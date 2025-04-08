@@ -97,17 +97,6 @@ export const mockDefaultTunkEthertnetPortProfile = {
   isDefault: true
 }
 
-export const mockClientVisibilityEthernetPortProfile = {
-  id: mockTrunkEthertnetPortProfileId1,
-  tenantId: 'tenant-id',
-  name: trunkWithPortBasedName,
-  type: 'TRUNK',
-  untagId: 1,
-  vlanMembers: '1-4094',
-  authType: 'PORT_BASED_AUTHENTICATOR',
-  isDefault: false
-}
-
 export const dummyRadiusServiceList = {
   totalCount: 3,
   page: 1,

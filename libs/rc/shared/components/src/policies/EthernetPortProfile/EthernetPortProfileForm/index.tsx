@@ -345,7 +345,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 {clientVisibilityEnabled &&
                   <Alert
                     showIcon={true}
-                    style={{ verticalAlign: 'middle', width: '16vw' }}
+                    style={{ verticalAlign: 'middle', width: '18vw' }}
                     message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />
                 }
               </>

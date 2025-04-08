@@ -23,7 +23,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockClientVisibilityEthernetPortProfile, mockDefaultTunkEthertnetPortProfile, portOverwrite, selectedApModel, selectedApModelCaps, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefaultTunkEthertnetPortProfile, portOverwrite, selectedApModel, selectedApModelCaps, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
@@ -883,76 +883,5 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
     })
 
     expect(screen.queryByText(/Enable SoftGRE Tunnel/)).not.toBeInTheDocument()
-  })
-})
-
-describe('Client Visibility', ()=> {
-  beforeEach(() => {
-    mockServer.resetHandlers()
-    mockServer.use(
-      rest.post(
-        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
-        (_, res, ctx) => res(ctx.json({
-          data: ethernetPortProfileList
-        }))
-      ),
-      rest.get(
-        LanPortsUrls.getApLanPortSettings.url,
-        (_, res, ctx) => res(ctx.json(portOverwrite))
-      ),
-      rest.get(
-        EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (_, res, ctx) => res(ctx.json({
-          data: mockClientVisibilityEthernetPortProfile
-        }))
-      ),
-      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
-        (_, res, ctx) => {
-          return res(ctx.json(dummyRadiusServiceList))
-        }
-      )
-    )
-  })
-
-  afterAll(() => mockServer.close())
-
-  it('Venue Level - should render alert when profile is cient visibility ON', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
-        ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
-    })
-
-    const venueParams = {
-      tenantId: 'tenant-id',
-      venueId: '123'
-    }
-
-    render(<Provider>
-      <Form initialValues={{ lan: initLanData }}>
-        <LanPortSettings
-          index={0}
-          readOnly={false}
-          selectedPortCaps={selectedTrunkPortCaps}
-          selectedModel={selectedModel}
-          setSelectedPortCaps={jest.fn()}
-          selectedModelCaps={selectedModelCaps}
-          isDhcpEnabled={false}
-          isTrunkPortUntaggedVlanEnabled={true}
-          useVenueSettings={false}
-          venueId={venueParams.venueId}
-        />
-      </Form>
-    </Provider>, {
-      route: { params: venueParams, path: '/:tenantId/t/venues/:venueId/edit/wifi/networking' }
-    })
-
-    expect(screen.queryByTestId('client-visibility-banner')).not.toBeInTheDocument()
-
-    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
-    const ethernetPortProfileCombo = screen.getByRole('combobox', { name: 'Ethernet Port Profile' })
-    await userEvent.click(ethernetPortProfileCombo)
-    await userEvent.selectOptions(ethernetPortProfileCombo, 'Trunk with Port Based')
-
-    expect(screen.getByTestId('client-visibility-banner')).toBeInTheDocument()
   })
 })

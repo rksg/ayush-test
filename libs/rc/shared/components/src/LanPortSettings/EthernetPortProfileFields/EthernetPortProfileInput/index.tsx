@@ -49,7 +49,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
         <Alert
           data-testid={'client-visibility-banner'}
           showIcon={true}
-          style={{ verticalAlign: 'middle', width: '36vw' }}
+          style={{ verticalAlign: 'middle', width: '40vw' }}
           message={$t(EthernetPortProfileMessages.WARN_CLIENT_VISIBILITY)}
         />
       }
