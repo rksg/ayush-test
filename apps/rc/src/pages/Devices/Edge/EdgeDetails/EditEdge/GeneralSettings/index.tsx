@@ -25,7 +25,7 @@ const GeneralSettings = () => {
     generalSettings,
     clusterInfo
   } = useContext(EditEdgeDataContext)
-  const [upadteEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
+  const [updateEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
 
   useEffect(() => {
     if(generalSettings) {
@@ -53,7 +53,7 @@ const GeneralSettings = () => {
       delete data.venueId
       delete data.clusterId
       delete data.serialNumber
-      await upadteEdge({ params, payload: data }).unwrap()
+      await updateEdge({ params, payload: data }).unwrap()
       navigate(linkToEdgeList)
 
     } catch (error) {

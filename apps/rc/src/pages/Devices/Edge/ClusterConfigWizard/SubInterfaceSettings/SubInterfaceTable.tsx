@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Table, TableProps, showActionModal, useStepFormContext }                                        from '@acx-ui/components'
-import { isInterfaceInVRRPSetting, SubInterface, convertEdgeSubinterfaceToApiPayload, EdgeSubInterface } from '@acx-ui/rc/utils'
+import { isInterfaceInVRRPSetting, SubInterface, convertEdgeSubInterfaceToApiPayload, EdgeSubInterface } from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                                                    from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                 from '@acx-ui/user'
 
@@ -145,7 +145,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }
 
   const handleAdd = async (data: SubInterface): Promise<unknown> => {
-    const savedData = convertEdgeSubinterfaceToApiPayload(data as EdgeSubInterface)
+    const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
 
     form.setFieldValue(
       props.namePath,
@@ -156,7 +156,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   const handleUpdate = async (data: SubInterface): Promise<unknown> => {
     const existingData = form.getFieldValue(props.namePath)
-    const savedData = convertEdgeSubinterfaceToApiPayload(data as EdgeSubInterface)
+    const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
 
     const updatedData = existingData.map((item: SubInterface) =>
       item.id === data.id ? savedData : item

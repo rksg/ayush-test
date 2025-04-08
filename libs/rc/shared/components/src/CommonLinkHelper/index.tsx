@@ -61,13 +61,13 @@ export function IdentityDetailsLink (
     name?: string })
 {
   const { personaGroupId, personaId, name } = props
-  return (
-    <TenantLink
+  return personaId && personaGroupId
+    ? <TenantLink
       to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
     >
       {name ?? personaId}
     </TenantLink>
-  )
+    : <>{name ?? ''}</>
 }
 
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {
