@@ -23,11 +23,7 @@ jest.mock('./components/WidgetChart', () => ({
   DraggableChart: () => <div>DraggableChart</div>
 }))
 
-const mockedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  useNavigate: () => mockedNavigate,
-  useTenantLink: jest.fn()
-}))
+const mockedSetModal = jest.fn()
 
 const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
@@ -189,7 +185,7 @@ describe('AICanvas', () => {
   it('should render a chat content correctly', async () => {
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
@@ -227,7 +223,7 @@ describe('AICanvas', () => {
     )
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
@@ -246,7 +242,7 @@ describe('AICanvas', () => {
     HTMLElement.prototype.scrollTo = scrollTo
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
@@ -258,7 +254,7 @@ describe('AICanvas', () => {
     expect(await screen.findByText('hello')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
     fireEvent.click(closeBtn)
-    expect(mockedNavigate).toBeCalled()
+    expect(mockedSetModal).toBeCalled()
   })
 
 })
