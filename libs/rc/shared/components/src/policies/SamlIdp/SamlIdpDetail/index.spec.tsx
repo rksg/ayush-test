@@ -12,7 +12,7 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockSamlIdpProfileName, mockSamlIdpProfileName2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedsamlIpdProfileList, samlNetworkList } from '../__tests__/fixtures'
+import { certList, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockSamlIdpProfileName, mockSamlIdpProfileName2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedSamlIdpProfileList, samlNetworkList } from '../__tests__/fixtures'
 
 import {  SamlIdpDetail } from '.'
 
@@ -65,7 +65,7 @@ describe('SAML IdP Detail', () => {
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
           mockedQueryViewDataList()
-          return res(ctx.json(mockedsamlIpdProfileList))
+          return res(ctx.json(mockedSamlIdpProfileList))
         }
       ),
 
@@ -83,7 +83,12 @@ describe('SAML IdP Detail', () => {
         SamlIdpProfileUrls.downloadSamlServiceProviderMetadata.url,
         (req, res, ctx) => {
           mockedDownloadMetadata()
-          return res(ctx.status(202))
+          return res(
+            ctx.status(200),
+            ctx.set('Content-Disposition', 'attachment; filename=test.xml'),
+            ctx.set('Content-Type', 'text/xml'),
+            ctx.body('<?xml version="1.0" encoding="UTF-8"?><root><test>test</test></root>')
+          )
         }
       ),
 
@@ -120,10 +125,12 @@ describe('SAML IdP Detail', () => {
     )
 
     await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
 
     expect(await screen.findByText(mockSamlIdpProfileName)).toBeInTheDocument()
     const downloadButton = screen.getByRole('button', { name: 'Download SAML Metadata' })
     await user.click(downloadButton)
+
     await waitFor(() => expect(mockedDownloadMetadata).toBeCalled())
     await waitFor(() => expect(downloadFile).toBeCalled())
   })

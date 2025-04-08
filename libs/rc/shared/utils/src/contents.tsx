@@ -615,5 +615,8 @@ export const SamlIdpMessages = {
   }),
   UPLOAD_SAML_METADATA: defineMessage({
     defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
+  }),
+  IDENTITY_NAME: defineMessage({
+    defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.'
   })
 }

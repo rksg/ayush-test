@@ -25,7 +25,12 @@ import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
-export function IdentityGroup () {
+interface IdentityGroupProps {
+  comboWidth?: string
+}
+
+export function IdentityGroup (props: IdentityGroupProps) {
+  const { comboWidth = '400px' } = props
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -130,15 +135,13 @@ export function IdentityGroup () {
           children={
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
-              style={{ width: '400px' }}
+              style={{ width: comboWidth }}
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
             />
           }
         />
-
         <Space>
-
           <Space split='|'>
             <Button
               type='link'
@@ -160,7 +163,7 @@ export function IdentityGroup () {
       </Space>
       {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
-          <UI.FieldLabel width={'400px'}>
+          <UI.FieldLabel width={comboWidth}>
             {$t({
               defaultMessage:
                 'Use single identity association to all onboarded devices'
@@ -174,13 +177,13 @@ export function IdentityGroup () {
             />
           </UI.FieldLabel>
           <div style={{ marginBottom: '20px', ...display }}>
-            <UI.FieldLabel width={'400px'}>
+            <UI.FieldLabel width={comboWidth}>
               <p style={{ marginBottom: '0px' }}>
                 {$t({ defaultMessage: 'Identity' })}
               </p>
             </UI.FieldLabel>
             {selectedIdentity ? (
-              <UI.FieldLabel width={'400px'}>
+              <UI.FieldLabel width={comboWidth}>
                 <p style={{ marginBottom: '0px' }}>{selectedIdentity.name}</p>
                 <Form.Item
                   style={{ marginBottom: '0px' }}

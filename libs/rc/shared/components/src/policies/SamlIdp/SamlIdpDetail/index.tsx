@@ -14,8 +14,10 @@ import {
   useRefreshSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
+  AttributeMapping,
   PolicyOperation,
   PolicyType,
+  SamlIdpAttributeMappingNameType,
   SamlIdpMessages,
   ServerCertificate,
   filterByAccessForServicePolicyMutation,
@@ -136,6 +138,36 @@ export const SamlIdpDetail = () => {
             certificatFlag={samlIdpData?.encryptionCertificateEnabled ?? false}
             certificatId={samlIdpData?.encryptionCertificateId ?? ''}
           />
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Name' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+          )?.mappedByName || noDataDisplay
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Email' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+          )?.mappedByName || noDataDisplay
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Phone' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+          )?.mappedByName || noDataDisplay
         )
       }
     }
