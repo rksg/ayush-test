@@ -14,7 +14,7 @@ import { TrafficClassSettingsTable } from '.'
 
 const { mockTrafficClassSettings } = EdgeHqosProfileFixtures
 
-describe('Edge Qos Bandwitdth TrafficClassSettgins Table', () => {
+describe('Edge Qos Bandwidth TrafficClassSettgins Table', () => {
   it('should correctly render', async () => {
     render(
       <Provider>

@@ -26,13 +26,14 @@ import {
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
-import { SwitchScopes }                                 from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
-import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                                      from '@acx-ui/utils'
+import { useParams }                                                   from '@acx-ui/react-router-dom'
+import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
+import { SwitchScopes }                                                from '@acx-ui/types'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                                                     from '@acx-ui/utils'
 
+import { SimpleListTooltip }    from '../SimpleListTooltip'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
 
@@ -54,6 +55,7 @@ export function SwitchPortTable (props: {
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -250,6 +252,37 @@ export function SwitchPortTable (props: {
       }
     }
   },
+  ...( isSwitchMacAclEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    ? [{
+      key: 'switchMacAcl',
+      title: $t({ defaultMessage: 'MAC ACL' }),
+      dataIndex: 'switchMacAcl',
+      sorter: false,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchMacAcl ? row.switchMacAcl : ''
+      }
+    }, {
+      key: 'stickyMacAclAllowCount',
+      title: $t({ defaultMessage: 'Sticky MAC' }),
+      dataIndex: 'stickyMacAclAllowCount',
+      sorter: false,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        if (row.stickyMacAclAllowCount && row.stickyMacAclAllowCount > 0 &&
+          row.stickyMacAclAllowList) {
+          return (
+            <SimpleListTooltip
+              items={row.stickyMacAclAllowList}
+              displayText={row.stickyMacAclAllowCount}
+            />
+          )
+        }
+        return noDataDisplay
+      }
+    }] : [])
+  ,
   ...( isSwitchPortProfileEnabled
     && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
     ? [{
