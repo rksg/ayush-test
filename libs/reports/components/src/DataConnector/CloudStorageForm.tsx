@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { Form, Input }   from 'antd'
 import { FormItemProps } from 'antd/lib/form'
@@ -8,9 +8,10 @@ import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader,
 import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
 import { getIntl  }                                                                          from '@acx-ui/utils'
 
-import { useSaveStorageMutation, useGetStorageQuery } from './services'
-import { AzureConnectionType }                        from './types'
-import { generateBreadcrumb }                         from './utils'
+import SecretFieldInput                                             from './SecretFieldInput'
+import { useSaveStorageMutation, useGetStorageQuery }               from './services'
+import { AzureConnectionType, AzureStoragePayload, ConnectionType } from './types'
+import { generateBreadcrumb }                                       from './utils'
 
 export const StorageOptions = [
   { value: 'azure', label: 'Azure' },
@@ -24,34 +25,58 @@ type CloudStorageFormProps = {
 
 type StorageFieldProps = {
   id: string,
-  name: string,
+  name: React.ReactNode,
   component: FormItemProps['children'],
   dependencies?: FormItemProps['dependencies'],
   rules?: FormItemProps['rules']
 }
 
-export const getFieldRules = (fieldName: string): FormItemProps['rules'] | undefined => {
+export const getFieldRules = (
+  needValidation: boolean,
+  selectedConnectionType: ConnectionType,
+  crossCheckfieldName?: string
+): FormItemProps['rules'] | undefined => {
   const { $t } = getIntl()
-  const errorMessage = $t({
-    defaultMessage: 'Please enter SFTP password or private key'
-  })
 
-  return [
-    ({ getFieldValue }) => ({
-      validator (_, value: string) {
-        if (!value &&
-          !getFieldValue(fieldName)) {
-          return Promise.reject(errorMessage)
-        }
-        return Promise.resolve()
-      }
-    })
-  ]
+  if (!needValidation) {
+    // return empty array to avoid being added required rule at the end of the form
+    return []
+  }
+
+  switch (selectedConnectionType) {
+    case ConnectionType.Azure:
+      return [{
+        required: true,
+        message: $t({ defaultMessage: 'Please enter Azure account key' })
+      }]
+    case ConnectionType.FTP:
+      return [{
+        required: true,
+        message: $t({ defaultMessage: 'Please enter FTP password' })
+      }]
+    case ConnectionType.SFTP:
+      return [
+        ({ getFieldValue }) => ({
+          validator (_, value: string) {
+            if (!value && !getFieldValue(crossCheckfieldName as string)) {
+              return Promise.reject($t({
+                defaultMessage: 'Please enter SFTP password or private key'
+              }))
+            }
+            return Promise.resolve()
+          }
+        })
+      ]
+  }
 }
 
-const getStorageMap = (azureConnectionType: AzureConnectionType):
-Record<string, StorageFieldProps[]> => {
+const getStorageMap = (
+  needValidation: boolean,
+  selectedConnectionType: ConnectionType,
+  azureConnectionType: AzureConnectionType
+): Record<string, StorageFieldProps[]> => {
   const { $t } = getIntl()
+
   return {
     azure: [
       {
@@ -80,7 +105,12 @@ Record<string, StorageFieldProps[]> => {
       {
         id: 'azureAccountKey',
         name: $t({ defaultMessage: 'Azure account key' }),
-        component: <Input data-testid='azureAccountKey' />
+        component:
+          <SecretFieldInput
+            data-testid='azureAccountKey'
+            hasPlaceholder={!needValidation}
+          />,
+        rules: getFieldRules(needValidation, selectedConnectionType)
       },
       ...(azureConnectionType === AzureConnectionType.Files
         ? [{
@@ -123,7 +153,8 @@ Record<string, StorageFieldProps[]> => {
       {
         id: 'ftpPassword',
         name: $t({ defaultMessage: 'FTP password' }),
-        component: <Input type='password' />
+        component: <SecretFieldInput type='password' hasPlaceholder={!needValidation} />,
+        rules: getFieldRules(needValidation, selectedConnectionType)
       },
       {
         id: 'ftpStoragePath',
@@ -135,36 +166,45 @@ Record<string, StorageFieldProps[]> => {
       {
         id: 'sftpHost',
         name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
-        component: <Input />
+        component: <Input data-testid='sftpHost' />
       },
       {
         id: 'sftpPort',
         name: $t({ defaultMessage: 'SFTP port' }),
-        component: <Input />
+        component: <Input data-testid='sftpPort' />
       },
       {
         id: 'sftpUserName',
         name: $t({ defaultMessage: 'SFTP username' }),
-        component: <Input />
+        component: <Input data-testid='sftpUserName' />
       },
       {
         id: 'sftpPassword',
         name: $t({ defaultMessage: 'SFTP password' }),
-        component: <Input type='password' />,
+        component:
+          <SecretFieldInput
+            data-testid='sftpPassword'
+            hasPlaceholder={!needValidation}
+          />,
         dependencies: ['sftpPrivateKey'],
-        rules: getFieldRules('sftpPrivateKey')
+        rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPrivateKey')
       },
       {
         id: 'sftpPrivateKey',
         name: $t({ defaultMessage: 'SFTP private key' }),
-        component: <Input.TextArea rows={5} />,
+        component:
+          <SecretFieldInput.TextArea
+            rows={5}
+            data-testid='sftpPrivateKey'
+            hasPlaceholder={!needValidation}
+          />,
         dependencies: ['sftpPassword'],
-        rules: getFieldRules('sftpPassword')
+        rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPassword')
       },
       {
         id: 'sftpStoragePath',
         name: $t({ defaultMessage: 'SFTP storage path' }),
-        component: <Input />
+        component: <Input data-testid='sftpStoragePath' />
       }
     ]
   }
@@ -175,12 +215,21 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const azureConnectionType = Form.useWatch('azureConnectionType', form)
-  const storageMap = useMemo(() => getStorageMap(azureConnectionType), [azureConnectionType])
   const storage = useGetStorageQuery({}, { skip: !editMode })
   const selectedCloudStorage = storage.data?.config
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
   const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
   const [updateStorage, { isLoading }] = useSaveStorageMutation()
+  const isConnectionTypeChanged = selectedConnectionType !== selectedCloudStorage?.connectionType
+    || (selectedCloudStorage?.connectionType === 'azure'
+      && azureConnectionType !== (selectedCloudStorage as AzureStoragePayload)?.azureConnectionType)
+  const shouldValidateSecretFields = !editMode || isConnectionTypeChanged
+  const storageMap = useMemo(
+    () => getStorageMap(shouldValidateSecretFields,
+      selectedConnectionType as ConnectionType,
+      azureConnectionType),
+    [shouldValidateSecretFields, selectedConnectionType, azureConnectionType]
+  )
 
   const saveStorage = useCallback(() => {
     const data = form.getFieldsValue()
@@ -201,8 +250,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
         showToast({ type: 'error', content: error })
       })
   }, [form, editMode, storage.data?.id, navigate, updateStorage, $t])
-  const initialValues =
-    editMode ? selectedCloudStorage : { connectionType: 'azure' }
+
+  useEffect(() => {
+    if (editMode) {
+      // set as initial values here when cloud storage is loaded
+      form.setFieldsValue(selectedCloudStorage)
+    }
+  }, [editMode, form, selectedCloudStorage])
+
   return <>
     <PageHeader
       title={editMode
@@ -211,11 +266,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
       }
       breadcrumb={generateBreadcrumb()}
     />
-    <Loader states={[{ isLoading: isLoading || storage.isLoading }]}>
+    <Loader states={[{
+      isLoading: isLoading || storage.isLoading,
+      isFetching: storage.isFetching
+    }]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
           <Form
-            initialValues={initialValues}
+            initialValues={{ connectionType: 'azure' }}
             layout='vertical'
             form={form}
           >
@@ -237,7 +295,8 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
                   dependencies={item.dependencies}
                   rules={item.rules ?? [{
                     required: true,
-                    message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
+                    message: $t({ defaultMessage: '{label} is required!' },
+                      { label: item.name }) as string
                   }]}
                 >
                   {item.component}

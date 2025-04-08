@@ -40,7 +40,7 @@ export const api = dataApi.injectEndpoints({
                 ) {
                   network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
                     hierarchyNode(path: $path) {
-                      facts(n: 2, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
+                      facts(n: 1, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
                         key values labels
                       }
                     }
@@ -86,10 +86,8 @@ export const api = dataApi.injectEndpoints({
               }
             }
           },
-          transformResponse: (response: Response<string[][]>) => {
-            const items = response.network.hierarchyNode.availableFacts
-            return _(items).chunk(2).shuffle().value()
-          }
+          transformResponse: (response: Response<string[][]>) =>
+            _(response.network.hierarchyNode.availableFacts).chunk(1).value()
         })
   })
 })

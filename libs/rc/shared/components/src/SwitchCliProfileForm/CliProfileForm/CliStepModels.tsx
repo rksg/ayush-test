@@ -40,6 +40,7 @@ export function CliStepModels () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport8100Or8100X = isSupport8100 || isSupport8100X
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const { form, editMode } = useStepFormContext()
 
@@ -57,7 +58,8 @@ export function CliStepModels () {
   const getAllFamilyModel = (
     isSupport8200AV: boolean,
     isSupport8100: boolean,
-    isSupport8100X: boolean) => {
+    isSupport8100X: boolean,
+    isSupport7550Zippy: boolean) => {
     const filteredModels = (model: string) => {
       switch (model) {
         case 'ICX8200-24PV':
@@ -75,6 +77,8 @@ export function CliStepModels () {
         case 'ICX8100-48P-X':
         case 'ICX8100-C08PF-X':
           return isSupport8100X
+        case 'ICX7550-24XZP':
+          return isSupport7550Zippy
         default:
           return true
       }
@@ -88,7 +92,8 @@ export function CliStepModels () {
       .filter(family => family.models.length > 0)
   }
 
-  const allFamilyModels = getAllFamilyModel(isSupport8200AV, isSupport8100, isSupport8100X)
+  const allFamilyModels = getAllFamilyModel(isSupport8200AV, isSupport8100,
+    isSupport8100X, isSupport7550Zippy)
   const allModels:string[] = allFamilyModels.map((m) => m.models).flat()
 
   const existingProfileNameList = profiles?.data?.filter(

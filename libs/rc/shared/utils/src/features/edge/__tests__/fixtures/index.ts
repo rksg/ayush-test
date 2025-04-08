@@ -2,6 +2,7 @@ import * as EdgeAlarmFixtures         from './alarm'
 import * as CommonFixtures            from './common'
 import * as EdgeCompatibilityFixtures from './compatibility'
 import * as EdgeDHCPFixtures          from './dhcp'
+import * as EdgeDualWanFixtures       from './dualWan'
 import * as EdgeErrorsFixtures        from './errors'
 import * as EdgeFirewallFixtures      from './firewall'
 import * as EdgeFirmwareFixtures      from './firmware'
@@ -40,5 +41,6 @@ export {
   CommonFixtures,
   CommonFixtureTypes,
   EdgeHqosProfileFixtures,
-  EdgeOltFixtures
+  EdgeOltFixtures,
+  EdgeDualWanFixtures
 }

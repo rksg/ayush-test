@@ -85,6 +85,7 @@ export function SwitchForm () {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -465,7 +466,8 @@ export function SwitchForm () {
     const re = createSwitchSerialPattern({
       isSupport8200AV: isSupport8200AV,
       isSupport8100: isSupport8100,
-      isSupport8100X: isSupport8100X
+      isSupport8100X: isSupport8100X,
+      isSupport7550Zippy: isSupport7550Zippy
     })
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
@@ -755,7 +757,8 @@ export function SwitchForm () {
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                   {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                  {switchDetail && <SwitchStackSetting
+                  {switchData && switchDetail && <SwitchStackSetting
+                    switchData={switchData}
                     switchDetail={switchDetail}
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}

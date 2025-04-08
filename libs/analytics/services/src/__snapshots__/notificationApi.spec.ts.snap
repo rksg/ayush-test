@@ -2,10 +2,6 @@
 
 exports[`Services for notification apis setIncidentNotification should return correct value on preferences mutation 1`] = `
 Object {
-  "configRecommendation": Object {
-    "aiOps": Array [],
-    "crrm": Array [],
-  },
   "incident": Object {
     "P1": Array [],
     "P2": Array [

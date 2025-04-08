@@ -6,12 +6,12 @@ import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { networkApi, pinApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  EdgePinUrls,
   EdgeSdLanUrls,
   EdgeTunnelProfileFixtures,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  EdgePinUrls,
   PolicyOperation,
   PolicyType,
   TunnelProfileUrls
@@ -307,7 +307,80 @@ describe('TunnelProfileList', () => {
       expect(mockedSdLanReq).toBeCalled()
     })
 
-    it('edit button will remove when select VLAN_VxLAN Default Tunnel Profile', async () => {
+    it('edit button and delete button will remove when select VLAN_VxLAN Default Tunnel Profile',
+      async () => {
+        const user = userEvent.setup()
+        render(
+          <Provider>
+            <TunnelProfileTable />
+          </Provider>, {
+            route: { params, path: tablePath }
+          })
+
+        await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+        // eslint-disable-next-line max-len
+        const row = await screen.findAllByRole('row', { name: /Default tunnel profile \(SD-LAN\)/i })
+        await user.click(within(row[0]).getByRole('checkbox'))
+        expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+        expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+      })
+  })
+
+  describe('when L2GRE is ready', () => {
+    const mockedSdLanReq = jest.fn()
+    const mockedSdLanDataList = {
+      totalCount: 1,
+      data: [{ id: 'mocked_sdlan_id', name: 'testSDLAN' }]
+    }
+
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_L2OGRE_TOGGLE
+          || ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE
+          || ff === Features.EDGE_PIN_HA_TOGGLE
+        )
+
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (req, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
+        ),
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanReq()
+            return res(ctx.json(mockedSdLanDataList))
+          }
+        )
+      )
+    })
+
+    it('should display Tunnel Type, Destination SD-LAN and Personal Identity Network column',
+      async () => {
+        render(
+          <Provider>
+            <TunnelProfileTable />
+          </Provider>, {
+            route: { params, path: tablePath }
+          })
+
+        await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+        await screen.findAllByRole('row', { name: /Default/i })
+        await screen.findByRole('columnheader', { name: 'Tunnel Type' })
+        await screen.findByRole('columnheader', { name: 'Destination' })
+        await screen.findByRole('columnheader', { name: 'Personal Identity Network' })
+        await screen.findByRole('columnheader', { name: 'SD-LAN' })
+        const tableFilters = await screen.findAllByTestId('options-selector')
+        await waitFor(() => {
+          expect(tableFilters.length).toBe(3)
+        })
+        expect(tableFilters[0]).toHaveTextContent(/Tunnel Type/)
+        expect(tableFilters[1]).toHaveTextContent(/Personal Identity Network/)
+        expect(tableFilters[2]).toHaveTextContent(/SD-LAN/)
+      })
+
+    it('show edit and delete button when select Default Tunnel Profile', async () => {
       const user = userEvent.setup()
       render(
         <Provider>
@@ -319,7 +392,8 @@ describe('TunnelProfileList', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       const row = await screen.findAllByRole('row', { name: /Default tunnel profile \(SD-LAN\)/i })
       await user.click(within(row[0]).getByRole('checkbox'))
-      expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Edit' })).toBeVisible()
+      expect(screen.queryByRole('button', { name: 'Delete' })).toBeVisible()
     })
   })
 })
