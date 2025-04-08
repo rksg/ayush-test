@@ -34,14 +34,23 @@ export const mockVenueList = {
   data: [
     {
       id: 'a307d7077410456f8f1a4fc41d861567',
+      name: 'Mocked-Venue-1',
       country: 'TestCountry1',
       city: 'TestCity1',
       aggregatedApStatus: []
     },
     {
       id: 'test-2',
+      name: 'Mocked-Venue-2',
       country: 'TestCountry2',
       city: 'TestCity2',
+      aggregatedApStatus: []
+    },
+    {
+      id: 'test-3',
+      name: 'Mocked-Venue-3',
+      country: 'TestCountry3',
+      city: 'TestCity3',
       aggregatedApStatus: []
     }
   ]
