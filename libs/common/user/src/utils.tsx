@@ -38,6 +38,6 @@ export function goToNoPermission () {
   return <TenantNavigate replace to='/no-permissions' />
 }
 
-export function isFoundationTier (tier: string | undefined) {
-  return tier === AccountTier.FOUNDATION
+export function isCoreTier (tier: string | undefined) {
+  return tier === AccountTier.CORE
 }

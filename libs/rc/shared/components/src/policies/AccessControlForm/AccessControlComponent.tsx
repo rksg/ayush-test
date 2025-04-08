@@ -4,14 +4,14 @@ import { Form, FormItemProps, Switch } from 'antd'
 import { useIntl }                     from 'react-intl'
 import styled                          from 'styled-components/macro'
 
-import { AccessControlProfile } from '@acx-ui/rc/utils'
+import { AccessControlProfile }       from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ApplicationDrawer } from './ApplicationDrawer'
 import { ClientRateLimit }   from './ClientRateLimit'
 import { DeviceOSDrawer }    from './DeviceOSDrawer'
 import { Layer2Drawer }      from './Layer2Drawer'
 import { Layer3Drawer }      from './Layer3Drawer'
-import { getUserProfile, isCoreTier } from '@acx-ui/user'
 const { useWatch } = Form
 
 const AccessComponentWrapper = styled.div`
