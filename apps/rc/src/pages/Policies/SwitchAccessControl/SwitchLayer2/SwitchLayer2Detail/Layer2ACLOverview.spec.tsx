@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, SwitchUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
 import Layer2ACLOverview from './Layer2ACLOverview'
 
@@ -80,6 +80,8 @@ describe('Layer2ACLOverview', () => {
       })
 
     const switchLink = await screen.findByText('Switch One')
-    fireEvent.click(switchLink)
+    expect(switchLink.tagName).toBe('A')
+    expect(switchLink).toHaveAttribute('href',
+      expect.stringContaining('/devices/switch/switch-1/SN123456/details/overview'))
   })
 })
