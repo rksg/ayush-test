@@ -12,7 +12,6 @@ import MigrationSummary                                                         
 import { AddNewCustomRole }                                                      from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
 import { AddPrivilegeGroup }                                                     from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                                                    from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
-import AICanvas                                                                  from './pages/AICanvas'
 import AICanvasQ1                                                                from './pages/AICanvas/archived/AICanvasQ1'
 import AnalyticsBase                                                             from './pages/Analytics'
 import Dashboard                                                                 from './pages/Dashboard'
@@ -63,7 +62,6 @@ function AllRoutes () {
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='canvas' element={<AICanvasQ1 />} />
-          <Route path='canvas2' element={<AICanvas />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
