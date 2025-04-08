@@ -410,7 +410,7 @@ export function PropertyUnitDetails () {
         >{$t({ defaultMessage: 'View Portal' })} </Button>,
         <Button
           type='primary'
-          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.addPropertyUnit)]}
+          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.updatePropertyUnit)]}
           onClick={() => {setConfigurePropertyUnitDrawerVisible(true)}}
         >{$t({ defaultMessage: 'Configure' })} </Button>
       ])}
