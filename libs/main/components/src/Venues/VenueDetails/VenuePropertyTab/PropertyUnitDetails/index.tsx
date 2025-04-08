@@ -23,8 +23,8 @@ import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAllowedOperations } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }             from '@acx-ui/utils'
+import { filterByAccess, filterByOperations } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -79,10 +79,6 @@ export function PropertyUnitDetails () {
   const copyButtonTooltipCopiedText = $t({ defaultMessage: 'Passphrase Copied' })
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
   const [guestCopyButtonTooltip, setGuestCopyTooltip] = useState(copyButtonTooltipDefaultText)
-  const hasUpdateUnitsPermission =
-    hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyUnit)])
-  const hasAddUnitsPermission =
-    hasAllowedOperations([getOpsApi(PropertyUrlsInfo.addPropertyUnit)])
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
@@ -401,10 +397,10 @@ export function PropertyUnitDetails () {
     <PageHeader
       title={unitResult.data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={[
-        hasUpdateUnitsPermission &&
+      extra={filterByOperations([
         <Button
           onClick={handleSuspend}
+          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.updatePropertyUnit)]}
         >{unitData?.status === PropertyUnitStatus.ENABLED
             ? $t({ defaultMessage: 'Suspend' }) : $t({ defaultMessage: 'Activate' }) } </Button>,
         <Button
@@ -412,12 +408,12 @@ export function PropertyUnitDetails () {
             window.open(residentPortalUrl, '_blank')
           }}
         >{$t({ defaultMessage: 'View Portal' })} </Button>,
-        hasAddUnitsPermission &&
         <Button
           type='primary'
+          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.addPropertyUnit)]}
           onClick={() => {setConfigurePropertyUnitDrawerVisible(true)}}
         >{$t({ defaultMessage: 'Configure' })} </Button>
-      ]}
+      ])}
     />
     <UnitDetails />
     <Subtitle level={3} style={{ marginTop: '20px', marginBottom: '0' }}>
