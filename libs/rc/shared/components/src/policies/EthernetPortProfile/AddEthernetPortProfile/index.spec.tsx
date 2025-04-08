@@ -100,6 +100,10 @@ describe('AddEthernetPortProfile', () => {
 
     const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'testEthernetPortProfile1')
+    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    await user.hover(tooltips[3])
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('Enables visibility for wired port clients, making them discoverable')
     await user.click(screen.getByRole('switch', { name: 'Client Visibility' }))
     expect(
       screen.getByText(

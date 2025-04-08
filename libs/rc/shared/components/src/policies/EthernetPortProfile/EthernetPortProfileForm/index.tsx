@@ -346,7 +346,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   <Row>
                     <Col span={12}>
                       <Alert
-                        data-testid={'enable-softgre-tunnel-banner'}
                         showIcon={true}
                         style={{ verticalAlign: 'middle' }}
                         message={$t({
