@@ -160,14 +160,14 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
         dataIndex: 'start',
         key: 'start',
         render: (_, { start }) =>
-          formatter(DateFormatEnum.DateTimeFormat)(moment.utc(start).format())
+          formatter(DateFormatEnum.DateTimeFormat)(start)
       },
       {
         title: $t({ defaultMessage: 'Export end' }),
         dataIndex: 'end',
         key: 'end',
         render: (_, { end }) =>
-          formatter(DateFormatEnum.DateTimeFormat)(moment.utc(end).format())
+          formatter(DateFormatEnum.DateTimeFormat)(end)
       }
     ],
     [$t]

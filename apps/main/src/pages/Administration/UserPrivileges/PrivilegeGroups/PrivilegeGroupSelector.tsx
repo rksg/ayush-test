@@ -23,9 +23,13 @@ const PrivilegeGroupSelector = (props: PrivilegeGroupSelectorProps) => {
 
   const rolesList = privilegeGroupList?.map((item) => ({
     label: roleStringMap[item.name as RolesEnum]
-      ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
+      ? $t(roleStringMap[item.name as RolesEnum]) : item.name ?? '',
     value: item.name
-  }))
+  })).sort((a, b) => {
+    const labelA = a.label.toUpperCase()
+    const labelB = b.label.toUpperCase()
+    return (labelA > labelB) ? 1 : (labelA < labelB ? -1 : 0)
+  })
 
   const handleChange = (value: string) => {
     const selected = privilegeGroupList?.find(p => p.name === value) as PrivilegeGroup

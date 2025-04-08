@@ -1,5 +1,4 @@
-import React from 'react'
-
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, Banner, Button, PageHeader, Loader, DisabledButton } from '@acx-ui/components'
@@ -21,8 +20,8 @@ const DataConnectorContent: React.FC<{}> = () => {
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataConnector')
-  const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
-  const StorageLabel = StorageOptions.find(
+  const { data: storage, isLoading, isFetching } = useGetStorageQuery({})
+  const storageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType
   )?.label
   const hasDCStoragePermission = get('IS_MLISA_SA')
@@ -59,28 +58,31 @@ const DataConnectorContent: React.FC<{}> = () => {
   }
   if (hasDCStoragePermission) {
     headerButtons.push(
-      <Button
-        key='cloud-storage-button'
-        size='middle'
-        icon={<SettingsOutlined />}
-        type='default'
-        onClick={() => navigate({
-          ...basePath,
-          pathname: storage?.id
-            ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
-            : `${basePath.pathname}/cloudStorage/create`
-        })}
-      >
-        {storage?.config
-          ? $t(
-            { defaultMessage: 'Cloud Storage: {connectionType}' },
-            { connectionType: StorageLabel }
-          )
-          : $t({ defaultMessage: 'New Cloud Storage' })}
-        {storage?.isConnected
-          ? <UI.ConnectedDot data-testid='connected-dot' />
-          : <UI.DisconnectedDot data-testid='disconnected-dot' />}
-      </Button>
+      <Tooltip title={storage?.error} key='cloud-storage-button'>
+        <Button
+          size='middle'
+          icon={<SettingsOutlined />}
+          type='default'
+          onClick={() => navigate({
+            ...basePath,
+            pathname: storage?.id
+              ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
+              : `${basePath.pathname}/cloudStorage/create`
+          })}
+        >
+          {storage?.config
+            ? $t(
+              { defaultMessage: 'Cloud Storage: {connectionType}' },
+              { connectionType: storageLabel }
+            )
+            : $t({ defaultMessage: 'New Cloud Storage' })}
+          {storage != null && (
+            storage.isConnected
+              ? <UI.ConnectedDot data-testid='connected-dot' />
+              : <UI.DisconnectedDot data-testid='disconnected-dot' />
+          )}
+        </Button>
+      </Tooltip>
     )
   }
 
@@ -90,7 +92,7 @@ const DataConnectorContent: React.FC<{}> = () => {
       breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={headerButtons.length > 0
         ? <Loader
-          states={[{ isLoading: isStorageLoading }]}
+          states={[{ isLoading, isFetching }]}
           style={{ flexDirection: 'row', gap: '10px' }}>
           {headerButtons}
         </Loader>

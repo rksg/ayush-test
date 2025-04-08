@@ -5,6 +5,9 @@ import { Input } from 'antd'
 
 import { DeviceConnectionStatus }                                                         from '../../constants'
 import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
+import { MacAclRule }                                                                     from '../../types/switch'
+
+import { macAclRulesParser } from './switch.utils'
 
 import {
   isOperationalSwitch,
@@ -657,5 +660,49 @@ describe('Test getFamilyAndModel function', () => {
     expect(getFamilyAndModel('ICX8100-48-X')).toEqual(['ICX8100', '48-X'])
     expect(getFamilyAndModel('ICX8200-48PF2')).toEqual(['ICX8200', '48PF2'])
     expect(getFamilyAndModel('ICX8200-24PV')).toEqual(['ICX8200', '24PV'])
+  })
+})
+
+describe('macAclRulesParser', () => {
+  it('should return zero counts when no rules are provided', () => {
+    const result = macAclRulesParser([])
+    expect(result).toEqual({ permit: 0, deny: 0 })
+  })
+
+  it('should return zero counts when rules is undefined', () => {
+    const result = macAclRulesParser(undefined as unknown as MacAclRule[])
+    expect(result).toEqual({ permit: 0, deny: 0 })
+  })
+
+  it('should count permit rules correctly', () => {
+    const rules: MacAclRule[] = [
+      { id: '1', action: 'permit', sourceAddress: '00:11:22:33:44:55' },
+      { id: '2', action: 'permit', sourceAddress: '66:77:88:99:AA:BB' }
+    ]
+
+    const result = macAclRulesParser(rules)
+    expect(result).toEqual({ permit: 2, deny: 0 })
+  })
+
+  it('should count deny rules correctly', () => {
+    const rules: MacAclRule[] = [
+      { id: '1', action: 'deny', sourceAddress: '00:11:22:33:44:55' },
+      { id: '2', action: 'deny', sourceAddress: '66:77:88:99:AA:BB' }
+    ]
+
+    const result = macAclRulesParser(rules)
+    expect(result).toEqual({ permit: 0, deny: 2 })
+  })
+
+  it('should count mixed permit and deny rules correctly', () => {
+    const rules: MacAclRule[] = [
+      { id: '1', action: 'permit', sourceAddress: '00:11:22:33:44:55' },
+      { id: '2', action: 'deny', sourceAddress: '66:77:88:99:AA:BB' },
+      { id: '3', action: 'permit', sourceAddress: 'CC:DD:EE:FF:00:11' },
+      { id: '4', action: 'deny', sourceAddress: '22:33:44:55:66:77' }
+    ]
+
+    const result = macAclRulesParser(rules)
+    expect(result).toEqual({ permit: 2, deny: 2 })
   })
 })

@@ -47,7 +47,7 @@ export function PoolTable (props:{
       disabled: (selectedRows) => isPinUsedPool(selectedRows),
       tooltip: (selectedRows) => isPinUsedPool(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'The selected pool is confgiured as PIN DHCP pool and cannot be edited' })
+        ? $t({ defaultMessage: 'The selected pool is configured as PIN DHCP pool and cannot be edited' })
         : undefined,
       onClick: (rows: EdgeDhcpPool[]) => {
         openDrawer(rows[0])
@@ -58,7 +58,7 @@ export function PoolTable (props:{
       disabled: (selectedRows) => isPinUsedPool(selectedRows),
       tooltip: (selectedRows) => isPinUsedPool(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'The selected pool is confgiured as PIN DHCP pool and cannot be deleted' })
+        ? $t({ defaultMessage: 'The selected pool is configured as PIN DHCP pool and cannot be deleted' })
         : undefined,
       onClick: (rows: EdgeDhcpPool[], clearSelection) => {
         onDelete?.(rows)

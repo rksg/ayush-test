@@ -189,7 +189,11 @@ export function DpskForm (props: DpskFormProps) {
             initialValues={initialValues}
             preserve={modalMode ? false : true}
           >
-            <DpskSettingsForm modalMode={modalMode} editMode={editMode} />
+            <DpskSettingsForm
+              modalMode={modalMode}
+              editMode={editMode}
+              isEnforced={dataFromServer?.isEnforced}
+            />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
       </Loader>

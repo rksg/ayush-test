@@ -64,7 +64,8 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
         retryLimitEnabledCheckbox: true,
         espReplayWindowEnabledCheckbox: true,
         deadPeerDetectionDelayEnabledCheckbox: true,
-        nattKeepAliveIntervalEnabledCheckbox: true
+        nattKeepAliveIntervalEnabledCheckbox: true,
+        failoverRetryPeriodIsForever: true
       })
     }
   }, [form, readMode, visible])
