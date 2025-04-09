@@ -30,7 +30,7 @@ interface IdentityGroupProps {
 }
 
 export function IdentityGroup (props: IdentityGroupProps) {
-  const { comboWidth = '400px' } = props
+  const { comboWidth = '280px' } = props
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
