@@ -7,8 +7,8 @@ import {
   PolicyOperation,
   PolicyType,
   SamlIdpProfileUrls,
-  getPolicyRoutePath,
-  downloadFile } from '@acx-ui/rc/utils'
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -16,9 +16,12 @@ import { certList, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockSamlIdpProfi
 
 import {  SamlIdpDetail } from '.'
 
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  downloadFile: jest.fn()
+const mockedDownloadSamlServiceProviderMetadata = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useDownloadSamlServiceProviderMetadataMutation: () => (
+    [mockedDownloadSamlServiceProviderMetadata]
+  )
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -36,7 +39,6 @@ const detailViewPath = '/:tenantId/' + getPolicyRoutePath({
 
 const mockedGetSamlIdpProfile = jest.fn()
 const mockedQueryViewDataList = jest.fn()
-const mockedDownloadMetadata = jest.fn()
 const mockedSyncMetadata = jest.fn()
 
 describe('SAML IdP Detail', () => {
@@ -79,19 +81,6 @@ describe('SAML IdP Detail', () => {
         (req, res, ctx) => res(ctx.json(certList))
       ),
 
-      rest.get(
-        SamlIdpProfileUrls.downloadSamlServiceProviderMetadata.url,
-        (req, res, ctx) => {
-          mockedDownloadMetadata()
-          return res(
-            ctx.status(200),
-            ctx.set('Content-Disposition', 'attachment; filename=test.xml'),
-            ctx.set('Content-Type', 'text/xml'),
-            ctx.body('<?xml version="1.0" encoding="UTF-8"?><root><test>test</test></root>')
-          )
-        }
-      ),
-
       rest.patch(
         SamlIdpProfileUrls.refreshSamlServiceProviderMetadata.url,
         (req, res, ctx) => {
@@ -131,8 +120,7 @@ describe('SAML IdP Detail', () => {
     const downloadButton = screen.getByRole('button', { name: 'Download SAML Metadata' })
     await user.click(downloadButton)
 
-    await waitFor(() => expect(mockedDownloadMetadata).toBeCalled())
-    await waitFor(() => expect(downloadFile).toBeCalled())
+    await waitFor(() => expect(mockedDownloadSamlServiceProviderMetadata).toBeCalled())
   })
 
   it('Should call sync metadata api when click sync metadata button', async () => {
