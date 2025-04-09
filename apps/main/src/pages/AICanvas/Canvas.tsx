@@ -3,13 +3,15 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button }                                         from '@acx-ui/components'
+import { Button, Dropdown }                                         from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
 import Layout                                     from './components/Layout'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
+import { Menu, MenuProps } from 'antd'
+import { ArrowExpand, Dashboard } from '@acx-ui/icons-new'
 
 // import mockData from './mock'
 
@@ -226,12 +228,69 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     setShadowCard({} as CardInfo)
   }
 
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    // switch(e.key) {
+    //   case MoreActions.CLI_SESSION:
+    //     setCliModalOpen(true)
+    //     break
+    //   case MoreActions.REBOOT:
+    //     switchAction.showRebootSwitch(switchId || '', switchDetailHeader.venueId || '', tenantId || '', isStack)
+    //     break
+    //   case MoreActions.DELETE:
+    //     switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
+    //     break
+    //   case MoreActions.SYNC_DATA:
+    //     switchAction.doSyncData(switchId || '', switchDetailHeader.venueId || '', tenantId || '', handleSyncData)
+    //     setIsSyncing(true)
+    //     break
+    //   case MoreActions.ADD_MEMBER:
+    //     setAddStackMemberOpen(true)
+    //     break
+    // }
+  }
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={[
+        {
+          key: '1',
+          label: 'Canvas 1'
+        },
+        {
+          key: '2',
+          label: 'Canvas 2',
+          disabled: true,
+        },
+        {
+          type: 'divider'
+        },
+        {
+          key: 'New_Canvas',
+          label:  $t({ defaultMessage: 'New Canvas' })
+        },
+        {
+          key: 'Manage_Canvases',
+          label:  $t({ defaultMessage: 'Manage My Canvases' })
+        }
+      ]
+      }/>
+  )
+
   return (
     <UI.Canvas>
       <div className='header'>
-        <div className='title'>
-          <span>{$t({ defaultMessage: 'Dashboard Canvas' })}</span>
-        </div>
+        <Dropdown overlay={menu}>{() =>
+            <div className='title'>
+                <span>
+                  {$t({ defaultMessage: 'Dashboard Canvas' })}
+                </span>
+                <ArrowExpand size='sm' />
+                <div className='dashboard-icon'>
+                  <Dashboard size='sm' />
+                </div>
+            </div>
+        }</Dropdown>
         <div className='actions'>
           {/* <Button onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Publish' })}

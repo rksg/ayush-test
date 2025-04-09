@@ -348,11 +348,23 @@ export const Canvas = styled.div`
     justify-content: space-between;
     padding: 8px 25px;
     .title{
-      cursor: default;
+      display: flex;
+      align-items: center;
       padding: 10px 0;
       font-family: var(--acx-accent-brand-font);
       font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
+      span {
+        padding-right: 10px;
+      }
+      .dashboard-icon {
+        background-color: var(--acx-neutrals-20);
+        padding: 2px;
+        height: 20px;
+        width: 20px;
+        border-radius: 4px;
+        margin-left: 10px;
+      }
     }
     .actions{
       button {
