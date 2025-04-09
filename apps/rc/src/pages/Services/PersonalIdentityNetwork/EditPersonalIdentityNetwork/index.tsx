@@ -86,7 +86,7 @@ const EditPersonalIdentityNetwork = () => {
       originalDistributionSwitchInfos: pinData?.distributionSwitchInfos,
       originalAccessSwitchInfos: pinData?.accessSwitchInfos
     }
-  }, [pinData])
+  }, [pinData, currentEdgeClusterData, currentTunnelProfileData])
 
   return (
     <>
