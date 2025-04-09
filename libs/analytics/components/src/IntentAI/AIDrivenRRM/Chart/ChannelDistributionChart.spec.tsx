@@ -1,14 +1,14 @@
 import { intentAIUrl, Provider }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedAPChannelDistribution, mockedIntentCRRM, mockedIntentCRRMnew } from '../__tests__/fixtures'
+import { mockedApChannelDistribution, mockedIntentCRRM, mockedIntentCRRMnew } from '../__tests__/fixtures'
 
 import ChannelDistributionChart from './ChannelDistributionChart'
 
 describe('ChannelDistributionChart', () => {
   it('renders the chart with data', async () => {
-    mockGraphqlQuery(intentAIUrl, 'APChannelDistribution', {
-      data: { intent: { apChannelDistribution: mockedAPChannelDistribution } }
+    mockGraphqlQuery(intentAIUrl, 'ApChannelDistribution', {
+      data: { intent: { apChannelDistribution: mockedApChannelDistribution } }
     })
     const { asFragment } = render(
       <Provider>
@@ -21,7 +21,7 @@ describe('ChannelDistributionChart', () => {
   })
 
   it('renders NoData component when there is no data', async () => {
-    mockGraphqlQuery(intentAIUrl, 'APChannelDistribution', {
+    mockGraphqlQuery(intentAIUrl, 'ApChannelDistribution', {
       data: { intent: { apChannelDistribution: [] } }
     })
     const { asFragment } = render(

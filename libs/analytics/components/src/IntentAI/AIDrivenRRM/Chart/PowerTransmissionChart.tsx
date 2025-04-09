@@ -1,21 +1,31 @@
 import { useIntl } from 'react-intl'
 
-import { Card, NoData, VerticalBarChart } from '@acx-ui/components'
-import { txpowerMapping }                 from '@acx-ui/formatter'
+import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
+import { txpowerMapping }                         from '@acx-ui/formatter'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
+import { useApPowerDistributionQuery } from './services'
+
 function PowerTransmissionChart (intent: IntentDetail) {
   const { $t } = useIntl()
-  const { apPowerTransmission } = intent
 
-  const txPowerMapping = Object.values(txpowerMapping).map(value => value.replace(/dB/g, ' dB'))
+  const queryResult = useApPowerDistributionQuery({
+    root: intent.root,
+    sliceId: intent.sliceId,
+    code: intent.code
+  })
+  const apPowerDistribution = queryResult.data
 
-  const sortedData = apPowerTransmission?.map(({ txPower, apCount }) => [txPower, apCount])
+  const txPowerList = Object.values(txpowerMapping).map(value => value.replace(/dB/g, 'dB'))
+  const txPowerData = apPowerDistribution?.map(({ txPower, apCount }) => [
+    txpowerMapping[txPower as keyof typeof txpowerMapping],
+    apCount
+  ])
 
   const data = {
     dimensions: ['txPower', 'apCount'],
-    source: sortedData,
+    source: txPowerData!,
     seriesEncode: [
       {
         x: 'txPower',
@@ -25,15 +35,17 @@ function PowerTransmissionChart (intent: IntentDetail) {
   }
 
   return (
-    <Card title={$t({ defaultMessage: 'Power Transmission' })}>
-      {apPowerTransmission.length ? <VerticalBarChart
-        data={data}
-        xAxisName={$t({ defaultMessage: 'Tx Power' })}
-        barWidth={20}
-        showTooltipName={false}
-        xAxisValues={txPowerMapping}
-      /> : <NoData />}
-    </Card>
+    <Loader states={[queryResult]}>
+      <Card title={$t({ defaultMessage: 'Power Transmission' })}>
+        {apPowerDistribution?.length ? <VerticalBarChart
+          data={data}
+          xAxisName={$t({ defaultMessage: 'Tx Power' })}
+          barWidth={20}
+          showTooltipName={false}
+          xAxisValues={txPowerList}
+        /> : <NoData />}
+      </Card>
+    </Loader>
   )
 }
 

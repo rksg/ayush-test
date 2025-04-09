@@ -1,12 +1,19 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { intentAIUrl, Provider }            from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM, mockedIntentCRRMnew } from '../__tests__/fixtures'
+import {
+  mockedApPowerDistribution,
+  mockedIntentCRRM,
+  mockedIntentCRRMnew
+} from '../__tests__/fixtures'
 
 import PowerTransmissionChart from './PowerTransmissionChart'
 
-describe('PowerTransmi', () => {
+describe('PowerTransmissionChart', () => {
   it('renders the chart with data', async () => {
+    mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
+      data: { intent: { apPowerDistribution: mockedApPowerDistribution } }
+    })
     const { asFragment } = render(
       <Provider>
         <PowerTransmissionChart {...mockedIntentCRRM} />
@@ -18,6 +25,9 @@ describe('PowerTransmi', () => {
   })
 
   it('renders NoData component when there is no data', async () => {
+    mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
+      data: { intent: { apPowerDistribution: [] } }
+    })
     const { asFragment } = render(
       <Provider>
         <PowerTransmissionChart {...mockedIntentCRRMnew} />
