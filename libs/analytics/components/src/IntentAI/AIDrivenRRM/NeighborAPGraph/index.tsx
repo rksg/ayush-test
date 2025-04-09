@@ -17,7 +17,7 @@ export function DataGraph (props: {
 }) {
   const nodeSize = {
     max: 120,
-    min: 50
+    min: 60
   }
 
   if (!props.data?.length) return null

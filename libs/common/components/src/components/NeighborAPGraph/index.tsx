@@ -58,19 +58,21 @@ export const nodeTypes = {
     name: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
     color: cssStr('--acx-accents-blue-50'),
     legendText: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
-    tooltip: defineMessage({ defaultMessage: 'Non-Interfering AP tooltip' })
+    tooltip: defineMessage(
+      { defaultMessage: 'APs on different channels that minimize interference.' })
   },
   [Node.Interfering]: {
     name: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
     color: cssStr('--acx-semantics-red-50'),
     legendText: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
-    tooltip: defineMessage({ defaultMessage: 'Non-Interfering AP tooltip' })
+    tooltip: defineMessage(
+      { defaultMessage: 'APs operating on the same channel, potentially causing interference.' })
   },
   [Node.Rogue]: {
     name: defineMessage({ defaultMessage: 'Rogue AP' }),
     color: cssStr('--acx-neutrals-80'),
     legendText: defineMessage({ defaultMessage: 'Rogue AP' }),
-    tooltip: defineMessage({ defaultMessage: 'Non-Interfering AP tooltip' })
+    tooltip: defineMessage({ defaultMessage: 'Unauthorized or unknown APs detected.' })
   }
 } as Record<string, NodeType>
 
