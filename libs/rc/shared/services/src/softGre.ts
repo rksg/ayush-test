@@ -291,14 +291,16 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             || i.apActivations.find(a => a.venueId === venueId)
             || i.venueActivations.find(a => a.venueId === venueId))
           if (ipsec) {
-            if (ipsec.activations.length > 0) {
-              bindSoftGreId = ipsec.activations[0].softGreProfileId || ''
+            console.log('ipsecInSoftGreAPI:',ipsec) // eslint-disable-line no-console
+            bindSoftGreId = ipsec.activations
+              .find(a => a.venueId === venueId)?.softGreProfileId || ''
+            if (bindSoftGreId.length === 0) {
+              bindSoftGreId = ipsec.apActivations
+                .find(a => a.venueId === venueId)?.softGreProfileId || ''
             }
-            if (bindSoftGreId.length === 0 && ipsec.apActivations.length > 0) {
-              bindSoftGreId = ipsec.apActivations[0].softGreProfileId || ''
-            }
-            if (bindSoftGreId.length === 0&& ipsec.venueActivations.length > 0) {
-              bindSoftGreId = ipsec.venueActivations[0].softGreProfileId || ''
+            if (bindSoftGreId.length === 0) {
+              bindSoftGreId = ipsec.venueActivations
+                .find(a => a.venueId === venueId)?.softGreProfileId || ''
             }
           }
           if (bindSoftGreId.length > 0) {
