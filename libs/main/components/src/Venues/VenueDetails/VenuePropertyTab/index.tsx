@@ -423,6 +423,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Add Identity Association' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addUnitLinkedIdentity)],
           visible: (selectedItems => selectedItems.length <= 1 && isMultipleIdentityUnits),
           onClick: (units, clearSelection) => {
             setSelectedUnit(units.at(0))

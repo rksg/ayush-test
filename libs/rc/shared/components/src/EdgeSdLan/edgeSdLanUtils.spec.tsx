@@ -15,7 +15,7 @@ import {
   isGuestTunnelUtilized,
   isSdLanGuestUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   useGetNetworkTunnelInfo
 } from './edgeSdLanUtils'
 
@@ -180,9 +180,9 @@ describe('isSdLanGuestUtilizedOnDiffVenue', () => {
   })
 })
 
-describe('tansformSdLanScopedVenueMap', () => {
+describe('transformSdLanScopedVenueMap', () => {
   it('should correctly transform', async () => {
-    const result = tansformSdLanScopedVenueMap(mockedMvSdLanDataList)
+    const result = transformSdLanScopedVenueMap(mockedMvSdLanDataList)
     expect(result).toStrictEqual({
       a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0],
       a307d7077410456f8f1a4fc41d861560: mockedMvSdLanDataList[1],
@@ -191,7 +191,7 @@ describe('tansformSdLanScopedVenueMap', () => {
   })
 
   it('should return empty object when no data given', async () => {
-    const result = tansformSdLanScopedVenueMap()
+    const result = transformSdLanScopedVenueMap()
     expect(result).toStrictEqual({})
   })
 
@@ -199,7 +199,7 @@ describe('tansformSdLanScopedVenueMap', () => {
     const mockData = cloneDeep(mockedMvSdLanDataList)
     mockData[1].tunneledWlans = undefined
 
-    const result = tansformSdLanScopedVenueMap(mockData)
+    const result = transformSdLanScopedVenueMap(mockData)
     expect(result).toStrictEqual({
       a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0]
     })
