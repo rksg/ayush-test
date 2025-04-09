@@ -23,6 +23,11 @@ Array [
         "target": "5C:DF:89:0B:FE:E0",
       },
     ],
+    "neighborAP": Object {
+      "interfering": 9,
+      "nonInterfering": 12,
+      "rogue": 5,
+    },
     "nodes": Array [
       Object {
         "aggregate": Array [
@@ -115,6 +120,11 @@ Array [
         "target": "5C:DF:89:0B:FE:E0",
       },
     ],
+    "neighborAP": Object {
+      "interfering": 3,
+      "nonInterfering": 18,
+      "rogue": 5,
+    },
     "nodes": Array [
       Object {
         "aggregate": Array [
@@ -219,6 +229,7 @@ Array [
         "target": "5C:DF:89:0B:FE:E0",
       },
     ],
+    "neighborAP": undefined,
     "nodes": Array [
       Object {
         "aggregate": Array [
@@ -317,6 +328,7 @@ Array [
         "target": "5C:DF:89:0B:FE:E0",
       },
     ],
+    "neighborAP": undefined,
     "nodes": Array [
       Object {
         "aggregate": Array [

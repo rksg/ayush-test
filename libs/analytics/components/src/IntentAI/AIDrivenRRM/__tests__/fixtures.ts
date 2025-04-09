@@ -405,7 +405,12 @@ export const mockedCRRMGraphs = {
           }
         ],
         links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ],
+        neighborAP: {
+          rogue: 5,
+          interfering: 9,
+          nonInterfering: 12
+        }
       }
     },
     data: {
@@ -428,7 +433,12 @@ export const mockedCRRMGraphs = {
           }
         ],
         links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-        interferingLinks: null
+        interferingLinks: null,
+        neighborAP: {
+          rogue: 5,
+          interfering: 3,
+          nonInterfering: 18
+        }
       }
     }
   }
@@ -456,7 +466,12 @@ export const mockedCRRMGraphsApplied = {
           }
         ],
         links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-        interferingLinks: null
+        interferingLinks: null,
+        neighborAP: {
+          rogue: 5,
+          interfering: 3,
+          nonInterfering: 18
+        }
       }
     },
     compareData: {
@@ -479,7 +494,12 @@ export const mockedCRRMGraphsApplied = {
           }
         ],
         links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ],
+        neighborAP: {
+          rogue: 5,
+          interfering: 9,
+          nonInterfering: 12
+        }
       }
     }
   }
