@@ -89,7 +89,8 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PUT:/wifiNetworks/{id}/wifiCallingServiceProfiles/{id}'
   },
   deactivateWifiCalling: {
     method: 'delete',
@@ -98,6 +99,7 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/wifiNetworks/{id}/wifiCallingServiceProfiles/{id}'
   }
 }
