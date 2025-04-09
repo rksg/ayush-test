@@ -108,7 +108,7 @@ export function IntentAIDetails () {
                 <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
               </Tabs.TabPane>
               <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
-                <NeighborAPGraph width={350} />
+                <NeighborAPGraph />
               </Tabs.TabPane>
             </Tabs>
           </DetailsSection>

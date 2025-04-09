@@ -3,6 +3,8 @@ import ReactECharts                                  from 'echarts-for-react'
 import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
+import { formatter } from '@acx-ui/formatter'
+
 import { cssNumber, cssStr } from '../../theme/helper'
 import { graphStyles }       from '../CloudRRMGraph'
 
@@ -100,8 +102,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
     itemStyle: { color: nodeTypes[key as Node].color },
     label: {
       ...genericLabel,
-      formatter: $t({ defaultMessage: '{value, number, -}' },
-        { value: Math.round(value * 10) / 10 })
+      formatter: formatter('countFormat')(value)
     }
   })).value()
 

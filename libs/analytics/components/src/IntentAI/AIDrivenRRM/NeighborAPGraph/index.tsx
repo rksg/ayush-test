@@ -10,18 +10,17 @@ import { Legend }               from '../RRMGraph/Legend'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 import * as UI                  from '../RRMGraph/styledComponents'
 
+
 export function DataGraph (props: {
-  graphs: ProcessedCloudRRMGraph[],
-  width: number,
+  data: ProcessedCloudRRMGraph[],
   zoom: number
 }) {
-  const nodes = { nonInterfering: 12, interfering: 9, rogue: 5 }
   const nodeSize = {
     max: 120,
     min: 50
   }
 
-  if (!props.graphs?.length) return null
+  if (!props.data?.length) return null
 
   return <>
     <div style={{
@@ -31,8 +30,8 @@ export function DataGraph (props: {
       <NeighborAPGraphComponent
         title=''
         nodeSize={nodeSize}
-        nodes={nodes}
-        width={props.width}
+        nodes={props.data[0].neighborAP!}
+        width={500}
         height={400}
         backgroundColor='transparent'
       />
@@ -45,8 +44,8 @@ export function DataGraph (props: {
       <NeighborAPGraphComponent
         title=''
         nodeSize={nodeSize}
-        nodes={nodes}
-        width={props.width}
+        nodes={props.data[1].neighborAP!}
+        width={500}
         height={400}
         backgroundColor='transparent'
       />
@@ -54,11 +53,7 @@ export function DataGraph (props: {
   </>
 }
 
-export const NeighborAPGraph = ({
-  width = 300
-}: {
-  width?: number
-}) => {
+export const NeighborAPGraph = () => {
   const { $t } = useIntl()
   const { intent, state } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -69,7 +64,8 @@ export const NeighborAPGraph = ({
   useEffect(() => setKey(Math.random()), [visible])
 
   const queryResult = useIntentAICRRMQuery()
-  const crrmData = queryResult.data!
+  const result = queryResult.data!
+
   const title = $t({ defaultMessage: 'Neighbor AP Graph' })
   const noData = state === 'no-data'
 
@@ -83,7 +79,7 @@ export const NeighborAPGraph = ({
         <UI.GraphWrapper data-testid='graph-wrapper'
           key={'graph-details'}
         >
-          <DataGraph {...{ graphs: crrmData }} width={width} zoom={0.8}/>
+          <DataGraph data={result} zoom={0.8}/>
           <GraphTitle details={intent} />
           <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
         </UI.GraphWrapper>
@@ -104,7 +100,7 @@ export const NeighborAPGraph = ({
         onClose={closeDrawer}
         children={
           <UI.GraphWrapper>
-            <DataGraph {...{ graphs: crrmData }} width={width} zoom={1.5}/>
+            <DataGraph data={result} zoom={1.5}/>
             <GraphTitle details={intent} />
             <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
           </UI.GraphWrapper>
