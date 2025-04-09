@@ -130,7 +130,7 @@ export function IdentityGroup () {
           children={
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
-              style={{ width: '400px' }}
+              style={{ width: '280px' }}
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
             />

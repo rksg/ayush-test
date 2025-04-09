@@ -253,11 +253,12 @@ export const getFlexAuthButtonStatus = (props: {
   isMultipleEdit: boolean,
   isFirmwareAbove10010f: boolean,
   portVlansCheckbox: boolean,
-  ipsgCheckbox: boolean
+  ipsgCheckbox: boolean,
+  portSecurity: boolean
 }) => {
   const {
     isMultipleEdit, isCloudPort, isFirmwareAbove10010f,
-    aggregateData, portVlansCheckbox, ipsgCheckbox, hasMultipleValue, form
+    aggregateData, portVlansCheckbox, ipsgCheckbox, portSecurity, hasMultipleValue, form
   } = props
 
   const checkUntaggedPortMismatch = (id: string) => {
@@ -285,6 +286,8 @@ export const getFlexAuthButtonStatus = (props: {
     return 'UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH'
   } else if (isEitherPortEnabledIPSG) {
     return 'CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED'
+  } else if (portSecurity) {
+    return 'CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED'
   }
   return ''
 }

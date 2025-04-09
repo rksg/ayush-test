@@ -109,6 +109,7 @@ describe('SoftGRETunnelSettings', () => {
           <SoftGRETunnelSettings
             index={1}
             readonly={false}
+            usedProfileData={{ data: [], operations: [] }}
           />
         </Form>
       </Provider>
@@ -117,7 +118,7 @@ describe('SoftGRETunnelSettings', () => {
     await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
     expect(await screen.findByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
     expect(screen.getByText(/Enable IPsec/i)).toBeInTheDocument()
-    expect(screen.queryByTestId('ipsec-profile-select')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('ipsec-profile-select')).toBeInTheDocument()
     await userEvent.click(screen.getByTestId('ipsec-switch'))
     expect(await screen.findByTestId('enable-ipsec-banner')).toBeInTheDocument()
     expect(await screen.findByTestId('ipsec-profile-select')).toBeInTheDocument()
