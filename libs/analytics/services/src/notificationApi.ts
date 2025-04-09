@@ -1,7 +1,7 @@
 import { notificationApi } from '@acx-ui/store'
 
 export type NotificationMethod = 'web' | 'email'
-export type AnalyticsPreferenceType = 'incident' | 'configRecommendation' | 'licenses' | 'intentAI'
+export type AnalyticsPreferenceType = 'incident' | 'licenses' | 'intentAI'
 
 export type AnalyticsPreferences = {
   incident?: {
@@ -9,10 +9,6 @@ export type AnalyticsPreferences = {
     P2?: NotificationMethod[]
     P3?: NotificationMethod[]
     P4?: NotificationMethod[]
-  }
-  configRecommendation?: {
-    crrm: NotificationMethod[]
-    aiOps: NotificationMethod[]
   }
   licenses?: {
     '60D': NotificationMethod[]

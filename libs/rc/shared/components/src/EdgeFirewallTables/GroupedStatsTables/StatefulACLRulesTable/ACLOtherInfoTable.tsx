@@ -22,7 +22,7 @@ export const ACLOtherInfoTable = (props: ACLOtherInfoTableProps) => {
   const { stats } = props
 
   const ACLOtherInfoMap = [{
-    description: $t({ defaultMessage: 'Permmited by ACL Sessions' }),
+    description: $t({ defaultMessage: 'Permitted by ACL Sessions' }),
     dataIndex: 'permittedSessions'
   }]
 

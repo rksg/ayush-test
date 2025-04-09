@@ -9,7 +9,7 @@ import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaStrin
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
     const result = getDualWanModeString(EdgeMultiWanModeEnum.ACTIVE_BACKUP)
-    expect(result).toBe('Aactive / Backup')
+    expect(result).toBe('Active / Backup')
   })
 
   it('returns an empty string for NONE', () => {
