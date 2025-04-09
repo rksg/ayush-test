@@ -45,7 +45,9 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
   } = useGetTunnelProfileViewDataListQuery({
     payload: {
       fields: [
-        'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName'
+        'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
+        'type', 'mtuType', 'forceFragmentation', 'ageTimeMinutes', 'keepAliveInterval',
+        'keepAliveRetry'
       ],
       sortField: 'name',
       sortOrder: 'ASC',

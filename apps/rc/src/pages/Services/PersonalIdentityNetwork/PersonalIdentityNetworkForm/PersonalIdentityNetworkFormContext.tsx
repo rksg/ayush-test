@@ -33,6 +33,7 @@ import {
   NetworkTypeEnum,
   PersonaGroup,
   SwitchLite,
+  TunnelProfileViewData,
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork
@@ -72,6 +73,7 @@ export interface PersonalIdentityNetworkFormContextType {
   requiredFw_AS?: string
   requiredSwitchModels?: string[]
   getClusterInfoByTunnelProfileId: (tunnelId: string) => EdgeClusterStatus | undefined
+  availableTunnelProfiles?: TunnelProfileViewData[]
 }
 
 // eslint-disable-next-line max-len
@@ -439,7 +441,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         requiredFw_DS,
         requiredFw_AS,
         requiredSwitchModels,
-        getClusterInfoByTunnelProfileId
+        getClusterInfoByTunnelProfileId,
+        availableTunnelProfiles
       }}
     >
       {props.children}

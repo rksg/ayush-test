@@ -1,18 +1,19 @@
 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { StepsForm, useStepFormContext }                            from '@acx-ui/components'
-import { Features }                                                 from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                    from '@acx-ui/rc/components'
-import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                                                   from '@acx-ui/components'
+import { Features }                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                           from '@acx-ui/rc/components'
+import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp, TunnelProfileViewData } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../../PersonalIdentityNetworkFormContext'
 import { FieldTitle }                         from '../../styledComponents'
 
 import { PropertyManagementInfo } from './PropertyManagementInfo'
+import { TunnelDetailsDrawer }    from './TunnelDetailsDrawer'
 
 export const EnhancedGeneralSettingsForm = () => {
   const { $t } = useIntl()
@@ -23,10 +24,13 @@ export const EnhancedGeneralSettingsForm = () => {
     isVenueOptionsLoading,
     tunnelProfileOptions,
     isTunnelLoading,
+    availableTunnelProfiles,
     setVenueId,
     getClusterInfoByTunnelProfileId
   } = useContext(PersonalIdentityNetworkFormContext)
+  const [currentTunnelProfileData, setCurrentTunnelProfileData] = useState<TunnelProfileViewData>()
   const venueId = Form.useWatch('venueId', form) || form.getFieldValue('venueId')
+  const tunnelProfileId = Form.useWatch('vxlanTunnelProfileId', form)
 
   const onVenueChange = (value: string) => {
     setVenueId(value)
@@ -41,6 +45,8 @@ export const EnhancedGeneralSettingsForm = () => {
     // eslint-disable-next-line max-len
     const clusterInfo = getClusterInfoByTunnelProfileId(value)
     setVenueId(clusterInfo?.venueId ?? '')
+    // eslint-disable-next-line max-len
+    setCurrentTunnelProfileData(availableTunnelProfiles?.find(tunnelProfile => tunnelProfile.id === value))
     form.setFieldsValue({
       venueId: clusterInfo?.venueId,
       edgeClusterId: clusterInfo?.clusterId,
@@ -72,8 +78,8 @@ export const EnhancedGeneralSettingsForm = () => {
         </Row>
         {
           isL2GreEnabled ?
-            <Row gutter={20}>
-              <Col span={20}>
+            <Row gutter={20} align='middle'>
+              <Col span={20} >
                 <Form.Item
                   name='vxlanTunnelProfileId'
                   label={$t({ defaultMessage: 'Tunnel Profile' })}
@@ -91,6 +97,7 @@ export const EnhancedGeneralSettingsForm = () => {
                   }
                 />
               </Col>
+              {tunnelProfileId && <TunnelDetailsDrawer data={currentTunnelProfileData} />}
             </Row> : <>
               <Row gutter={20}>
                 <Col span={20}>

@@ -49,6 +49,10 @@ jest.mock('@acx-ui/rc/components', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('./TunnelDetailsDrawer', () => ({
+  TunnelDetailsDrawer: () => <div data-testid='TunnelDetailsDrawer' />
+}))
+
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 const { mockPinStatsList } = EdgePinFixtures
 
@@ -156,6 +160,7 @@ describe('PersonalIdentityNetworkForm - EnhancedGeneralSettingsForm', () => {
       const tunnelProfileDropdown = await screen.findByRole('combobox', { name: 'Tunnel Profile' })
       expect(tunnelProfileDropdown).toBeVisible()
       await userEvent.selectOptions(tunnelProfileDropdown, 'tunnelProfileId1')
+      await screen.findByTestId('TunnelDetailsDrawer')
     })
   })
 })
