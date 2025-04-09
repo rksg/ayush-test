@@ -142,7 +142,6 @@ export function IdentityGroup () {
           <Space split='|'>
             <Button
               type='link'
-              style={{ zIndex: 1000 }}
               disabled={!formFieldIdentityGroupId}
               onClick={() => {
                 setDetailDrawerVisible(true)
@@ -150,9 +149,7 @@ export function IdentityGroup () {
             >
               {$t({ defaultMessage: 'View Details' })}
             </Button>
-            <Button
-              type='link'
-              style={{ zIndex: 1000 }}
+            <Button type='link'
               onClick={() => {
                 setIdentityGroupModelVisible(true)
               }}>
