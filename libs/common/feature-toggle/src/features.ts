@@ -33,6 +33,7 @@ export enum Features {
   CONFIG_TEMPLATE_ENFORCED_VENUE = 'acx-ui-config-template-enforcement-venue',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
+  CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',

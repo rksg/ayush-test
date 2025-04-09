@@ -1,18 +1,21 @@
 import { useState } from 'react'
 
-import { Divider, Space } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Divider, Space, Typography } from 'antd'
+import { useIntl }                    from 'react-intl'
 
-import { cssStr, Descriptions, Loader }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                 from '@acx-ui/msp/services'
-import { AccessControlSubPolicyVisibility }        from '@acx-ui/rc/components'
-import { ConfigTemplate, ConfigTemplateDriftType } from '@acx-ui/rc/utils'
-import { noDataDisplay }                           from '@acx-ui/utils'
+import { cssStr, Descriptions, GridCol, GridRow, Loader }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery }                                     from '@acx-ui/msp/services'
+import { AccessControlSubPolicyVisibility }                            from '@acx-ui/rc/components'
+import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                               from '@acx-ui/utils'
 
 import { ShowDriftsDrawer }                                                                                                                               from '../ShowDriftsDrawer'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
 import { useEcFilters }                                                                                                                                   from '../templateUtils'
+
+import { ProtectedActivationViewer } from './ActivationViewer'
+import { ApGroupVenueViewer }        from './ActivationViewer/ApGroupVenueViewer'
 
 interface DetailsContentProps {
   template: ConfigTemplate
@@ -27,6 +30,8 @@ export function DetailsContent (props: DetailsContentProps) {
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
+  const shouldShowApGroupVenue = useIsSplitOn(Features.CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION)
+    && template.type === ConfigTemplateType.AP_GROUP
 
   return <>
     <Descriptions labelWidthPercent={35}>
@@ -38,6 +43,10 @@ export function DetailsContent (props: DetailsContentProps) {
         label={$t({ defaultMessage: 'Type' })}
         children={getConfigTemplateTypeLabel(template.type)}
       />
+      {shouldShowApGroupVenue && <Descriptions.Item
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+        children={<ApGroupVenueViewer templateId={template.id!} />}
+      />}
       {driftsEnabled && <Descriptions.Item
         label={$t({ defaultMessage: 'Drift Status' })}
         children={<ConfigTemplateDriftStatus row={template}
@@ -79,7 +88,14 @@ export function DetailsContent (props: DetailsContentProps) {
       />
     </Descriptions>
     <Divider/>
-    <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
+    <GridRow>
+      <GridCol col={{ span: 12 }}>
+        <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
+      </GridCol>
+      <GridCol col={{ span: 12 }}>
+        <ProtectedActivationViewer type={template.type} templateId={template.id!} />
+      </GridCol>
+    </GridRow>
     {showDriftsDrawerVisible &&
       <ShowDriftsDrawer
         setVisible={setShowDriftsDrawerVisible}
@@ -104,17 +120,29 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
     { skip: !appliedOnTenants?.length }
   )
 
+  return <DetailsItemList
+    title={$t({ defaultMessage: 'Applied to' })}
+    items={data?.data.map(mspEcTenant => mspEcTenant.name) || []}
+    isLoading={isLoading}
+  />
+}
+
+
+export function DetailsItemList (
+  { title, items = [], isLoading = false }: { title: string, items: string[], isLoading?: boolean }
+) {
+  const sortedItems = [...items].sort((a, b) => a.localeCompare(b))
+
   return <Space direction='vertical' size={6}>
     <span style={{ fontWeight: 700, color: cssStr('--acx-neutrals-60') }}>
-      { $t({ defaultMessage: 'Applied to' })}
+      { title }
     </span>
     <Loader states={[{ isLoading }]} style={{ width: '100%', backgroundColor: 'transparent' }}>
       <Space direction='vertical' size={4}>
-        {!appliedOnTenants?.length && noDataDisplay}
-        {data?.data.map(mspEcTenant => <div key={mspEcTenant.id}>{mspEcTenant.name}</div>)}
+        {sortedItems.length > 0 ? sortedItems.map(item => (
+          <Typography.Text ellipsis key={item}>{item}</Typography.Text>
+        )) : noDataDisplay}
       </Space>
     </Loader>
   </Space>
 }
-
-
