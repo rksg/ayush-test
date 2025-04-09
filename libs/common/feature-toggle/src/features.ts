@@ -19,6 +19,7 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
+  CANVAS_Q2 = 'ruckus-gen-ai-customized-canvas-phase2',
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
@@ -318,7 +319,10 @@ export enum Features {
   MSP_APP_VISIBILITY = 'mspservice-app-visibility',
   AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle',
   RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle',
-  SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle'
+  SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle',
+  LOGIN_SSO_SAML_MSPEC = 'login-sso-saml-mspec',
+  DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
+  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

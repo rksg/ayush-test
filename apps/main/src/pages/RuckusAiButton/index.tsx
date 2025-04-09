@@ -11,6 +11,8 @@ import { useStartConversationsMutation, useUpdateConversationsMutation } from '@
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                    from '@acx-ui/react-router-dom'
 
+import AICanvasModal from '../AICanvas'
+
 import BasicInformationPage    from './BasicInformationPage'
 import Congratulations         from './Congratulations'
 import { willRegenerateAlert } from './ruckusAi.utils'
@@ -18,7 +20,6 @@ import RuckusAiWizard          from './RuckusAiWizard'
 import * as UI                 from './styledComponents'
 import VerticalPage            from './VerticalPage'
 import WelcomePage             from './WelcomePage'
-
 export enum RuckusAiStepsEnum {
   WELCOME = 'WELCOME',
   VERTICAL = 'VERTICAL',
@@ -30,7 +31,8 @@ export enum RuckusAiStepsEnum {
 export default function RuckusAiButton () {
   const { $t } = useIntl()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList || isCanvasQ2Enabled
 
   const [basicFormRef] = Form.useForm()
 
@@ -46,6 +48,7 @@ export default function RuckusAiButton () {
 
   const [showAlert, setShowAlert] = useState(false as boolean)
   const [selectedType, setSelectedType] = useState('' as string)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [startConversations] = useStartConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -264,7 +267,11 @@ export default function RuckusAiButton () {
   }
 
   const goChatCanvas = () => {
-    navigate(canvasLink)
+    if(isCanvasQ2Enabled){
+      setIsModalOpen(true)
+    }else{
+      navigate(canvasLink)
+    }
     setVisible(false)
   }
 
@@ -281,7 +288,9 @@ export default function RuckusAiButton () {
         }}
       />
     }
-
+    {
+      isModalOpen && <AICanvasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+    }
     <UI.GptModal
       needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
       titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}

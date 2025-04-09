@@ -1,5 +1,6 @@
 import { RbacOpsIds }           from '@acx-ui/types'
 import { hasAllowedOperations } from '@acx-ui/user'
+import { ApiInfo, getOpsApi }   from '@acx-ui/utils'
 
 import { useConfigTemplate }             from '../../configTemplate'
 import { ServiceType, ServiceOperation } from '../../constants'
@@ -72,4 +73,31 @@ export const hasSomeProfilesPermission = <T extends SvcPcyAllowedType, O extends
     const allowedOperations = getProfileAllowdOperation(profile as T, oper)
     return allowedOperations ? hasAllowedOperations(allowedOperations) : false
   })
+}
+
+
+interface useActivationPermissionProps {
+  activateApiInfo: ApiInfo
+  activateTemplateApiInfo: ApiInfo
+  deactivateApiInfo: ApiInfo
+  deactivateTemplateApiInfo: ApiInfo
+}
+export const useActivativationPermission = (props: useActivationPermissionProps) => {
+  const {
+    activateApiInfo,
+    activateTemplateApiInfo,
+    deactivateApiInfo,
+    deactivateTemplateApiInfo
+  } = props
+  const { isTemplate } = useConfigTemplate()
+
+  const activateOpsApi = getOpsApi(isTemplate ? activateTemplateApiInfo : activateApiInfo)
+
+  const deactivateOpsApi = getOpsApi(isTemplate ? deactivateTemplateApiInfo : deactivateApiInfo)
+
+  return {
+    activateOpsApi,
+    deactivateOpsApi,
+    hasFullActivationPermission: hasAllowedOperations([[ activateOpsApi, deactivateOpsApi]])
+  }
 }

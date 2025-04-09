@@ -8,12 +8,11 @@ import { HTML5Backend }        from 'react-dnd-html5-backend'
 import { useIntl }             from 'react-intl'
 import { v4 as uuidv4 }        from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
@@ -82,18 +81,21 @@ const Messages = memo((props:{
     {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
 
-export default function AICanvas () {
+export default function AICanvasModal (props: {
+  isModalOpen: boolean,
+  setIsModalOpen: (p: boolean) => void
+}) {
+  const { isModalOpen, setIsModalOpen } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
-  const linkToDashboard = useTenantLink('/dashboard')
-  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
   const [getChats] = useGetChatsMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
+  const [reload, setReload] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -103,6 +105,7 @@ export default function AICanvas () {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
+  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -137,6 +140,7 @@ export default function AICanvas () {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
         setSessionId(latestId)
+        setReload(true)
       }
     } else if(historyData?.length === 0) {
       setIsChatsLoading(false)
@@ -151,8 +155,11 @@ export default function AICanvas () {
   }
 
   useEffect(() => {
-    if(!isNewChat && sessionId) {
+    if((!isNewChat && sessionId) || reload) {
       getLatestPageChats()
+      if(reload) {
+        setReload(false)
+      }
     }
   }, [sessionId])
 
@@ -246,7 +253,7 @@ export default function AICanvas () {
       })
   }
 
-  const onClickClose = () => {
+  const checkChanges = (callback:()=>void, handleSave:()=>void) => {
     if (canvasHasChanges) {
       showActionModal({
         type: 'confirm',
@@ -265,19 +272,26 @@ export default function AICanvas () {
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
-            handler: onClose
+            handler: callback
           }, {
             text: $t({ defaultMessage: 'Save Canvas' }),
             type: 'primary',
             key: 'ok',
             closeAfterAction: true,
-            handler: handleSaveCanvas
+            handler: handleSave
           }]
         }
       })
     } else {
-      onClose()
+      callback()
     }
+  }
+
+  const onClickClose = () => {
+    checkChanges(onClose, ()=> {
+      handleSaveCanvas()
+      onClose()
+    })
   }
 
   const handleCanvasChange = useCallback((hasChanges: boolean) => {
@@ -287,12 +301,12 @@ export default function AICanvas () {
   const handleSaveCanvas = async () => {
     await canvasRef.current?.save()
     setCanvasHasChanges(false)
-    onClose()
   }
 
   const onClose = () => {
-    navigate(linkToDashboard)
+    setIsModalOpen(false)
   }
+
 
   const onClickChat = (id: string) => {
     setIsNewChat(false)
@@ -313,65 +327,115 @@ export default function AICanvas () {
     setChats([])
   }
 
+  const onClickCanvasMode = () => {
+    checkChanges(()=>{
+      setCanvasMode(!showCanvas)
+      setCanvasHasChanges(false)
+    }, ()=>{
+      handleSaveCanvas()
+      setCanvasMode(!showCanvas)
+    })
+  }
+
+  const setCanvasMode = (value: boolean) => {
+    setShowCanvas(value)
+    localStorage.setItem('show-canvas', value.toString())
+  }
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <UI.Wrapper>
-        <div className='chat-wrapper'>
-          <div className='chat'>
-            <div className='header'>
-              <div className='actions'>
-                {historyData?.length ?
-                  <>
-                    <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
-                    <Tooltip
-                      placement='right'
-                      title={historyData && historyData.length >= 10
-                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
+    <UI.ChatModal
+      visible={isModalOpen}
+      onCancel={onClose}
+      width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
+      style={showCanvas ? { top: 40, height: 'calc(100vh - 40px)' } : { top: 70 }}
+      footer={null}
+      closable={false}
+      maskClosable={false}
+      showCanvas={showCanvas}
+    >
+      <DndProvider backend={HTML5Backend}>
+        <UI.Wrapper showCanvas={showCanvas}>
+          <div className='chat-wrapper'>
+            {
+              historyVisible && <HistoryDrawer
+                visible={historyVisible}
+                onClose={onHistoryDrawer}
+                historyData={historyData as ChatHistory[]}
+                sessionId={sessionId}
+                onClickChat={onClickChat}
+              />
+            }
+            <div className='chat'>
+              <div className='header'>
+                <div className='actions'>
+                  {historyData?.length ?
+                    <>
+                      <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
+                      <Tooltip
+                        placement='right'
+                        title={historyData && historyData.length >= 10
+                          ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
-                        : ''}
-                    >
-                      <Plus
-                        data-testid='newChatIcon'
-                        className={
-                          'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
-                        }
-                        onClick={onNewChat}
-                      />
-                    </Tooltip>
-                  </> : null
-                }
-              </div>
-              <div className='title'>
-                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
-              </div>
-              <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close data-testid='close-icon' onClick={onClickClose}/>
-              </div>
-            </div>
-            <div className='content'>
-              <Loader states={[{ isLoading: isChatsLoading }]}>
-                <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <Messages
-                    moreloading={moreloading}
-                    aiBotLoading={aiBotLoading}
-                    chats={chats}
-                    sessionId={sessionId}
-                    canvasRef={canvasRef}
-                    groups={groups} />
-                  {
-                    !chats?.length && <div className='placeholder'>
+                          : ''}
+                      >
+                        <Plus
+                          data-testid='newChatIcon'
+                          className={
+                            'newChat' + (historyData && historyData.length >= 10 ?
+                              ' disabled' : '')
+                          }
+                          onClick={onNewChat}
+                        />
+                      </Tooltip>
                       {
-                        questions.map(question => <div
-                          key={question}
-                          onClick={()=> {
-                            handleSearch(question)
-                          }}
-                        >
-                          {question}
-                        </div>)
+                        showCanvas ? <CanvasCollapse
+                          data-testid='canvasCollapseIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                          : <CanvasExpand
+                            data-testid='canvasExpandIcon'
+                            onClick={onClickCanvasMode}
+                          />
                       }
-                    </div>
+                    </> : null
                   }
+                </div>
+                <div className='title'>
+                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                </div>
+                <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
+                  <Close data-testid='close-icon' onClick={onClickClose}/>
+                </div>
+              </div>
+              <div className='content'>
+                <Loader states={[{ isLoading: isChatsLoading }]}
+                  style={{
+                    borderBottomLeftRadius: '24px',
+                    borderBottomRightRadius: '24px'
+                  }}>
+                  <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                    <Messages
+                      moreloading={moreloading}
+                      aiBotLoading={aiBotLoading}
+                      chats={chats}
+                      sessionId={sessionId}
+                      canvasRef={canvasRef}
+                      groups={groups} />
+                    {
+                      !chats?.length && <div className='placeholder'>
+                        {
+                          questions.map(question => <div
+                            key={question}
+                            onClick={()=> {
+                              handleSearch(question)
+                            }}
+                          >
+                            {question}
+                          </div>)
+                        }
+                      </div>
+                    }
+                  </div>
                   <div className='input'>
                     <Form form={form} >
                       <Form.Item
@@ -398,27 +462,20 @@ export default function AICanvas () {
                       onClick={()=> { handleSearch() }}
                     />
                   </div>
-                </div>
-              </Loader>
+                </Loader>
+              </div>
             </div>
           </div>
-        </div>
-        <Canvas
-          ref={canvasRef}
-          onCanvasChange={handleCanvasChange}
-          groups={groups}
-          setGroups={setGroups}
-        />
-        {
-          historyVisible && <HistoryDrawer
-            visible={historyVisible}
-            onClose={onHistoryDrawer}
-            historyData={historyData as ChatHistory[]}
-            sessionId={sessionId}
-            onClickChat={onClickChat}
-          />
-        }
-      </UI.Wrapper>
-    </DndProvider>
+          {
+            showCanvas && <Canvas
+              ref={canvasRef}
+              onCanvasChange={handleCanvasChange}
+              groups={groups}
+              setGroups={setGroups}
+            />
+          }
+        </UI.Wrapper>
+      </DndProvider>
+    </UI.ChatModal>
   )
 }

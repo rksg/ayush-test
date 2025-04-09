@@ -496,6 +496,7 @@ export interface MspRecCustomer {
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
   email_id?: string
+  is_tenant_onboarded?: boolean
 }
 
 export enum MspEcTierEnum {
