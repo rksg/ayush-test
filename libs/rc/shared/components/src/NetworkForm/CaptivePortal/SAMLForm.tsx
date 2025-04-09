@@ -89,7 +89,7 @@ export const SAMLForm = () => {
               children={
                 <Select
                   data-testid={'saml-idp-profile-select'}
-                  style={{ width: '300px' }}
+                  style={{ width: '380px' }}
                   onChange={(value, option) => {
                     form.setFieldValue('samlIdpProfilesName',(option as DefaultOptionType).label)
                   }}
@@ -124,7 +124,7 @@ export const SAMLForm = () => {
             hidden
             children={<Input hidden />}
           />
-          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='300px' />}
+          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='380px' />}
           <WlanSecurityFormItems />
           <RedirectUrlInput></RedirectUrlInput>
           <DhcpCheckbox />
