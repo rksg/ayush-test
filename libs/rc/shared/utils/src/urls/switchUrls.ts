@@ -802,6 +802,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updatePortDisableRecovery: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/portDisableRecoverySetting',
     newApi: true
   },
   getLayer2Acls: {
