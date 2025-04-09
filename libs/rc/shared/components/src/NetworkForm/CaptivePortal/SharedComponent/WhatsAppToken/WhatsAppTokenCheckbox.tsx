@@ -38,7 +38,7 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
   const { data: smsUsage } = useGetNotificationSmsQuery({ params })
   const smsProviderData = useGetNotificationSmsProviderQuery(
     { params: { provider: 'twilios' } },
-    { skip: !isEnabledWhatsApp || smsUsage?.provider !== SmsProviderType.TWILIO })
+    { skip: isTemplate || !isEnabledWhatsApp || smsUsage?.provider !== SmsProviderType.TWILIO })
   const twilioData = useGetTwiliosWhatsappServicesQuery({
     payload: {
       accountSid: smsProviderData.data?.accountSid,
@@ -65,10 +65,15 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
     return null
   }
 
-  // eslint-disable-next-line max-len
-  const isAlert = enableWhatsappLogin && data?.guestPortal?.enableWhatsappLogin && provider !== SmsProviderType.TWILIO
-  // eslint-disable-next-line max-len
-  const isDisabled = !isAlert && (!enableWhatsappLogin || provider !== SmsProviderType.TWILIO) && !enableWhatsappLoginByTwilio
+  const isAlert = isTemplate
+    ? false
+    // eslint-disable-next-line max-len
+    : enableWhatsappLogin && data?.guestPortal?.enableWhatsappLogin && provider !== SmsProviderType.TWILIO
+
+  const isDisabled = isTemplate
+    ? false
+    // eslint-disable-next-line max-len
+    : !isAlert && (!enableWhatsappLogin || provider !== SmsProviderType.TWILIO) && !enableWhatsappLoginByTwilio
 
   return <><Form.Item name={['guestPortal', 'enableWhatsappLogin']}
     initialValue={false}
