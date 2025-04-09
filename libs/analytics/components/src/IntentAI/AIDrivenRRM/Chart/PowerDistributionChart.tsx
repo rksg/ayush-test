@@ -7,7 +7,7 @@ import { IntentDetail } from '../../useIntentDetailsQuery'
 
 import { useApPowerDistributionQuery } from './services'
 
-function PowerTransmissionChart (intent: IntentDetail) {
+function PowerDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
 
   const queryResult = useApPowerDistributionQuery({
@@ -49,4 +49,4 @@ function PowerTransmissionChart (intent: IntentDetail) {
   )
 }
 
-export default PowerTransmissionChart
+export default PowerDistributionChart

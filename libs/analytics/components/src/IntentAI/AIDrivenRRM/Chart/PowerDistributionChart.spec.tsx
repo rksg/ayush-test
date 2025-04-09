@@ -7,16 +7,16 @@ import {
   mockedIntentCRRMnew
 } from '../__tests__/fixtures'
 
-import PowerTransmissionChart from './PowerTransmissionChart'
+import PowerDistributionChart from './PowerDistributionChart'
 
-describe('PowerTransmissionChart', () => {
+describe('PowerDistributionChart', () => {
   it('renders the chart with data', async () => {
     mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
       data: { intent: { apPowerDistribution: mockedApPowerDistribution } }
     })
     const { asFragment } = render(
       <Provider>
-        <PowerTransmissionChart {...mockedIntentCRRM} />
+        <PowerDistributionChart {...mockedIntentCRRM} />
       </Provider>
     )
     expect(await screen.findByText('Power Transmission')).toBeVisible()
@@ -30,7 +30,7 @@ describe('PowerTransmissionChart', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <PowerTransmissionChart {...mockedIntentCRRMnew} />
+        <PowerDistributionChart {...mockedIntentCRRMnew} />
       </Provider>
     )
     expect(await screen.findByText('Power Transmission')).toBeVisible()
