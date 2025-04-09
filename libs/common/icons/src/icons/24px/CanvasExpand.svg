@@ -1,0 +1,12 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="20px_chatwcanvas" clip-path="url(#clip0_40628_11033)">
+<path id="Vector" d="M17.5603 3H2.10574C1.67897 3 1.33301 3.28491 1.33301 3.63636V16.3636C1.33301 16.7151 1.67897 17 2.10574 17H17.5603C17.987 17 18.333 16.7151 18.333 16.3636V3.63636C18.333 3.28491 17.987 3 17.5603 3Z" stroke="#333333" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector 91" d="M6.33301 17.4062V3.40625" stroke="#333333"/>
+<path id="Vector_2" d="M11 7.75L13.25 10L11 12.25" stroke="#333333" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_40628_11033">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>

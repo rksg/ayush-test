@@ -833,16 +833,19 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addLayer2Acl: {
     method: 'post',
     url: '/switchL2AclPolicies',
+    opsApi: 'POST:/switchL2AclPolicies',
     newApi: true
   },
   updateLayer2Acl: {
     method: 'put',
     url: '/switchL2AclPolicies/:l2AclId',
+    opsApi: 'PUT:/switchL2AclPolicies/{id}',
     newApi: true
   },
   deleteLayer2Acl: {
     method: 'delete',
     url: '/switchL2AclPolicies/:l2AclId',
+    opsApi: 'DELETE:/switchL2AclPolicies/{id}',
     newApi: true
   },
   getSwitchMacAcls: {
@@ -853,16 +856,19 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addSwitchMacAcl: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/switchL2Acls',
+    opsApi: 'POST:/venues/{id}/switches/{id}/switchL2Acls',
     newApi: true
   },
   updateSwitchMacAcl: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/switchL2Acls/:macAclId',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/switchL2Acls/{id}',
     newApi: true
   },
   deleteSwitchMacAcl: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/switchL2Acls/:macAclId',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/switchL2Acls/{id}',
     newApi: true
   },
   getSwitchStickyMacAcls: {
@@ -883,16 +889,19 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addSwitchAccessControlSet: {
     method: 'post',
     url: '/switchAccessControlProfiles',
+    opsApi: 'POST:/switchAccessControlProfiles',
     newApi: true
   },
   updateSwitchAccessControlSet: {
     method: 'put',
     url: '/switchAccessControlProfiles/:accessControlId',
+    opsApi: 'PUT:/switchAccessControlProfiles/{id}',
     newApi: true
   },
   deleteSwitchAccessControlSet: {
     method: 'delete',
     url: '/switchAccessControlProfiles/:accessControlId',
+    opsApi: 'DELETE:/switchAccessControlProfiles/{id}',
     newApi: true
   }
 }

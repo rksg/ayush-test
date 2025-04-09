@@ -288,9 +288,9 @@ export default function RuckusAiButton () {
         }}
       />
     }
-
-    <AICanvasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-
+    {
+      isModalOpen && <AICanvasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+    }
     <UI.GptModal
       needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
       titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}

@@ -20,9 +20,9 @@ import {
   MacAclRule,
   PolicyType,
   usePolicyListBreadcrumb,
-  SwitchRbacUrlsInfo,
   MacAcl,
-  useTableQuery
+  useTableQuery,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
@@ -143,7 +143,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           setSelectedRow(selectedRows[0])
@@ -156,7 +156,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         setDataSource(dataSource?.filter(option=>{
           return !selectedRows.map(r=>r.key).includes(option?.key)
