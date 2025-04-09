@@ -50,7 +50,7 @@ export const mockedSamlIdpProfileByURL = {
   name: mockSamlIdpProfileName2,
   metadata: Buffer.from(mockedMetadata2).toString('base64'),
   metadataUrl: 'https://mockedMetadataUrl',
-  updatedData: '2025-03-26T09:12:52.705+00:00'
+  updatedDate: '2025-03-26T09:12:52.705+00:00'
 }
 
 export const mockedSamlIdpProfileWithRelations = {

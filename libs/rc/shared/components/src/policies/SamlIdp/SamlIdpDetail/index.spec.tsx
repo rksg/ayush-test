@@ -12,17 +12,20 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockSamlIdpProfileName, mockSamlIdpProfileName2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedSamlIdpProfileList, samlNetworkList } from '../__tests__/fixtures'
+import {
+  certList,
+  mockSamlIdpProfileId,
+  mockSamlIdpProfileId2,
+  mockSamlIdpProfileName,
+  mockSamlIdpProfileName2,
+  mockedSamlIdpProfile,
+  mockedSamlIdpProfileByURL,
+  mockedSamlIdpProfileList,
+  samlNetworkList
+} from '../__tests__/fixtures'
 
 import {  SamlIdpDetail } from '.'
 
-const mockedDownloadSamlServiceProviderMetadata = jest.fn()
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useDownloadSamlServiceProviderMetadataMutation: () => (
-    [mockedDownloadSamlServiceProviderMetadata]
-  )
-}))
 
 const mockedUsedNavigate = jest.fn()
 
@@ -40,6 +43,7 @@ const detailViewPath = '/:tenantId/' + getPolicyRoutePath({
 const mockedGetSamlIdpProfile = jest.fn()
 const mockedQueryViewDataList = jest.fn()
 const mockedSyncMetadata = jest.fn()
+const mockedDownloadSamlServiceProviderMetadata = jest.fn()
 
 describe('SAML IdP Detail', () => {
   beforeEach(() => {
@@ -79,6 +83,14 @@ describe('SAML IdP Detail', () => {
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (req, res, ctx) => res(ctx.json(certList))
+      ),
+
+      rest.get(
+        SamlIdpProfileUrls.downloadSamlServiceProviderMetadata.url,
+        (req, res, ctx) => {
+          mockedDownloadSamlServiceProviderMetadata()
+          return res(ctx.json({}))
+        }
       ),
 
       rest.patch(

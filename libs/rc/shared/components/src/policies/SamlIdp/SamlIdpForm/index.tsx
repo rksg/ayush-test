@@ -79,6 +79,8 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
   const attributeMappings = useWatch('attributeMappings', formRef)
 
+  const fieldColSpan = isEmbedded ? 20 : 12
+
   const maxMappingCount =
     getSamlIdpAttributeMappingNameTypeOptions().length - excludedAttributeTypes.length // TODO: 3 for testing, should be 64 for production
 
@@ -156,7 +158,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       >
         <StepsForm.StepForm>
           <Row>
-            <Col span={isEmbedded ? 20: 12}>
+            <Col span={fieldColSpan}>
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Profile Name' })}
@@ -265,7 +267,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col span={fieldColSpan}>
               <StepsForm.FieldLabel width={'280px'}>
                 <Space>
                   {$t({ defaultMessage: 'Enable SAML Request Signature' })}
@@ -290,15 +292,17 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                     {$t({ defaultMessage: 'Select Signing Certificate' })}
                   </>
                   }
-                  style={{ marginBottom: '5px' }}
-                  children={<Select
-                    options={signingCertificateOptions}
-                  />}
+                  style={{ marginBottom: '8px' }}
+                  children={
+                    <Select
+                      options={signingCertificateOptions}
+                    />
+                  }
                   required
                 />
                 <Button
                   type='link'
-                  style={{ fontSize: cssStr('--acx-body-4-font-size'), marginBottom: '5px' }}
+                  style={{ fontSize: cssStr('--acx-body-4-font-size'), marginBottom: '24px' }}
                   children={$t({ defaultMessage: 'Generate a signing certificate' })}
                   onClick={()=>setSigningCertFormVisible(true)}
                 />
@@ -307,7 +311,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col span={fieldColSpan}>
               <StepsForm.FieldLabel width={'280px'}>
                 <Space >
                   {$t({ defaultMessage: 'Enable SAML Response Encryption' })}
@@ -332,7 +336,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                     {$t({ defaultMessage: 'Select Encryption Certificate' })}
                   </>
                   }
-                  style={{ marginBottom: '5px' }}
+                  style={{ marginBottom: '8px' }}
                   children={<Select
                     options={encryptionCertificateOptions}
                   />}
@@ -340,7 +344,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 />
                 <Button
                   type='link'
-                  style={{ fontSize: cssStr('--acx-body-4-font-size'), marginBottom: '5px' }}
+                  style={{ fontSize: cssStr('--acx-body-4-font-size'), marginBottom: '24px' }}
                   children={$t({ defaultMessage: 'Generate an encryption certificate' })}
                   onClick={()=>setEncryptCertFormVisible(true)}
                 />
@@ -349,7 +353,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col span={16}>
+            <Col span={fieldColSpan}>
               <StepsForm.FieldLabel width={'280px'}>
                 {$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
               </StepsForm.FieldLabel>

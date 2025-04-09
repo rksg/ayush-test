@@ -85,7 +85,7 @@ export const SamlIdpDetail = () => {
       content: () => {
         return (
           <Space direction='vertical' size={1} style={{ lineHeight: 1 }}>
-            <Space size={1}>
+            <Space size={1} style={{ marginBottom: '8px' }}>
               <Button
                 type='link'
                 size={'small'}
@@ -96,8 +96,8 @@ export const SamlIdpDetail = () => {
               {(samlIdpData?.metadataUrl) && (
                 <Button
                   data-testid='sync-metadata-button'
-                  style={{ borderStyle: 'none' }}
-                  icon={<SyncOutlined spin={isSyncingMetadata} />}
+                  style={{ borderStyle: 'none', width: '14px', height: '14px' }}
+                  icon={<SyncOutlined spin={isSyncingMetadata} style={{ width: '14px' }} />}
                   type='link'
                   onClick={() => handleSyncMetadata()}
                 >
@@ -184,7 +184,7 @@ export const SamlIdpDetail = () => {
             downloadSamlServiceProviderMetadata({ params: { id: samlIdpData?.id } })
           }
         >
-          <Tooltip title={$t(SamlIdpMessages.DOWNLOAD_SAML_METADATA)}>
+          <Tooltip title={$t(SamlIdpMessages.DOWNLOAD_SAML_METADATA)} >
             {$t({ defaultMessage: 'Download SAML Metadata' })}
           </Tooltip>
         </Button>,

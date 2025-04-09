@@ -623,9 +623,6 @@ export const SamlIdpMessages = {
     defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
   }),
   DOWNLOAD_SAML_METADATA: defineMessage({
-    defaultMessage: 'Download SAML metadata'
-  }),
-  UPLOAD_SAML_METADATA: defineMessage({
     defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
   }),
   IDENTITY_NAME: defineMessage({
