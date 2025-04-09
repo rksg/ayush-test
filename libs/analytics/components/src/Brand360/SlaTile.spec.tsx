@@ -1,14 +1,9 @@
-import { Settings } from '@acx-ui/analytics/utils'
-import { Provider } from '@acx-ui/store'
-import {
-  render,
-  screen,
-  fireEvent
-} from '@acx-ui/test-utils'
-
+import { Settings }                  from '@acx-ui/analytics/utils'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { AccountTier }                    from '@acx-ui/utils'
+import { AccountTier }               from '@acx-ui/utils'
 
 import {
   fetchBrandProperties,
@@ -17,7 +12,7 @@ import {
   currTimeseries,
   zeroPrevTimeseries,
   zeroCurrTimeseries
-}         from './__tests__/fixtures'
+} from './__tests__/fixtures'
 import { SlaTile } from './SlaTile'
 
 import type { FranchisorTimeseries, Response } from './services'

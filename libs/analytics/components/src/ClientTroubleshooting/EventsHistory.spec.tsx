@@ -9,12 +9,12 @@ import {
   RaiPermissions,
   setRaiPermissions
 } from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
 
 import { Filters } from '.'
-import { AccountTier } from '@acx-ui/utils'
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()

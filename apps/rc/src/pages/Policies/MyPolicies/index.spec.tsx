@@ -31,6 +31,8 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import {
   macRegistrationPools,
@@ -41,8 +43,6 @@ import {
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { AccountTier } from '@acx-ui/utils'
 
 
 const mockTableResult = {

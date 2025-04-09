@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import { BrandTable } from './Table'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { AccountTier } from '@acx-ui/utils'
 
 const nameProps = {
   lspLabel: 'LSP',
