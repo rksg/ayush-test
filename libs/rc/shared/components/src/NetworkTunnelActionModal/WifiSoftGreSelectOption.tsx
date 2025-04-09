@@ -378,7 +378,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         </UI.TextButton>
         <UI.TextButton
           type='link'
-          disabled={!hasPolicyPermission({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
+          disabled={!hasPolicyPermission({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE }) || ipsecDisabled}
           onClick={handleClickAddIpsec}
           style={{ marginLeft: 5 }}
         >

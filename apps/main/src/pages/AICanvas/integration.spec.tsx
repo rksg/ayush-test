@@ -242,7 +242,7 @@ describe('AICanvas Drag', () => {
   it('should render a chat content correctly', async () => {
     renderWithDndProvider(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={()=>{}}/>
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()

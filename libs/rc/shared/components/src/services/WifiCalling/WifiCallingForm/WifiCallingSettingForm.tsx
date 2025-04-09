@@ -201,7 +201,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
           <EpdgTable edit={edit} />
         </Form.Item>
         <div style={{ marginTop: '20px' }}>
-          <ProtectedEnforceTemplateToggleP1 templateId={data?.id} />
+          <ProtectedEnforceTemplateToggleP1 initValue={data?.isEnforced} />
         </div>
       </GridCol>
     </GridRow>
