@@ -94,6 +94,7 @@ export default function AICanvas () {
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
+  const [reload, setReload] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -137,6 +138,7 @@ export default function AICanvas () {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
         setSessionId(latestId)
+        setReload(true)
       }
     } else if(historyData?.length === 0) {
       setIsChatsLoading(false)
@@ -151,8 +153,11 @@ export default function AICanvas () {
   }
 
   useEffect(() => {
-    if(!isNewChat && sessionId) {
+    if((!isNewChat && sessionId) || reload) {
       getLatestPageChats()
+      if(reload) {
+        setReload(false)
+      }
     }
   }, [sessionId])
 
