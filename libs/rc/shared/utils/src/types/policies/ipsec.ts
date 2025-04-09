@@ -75,6 +75,7 @@ export interface IpSecFormData extends Ipsec {
   deadPeerDetectionDelayEnabledCheckbox?: boolean
   espReplayWindowEnabledCheckbox?: boolean
   nattKeepAliveIntervalEnabledCheckbox?: boolean
+  failoverRetryPeriodIsForever?: boolean
 }
 
 export interface IpsecViewData {
