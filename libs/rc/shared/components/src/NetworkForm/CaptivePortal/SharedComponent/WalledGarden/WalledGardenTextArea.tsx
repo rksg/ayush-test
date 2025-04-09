@@ -7,6 +7,7 @@ import {
   Space
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
+import styled                        from 'styled-components'
 
 import { Button }                     from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
@@ -25,6 +26,7 @@ enum WallGardenAction {
 
 export interface WalledGardenProps {
   enableDefaultWalledGarden: boolean
+  required?: boolean
 }
 
 interface WalledGardenFieldsValue {
@@ -39,12 +41,38 @@ interface WalledGardenState {
   fieldsValue: WalledGardenFieldsValue
 }
 
+const StyledFormItem = styled(Form.Item)`
+  .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+    flex-direction: unset !important;
+
+    &::before {
+      content: '';
+    }
+
+    > svg {
+      order: unset !important;
+    }
+
+    > button {
+      position: relative;
+    }
+  }
+`
+
+export const RequiredMark = styled.span`
+  margin: 0;
+  margin-left: 3px;
+  & {
+    color: var(--acx-accents-orange-50);
+    font-size: var(--acx-body-4-font-size);
+  }
+`
 
 /* eslint-disable max-len */
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { enableDefaultWalledGarden } = props
+  const { enableDefaultWalledGarden, required = false } = props
 
   /**
    * the reanson why we set condition isExemption() is because
@@ -137,16 +165,19 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * I want to try stay the same as the old code.
    * So that we only extract the old code to a new component
    * and no sigcanificant change to the submit/validate logic in NetworkForm.tsx
-   * The walledGardensString attribute will be deleted before submit
+   * The walledGardensString attribute wilfl be deleted before submit
    */
   return (<>
-    <Form.Item
+    <StyledFormItem
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
       rules={[
+        { required, message: $t({ defaultMessage: 'Walled Garden is required' }) },
         { validator: (_, value) => walledGardensRegExp(value) }
       ]}
-      label={<>{$t({ defaultMessage: 'Walled Garden' })}
+      label={<>
+        {$t({ defaultMessage: 'Walled Garden' })}
+        {required && <RequiredMark>*</RequiredMark>}
         <Tooltip title={
           <FormattedMessage
             values={{ br: () => <br /> }}
@@ -168,14 +199,14 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         {enableDefaultWalledGarden &&
         <Button onClick={() => dispatch(statesCollection.useDefaultState)}
           data-testid='walled-garden-default-button'
-          style={{ marginLeft: 90, marginRight: 10 }}
+          style={{ marginLeft: 90 }}
           type='link'>
           {$t({ defaultMessage: 'Reset to default' })}
         </Button>
         }
         <Space />
         <Button onClick={() => dispatch(statesCollection.initialState)}
-          style={enableDefaultWalledGarden? {} : { marginLeft: 90, marginRight: 10 }}
+          style={{ marginLeft: enableDefaultWalledGarden ? 10 : 90 }}
           data-testid='walled-garden-clear-button'
           type='link'>
           {$t({ defaultMessage: 'Clear' })}
