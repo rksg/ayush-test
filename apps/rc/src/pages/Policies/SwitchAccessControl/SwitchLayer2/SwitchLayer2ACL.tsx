@@ -21,7 +21,7 @@ import {
   macAclRulesParser,
   PolicyOperation,
   PolicyType,
-  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
@@ -171,7 +171,7 @@ export function SwitchLayer2ACL () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/layer2/${selectedRows[0].id}/edit`, {
@@ -185,7 +185,7 @@ export function SwitchLayer2ACL () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteLayer2Acl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         const appliedSwitchesCount = selectedRows.reduce(
           (count, row) => count + (row.appliedSwitchesInfo?.length || 0), 0)

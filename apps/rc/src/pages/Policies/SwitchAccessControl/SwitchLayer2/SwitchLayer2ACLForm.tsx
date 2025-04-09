@@ -20,7 +20,7 @@ import {
   MacAclRule,
   PolicyType,
   usePolicyListBreadcrumb,
-  SwitchRbacUrlsInfo
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                          from '@acx-ui/types'
@@ -143,7 +143,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           setSelectedRow(selectedRows[0])
@@ -156,7 +156,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteLayer2Acl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         setDataSource(dataSource?.filter(option=>{
           return !selectedRows.map(r=>r.key).includes(option?.key)
