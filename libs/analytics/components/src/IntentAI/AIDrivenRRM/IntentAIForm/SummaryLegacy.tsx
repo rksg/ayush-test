@@ -6,7 +6,7 @@ import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { KPIFields }        from '../../common/KPIs'
 import { ScheduleTiming }   from '../../common/ScheduleTiming'
 import { IntentDetail }     from '../../useIntentDetailsQuery'
-import { IntentAIRRMGraph } from '../RRMGraph'
+import { IntentAIRRMGraph } from '../RRMGraph/indexLegacy'
 
 import { Priority }   from './Priority'
 import * as SideNotes from './SideNotes'

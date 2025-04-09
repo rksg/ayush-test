@@ -48,6 +48,38 @@
       rel="stylesheet"
     />
 
+    <script>
+
+      const supportEnvs = [
+        "dev.ruckus.cloud", 
+        "qa.ruckus.cloud", 
+        "int.ruckus.cloud"
+      ];
+      const host = window.location.hostname;
+
+      if (supportEnvs.some(env => host.includes(env))) {
+        !function(t,e){var
+      
+        o,n,p,r;e.__SV||(window.contextqa=e,e._i=[],e.init=function(i){
+        
+        window.cqakey = i;
+        
+        const script = document.createElement('script');
+        
+        script.src =
+        
+        "https://cqa-media.s3.us-east-2.amazonaws.com/contextqa_init.js";
+        
+        document.head.appendChild(script);
+        
+        },e.__SV=1)}(document,window.contextqa||[]);
+        
+        // Initialize after defining
+        window.contextqa.init('phc_WIcDskiqCroNW6JNdTbjMRbb51aO5dLVMbXKot7ZRxZ');
+      }
+      
+      </script>   
+          
     <title>RUCKUS One</title>
   </head>
   <body>

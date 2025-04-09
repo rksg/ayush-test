@@ -22,7 +22,7 @@ const defaultPayload = {
   ]
 }
 
-function AccessControlTabs () {
+export function AccessControlTabs () {
   const { $t } = useIntl()
   const paddingStyle = { paddingTop: '8px' }
 
@@ -44,7 +44,7 @@ function AccessControlTabs () {
   })
 
   return (
-    <Tabs onChange={onTabChange} activeKey={currentTab}>
+    <Tabs onChange={onTabChange} activeKey={currentTab} type='card'>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Access Control Set ({aclCount})' }, {
           aclCount: tableQuery?.data?.totalCount

@@ -4,13 +4,13 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy, StepsFormLegacyInstance }       from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider, store, userApi }                       from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                   from '@acx-ui/user'
+import { StepsFormLegacy, StepsFormLegacyInstance }             from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { venueApi }                                             from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store, userApi }                             from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor }       from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                         from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -57,13 +57,46 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     networkDeepResponse.name = 'Self sign in network test'
     const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: selfsignData.guestPortal }
+    const twilioData = {
+      data: {
+        accountSid: 'AC1234567890abcdef1234567890abcdef',
+        authToken: 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6',
+        authTemplateSid: 'templateSid',
+        apiKey: '29b04e7f-3bfb-4fed-b333-a49327981cab',
+        url: 'test.com'
+      }
+    }
+    const twilioWhatsAppData = { data: {
+      approvalFetch: {
+        sid: 'sid',
+        whatsapp: {
+          allow_category_change: true,
+          category: 'AUTHENTICATION',
+          content_type: 'whatsapp/authentication',
+          flows: null,
+          name: 'guest_network_authentication',
+          rejection_reason: '',
+          status: 'approved',
+          type: 'whatsapp'
+        },
+        url: 'https://content.twilio.com/v1/Content/sid/ApprovalRequests',
+        accountSid: 'AC1234567890abcdef1234567890abcdef'
+      },
+      errorMessage: null,
+      hasError: false
+    } }
+
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(selfSignInRes)))
+        (_, res, ctx) => res(ctx.json(selfSignInRes))),
+      rest.get(AdministrationUrlsInfo.getNotificationSmsProvider.url,
+        (req, res, ctx) => res(ctx.json(twilioData))),
+      rest.post(AdministrationUrlsInfo.getTwiliosWhatsappServices.url,
+        (req, res, ctx) => res(ctx.json(twilioWhatsAppData)))
     )
   })
 

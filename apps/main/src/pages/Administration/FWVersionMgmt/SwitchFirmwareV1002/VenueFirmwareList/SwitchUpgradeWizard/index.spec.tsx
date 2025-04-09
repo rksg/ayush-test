@@ -49,7 +49,7 @@ jest.mock('./VenueStatusDrawer', () => ({
 
 const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
-describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
+describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -298,6 +298,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
     await userEvent.click(skipButton)
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
   })
+
 
   it('render SwitchUpgradeWizard - skip - select switch', async () => {
     render(

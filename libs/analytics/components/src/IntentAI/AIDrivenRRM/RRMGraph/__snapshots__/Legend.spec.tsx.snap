@@ -12,9 +12,8 @@ exports[`Legend should render properly 1`] = `
   display: -ms-flexbox;
   display: flex;
   grid-template-columns: auto 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  padding: 10px 0px;
+  grid-column-gap: 5px;
+  padding-bottom: 20px;
   -webkit-align-items: start;
   -webkit-box-align: start;
   -ms-flex-align: start;
@@ -42,6 +41,7 @@ exports[`Legend should render properly 1`] = `
   width: 12px;
   height: 12px;
   margin-top: 2px;
+  margin-left: 10px;
 }
 
 .c4 {
@@ -50,6 +50,7 @@ exports[`Legend should render properly 1`] = `
   width: 12px;
   height: 12px;
   margin-top: 2px;
+  margin-left: 10px;
 }
 
 <div

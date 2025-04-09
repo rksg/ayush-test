@@ -46,14 +46,6 @@ export type IntentDetail = Intent & Partial<IntentKPI> & {
     isDataRetained: boolean
     isHotTierData: boolean
   }
-  apChannelDistributions: {
-    channel: number
-    apCount: number
-  }[]
-  apPowerTransmission: {
-    txPower: number
-    apCount: number
-  }[]
 }
 
 export const useIntentParams = () => {
@@ -180,14 +172,6 @@ export const api = intentAIApi.injectEndpoints({
               path { type name }
               ${!variables.code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
               ${preventColdTier ? 'dataCheck' : ''}
-              apChannelDistributions {
-                channel
-                apCount
-              }
-              apPowerTransmission {
-                txPower
-                apCount
-              }
             }
           }
         `

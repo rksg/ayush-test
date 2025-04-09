@@ -3,7 +3,7 @@
   "SPLIT_IO": "s56i5harnvpksqb6a5kom1phqncj9d6ujf92",
   "SPLIT_PROXY_ENDPOINT": "https://splitproxy.dev.ruckus.cloud/api",
   "PENDO_API": "b775f526-720b-449c-7fca-f45b7c3df0ae",
-  "DISABLE_PENDO": "false",
+  "DISABLE_PENDO": "true",
   "CAPTIVE_PORTAL_DOMAIN_NAME": "dev.ruckus.cloud",
   "CHANGE_PASSWORD": "https://supportqa.ruckuswireless.com/edit_my_profile",
   "MANAGE_LICENSES": "https://supportqa.ruckuswireless.com/cloud_subscriptions",

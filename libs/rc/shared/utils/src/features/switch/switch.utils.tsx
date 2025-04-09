@@ -13,10 +13,12 @@ import {
   SwitchStatusEnum,
   SwitchViewModel,
   SWITCH_TYPE,
+  MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
   SWITCH_SERIAL_8100,
   SWITCH_SERIAL_8100X,
+  SWITCH_SERIAL_7550Zippy,
   SWITCH_SERIAL_SUFFIX
 } from '../../types'
 import { FlexibleAuthentication } from '../../types'
@@ -74,6 +76,7 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
   ['FMS', 'ICX7550-48F'],
+  ['FPH', 'ICX7550-24XZP'],
   ['FNX', 'ICX8100-24'],
   ['FNY', 'ICX8100-24P'],
   ['FNZ', 'ICX8100-48'],
@@ -126,7 +129,8 @@ export const ICX_MODELS_MODULES = {
     '24ZP': [['24X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
     '48ZP': [['48X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
     '24F': [['24X10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
-    '48F': [['48X1/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']]
+    '48F': [['48X1/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
+    '24XZP': [['24X10G'], ['2X40G','2X100G'], ['1X100G', '2X40G', '4X10G', '4X25G']]
   },
   ICX7650: {
     '48P': [['48X1G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']],
@@ -717,7 +721,8 @@ export const getClientIpAddr = (data?: SwitchClient) => {
 export interface SupportModels {
   isSupport8200AV: boolean,
   isSupport8100: boolean,
-  isSupport8100X: boolean
+  isSupport8100X: boolean,
+  isSupport7550Zippy: boolean
 }
 
 export const createSwitchSerialPattern = (supportModels: SupportModels) => {
@@ -730,6 +735,9 @@ export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   }
   if (supportModels.isSupport8100X) {
     pattern += '|' + SWITCH_SERIAL_8100X
+  }
+  if (supportModels.isSupport7550Zippy) {
+    pattern += '|' + SWITCH_SERIAL_7550Zippy
   }
 
   return new RegExp(`^(${pattern})${SWITCH_SERIAL_SUFFIX}$`, 'i')
@@ -881,6 +889,10 @@ export const isBabyRodanX = (model: string) => {
   }
 }
 
+export const is7550Zippy = (model: string) => {
+  return model === 'ICX7550-24XZP'
+}
+
 export const isRodanAvSubModel = (model: string) => {
   switch(model) {
     case '24PV':
@@ -904,8 +916,27 @@ export const isBabyRodanXSubModel = (model: string) => {
   }
 }
 
+export const is7550ZippySubModel = (model: string) => {
+  return model === '24XZP'
+}
+
 export const getFamilyAndModel = function (switchModel: string) {
   const family = switchModel.split('-')[0]
   const model = switchModel.substring(switchModel.indexOf('-')+1)
   return [family, model]
+}
+
+export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
+  if (!macAclRules || macAclRules.length === 0) {
+    return { permit: 0, deny: 0 }
+  }
+
+  return macAclRules.reduce((acc, rule) => {
+    if (rule.action === 'permit') {
+      acc.permit += 1
+    } else if (rule.action === 'deny') {
+      acc.deny += 1
+    }
+    return acc
+  }, { permit: 0, deny: 0 })
 }

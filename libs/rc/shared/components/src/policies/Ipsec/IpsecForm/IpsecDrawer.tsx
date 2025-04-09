@@ -45,7 +45,7 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
           replayWindow: 32,
           ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
           enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 1,
+          dpdDelay: 30,
           keepAliveInterval: 20,
           failoverRetryInterval: 1,
           failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
@@ -59,10 +59,13 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
           espProposalType: IpSecProposalTypeEnum.DEFAULT,
           espProposals: []
         },
+        ikeRekeyTimeEnabledCheckbox: true,
+        espRekeyTimeEnabledCheckbox: true,
         retryLimitEnabledCheckbox: true,
         espReplayWindowEnabledCheckbox: true,
-        deadPeerDetectionDelayEnabledCheckbox: false,
-        nattKeepAliveIntervalEnabledCheckbox: true
+        deadPeerDetectionDelayEnabledCheckbox: true,
+        nattKeepAliveIntervalEnabledCheckbox: true,
+        failoverRetryPeriodIsForever: true
       })
     }
   }, [form, readMode, visible])
@@ -78,6 +81,12 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
     }
     if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
       data.espSecurityAssociation.espProposals = []
+    }
+    if (data.ikeRekeyTimeEnabledCheckbox === false && data.ikeRekeyTime) {
+      data.ikeRekeyTime = 0
+    }
+    if (data.espRekeyTimeEnabledCheckbox === false && data.espRekeyTime) {
+      data.espRekeyTime = 0
     }
     if (data.retryLimitEnabledCheckbox === false) {
       if (data.advancedOption && data.advancedOption.retryLimit)

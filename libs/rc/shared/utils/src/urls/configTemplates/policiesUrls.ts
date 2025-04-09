@@ -701,7 +701,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PUT:/templates/venues/{id}/roguePolicies/{id}'
   },
   deactivateRoguePolicy: {
     method: 'delete',
@@ -710,7 +711,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/templates/venues/{id}/roguePolicies/{id}'
   },
   getVenueRogueApRbac: {
     method: 'get',
