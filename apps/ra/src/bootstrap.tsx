@@ -52,8 +52,8 @@ export async function init (root: Root) {
     { headers: { ...getJwtHeaders() } })
   if (user.status === 401) {
     window.location.hostname === 'localhost'
-      ? userLogout()
-      : showExpiredSessionModal()
+      ? showExpiredSessionModal()
+      : userLogout()
   } else {
     setUserProfile(await(user).json())
   }
