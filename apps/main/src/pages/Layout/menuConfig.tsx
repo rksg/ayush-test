@@ -69,6 +69,7 @@ export function useMenuConfig () {
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOOGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
 
@@ -175,10 +176,18 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
-            {
-              uri: '/users/switch/clients',
-              label: $t({ defaultMessage: 'Wired Clients List' })
-            }
+            ...(!isSupportWifiWireClient? [
+              {
+                uri: '/users/switch/clients',
+                label: $t({ defaultMessage: 'Wired Clients List' })
+              }
+            ] : [{
+              uri: '/users/wired/switch/clients',
+              label: $t({ defaultMessage: 'Switch Clients List' })
+            }, {
+              uri: '/users/wired/wifi/clients',
+              label: $t({ defaultMessage: 'AP Clients List' })
+            }])
           ]
         },
         ...(isCloudpathBetaEnabled ? [{

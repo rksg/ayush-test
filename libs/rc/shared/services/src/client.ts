@@ -27,7 +27,8 @@ import {
   ClientInfo,
   SwitchRbacUrlsInfo,
   SwitchClient,
-  SwitchInformation
+  SwitchInformation,
+  WiredClientInfo
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -556,6 +557,26 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
         return { data: 'done' }
       }
+    }),
+    getApWiredClients: build.query<TableResult<WiredClientInfo>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, payload } = arg
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const wiredClientListInfo = {
+          ...createHttpRequest(ClientUrlsInfo.getApWiredClients, params, apiCustomHeader),
+          body: JSON.stringify(payload)
+        }
+        const wiredClientListQuery = await fetchWithBQ(wiredClientListInfo)
+        const wiredClientList = wiredClientListQuery.data as TableResult<WiredClientInfo>
+        const aggregatedList = aggregatedApWiredClientListData(wiredClientList)
+
+        return wiredClientListQuery.data
+          ? { data: aggregatedList }
+          : { error: wiredClientListQuery.error as FetchBaseQueryError }
+
+      },
+      providesTags: [{ type: 'WiredClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -649,6 +670,30 @@ export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
   return { ...guestsListResult, data: guestsList }
 }
 
+export const aggregatedApWiredClientListData = (wiredClientList: TableResult<WiredClientInfo>) => {
+  const data: WiredClientInfo[] = []
+
+  wiredClientList?.data.forEach(client => {
+    const tmp = {
+      ...client,
+      macAddress: client.macAddress.toLowerCase()
+    }
+
+    if (tmp.connectedTime && !tmp.connectedTimeParssed) {
+      tmp.connectedTimeString =
+        formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
+      tmp.connectedTimeParssed = true
+    }
+
+    data.push(tmp)
+  })
+
+  return {
+    ...wiredClientList,
+    data
+  }
+}
+
 
 export const {
   useGetClientListQuery,
@@ -673,5 +718,6 @@ export const {
   useImportGuestPassMutation,
   useGetClientOrHistoryDetailQuery,
   useGetClientUEDetailQuery,
-  useGetUEDetailAndDisconnectMutation
+  useGetUEDetailAndDisconnectMutation,
+  useGetApWiredClientsQuery
 } = clientApi
