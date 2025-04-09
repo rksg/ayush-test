@@ -181,7 +181,9 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
     return networkType === NetworkTypeEnum.CAPTIVEPORTAL && (
       guestType === GuestNetworkTypeEnum.GuestPass ||
       guestType === GuestNetworkTypeEnum.HostApproval ||
-      guestType === GuestNetworkTypeEnum.SelfSignIn
+      guestType === GuestNetworkTypeEnum.SelfSignIn ||
+      guestType === GuestNetworkTypeEnum.Directory ||
+      guestType === GuestNetworkTypeEnum.SAML
     )
   }
 
@@ -554,11 +556,15 @@ function GuestDetails ({ guestDetail, clientMac }: {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.creationDate) || '--'}
+        children={guestDetail?.creationDate
+          ? formatter(DateFormatEnum.DateTimeFormat)(guestDetail.creationDate)
+          : '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Expires' })}
-        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.expiryDate) || '--'}
+        children={guestDetail?.expiryDate
+          ? formatter(DateFormatEnum.DateTimeFormat)(guestDetail.expiryDate)
+          : '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Max no. of clients' })}
