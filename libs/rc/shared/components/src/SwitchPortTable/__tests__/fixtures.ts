@@ -720,3 +720,27 @@ export const availablePortProfileList = [
     ]
   }
 ]
+
+export const macAclList ={
+  data: [
+    {
+      id: '525a68dc53494d29bb163ee0de86ad6a',
+      switchId: 'c0:c5:20:78:dd:04',
+      name: 'switch_acl1',
+      customized: true,
+      sharedWithPolicyAndProfile: false,
+      switchMacAclRules: [
+        {
+          id: '5526d685265144cb9908aea2136a77b7',
+          action: 'permit',
+          sourceAddress: 'any',
+          destinationAddress: 'any',
+          macAclId: '525a68dc53494d29bb163ee0de86ad6a'
+        }
+      ]
+    }
+  ],
+  page: 1,
+  totalCount: 1,
+  totalPages: 1
+}

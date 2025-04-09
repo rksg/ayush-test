@@ -62,7 +62,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
           replayWindow: 32,
           ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
           enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 1,
+          dpdDelay: 30,
           keepAliveInterval: 20,
           failoverRetryInterval: 1,
           failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
@@ -80,19 +80,15 @@ export const IpsecForm = (props: IpsecFormProps) => {
         espRekeyTimeEnabledCheckbox: true,
         retryLimitEnabledCheckbox: true,
         espReplayWindowEnabledCheckbox: true,
-        deadPeerDetectionDelayEnabledCheckbox: false,
-        nattKeepAliveIntervalEnabledCheckbox: true
+        deadPeerDetectionDelayEnabledCheckbox: true,
+        nattKeepAliveIntervalEnabledCheckbox: true,
+        failoverRetryPeriodIsForever: true
       })
     }
   }, [dataFromServer, editMode, form])
 
   const handleFinish = async (data: IpSecFormData) => {
     try {
-      if (data?.advancedOption) {
-        if (!data.advancedOption.failoverRetryPeriod) {
-          data.advancedOption.failoverRetryPeriod = 0
-        }
-      }
       if (data?.ikeSecurityAssociation?.ikeProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.ikeSecurityAssociation.ikeProposals = []
       }
@@ -101,9 +97,11 @@ export const IpsecForm = (props: IpsecFormProps) => {
       }
       if (data.ikeRekeyTimeEnabledCheckbox === false && data.ikeRekeyTime) {
         data.ikeRekeyTime = 0
+        data.ikeRekeyTimeUnit = IpSecRekeyTimeUnitEnum.HOUR
       }
       if (data.espRekeyTimeEnabledCheckbox === false && data.espRekeyTime) {
         data.espRekeyTime = 0
+        data.espRekeyTimeUnit = IpSecRekeyTimeUnitEnum.HOUR
       }
       if (data.retryLimitEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.retryLimit)
@@ -120,6 +118,10 @@ export const IpsecForm = (props: IpsecFormProps) => {
       if (data.nattKeepAliveIntervalEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.keepAliveInterval)
           data.advancedOption.keepAliveInterval = 0
+      }
+      if (data.failoverRetryPeriodIsForever === true) {
+        if (data.advancedOption && data.advancedOption.failoverRetryPeriod)
+          data.advancedOption.failoverRetryPeriod = 0
       }
 
       // eslint-disable-next-line no-console
