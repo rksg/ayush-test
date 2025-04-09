@@ -3,6 +3,8 @@ import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 import { overlapsRollup }                                                                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                                                  from '@acx-ui/user'
+import { AccountTier }                                                                     from '@acx-ui/utils'
 
 import { connectionDetailsByAp, connectionEvents, connectionQualities } from './__tests__/fixtures'
 import { DisplayEvent }                                                 from './config'
@@ -93,6 +95,24 @@ describe('ClientTroubleshootingTab', () => {
     const fragment = asFragment()
     const charts = fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
     expect(charts).toHaveLength(4)
+  })
+  it('should render successfully for Core Tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    render(
+      <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(screen.getAllByRole('img', { name: 'loader' })[0]).toBeVisible()
+    expect(await screen.findByText('History')).toBeVisible()
   })
   it('should hide chart when under druidRollup', async () => {
     jest.mocked(mockOverlapsRollup).mockReturnValue(true)

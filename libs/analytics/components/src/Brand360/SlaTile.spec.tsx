@@ -7,6 +7,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
+
 import {
   fetchBrandProperties,
   mockBrandTimeseries,
@@ -270,4 +273,23 @@ describe('SlaTile', () => {
     const downIcon = screen.queryByTestId('DownArrow')
     expect(downIcon).toBeNull()
   })
+
+  it('should render tooltip for Core tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    const props = {
+      chartKey: 'experience' as const,
+      ...baseProps,
+      tableData: [],
+      sliceType: 'property' as const
+    }
+    render(<SlaTile {...props}/>, { wrapper: Provider })
+    expect(await screen.findByText('Guest Experience')).toBeInTheDocument()
+    const tooltipIcon = await screen.findByTestId('InformationOutlined')
+    expect(tooltipIcon).toBeInTheDocument()
+  })
+
 })
