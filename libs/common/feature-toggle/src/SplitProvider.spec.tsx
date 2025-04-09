@@ -108,7 +108,6 @@ describe('SplitProvider', () => {
         events: 'https://splitproxy.dev.ruckus.cloud/api',
         sdk: 'https://splitproxy.dev.ruckus.cloud/api'
       },
-      storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234-f91b36cbfb9941e8b45b337a37f330c0' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
@@ -121,7 +120,6 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234-0015000000GlI7SAAV' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
@@ -135,7 +133,6 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234-0015000000GlI7SAAV' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
@@ -148,7 +145,6 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '1015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234-1015000000GlI7SAAV' },
       debug: false
     })
   })
