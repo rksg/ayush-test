@@ -23,7 +23,7 @@ export interface SamlIdpProfileFormType extends SamlIdpProfile {
     signingCertificateId?: string
     metadataContent?: string // store The content converted from base64 format
     wifiNetworkIds: string[]
-    updatedData?: string
+    updatedDate?: string
     identityName?: string
     identityEmail?: string
     identityPhone?: string

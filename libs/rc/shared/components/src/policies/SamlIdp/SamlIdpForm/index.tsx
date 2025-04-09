@@ -180,8 +180,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   <Space>
                     {$t({ defaultMessage: 'Identity Provider (IdP) Metadata' })}
                     <Tooltip.Question
-                    // eslint-disable-next-line max-len
-                      title={$t(SamlIdpMessages.METADATA_TEXTAREA) + '\n' + $t({ defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.' })}
+                      title={
+                        $t(SamlIdpMessages.METADATA_TEXTAREA) +
+                        '\n' +
+                        $t(SamlIdpMessages.METADATA_TEXTAREA_NOTE)
+                      }
                       placement='bottom'
                       iconStyle={{ width: 16, height: 16 }}
                     />

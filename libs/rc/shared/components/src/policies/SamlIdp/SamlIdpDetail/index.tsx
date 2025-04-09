@@ -107,9 +107,9 @@ export const SamlIdpDetail = () => {
             {(samlIdpData?.metadataUrl) && (
               <span style={{ fontSize: '12px' }}>
                 {$t({ defaultMessage: 'Last Update:' })} {
-                  (samlIdpData?.updatedData )
+                  (samlIdpData?.updatedDate )
                     ? formatter(DateFormatEnum.DateFormat)(
-                      samlIdpData?.updatedData
+                      samlIdpData?.updatedDate
                     )
                     : noDataDisplay
                 }

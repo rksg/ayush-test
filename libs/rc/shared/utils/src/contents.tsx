@@ -599,8 +599,11 @@ export const ClientIsolationMessages = {
 export const SamlIdpMessages = {
   /* eslint-disable max-len */
   METADATA_TEXTAREA: defineMessage({
-    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
-                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider.' +
+                   'You can upload an XML file, provide a metadata URL, or enter the codes.'
+  }),
+  METADATA_TEXTAREA_NOTE: defineMessage({
+    defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.'
   }),
   /* eslint-disable max-len */
   SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
