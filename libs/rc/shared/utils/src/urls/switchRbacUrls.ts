@@ -497,11 +497,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/rearDetails?unitid=:unitId',
     newApi: true
   },
-  updatePortDisableRecovery: {
-    method: 'put',
-    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
-    newApi: true
-  },
   getLayer2Acls: {
     method: 'post',
     url: '/switchL2AclPolicies/query',
