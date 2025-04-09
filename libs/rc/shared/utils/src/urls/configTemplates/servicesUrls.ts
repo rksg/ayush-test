@@ -286,7 +286,8 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PUT:/templates/wifiNetworks/{id}/wifiCallingServiceProfiles/{id}'
   },
   deactivateWifiCalling: {
     method: 'delete',
@@ -295,7 +296,8 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/templates/wifiNetworks/{id}/wifiCallingServiceProfiles/{id}'
   },
   activateDpskService: {
     method: 'PUT',
