@@ -99,7 +99,7 @@ beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
   moment.tz.setDefault('Asia/Singapore')
   const now = +new Date('2024-08-08T12:00:00.000Z')
-  jest.spyOn(global.Date, 'now').mockReturnValue(now)
+  jest.spyOn(Date, 'now').mockReturnValue(now)
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
@@ -147,7 +147,7 @@ describe('IntentAIForm', () => {
     })
 
     it('handle schedule intent for RAI', async () => {
-      mockGet.mockReturnValue(true)
+      mockGet.mockReturnValue(true) // RAI
       const { params } = mockIntentContextWith({ status: Statuses.new })
       render(<IntentAIForm />, { route: { params }, wrapper: Provider })
       const form = within(await screen.findByTestId('steps-form'))
@@ -194,7 +194,7 @@ describe('IntentAIForm', () => {
     })
 
     it('handle schedule intent for R1', async () => {
-      mockGet.mockReturnValue(false) //R1
+      mockGet.mockReturnValue(false) // R1
       const { params } = mockIntentContextWith({ status: Statuses.new })
       render(<IntentAIForm />, { route: { params }, wrapper: Provider })
       const form = within(await screen.findByTestId('steps-form'))
@@ -238,7 +238,7 @@ describe('IntentAIForm', () => {
     })
 
     it('handle pause intent', async () => {
-      mockGet.mockReturnValue(false) //R1
+      mockGet.mockReturnValue(false) // R1
       const { params } = mockIntentContextWith({ status: Statuses.new })
       render(<IntentAIForm />, { route: { params }, wrapper: Provider })
       const form = within(await screen.findByTestId('steps-form'))
@@ -249,12 +249,12 @@ describe('IntentAIForm', () => {
 
       expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
       expect(await screen.findByText('Potential trade-off')).toBeVisible()
-      const radioDisabled = screen.getByRole(
+      const radio = screen.getByRole(
         'radio',
         { name: 'Standard Management traffic in a sparse network' }
       )
-      await click(radioDisabled)
-      expect(radioDisabled).toBeChecked()
+      await click(radio)
+      expect(radio).toBeChecked()
       await click(actions.getByRole('button', { name: 'Next' }))
 
       expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
