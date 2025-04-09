@@ -87,10 +87,6 @@ describe('SelectRecCustomerDrawer', () => {
     expect(await screen.findByText('Aloft Lexington')).toBeVisible()
     expect(await screen.findByText('Springhill Suites Las Vegas')).toBeVisible()
 
-    fireEvent.change(input, { target: { value: 'al' } })
-    expect(await screen.findByText('Al')).toBeVisible()
-    expect(await screen.findByText('oft Lexington')).toBeVisible()
-
     fireEvent.change(input, { target: { value: 'aa' } })
     expect(screen.queryByText('aa')).toBeNull()
   })

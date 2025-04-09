@@ -123,7 +123,10 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
 
       const isDuplicate = dataSource?.some(rule =>
         rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
+          (payload.sourceMask ? rule.sourceMask?.toLowerCase() === payload.sourceMask : true) &&
           rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
+          (payload.destinationMask ?
+            rule.destinationMask?.toLowerCase() === payload.destinationMask : true) &&
           (editMode ? rule.key !== payload.key : true)
       )
 
