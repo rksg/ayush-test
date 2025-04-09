@@ -24,7 +24,8 @@ import {
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010g2Or10020b
+  isFirmwareVersionAbove10010g2Or10020b,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'
 import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
@@ -472,7 +473,7 @@ export function SwitchPortTable (props: {
           ...(
             switchSupportErrorRecovery ? [{
               label: $t({ defaultMessage: 'Error Disable Recovery' }),
-              rbacOpsId: [getOpsApi(SwitchRbacUrlsInfo.updatePortDisableRecovery)],
+              rbacOpsId: [getOpsApi(SwitchUrlsInfo.updatePortDisableRecovery)],
               onClick: () => { setRecoveryDrawerVisible(true) }
             }] : []),
           {
