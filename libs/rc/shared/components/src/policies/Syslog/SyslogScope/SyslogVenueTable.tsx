@@ -8,8 +8,11 @@ import { Features, useIsSplitOn }                                              f
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
   ConfigTemplateType,
+  PoliciesConfigTemplateUrlsInfo,
   SyslogActionPayload,
   SyslogActionTypes,
+  SyslogUrls,
+  useActivativationPermission,
   useConfigTemplate,
   useTableQuery,
   VenueSyslogPolicyType
@@ -42,6 +45,16 @@ const SyslogVenueTable = () => {
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const {
+    activateOpsApi,
+    deactivateOpsApi,
+    hasFullActivationPermission
+  } = useActivativationPermission({
+    activateApiInfo: SyslogUrls.bindVenueSyslog,
+    activateTemplateApiInfo: PoliciesConfigTemplateUrlsInfo.bindVenueSyslog,
+    deactivateApiInfo: SyslogUrls.unbindVenueSyslog,
+    deactivateTemplateApiInfo: PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog
+  })
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({
@@ -118,7 +131,7 @@ const SyslogVenueTable = () => {
           placement='bottom'>
           <Switch
             data-testid={`switchBtn_${row.id}`}
-            disabled={isEnforcedByTemplate}
+            disabled={isEnforcedByTemplate || !hasFullActivationPermission}
             checked={
               state.venues
                 ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
@@ -156,6 +169,7 @@ const SyslogVenueTable = () => {
 
   const rowActions: TableProps<VenueSyslogPolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    rbacOpsIds: [activateOpsApi],
     disabled: (selectedRows: VenueSyslogPolicyType[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: VenueSyslogPolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueSyslogPolicyType[], clearSelection: () => void) => {
@@ -174,6 +188,7 @@ const SyslogVenueTable = () => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    rbacOpsIds: [deactivateOpsApi],
     disabled: (selectedRows: VenueSyslogPolicyType[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: VenueSyslogPolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueSyslogPolicyType[], clearSelection: () => void) => {
@@ -183,6 +198,8 @@ const SyslogVenueTable = () => {
     }
   }]
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <Table
       columns={basicColumns}
@@ -190,9 +207,11 @@ const SyslogVenueTable = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={filterByAccess(rowActions)}
-      // eslint-disable-next-line max-len
-      rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }}
+      rowActions={allowedRowActions}
+      rowSelection={hasPermission({
+        scopes: [WifiScopes.UPDATE, WifiScopes.DELETE],
+        rbacOpsIds: [activateOpsApi, deactivateOpsApi]
+      }) && { type: 'checkbox' }}
     />
   )
 }

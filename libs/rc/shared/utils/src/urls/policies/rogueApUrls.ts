@@ -101,7 +101,8 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PUT:/venues/{id}/roguePolicies/{id}'
   },
   deactivateRoguePolicy: {
     method: 'delete',
@@ -110,6 +111,7 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/venues/{id}/roguePolicies/{id}'
   }
 }
