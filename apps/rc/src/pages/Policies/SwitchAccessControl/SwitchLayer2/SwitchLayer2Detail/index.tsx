@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs }                          from '@acx-ui/components'
 import { useGetLayer2AclByIdQuery }                          from '@acx-ui/rc/services'
-import {  getPolicyListRoutePath, SwitchRbacUrlsInfo }       from '@acx-ui/rc/utils'
+import {  getPolicyListRoutePath, SwitchUrlsInfo }           from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                      from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
@@ -61,7 +61,7 @@ export function SwitchLayer2Detail () {
     return (
       <TenantLink
         scopeKey={[SwitchScopes.UPDATE]}
-        rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)]}
+        rbacOpsIds={[getOpsApi(SwitchUrlsInfo.updateLayer2Acl)]}
         to={`/policies/accessControl/switch/layer2/${accessControlId}/edit`}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
