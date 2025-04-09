@@ -105,7 +105,7 @@ export default function AICanvasModal (props: {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
-  const [showCanvas, setShowCanvas] = useState(false)
+  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -329,12 +329,17 @@ export default function AICanvasModal (props: {
 
   const onClickCanvasMode = () => {
     checkChanges(()=>{
-      setShowCanvas(!showCanvas)
+      setCanvasMode(!showCanvas)
       setCanvasHasChanges(false)
     }, ()=>{
       handleSaveCanvas()
-      setShowCanvas(!showCanvas)
+      setCanvasMode(!showCanvas)
     })
+  }
+
+  const setCanvasMode = (value: boolean) => {
+    setShowCanvas(value)
+    localStorage.setItem('show-canvas', value.toString())
   }
 
   return (
@@ -383,8 +388,14 @@ export default function AICanvasModal (props: {
                         />
                       </Tooltip>
                       {
-                        showCanvas ? <CanvasCollapse onClick={onClickCanvasMode} />
-                          : <CanvasExpand onClick={onClickCanvasMode} />
+                        showCanvas ? <CanvasCollapse
+                          data-testid='canvasCollapseIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                          : <CanvasExpand
+                            data-testid='canvasExpandIcon'
+                            onClick={onClickCanvasMode}
+                          />
                       }
                     </> : null
                   }
