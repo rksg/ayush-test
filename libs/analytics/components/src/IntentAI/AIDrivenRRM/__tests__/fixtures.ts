@@ -278,21 +278,7 @@ export const mockedIntentCRRM = {
   dataCheck: {
     isDataRetained: true,
     isHotTierData: true
-  },
-  apChannelDistributions: [
-    {
-      channel: 1,
-      apCount: 1
-    },
-    {
-      channel: 2,
-      apCount: 2
-    },
-    {
-      channel: 3,
-      apCount: 3
-    }
-  ]
+  }
 } as unknown as IntentDetail
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
@@ -337,8 +323,7 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
       result: 0
     }
   },
-  preferences: null,
-  apChannelDistributions: []
+  preferences: null
 } as unknown as IntentDetail
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
@@ -395,13 +380,7 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
       result: 2
     }
   },
-  preferences: null,
-  apChannelDistributions: [
-    {
-      channel: 1,
-      apCount: 1
-    }
-  ]
+  preferences: null
 } as unknown as IntentDetail
 
 export const mockedCRRMGraphs = {
@@ -505,3 +484,20 @@ export const mockedCRRMGraphsApplied = {
     }
   }
 }
+
+export const mockedAPChannelDistribution = [
+  { channel: 1, apCount: 1 },
+  { channel: 2, apCount: 2 },
+  { channel: 3, apCount: 3 },
+  { channel: 4, apCount: 4 },
+  { channel: 5, apCount: 5 },
+  { channel: 6, apCount: 6 },
+  { channel: 7, apCount: 7 },
+  { channel: 8, apCount: 8 },
+  { channel: 9, apCount: 9 },
+  { channel: 10, apCount: 10 },
+  { channel: 11, apCount: 11 },
+  { channel: 12, apCount: 12 },
+  { channel: 13, apCount: 13 },
+  { channel: 14, apCount: 14 }
+]
