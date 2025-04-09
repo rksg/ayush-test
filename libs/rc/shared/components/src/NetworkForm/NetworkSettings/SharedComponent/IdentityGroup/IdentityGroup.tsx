@@ -130,7 +130,7 @@ export function IdentityGroup () {
           children={
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
-              style={{ width: '400px' }}
+              style={{ width: '280px' }}
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
             />
@@ -142,6 +142,7 @@ export function IdentityGroup () {
           <Space split='|'>
             <Button
               type='link'
+              style={{ zIndex: 1000 }}
               disabled={!formFieldIdentityGroupId}
               onClick={() => {
                 setDetailDrawerVisible(true)
@@ -149,7 +150,9 @@ export function IdentityGroup () {
             >
               {$t({ defaultMessage: 'View Details' })}
             </Button>
-            <Button type='link'
+            <Button
+              type='link'
+              style={{ zIndex: 1000 }}
               onClick={() => {
                 setIdentityGroupModelVisible(true)
               }}>
