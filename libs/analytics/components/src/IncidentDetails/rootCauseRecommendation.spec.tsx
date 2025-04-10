@@ -4,7 +4,6 @@ import { MemoryRouter }                    from 'react-router-dom'
 
 import { IncidentCode, fakeIncident } from '@acx-ui/analytics/utils'
 import { get }                        from '@acx-ui/config'
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { render, screen }             from '@acx-ui/test-utils'
 import { encodeParameter }            from '@acx-ui/utils'
 
@@ -73,8 +72,7 @@ describe('TenantLinkWrapper', () => {
     }
   } as AirtimeParams
 
-  it('renders the correct link when Intent AI is enabled for RA', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('renders the correct link for RA', () => {
     jest.mocked(get).mockReturnValue('true')
     const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'crrm') }
 
@@ -97,8 +95,7 @@ describe('TenantLinkWrapper', () => {
       .toContain(path)
 
   })
-  it('renders the correct link when Intent AI is enabled for R1', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('renders the correct link for R1', () => {
     jest.mocked(get).mockReturnValue('')
     const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'aclb') }
 
@@ -120,49 +117,6 @@ describe('TenantLinkWrapper', () => {
       .getAttribute('href'))
       .toContain(path)
 
-  })
-
-  it('renders the correct link when Intent AI is not enabled for crrm', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <MemoryRouter>
-        <TenantLinkWrapper params={baseParams} linkType='crrm' />
-      </MemoryRouter>
-    )
-
-    expect(screen.getByRole('link', { name: /Explore more/i })
-      .getAttribute('href'))
-      .toContain(`/recommendations/crrm/${baseParams.crrm?.intentId}`)
-  })
-
-  it('renders the correct link when Intent AI is not enabled for aiOps', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <MemoryRouter>
-        <TenantLinkWrapper params={baseParams} linkType='aiOps' />
-      </MemoryRouter>
-    )
-
-    expect(screen.getByRole('link', { name: /Explore more/i })
-      .getAttribute('href'))
-      .toContain(`/recommendations/aiOps/${baseParams.aclb?.intentId}`)
-  })
-
-  it('renders the correct link when Intent AI is not enabled for fallback', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'recommendationId') }
-
-    render(
-      <MemoryRouter>
-        <TenantLinkWrapper params={newParams} linkType='aiOps' />
-      </MemoryRouter>
-    )
-
-    expect(screen.getByRole('link', { name: /Explore more/i })
-      .getAttribute('href'))
-      .toContain(`/recommendations/aiOps/${baseParams.recommendationId}`)
   })
 })
 
@@ -386,7 +340,6 @@ describe('getRootCauseAndRecommendations', () => {
 
   describe('airtime Rx Incident', () => {
     it('should return correct data if feature flag is on RA', () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
       jest.mocked(get).mockReturnValue('true')
       const checks = [
         { isHighDensityWifiDevices: true },
@@ -422,7 +375,6 @@ describe('getRootCauseAndRecommendations', () => {
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
     })
     it('should return correct data if feature flag is on for R1', () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
       jest.mocked(get).mockReturnValue('')
       const checks = [
         { isHighDensityWifiDevices: true },

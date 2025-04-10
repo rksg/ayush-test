@@ -220,7 +220,8 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'SSO via SAML Identity Provider (IdP)',
-    description: 'Guest network type - SAML'
+    // eslint-disable-next-line max-len
+    description: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.'
   })
 }
 

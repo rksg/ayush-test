@@ -122,7 +122,8 @@ export enum GuestTypesEnum {
     MANAGED = 'GuestPass',
     SELF_SIGN_IN = 'SelfSign',
     HOST_GUEST = 'HostGuest',
-    DIRECTORY = 'Directory'
+    DIRECTORY = 'Directory',
+    SAML = 'SAML'
 }
 
 export enum GuestStatusEnum {
@@ -141,6 +142,10 @@ export interface ClientInfo {
   ipAddress: string
   username: string
   hostname: string
+  identityId?: string
+  identityName?: string
+  identityGroupId?: string
+  identityGroupName?: string
   authenticationStatus: number
   connectedTime: string
   lastUpdatedTime: string

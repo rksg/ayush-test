@@ -333,6 +333,15 @@ export const EditPortMessages = {
   }),
   STP_BPDU_GUARD: defineMessage({
     defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
+  }),
+  CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'Port MAC Security cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'MAC ACL cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled if Port MAC Security is turned ON.'
   })
 }
 
@@ -599,8 +608,11 @@ export const ClientIsolationMessages = {
 export const SamlIdpMessages = {
   /* eslint-disable max-len */
   METADATA_TEXTAREA: defineMessage({
-    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
-                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider.' +
+                   'You can upload an XML file, provide a metadata URL, or enter the codes.'
+  }),
+  METADATA_TEXTAREA_NOTE: defineMessage({
+    defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.'
   }),
   /* eslint-disable max-len */
   SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
@@ -611,9 +623,9 @@ export const SamlIdpMessages = {
     defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
   }),
   DOWNLOAD_SAML_METADATA: defineMessage({
-    defaultMessage: 'Download SAML metadata'
-  }),
-  UPLOAD_SAML_METADATA: defineMessage({
     defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
+  }),
+  IDENTITY_NAME: defineMessage({
+    defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.'
   })
 }

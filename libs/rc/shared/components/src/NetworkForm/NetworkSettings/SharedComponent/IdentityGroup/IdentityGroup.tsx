@@ -25,7 +25,12 @@ import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
-export function IdentityGroup () {
+interface IdentityGroupProps {
+  comboWidth?: string
+}
+
+export function IdentityGroup (props: IdentityGroupProps) {
+  const { comboWidth = '280px' } = props
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -45,8 +50,9 @@ export function IdentityGroup () {
 
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityListTrigger] = useLazySearchPersonaListQuery()
-  const noDisplayUnderSpecificNetwork = ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20]
-    .includes(data?.type ?? NetworkTypeEnum.PSK)
+  const noDisplayUnderSpecificNetwork =
+    ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20, NetworkTypeEnum.CAPTIVEPORTAL]
+      .includes(data?.type ?? NetworkTypeEnum.PSK)
   const handleClose = (identity?: Persona) => {
     setIdentitySelectorDrawerVisible(false)
     if (identity) {
@@ -74,7 +80,8 @@ export function IdentityGroup () {
         if (
           data.type === NetworkTypeEnum.PSK ||
           data.type === NetworkTypeEnum.AAA ||
-          data.type === NetworkTypeEnum.HOTSPOT20
+          data.type === NetworkTypeEnum.HOTSPOT20 ||
+          data.type === NetworkTypeEnum.CAPTIVEPORTAL
         ) {
           const retrievedIdentityGroupsData = await identityGroupListTrigger(
             { payload: { networkId: data.id } }
@@ -128,15 +135,13 @@ export function IdentityGroup () {
           children={
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
-              style={{ width: '400px' }}
+              style={{ width: comboWidth }}
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
             />
           }
         />
-
         <Space>
-
           <Space split='|'>
             <Button
               type='link'
@@ -172,13 +177,13 @@ export function IdentityGroup () {
             />
           </UI.FieldLabel>
           <div style={{ marginBottom: '20px', ...display }}>
-            <UI.FieldLabel width={'400px'}>
+            <UI.FieldLabel width={comboWidth}>
               <p style={{ marginBottom: '0px' }}>
                 {$t({ defaultMessage: 'Identity' })}
               </p>
             </UI.FieldLabel>
             {selectedIdentity ? (
-              <UI.FieldLabel width={'400px'}>
+              <UI.FieldLabel width={comboWidth}>
                 <p style={{ marginBottom: '0px' }}>{selectedIdentity.name}</p>
                 <Form.Item
                   style={{ marginBottom: '0px' }}

@@ -3,8 +3,6 @@ import React from 'react'
 export * from './DescriptionSection'
 export { AccountManagement, AccountManagementTabEnum } from './AccountManagement'
 export { AnalyticsTabs } from './AnalyticsTabs'
-export { AIDrivenRRM } from './AIDrivenRRM'
-export { AIOperations } from './AIOperations'
 export { Brand360 } from './Brand360'
 export { ChatWithMelissa } from './ChatWithMelissa'
 export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
@@ -64,11 +62,6 @@ export { AIAnalytics, AIAnalyticsTabEnum } from './AIAnalytics'
 export { ConfigChange } from './ConfigChange'
 export { TopEdgesByTraffic } from './TopEdgesByTraffic'
 export { TopEdgesByResources } from './TopEdgesByResources'
-export {
-  RecommendationDetails,
-  CrrmDetails,
-  UnknownDetails
-} from './Recommendations/RecommendationDetails'
 export { ReportTile } from './ReportTiles'
 export { ServiceGuardDetails } from './ServiceGuard/ServiceGuardDetails'
 export { ServiceGuardForm } from './ServiceGuard/ServiceGuardForm'

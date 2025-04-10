@@ -52,7 +52,7 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('./pages/AICanvas', () => () => {
+jest.mock('./pages/AICanvas/archived/AICanvasQ1', () => () => {
   return <div data-testid='canvas' />
 })
 jest.mock('./routes/AnalyticsRoutes', () => () => {

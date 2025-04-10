@@ -64,8 +64,14 @@ export const ImpactedSwitchesDrawer: React.FC<ImpactedDrawerProps> = (props) => 
           title: $t({ defaultMessage: 'Switch Group' }),
           width: 120,
           searchable: true,
-          render: (_, { switchGroup }, __, highlightFn ) => {
+          render: (_, { switchGroup, domains }, __, highlightFn ) => {
             const basePath = [...path]
+            if (basePath.length === 1 && domains.length > 0) {
+              domains.forEach((domain) => {
+                const domainName = domain.split('||')[1]
+                basePath.push({ type: 'domain', name: domainName })
+              })
+            }
             basePath.push({ type: 'switchGroup', name: switchGroup })
             return <Tooltip
               placement='top'
