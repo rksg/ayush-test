@@ -189,7 +189,14 @@ describe('AICanvas', () => {
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
+    const canvasCollapseIcon = await screen.findByTestId('canvasCollapseIcon')
+    expect(canvasCollapseIcon).toBeVisible()
+    fireEvent.click(canvasCollapseIcon)
+    expect(localStorage.getItem('show-canvas')).toBe('false')
     expect(await screen.findByText(
       'Older chat conversations have been deleted due to the 30-day retention policy.'))
       .toBeVisible()
@@ -227,6 +234,9 @@ describe('AICanvas', () => {
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
@@ -246,6 +256,9 @@ describe('AICanvas', () => {
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
