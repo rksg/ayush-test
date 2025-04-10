@@ -123,8 +123,8 @@ export function Summary () {
                         ),
                         affectedNetworksCount: wlans?.length
                       }
-                      )}
-                    </>
+                    )}
+                  </>
                 </StyledFormItem>
               </StyledLoader>
             }
