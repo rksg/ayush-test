@@ -163,7 +163,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
       </Space>
       {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
-          <UI.FieldLabel width={comboWidth}>
+          <UI.FieldLabel width={'400px'}>
             {$t({
               defaultMessage:
                 'Use single identity association to all onboarded devices'
