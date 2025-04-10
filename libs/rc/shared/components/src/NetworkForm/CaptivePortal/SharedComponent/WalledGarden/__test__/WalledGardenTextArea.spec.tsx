@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
 
 import { StepsFormLegacy }                    from '@acx-ui/components'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
@@ -180,12 +181,39 @@ describe('WalledGardenTextArea Unit Test', () => {
         cleanup()
       })
     })
+
+    describe('Check that required validation works correctly', () => {
+      it('should contain required text when required is true', async () => {
+        render(WalledGardenTextAreaEmptyTestCase({ enableDefaultWalledGarden: true }, true))
+        const textarea = screen.getByTestId('walled-garden-showed-textarea') as HTMLTextAreaElement
+        expect(textarea.value).not.toBeNull()
+
+        await userEvent.clear(screen.getByTestId('walled-garden-showed-textarea'))
+
+        const textarea1 = screen.getByTestId('walled-garden-showed-textarea') as HTMLTextAreaElement
+        expect(textarea1.value).toBe('')
+
+        await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+        expect(await screen.findByText('Walled Garden is required')).toBeVisible()
+      })
+
+      it('should NOT contain required text when required is false', async () => {
+        render(WalledGardenTextAreaEmptyTestCase({ enableDefaultWalledGarden: true }, false))
+
+        const textarea = screen.getByTestId('walled-garden-showed-textarea') as HTMLTextAreaElement
+        expect(textarea.value).not.toBeNull()
+
+        await userEvent.clear(screen.getByTestId('walled-garden-showed-textarea'))
+
+        const textarea1 = screen.getByTestId('walled-garden-showed-textarea') as HTMLTextAreaElement
+        expect(textarea1.value).toBe('')
+
+        await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+        expect(screen.queryByText('Walled Garden is required')).toBeNull()
+      })
+    })
   })
 })
-
-
-
-
 
 function WalledGardenTextAreaNormalTestCase (props: WalledGardenProps) {
   return (<Provider>
@@ -238,6 +266,35 @@ function WalledGardenTextAreaEditModeTestCase (props: WalledGardenProps) {
         <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
+    </NetworkFormContext.Provider>
+  </Provider>)
+}
+
+
+function WalledGardenTextAreaEmptyTestCase (props: WalledGardenProps, required = false) {
+  const network = {
+    ...MockNetworkSetting,
+    guestPortal: {
+      ...MockNetworkSetting.guestPortal,
+      walledGardens: []
+    }
+  }
+  return (<Provider>
+    <NetworkFormContext.Provider
+      value={{
+        editMode: false,
+        cloneMode: false,
+        data: network,
+        isRuckusAiMode: false
+      }}
+    >
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
+          <WalledGardenTextArea
+            enableDefaultWalledGarden={props.enableDefaultWalledGarden}
+            required={required} />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </NetworkFormContext.Provider>
