@@ -545,7 +545,6 @@ export function LanPorts (props: ApEditItemProps) {
   const onGUIChanged = () => {
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
-  console.log('render ap edit') // eslint-disable-line no-console
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||

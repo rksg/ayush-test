@@ -62,6 +62,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const ipsecFieldName = ['lan', index, 'ipsecEnabled']
   const form = Form.useFormInstance()
   const isSoftGreTunnelToggleEnabled = useWatch<boolean>(softgreTunnelFieldName, form)
+  const isIpsecToggleEnabled = useWatch<boolean>(ipsecFieldName, form)
   const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
   const ipsecProfileId = useWatch<string>(['lan', index, 'ipsecProfileId'], form)
   const [isSoftGreProfileDisabled, setSoftGreProfileDisabled] = useState(false)
@@ -84,17 +85,30 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
 
   const onFormChange = () => {
     if (!isEqual(usedProfileData, previous)) {
+      // eslint-disable-next-line no-console
+      console.log('formChanged, portId:', portId,
+        '\tsoftGreProfileId:', softGreProfileId,
+        '\tipsecProfileId:', ipsecProfileId,
+        '\tisSoftGreTunnelToggleEnabled:', isSoftGreTunnelToggleEnabled,
+        '\tisIpsecToggleEnabled:', isIpsecToggleEnabled)
       onGUIChanged && onGUIChanged('ipsecEnabled')
     }
   }
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log('usedProfileData: ', usedProfileData?.data,
+    console.log('portId:', portId,
+      '\tsoftGreProfileId:', softGreProfileId,
+      '\tipsecProfileId:', ipsecProfileId,
+      '\tisSoftGreTunnelToggleEnabled:', isSoftGreTunnelToggleEnabled,
+      '\tisIpsecToggleEnabled:', isIpsecToggleEnabled,
+      '\tusedProfileData: ', usedProfileData?.data,
       '\t\toperations: ', usedProfileData?.operations)
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {
+      form.setFieldValue(['lan', index, 'softGreProfileId'], '')
+      form.setFieldValue(['lan', index, 'ipsecProfileId'], '')
       setSoftGreProfileDisabled(false)
       setIsIpsecDisabled(false)
       return
@@ -103,9 +117,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       let standardOp = target.find(a => isUnderAPNetworking ?
         a.portId === portId && a.serialNumber === serialNumber :
         a.portId === portId && a.apModel === apModel)
-      let isDbRecord = true
       if (!!!standardOp) {
-        isDbRecord = false
         standardOp = target[0]
       }
       if (!!standardOp.ipsecId) {
@@ -113,9 +125,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         setSoftGreProfileDisabled(true)
         form.setFieldValue(ipsecFieldName, true)
         form.setFieldValue(['lan', index, 'softGreProfileId'], target[0].softGreId)
-        if (isDbRecord) {
-          return
-        }
         if (ipsecProfileId !== standardOp.ipsecId) {
           form.setFieldValue(['lan', index, 'ipsecProfileId'], target[0].ipsecId)
           onFormChange()
@@ -123,9 +132,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
         form.setFieldValue(ipsecFieldName, '')
-        if (isDbRecord) {
-          return
-        }
         if (softGreProfileId !== standardOp.softGreId) {
           onFormChange()
         }
@@ -140,7 +146,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             operations.filter(a => a.serialNumber !== serialNumber || a.portId !== portId) :
             operations.filter(a => a.apModel !== apModel || a.portId !== portId)
           if (!!standardOps[0].ipsecId) {
-            console.log('ipsecProfileId:', ipsecProfileId) // eslint-disable-line no-console
+            // eslint-disable-next-line no-console
+            console.log('portId:', portId, '\tother port settings ipsecId')
             if (ipsecProfileId !== standardOps[0].ipsecId) {
               form.setFieldValue(['lan', index, 'softGreProfileId'], standardOps[0].softGreId)
               form.setFieldValue(['lan', index, 'ipsecProfileId'], standardOps[0].ipsecId)
@@ -154,16 +161,22 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             form.setFieldValue(ipsecFieldName, true)
             onFormChange()
           } else if (!!standardOps[0].softGreId) {
+            // eslint-disable-next-line no-console
+            console.log('portId:', portId, '\tother port settings softGreId')
             setIsIpsecDisabled(true)
             form.setFieldValue(ipsecFieldName, '')
             onFormChange()
           }
         } else {
+          // eslint-disable-next-line no-console
+          console.log('portId:', portId, '\tother port not setting yet')
           setSoftGreProfileDisabled(false)
           setIsIpsecDisabled(false)
         }
       }
     } else {
+      // eslint-disable-next-line no-console
+      console.log('portId:', portId, '\tdb and user not setting yet')
       form.setFieldValue(ipsecFieldName, '')
       setSoftGreProfileDisabled(false)
       setIsIpsecDisabled(false)
