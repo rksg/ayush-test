@@ -2,8 +2,11 @@ import { Settings }                  from '@acx-ui/analytics/utils'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { AccountTier }               from '@acx-ui/utils'
+import {
+  getUserProfile,
+  setUserProfile
+} from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
 
 import {
   fetchBrandProperties,
