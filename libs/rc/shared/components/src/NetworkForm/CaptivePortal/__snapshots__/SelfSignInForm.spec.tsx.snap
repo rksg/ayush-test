@@ -83,7 +83,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   min-width: 0;
 }
 
-.c19 {
+.c18 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -93,14 +93,14 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   z-index: 5;
 }
 
-.c19::before {
+.c18::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c19 .ant-space-item .ant-space {
+.c18 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -130,37 +130,37 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   height: 16px;
 }
 
-.c20 .has-steps-form .ant-modal-content .c18 {
+.c19 .has-steps-form .ant-modal-content .c17 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c20 .has-steps-form .ant-modal-content .c18::before {
+.c19 .has-steps-form .ant-modal-content .c17::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c20 .ant-modal-content:has(.c18) .c18 {
+.c19 .ant-modal-content:has(.c17) .c17 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c20 .ant-modal-content:has(.c18) .c18::before {
+.c19 .ant-modal-content:has(.c17) .c17::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c20 .ant-modal-content:has(.c18) .ant-modal-body {
+.c19 .ant-modal-content:has(.c17) .ant-modal-body {
   padding-bottom: 0px;
 }
 
-.c20 .ant-modal-content:has(.c18) .ant-modal-footer {
+.c19 .ant-modal-content:has(.c17) .ant-modal-footer {
   display: none;
 }
 
@@ -301,7 +301,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   flex: 1;
 }
 
-.c17 {
+.c16 {
   width: 358px;
   margin-top: 40px;
 }
@@ -394,26 +394,6 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
 
 .c15 path {
   fill: var(--acx-neutrals-60);
-}
-
-.c16 .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
-  -webkit-flex-direction: unset !important;
-  -ms-flex-direction: unset !important;
-  flex-direction: unset !important;
-}
-
-.c16 .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-  content: '';
-}
-
-.c16 .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) > svg {
-  -webkit-order: unset !important;
-  -ms-flex-order: unset !important;
-  order: unset !important;
-}
-
-.c16 .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) > button {
-  position: relative;
 }
 
 <section
@@ -1334,7 +1314,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                         />
                       </div>
                       <div
-                        class="ant-form-item c16 ant-form-item-has-success"
+                        class="ant-form-item ant-form-item-has-success"
                       >
                         <div
                           class="ant-row ant-form-item-row"
@@ -1428,7 +1408,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                           class="ant-col"
                         >
                           <div
-                            class="c17"
+                            class="c16"
                           >
                             <img
                               src="SelfSignIn"
@@ -1462,7 +1442,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
         </div>
       </div>
       <div
-        class="c18 c19"
+        class="c17 c18"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
