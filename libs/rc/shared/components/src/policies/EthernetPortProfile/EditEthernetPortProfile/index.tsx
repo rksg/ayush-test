@@ -125,8 +125,8 @@ export const EditEthernetPortProfile = () => {
     form.setFieldsValue({
       ...sourceData,
       ...(forceEnableClientVisibility && {
-          clientVisibilityEnabled: true
-        })
+        clientVisibilityEnabled: true
+      })
     })
 
   }, [ethernetPortProfileData])
