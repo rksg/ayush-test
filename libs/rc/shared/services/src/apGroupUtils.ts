@@ -326,12 +326,12 @@ export const addApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, 
   }
 }
 
-// eslint-disable-next-line max-len
 export const deleteApGroupsTemplateFn = () : QueryFn<ApGroup[], RequestPayload> => {
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
       const apis = ApGroupConfigTemplateUrlsInfo
-      const apGroupListReq = createHttpRequest(apis.getApGroupsList, params)
+      const apGroupListReq = createHttpRequest(
+        enableRbac ? apis.getApGroupsListRbac : apis.getApGroupsList, params)
       let apGroups: TableResult<ApGroupViewModel>
 
       if (enableRbac) {
