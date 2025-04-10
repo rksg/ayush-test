@@ -72,18 +72,39 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       '\t\toperations: ', usedProfileData?.operations)
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
+    if (!isSoftGreTunnelToggleEnabled) {
+      return
+    }
     if (target.length > 0) {
-      if (!!target[0].ipsecId) {
+      let standardOp = target.find(a => isUnderAPNetworking ?
+        a.portId === portId && a.serialNumber === serialNumber :
+        a.portId === portId && a.apModel === apModel)
+      let isDbRecord = true
+      if (!!!standardOp) {
+        isDbRecord = false
+        standardOp = target[0]
+      }
+      if (!!standardOp.ipsecId) {
         setIsIpsecDisabled(true)
         setSoftGreProfileDisabled(true)
         form.setFieldValue(ipsecFieldName, 'checked')
         form.setFieldValue(['lan', index, 'softGreProfileId'], target[0].softGreId)
-        form.setFieldValue(['lan', index, 'ipsecProfileId'], target[0].ipsecId)
-        onGUIChanged && onGUIChanged('ipsecEnabled')
-      } else if (!!target[0].softGreId) {
+        if (isDbRecord) {
+          return
+        }
+        if (ipsecProfileId !== standardOp.ipsecId) {
+          form.setFieldValue(['lan', index, 'ipsecProfileId'], target[0].ipsecId)
+          onGUIChanged && onGUIChanged('ipsecEnabled')
+        }
+      } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
         form.setFieldValue(ipsecFieldName, '')
-        onGUIChanged && onGUIChanged('ipsecEnabled')
+        if (isDbRecord) {
+          return
+        }
+        if (softGreProfileId !== standardOp.softGreId) {
+          onGUIChanged && onGUIChanged('ipsecEnabled')
+        }
       }
     } else if (operations.length > 0) {
       const currentOps = isUnderAPNetworking ?
