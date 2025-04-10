@@ -97,7 +97,7 @@ export function Summary () {
                   <>
                     {$t(
                       {
-                        defaultMessage: `The intent will affect {affectedVenueText} where {
+                        defaultMessage: `The intent will also affect {affectedVenueText} where {
                         affectedNetworksCount, plural,
                         one {this selected network is}
                         other {these selected networks are}
