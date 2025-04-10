@@ -326,7 +326,6 @@ export const addApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, 
   }
 }
 
-// eslint-disable-next-line max-len
 export const deleteApGroupsTemplateFn = () : QueryFn<ApGroup[], RequestPayload> => {
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
