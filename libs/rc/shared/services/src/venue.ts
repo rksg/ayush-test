@@ -416,7 +416,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result.cityList
       }
     }),
-    getVenueTagList: build.query<{ name: string }[], RequestPayload>({
+    getVenueTagList: build.query<string[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueTagList, params)
         return{

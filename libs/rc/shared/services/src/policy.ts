@@ -1970,7 +1970,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             fields: ['name', 'id', 'addressLine'],
             ...(tableChangePayload.searchVenueNameString ? {
               searchString: tableChangePayload.searchVenueNameString,
-              searchTargetFields: ['name', 'addressLine']
+              searchTargetFields: ['name', 'addressLine', 'tags']
             } : {}),
             page: 1,
             pageSize: 10000

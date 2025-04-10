@@ -24,11 +24,15 @@ import {
 
 import { VenuesTable } from '.'
 
+const venueTagReponse = ['newtag', 'sunnyvale', 'tag3']
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const services = require('@acx-ui/rc/services')
 
 const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
@@ -41,6 +45,9 @@ describe('Venues Table', () => {
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
 
+    services.useGetVenueTagListQuery = jest.fn().mockImplementation(() => {
+      return { data: venueTagReponse }
+    })
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,

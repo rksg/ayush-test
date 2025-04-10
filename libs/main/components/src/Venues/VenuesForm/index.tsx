@@ -185,6 +185,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [countryCode, setCountryCode] = useState('')
   const [validating, setValidating] = useState(false)
+  const [venueTagOptions, setVenueTagOptions] = useState<{ label: string, value: string }[]>()
 
   const action = specifiedAction ?? params.action ?? 'add'
   const { data = dataFromParent } = useGetVenueInstance()
@@ -202,11 +203,15 @@ export function VenuesForm (props: VenuesFormProps) {
   const { saveEnforcementConfig } = useConfigTemplate()
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
   const venueTagList = useGetVenueTagListQuery({ params })
-  const venueTagOptions =
-    venueTagList.data?.map((item) =>({
-      label: item,
-      value: item
-    }))
+
+  useEffect(() => {
+    if (venueTagList.data) {
+      const tags = venueTagList.data.map((item) => ({
+        label: item, value: item
+      }))
+      setVenueTagOptions(tags)
+    }
+  },[venueTagList.data])
 
   useEffect(() => {
     if (data) {

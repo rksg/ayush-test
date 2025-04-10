@@ -255,7 +255,7 @@ function useColumns (
       sorter: true,
       filterKey: 'tags',
       searchable: searchable,
-      filterable: filterables ? filterables['tags'] : false,
+      // filterable: filterables ? filterables['tags'] : false,
       render: (data: ReactNode, row: Venue) => (
         row.tags?.join(', ')
       )
@@ -470,11 +470,17 @@ function useGetVenueCityList () {
 function useGetVenueTagList () {
   const params = useParams()
 
-  const tagList = useGetVenueTagListQuery({ params })
-  const venueTagList = tagList.data?.map(item => {
-    return { key: item, value: item }
+  let tagList = useGetVenueTagListQuery({
+    params
+  }, {
+    selectFromResult: ({ data }) => ({
+      tagFilterOptions: data?.map(item => (
+        { key: item, value: item }
+      ))
+    })
   })
-  return { tagFilterOptions: venueTagList }
+
+  return tagList
 }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
