@@ -4,11 +4,11 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PageHeader }                                                                       from '@acx-ui/components'
-import { Features }                                                                                 from '@acx-ui/feature-toggle'
-import { useEdgePinActions, useIsEdgeFeatureReady }                                                 from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery, useGetEdgePinByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }              from '@acx-ui/rc/utils'
+import { Loader, PageHeader }                                                                              from '@acx-ui/components'
+import { Features }                                                                                        from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady }                                                        from '@acx-ui/rc/components'
+import { PersonalIdentityNetworkApiVersion, useGetEdgePinByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }                     from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,
@@ -35,7 +35,10 @@ const EditPersonalIdentityNetwork = () => {
     data: pinData,
     isLoading: isPinDataLoading,
     isFetching: isPinDataFetching
-  } = useGetEdgePinByIdQuery({ params })
+  } = useGetEdgePinByIdQuery({
+    params,
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
+  })
 
   const getTunnelProfilePayload = {
     fields: ['destinationEdgeClusterId'],
@@ -50,19 +53,6 @@ const EditPersonalIdentityNetwork = () => {
     })
   })
 
-  const getEdgeClusterPayload = {
-    fields: ['venueId'],
-    filters: { clusterId: [currentTunnelProfileData?.destinationEdgeClusterId] }
-  }
-  const { currentEdgeClusterData } = useGetEdgeClusterListQuery({
-    payload: getEdgeClusterPayload
-  }, {
-    skip: !isL2GreEnabled || !currentTunnelProfileData?.destinationEdgeClusterId,
-    selectFromResult: ({ data }) => ({
-      currentEdgeClusterData: data?.data?.[0]
-    })
-  })
-
   const tablePath = getServiceRoutePath(
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
@@ -70,7 +60,7 @@ const EditPersonalIdentityNetwork = () => {
     return {
       id: pinData?.id,
       name: pinData?.name,
-      venueId: pinData?.venueId || currentEdgeClusterData?.venueId,
+      venueId: pinData?.venueId,
       // eslint-disable-next-line max-len
       edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId || currentTunnelProfileData?.destinationEdgeClusterId,
       segments: pinData?.edgeClusterInfo?.segments || pinData?.networkSegmentConfiguration.segments,
@@ -86,7 +76,7 @@ const EditPersonalIdentityNetwork = () => {
       originalDistributionSwitchInfos: pinData?.distributionSwitchInfos,
       originalAccessSwitchInfos: pinData?.accessSwitchInfos
     }
-  }, [pinData, currentEdgeClusterData, currentTunnelProfileData])
+  }, [pinData, currentTunnelProfileData])
 
   return (
     <>
@@ -99,7 +89,7 @@ const EditPersonalIdentityNetwork = () => {
         ]}
       />
       <PersonalIdentityNetworkFormDataProvider
-        venueId={pinData?.venueId || currentEdgeClusterData?.venueId}
+        venueId={pinData?.venueId}
       >
         <Loader states={[{ isLoading: isPinDataLoading || isPinDataFetching }]}>
           <PersonalIdentityNetworkForm

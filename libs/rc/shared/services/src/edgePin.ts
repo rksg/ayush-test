@@ -19,7 +19,9 @@ import {
   EdgeUrlsInfo,
   PropertyUrlsInfo,
   PropertyConfigs,
-  EdgeClusterInfo
+  EdgeClusterInfo,
+  TunnelProfileUrls,
+  TunnelProfileViewData
 } from '@acx-ui/rc/utils'
 import { basePinApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -140,8 +142,8 @@ export const pinApi = basePinApi.injectEndpoints({
       }
     }),
     getEdgePinById: build.query<PersonalIdentityNetworks, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
-        const pinRequest = createHttpRequest(EdgePinUrls.getEdgePinById, params)
+      async queryFn ({ params, customHeaders }, _queryApi, _extraOptions, fetchWithBQ) {
+        const pinRequest = createHttpRequest(EdgePinUrls.getEdgePinById, params, customHeaders)
         const pinQuery = await fetchWithBQ(pinRequest)
         const pinData = pinQuery.data as PersonalIdentityNetworks
 
@@ -160,41 +162,59 @@ export const pinApi = basePinApi.injectEndpoints({
           pinData.tunneledWlans = pinViewmodel.data[0]?.tunneledWlans ?? []
 
         let pinSwitch
-        // fetch venue id
-        const edgeClusterId = pinData?.edgeClusterInfo.edgeClusterId
-        if (edgeClusterId) {
-          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
-          const edgeClusterQuery = await fetchWithBQ({
-            ...clusterReq,
+        // Get edge cluster ID from pin data or fetch it from tunnel profile
+        let edgeClusterId = pinData?.edgeClusterInfo?.edgeClusterId
+        if (!edgeClusterId && pinData?.vxlanTunnelProfileId) {
+          const tunnelProfileQuery = await fetchWithBQ({
+            ...createHttpRequest(TunnelProfileUrls.getTunnelProfileViewDataList),
             body: {
-              fields: [ 'clusterId', 'venueId' ],
+              fields: ['destinationEdgeClusterId'],
+              filters: { id: [pinData.vxlanTunnelProfileId] }
+            }
+          })
+
+          const tunnelProfileList = tunnelProfileQuery.data as TableResult<TunnelProfileViewData>
+          edgeClusterId = tunnelProfileList?.data?.[0]?.destinationEdgeClusterId ?? ''
+        }
+
+        if (edgeClusterId) {
+          const edgeClusterQuery = await fetchWithBQ({
+            ...createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList),
+            body: {
+              fields: ['clusterId', 'venueId'],
               filters: { clusterId: [edgeClusterId] }
             }
           })
 
           const clusterList = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
-          const venueId = clusterList.data[0].venueId
+          const venueId = clusterList?.data?.[0]?.venueId
 
-          const personaReq = createHttpRequest(
-            PropertyUrlsInfo.getPropertyConfigs,
-            { venueId },
-            { Accept: 'application/hal+json' }
-          )
-          const personaQuery = await fetchWithBQ(personaReq)
-          const personaList = personaQuery.data as PropertyConfigs
+          if (venueId) {
+            // Fetch persona information
+            const personaQuery = await fetchWithBQ(
+              createHttpRequest(
+                PropertyUrlsInfo.getPropertyConfigs,
+                { venueId },
+                { Accept: 'application/hal+json' }
+              )
+            )
+            const personaList = personaQuery.data as PropertyConfigs
 
-          pinData.venueId = venueId ?? ''
-          pinData.personaGroupId = personaList?.personaGroupId ?? ''
+            // Update pin data with venue and persona information
+            pinData.venueId = venueId
+            pinData.personaGroupId = personaList?.personaGroupId ?? ''
 
-          const pinSwitchRequest = createHttpRequest(
-            EdgePinUrls.getSwitchInfoByPinId, {
-              ...params,
-              venueId
-            })
-          const pinSwitchQuery = await fetchWithBQ(pinSwitchRequest)
-          pinSwitch = pinSwitchQuery.data as {
-            distributionSwitches: DistributionSwitch[]
-            accessSwitches: AccessSwitch[]
+            // Fetch switch information
+            const pinSwitchQuery = await fetchWithBQ(
+              createHttpRequest(
+                EdgePinUrls.getSwitchInfoByPinId,
+                { ...params, venueId }
+              )
+            )
+            pinSwitch = pinSwitchQuery.data as {
+                distributionSwitches: DistributionSwitch[]
+                accessSwitches: AccessSwitch[]
+            }
           }
         }
 
@@ -396,3 +416,5 @@ export const {
   useDeactivateEdgePinNetworkMutation,
   useValidateEdgePinClusterConfigMutation
 } = pinApi
+
+export const PersonalIdentityNetworkApiVersion = customHeaders
