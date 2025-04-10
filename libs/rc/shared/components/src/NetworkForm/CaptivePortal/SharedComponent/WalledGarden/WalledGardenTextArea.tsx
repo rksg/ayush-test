@@ -14,8 +14,7 @@ import { walledGardensRegExp }        from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 
-import { defaultWalledGarden }          from './DefaultWalledGarden'
-import { StyledFormItem, RequiredMark } from './styledComponents'
+import { defaultWalledGarden } from './DefaultWalledGarden'
 
 enum WallGardenAction {
   Clear,
@@ -41,6 +40,7 @@ interface WalledGardenState {
   fieldsValue: WalledGardenFieldsValue
 }
 
+/* eslint-disable max-len */
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -140,7 +140,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * The walledGardensString attribute will be deleted before submit
    */
   return (<>
-    <StyledFormItem
+    <Form.Item
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
       rules={[
@@ -149,7 +149,6 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       ]}
       label={<>
         {$t({ defaultMessage: 'Walled Garden' })}
-        {required && <RequiredMark>*</RequiredMark>}
         <Tooltip title={
           <FormattedMessage
             values={{ br: () => <br /> }}
@@ -171,14 +170,20 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         {enableDefaultWalledGarden &&
         <Button onClick={() => dispatch(statesCollection.useDefaultState)}
           data-testid='walled-garden-default-button'
-          style={{ marginLeft: 90 }}
+          style={{
+            marginLeft: 90,
+            ...(required && { order: -1 })
+          }}
           type='link'>
           {$t({ defaultMessage: 'Reset to default' })}
         </Button>
         }
         <Space />
         <Button onClick={() => dispatch(statesCollection.initialState)}
-          style={{ marginLeft: enableDefaultWalledGarden ? 10 : 90 }}
+          style={{
+            marginLeft: enableDefaultWalledGarden ? 10 : 90,
+            ...(required && { order: -2 })
+          }}
           data-testid='walled-garden-clear-button'
           type='link'>
           {$t({ defaultMessage: 'Clear' })}

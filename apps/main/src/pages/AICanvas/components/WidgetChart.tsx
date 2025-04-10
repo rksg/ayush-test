@@ -195,7 +195,9 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
 }
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const queryResults = useGetWidgetQuery({
+    customHeaders: { timezone },
     params: {
       canvasId: data.canvasId,
       widgetId: data.widgetId
