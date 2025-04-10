@@ -223,7 +223,7 @@ describe('IntentAIForm', () => {
       expect(time).toHaveValue('12.5')
       await selectOptions(
         await screen.findByPlaceholderText('Select Networks'),
-        'n4'
+        'n7'
       )
       await click(actions.getByRole('button', { name: 'Next' }))
 

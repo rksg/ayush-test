@@ -3,14 +3,17 @@ import { useMemo } from 'react'
 import { Row, Col, Form }            from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
-import { useEnhanceVenueTableQuery }                      from '@acx-ui/rc/services'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
+import { useEnhanceVenueTableQuery }              from '@acx-ui/rc/services'
 
 import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
+import { useIntentContext }     from '../../IntentContext'
 import { IntentDetail }         from '../../useIntentDetailsQuery'
+
+import { StyledFormItem, StyledLoader } from './styledComponents'
 
 import type { Wlan } from './WlanSelection'
 
@@ -26,6 +29,7 @@ export function Summary () {
   const isRAI = Boolean(get('IS_MLISA_SA'))
   const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
+  const { intent: { sliceValue: currentVenue } } = useIntentContext()
   const isEnabled = form.getFieldValue('preferences').enable
   const { data: venues, isLoading } = useEnhanceVenueTableQuery({ payload, skip: isRAI })
 
@@ -33,11 +37,17 @@ export function Summary () {
     if (!venues || wlans.length === 0) {
       return []
     }
+    const affectedVenues =
+      venues?.data
+        .filter(
+          ({ name: venueName, networks }) =>
+            currentVenue !== venueName &&
+            wlans.some(({ name }) => networks?.names?.includes(name))
+        )
+        .map(({ name }) => name) || []
 
-    return venues?.data
-      .filter(({ networks }) => wlans.some(({ name }) => networks?.names?.includes(name)))
-      .map(({ name }) => name) || []
-  }, [venues, wlans])
+    return ['banana', ...affectedVenues]
+  }, [currentVenue, venues, wlans])
 
   return (
     <Row gutter={20}>
@@ -73,56 +83,50 @@ export function Summary () {
                 {$t(
                   {
                     defaultMessage: `{count} {count, plural,
-                    one {network}
-                    other {networks}
-                  } selected`
+                      one {network}
+                      other {networks}
+                    } selected`
                   },
                   { count: wlans?.length || 0 }
                 )}
               </Tooltip>
             </Form.Item>
             {!isRAI &&
-              <Form.Item name='venues'>
-                <Loader
-                  states={[{ isLoading }]}
-                  // Prevent newline after tooltip text
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    columnGap: 4
-                  }}
-                >
-                  {$t(
-                    {
-                      defaultMessage: `The intent will affect {affectedVenueText} where {
-                      affectedNetworksCount, plural,
-                      one {this selected network is}
-                      other {these selected networks are}
-                    } active`
-                    },
-                    {
-                      affectedVenueText: (
-                        <Tooltip
-                          placement='top'
-                          title={affectedVenueNames.join(', ')}
-                          dottedUnderline
-                        >
-                          {$t(
-                            {
-                              defaultMessage: `{affectedVenuesCount} {affectedVenuesCount, plural,
-                            one {<venueSingular></venueSingular>}
-                            other {<venuePlural></venuePlural>}
-                            }`
-                            },
-                            { affectedVenuesCount: affectedVenueNames.length }
-                          )}
-                        </Tooltip>
-                      ),
-                      affectedNetworksCount: wlans?.length
-                    }
-                  )}
-                </Loader>
-              </Form.Item>
+              <StyledLoader states={[{ isLoading }]} style={{ height: 40 }}>
+                <StyledFormItem name='venues' hidden={!affectedVenueNames.length}>
+                  <>
+                    {$t(
+                      {
+                        defaultMessage: `The intent will affect {affectedVenueText} where {
+                        affectedNetworksCount, plural,
+                        one {this selected network is}
+                        other {these selected networks are}
+                      } active`
+                      },
+                      {
+                        affectedVenueText: (
+                          <Tooltip
+                            placement='top'
+                            title={affectedVenueNames.join(', ')}
+                            dottedUnderline
+                          >
+                            {$t(
+                              {
+                                defaultMessage: `{affectedVenuesCount} {affectedVenuesCount, plural,
+                                  one {<venueSingular></venueSingular>}
+                                  other {<venuePlural></venuePlural>}
+                                }`
+                              },
+                              { affectedVenuesCount: affectedVenueNames.length }
+                            )}
+                          </Tooltip>
+                        ),
+                        affectedNetworksCount: wlans?.length
+                      }
+                      )}
+                    </>
+                </StyledFormItem>
+              </StyledLoader>
             }
           </>
         ) : (
@@ -134,7 +138,6 @@ export function Summary () {
               <p>For manual control, you may directly change the network configurations.</p>
               <p>For automated monitoring and control, you can select the "Resume" action, after which IntentAI will resume overseeing the network for this Intent.</p>
             `}
-            /* eslint-disable max-len */
           />
         )}
       </Col>
