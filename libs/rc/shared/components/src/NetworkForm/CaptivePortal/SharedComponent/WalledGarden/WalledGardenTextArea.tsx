@@ -172,7 +172,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
           data-testid='walled-garden-default-button'
           style={{
             marginLeft: 90,
-            ...(required && { order: -1 })
+            ...(required && { order: enableDefaultWalledGarden ? -2 : -1 })
           }}
           type='link'>
           {$t({ defaultMessage: 'Reset to default' })}
@@ -182,7 +182,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         <Button onClick={() => dispatch(statesCollection.initialState)}
           style={{
             marginLeft: enableDefaultWalledGarden ? 10 : 90,
-            ...(required && { order: -2 })
+            ...(required && { order: enableDefaultWalledGarden ? -3 : -2 })
           }}
           data-testid='walled-garden-clear-button'
           type='link'>
