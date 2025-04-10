@@ -1,8 +1,8 @@
-import userEvent                      from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 import { cloneDeep, groupBy, remove } from 'lodash'
 
 import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
-import {  screen }                                                          from '@acx-ui/test-utils'
+import { screen } from '@acx-ui/test-utils'
 
 import { showSdLanGuestFwdConflictModal } from '.'
 
@@ -193,7 +193,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
     showSdLanGuestFwdConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: true,
+      activatedDmz: true,
       tunneledWlans: mockedDmzSdLanNoGuestFwd.tunneledWlans,
       tunneledGuestWlans: mockedDmzSdLanNoGuestFwd.tunneledGuestWlans,
       onOk: mockOkFn
@@ -412,7 +412,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
     showSdLanGuestFwdConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: false,
+      activatedDmz: false,
       tunneledWlans: activatedNetworks,
       tunneledGuestWlans: activatedGuestNetworks,
       onOk: mockOkFn

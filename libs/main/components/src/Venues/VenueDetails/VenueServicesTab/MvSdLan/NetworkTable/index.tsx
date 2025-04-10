@@ -1,27 +1,27 @@
 import { useState } from 'react'
 
-import { isNil }   from 'lodash'
+import { isNil } from 'lodash'
 import { useIntl } from 'react-intl'
 
 
-import { Loader }                     from '@acx-ui/components'
-import { Features }                   from '@acx-ui/feature-toggle'
+import { Loader } from '@acx-ui/components'
+import { Features } from '@acx-ui/feature-toggle'
 import {
-  useIsEdgeFeatureReady,
-  useEdgeMvSdLanActions,
+  EdgeSdLanP2ActivatedNetworksTable,
   isSdLanLastNetworkInVenue,
-  showSdLanVenueDissociateModal,
   showSdLanGuestFwdConflictModal,
-  EdgeSdLanP2ActivatedNetworksTable
+  showSdLanVenueDissociateModal,
+  useEdgeMvSdLanActions,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import { useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
+  hasServicePermission,
   Network,
   NetworkTypeEnum,
-  hasServicePermission,
-  ServiceType,
-  ServiceOperation
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -88,7 +88,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
             currentNetworkVenueId: sdLanVenueId!,
             currentNetworkId: networkId,
             currentNetworkName: rowData.name!,
-            activatedGuest: checked,
+            activatedDmz: checked,
             tunneledWlans,
             tunneledGuestWlans,
             onOk: async (impactVenueIds: string[]) => {

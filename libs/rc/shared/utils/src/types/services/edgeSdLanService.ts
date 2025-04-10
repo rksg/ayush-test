@@ -1,3 +1,4 @@
+import { TunnelTypeEnum }   from '../../models'
 import { EdgeAlarmSummary } from '../edge'
 
 export interface EdgeSdLanSetting {
@@ -126,6 +127,7 @@ export interface EdgeSdLanTunneledWlan {
   networkName: string
   wlanId: string
   forwardingTunnelProfileId?: string
+  forwardingTunnelType?: TunnelTypeEnum
 }
 
 export interface EdgeMvSdLanViewData {

@@ -36,6 +36,51 @@ export const useEdgeSdLanActions = () => {
     }
   }
 
+  const toggleNetworkChange = async (
+    serviceId: string,
+    venueId: string,
+    networkId: string,
+    currentTunnelProfileId: string,
+    originTunnelProfileId: string | undefined,
+    cb?: () => void
+  ) => {
+    const isChangeTunneling = currentTunnelProfileId !== originTunnelProfileId
+    if (!isChangeTunneling) {
+      return
+    }
+    if (originTunnelProfileId !== undefined && originTunnelProfileId !== null) {
+      deactivateNetwork({
+        customHeaders: {
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        },
+        params: {
+          serviceId,
+          venueId: venueId,
+          wifiNetworkId: networkId
+        },
+        callback: cb
+      }).unwrap()
+    }
+    if (currentTunnelProfileId !== undefined && currentTunnelProfileId !== null) {
+      activateNetwork({
+        customHeaders: {
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        },
+        params: {
+          serviceId,
+          venueId: venueId,
+          wifiNetworkId: networkId
+        },
+        payload: {
+          ...(currentTunnelProfileId ? {
+            forwardingTunnelProfileId: currentTunnelProfileId
+          } : {})
+        },
+        callback: cb
+      }).unwrap()
+    }
+  }
+
   const handleNetworkChanges = async (
     serviceId: string,
     currentData: EdgeSdLanServiceProfile['activeNetwork'],
@@ -145,6 +190,7 @@ export const useEdgeSdLanActions = () => {
 
   return {
     createEdgeSdLan,
-    updateEdgeSdLan
+    updateEdgeSdLan,
+    toggleNetworkChange
   }
 }

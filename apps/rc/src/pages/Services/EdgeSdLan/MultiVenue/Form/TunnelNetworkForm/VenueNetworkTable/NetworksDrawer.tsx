@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Typography, Space }                              from 'antd'
-import { isNil, pick, remove, cloneDeep, unionBy, unset } from 'lodash'
-import { FormattedMessage, useIntl }                      from 'react-intl'
+import { Space, Typography } from 'antd'
+import { cloneDeep, isNil, pick, remove, unionBy, unset } from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer }                                                            from '@acx-ui/components'
+import { Drawer } from '@acx-ui/components'
 import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
-import { Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
+import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -80,7 +80,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
       currentNetworkVenueId: venueId,
       currentNetworkId: networkData.id,
       currentNetworkName: networkData.name,
-      activatedGuest: checked,
+      activatedDmz: checked,
       tunneledWlans: activatedNetworks,
       tunneledGuestWlans: activatedGuestNetworks,
       onOk: (impactVenueIds: string[]) => {

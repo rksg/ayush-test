@@ -12,7 +12,7 @@ import {
 import { mockMvSdLanFormData } from './__tests__/fixtures'
 import {
   edgeSdLanFormRequestPreProcess,
-  isGuestTunnelUtilized,
+  isDmzTunnelUtilized,
   isSdLanGuestUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   transformSdLanScopedVenueMap,
@@ -108,43 +108,43 @@ describe('edgeSdLanFormRequestPreProcess', () => {
   })
 })
 
-describe('isGuestTunnelUtilized', () => {
+describe('isDmzTunnelUtilized', () => {
   const mockDcData = mockedMvSdLanDataList[1]
   const mockDmzData = mockedMvSdLanDataList[0]
 
   it('should return false when it is DC scenario', async () => {
-    const result = isGuestTunnelUtilized(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
+    const result = isDmzTunnelUtilized(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
     expect(result).toBe(false)
   })
 
   it('should return false when it is DMZ scenario and no guest forwared', async () => {
     const mockData = cloneDeep(mockDmzData)
     mockData.tunneledGuestWlans = []
-    const result = isGuestTunnelUtilized(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isDmzTunnelUtilized(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(false)
   })
 
   it('should return false when one of paramters is undefined', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData)
+    const result = isDmzTunnelUtilized(mockDmzData)
     expect(result).toBe(false)
-    const result2 = isGuestTunnelUtilized(mockDmzData, 'network_4')
+    const result2 = isDmzTunnelUtilized(mockDmzData, 'network_4')
     expect(result2).toBe(false)
-    const result3 = isGuestTunnelUtilized(mockDmzData, undefined, 'a307d7077410456f8f1a4fc41d861567')
+    const result3 = isDmzTunnelUtilized(mockDmzData, undefined, 'a307d7077410456f8f1a4fc41d861567')
     expect(result3).toBe(false)
   })
 
   it('should return false when no parameter given', async () => {
-    const result = isGuestTunnelUtilized()
+    const result = isDmzTunnelUtilized()
     expect(result).toBe(false)
   })
 
   it('should return false when target network venue is not guest forwared', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData, 'mock_network_1', 'mock_venue_1')
+    const result = isDmzTunnelUtilized(mockDmzData, 'mock_network_1', 'mock_venue_1')
     expect(result).toBe(false)
   })
 
   it('should return true when it is DMZ scenario', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isDmzTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(true)
   })
 })

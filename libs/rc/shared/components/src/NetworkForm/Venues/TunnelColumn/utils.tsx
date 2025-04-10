@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { FormInstance }                            from 'antd'
+import { FormInstance } from 'antd'
 import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
 import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
@@ -9,10 +9,10 @@ import {
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal
 } from '../../../EdgeSdLan/edgeSdLanUtils'
-import { showSdLanGuestFwdConflictModal }                                                from '../../../EdgeSdLan/SdLanGuestFwdConflictModal'
+import { showSdLanGuestFwdConflictModal } from '../../../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../../../NetworkTunnelActionModal'
-import { mergeSdLanCacheAct }                                                            from '../../../NetworkTunnelActionModal/utils'
-import { getNetworkTunnelSdLanUpdateData }                                               from '../../utils'
+import { mergeSdLanCacheAct } from '../../../NetworkTunnelActionModal/utils'
+import { getNetworkTunnelSdLanUpdateData } from '../../utils'
 
 
 export const handleSdLanTunnelAction = async (
@@ -65,7 +65,7 @@ export const handleSdLanTunnelAction = async (
           currentNetworkVenueId: network?.venueId!,
           currentNetworkId: network?.id!,
           currentNetworkName: '',
-          activatedGuest: modalFormValues.sdLan.isGuestTunnelEnabled,
+          activatedDmz: modalFormValues.sdLan.isGuestTunnelEnabled,
           tunneledWlans: venueSdLan!.tunneledWlans,
           tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
           onOk: async (impactVenueIds: string[]) => {

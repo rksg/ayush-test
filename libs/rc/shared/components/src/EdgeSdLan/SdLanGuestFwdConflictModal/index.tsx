@@ -8,7 +8,7 @@ interface showSdLanGuestFwdConflictModalProps {
   currentNetworkVenueId: string
   currentNetworkId: string
   currentNetworkName?: string
-  activatedGuest: boolean
+  activatedDmz: boolean
   tunneledWlans: EdgeSdLanTunneledWlan[] | EdgeMvSdLanFormNetwork | undefined
   tunneledGuestWlans: EdgeSdLanTunneledWlan[] | EdgeMvSdLanFormNetwork | undefined
   onOk: (impactVenueIds: string[]) => Promise<void> | void
@@ -19,19 +19,19 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     currentNetworkVenueId,
     currentNetworkId,
     currentNetworkName,
-    activatedGuest,
+    activatedDmz,
     tunneledWlans,
     tunneledGuestWlans,
     onOk,
     onCancel
   } = props
   const { $t } = getIntl()
-  const isFormNetwork = !Array.isArray(tunneledWlans)
+  const isWizardFormNetwork = !Array.isArray(tunneledWlans)
 
   let impactVenueIds: string[] = []
   let networkName: string = ''
 
-  if (isFormNetwork) {
+  if (isWizardFormNetwork) {
     const activatedNetworks = (tunneledWlans ?? {}) as EdgeMvSdLanFormNetwork
     const activatedGuestNetworks = (tunneledGuestWlans ?? {}) as EdgeMvSdLanFormNetwork
 
@@ -46,7 +46,7 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
 
         return networks.map(n => {
           const activatedStateDiff = Boolean(find(activatedGuestNetworks[vId],
-            { id: currentNetworkId })) === !activatedGuest
+            { id: currentNetworkId })) === !activatedDmz
 
           if (n.id === currentNetworkId && activatedStateDiff) {
             return vId
@@ -58,16 +58,15 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
       .filter(v => !!v) as string[]
   } else {
     const typedTunneledWlans = (tunneledWlans ?? []) as EdgeSdLanTunneledWlan[]
-    const typedTunneledGuestWlans = (tunneledGuestWlans ?? []) as EdgeSdLanTunneledWlan[]
 
     networkName = find(typedTunneledWlans, { networkId: currentNetworkId })?.networkName ?? ''
 
     impactVenueIds = (typedTunneledWlans)
       .filter(n => n.networkId === currentNetworkId
         && n.venueId !== currentNetworkVenueId
-        && typedTunneledGuestWlans
+        && typedTunneledWlans
           // eslint-disable-next-line max-len
-          ?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedGuest)
+          ?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
       .map(i => i.venueId)
   }
 
