@@ -1146,7 +1146,6 @@ export const apApi = baseApApi.injectEndpoints({
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
-          console.log(apSettings?.lanPorts) // eslint-disable-line no-console
           const ipsecActivateRequests = apSettings?.lanPorts
             ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
             .map(l => ({

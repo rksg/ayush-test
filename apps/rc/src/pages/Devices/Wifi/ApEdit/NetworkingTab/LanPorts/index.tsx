@@ -357,8 +357,6 @@ export function LanPorts (props: ApEditItemProps) {
         if (isEthernetClientIsolationEnabled) {
           await handleClientIsolationDeactivate(values)
         }
-        //eslint-disable-next-line  no-console
-        console.log('payload', payload)
         await updateEthernetPortProfile({
           params: { venueId, serialNumber },
           payload,
