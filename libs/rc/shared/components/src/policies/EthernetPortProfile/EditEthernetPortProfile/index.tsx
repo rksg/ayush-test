@@ -117,15 +117,17 @@ export const EditEthernetPortProfile = () => {
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
       sourceData.authEnabled = sourceData.authType !== EthernetPortAuthType.OPEN
-      sourceData.accountingEnabled = false
       sourceData.authTypeRole = sourceData.authType
 
-      sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
+      sourceData.accountingEnabled = !!sourceData.accountingRadiusId
     }
-    if (sourceData.authType === EthernetPortAuthType.OPEN) {
-      form.setFieldValue('clientVisibilityEnabled', true)
-    }
-    form.setFieldsValue(sourceData)
+    const forceEnableClientVisibility = sourceData.authType === EthernetPortAuthType.OPEN
+    form.setFieldsValue({
+      ...sourceData,
+      ...(forceEnableClientVisibility && {
+          clientVisibilityEnabled: true
+        })
+    })
 
   }, [ethernetPortProfileData])
 
