@@ -1,17 +1,22 @@
-import { GridCol, GridRow }             from '@acx-ui/components'
-import { EdgeClusterNodesUpTimeWidget } from '@acx-ui/edge/components'
+import { GridCol, GridRow }            from '@acx-ui/components'
+import { EdgeClusterNodeUpTimeWidget } from '@acx-ui/edge/components'
 import {
   EdgeTrafficByVolumeWidget
 } from '@acx-ui/rc/components'
+import { EdgeClusterStatus } from '@acx-ui/rc/utils'
 
-export const MonitorTab = (props: { clusterId: string | undefined }) => {
+export const MonitorTab = (props: { clusterData: EdgeClusterStatus | undefined }) => {
+  const { clusterData } = props
+
   return (
     <GridRow>
-      <GridCol col={{ span: 24 }} style={{ height: '100px' }}>
-        <EdgeClusterNodesUpTimeWidget clusterId={props.clusterId} />
+      <GridCol col={{ span: 24 }}>
+        {clusterData?.edgeList?.map((edge, index) => (
+          <EdgeClusterNodeUpTimeWidget nodeIndex={index} edgeData={edge} />
+        ))}
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <EdgeTrafficByVolumeWidget />
+        <EdgeClusterTrafficByVolumeWidget />
       </GridCol>
     </GridRow>
   )

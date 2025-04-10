@@ -9,7 +9,7 @@ import {
   EdgePortStatus
 } from '@acx-ui/rc/utils'
 
-import EdgeClusterDetailsDrawer from './ClusterDetailsDrawer'
+import { EdgeClusterDetailsDrawer } from './ClusterDetailsDrawer'
 
 interface EdgeClusterInfoWidgetProps {
   currentCluster: EdgeClusterStatus | undefined

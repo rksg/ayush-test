@@ -122,7 +122,7 @@ export const EdgeClusterOverview = () => {
   const tabs = [{
     label: $t({ defaultMessage: 'Monitor' }),
     value: 'monitor',
-    children: <MonitorTab clusterId={currentCluster?.clusterId} />
+    children: <MonitorTab clusterData={currentCluster} />
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: 'ports',
