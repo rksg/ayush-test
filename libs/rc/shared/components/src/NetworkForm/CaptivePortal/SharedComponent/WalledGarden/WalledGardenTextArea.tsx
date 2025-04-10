@@ -7,7 +7,6 @@ import {
   Space
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
-import styled                        from 'styled-components'
 
 import { Button }                     from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
@@ -15,7 +14,8 @@ import { walledGardensRegExp }        from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 
-import { defaultWalledGarden } from './DefaultWalledGarden'
+import { defaultWalledGarden }          from './DefaultWalledGarden'
+import { StyledFormItem, RequiredMark } from './styledComponents'
 
 enum WallGardenAction {
   Clear,
@@ -41,34 +41,6 @@ interface WalledGardenState {
   fieldsValue: WalledGardenFieldsValue
 }
 
-const StyledFormItem = styled(Form.Item)`
-  .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
-    flex-direction: unset !important;
-
-    &::before {
-      content: '';
-    }
-
-    > svg {
-      order: unset !important;
-    }
-
-    > button {
-      position: relative;
-    }
-  }
-`
-
-export const RequiredMark = styled.span`
-  margin: 0;
-  margin-left: 3px;
-  & {
-    color: var(--acx-accents-orange-50);
-    font-size: var(--acx-body-4-font-size);
-  }
-`
-
-/* eslint-disable max-len */
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -165,7 +137,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * I want to try stay the same as the old code.
    * So that we only extract the old code to a new component
    * and no sigcanificant change to the submit/validate logic in NetworkForm.tsx
-   * The walledGardensString attribute wilfl be deleted before submit
+   * The walledGardensString attribute will be deleted before submit
    */
   return (<>
     <StyledFormItem
