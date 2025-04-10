@@ -617,8 +617,11 @@ export const ClientIsolationMessages = {
 export const SamlIdpMessages = {
   /* eslint-disable max-len */
   METADATA_TEXTAREA: defineMessage({
-    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
-                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider.' +
+                   'You can upload an XML file, provide a metadata URL, or enter the codes.'
+  }),
+  METADATA_TEXTAREA_NOTE: defineMessage({
+    defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.'
   }),
   /* eslint-disable max-len */
   SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
@@ -629,9 +632,9 @@ export const SamlIdpMessages = {
     defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
   }),
   DOWNLOAD_SAML_METADATA: defineMessage({
-    defaultMessage: 'Download SAML metadata'
-  }),
-  UPLOAD_SAML_METADATA: defineMessage({
     defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
+  }),
+  IDENTITY_NAME: defineMessage({
+    defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.'
   })
 }

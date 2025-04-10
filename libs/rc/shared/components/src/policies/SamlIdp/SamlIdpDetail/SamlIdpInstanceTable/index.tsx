@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Card, Loader, Table, TableProps }                                                             from '@acx-ui/components'
@@ -18,7 +20,8 @@ export const SamlIdpInstanceTable = (props: SamlIdpInstanceTableProps) => {
   const tableQuery = useTableQuery<Network>({
     useQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType']
+      fields: ['name', 'id', 'captiveType', 'nwSubType'],
+      filters: { id: networkIds }
     },
     sorter: {
       sortField: 'name',
@@ -35,6 +38,15 @@ export const SamlIdpInstanceTable = (props: SamlIdpInstanceTableProps) => {
       skip: !networkIds || networkIds.length === 0
     }
   })
+
+  useEffect(() => {
+    if (networkIds?.length && networkIds.length > 0) {
+      tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: { id: networkIds }
+      })
+    }
+  }, [networkIds])
 
   const columns: TableProps<Network>['columns'] = [
     {
@@ -63,7 +75,6 @@ export const SamlIdpInstanceTable = (props: SamlIdpInstanceTableProps) => {
       />
     }
   ]
-
 
   return (
     <Loader states={[tableQuery]}>
