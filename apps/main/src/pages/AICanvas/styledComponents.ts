@@ -1,7 +1,8 @@
 import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
 import styled                                          from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Card }      from '@acx-ui/components'
+import { Dashboard } from '@acx-ui/icons-new'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
@@ -374,6 +375,14 @@ display: flex;
 
 `
 
+export const DashboardIcon = styled(Dashboard)`
+  background-color: var(--acx-neutrals-20);
+  padding: 2px;
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+`
+
 export const Canvas = styled.div`
   width: calc(100vw - 450px);
   .header {
@@ -394,16 +403,30 @@ export const Canvas = styled.div`
       span {
         padding-right: 10px;
       }
-      .dashboard-icon {
-        background-color: var(--acx-neutrals-20);
-        padding: 2px;
-        height: 20px;
-        width: 20px;
-        border-radius: 4px;
-        margin-left: 10px;
+      svg {
+        margin-right: 10px;
+      }
+    }
+    .visibility-type {
+      display: flex;
+      padding: 6px 8px 6px 10px;
+      border: 1px solid var(--acx-neutrals-30);
+      border-radius: 20px;
+      min-width: 106px;
+      justify-content: space-between;
+      .label {
+        font-size: var(--acx-headline-4-font-size);
+        padding-right: 5px;
+        display:flex;
+        align-items: center;
+        svg{
+          margin-right: 4px;
+        }
       }
     }
     .actions{
+      display: flex;
+      align-items: center;
       button {
         margin-left: 15px;
         &.black{
@@ -420,6 +443,18 @@ export const Canvas = styled.div`
     border-bottom-right-radius: 24px;
     height: calc(100vh - 130px);
   }
+`
+
+export const Visibility = styled.div`
+.type {
+  .title{
+    font-weight: 700;
+    font-size: 12px;
+  }
+  &:last-of-type {
+    margin-top: 20px;
+  }
+}
 `
 
 export const Grid = styled.div`

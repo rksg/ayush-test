@@ -1,17 +1,17 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, ReactElement, useEffect, useImperativeHandle, useState } from 'react'
 
+import { Menu }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Dropdown }                                         from '@acx-ui/components'
+import { Button, Dropdown, Tooltip }                      from '@acx-ui/components'
+import { ArrowExpand, Lock, GlobeOutlined }               from '@acx-ui/icons-new'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
 import Layout                                     from './components/Layout'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
-import { Menu, MenuProps } from 'antd'
-import { ArrowExpand, Dashboard } from '@acx-ui/icons-new'
 
 // import mockData from './mock'
 
@@ -228,50 +228,66 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     setShadowCard({} as CardInfo)
   }
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    // switch(e.key) {
-    //   case MoreActions.CLI_SESSION:
-    //     setCliModalOpen(true)
-    //     break
-    //   case MoreActions.REBOOT:
-    //     switchAction.showRebootSwitch(switchId || '', switchDetailHeader.venueId || '', tenantId || '', isStack)
-    //     break
-    //   case MoreActions.DELETE:
-    //     switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
-    //     break
-    //   case MoreActions.SYNC_DATA:
-    //     switchAction.doSyncData(switchId || '', switchDetailHeader.venueId || '', tenantId || '', handleSyncData)
-    //     setIsSyncing(true)
-    //     break
-    //   case MoreActions.ADD_MEMBER:
-    //     setAddStackMemberOpen(true)
-    //     break
-    // }
-  }
+  // const handleMenuClick: MenuProps['onClick'] = (e) => {
 
-  const menu = (
+  // }
+
+  const canvasMenu = (
     <Menu
-      onClick={handleMenuClick}
+      onClick={()=>{}}
       items={[
         {
+          icon: <GlobeOutlined size='sm' />,
           key: '1',
-          label: 'Canvas 1'
+          label: 'Canvas 1',
+          itemIcon: <UI.DashboardIcon size='sm' />
         },
         {
           key: '2',
           label: 'Canvas 2',
-          disabled: true,
+          disabled: true
         },
         {
           type: 'divider'
         },
         {
           key: 'New_Canvas',
-          label:  $t({ defaultMessage: 'New Canvas' })
+          label: $t({ defaultMessage: 'New Canvas' })
         },
         {
           key: 'Manage_Canvases',
-          label:  $t({ defaultMessage: 'Manage My Canvases' })
+          label: $t({ defaultMessage: 'Manage My Canvases' })
+        }
+      ]
+      }/>
+  )
+
+  const visibilityMap: { [key:string]: { icon: ReactElement, label: string } } = {
+    private: {
+      icon: <Lock size='sm' />,
+      label: $t({ defaultMessage: 'Private' })
+    },
+    public: {
+      icon: <GlobeOutlined size='sm' />,
+      label: $t({ defaultMessage: 'Public' })
+    }
+  }
+
+  const visibilityMenu = (
+    <Menu
+      onClick={()=>{}}
+      selectable
+      defaultSelectedKeys={['private']}
+      items={[
+        {
+          key: 'private',
+          icon: visibilityMap['private'].icon,
+          label: visibilityMap['private'].label
+        },
+        {
+          key: 'public',
+          icon: visibilityMap['public'].icon,
+          label: visibilityMap['public'].label
         }
       ]
       }/>
@@ -280,27 +296,50 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
   return (
     <UI.Canvas>
       <div className='header'>
-        <Dropdown overlay={menu}>{() =>
-            <div className='title'>
-                <span>
-                  {$t({ defaultMessage: 'Dashboard Canvas' })}
-                </span>
-                <ArrowExpand size='sm' />
-                <div className='dashboard-icon'>
-                  <Dashboard size='sm' />
-                </div>
-            </div>
+        <Dropdown overlay={canvasMenu}>{() =>
+          <div className='title'>
+            <span>
+              {$t({ defaultMessage: 'Dashboard Canvas' })}
+            </span>
+            <ArrowExpand size='sm' />
+            <UI.DashboardIcon size='sm' />
+          </div>
         }</Dropdown>
         <div className='actions'>
-          {/* <Button onClick={()=>{onClose()}}>
-            {$t({ defaultMessage: 'Publish' })}
-          </Button> */}
-          {/* <Button className='black' onClick={()=>{onClose()}}>
+          <Dropdown overlay={visibilityMenu}>{(selectedKeys) =>
+            <div className='visibility-type'>
+              {selectedKeys && <div className='label'>
+                {visibilityMap[selectedKeys].icon}
+                {visibilityMap[selectedKeys].label}
+              </div>}
+              <ArrowExpand size='sm' />
+            </div>
+          }</Dropdown>
+          <Tooltip.Question
+            iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
+            overlayStyle={{ maxWidth: '270px' }}
+            title={<UI.Visibility>
+              <div className='type'>
+                <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
+                <div>
+                  {$t({ defaultMessage: `Hide this canvas from the public. 
+                     The canvas will be visible to the owner only.` })}
+                </div>
+              </div>
+              <div className='type'>
+                <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
+                <div>
+                  {$t({
+                    defaultMessage: 'Publish this canvas for all administrators in this tenant.'
+                  })}
+                </div>
+              </div>
+            </UI.Visibility>}
+            placement='bottom'
+          />
+          <Button className='black' onClick={()=>{}}>
             {$t({ defaultMessage: 'Preview' })}
-          </Button> */}
-          {/* <Button className='black' onClick={() => {emptyCanvas()}}>
-            {$t({ defaultMessage: 'Clear' })}
-          </Button> */}
+          </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
             {$t({ defaultMessage: 'Save' })}
           </Button>

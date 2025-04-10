@@ -36,11 +36,13 @@ jest.mock('@acx-ui/components', () => {
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
   const Button = jest.requireActual('@acx-ui/components').Button
   const Card = jest.requireActual('@acx-ui/components').Card
+  const Dropdown = jest.requireActual('@acx-ui/components').Dropdown
   return {
     Card,
     Button,
     Loader,
     Tooltip,
+    Dropdown,
     showActionModal: () => mockedShowActionModal
   }
 })
@@ -242,7 +244,7 @@ describe('AICanvas Drag', () => {
   it('should render a chat content correctly', async () => {
     renderWithDndProvider(
       <Provider>
-        <AICanvas isModalOpen={true} setIsModalOpen={()=>{}}/>
+        <AICanvas isModalOpen={true} setIsModalOpen={jest.fn()}/>
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()

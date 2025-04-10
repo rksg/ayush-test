@@ -161,6 +161,7 @@ export const {
   ListSolid,
   LocationOutlined,
   LocationSolid,
+  Lock,
   LogOut,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassMinusSolid,
