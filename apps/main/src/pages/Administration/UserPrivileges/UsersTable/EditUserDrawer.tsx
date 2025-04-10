@@ -7,7 +7,8 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer }               from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetMspEcAdminQuery,
   useUpdateMspEcAdminMutation
@@ -53,6 +54,8 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
       mspEcAdminId: editData.id
     }
   }, { skip: !isMspEc })
+
+  const isCAMFFEnabled = useIsSplitOn(Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
 
   const updateMspEcAdminUsername = async (data: Administrator) => {
     try {
@@ -142,7 +145,8 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
         >
           {editData.authenticationId
             ? $t({ defaultMessage: 'SSO with 3rd Party' })
-            : $t({ defaultMessage: 'RUCKUS Identity Management' })
+            : isCAMFFEnabled ? $t({ defaultMessage: 'Ruckus Account Management' })
+              : $t({ defaultMessage: 'RUCKUS Identity Management' })
           }
         </Form.Item>
 
