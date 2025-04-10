@@ -2,7 +2,9 @@ import { Features }                 from '@acx-ui/feature-toggle'
 import { withTemplateFeatureGuard } from '@acx-ui/rc/components'
 import { ConfigTemplateType }       from '@acx-ui/rc/utils'
 
-import { activationViewerMap, allowedDisplayActivationTemplateTypesSet } from './constants'
+import { activationViewerMap, isAllowedDisplayActivationType } from './constants'
+
+export { ApGroupVenueViewer } from './ApGroupVenueViewer'
 
 export interface ActivationViewerProps {
   type: ConfigTemplateType
@@ -10,15 +12,11 @@ export interface ActivationViewerProps {
 }
 
 export function ActivationViewer ({ type, templateId }: ActivationViewerProps) {
-  if (!allowedDisplayActivationTemplateTypesSet.has(type)) {
+  if (!isAllowedDisplayActivationType(type)) {
     return null
   }
 
   const ActivationViewerComponent = activationViewerMap[type]
-
-  if (!ActivationViewerComponent) {
-    return null
-  }
 
   return <ActivationViewerComponent type={type} templateId={templateId} />
 }

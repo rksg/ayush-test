@@ -5,6 +5,13 @@ import { VenueActivationViewer }   from './VenueActivationViewer'
 
 import { ActivationViewerProps } from '.'
 
+export type AllowedDisplayActivationTemplateTypes =
+  ConfigTemplateType.VENUE |
+  ConfigTemplateType.DPSK |
+  ConfigTemplateType.RADIUS |
+  ConfigTemplateType.NETWORK |
+  ConfigTemplateType.SYSLOG
+
 export const allowedDisplayActivationTemplateTypesSet = new Set<ConfigTemplateType>([
   ConfigTemplateType.VENUE,
   ConfigTemplateType.DPSK,
@@ -14,7 +21,12 @@ export const allowedDisplayActivationTemplateTypesSet = new Set<ConfigTemplateTy
 ])
 
 // eslint-disable-next-line max-len
-export const activationViewerMap: Partial<Record<ConfigTemplateType, React.FC<ActivationViewerProps>>> = {
+export function isAllowedDisplayActivationType (type: ConfigTemplateType): type is AllowedDisplayActivationTemplateTypes {
+  return allowedDisplayActivationTemplateTypesSet.has(type)
+}
+
+// eslint-disable-next-line max-len
+export const activationViewerMap: Record<AllowedDisplayActivationTemplateTypes, React.FC<ActivationViewerProps>> = {
   [ConfigTemplateType.NETWORK]: VenueActivationViewer,
   [ConfigTemplateType.VENUE]: NetworkActivationViewer,
   [ConfigTemplateType.DPSK]: NetworkActivationViewer,

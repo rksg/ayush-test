@@ -14,8 +14,7 @@ import { ShowDriftsDrawer }                                                     
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
 import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
-import { ProtectedActivationViewer } from './ActivationViewer'
-import { ApGroupVenueViewer }        from './ActivationViewer/ApGroupVenueViewer'
+import { ProtectedActivationViewer, ApGroupVenueViewer } from './ActivationViewer'
 
 interface DetailsContentProps {
   template: ConfigTemplate
@@ -127,10 +126,13 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
   />
 }
 
+export interface DetailsItemListProps {
+  title: string
+  items: string[]
+  isLoading?: boolean
+}
 
-export function DetailsItemList (
-  { title, items = [], isLoading = false }: { title: string, items: string[], isLoading?: boolean }
-) {
+export function DetailsItemList ({ title, items = [], isLoading = false }: DetailsItemListProps) {
   const sortedItems = [...items].sort((a, b) => a.localeCompare(b))
 
   return <Space direction='vertical' size={6}>
