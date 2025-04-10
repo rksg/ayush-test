@@ -92,7 +92,7 @@ jest.mock('@acx-ui/rc/services', () => ({
     ssid: 's7'
   }]
   }),
-  useEnhanceVenueTableQuery: jest.fn().mockReturnValue({ data: mockVenueList }),
+  useEnhanceVenueTableQuery: jest.fn().mockReturnValue({ data: mockVenueList })
 }))
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
