@@ -650,7 +650,7 @@ describe('AuthRoute', () => {
     })
     render(<Router>
       <AuthRoute
-        unsupportTiers={[AccountTier.CORE]}>
+        unsupportedTiers={[AccountTier.CORE]}>
         <div>test page</div>
       </AuthRoute>
     </Router>)
@@ -666,7 +666,7 @@ describe('AuthRoute', () => {
     })
     render(<Router>
       <AuthRoute
-        unsupportTiers={[AccountTier.CORE]}>
+        unsupportedTiers={[AccountTier.CORE]}>
         <div>test page</div>
       </AuthRoute>
     </Router>)

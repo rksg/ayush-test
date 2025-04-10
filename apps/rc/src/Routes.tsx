@@ -1140,7 +1140,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]} unsupportTiers={[AccountTier.CORE]}>
+          <AuthRoute scopes={[WifiScopes.CREATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={false} />
           </AuthRoute>
         }
@@ -1148,7 +1148,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]} unsupportTiers={[AccountTier.CORE]}>
+          <AuthRoute scopes={[WifiScopes.UPDATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={true} />
           </AuthRoute>
         }
@@ -1156,7 +1156,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
         element={
-          <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileTable />
           </AuthRoute>
         }
@@ -1164,7 +1164,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
         element={
-          <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileDetail />
           </AuthRoute>}
       />
@@ -1341,20 +1341,20 @@ function PolicyRoutes () {
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
           element={
-            <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
               <WorkflowTable/>
             </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
           element={
-            <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
               <WorkflowDetails />
             </AuthRoute>} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
-            <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
               <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
                 <WorkflowPageForm/>
               </PolicyAuthRoute>

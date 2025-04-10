@@ -264,17 +264,17 @@ export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
     rbacOpsIds?: RbacOpsIds,
-    unsupportTiers?: AccountTier[]
+    unsupportedTiers?: AccountTier[]
     requireCrossVenuesPermission?: boolean | Permission
   }) {
   const { scopes = [], children,
-    requireCrossVenuesPermission, rbacOpsIds = [], unsupportTiers } = props
+    requireCrossVenuesPermission, rbacOpsIds = [], unsupportedTiers } = props
   const { rbacOpsApiEnabled, accountTier } = getUserProfile()
 
   let authorizedElement = children
 
-  if (Array.isArray(unsupportTiers) && unsupportTiers.length > 0) {
-    authorizedElement = unsupportTiers.includes(accountTier as AccountTier)
+  if (Array.isArray(unsupportedTiers) && unsupportedTiers.length > 0) {
+    authorizedElement = unsupportedTiers.includes(accountTier as AccountTier)
       ? <TenantNavigate replace to='/no-permissions' /> : children
   }
 

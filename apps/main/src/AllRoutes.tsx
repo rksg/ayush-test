@@ -66,7 +66,7 @@ function AllRoutes () {
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*'
             element={
-              <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+              <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
                 <AnalyticsBase />
               </AuthRoute>}>
             <Route path='*'
@@ -80,7 +80,7 @@ function AllRoutes () {
           </Route>
           <Route path='dataStudio/*'
             element={
-              <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+              <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
                 <ReportsBase />
               </AuthRoute>}>
             <Route path='*' element={<ReportsRoutes />} />

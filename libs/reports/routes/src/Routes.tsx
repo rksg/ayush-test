@@ -51,7 +51,7 @@ export default function ReportsRoutes () {
       <Route path='reports/clients' element={reports.clients}/>
       <Route path='reports/applications'
         element={
-          <AuthRoute unsupportTiers={[AccountTier.CORE]}>
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
             {reports.applications}
           </AuthRoute>} />
       <Route path='reports/edgeApplications' element={reports.edgeApplications} />
