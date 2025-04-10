@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
@@ -27,7 +27,7 @@ import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
-  // useGetVenueTagListQuery,
+  useGetVenueTagListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useVenuesTableQuery
@@ -255,7 +255,10 @@ function useColumns (
       sorter: true,
       filterKey: 'tags',
       searchable: searchable,
-      filterable: filterables ? filterables['tags'] : false
+      filterable: filterables ? filterables['tags'] : false,
+      render: (data: ReactNode, row: Venue) => (
+        row.tags?.join(', ')
+      )
     }] : [])
   ]
 
@@ -465,12 +468,10 @@ function useGetVenueCityList () {
 }
 
 function useGetVenueTagList () {
-  // const params = useParams()
+  const params = useParams()
 
-  // let venueTagList = useGetVenueTagListQuery({
-  //   params
-  // })
-  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ].map(item => {
+  const tagList = useGetVenueTagListQuery({ params })
+  const venueTagList = tagList.data?.map(item => {
     return { key: item, value: item }
   })
   return { tagFilterOptions: venueTagList }

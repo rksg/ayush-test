@@ -24,7 +24,8 @@ import {
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
   useLazyGetVenuesTemplateListQuery,
-  useLazyGetTimezoneQuery
+  useLazyGetTimezoneQuery,
+  useGetVenueTagListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -200,9 +201,9 @@ export function VenuesForm (props: VenuesFormProps) {
   })
   const { saveEnforcementConfig } = useConfigTemplate()
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
-  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvale Lab' ]
+  const venueTagList = useGetVenueTagListQuery({ params })
   const venueTagOptions =
-    venueTagList.map((item) =>({
+    venueTagList.data?.map((item) =>({
       label: item,
       value: item
     }))
@@ -217,7 +218,8 @@ export function VenuesForm (props: VenuesFormProps) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
-        address: { ...data?.address, countryCode: defaultCountryCode }
+        address: { ...data?.address, countryCode: defaultCountryCode },
+        tags: data?.tags
       })
       updateAddress(data?.address as Address)
 
