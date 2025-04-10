@@ -228,7 +228,7 @@ describe('IntentAIForm', () => {
 
       expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
       expect(await screen.findByText('1 network selected')).toBeVisible()
-      expect(await screen.findByText('1 venue')).toBeVisible()
+      expect(await screen.findByText('1 other venue')).toBeVisible()
       await click(actions.getByRole('button', { name: 'Apply' }))
 
       expect(await screen.findByText(/has been updated/)).toBeVisible()

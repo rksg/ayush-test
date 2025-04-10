@@ -112,7 +112,8 @@ export function Summary () {
                           >
                             {$t(
                               {
-                                defaultMessage: `{affectedVenuesCount} {affectedVenuesCount, plural,
+                                defaultMessage: `{affectedVenuesCount} other {
+                                  affectedVenuesCount, plural,
                                   one {<venueSingular></venueSingular>}
                                   other {<venuePlural></venuePlural>}
                                 }`
