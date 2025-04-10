@@ -454,7 +454,8 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         </Tooltip>}
         children={<WifiSignal
           snr={clientInfo?.signalStatus?.snr}
-          text={clientInfo?.signalStatus?.snr ? clientInfo?.signalStatus?.snr + ' dB' : noDataDisplay}
+          text={clientInfo?.signalStatus?.snr
+            ? clientInfo?.signalStatus?.snr + ' dB' : noDataDisplay}
         />}
       />
       <Descriptions.Item
@@ -470,7 +471,8 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
             placement='bottom'
             title={getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.tooltip}
           >
-            {clientInfo?.signalStatus?.rssi ? clientInfo?.signalStatus?.rssi + ' dBm' : noDataDisplay}
+            {clientInfo?.signalStatus?.rssi
+              ? clientInfo?.signalStatus?.rssi + ' dBm' : noDataDisplay}
           </Tooltip>
         </Space>}
       />
@@ -688,7 +690,7 @@ function getAuthStatus (statusInt: number) {
   const { $t } = getIntl()
   if (isNaN(statusInt)) return noDataDisplay
 
-  let statusText = noDataDisplay
+  let statusText: string = noDataDisplay
   if (statusInt === 1) {
     statusText = $t({ defaultMessage: 'Authorized' })
   } else if (statusInt === 0) {
