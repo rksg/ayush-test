@@ -98,14 +98,21 @@ export const EdgeClusterTable = () => {
       searchable: true,
       fixed: 'left',
       render: (_, row) => {
-        return row.isFirstLevel ?
-          row.name :
-          <TenantLink to={`${getUrl({
-            feature: Device.Edge,
-            oper: CommonOperation.Detail,
-            params: { id: row.serialNumber } })}/overview`}>
-            {row.name}
-          </TenantLink>
+        return <TenantLink to={`${getUrl({
+          feature: row.isFirstLevel ? Device.EdgeCluster : Device.Edge,
+          oper: CommonOperation.Detail,
+          params: { id: row.isFirstLevel ? row.clusterId : row.serialNumber } })}/overview`}>
+          {row.name}
+        </TenantLink>
+
+        // return row.isFirstLevel ?
+        //   row.name :
+        //   <TenantLink to={`${getUrl({
+        //     feature: Device.Edge,
+        //     oper: CommonOperation.Detail,
+        //     params: { id: row.serialNumber } })}/overview`}>
+        //     {row.name}
+        //   </TenantLink>
       }
     },
     {

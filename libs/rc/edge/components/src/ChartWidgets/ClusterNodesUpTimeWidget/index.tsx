@@ -1,0 +1,174 @@
+import { Typography } from 'antd'
+import { isEmpty }    from 'lodash'
+import moment         from 'moment-timezone'
+import { useIntl }    from 'react-intl'
+import AutoSizer      from 'react-virtualized-auto-sizer'
+
+import { calculateGranularity, TimeSeriesChartData, getSeriesData }                                                  from '@acx-ui/analytics/utils'
+import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip, getDefaultEarliestStart, GridRow } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { formatter }                                                                                                 from '@acx-ui/formatter'
+import { useGetEdgeUptimeQuery }                                                                                     from '@acx-ui/rc/services'
+import { CommonOperation, Device, EdgeStatusTimeSeries, EdgeTimeSeriesPayload, getUrl }                              from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
+import { TimeStamp }                                                                                                 from '@acx-ui/types'
+import { useDateFilter }                                                                                             from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
+
+function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
+  return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
+    const [time, value] = dataPoint
+    if (index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]) {
+      const seriesColor =
+        value === 1
+          ? cssStr('--acx-semantics-green-50')
+          : (cssStr('--acx-semantics-red-50') as string)
+      startEndTimes.push([time, 'edgeStatus', time, value, seriesColor])
+    } else {
+      const lastStartEndTime = startEndTimes[startEndTimes.length - 1]
+      lastStartEndTime[2] = time
+    }
+    return startEndTimes
+  }, [] as [TimeStamp, string, TimeStamp, number | null, string][])
+}
+
+const emptyData = {
+  data: [],
+  timeSeries: {
+    time: [],
+    isEdgeUp: []
+  },
+  totalUptime: 0,
+  totalDowntime: 0
+}
+
+export const EdgeClusterNodesUpTimeWidget = (props: { clusterId: string | undefined }) => {
+  const { $t } = useIntl()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
+  const { clusterId } = props
+
+  type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>
+
+  const seriesMapping = [
+    { key: 'isEdgeUp', name: $t({ defaultMessage: 'EdgeStatus' }) }
+  ] as Array<{ key: Key; name: string }>
+
+  const { data = emptyData, isLoading } = useGetEdgeUptimeQuery({
+    params: { clusterId },
+    payload: {
+      start: filters?.startDate,
+      end: filters?.endDate,
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate)
+    } as EdgeTimeSeriesPayload
+  }, { skip: !clusterId })
+
+  const queryResults = isLoading ? emptyData : {
+    data: [{
+      serialNumber: 'test1',
+      name: 'test1',
+      timeSeries: getStartAndEndTimes(getSeriesData(data!.timeSeries, seriesMapping))
+        ?.filter((dataPoint) => dataPoint?.[3] === 1 || dataPoint?.[3] === 0)
+        .map((dataPoint) => {
+          let inclusiveDataPoint = dataPoint
+          inclusiveDataPoint[2] = moment(dataPoint?.[2])
+            .add(
+              moment
+                .duration(calculateGranularity(filters?.startDate, filters?.endDate))
+                .asSeconds(),
+              'seconds'
+            )
+            .toISOString()
+          return inclusiveDataPoint
+        })
+    }],
+    totalUptime: data!.totalUptime,
+    totalDowntime: data!.totalDowntime
+  }
+
+  return (
+    <Loader states={[{ isLoading }]}>
+      <UI.Wrapper>
+        <UI.EdgeStatusHeader col={{ span: 16 }}>
+          <Card.Title>
+            {$t({ defaultMessage: 'Node Status' })}
+            <Tooltip
+              title={$t({
+                defaultMessage: 'Historical data is slightly delayed, and not real-time'
+              })}>
+              <UI.HistoricalIcon />
+            </Tooltip>
+          </Card.Title>
+        </UI.EdgeStatusHeader>
+        {isEmpty(queryResults.data) ?
+          <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
+            <AutoSizer>
+              {() =><NoData />}
+            </AutoSizer>
+          </GridCol>:
+          <>
+            <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
+              {$t({ defaultMessage: 'Total Uptime' })}
+              {': '}
+              <UI.Duration>
+                {formatter('durationFormat')((queryResults.totalUptime * 1000) || 0)}
+              </UI.Duration>
+            </UI.Status>
+            <UI.Status col={{ span: 4 }}>
+              {$t({ defaultMessage: 'Total Downtime' })}
+              {': '}
+              <UI.Duration>
+                {formatter('durationFormat')(queryResults?.totalDowntime * 1000 || 0)}
+              </UI.Duration>
+            </UI.Status>
+
+            <GridCol col={{ span: 24 }}>
+              {queryResults?.data.map((dataPoint, index) => {
+                return <GridRow>
+                  <GridCol col={{ span: 3 }} style={{ minWidth: '100px' }}>
+                    <Typography.Title level={5}>
+                      {$t({ defaultMessage: 'Node {index}: {nodeDetailLink}' },
+                        {
+                          index,
+                          nodeDetailLink: <TenantLink to={`${getUrl({
+                            feature: Device.Edge,
+                            oper: CommonOperation.Detail,
+                            params: { id: dataPoint.serialNumber } })}/overview`}>
+                            {dataPoint.name}
+                          </TenantLink>
+                        })}
+                    </Typography.Title>
+                  </GridCol>
+                  <GridCol col={{ span: 21 }} style={{ height: '50px' }}>
+                    <AutoSizer>
+                      {({ height, width }) =>
+                        <MultiBarTimeSeriesChart
+                          style={{ width, height }}
+                          data={[
+                            {
+                              key: 'EdgeStatus',
+                              name: 'Edge',
+                              color: cssStr('--acx-semantics-green-50'),
+                              // eslint-disable-next-line max-len
+                              data: dataPoint?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
+                            }
+                          ]}
+                          chartBoundary={[
+                            moment(filters?.startDate).valueOf(),
+                            moment(filters?.endDate).valueOf()
+                          ]}
+                          hasXaxisLabel
+                        />
+                      }
+                    </AutoSizer>
+                  </GridCol>
+                </GridRow>
+              })}
+            </GridCol>
+          </>
+        }
+      </UI.Wrapper>
+    </Loader>
+  )
+}

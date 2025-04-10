@@ -1,5 +1,10 @@
-import { EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                  from '@acx-ui/utils'
+import { ClusterNetworkMultiWanSettings, EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                  from '@acx-ui/utils'
+
+export const emptyDualWanSettings: ClusterNetworkMultiWanSettings = {
+  mode: EdgeMultiWanModeEnum.NONE,
+  wanMembers: []
+}
 
 export const getDualWanModeString = (type: EdgeMultiWanModeEnum) => {
   const { $t } = getIntl()

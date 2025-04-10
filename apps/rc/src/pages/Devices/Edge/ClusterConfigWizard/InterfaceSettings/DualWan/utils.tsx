@@ -1,5 +1,6 @@
 import { find } from 'lodash'
 
+import { emptyDualWanSettings }                            from '@acx-ui/edge/components'
 import {
   getEdgeWanInterfaces, ClusterNetworkMultiWanSettings,
   EdgePort, EdgeLag, EdgeWanMember, EdgeMultiWanModeEnum
@@ -37,7 +38,7 @@ export const getDualWanDataFromClusterWizard = (
 
     // clear dualWanSettings if WAN count < 2
     if (wans.length < 2) {
-      return undefined
+      return emptyDualWanSettings
     }
 
     const currentMembers = formData?.multiWanSettings?.wanMembers
@@ -99,6 +100,6 @@ export const getDualWanDataFromClusterWizard = (
     }
   } else {
     // clear dualWanSettings if cluster is multi-nodes
-    return undefined
+    return emptyDualWanSettings
   }
 }

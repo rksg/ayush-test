@@ -1,3 +1,6 @@
 export * from './EdgePortsWidget'
 export * from './EdgeSysResourceBox'
 export { EdgeOverviewDonutWidget } from './EdgeOverviewDonutWidget'
+export * from './ClusterNodesWidget'
+export * from './EdgeAlarmWidget'
+export * from './ClusterNodesUpTimeWidget'

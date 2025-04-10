@@ -84,8 +84,9 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import AddEdgeCluster                               from './pages/Devices/Edge/AddEdgeCluster'
 import EdgeClusterConfigWizard                      from './pages/Devices/Edge/ClusterConfigWizard'
+import EdgeClusterDetails                           from './pages/Devices/Edge/ClusterDetails'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
@@ -339,6 +340,10 @@ function DeviceRoutes () {
         element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
           <EditEdgeCluster />
         </AuthRoute>} />
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab'
+        element={<EdgeClusterDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab/:activeSubTab'
+        element={<EdgeClusterDetails />} />
       <Route path='devices/edge/cluster/:clusterId/configure'
         element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
           <EdgeClusterConfigWizard />
