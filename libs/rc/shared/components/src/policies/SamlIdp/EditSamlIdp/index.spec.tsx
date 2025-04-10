@@ -11,7 +11,7 @@ import {
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockCertName1, mockCertName2, mockCertName3, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedsamlIpdProfileList } from '../__tests__/fixtures'
+import { certList, mockCertName1, mockCertName2, mockCertName3, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedSamlIdpProfileList } from '../__tests__/fixtures'
 
 import { EditSamlIdp } from '.'
 
@@ -63,7 +63,7 @@ describe('Edit SAML IdP Profile', () => {
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
           mockedGetSamlIdpProfileViewDataList()
-          return res(ctx.json(mockedsamlIpdProfileList))
+          return res(ctx.json(mockedSamlIdpProfileList))
         }
       ),
 
@@ -143,6 +143,31 @@ describe('Edit SAML IdP Profile', () => {
     const certCombo = await screen.findByText(mockCertName1)
     await user.click(certCombo)
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('Click apply button and go back to list page', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EditSamlIdp />
+      </Provider>
+      ,{ route: { path: editViewPath, params } }
+    )
+
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
+
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => expect(mockedMainSamlIdpProfile).toBeCalled())
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
+
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
       hash: '',

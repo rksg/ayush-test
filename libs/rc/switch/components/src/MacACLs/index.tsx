@@ -13,7 +13,7 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import { useGetSwitchMacAclsQuery, useDeleteSwitchMacAclMutation } from '@acx-ui/rc/services'
 import {
   MacAcl,
-  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo,
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -91,7 +91,7 @@ export function MacACLs (props: {
     label: $t({ defaultMessage: 'Add MAC ACL' }),
     disabled: !deviceOnline,
     scopeKey: [SwitchScopes.CREATE],
-    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchMacAcl)],
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addSwitchMacAcl)],
     onClick: () => {
       setEditMode(false)
       setMacACLData({} as MacAcl)
@@ -103,7 +103,7 @@ export function MacACLs (props: {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           setEditMode(true)
@@ -117,7 +117,7 @@ export function MacACLs (props: {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',

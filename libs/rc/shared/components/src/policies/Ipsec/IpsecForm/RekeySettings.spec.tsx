@@ -1,7 +1,7 @@
 import { Form }         from 'antd'
 import { IntlProvider } from 'react-intl'
 
-import { IpSecAuthEnum }                         from '@acx-ui/rc/utils'
+import { IpSecAuthEnum, IpSecRekeyTimeUnitEnum } from '@acx-ui/rc/utils'
 import { render, fireEvent, screen, renderHook } from '@acx-ui/test-utils'
 
 import RekeySettings from './RekeySettings'
@@ -42,6 +42,46 @@ describe('RekeySettings', () => {
     expect(ikeRekeyTimeElement).toBeInTheDocument()
     const espRekeyTimeElement = screen.getByTestId('espRekeyTime')
     expect(espRekeyTimeElement).toBeInTheDocument()
+  })
+
+  it('renders disabled rekeyTime and enable with default value', () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      return form
+    })
+    let customizedValue = {
+      id: 'testId',
+      name: 'testName',
+      authType: IpSecAuthEnum.PSK,
+      ikeRekeyTime: 0, // default value
+      ikeRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+      ikeRekeyTimeEnabledCheckbox: false, // Ensure the checkbox is disabled
+      espRekeyTime: 0,
+      espRekeyTimeEnabledCheckbox: false
+    }
+    render(<Form form={formRef.current}>
+      <RekeySettings
+        initIpSecData={customizedValue}
+        loadReKeySettings
+        setLoadReKeySettings={jest.fn()} /></Form>)
+    expect(screen.getByText('Internet Key Exchange (IKE)')).toBeInTheDocument()
+    expect(screen.getByText('Encapsulating Security Payload (ESP)')).toBeInTheDocument()
+
+    // Check if the ikeRekeyTime element is not visible
+    const ikeRekeyTimeElement = screen.queryByTestId('ikeRekeyTime')
+    expect(ikeRekeyTimeElement).not.toBeInTheDocument()
+
+    // Enable the checkbox
+    const ikeRekeyTimeEnabledCheckbox = screen
+      .getByTestId('ikeRekeyTimeEnabled') as HTMLInputElement
+    fireEvent.click(ikeRekeyTimeEnabledCheckbox)
+    expect(ikeRekeyTimeEnabledCheckbox.checked).toBe(true)
+
+    // Verify the value of the InputNumber
+    const ikeRekeyTimeElementAfterClick = screen.getByTestId('ikeRekeyTime')
+    expect(ikeRekeyTimeElementAfterClick).toBeInTheDocument()
+    const ikeRekeyTimeInput = ikeRekeyTimeElementAfterClick.querySelector('input')
+    expect(Number(ikeRekeyTimeInput!.value)).toBe(4) // Check if the default value is set correctly
   })
 
   it('toggles checkboxes', () => {

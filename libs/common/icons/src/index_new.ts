@@ -47,6 +47,8 @@ export const {
   CalendarSolid,
   CancelCircleOutlined,
   CancelCircleSolid,
+  CanvasCollapse,
+  CanvasExpand,
   CaretDoubleDownOutlined,
   CaretDoubleDownSolid,
   CaretDoubleLeftCircleOutlined,
