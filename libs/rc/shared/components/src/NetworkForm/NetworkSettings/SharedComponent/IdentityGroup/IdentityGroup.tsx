@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Drawer }                  from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
 import {
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetDpskQuery,
@@ -52,18 +52,20 @@ export function IdentityGroup () {
     if (identity) {
       setSelectedIdentity(identity)
       form.setFieldsValue({
-        identityId: identity.id
+        identity: identity
       })
     }
   }
   useEffect(() => {
-    setSelectedIdentity(undefined)
-    if (formFieldIdentityId) {
-      form.setFieldValue('identityId', '')
-    }
     const selected = identityGroups.find((ig) => ig.id === formFieldIdentityGroupId)
     if (selected) {
       setSelectedIdentityGroup(selected)
+    }
+    // Dont use useWatch hook here, it will get undefined
+    // when user choose MAC Registration List, form.item will be removed.
+    const identity = form.getFieldValue('identity')
+    if(identity) {
+      setSelectedIdentity(identity)
     }
   }, [formFieldIdentityGroupId])
 
@@ -98,7 +100,7 @@ export function IdentityGroup () {
           const boundIdentities = retrievedIdentitiesData?.data
           if (boundIdentities && boundIdentities.totalCount > 0){
             const persona = boundIdentities.data[0]
-            form.setFieldValue('identityId', persona.id)
+            form.setFieldValue('identity', persona)
             form.setFieldValue('enableIdentityAssociation', true)
             setSelectedIdentity(persona)
           }
@@ -132,6 +134,12 @@ export function IdentityGroup () {
               style={{ width: '400px' }}
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
+              onChange={() => {
+                setSelectedIdentity(undefined)
+                if (formFieldIdentityId) {
+                  form.setFieldValue('identity', undefined)
+                }
+              }}
             />
           }
         />
@@ -215,7 +223,7 @@ export function IdentityGroup () {
       )}
       <Form.Item
         noStyle
-        name={'identityId'}
+        name={'identity'}
         hidden
         children={<Input hidden />}
       />

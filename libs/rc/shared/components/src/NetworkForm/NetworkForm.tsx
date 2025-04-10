@@ -1544,7 +1544,7 @@ function useIdentityGroupOnNetworkActivation () {
       )
     ) {
       const identityGroupId = network?.identityGroupId
-      const identityId = network?.identityId
+      const identityId = network?.identity?.id
       if (identityGroupId) {
         if (identityId) {
           return await bindingSpecificIdentityPersonaGroupWithNetwork({

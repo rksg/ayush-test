@@ -1,4 +1,4 @@
-import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Persona, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -181,7 +181,7 @@ export interface NetworkSaveData extends EnforceableFields {
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
   ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
   identityGroupId?: string,
-  identityId?: string,
+  identity?: Persona,
   samlIdpProfilesId?: string
   samlIdpProfilesName?: string
 }
