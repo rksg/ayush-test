@@ -46,7 +46,7 @@ export function Summary () {
         )
         .map(({ name }) => name) || []
 
-    return ['banana', ...affectedVenues]
+    return affectedVenues
   }, [currentVenue, venues, wlans])
 
   return (

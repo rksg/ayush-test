@@ -93,7 +93,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   }]
   }),
   useEnhanceVenueTableQuery: jest.fn().mockReturnValue({ data: mockVenueList }),
-  useVenuesTableQuery: jest.fn().mockReturnValue({ data: mockVenueList })
 }))
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
@@ -223,7 +222,7 @@ describe('IntentAIForm', () => {
       expect(time).toHaveValue('12.5')
       await selectOptions(
         await screen.findByPlaceholderText('Select Networks'),
-        'n7'
+        'n4'
       )
       await click(actions.getByRole('button', { name: 'Next' }))
 
