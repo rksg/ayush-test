@@ -13,6 +13,7 @@ import {
   SwitchStatusEnum,
   SwitchViewModel,
   SWITCH_TYPE,
+  MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
   SWITCH_SERIAL_8100,
@@ -923,4 +924,19 @@ export const getFamilyAndModel = function (switchModel: string) {
   const family = switchModel.split('-')[0]
   const model = switchModel.substring(switchModel.indexOf('-')+1)
   return [family, model]
+}
+
+export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
+  if (!macAclRules || macAclRules.length === 0) {
+    return { permit: 0, deny: 0 }
+  }
+
+  return macAclRules.reduce((acc, rule) => {
+    if (rule.action === 'permit') {
+      acc.permit += 1
+    } else if (rule.action === 'deny') {
+      acc.deny += 1
+    }
+    return acc
+  }, { permit: 0, deny: 0 })
 }

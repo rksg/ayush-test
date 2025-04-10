@@ -516,7 +516,7 @@ function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended })
         }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Recieved Traffic' })}
+        label={$t({ defaultMessage: 'Received Traffic' })}
         children={
           (clientInfo?.wifiCallingStatus.trafficFromClient &&
             bytesFormatter(clientInfo?.wifiCallingStatus.trafficFromClient)) || '--'

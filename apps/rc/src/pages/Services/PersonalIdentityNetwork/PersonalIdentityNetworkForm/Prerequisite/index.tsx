@@ -21,7 +21,7 @@ export const Prerequisite = () => {
       <Row gutter={20}>
         <Col span={22}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Prerequisite' })}</Typography.Title>
-          <UI.PrerequisiteListContiner>
+          <UI.PrerequisiteListContainer>
             <ol>
               {prerequisiteListMessage.map((item, index) => {
                 return <li key={index}>
@@ -33,7 +33,7 @@ export const Prerequisite = () => {
                 </li>
               })}
             </ol>
-          </UI.PrerequisiteListContiner>
+          </UI.PrerequisiteListContainer>
         </Col>
       </Row>
     </Col>
@@ -62,7 +62,7 @@ const PrerequisiteFormBlock = (props: {
           title={$t(tooltip)}
           iconStyle={UI.questionIconStyle}/>}
       </Typography.Title>
-      <UI.PrerequisiteListItemContiner>
+      <UI.PrerequisiteListItemContainer>
         {steps.map((item, index) => <li key={index}>
           <Typography.Text>
             <FormattedMessage
@@ -73,7 +73,7 @@ const PrerequisiteFormBlock = (props: {
             />
           </Typography.Text>
         </li>)}
-      </UI.PrerequisiteListItemContiner>
+      </UI.PrerequisiteListItemContainer>
     </Col>
   </Row>
 }

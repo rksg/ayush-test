@@ -19,6 +19,11 @@ jest.mock('../policies/SoftGre/SoftGreForm/SoftGreDrawer', () => ({
   default: () => <div data-testid={'rc-SoftGreDrawer'} title='SoftGreDrawer' />
 }))
 
+jest.mock('../policies/Ipsec/IpsecForm/IpsecDrawer', () => ({
+  ...jest.requireActual('../policies/Ipsec/IpsecForm/IpsecDrawer'),
+  default: () => <div data-testid={'rc-IpsecDrawer'} title='IpsecDrawer' />
+}))
+
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
@@ -90,7 +95,7 @@ describe('WifiSoftGreSelectOption', () => {
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
-        enbaleIpsec: undefined
+        enableIpsec: false
       },
       softGre: {
         newProfileId: '0d89c0f5596c4689900fb7f5f53a0859'
@@ -123,7 +128,7 @@ describe('WifiSoftGreSelectOption', () => {
     )).toBeEnabled())
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
-        enbaleIpsec: undefined
+        enableIpsec: false
       },
       softGre: {
         newProfileId: '0d89c0f5596c4689900fb7f5f53a0859'
@@ -133,6 +138,7 @@ describe('WifiSoftGreSelectOption', () => {
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
+        enableIpsec: false
       },
       softGre: {
         newProfileId: '75aa5131892d44a6a85a623dd3e524ed'
@@ -200,7 +206,7 @@ describe('WifiSoftGreSelectOption', () => {
     )).toBeEnabled())
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
-        enbaleIpsec: undefined
+        enableIpsec: false
       },
       softGre: {
         newProfileId: 'softGreProfileName4-id'
@@ -213,7 +219,7 @@ describe('WifiSoftGreSelectOption', () => {
     await userEvent.selectOptions(await screen.findByRole('combobox'),'softGreProfileName2')
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
-        enbaleIpsec: undefined
+        enableIpsec: false
       },
       softGre: {
         newProfileId: '75aa5131892d44a6a85a623dd3e524ed'

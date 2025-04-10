@@ -1,10 +1,38 @@
-import { Input as AntInput, Badge as AntBadge } from 'antd'
-import styled                                   from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
+import styled                                          from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
-import CanvasBackground from './assets/CanvasBackground.svg'
-import WaveBackground   from './assets/waves.svg'
+import CanvasBackground   from './assets/CanvasBackground.svg'
+import RuckusAiBackground from './assets/RuckusAiBackground.svg'
+
+export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
+  ${(props) => props.showCanvas && `
+    transition: all 0.2s ease-in-out; 
+    transform: scale(1); 
+  `
+}
+  ${(props) => !props.showCanvas && `
+    transition: all 0.2s ease-in-out; 
+    transform: scale(1); 
+  `
+}
+  .ant-modal-content {
+    border-radius: 24px;
+    .ant-modal-header {
+      border-radius: 24px;
+    }
+    .ant-modal-footer {
+      background: none;
+      text-align: center;
+    }
+    .ant-modal-body {
+      overflow-y: auto;
+      padding: 0;
+      font-size: 12px;
+     }
+  }
+`
 
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
@@ -29,6 +57,7 @@ export const History = styled.div`
     padding: 10px 70px 25px 40px;
     margin-left: -20px;
     background: var(--acx-neutrals-10);
+    border-bottom-left-radius: 24px;
   }
   .duration {
     margin: 0 -20px;
@@ -47,13 +76,14 @@ export const History = styled.div`
       padding: 12px 16px 6px 16px;
       cursor: default;
     }
-    .chat {
+    .chat-title {
       padding: 6px 8px 6px 16px;
       display: flex;
       justify-content: space-between;
       color: var(--acx-primary-black);
       &:hover {
-        background: var(--acx-neutrals-30);
+        background: var(--acx-neutrals-70);
+        color: var(--acx-primary-white);
         .action {
           display: flex;
         }
@@ -72,6 +102,9 @@ export const History = styled.div`
         }
         .ant-form-item {
           margin-bottom: 0;
+          input {
+            font-size: 12px;
+          }
         }
         .action {
           display: flex;
@@ -107,34 +140,45 @@ export const History = styled.div`
   }
 `
 
-export const Wrapper = styled.div`
-animation: fadeIn 0.1s linear 0s both;
-position: fixed; /* Stay in place */
-z-index: 101; /* Sit on top */
-padding-top: 100px; /* Location of the box */
-left: 0;
-top: 0;
-width: 100%; /* Full width */
-height: 100%; /* Full height */
-background-color: transparent;
-border-top: 75px solid rgba(255,255,255, 0.4);
+const CanvasChatWidth = '400px'
+const ChatOnlyWidth = '1000px'
+const ChatOnlyHeightDiff = '100px'
+const ModalMargin = '80px'
+const ModalHeaderHeight = '50px'
+const ModalInputHeight = '130px'
 
+export const Wrapper = styled.div<{ showCanvas: boolean }>`
+display: flex;
+.canvas {
+  ${(props) => !props.showCanvas && `
+    display: none;
+  `
+}
+}
 .chat-wrapper {
-  height: calc(100vh - 50px);
-  background-color: var(--acx-primary-white);
+  overflow: hidden;
+  position: relative;
 }
 .chat {
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  ${(props) => !props.showCanvas && `
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+  `
+}
+  ${(props) => props.showCanvas && `
+    background-position: -50px -10px;
+  `
+}
   background-color: var(--acx-primary-white);
-  background-image: url(${WaveBackground});
+  background-image: url(${RuckusAiBackground});
   background-repeat: no-repeat;
-  background-size: 401px 659px;
-  position: fixed;
-  width: 400px;
-  height: calc(100vh - 50px);
+  width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
   top: 60px;
-  z-index: 2;
   .header {
-    background-color: rgba(255, 255, 255, .4);
+    // background-color: rgba(255, 255, 255, .4);
+    border-top-left-radius: 24px;
     height: 50px;
     padding: 15px 20px;
     display: flex;
@@ -145,16 +189,16 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       align-items: center;
       cursor: default;
       span {
-        padding-left: 10px;
+        margin-left: -50px;
         font-family: var(--acx-accent-brand-font);
-        font-weight: 700;
-        font-size: var(--acx-headline-4-font-size);
+        font-weight: 600;
+        font-size: 15px;
       }
     }
     .actions{
       display: flex;
       align-items: center;
-      width: 56px;
+      width: 100px;
       justify-content: space-between;
       color: #000;
       svg {
@@ -171,11 +215,48 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   }
   .content {
     background: transparent;
-    height: calc(100vh - 110px);
-    width: 400px;
-    position: fixed;
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
+    width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
     overflow: auto;
+    .input {
+      background-color: var(--acx-primary-white);
+      border-bottom-left-radius: 24px;
+      ${(props) => !props.showCanvas && `
+        border-bottom-right-radius: 24px;
+      `
+}
+      height: 120px;
+      position: absolute;
+      bottom: 0;
+      width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
+      padding: 10px 20px 20px 20px;
+      .text-counter {
+        position: absolute;
+        right: 35px;
+        bottom: 85px;
+        color: var(--acx-neutrals-60);
+      }
+      button {
+        min-width: 24px;
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        right: 37px;
+        bottom: 46px;
+        border: 0px;
+        background: var(--acx-accents-orange-50);
+        &.ant-btn[disabled] {
+          background: var(--acx-neutrals-30);
+        }
+        svg {
+          width: 14px;
+          height: 14px;
+          path { stroke: var(--acx-primary-white); } }
+        }
+      }
+    }
     .chatroom {
       /* width */
       &::-webkit-scrollbar {
@@ -194,23 +275,23 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - 250px);
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+        - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
-      margin-right: 4px;
+      margin-right: 10px;
       margin-top: 4px;
       .placeholder {
-        position: fixed;
-        bottom: 130px;
-        width: 400px;
-        left: 20px;
+        position: absolute;
+        bottom: 0px;
+        left: 14px;
         div{
           background-color: var(--acx-accents-blue-50);
           color: var(--acx-primary-white);
           border-radius: 20px;
           height: 30px;
           width: fit-content;
-          padding: 7px 12px;
+          padding: 7px 10px;
           cursor: pointer;
           float: left;
           margin: 4px;
@@ -233,7 +314,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         }
         .ant-divider-horizontal.ant-divider-with-text::before, 
         .ant-divider-horizontal.ant-divider-with-text::after {
-          width: 20%;
+          width: 29%;
         }
       }
       .chat-container {
@@ -261,7 +342,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         background: #F8F8FA;
         border: 1px solid #D4D4D4;
         color: #000;
-        margin-right: 0px;
+        margin-right: 5px;
         font-weight: 400;
       }
       .chat-bubble {
@@ -284,39 +365,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         margin-top: -5px;
         &.right{
           justify-content: end;
-          margin-right: 2px;
-        }
-      }
-      .input {
-        background-color: var(--acx-primary-white);
-        height: 130px;
-        position: fixed;
-        bottom: 0;
-        width: 400px;
-        padding: 10px 20px 20px 20px;
-        .text-counter {
-          position: absolute;
-          right: 35px;
-          bottom: 85px;
-          color: var(--acx-neutrals-60);
-        }
-        button {
-          min-width: 24px;
-          width: 24px;
-          height: 24px;
-          position: absolute;
-          right: 37px;
-          bottom: 46px;
-          border: 0px;
-          background: var(--acx-accents-orange-50);
-          &.ant-btn[disabled] {
-            background: var(--acx-neutrals-30);
-          }
-          svg {
-            width: 14px;
-            height: 14px;
-            path { stroke: var(--acx-primary-white); } }
-          }
+          margin-right: 7px;
         }
       }
     }
@@ -326,13 +375,10 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 `
 
 export const Canvas = styled.div`
-  position: fixed;
-  width: calc(100vw - 400px);
-  top: 60px;
-  z-index: 2;
-  left: 400px;
+  width: calc(100vw - 450px);
   .header {
     border: 1px solid #E5E5E5;
+    border-top-right-radius: 24px;
     background-color: var(--acx-primary-white);
     height: 50px;
     display: flex;
@@ -342,7 +388,7 @@ export const Canvas = styled.div`
       cursor: default;
       padding: 10px 0;
       font-family: var(--acx-accent-brand-font);
-      font-weight: 700;
+      font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
     }
     .actions{
@@ -359,33 +405,35 @@ export const Canvas = styled.div`
     background-color: var(--acx-neutrals-30);
     background-image: url(${CanvasBackground});
     border-left: 1px solid #E5E5E5;
-    height: calc(100vh - 110px);
-    overflow: auto;
-    /* width */
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    /* Track */
-    &::-webkit-scrollbar-track {
-      border-radius: 6px;
-      background: transparent; 
-    }
-
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-      background: var(--acx-neutrals-30);
-      border-radius: 4px;
-    }
+    border-bottom-right-radius: 24px;
+    height: calc(100vh - 130px);
   }
 `
 
 export const Grid = styled.div`
+height: calc(100vh - 150px);
+overflow: auto;
+/* width */
+&::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track */
+&::-webkit-scrollbar-track {
+  border-radius: 6px;
+  background: #000 //transparent; 
+  padding-bottom: 10px;
+}
+
+/* Handle */
+&::-webkit-scrollbar-thumb {
+  background: var(--acx-neutrals-30);
+  border-radius: 4px;
+}
 .rglb_group-item {
   width: 100%;
   margin-bottom: 30px;
-  // cursor: move;
   position: relative;
   transition: all 0.2s ease-out;
 }
