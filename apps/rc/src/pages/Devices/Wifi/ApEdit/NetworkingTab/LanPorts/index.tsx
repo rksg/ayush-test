@@ -357,6 +357,7 @@ export function LanPorts (props: ApEditItemProps) {
         if (isEthernetClientIsolationEnabled) {
           await handleClientIsolationDeactivate(values)
         }
+
         await updateEthernetPortProfile({
           params: { venueId, serialNumber },
           payload,
