@@ -5,8 +5,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useEnhanceVenueTableQuery, useVenuesTableQuery } from '@acx-ui/rc/services'
+import { useEnhanceVenueTableQuery }                      from '@acx-ui/rc/services'
 
 import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
@@ -28,10 +27,7 @@ export function Summary () {
   const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
   const isEnabled = form.getFieldValue('preferences').enable
-  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
-  const query = isApCompatibilitiesByModel ? useEnhanceVenueTableQuery : useVenuesTableQuery
-
-  const { data: venues, isLoading } = query({ payload, skip: isRAI })
+  const { data: venues, isLoading } = useEnhanceVenueTableQuery({ payload, skip: isRAI })
 
   const affectedVenueNames = useMemo(() => {
     if (!venues || wlans.length === 0) {
