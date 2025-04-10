@@ -1,6 +1,9 @@
-import { SamlIdpAttributeMappingNameType } from '@acx-ui/rc/utils'
+import { SamlIdpAttributeMappingNameType } from '../../models'
 
-import { getSamlIdpAttributeMappingNameTypeOptions, getSamlIdpAttributeMappingNameTypeString } from './samlIdpUtils'
+import {
+  getSamlIdpAttributeMappingNameTypeOptions,
+  getSamlIdpAttributeMappingNameTypeString
+} from './samlIdpUtils'
 
 describe('samlIdpUtils', () => {
   describe('getSamlIdpAttributeMappingNameTypeOptions', () => {
