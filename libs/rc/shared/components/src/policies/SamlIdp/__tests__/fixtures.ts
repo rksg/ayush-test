@@ -29,14 +29,28 @@ export const mockedMetadata2 = '<EntityDescriptor xmlns="urn:oasis:names:tc:SAML
 export const mockedSamlIdpProfile = {
   name: mockSamlIdpProfileName,
   metadata: Buffer.from(mockedMetadata).toString('base64'),
-  metadataUrl: ''
+  metadataUrl: '',
+  attributeMappings: [
+    {
+      name: 'displayName',
+      mappedByName: 'displayName'
+    },
+    {
+      name: 'email',
+      mappedByName: 'email'
+    },
+    {
+      name: 'phoneNumber',
+      mappedByName: 'phone'
+    }
+  ]
 }
 
 export const mockedSamlIdpProfileByURL = {
   name: mockSamlIdpProfileName2,
   metadata: Buffer.from(mockedMetadata2).toString('base64'),
   metadataUrl: 'https://mockedMetadataUrl',
-  updatedData: '2025-03-26T09:12:52.705+00:00'
+  updatedDate: '2025-03-26T09:12:52.705+00:00'
 }
 
 export const mockedSamlIdpProfileWithRelations = {
@@ -47,10 +61,24 @@ export const mockedSamlIdpProfileWithRelations = {
   signingCertificateId: mockCertId3,
   encryptionCertificateEnabled: true,
   encryptionCertificateId: mockCertId1,
-  wifiNetworkIds: [mockedNetworkId1]
+  wifiNetworkIds: [mockedNetworkId1],
+  attributeMappings: [
+    {
+      name: 'displayName',
+      mappedByName: 'displayName'
+    },
+    {
+      name: 'email',
+      mappedByName: 'email'
+    },
+    {
+      name: 'phoneNumber',
+      mappedByName: 'phone'
+    }
+  ]
 }
 
-export const mockedsamlIpdProfileList = {
+export const mockedSamlIdpProfileList = {
   page: 1,
   totalCount: 2,
   data: [
