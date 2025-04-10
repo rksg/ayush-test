@@ -67,6 +67,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 describe('Add user drawer component', () => {
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
 
   beforeEach(() => {
     mockReqAdminsData.mockReset()
@@ -122,6 +123,7 @@ describe('Add user drawer component', () => {
         email: 'c123@email.com',
         role: 'READ_ONLY',
         detailLevel: 'debug',
+        phoneNumber: '',
         delegateToAllECs: false
       })
     })
@@ -151,6 +153,7 @@ describe('Add user drawer component', () => {
         email: 'c123@email.com',
         role: 'wi-fi privilege group',
         detailLevel: 'debug',
+        phoneNumber: '',
         delegateToAllECs: false
       })
     })
@@ -184,6 +187,7 @@ describe('Add user drawer component', () => {
         role: 'READ_ONLY',
         detailLevel: 'debug',
         delegateToAllECs: false,
+        phoneNumber: '',
         delegatedECs: ['2242a683a7594d7896385cfef1fe1234']
       })
     })
@@ -338,5 +342,37 @@ describe('Add user drawer component', () => {
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
     await userEvent.click(await screen.findByText( 'Guest Manager' ))
     await userEvent.click(await screen.findByText('Add User'))
+  })
+
+  it('should MSP submit correctly with common account management FF On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    await render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={true}
+          currentUserDetailLevel='debug'
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText('Read Only'))
+    await userEvent.click(await screen.findByText('Add User'))
+    await expect(mockedAddAdminFn).toBeCalledWith({
+      email: 'c123@email.com',
+      lastName: '',
+      name: '',
+      role: 'READ_ONLY',
+      detailLevel: 'debug',
+      phoneNumber: '',
+      delegateToAllECs: false
+    })
   })
 })
