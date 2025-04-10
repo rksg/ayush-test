@@ -75,7 +75,9 @@ export const Wrapper = styled.div<{ showScreen: boolean, greyBg?: boolean }>`
             }`)}
           }
           &:after {
-            background-color: var(--acx-primary-white);
+            ${({ greyBg }) => (greyBg
+    ? 'background-color: var(--acx-neutrals-10);'
+    : 'background-color: var(--acx-primary-white);')}
             border-top-left-radius: 20px;
             ${({ showScreen }) => (!showScreen &&
             `@media screen and (max-width: 1279px) {

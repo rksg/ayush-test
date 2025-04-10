@@ -41,7 +41,7 @@ function PageHeader (props: PageHeaderProps) {
   const location = useLocation()
   const layout = useLayoutContext()
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
-  const isDashboardPage = location.pathname.includes('dashboard')
+  const isDashboardPage = location.pathname?.includes('dashboard')
   const { $t } = useIntl()
 
   useLayoutEffect(() => {

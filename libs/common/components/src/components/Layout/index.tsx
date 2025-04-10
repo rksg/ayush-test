@@ -240,7 +240,7 @@ export function Layout ({
   }, [window.innerWidth])
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
-  const isDashboardPage = location.pathname.includes('dashboard')
+  const isDashboardPage = location.pathname?.includes('dashboard')
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
     greyBg={isDashboardPage}

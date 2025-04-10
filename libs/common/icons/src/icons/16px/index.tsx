@@ -3,6 +3,7 @@
  * Please make sure to use the correct icon size and set the stroke/fill to "currentColor."
  */
 
+export { ReactComponent as AccountCircleSolid } from './AccountCircleSolid.svg'
 export { ReactComponent as ArrowChevronRight } from './ArrowChevronRight.svg'
 export { ReactComponent as ArrowCollapse } from './ArrowCollapse.svg'
 export { ReactComponent as ArrowExpand } from './ArrowExpand.svg'

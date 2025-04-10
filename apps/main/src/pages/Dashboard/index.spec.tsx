@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom'
 import { useEffect } from 'react'
 
+import userEvent from '@testing-library/user-event'
+
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }            from '@acx-ui/rc/components'
 import { BrowserRouter }             from '@acx-ui/react-router-dom'
@@ -50,6 +52,36 @@ jest.mock(
   'rc/Widgets',
   () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
   { virtual: true })
+
+const mockedGetCanvas = jest.fn(() => ({
+  unwrap: jest.fn().mockResolvedValue([
+    {
+      id: '65bcb4d334ec4a47b21ae5e062de279f',
+      name: 'Canvas',
+      content: `[{
+        "id":"default_section",
+        "type":"section",
+        "hasTab":false,
+        "groups":[]
+      }]`
+    }
+  ])
+}))
+
+jest.mock('@acx-ui/rc/services', () => {
+  return {
+    useGetWidgetQuery: jest.fn().mockReturnValue({}),
+    useLazyGetCanvasQuery: () => ([ mockedGetCanvas ]),
+    useCreateWidgetMutation: () => [
+      jest.fn(() => ({
+        then: jest.fn().mockResolvedValue({
+          id: '123'
+        })
+      }))
+    ]
+  }
+})
+
 
 describe('Dashboard', () => {
   it('renders correctly', async () => {
@@ -147,4 +179,39 @@ describe('Dashboard', () => {
     expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
   })
 
+  describe('Dashboard canvas', () => { //TODO
+    it('should render correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      expect(await screen.findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(await screen.findByText('Import dashboards from available canvases'))
+      expect(await screen.findByText('Import Dashboards')).toBeVisible()
+
+      const canvasMoreBtn = await screen.findAllByTestId('canvas-more-btn')
+      await userEvent.click(canvasMoreBtn[0])
+      // await waitFor(async ()=>{
+      //   expect(await screen.findByText(/Clone as Private Copy/)).toBeVisible()
+      // })
+
+      await userEvent.click(await screen.findByText(/Back/))
+      const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      await userEvent.click(dashboardMoreBtn[0])
+      // expect(await screen.findByText('Set as Landing Page')).toBeVisible()
+
+    })
+
+    it('should switch dashboard correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByText(/RUCKUS One Default Dashboard/))
+      await userEvent.click(await screen.findByText(/Dashboard 1/))
+      expect(await screen.findByText('Dashboard 1 longlonglonglonglonglonglonglong')).toBeVisible()
+    })
+  })
 })

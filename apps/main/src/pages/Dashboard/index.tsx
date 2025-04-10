@@ -90,33 +90,34 @@ import Layout                     from '../AICanvas/components/Layout'
 import * as CanvasUI              from '../AICanvas/styledComponents'
 import { compactLayout }          from '../AICanvas/utils/compact'
 
-import * as UI from './styledComponents'
+import { DashboardDrawer }                                from './DashboardDrawer'
+import { ImportDashboardDrawer }                          from './ImportDashboardDrawer'
+import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth } from './index.utils'
+import { mockDashboardList }                              from './mockData'
+import { PreviewDashboardModal }                          from './PreviewDashboardModal'
+import * as UI                                            from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
   setDateFilterState: Dispatch<SetStateAction<DateFilter>>;
 }
 
-interface DashboardInfo {
+export interface DashboardInfo {
   id: string
   name: string
   author?: string
   updatedDate?: string
   widgetIds?: string[]
   diffWidgetIds?: string[]
+  isLanding?: boolean
+  isDefault?: boolean
+  key: string
 }
 
 const DashboardFilterContext = createContext<DashboardFilterContextProps>({
   dashboardFilters: getDateRangeFilter(DateRange.last8Hours) as AnalyticsFilter,
   setDateFilterState: () => {}
 })
-
-const DEFAULT_DASHBOARD_ID = 'default-dashboard-id'
-const getCalWidthByClientWidth = (menuCollapsed?: boolean) => {
-  const width = document.documentElement.clientWidth
-  const menuWidth = menuCollapsed ? width - 60 : width - 216
-  return (menuWidth - 72 - 60) / 4
-}
 
 export const DashboardFilterProvider = ({ children }: { children : React.ReactNode }) => {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
@@ -181,7 +182,7 @@ export default function Dashboard () {
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
   const [layout, setLayout] = useState({
     ...layoutConfig,
-    calWidth: getCalWidthByClientWidth(menuCollapsed)
+    calWidth: getCalculatedColumnWidth(menuCollapsed)
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
@@ -193,14 +194,16 @@ export default function Dashboard () {
   }, [])
 
   useEffect(() => {
-    setLayout({
-      ...layout,
-      calWidth: getCalWidthByClientWidth(menuCollapsed)
-    })
+    if (isCanvasQ2Enabled) {
+      setLayout({
+        ...layout,
+        calWidth: getCalculatedColumnWidth(menuCollapsed)
+      })
+    }
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
       getDefaultCanvas()
     }
   }, [dashboardId])
@@ -229,38 +232,12 @@ export default function Dashboard () {
   }
 
   const getDashboardList = () => {
-    return [{
-      id: DEFAULT_DASHBOARD_ID,
-      name: $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) //temp
-    }, {
-      id: '2bde337644cc43ac925684879e1b83d5',
-      name: 'Dashboard 1',
-      author: 'Joseph Stonkus',
-      updatedDate: '2025-04-01T09:19:14.525+00:00',
-      widgetIds: [
-        '4488ae74ee7d4316835d92ce57c2978d',
-        '50d9f993a88b4d86a53da0e8dfff83c4',
-        'b73ba496ba0545ec994098f139d99fd8'
-      ],
-      diffWidgetIds: [
-        '50d9f993a88b4d86a53da0e8dfff83c4',
-        'b73ba496ba0545ec994098f139d99fd8'
-      ]
-    },
-    {
-      id: '613013d1015d45fea3929830072d0512',
-      name: 'Dashboard 2',
-      updatedDate: '2025-04-01T09:19:14.525+00:00',
-      widgetIds: [
-        '54ca583dc31b44e4ac8c74030cedf562',
-        '0f7d4d22707642ecad6ceb4a5282b42d',
-        '59a0769d298241a086ef71341ba099db',
-        '04fbc2eb86e5411fb76a820bd9fc4543',
-        '6ef08aba650d432698160a837a8c51f0'
-      ],
-      diffWidgetIds: []
-    }
-    ]
+    return mockDashboardList.map((item, index) => {
+      return { ...item, key: item.id,
+        isLanding: index === 0,
+        isDefault: item.id === DEFAULT_DASHBOARD_ID
+      }
+    })
   }
 
   return (
@@ -272,7 +249,7 @@ export default function Dashboard () {
       />
       {
         dashboardId === DEFAULT_DASHBOARD_ID
-          ? <div>
+          ? <>
             <CommonDashboardWidgets />
             <Divider dashed
               style={{
@@ -296,7 +273,7 @@ export default function Dashboard () {
                 borderColor: 'var(--acx-neutrals-30)',
                 margin: '20px 0px' }}/>
             <DashboardMapWidget />
-          </div>
+          </>
           : <DndProvider backend={HTML5Backend}>
             <div className='grid' id='grid'>
               <CanvasUI.Grid $type='pageview'>
@@ -335,6 +312,11 @@ function DashboardPageHeader (props: {
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+
+  const [previewId, setPreviewId] = useState('')
+  const [previewModalVisible, setPreviewModalVisible] = useState(false)
+  const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
+  const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -425,6 +407,11 @@ function DashboardPageHeader (props: {
     setDashboardId(value)
   }
 
+  const handlePreview = async (id: string) => {
+    setPreviewId(id)
+    setPreviewModalVisible(true)
+  }
+
   const DashboardSelector = () => {
     return <>
       <UI.DashboardSelectDropdown />
@@ -441,6 +428,7 @@ function DashboardPageHeader (props: {
             const hasUpdated = item.diffWidgetIds && item.diffWidgetIds.length > 0
             const icon = item.author ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
             return <Select.Option
+              key={item.id}
               value={item.id}
               title={item.name}
               className={isDefault ? 'default' : (hasUpdated ? 'hasUpdated' : '')}
@@ -452,7 +440,7 @@ function DashboardPageHeader (props: {
     </>
   }
 
-  return (
+  return (<>
     <PageHeader
       title={''}
       titleExtra={isCanvasQ2Enabled &&
@@ -464,6 +452,7 @@ function DashboardPageHeader (props: {
           icon={<SettingsOutlined size='sm' />}
           style={{ minWidth: '16px', width: '16px' }}
           onClick={()=> {
+            setDashboardDrawerVisible(true)
           }}
         />
       </Space>}
@@ -500,6 +489,42 @@ function DashboardPageHeader (props: {
         />
       ]}
     />
+
+    { isCanvasQ2Enabled && <>
+      <DashboardDrawer
+        data={dashboardList}
+        visible={dashboardDrawerVisible}
+        handlePreview={handlePreview}
+        onClose={() => {
+          setDashboardDrawerVisible(false)
+        }}
+        onNextClick={() => {
+          setImportDashboardDrawerVisible(true)
+        }}
+      />
+
+      <ImportDashboardDrawer
+        visible={importDashboardDrawerVisible}
+        handlePreview={handlePreview}
+        onBackClick={() => {
+          setDashboardDrawerVisible(true)
+          setImportDashboardDrawerVisible(false)
+        }}
+        onApplyClick={(keys) => {
+          //TODO
+          console.log(keys) // eslint-disable-line no-console
+        }}
+        onClose={() => setImportDashboardDrawerVisible(false)}
+      />
+
+      <PreviewDashboardModal
+        visible={previewModalVisible}
+        setVisible={setPreviewModalVisible}
+        previewId={previewId}
+      />
+    </>}
+
+  </>
   )
 }
 
