@@ -98,7 +98,7 @@ export function IdentityGroup () {
           const boundIdentities = retrievedIdentitiesData?.data
           if (boundIdentities && boundIdentities.totalCount > 0){
             const persona = boundIdentities.data[0]
-            form.setFieldValue('identityId', persona.groupId)
+            form.setFieldValue('identityId', persona.id)
             form.setFieldValue('enableIdentityAssociation', true)
             setSelectedIdentity(persona)
           }
