@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Switch, Space }       from 'antd'
 import { useWatch }                  from 'antd/lib/form/Form'
 import { DefaultOptionType }         from 'antd/lib/select'
+import { isEqual }                   from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
@@ -66,6 +67,27 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const [isSoftGreProfileDisabled, setSoftGreProfileDisabled] = useState(false)
   const [isIpsecDisabled, setIsIpsecDisabled] = useState(false)
 
+  function usePrevious (value: {
+    data: SoftGreIpsecProfile[];
+    operations: SoftGreIpsecProfile[];
+  } | undefined) {
+    const ref = useRef<{
+      data: SoftGreIpsecProfile[];
+      operations: SoftGreIpsecProfile[];
+  }>()
+    useEffect(() => {
+      ref.current = value
+    }, [value])
+    return ref.current
+  }
+  const previous = usePrevious(usedProfileData)
+
+  const onFormChange = () => {
+    if (!isEqual(usedProfileData, previous)) {
+      onGUIChanged && onGUIChanged('ipsecEnabled')
+    }
+  }
+
   useEffect(() => {
     // eslint-disable-next-line no-console
     console.log('usedProfileData: ', usedProfileData?.data,
@@ -73,6 +95,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {
+      setSoftGreProfileDisabled(false)
+      setIsIpsecDisabled(false)
       return
     }
     if (target.length > 0) {
@@ -87,14 +111,14 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       if (!!standardOp.ipsecId) {
         setIsIpsecDisabled(true)
         setSoftGreProfileDisabled(true)
-        form.setFieldValue(ipsecFieldName, 'checked')
+        form.setFieldValue(ipsecFieldName, true)
         form.setFieldValue(['lan', index, 'softGreProfileId'], target[0].softGreId)
         if (isDbRecord) {
           return
         }
         if (ipsecProfileId !== standardOp.ipsecId) {
           form.setFieldValue(['lan', index, 'ipsecProfileId'], target[0].ipsecId)
-          onGUIChanged && onGUIChanged('ipsecEnabled')
+          onFormChange()
         }
       } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
@@ -103,7 +127,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           return
         }
         if (softGreProfileId !== standardOp.softGreId) {
-          onGUIChanged && onGUIChanged('ipsecEnabled')
+          onFormChange()
         }
       }
     } else if (operations.length > 0) {
@@ -116,7 +140,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             operations.filter(a => a.serialNumber !== serialNumber || a.portId !== portId) :
             operations.filter(a => a.apModel !== apModel || a.portId !== portId)
           if (!!standardOps[0].ipsecId) {
-            if (form.getFieldValue(['lan', index, 'ipsecProfileId']) !== standardOps[0].ipsecId) {
+            console.log('ipsecProfileId:', ipsecProfileId) // eslint-disable-line no-console
+            if (ipsecProfileId !== standardOps[0].ipsecId) {
               form.setFieldValue(['lan', index, 'softGreProfileId'], standardOps[0].softGreId)
               form.setFieldValue(['lan', index, 'ipsecProfileId'], standardOps[0].ipsecId)
               ipsecOptionDispatch && ipsecOptionDispatch({
@@ -126,12 +151,12 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             }
             setIsIpsecDisabled(true)
             setSoftGreProfileDisabled(true)
-            form.setFieldValue(ipsecFieldName, 'checked')
-            onGUIChanged && onGUIChanged('ipsecEnabled')
+            form.setFieldValue(ipsecFieldName, true)
+            onFormChange()
           } else if (!!standardOps[0].softGreId) {
             setIsIpsecDisabled(true)
             form.setFieldValue(ipsecFieldName, '')
-            onGUIChanged && onGUIChanged('ipsecEnabled')
+            onFormChange()
           }
         } else {
           setSoftGreProfileDisabled(false)
@@ -142,7 +167,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       form.setFieldValue(ipsecFieldName, '')
       setSoftGreProfileDisabled(false)
       setIsIpsecDisabled(false)
-      onGUIChanged && onGUIChanged('ipsecEnabled')
+      onFormChange()
     }
 
   }, [usedProfileData])
