@@ -640,7 +640,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
+      return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
     }
     return data
   }
