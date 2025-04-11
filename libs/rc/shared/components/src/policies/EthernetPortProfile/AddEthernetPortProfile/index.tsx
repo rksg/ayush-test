@@ -1,6 +1,7 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useAddEthernetPortProfileTemplateMutation,
   useCreateEthernetPortProfileMutation,
@@ -22,6 +23,7 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
   const [form] = Form.useForm()
   const { isTemplate } = useConfigTemplate()
   const { onClose, isEmbedded, updateInstance } = props
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const [ createEthernetPortProfile ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useCreateEthernetPortProfileMutation,
@@ -32,7 +34,7 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
+      const payload = requestPreProcess(isWiredClientVisibilityEnabled, data)
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
       const createId = createResult.response?.id

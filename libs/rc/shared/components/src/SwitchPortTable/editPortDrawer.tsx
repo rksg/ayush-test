@@ -2519,7 +2519,7 @@ export function EditPortDrawer ({
               {...getFormItemLayout(isMultipleEdit)}
               name='portSecurityMaxEntries'
               label={$t(FIELD_LABEL.portSecurityMaxEntries)}
-              initialValue='1'
+              initialValue={1}
               rules={[
                 {
                   type: 'number',
