@@ -53,8 +53,15 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   // eslint-disable-next-line max-len
   const sdLanVenueMap = transformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const { venuePins: allPins, refetch } = useEdgeAllPinData({}, isTemplate)
-  refetchFnRef.current.pin = refetch
+  const {
+    venuePins: allPins,
+    isUninitialized: isPinUninitialized,
+    refetch
+  } = useEdgeAllPinData({}, isTemplate)
+
+  if (refetchFnRef && !isPinUninitialized) {
+    refetchFnRef.current.pin = refetch
+  }
 
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
