@@ -84,14 +84,14 @@ export enum AiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
-  EcoFlex = 'EcoFlex'
+  EcoFlex = 'Energy Saving'
 }
 
 export const aiFeaturesLabel = {
   [AiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   [AiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
   [AiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
+  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'Energy Saving' })
 }
 
 type CodeInfo = {
