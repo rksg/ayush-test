@@ -141,7 +141,7 @@ export const DashboardDrawer = (props: {
           const data = item as DashboardInfo
           const dropdownMenu = getActionMenu(data)
           const hasDropdownMenu = dropdownMenu.props.items.length > 0
-          return (<>
+          return (<span title=''>
             <div className={`mark ${data?.isLanding ? 'star' : 'move'}`}>{
               data?.isLanding
                 // eslint-disable-next-line max-len
@@ -182,7 +182,7 @@ export const DashboardDrawer = (props: {
                 />
               </Dropdown>
             </div>}
-          </>) as React.ReactNode
+          </span>) as React.ReactNode
         }}
       />
 

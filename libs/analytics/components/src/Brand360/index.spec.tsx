@@ -17,7 +17,7 @@ import { Brand360 } from '.'
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
-const utils = require('@acx-ui/utils') 
+const utils = require('@acx-ui/utils')
 
 jest.mock('./Table', () => ({
   BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>

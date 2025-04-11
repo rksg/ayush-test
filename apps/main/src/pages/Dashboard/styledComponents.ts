@@ -111,6 +111,12 @@ export const DashboardList = styled(Tree)`
       display: flex;
       gap: 8px;
       align-items: center;
+      > span {
+        display: flex;
+        overflow: hidden;
+        width: 100%;
+        gap: 8px;
+      }
       .mark {
         display: flex;
         align-items: center;
@@ -222,7 +228,7 @@ export const ListItem = styled(AntList.Item)`
   margin-bottom: 6px;
   padding: 12px 15px !important;
 
-  .ant-checkbox-wrapper-checked {
+  .ant-checkbox-wrapper {
     overflow: hidden;
   }
 

@@ -50,7 +50,7 @@ const DraggableCard = (props: CardProps) => {
   }, [preview])
 
   return (
-    <div style={{ cursor: 'grab' }}>
+    <div style={{ cursor: props.draggable ? 'grab' : 'default' }}>
       <Card
         {...props}
         drag={drag}
