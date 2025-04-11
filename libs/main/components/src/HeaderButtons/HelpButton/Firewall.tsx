@@ -23,7 +23,7 @@ export default function Firewall (props: {
         }
       </Typography.Paragraph>
       <HelpSubtitle>
-        {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
+        {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs, Switches and Edges to:' })}
       </HelpSubtitle>
       <Typography.Paragraph>
         <CopyableText>https://ap-registrar.ruckuswireless.com</CopyableText>
@@ -35,9 +35,14 @@ export default function Firewall (props: {
         <CopyableText>https://device.eu.ruckus.cloud</CopyableText>
         <CopyableText>https://device.asia.ruckus.cloud</CopyableText>
         <CopyableText>https://storage.googleapis.com</CopyableText>
+        <CopyableText>https://edge-docker-registry.asia.ruckus.cloud</CopyableText>
+        <CopyableText>https://edge-docker-registry.eu.ruckus.cloud</CopyableText>
+        <CopyableText>https://edge-docker-registry.ruckus.cloud</CopyableText>
+        <CopyableText>https://registrar.ruckuswireless.com</CopyableText>
+        <CopyableText>https://us-docker.pkg.dev</CopyableText>
       </Typography.Paragraph>
       <HelpSubtitle>
-        {$t({ defaultMessage: 'Outbound HTTP (TCP 80) from APs and Switches to:' })}
+        {$t({ defaultMessage: 'Outbound HTTP (TCP 80) from APs, Switches and Edges to:' })}
       </HelpSubtitle>
       <Typography.Paragraph>
         <CopyableText>http://ocsp.comodoca.com</CopyableText>
@@ -45,7 +50,7 @@ export default function Firewall (props: {
         <CopyableText>http://ocsp.godaddy.com</CopyableText>
       </Typography.Paragraph>
       <HelpSubtitle>
-        {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
+        {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs, Switches and Edges to:' })}
       </HelpSubtitle>
       <Typography.Paragraph>
         <CopyableText>device.ruckus.cloud</CopyableText>
