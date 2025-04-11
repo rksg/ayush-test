@@ -50,7 +50,6 @@ import {
   useIsEdgeReady,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { useLazyGetCanvasQuery } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeUrlsInfo,
@@ -88,14 +87,13 @@ import { Section, Group }         from '../AICanvas/Canvas'
 import { CardInfo, layoutConfig } from '../AICanvas/Canvas'
 import Layout                     from '../AICanvas/components/Layout'
 import * as CanvasUI              from '../AICanvas/styledComponents'
-import { compactLayout }          from '../AICanvas/utils/compact'
 
-import { DashboardDrawer }                                from './DashboardDrawer'
-import { ImportDashboardDrawer }                          from './ImportDashboardDrawer'
-import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth } from './index.utils'
-import { mockDashboardList }                              from './mockData'
-import { PreviewDashboardModal }                          from './PreviewDashboardModal'
-import * as UI                                            from './styledComponents'
+import { DashboardDrawer }                                               from './DashboardDrawer'
+import { ImportDashboardDrawer }                                         from './ImportDashboardDrawer'
+import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from './index.utils'
+import { mockDashboardList }                                             from './mockData'
+import { PreviewDashboardModal }                                         from './PreviewDashboardModal'
+import * as UI                                                           from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -173,7 +171,6 @@ export default function Dashboard () {
     localStorage.setItem('dashboard-tab', value)
   }
 
-  const [ getCanvas ] = useLazyGetCanvasQuery()
   const { menuCollapsed } = useLayoutContext()
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
@@ -204,32 +201,14 @@ export default function Dashboard () {
 
   useEffect(() => {
     if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      getDefaultCanvas()
-    }
-  }, [dashboardId])
-
-  const getDefaultCanvas = async () => {
-    const response = await getCanvas({}).unwrap()
-    if (response?.length && response[0].content) {
-      const canvasId = response[0].id
-      let data = JSON.parse(response[0].content) as Section[]
-      data = data.map(section => ({
-        ...section,
-        groups: section.groups.map(group => ({
-          ...group,
-          cards: compactLayout(group.cards)
-        }))
-      }))
-      const groups = data.flatMap(section => section.groups)
-      setCanvasId(canvasId)
-      setSections(data)
-      setGroups(groups)
-    } else {
-      if (response?.length && response[0].id) {
-        setCanvasId(response[0].id)
+      const { canvasId, sections, groups } = getCanvasData()
+      if (canvasId && sections) {
+        setCanvasId(canvasId)
+        setSections(sections)
+        setGroups(groups)
       }
     }
-  }
+  }, [dashboardId])
 
   const getDashboardList = () => {
     return mockDashboardList.map((item, index) => {

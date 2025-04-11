@@ -427,7 +427,7 @@ exports[`Layout should render correctly 1`] = `
   top: var(--acx-header-height);
   height: var(--acx-content-vertical-space);
   width: 100%;
-  background-color: var(--acx-primary-white);
+  background-color: var(--acx-neutrals-10);
   z-index: 6;
 }
 
@@ -2785,6 +2785,663 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                       >
                         <svg
                           data-testid="SpeedIndicatorOutlined"
+                        />
+                      </span>
+                      Dashboard
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+            <div
+              class="ant-pro-sider-links"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-link-menu"
+                data-menu-list="true"
+                role="menu"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-pro-sider-collapsed-button"
+                  data-menu-id="rc-menu-uuid-test-collapsed"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <svg
+                      class="c2"
+                      data-testid="ArrowChevronLeft"
+                    />
+                    <div
+                      class="c3 ant-pro-menu-item-title"
+                    >
+                      Collapse
+                    </div>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+          </div>
+        </aside>
+        <div
+          class="ant-layout"
+          style="position: relative;"
+        >
+          <header
+            class="ant-layout-header"
+            style="height: 48px; line-height: 48px; background: transparent;"
+          />
+          <header
+            class="ant-layout-header ant-pro-fixed-header ant-pro-fixed-header-action ant-pro-header-dark"
+            style="padding: 0px; height: 48px; line-height: 48px; width: calc(100% - 208px); z-index: 19; right: 0px;"
+          >
+            <div
+              class="ant-pro-global-header ant-pro-global-header-layout-side"
+            >
+              <div
+                style="flex: 1;"
+              >
+                <div
+                  class="c4"
+                >
+                  <div>
+                    Left header
+                  </div>
+                </div>
+              </div>
+              <div
+                class="c5"
+              >
+                <div>
+                  Right header
+                </div>
+              </div>
+            </div>
+          </header>
+          <main
+            class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
+          >
+            <div
+              class="c6"
+            >
+              <div>
+                content
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Layout should render layout with grey background correctly 1`] = `
+<DocumentFragment>
+  .c0 {
+  --acx-header-caret-width: 8px;
+  --acx-header-item-margin: 20px;
+  --acx-header-divider-margin: 5px;
+  --acx-header-button-margin: 12px;
+  --acx-header-company-name-width: 175px;
+  --acx-header-company-name-min-width: 130px;
+  --acx-header-company-name-right-space: 6px;
+  --acx-sidebar-left-space: 10px;
+  --acx-sidebar-right-space: 28px;
+  --acx-cloudmessagebanner-height: 58px;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout {
+  background: var(--acx-primary-white);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider {
+  overflow: visible !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider .ant-layout-sider-children .ant-pro-sider-logo {
+  padding: 0;
+  width: var(--acx-sider-width);
+  height: var(--acx-header-height);
+  margin-bottom: 17px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider .ant-layout-sider-children .ant-pro-sider-logo a {
+  width: 100%;
+  height: 100%;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider .ant-layout-sider-children .ant-pro-sider-logo a svg,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider .ant-layout-sider-children .ant-pro-sider-logo a img {
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider:before,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider::after {
+  content: '';
+  position: absolute;
+  top: var(--acx-header-height);
+  right: -20px;
+  width: 20px;
+  height: 20px;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider:before {
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider:after {
+  background-color: var(--acx-neutrals-10);
+  border-top-left-radius: 20px;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu {
+  border: 0px;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: column;
+  -ms-flex-flow: column;
+  flex-flow: column;
+  -webkit-transition: unset;
+  transition: unset;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu a {
+  -webkit-text-decoration: none !important;
+  text-decoration: none !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-title-content {
+  -webkit-transition: all 0.2s !important;
+  transition: all 0.2s !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu {
+  border-left: 2px solid transparent;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu .ant-menu-submenu-title {
+  height: 48px;
+  line-height: 48px;
+  color: var(--acx-primary-white);
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  font-weight: var(--acx-headline-4-font-weight);
+  padding-left: var(--acx-sidebar-left-space) !important;
+  padding-right: var(--acx-sidebar-right-space);
+  margin: 0;
+  cursor: default;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu .ant-menu-submenu-title:active {
+  background: unset;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu .ant-menu-submenu-title .ant-menu-title-content + svg {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  margin: auto;
+  right: 12px;
+  width: 16px;
+  -webkit-transition: -webkit-transform 0.3s;
+  -webkit-transition: transform 0.3s;
+  transition: transform 0.3s;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu .ant-menu-submenu-title .ant-menu-title-content + svg path {
+  stroke: var(--acx-neutrals-60);
+  stroke-width: 2;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open {
+  background-color: var(--acx-neutrals-70);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu.menu-active {
+  border-left: 2px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-neutrals-70);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu.menu-active .ant-menu-submenu-title {
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-title .ant-menu-title-content + svg path,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu.menu-active .ant-menu-submenu-title .ant-menu-title-content + svg path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu.menu-admin-item {
+  margin-top: auto;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item {
+  height: 48px;
+  line-height: 48px;
+  border-left: 2px solid transparent;
+  padding-left: var(--acx-sidebar-left-space) !important;
+  padding-right: 0;
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  font-weight: var(--acx-headline-4-font-weight);
+  color: var(--acx-primary-white);
+  margin: 0;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item:active {
+  background: unset;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item-active {
+  background-color: var(--acx-neutrals-70);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item .ant-menu-title-content a {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item.menu-active {
+  font-weight: var(--acx-headline-4-font-weight-bold);
+  border-left: 2px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-neutrals-70);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item.menu-admin-item {
+  margin-top: auto;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-item.ant-pro-sider-collapsed-button {
+  border: none;
+  box-shadow: none;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider > div:first-child,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-layout-sider {
+  -webkit-flex: 0 0 var(--acx-sider-width) !important;
+  -ms-flex: 0 0 var(--acx-sider-width) !important;
+  flex: 0 0 var(--acx-sider-width) !important;
+  max-width: var(--acx-sider-width) !important;
+  min-width: var(--acx-sider-width) !important;
+  width: var(--acx-sider-width) !important;
+  -webkit-transition: all 0.2s !important;
+  transition: all 0.2s !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-popup {
+  visibility: hidden;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup {
+  height: auto;
+  border-left: unset;
+  visibility: visible;
+  -webkit-transition: visibility 1s;
+  transition: visibility 1s;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup.layout-group-horizontal .ant-menu {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row;
+  -ms-flex-flow: row;
+  flex-flow: row;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu {
+  margin-left: -4px;
+  box-shadow: none;
+  border-radius: 0;
+  background-color: var(--acx-neutrals-70);
+  padding-top: 8px;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item {
+  cursor: default;
+  height: 40px;
+  width: 100%;
+  border-left: unset;
+  margin: auto;
+  font-family: var(--acx-accent-brand-font);
+  line-height: var(--acx-headline-5-line-height);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight);
+  padding: 8px 16px 16px !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item:active {
+  background: unset;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item.menu-active > .ant-menu-title-content a,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item.menu-active > .ant-menu-title-content a:hover {
+  color: var(--acx-accents-orange-50);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content {
+  padding-left: unset;
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  font-weight: var(--acx-headline-4-font-weight);
+  color: var(--acx-neutrals-20);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content a {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  font-weight: var(--acx-headline-4-font-weight);
+  color: var(--acx-neutrals-20);
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content a:after {
+  content: attr(data-label) attr(data-superscript);
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content a:after,
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content a:hover {
+  color: var(--acx-neutrals-10);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item-selected {
+  background-color: unset;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item-group {
+  min-width: 180px;
+  margin-top: -8px;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item-group-title {
+  height: 28px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  color: var(--acx-neutrals-20);
+  opacity: 0.6;
+  padding: 8px 16px 4px;
+  white-space: nowrap;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider > div:first-child {
+  -webkit-flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  -ms-flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  max-width: var(--acx-sider-collapsed-width) !important;
+  min-width: var(--acx-sider-collapsed-width) !important;
+  width: var(--acx-sider-collapsed-width) !important;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-layout-sider {
+  -webkit-flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  -ms-flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  flex: 0 0 var(--acx-sider-collapsed-width) !important;
+  max-width: var(--acx-sider-collapsed-width) !important;
+  min-width: var(--acx-sider-collapsed-width) !important;
+  width: var(--acx-sider-collapsed-width) !important;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu.ant-menu-inline-collapsed {
+  width: unset;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu-submenu-title {
+  color: transparent;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu-title-content {
+  padding-left: 8px;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu-title-content + svg {
+  display: none;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu-item .ant-menu-title-content {
+  color: transparent;
+}
+
+.c0 .ant-pro-basicLayout.sider-collapsed .ant-layout.ant-layout-has-sider .ant-menu-item .ant-menu-title-content a {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  color: transparent;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout-header {
+  width: 100% !important;
+  height: var(--acx-header-height) !important;
+  line-height: var(--acx-header-height) !important;
+}
+
+.c0 .ant-pro-basicLayout .ant-layout-header .ant-pro-global-header {
+  background-color: var(--acx-primary-black);
+  color: var(--acx-primary-white);
+  padding: 0 20px 0 var(--acx-sider-width);
+  font-size: var(--acx-body-4-font-size);
+  gap: var(--acx-header-item-margin);
+}
+
+.c0 .ant-pro-basicLayout .ant-layout-content {
+  margin: 0;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c1 {
+  margin-right: 8px;
+  color: var(--acx-primary-white) !important;
+}
+
+.c1 > svg {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+  margin-top: -3px;
+}
+
+.c1 > svg .invert {
+  color: var(--acx-primary-black);
+}
+
+.c6 {
+  margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-height: calc(100vh - var(--acx-header-height) - var(--acx-content-vertical-space) * 2);
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c6:before {
+  content: '';
+  position: fixed;
+  left: 0;
+  top: var(--acx-header-height);
+  height: var(--acx-content-vertical-space);
+  width: 100%;
+  background-color: var(--acx-neutrals-10);
+  z-index: 6;
+}
+
+.c6 > .ant-alert {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
+  z-index: 6;
+  box-shadow: var(--acx-primary-white) 0px 5px 0 15px;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-left: var(--acx-header-item-margin);
+  gap: var(--acx-header-item-margin);
+  height: 100%;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -webkit-box-pack: end;
+  -webkit-justify-content: end;
+  -ms-flex-pack: end;
+  justify-content: end;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: var(--acx-header-button-margin);
+  height: 100%;
+}
+
+.c2 {
+  vertical-align: middle;
+}
+
+.c2 path {
+  stroke: var(--acx-primary-white);
+}
+
+.c3 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+@media speech {
+  .c0 .ant-pro-basicLayout .ant-layout.ant-layout-has-sider .ant-menu-submenu-open .ant-menu-submenu-popup .ant-menu .ant-menu-item .ant-menu-title-content a:after {
+    display: none;
+  }
+}
+
+<div
+    class="c0"
+    style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
+  >
+    <div
+      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
+    >
+      <section
+        class="ant-layout ant-layout-has-sider"
+        style="min-height: 100%;"
+      >
+        <div
+          style="width: 208px; overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; transition: background-color 0.3s, min-width 0.3s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);"
+        />
+        <aside
+          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-fixed ant-pro-sider-layout-side"
+          style="overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; width: 208px;"
+        >
+          <div
+            class="ant-layout-sider-children"
+          >
+            <div
+              class="ant-pro-sider-logo"
+              id="logo"
+            >
+              <div />
+            </div>
+            <div
+              style="flex: 1; overflow-y: auto; overflow-x: hidden;"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-vertical ant-menu-light"
+                data-menu-list="true"
+                role="menu"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-menu-item-only-child menu-active menu-admin-item"
+                  data-menu-id="rc-menu-uuid-test--dashboard"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      data-label="Dashboard"
+                      href="/undefined/t/dashboard"
+                    >
+                      <span
+                        class="c1"
+                      >
+                        <svg
+                          data-testid="SpeedIndicatorSolid"
                         />
                       </span>
                       Dashboard

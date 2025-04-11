@@ -12,16 +12,15 @@ import {
   ArrowsOut,
   Close
 } from '@acx-ui/icons-new'
-import { useLazyGetCanvasQuery } from '@acx-ui/rc/services'
 
 import { Section, Group }         from '../AICanvas/Canvas'
 import { CardInfo, layoutConfig } from '../AICanvas/Canvas'
 import Layout                     from '../AICanvas/components/Layout'
 import * as CanvasUI              from '../AICanvas/styledComponents'
-import { compactLayout }          from '../AICanvas/utils/compact'
 
 import {
   getCalculatedColumnWidth,
+  getCanvasData,
   getMenuWidth,
   getPreviewModalWidth
 } from './index.utils'
@@ -38,7 +37,6 @@ export const PreviewDashboardModal = (props: {
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
-  const [ getCanvas ] = useLazyGetCanvasQuery()
 
   const menuWidth = getMenuWidth(menuCollapsed)
   const modalDefaultWidth = document.documentElement.clientWidth - menuWidth
@@ -46,7 +44,8 @@ export const PreviewDashboardModal = (props: {
   const [modalWidth, setModalWidth] = useState(modalDefaultWidth)
   const [layout, setLayout] = useState({
     ...layoutConfig,
-    calWidth: getCalculatedColumnWidth(menuCollapsed, modalDefaultWidth, true)
+    containerWidth: modalWidth,
+    calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
   })
 
   useEffect(() => {
@@ -56,32 +55,9 @@ export const PreviewDashboardModal = (props: {
     setLayout({
       ...layout,
       containerWidth: modalWidth,
-      calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth, true)
+      calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
     })
   }, [menuCollapsed, isFullmode])
-
-  const getDefaultCanvas = async () => { //temp
-    const response = await getCanvas({}).unwrap()
-    if (response?.length && response[0].content) {
-      const canvasId = response[0].id
-      let data = JSON.parse(response[0].content) as Section[]
-      data = data.map(section => ({
-        ...section,
-        groups: section.groups.map(group => ({
-          ...group,
-          cards: compactLayout(group.cards)
-        }))
-      }))
-      const groups = data.flatMap(section => section.groups)
-      setCanvasId(canvasId)
-      setSections(data)
-      setGroups(groups)
-    } else {
-      if (response?.length && response[0].id) {
-        setCanvasId(response[0].id)
-      }
-    }
-  }
 
   useEffect(() => {
     if (visible) {
@@ -89,7 +65,12 @@ export const PreviewDashboardModal = (props: {
       // 1. get canvas by id
       // 2. scroll to top when opened
       console.log('previewId: ', previewId) // eslint-disable-line no-console
-      getDefaultCanvas()
+      const { canvasId, sections, groups } = getCanvasData()
+      if (canvasId && sections) {
+        setCanvasId(canvasId)
+        setSections(sections)
+        setGroups(groups)
+      }
     }
   }, [visible])
 
@@ -108,14 +89,14 @@ export const PreviewDashboardModal = (props: {
       <div className='action'>
         {isFullmode
           ? <Button
-            data-testid='narrow-button'
+            data-testid='collapsed-button'
             ghost={true}
             icon={<ArrowsIn size='md' />}
             onClick={()=> setIsFullmode(false)}
           />
           : <>
-            <Button
-              data-testid='expand-button'
+            <Button //TODO: Fix bug
+              data-testid='expanded-button'
               ghost={true}
               icon={<ArrowsOut size='md' />}
               onClick={()=> setIsFullmode(true)}

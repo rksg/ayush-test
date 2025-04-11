@@ -351,7 +351,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-content {
     background: transparent;
     box-shadow: none !important;
-    transition: .4s;
+    transition: all .4s linear;
     padding-top: 68px;
   }
   .ant-modal-body {
