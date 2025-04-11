@@ -8,9 +8,9 @@ import { HTML5Backend }        from 'react-dnd-html5-backend'
 import { useIntl }             from 'react-intl'
 import { v4 as uuidv4 }        from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 
@@ -95,6 +95,7 @@ export default function AICanvasModal (props: {
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
+  const [reload, setReload] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -104,7 +105,7 @@ export default function AICanvasModal (props: {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
-  // const [displayMode, setDisplayMode] = useState('canvas')
+  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -139,6 +140,7 @@ export default function AICanvasModal (props: {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
         setSessionId(latestId)
+        setReload(true)
       }
     } else if(historyData?.length === 0) {
       setIsChatsLoading(false)
@@ -153,8 +155,11 @@ export default function AICanvasModal (props: {
   }
 
   useEffect(() => {
-    if(!isNewChat && sessionId) {
+    if((!isNewChat && sessionId) || reload) {
       getLatestPageChats()
+      if(reload) {
+        setReload(false)
+      }
     }
   }, [sessionId])
 
@@ -217,7 +222,9 @@ export default function AICanvasModal (props: {
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     await chatAi({
+      customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,
@@ -248,7 +255,7 @@ export default function AICanvasModal (props: {
       })
   }
 
-  const onClickClose = () => {
+  const checkChanges = (callback:()=>void, handleSave:()=>void) => {
     if (canvasHasChanges) {
       showActionModal({
         type: 'confirm',
@@ -267,19 +274,26 @@ export default function AICanvasModal (props: {
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
-            handler: onClose
+            handler: callback
           }, {
             text: $t({ defaultMessage: 'Save Canvas' }),
             type: 'primary',
             key: 'ok',
             closeAfterAction: true,
-            handler: handleSaveCanvas
+            handler: handleSave
           }]
         }
       })
     } else {
-      onClose()
+      callback()
     }
+  }
+
+  const onClickClose = () => {
+    checkChanges(onClose, ()=> {
+      handleSaveCanvas()
+      onClose()
+    })
   }
 
   const handleCanvasChange = useCallback((hasChanges: boolean) => {
@@ -289,7 +303,6 @@ export default function AICanvasModal (props: {
   const handleSaveCanvas = async () => {
     await canvasRef.current?.save()
     setCanvasHasChanges(false)
-    onClose()
   }
 
   const onClose = () => {
@@ -316,17 +329,34 @@ export default function AICanvasModal (props: {
     setChats([])
   }
 
+  const onClickCanvasMode = () => {
+    checkChanges(()=>{
+      setCanvasMode(!showCanvas)
+      setCanvasHasChanges(false)
+    }, ()=>{
+      handleSaveCanvas()
+      setCanvasMode(!showCanvas)
+    })
+  }
+
+  const setCanvasMode = (value: boolean) => {
+    setShowCanvas(value)
+    localStorage.setItem('show-canvas', value.toString())
+  }
+
   return (
     <UI.ChatModal
       visible={isModalOpen}
       onCancel={onClose}
-      width='calc(100vw - 80px)'
-      style={{ top: 40, height: 'calc(100vh - 40px)' }}
+      width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
+      style={showCanvas ? { top: 40, height: 'calc(100vh - 40px)' } : { top: 70 }}
       footer={null}
       closable={false}
+      maskClosable={false}
+      showCanvas={showCanvas}
     >
       <DndProvider backend={HTML5Backend}>
-        <UI.Wrapper>
+        <UI.Wrapper showCanvas={showCanvas}>
           <div className='chat-wrapper'>
             {
               historyVisible && <HistoryDrawer
@@ -359,6 +389,16 @@ export default function AICanvasModal (props: {
                           onClick={onNewChat}
                         />
                       </Tooltip>
+                      {
+                        showCanvas ? <CanvasCollapse
+                          data-testid='canvasCollapseIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                          : <CanvasExpand
+                            data-testid='canvasExpandIcon'
+                            onClick={onClickCanvasMode}
+                          />
+                      }
                     </> : null
                   }
                 </div>
@@ -370,7 +410,11 @@ export default function AICanvasModal (props: {
                 </div>
               </div>
               <div className='content'>
-                <Loader states={[{ isLoading: isChatsLoading }]}>
+                <Loader states={[{ isLoading: isChatsLoading }]}
+                  style={{
+                    borderBottomLeftRadius: '24px',
+                    borderBottomRightRadius: '24px'
+                  }}>
                   <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
                     <Messages
                       moreloading={moreloading}
@@ -424,13 +468,14 @@ export default function AICanvasModal (props: {
               </div>
             </div>
           </div>
-          <Canvas
-            ref={canvasRef}
-            onCanvasChange={handleCanvasChange}
-            groups={groups}
-            setGroups={setGroups}
-          />
-
+          {
+            showCanvas && <Canvas
+              ref={canvasRef}
+              onCanvasChange={handleCanvasChange}
+              groups={groups}
+              setGroups={setGroups}
+            />
+          }
         </UI.Wrapper>
       </DndProvider>
     </UI.ChatModal>

@@ -249,7 +249,7 @@ export function EditPortDrawer ({
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
-    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAcl)]
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAcl), getOpsApi(SwitchUrlsInfo.addSwitchMacAcl)]
   })
 
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
@@ -2519,7 +2519,7 @@ export function EditPortDrawer ({
               {...getFormItemLayout(isMultipleEdit)}
               name='portSecurityMaxEntries'
               label={$t(FIELD_LABEL.portSecurityMaxEntries)}
-              initialValue='1'
+              initialValue={1}
               rules={[
                 {
                   type: 'number',
@@ -2667,8 +2667,7 @@ export function EditPortDrawer ({
                 }
               />
             </Tooltip>
-            {((isMultipleEdit && switchMacAclCheckbox) ||
-            !isMultipleEdit) &&
+            {((isMultipleEdit && switchMacAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
                   key='add-mac-acl'

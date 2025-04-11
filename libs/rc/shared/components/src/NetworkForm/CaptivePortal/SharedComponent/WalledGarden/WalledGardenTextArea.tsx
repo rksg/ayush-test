@@ -25,6 +25,7 @@ enum WallGardenAction {
 
 export interface WalledGardenProps {
   enableDefaultWalledGarden: boolean
+  required?: boolean
 }
 
 interface WalledGardenFieldsValue {
@@ -39,12 +40,11 @@ interface WalledGardenState {
   fieldsValue: WalledGardenFieldsValue
 }
 
-
 /* eslint-disable max-len */
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { enableDefaultWalledGarden } = props
+  const { enableDefaultWalledGarden, required = false } = props
 
   /**
    * the reanson why we set condition isExemption() is because
@@ -144,9 +144,11 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
       rules={[
+        { required, message: $t({ defaultMessage: 'Walled Garden is required' }) },
         { validator: (_, value) => walledGardensRegExp(value) }
       ]}
-      label={<>{$t({ defaultMessage: 'Walled Garden' })}
+      label={<>
+        {$t({ defaultMessage: 'Walled Garden' })}
         <Tooltip title={
           <FormattedMessage
             values={{ br: () => <br /> }}
@@ -168,14 +170,20 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         {enableDefaultWalledGarden &&
         <Button onClick={() => dispatch(statesCollection.useDefaultState)}
           data-testid='walled-garden-default-button'
-          style={{ marginLeft: 90, marginRight: 10 }}
+          style={{
+            marginLeft: 90,
+            ...(required && { order: enableDefaultWalledGarden ? -2 : -1 })
+          }}
           type='link'>
           {$t({ defaultMessage: 'Reset to default' })}
         </Button>
         }
         <Space />
         <Button onClick={() => dispatch(statesCollection.initialState)}
-          style={enableDefaultWalledGarden? {} : { marginLeft: 90, marginRight: 10 }}
+          style={{
+            marginLeft: enableDefaultWalledGarden ? 10 : 90,
+            ...(required && { order: enableDefaultWalledGarden ? -3 : -2 })
+          }}
           data-testid='walled-garden-clear-button'
           type='link'>
           {$t({ defaultMessage: 'Clear' })}

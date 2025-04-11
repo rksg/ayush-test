@@ -54,6 +54,7 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     authRadius?: Radius
     accountingRadius?: Radius
     accountingEnabled?: boolean
+    clientVisibilityEnabled?: boolean
   }
 
 

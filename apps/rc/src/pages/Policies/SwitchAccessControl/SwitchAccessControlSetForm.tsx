@@ -190,7 +190,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
             ]}
             validateTrigger='onBlur'
           >
-            <Input style={{ width: '400px' }} maxLength={255} />
+            <Input style={{ width: '400px' }} maxLength={255} disabled={editMode} />
           </Form.Item>
           <Form.Item
             name='description'

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Button, Space } from 'antd'
+import { useWatch }                    from 'antd/lib/form/Form'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
@@ -47,6 +48,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ ipsecProfile, setIpSecProfile ] = useState<DefaultOptionType>(defaultIpsecOption)
+  const isIpSecToggleEnabled = useWatch<boolean>(['lan', index, 'ipsecEnabled'], form)
 
   const onChange = (value: string) => {
     if(!value) {
@@ -79,13 +81,13 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
 
   return (
     <>
-      <Space>
+      <Space style={isIpSecToggleEnabled ? {} : { display: 'none' }}>
         <Form.Item
           label={$t({ defaultMessage: 'IPsec Profile' })}
           initialValue=''
           name={ipsecProfileIdFieldName}
           rules={[
-            { required: true }
+            { required: isIpSecToggleEnabled ? true : false }
           ]}
           children={
             <Select

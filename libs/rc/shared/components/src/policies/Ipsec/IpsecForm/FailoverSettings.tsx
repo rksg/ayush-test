@@ -25,6 +25,9 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
   useState<IpSecFailoverModeEnum>(IpSecFailoverModeEnum.NON_REVERTIVE)
 
   useEffect(() => {
+    const retryDurationSelection = form.getFieldValue(['retryDuration'])
+    setIsRetryDurationForever(retryDurationSelection === IpSecRetryDurationEnum.FOREVER)
+
     if (loadFailoverSettings && initIpSecData) {
       if (initIpSecData?.advancedOption?.failoverRetryPeriod
         && initIpSecData?.advancedOption?.failoverRetryPeriod !== 0) {
