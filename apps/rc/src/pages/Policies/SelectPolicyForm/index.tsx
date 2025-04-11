@@ -105,7 +105,7 @@ export default function SelectPolicyForm () {
 
   const sets = [
     {
-      type: PolicyType.ACCESS_CONTROL,
+      type: isSwitchMacAclEnabled ? PolicyType.SWITCH_ACCESS_CONTROL : PolicyType.ACCESS_CONTROL,
       categories: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]:
         [RadioCardCategory.WIFI]
     },
