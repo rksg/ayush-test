@@ -3,7 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }             from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   EdgePinFixtures,
   EdgePinUrls
@@ -50,6 +52,11 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+jest.mock('@acx-ui/rc/components', () => ({
+  AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />,
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 const mockedFinishFn = jest.fn()
 const mockedGetVenueName = jest.fn()
@@ -183,5 +190,74 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
     expect(screen.getByText('Distribution Switch (0)')).toBeInTheDocument()
     expect(screen.getByText('Access Switch (0)')).toBeInTheDocument()
     expect(screen.getByText('Wireless Networks (0)')).toBeVisible()
+  })
+
+  describe('test L2GRE case', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render correctly', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [ form ] = Form.useForm()
+        form.setFieldsValue({
+          name: 'testNsgName',
+          venueId: 'venueId',
+          edgeClusterId: 'edgeId',
+          segments: 10,
+          devices: 10,
+          dhcpId: 'dhcpId',
+          poolId: 'poolId',
+          poolName: 'DHCP_Pool',
+          vxlanTunnelProfileId: 'vxlanTunnelProfileId',
+          networkIds: ['testDpsk1', 'testDpsk2'],
+          distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+          accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
+        })
+        return form
+      })
+      const user = userEvent.setup()
+      render(
+        <Provider>
+          <PersonalIdentityNetworkFormContext.Provider
+            value={{
+              ...mockContextData,
+              getVenueName: mockedGetVenueName,
+              getClusterName: mockedGetClusterName,
+              getDhcpName: mockedGetDhcpName,
+              getTunnelProfileName: mockedGetTunnelProfileName,
+              getNetworksName: mockedGetNetworksName
+            }}
+          >
+            <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
+              <StepsForm.StepForm>
+                <SummaryForm />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </PersonalIdentityNetworkFormContext.Provider>
+        </Provider>,
+        { route: { params, path: createPinPath } })
+      expect(await screen.findByText('testNsgName')).toBeVisible()
+      expect(mockedGetVenueName).toBeCalledWith('venueId')
+      expect(mockedGetClusterName).toBeCalledWith('edgeId')
+      expect(mockedGetDhcpName).toBeCalledWith('dhcpId')
+      expect(mockedGetTunnelProfileName).toBeCalledWith('vxlanTunnelProfileId')
+      expect(await screen.findByText('venueName')).toBeVisible()
+      expect(await screen.findByText('edgeClusterName')).toBeVisible()
+      expect(await screen.findByText('dhcpName')).toBeVisible()
+      expect(await screen.findByText('DHCP_Pool')).toBeVisible()
+      expect(await screen.findByText('tunnelProfileName')).toBeVisible()
+      expect(await screen.findByText('network 1')).toBeVisible()
+      expect(await screen.findByText('network 2')).toBeVisible()
+      expect(mockedGetNetworksName).toBeCalledWith(['testDpsk1', 'testDpsk2'])
+      await user.click(await screen.findByRole('button', { name: 'Add' }))
+      await waitFor(() => {
+        expect(mockedFinishFn).toBeCalled()
+      })
+    })
   })
 })

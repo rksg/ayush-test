@@ -15,6 +15,7 @@ import {
   ConnectionMeteringLink
 } from '@acx-ui/rc/components'
 import {
+  PersonalIdentityNetworkApiVersion,
   useAllocatePersonaVniMutation,
   useGetConnectionMeteringByIdQuery,
   useGetEdgePinByIdQuery,
@@ -43,6 +44,7 @@ export function PersonaOverview (props:
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const {
     identityDeviceCount,
@@ -67,7 +69,10 @@ export function PersonaOverview (props:
   })
 
   const { data: pinData } = useGetEdgePinByIdQuery(
-    { params: { serviceId: personaGroupData?.personalIdentityNetworkId } },
+    {
+      params: { serviceId: personaGroupData?.personalIdentityNetworkId },
+      customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
+    },
     { skip: !networkSegmentationEnabled || !personaGroupData?.personalIdentityNetworkId }
   )
 
