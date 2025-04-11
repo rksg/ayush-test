@@ -5,6 +5,7 @@ import { CertificateAcceptType } from './certificateTemplate'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
+  SWITCH_ACCESS_CONTROL = 'Switch Access Control',
   VLAN_POOL = 'VLAN Pools',
   ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
@@ -65,6 +66,7 @@ export interface Policy {
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
+  [PolicyType.SWITCH_ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2 access policies for device access to switch networks' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
   [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Provides network services and operates the AAA infrastructure required to authenticate subscribers' }),
   [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Deploys and operates an access network consisting of publicly accessible or guest access Passpoint APs' }),

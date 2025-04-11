@@ -19,6 +19,7 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
+  CANVAS_Q2 = 'ruckus-gen-ai-customized-canvas-phase2',
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
@@ -236,9 +237,7 @@ export enum Features {
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
-  RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   RUCKUS_AI_JWT_TOGGLE = 'ruckus-ai-jwt-toggle',
-  INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
@@ -318,7 +317,13 @@ export enum Features {
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
   MSP_APP_VISIBILITY = 'mspservice-app-visibility',
-  SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle'
+  AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle',
+  RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle',
+  SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle',
+  LOGIN_SSO_SAML_MSPEC = 'login-sso-saml-mspec',
+  DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
+  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
+  WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

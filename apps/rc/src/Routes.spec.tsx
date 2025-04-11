@@ -219,6 +219,31 @@ jest.mock('./pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm', 
 jest.mock('./pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail', () => () => {
   return <div data-testid='PortProfileDetail' />
 })
+
+jest.mock('./pages/Policies/AccessControl', () => () => {
+  return <div data-testid='AccessControl' />
+})
+
+jest.mock('./pages/Policies/AccessControl/create', () => () => {
+  return <div data-testid='CreateAccessControl' />
+})
+
+jest.mock('./pages/Policies/SwitchAccessControl/SwitchAccessControlSetForm', () => ({
+  SwitchAccessControlSetForm: () => <div data-testid='SwitchAccessControlSetForm' />
+}))
+
+jest.mock('./pages/Policies/SwitchAccessControl/SwitchAccessControlSetDetail', () => ({
+  SwitchAccessControlSetDetail: () => <div data-testid='SwitchAccessControlSetDetail' />
+}))
+
+jest.mock('./pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2ACLForm', () => ({
+  SwitchLayer2ACLForm: () => <div data-testid='SwitchLayer2ACLForm' />
+}))
+
+jest.mock('./pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2Detail', () => ({
+  SwitchLayer2Detail: () => <div data-testid='SwitchLayer2Detail' />
+}))
+
 const mockUseIsEdgeFeatureReady = jest.fn().mockReturnValue(true)
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -269,9 +294,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   IpsecForm: () => <div data-testid='IpsecForm' />,
   ConnectionMeteringFormMode: {},
   useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
-  AddSamlIdp: () => <div data-testid='AddSamlIdp' />,
-  SamlIdpDetail: () => <div data-testid='SamlIdpDetail' />,
-  EditSamlIdp: () => <div data-testid='EditSamlIdp' />,
   IdentityForm: () => <div data-testid='IdentityForm' />,
   IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />
 }))
@@ -982,6 +1004,8 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should navigate to create ACCESS_CONTROL page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
@@ -1004,6 +1028,8 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should navigate to edit ACCESS_CONTROL page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
       render(<Provider><RcRoutes /></Provider>, {
         route: {
@@ -1434,6 +1460,156 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('PortProfileDetail')).toBeVisible()
+    })
+  })
+
+  describe('RcRoutes: Access Control', () => {
+    describe('when Switch MAC ACL is disabled', () => {
+      beforeEach(() => {
+        jest.mocked(useIsTierAllowed).mockReturnValue(true)
+        jest.mocked(useIsSplitOn).mockReturnValue(false) // Disable Switch MAC ACL feature
+      })
+
+      test('should navigate to ACCESS_CONTROL create form when feature flag is off', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL edit form when feature flag is off', async () => {
+        let path = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })
+        path = path.replace(':policyId', 'policyId')
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + path,
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL detail page when feature flag is off', async () => {
+        let path = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })
+        path = path.replace(':policyId', 'policyId')
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + path,
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControlDetail')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL table when feature flag is off', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControlTable')).toBeVisible()
+      })
+    })
+
+    describe('when Switch MAC ACL is enabled', () => {
+      beforeEach(() => {
+        jest.mocked(useIsTierAllowed).mockReturnValue(true)
+        jest.mocked(useIsSplitOn).mockReturnValue(true) // Enable Switch MAC ACL feature
+      })
+
+      test('should navigate to ACCESS_CONTROL create selection page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControls/create',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('CreateAccessControl')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL main page with tabs', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/wifi',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControl')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL wifi create form', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/create',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL switch add form', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/add',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchAccessControlSetForm')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL switch edit form', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/accessControlId/edit',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchAccessControlSetForm')).toBeVisible()
+      })
+
+      test('should navigate to ACCESS_CONTROL switch detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/accessControlId/overview',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchAccessControlSetDetail')).toBeVisible()
+      })
+
+      test('should navigate to Layer2 ACL add form', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/layer2/add',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchLayer2ACLForm')).toBeVisible()
+      })
+
+      test('should navigate to Layer2 ACL edit form', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/layer2/accessControlId123/edit',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchLayer2ACLForm')).toBeVisible()
+      })
+
+      test('should navigate to Layer2 ACL detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/policies/accessControl/switch/layer2/accessControlId123/overview',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SwitchLayer2Detail')).toBeVisible()
+      })
     })
   })
 })

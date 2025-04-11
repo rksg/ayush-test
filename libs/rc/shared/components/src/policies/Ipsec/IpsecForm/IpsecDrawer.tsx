@@ -45,7 +45,7 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
           replayWindow: 32,
           ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
           enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 1,
+          dpdDelay: 30,
           keepAliveInterval: 20,
           failoverRetryInterval: 1,
           failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
@@ -63,8 +63,9 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
         espRekeyTimeEnabledCheckbox: true,
         retryLimitEnabledCheckbox: true,
         espReplayWindowEnabledCheckbox: true,
-        deadPeerDetectionDelayEnabledCheckbox: false,
-        nattKeepAliveIntervalEnabledCheckbox: true
+        deadPeerDetectionDelayEnabledCheckbox: true,
+        nattKeepAliveIntervalEnabledCheckbox: true,
+        failoverRetryPeriodIsForever: true
       })
     }
   }, [form, readMode, visible])

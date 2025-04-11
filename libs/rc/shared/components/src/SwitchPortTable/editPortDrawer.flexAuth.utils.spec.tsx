@@ -12,7 +12,8 @@ import {
   aggregatePortSettings,
   checkAllSelectedPortsMatch,
   getCurrentVlansByKey,
-  getUnionValuesByKey
+  getUnionValuesByKey,
+  getFlexAuthButtonStatus
 } from './editPortDrawer.flexAuth.utils'
 
 
@@ -269,5 +270,142 @@ describe('getUnionValuesByKey', () => {
     )
     expect(getUnionValuesByKey('taggedVlans', aggregateData)).toStrictEqual(['3', '10'])
     expect(getUnionValuesByKey('untaggedVlan', aggregateData)).toStrictEqual([])
+  })
+
+  describe('getFlexAuthButtonStatus', () => {
+    const mockForm = {
+      getFieldValue: jest.fn()
+    } as unknown as FormInstance
+
+    // Basic aggregate data structure
+    const baseAggregateData: AggregatePortSettings = {
+      taggedVlans: {},
+      untaggedVlan: { switch1: ['1'], switch2: ['2'] },
+      defaultVlan: { switch1: 1, switch2: 2 },
+      hasMultipleValue: [],
+      selectedPortIdentifier: {},
+      enableAuthPorts: {},
+      profileAuthDefaultVlan: {},
+      authenticationProfileId: {},
+      switchLevelAuthDefaultVlan: {},
+      guestVlan: {},
+      authDefaultVlan: {},
+      restrictedVlan: {},
+      criticalVlan: {},
+      dot1xPortControl: {},
+      shouldAlertAaaAndRadiusNotApply: false,
+      ipsg: {}
+    }
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      mockForm.getFieldValue.mockImplementation((field: string) => {
+        if (field === 'ipsg') return false
+        return undefined
+      })
+    })
+
+    it('should return firmware error when firmware is below required version', () => {
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: [],
+        isCloudPort: false,
+        isMultipleEdit: false,
+        isFirmwareAbove10010f: false,
+        portVlansCheckbox: false,
+        ipsgCheckbox: false,
+        portSecurity: false
+      })
+
+      expect(result).toBe('ONLY_SUPPORT_FW_ABOVE_10010F')
+    })
+
+    it('should return cloud port error when port is a cloud port', () => {
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: [],
+        isCloudPort: true,
+        isMultipleEdit: false,
+        isFirmwareAbove10010f: true,
+        portVlansCheckbox: false,
+        ipsgCheckbox: false,
+        portSecurity: false
+      })
+
+      expect(result).toBe('CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH')
+    })
+
+    it('should return IPSG error when IPSG is enabled', () => {
+      mockForm.getFieldValue.mockImplementation((field: string) => {
+        if (field === 'ipsg') return true
+        return undefined
+      })
+
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: [],
+        isCloudPort: false,
+        isMultipleEdit: false,
+        isFirmwareAbove10010f: true,
+        portVlansCheckbox: false,
+        ipsgCheckbox: true,
+        portSecurity: false
+      })
+
+      expect(result).toBe('CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED')
+    })
+
+    it('should return port security error when port security is enabled', () => {
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: [],
+        isCloudPort: false,
+        isMultipleEdit: false,
+        isFirmwareAbove10010f: true,
+        portVlansCheckbox: false,
+        ipsgCheckbox: false,
+        portSecurity: true
+      })
+
+      expect(result).toBe('CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED')
+    })
+
+    it('should return empty string when all conditions are met for enabling flex auth', () => {
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: [],
+        isCloudPort: false,
+        isMultipleEdit: false,
+        isFirmwareAbove10010f: true,
+        portVlansCheckbox: false,
+        ipsgCheckbox: false,
+        portSecurity: false
+      })
+
+      expect(result).toBe('')
+    })
+
+    it('should check IPSG from multiple edit correctly', () => {
+      // Test when ipsg is in hasMultipleValue
+      const result = getFlexAuthButtonStatus({
+        aggregateData: baseAggregateData,
+        form: mockForm,
+        hasMultipleValue: ['ipsg'],
+        isCloudPort: false,
+        isMultipleEdit: true,
+        isFirmwareAbove10010f: true,
+        portVlansCheckbox: false,
+        ipsgCheckbox: false,
+        portSecurity: false
+      })
+
+      // Should return IPSG error because hasMultipleValue includes 'ipsg'
+      expect(result).toBe('CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED')
+    })
   })
 })

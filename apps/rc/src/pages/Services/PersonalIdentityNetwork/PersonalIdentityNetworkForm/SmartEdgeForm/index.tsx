@@ -169,7 +169,7 @@ export const SmartEdgeForm = () => {
   const warningMsg = <FormattedMessage
     defaultMessage={
       `Please note that additional configuration is required in the external DHCP server
-        for the pool & segment mgmt. and the available document will be exposed on
+        for the pool & segment management. and the available document will be exposed on
         this {detailPage}.`
     }
 

@@ -12,7 +12,7 @@ import {
   EdgePortTypeEnum,
   edgePortIpValidator,
   getEdgePortTypeOptions,
-  lanPortsubnetValidator,
+  lanPortSubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
   validateGatewayInSubnet
@@ -143,7 +143,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               },
               {
                 validator: () =>
-                  lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
               }
             ]}
             {..._.get(formFieldsProps, 'ip')}
@@ -202,7 +202,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   },
                   {
                     validator: () =>
-                      lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                      lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
                   }
                 ]}
                 {..._.get(formFieldsProps, 'ip')}

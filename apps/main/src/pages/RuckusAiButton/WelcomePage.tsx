@@ -18,7 +18,8 @@ function WelcomePage (props: {
     data: userProfileData
   } = useUserProfileContext()
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList || isCanvasQ2Enabled
   const name = userProfileData?.firstName || userProfileData?.lastName || ''
   return <div
     style={{
