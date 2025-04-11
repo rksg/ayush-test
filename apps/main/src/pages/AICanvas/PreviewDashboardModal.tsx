@@ -12,12 +12,12 @@ import {
   ArrowsOut,
   Close
 } from '@acx-ui/icons-new'
+import { Canvas } from '@acx-ui/rc/utils'
 
-import { Section, Group }         from '../AICanvas/Canvas'
-import { CardInfo, layoutConfig } from '../AICanvas/Canvas'
-import Layout                     from '../AICanvas/components/Layout'
-import * as CanvasUI              from '../AICanvas/styledComponents'
 
+import { Section, Group }         from './Canvas'
+import { CardInfo, layoutConfig } from './Canvas'
+import Layout                     from './components/Layout'
 import {
   getCalculatedColumnWidth,
   getCanvasData,
@@ -27,11 +27,11 @@ import {
 import * as UI from './styledComponents'
 
 export const PreviewDashboardModal = (props: {
+  data: Canvas[]
   visible: boolean
   setVisible: (visible: boolean) => void
-  previewId: string
 }) => {
-  const { visible, setVisible, previewId } = props
+  const { data, visible, setVisible } = props
   const { menuCollapsed } = useLayoutContext()
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
@@ -61,11 +61,8 @@ export const PreviewDashboardModal = (props: {
 
   useEffect(() => {
     if (visible) {
-      //TODO
-      // 1. get canvas by id
-      // 2. scroll to top when opened
-      console.log('previewId: ', previewId) // eslint-disable-line no-console
-      const { canvasId, sections, groups } = getCanvasData()
+      //TODO: scroll to top when opened
+      const { canvasId, sections, groups } = getCanvasData(data)
       if (canvasId && sections) {
         setCanvasId(canvasId)
         setSections(sections)
@@ -85,7 +82,7 @@ export const PreviewDashboardModal = (props: {
     className={isFullmode ? 'fullmode' : ''}
   >
     <div className='header'>
-      <div className='title'>Dashboard Canvas</div>
+      <div className='title'>{ data[0]?.name }</div>
       <div className='action'>
         {isFullmode
           ? <Button
@@ -95,7 +92,7 @@ export const PreviewDashboardModal = (props: {
             onClick={()=> setIsFullmode(false)}
           />
           : <>
-            <Button //TODO: Fix bug
+            <Button
               data-testid='expanded-button'
               ghost={true}
               icon={<ArrowsOut size='md' />}
@@ -112,7 +109,7 @@ export const PreviewDashboardModal = (props: {
     </div>
     <DndProvider backend={HTML5Backend}>
       <div className='grid'>
-        <CanvasUI.Grid $type='pageview'>
+        <UI.Grid $type='pageview'>
           <Layout
             readOnly={true}
             sections={sections}
@@ -126,7 +123,7 @@ export const PreviewDashboardModal = (props: {
             setShadowCard={setShadowCard}
             containerId='preview-container'
           />
-        </CanvasUI.Grid>
+        </UI.Grid>
       </div>
     </DndProvider>
   </UI.PreviewModal>

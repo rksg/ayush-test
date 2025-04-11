@@ -1,7 +1,7 @@
-import { Section }       from '../AICanvas/Canvas'
-import { compactLayout } from '../AICanvas/utils/compact'
+import { Canvas } from '@acx-ui/rc/utils'
 
-import { mockCanvas } from './mockData'
+import { Section }       from './Canvas'
+import { compactLayout } from './utils/compact'
 
 const MENU_COLLAPSED_WIDTH = 60
 const MENU_EXPANDED_WIDTH = 216
@@ -30,11 +30,12 @@ export const getCalculatedColumnWidth = (
   return (viewWidth - SIDE_PADDING - WIDGET_GRID_GAP) / COLUMN_COUNT
 }
 
-export const getCanvasData = () => { //temp
-  const response = mockCanvas
-  if (response?.length && response[0].content) {
-    const canvasId = response[0].id
-    let data = JSON.parse(response[0].content) as Section[]
+export const getCanvasData = (canvasList: Canvas[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ canvasData, ...rest ] = canvasList
+  if (canvasList?.length && canvasData.content) {
+    const canvasId = canvasData.id
+    let data = JSON.parse(canvasData.content) as Section[]
     data = data.map(section => ({
       ...section,
       groups: section.groups.map(group => ({
@@ -47,8 +48,8 @@ export const getCanvasData = () => { //temp
       canvasId, sections: data, groups
     }
   } else {
-    if (response?.length && response[0].id) {
-      return { canvasId: response[0].id }
+    if (canvasList?.length && canvasData.id) {
+      return { canvasId: canvasData.id }
     }
   }
   return {}

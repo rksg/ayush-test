@@ -51,6 +51,7 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
+  Canvas,
   CommonUrlsInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
@@ -83,17 +84,17 @@ import {
   useDashboardFilter
 } from '@acx-ui/utils'
 
-import { Section, Group }         from '../AICanvas/Canvas'
-import { CardInfo, layoutConfig } from '../AICanvas/Canvas'
-import Layout                     from '../AICanvas/components/Layout'
-import * as CanvasUI              from '../AICanvas/styledComponents'
+import { Section, Group }                                                from '../AICanvas/Canvas'
+import { CardInfo, layoutConfig }                                        from '../AICanvas/Canvas'
+import Layout                                                            from '../AICanvas/components/Layout'
+import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/index.utils'
+import { PreviewDashboardModal }                                         from '../AICanvas/PreviewDashboardModal'
+import * as CanvasUI                                                     from '../AICanvas/styledComponents'
 
-import { DashboardDrawer }                                               from './DashboardDrawer'
-import { ImportDashboardDrawer }                                         from './ImportDashboardDrawer'
-import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from './index.utils'
-import { mockDashboardList }                                             from './mockData'
-import { PreviewDashboardModal }                                         from './PreviewDashboardModal'
-import * as UI                                                           from './styledComponents'
+import { DashboardDrawer }               from './DashboardDrawer'
+import { ImportDashboardDrawer }         from './ImportDashboardDrawer'
+import { mockDashboardList, mockCanvas } from './mockData'
+import * as UI                           from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -201,7 +202,8 @@ export default function Dashboard () {
 
   useEffect(() => {
     if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      const { canvasId, sections, groups } = getCanvasData()
+      //TODO
+      const { canvasId, sections, groups } = getCanvasData(mockCanvas)
       if (canvasId && sections) {
         setCanvasId(canvasId)
         setSections(sections)
@@ -293,7 +295,7 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
-  const [previewId, setPreviewId] = useState('')
+  const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
@@ -387,8 +389,10 @@ function DashboardPageHeader (props: {
     setDashboardId(value)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handlePreview = async (id: string) => {
-    setPreviewId(id)
+    //TODO: get data by id
+    setPreviewData(mockCanvas)
     setPreviewModalVisible(true)
   }
 
@@ -498,9 +502,9 @@ function DashboardPageHeader (props: {
       />
 
       <PreviewDashboardModal
+        data={previewData}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
-        previewId={previewId}
       />
     </>}
 

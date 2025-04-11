@@ -60,7 +60,7 @@ jest.mock('./mockData', () => {
     ...jest.requireActual('./mockData'),
     mockCanvas: [{
       id: '65bcb4d334ec4a47b21ae5e062de279f',
-      name: 'Canvas',
+      name: 'Dashboard Canvas',
       content: `[{
         "id":"default_section",
         "type":"section",

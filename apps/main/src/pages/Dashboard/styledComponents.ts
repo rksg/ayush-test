@@ -1,7 +1,7 @@
 import { Input, Tree, List as AntList } from 'antd'
 import styled, { createGlobalStyle }    from 'styled-components/macro'
 
-import { Select, Modal }     from '@acx-ui/components'
+import { Select }            from '@acx-ui/components'
 import { ArrowChevronRight } from '@acx-ui/icons'
 
 export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
@@ -305,77 +305,4 @@ export const ListItem = styled(AntList.Item)`
       }
     }
   }
-`
-
-export const PreviewModal = styled(Modal)<{ $type?: string }>`
-  background: var(--acx-neutrals-10);
-  border-radius: 12px;
-  padding-bottom: 0;
-  overflow: hidden;
-  transition: all .4s linear;
-  height: 100%;
-  max-height: 80%;
-
-  .header {
-    position: absolute;
-    display: flex;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    background: var(--acx-neutrals-10);
-    padding: 24px 30px 16px 36px;
-    align-items: center;
-    .title {
-      flex: 1;
-      margin: 4px 0;
-      font-size: var(--acx-headline-3-font-size);
-      font-weight: var(--acx-headline-3-font-weight);
-      line-height: var(--acx-headline-3-line-height);
-    }
-    .action {
-      display: flex;
-      gap: 24px;
-      button {
-        min-width: 24px !important;
-        width: 24px !important;
-        height: 24px !important;
-        svg {
-          width: 24px !important;
-          height: 24px !important;
-        }
-      }
-    }
-  }
-  .grid {
-    .group-item-container {
-
-      margin: 0 10px;
-    }
-  }
-
-  .ant-modal-content {
-    background: transparent;
-    box-shadow: none !important;
-    transition: all .4s linear;
-    padding-top: 68px;
-  }
-  .ant-modal-body {
-    padding: 0px 0 24px;
-  }
-  .ant-modal-footer {
-    display: none;
-  }
-
-  &.fullmode {
-    max-width: 100vw;
-    height: 100%;
-    max-height: 100%;
-    border-radius: 0;
-    .ant-modal-content {
-      height: 100vh;
-      max-height: 100%;
-    }  
-  }
-
 `
