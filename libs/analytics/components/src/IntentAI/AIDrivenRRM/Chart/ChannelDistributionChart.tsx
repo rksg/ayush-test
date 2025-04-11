@@ -49,11 +49,11 @@ function ChannelDistributionChart (intent: IntentDetail) {
           xAxisValues={channelList}
           xAxisName={$t({ defaultMessage: 'Channel' })}
           barWidth={20}
-          showTooltipName={false}
+          showTooltipName={true}
+          style={{ height: '200px' }}
         /> : <NoData />}
       </Card>
     </Loader>
-
   )
 }
 
