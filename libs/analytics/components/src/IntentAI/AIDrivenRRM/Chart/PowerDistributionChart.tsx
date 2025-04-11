@@ -17,7 +17,7 @@ function PowerDistributionChart (intent: IntentDetail) {
   })
   const apPowerDistribution = queryResult.data
 
-  const txPowerList = Object.values(txpowerMapping).map(value => value.replace(/dB/g, 'dB'))
+  const txPowerList = Object.values(txpowerMapping)
   const txPowerData = apPowerDistribution?.map(({ txPower, apCount }) => [
     txpowerMapping[txPower as keyof typeof txpowerMapping],
     apCount
