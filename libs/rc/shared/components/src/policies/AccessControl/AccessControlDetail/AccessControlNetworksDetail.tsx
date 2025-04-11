@@ -23,7 +23,7 @@ const defaultPayload = {
   fields: [
     'name',
     'nwSubType',
-    'venues',
+    'venueApGroups',
     'id'
   ]
 }
@@ -58,11 +58,11 @@ const AccessControlNetworksDetail = (props: { data: EnhancedAccessControlInfoTyp
     },
     {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      dataIndex: 'venues',
+      dataIndex: 'venueApGroups',
       align: 'center',
-      key: 'venues',
+      key: 'venueApGroups',
       sorter: true,
-      renderText: (row) => row?.count ?? 0
+      renderText: (row) => row?.length || 0
     }
   ]
 
