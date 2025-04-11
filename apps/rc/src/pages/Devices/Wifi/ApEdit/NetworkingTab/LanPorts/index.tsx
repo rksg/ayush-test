@@ -50,6 +50,22 @@ import {
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
+enum ActionLevelEnum {
+  NETWORK = 'NETWORK',
+  VENUE = 'VENUE',
+  AP = 'AP'
+}
+
+interface SoftGreIpsecProfile {
+  actionLevel: ActionLevelEnum
+  softGreId: string
+  ipsecId?: string
+  isChangable: boolean,
+  portId?: string
+  apModel?: string,
+  serialNumber?: string
+}
+
 const useFetchIsVenueDhcpEnabled = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -297,7 +313,7 @@ export function LanPorts (props: ApEditItemProps) {
             okText: $t({ defaultMessage: 'Continue' }),
             onOk: async () => {
               try {
-                processUpdateLanPorts(values)
+                processUpdateLanPorts(values, usedProfileData)
                 isResetClick.current = false
               } catch (error) {
                 console.log(error) // eslint-disable-line no-console
@@ -305,7 +321,7 @@ export function LanPorts (props: ApEditItemProps) {
             }
           })
         } else {
-          processUpdateLanPorts(values)
+          processUpdateLanPorts(values, usedProfileData)
         }
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -330,9 +346,20 @@ export function LanPorts (props: ApEditItemProps) {
     return isEqualLanPort(currentLanPorts!, defaultLanPorts!)
   }
 
-  const processUpdateLanPorts = async (values: WifiApSetting) => {
+  const processUpdateLanPorts = async (values: WifiApSetting, usedProfileData: { data: SoftGreIpsecProfile[], operations: SoftGreIpsecProfile[] }) => {
     const { lan, poeOut, useVenueSettings } = values
     const lanPortsNoVni = lan?.filter(lanPort => !lanPort.vni)
+
+    values = {
+      ...values,
+      lan: values.lan?.map(lanPort => {
+        return {
+          ...lanPort,
+          softGreProfileId: usedProfileData.data.find(p => p.portId === lanPort.portId)?.softGreId,
+          ipsecProfileId: usedProfileData.data.find(p => p.portId === lanPort.portId)?.ipsecId
+        }
+      })
+    }
 
     if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
       const payload: WifiApSetting = {
