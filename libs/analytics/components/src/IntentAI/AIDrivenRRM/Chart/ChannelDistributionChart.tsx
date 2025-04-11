@@ -6,7 +6,6 @@ import { IntentDetail } from '../../useIntentDetailsQuery'
 
 import channelListJson                   from './mapping/channelList.json'
 import { useApChannelDistributionQuery } from './services'
-import { allChannels }                   from './utils'
 
 function ChannelDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
@@ -28,7 +27,8 @@ function ChannelDistributionChart (intent: IntentDetail) {
     'c-crrm-channel5g-auto': channelLists['5'],
     'c-crrm-channel6g-auto': channelLists['6']
   }
-  const channelList = channelMapping[intent.code as keyof typeof allChannels]
+
+  const channelList = channelMapping[intent.code as keyof typeof channelMapping]
 
   const data = {
     dimensions: ['channel', 'apCount'],
