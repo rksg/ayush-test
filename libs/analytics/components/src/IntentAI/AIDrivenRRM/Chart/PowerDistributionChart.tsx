@@ -41,8 +41,9 @@ function PowerDistributionChart (intent: IntentDetail) {
           data={data}
           xAxisName={$t({ defaultMessage: 'Tx Power' })}
           barWidth={20}
-          showTooltipName={false}
           xAxisValues={txPowerList}
+          showTooltipName={true}
+          style={{ height: '200px' }}
         /> : <NoData />}
       </Card>
     </Loader>
