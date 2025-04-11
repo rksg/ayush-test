@@ -68,7 +68,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return !row?.is_tenant_onboarded
+        return (isRecToMspREcConversionEnabled && !row?.is_tenant_onboarded)
           ? <span
             style={{ fontWeight: 'bold' }}>
             { row.account_name }
