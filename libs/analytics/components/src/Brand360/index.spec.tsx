@@ -17,7 +17,7 @@ import { Brand360 } from '.'
 
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
-const utils = require('@acx-ui/utils')
+const utils = require('@acx-ui/utils') 
 
 jest.mock('./Table', () => ({
   BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>
@@ -33,6 +33,10 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils')
+}))
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => jest.fn()
 }))
 const wrapData = (value: unknown) => ({
   data: {
