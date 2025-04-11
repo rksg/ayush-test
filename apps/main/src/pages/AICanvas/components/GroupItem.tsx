@@ -23,6 +23,7 @@ export interface GroupProps {
   defaultLayout: LayoutConfig
   shadowCard: CardInfo
   draggable?: boolean
+  containerId: string
   moveCardInGroupItem:(hoverItem: GroupProps, x: number, y: number) => void
   onCardDropInGroupItem:() => void
   updateShadowCard:Dispatch<SetStateAction<CardInfo>>
@@ -34,11 +35,11 @@ export interface GroupProps {
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
   // eslint-disable-next-line max-len
-  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem, draggable = true } = props
+  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem, containerId, draggable = true } = props
   // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
-    const containerDom = document.querySelector('#card-container')
+    const containerDom = document.querySelector(`#${containerId}`)
     if (containerDom) {
       clientWidth = containerDom.clientWidth
     }
@@ -97,7 +98,8 @@ export default function GroupItem (props: GroupProps) {
     <div className='rglb_group-item' ref={dropRef} id={'group' + id} data-testid='dropGroup'>
       <div className='group-item-container'>
         <section
-          id='card-container'
+          id={containerId}
+          className='card-container'
           // ref={sectionRef}
           style={{
             height:

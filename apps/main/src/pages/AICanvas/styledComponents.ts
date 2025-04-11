@@ -440,13 +440,13 @@ overflow: auto;
 .rglb_group-item .group-item-container {
   padding: 20px;
 }
-.rglb_group-item .group-item-container #card-container .card-shadow {
+.rglb_group-item .group-item-container .card-container .card-shadow {
   background: rgba(15, 15, 15, 0.3);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
 }
-.rglb_group-item .group-item-container #card-container .card {
+.rglb_group-item .group-item-container .card-container .card {
   position: absolute;
   transition: all 0.2s ease-out;
   .card-actions{
@@ -491,7 +491,7 @@ overflow: auto;
     border-bottom: 2px solid #888;
   }
 }
-.rglb_group-item .group-item-container #card-container .card .card-footer {
+.rglb_group-item .group-item-container .card-container .card .card-footer {
   display: flex;
   justify-content: space-between;
   position: absolute;
@@ -503,7 +503,7 @@ overflow: auto;
 }
 .rglb_group-item
   .group-item-container
-  #card-container
+  .card-container
   .card
   .card-footer
   .card-delete {

@@ -111,7 +111,7 @@ export const PreviewDashboardModal = (props: {
       </div>
     </div>
     <DndProvider backend={HTML5Backend}>
-      <div className='grid' id='grid'>
+      <div className='grid'>
         <CanvasUI.Grid $type='pageview'>
           <Layout
             readOnly={true}
@@ -124,6 +124,7 @@ export const PreviewDashboardModal = (props: {
             canvasId={canvasId}
             shadowCard={shadowCard}
             setShadowCard={setShadowCard}
+            containerId='preview-container'
           />
         </CanvasUI.Grid>
       </div>

@@ -254,7 +254,7 @@ export default function Dashboard () {
             <DashboardMapWidget />
           </>
           : <DndProvider backend={HTML5Backend}>
-            <div className='grid' id='grid'>
+            <div className='grid'>
               <CanvasUI.Grid $type='pageview'>
                 <Layout
                   readOnly={true}
@@ -267,6 +267,7 @@ export default function Dashboard () {
                   canvasId={canvasId}
                   shadowCard={shadowCard}
                   setShadowCard={setShadowCard}
+                  containerId='dashboard-canvas-container'
                 />
               </CanvasUI.Grid>
             </div>
