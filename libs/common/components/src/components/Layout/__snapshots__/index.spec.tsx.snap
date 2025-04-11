@@ -427,7 +427,7 @@ exports[`Layout should render correctly 1`] = `
   top: var(--acx-header-height);
   height: var(--acx-content-vertical-space);
   width: 100%;
-  background-color: var(--acx-neutrals-10);
+  background-color: var(--acx-primary-white);
   z-index: 6;
 }
 
@@ -2888,7 +2888,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Layout should render layout with grey background correctly 1`] = `
+exports[`Layout should render the dashboard page with a grey background correctly 1`] = `
 <DocumentFragment>
   .c0 {
   --acx-header-caret-width: 8px;

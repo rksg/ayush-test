@@ -279,8 +279,9 @@ export function Layout ({
         setShowMessageBanner,
         menuCollapsed: collapsed
       }}>
-        {(display || subOptimalDisplay) ? <Content greyBg={isR1DashboardPage}>{content}</Content> :
-          <UI.ResponsiveContent>
+        {(display || subOptimalDisplay)
+          ? <Content greyBg={isCanvasQ2Enabled && isR1DashboardPage}>{content}</Content>
+          : <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}
       </LayoutContext.Provider>
