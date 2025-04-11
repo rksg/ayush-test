@@ -511,7 +511,7 @@ h5.c7.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -1482,7 +1482,7 @@ h5.c5.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -1795,7 +1795,7 @@ h5.c5.ant-typography {
                               Leverage 
                               <b>
                                 <i>
-                                  EcoFlexAI
+                                  Energy Saving AI
                                 </i>
                               </b>
                               , available only through IntentAI for AI/ML based Energy Saving Model for the network. In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
@@ -1915,7 +1915,7 @@ h5.c5.ant-typography {
                     <div
                       class="ant-typography"
                     >
-                      EcoFlex enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.
+                      Energy Saving enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.
                     </div>
                   </div>
                 </div>
@@ -2740,7 +2740,7 @@ h5.c6.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -4162,7 +4162,7 @@ h5.c6.ant-typography {
                             />
                           </span>
                           <span>
-                            Do not apply EcoFlex during the following time slots of the week
+                            Do not apply Energy Saving during the following time slots of the week
                           </span>
                         </label>
                       </div>
@@ -8778,7 +8778,7 @@ h5.c6.ant-typography {
                             />
                           </span>
                           <span>
-                            Do not apply EcoFlex to the following APs
+                            Do not apply Energy Saving to the following APs
                           </span>
                         </label>
                       </div>

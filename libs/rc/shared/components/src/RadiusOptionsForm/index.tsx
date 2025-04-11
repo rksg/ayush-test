@@ -141,7 +141,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         children={<Input disabled={disabled}
           onChange={handleChanged}
           style={{ width: '412px' }}
-          placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
+          placeholder={$t({ defaultMessage: 'Maximum is 64 characters' })}/>}
       />
       }
       <Space size={30}>
