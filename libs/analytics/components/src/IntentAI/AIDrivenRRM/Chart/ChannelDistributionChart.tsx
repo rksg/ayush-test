@@ -4,6 +4,7 @@ import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
+import channelListJson                   from './mapping/channelList.json'
 import { useApChannelDistributionQuery } from './services'
 import { allChannels }                   from './utils'
 
@@ -17,7 +18,17 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const apChannelDistribution = queryResult.data
 
   const channelData = apChannelDistribution?.map(({ channel, apCount }) => [channel, apCount])
-  const channelList = allChannels[intent.code as keyof typeof allChannels]
+  const channelLists = channelListJson.reduce((acc: Record<string, number[]>, curr) => {
+    acc[curr.freq] = curr.channels
+    return acc
+  }, {})
+
+  const channelMapping = {
+    'c-crrm-channel24g-auto': channelLists['2.4'],
+    'c-crrm-channel5g-auto': channelLists['5'],
+    'c-crrm-channel6g-auto': channelLists['6']
+  }
+  const channelList = channelMapping[intent.code as keyof typeof allChannels]
 
   const data = {
     dimensions: ['channel', 'apCount'],
