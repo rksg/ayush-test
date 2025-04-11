@@ -89,5 +89,7 @@ export interface WidgetListData {
 export interface Canvas {
   id: string,
   name: string,
-  content: string
+  content: string,
+  visible?: boolean,
+  dashboardIds?: string[]
 }
