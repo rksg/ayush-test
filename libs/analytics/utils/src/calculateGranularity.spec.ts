@@ -1,7 +1,7 @@
 import moment from 'moment-timezone'
 
-import { get }                        from '@acx-ui/config'
-import { getUserProfile, isCoreTier } from '@acx-ui/user'
+import { get }        from '@acx-ui/config'
+import { isCoreTier } from '@acx-ui/user'
 
 import { calculateGranularity } from './calculateGranularity'
 
@@ -18,8 +18,7 @@ jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  getUserProfile: jest.fn(),
-  isCoreTier: jest.fn()
+  isCoreTier: jest.fn().mockReturnValue(false)
 }))
 
 it('should return correct granularity based on interval and min granularity', () => {
@@ -83,20 +82,9 @@ describe('Min Granularity Precedence', () => {
 })
 
 describe('Core Tier User', () => {
-  beforeEach(() => {
+  it('Should return PT1H when user is a Core Tier user even for small intervals', () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-02-02T01:00:00+08:00')))
-  })
-
-  afterEach(() => {
-    jest.useRealTimers()
-    jest.resetAllMocks()
-  })
-
-  it('Should return PT1H when user is a Core Tier user even for small intervals', () => {
-    // Mock getUserProfile and isCoreTier
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    jest.mocked(getUserProfile).mockReturnValue({ accountTier: 'core' } as any)
     jest.mocked(isCoreTier).mockReturnValue(true)
 
     // Small interval (10 minutes) that would normally return PT15M
@@ -105,8 +93,7 @@ describe('Core Tier User', () => {
 
     expect(calculateGranularity(start, end)).toStrictEqual('PT1H')
 
-    // Verify the functions were called
-    expect(getUserProfile).toHaveBeenCalled()
-    expect(isCoreTier).toHaveBeenCalled()
+    jest.useRealTimers()
+    jest.resetAllMocks()
   })
 })
