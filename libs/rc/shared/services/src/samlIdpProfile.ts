@@ -230,6 +230,9 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
               ? headerContent.split('filename=')[1]
               : filename
             downloadFile(response, fileName)
+            return {
+              data: null
+            }
           }
         }
       }
