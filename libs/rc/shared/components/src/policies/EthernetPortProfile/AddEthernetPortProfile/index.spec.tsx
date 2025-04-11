@@ -46,7 +46,8 @@ describe('AddEthernetPortProfile', () => {
   beforeEach(() => {
 
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE)
+      ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE ||
+      ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -99,6 +100,15 @@ describe('AddEthernetPortProfile', () => {
 
     const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'testEthernetPortProfile1')
+    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    await user.hover(tooltips[3])
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('Enables visibility for wired port clients, making them discoverable')
+    await user.click(screen.getByRole('switch', { name: 'Client Visibility' }))
+    expect(
+      screen.getByText(
+        'Enabling on the uplink will disconnect AP(s)')
+    ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/ethernetPortProfile/list`,
