@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Space, Typography } from 'antd'
+import { Space, Typography }                              from 'antd'
 import { cloneDeep, isNil, pick, remove, unionBy, unset } from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }                                                            from '@acx-ui/components'
 import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
-import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum }                  from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 

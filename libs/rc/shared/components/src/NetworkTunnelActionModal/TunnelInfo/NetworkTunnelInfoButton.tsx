@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button } from '@acx-ui/components'
+import { Button }                                               from '@acx-ui/components'
 import { EdgeMvSdLanViewData, Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
-import { isDmzTunnelUtilized } from '../../EdgeSdLan/edgeSdLanUtils'
+import { isDmzTunnelUtilized }  from '../../EdgeSdLan/edgeSdLanUtils'
 import { SoftGreNetworkTunnel } from '../useSoftGreTunnelActions'
 
 interface NetworkTunnelInfoButtonProps {

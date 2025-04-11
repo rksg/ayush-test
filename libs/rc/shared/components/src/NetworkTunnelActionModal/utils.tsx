@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
-import { useEdgeSdLanActions }  from 'libs/rc/edge/components/src/hooks'
+
 import { cloneDeep, findIndex } from 'lodash'
 
+import { useEdgeSdLanActions }                                                                                                                     from '@acx-ui/edge/components'
 import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
 import { useGetEdgePinViewDataListQuery }                                                                                                          from '@acx-ui/rc/services'
 import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
@@ -124,7 +125,6 @@ export const useUpdateNetworkTunnelAction = () => {
     tunnelTypeInitVal: NetworkTunnelTypeEnum,
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
-    console.log('formValues', tunnelTypeInitVal, formValues)
     const formTunnelType = formValues.tunnelType
     if (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
       return Promise.resolve()

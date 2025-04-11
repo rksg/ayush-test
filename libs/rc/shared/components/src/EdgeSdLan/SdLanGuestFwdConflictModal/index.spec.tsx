@@ -1,8 +1,8 @@
-import userEvent from '@testing-library/user-event'
+import userEvent                      from '@testing-library/user-event'
 import { cloneDeep, groupBy, remove } from 'lodash'
 
 import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
-import { screen } from '@acx-ui/test-utils'
+import { screen }                                                           from '@acx-ui/test-utils'
 
 import { showSdLanGuestFwdConflictModal } from '.'
 
