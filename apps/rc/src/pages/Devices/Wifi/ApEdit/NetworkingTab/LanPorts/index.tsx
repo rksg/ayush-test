@@ -387,31 +387,35 @@ export function LanPorts (props: ApEditItemProps) {
     }
   }
 
-  const handleSoftGreDeactivate = (values: WifiApSetting) => {
+  const handleSoftGreDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+    for (let i = 0; i < values.lan?.length!; i++) {
+      const lanPort = values.lan?.[i] || { portId: '', softGreEnabled: false, enabled: false }
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
       if (
         originSoftGreId &&
         (!lanPort.enabled || !lanPort.softGreEnabled || useVenueSettings)
       ) {
-        deactivateSoftGreProfileSettings({
+        await deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
-    })
+    }
   }
 
-  const handleSoftGreIpSecDeactivate = (values: WifiApSetting) => {
+  const handleSoftGreIpSecDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+    for (let i = 0; i < values.lan?.length!; i++) {
+      const lanPort = values.lan?.[i] || {
+        portId: '', softGreEnabled: false, enabled: false,
+        softGreProfileId: '', ipsecEnabled: false, ipsecProfileId: '' }
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
       const originIpsecId = lanData.find(l => l.portId === lanPort.portId)?.ipsecProfileId
       if (
         originIpsecId &&
         (!lanPort.enabled || !lanPort.softGreEnabled || !lanPort.ipsecEnabled || useVenueSettings)
       ) {
-        deactivateIpSecProfileSettings({
+        await deactivateIpSecProfileSettings({
           params: {
             venueId, serialNumber, portId: lanPort.portId,
             softGreProfileId: lanPort.softGreProfileId, ipsecProfileId: originIpsecId }
@@ -420,11 +424,11 @@ export function LanPorts (props: ApEditItemProps) {
         originSoftGreId &&
         (!lanPort.enabled || !lanPort.softGreEnabled || lanPort.ipsecEnabled || useVenueSettings)
       ) {
-        deactivateSoftGreProfileSettings({
+        await deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
-    })
+    }
   }
 
   const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
@@ -541,7 +545,7 @@ export function LanPorts (props: ApEditItemProps) {
   const onGUIChanged = () => {
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
-
+  console.log('render ap edit') // eslint-disable-line no-console
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||

@@ -57,6 +57,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
   const isLoginSSoTechpartnerEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_TECHPARTNER)
+  const isLoginSSoMspEcEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_MSPEC)
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
@@ -65,7 +66,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && canMSPDelegation && (!isMspEc || (isLoginSSoTechpartnerEnabled && isTechPartner))
+    && canMSPDelegation && ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
+    || (isLoginSSoTechpartnerEnabled && isTechPartner))
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 

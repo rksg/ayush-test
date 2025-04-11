@@ -3,10 +3,20 @@ import styled, { css }                                 from 'styled-components/m
 
 import { Card } from '@acx-ui/components'
 
-import CanvasBackground from './assets/CanvasBackground.svg'
-import WaveBackground   from './assets/waves.svg'
+import CanvasBackground   from './assets/CanvasBackground.svg'
+import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
-export const ChatModal = styled(Modal)`
+export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
+  ${(props) => props.showCanvas && `
+    transition: all 0.2s ease-in-out; 
+    transform: scale(1); 
+  `
+}
+  ${(props) => !props.showCanvas && `
+    transition: all 0.2s ease-in-out; 
+    transform: scale(1); 
+  `
+}
   .ant-modal-content {
     border-radius: 24px;
     .ant-modal-header {
@@ -72,7 +82,8 @@ export const History = styled.div`
       justify-content: space-between;
       color: var(--acx-primary-black);
       &:hover {
-        background: var(--acx-neutrals-30);
+        background: var(--acx-neutrals-70);
+        color: var(--acx-primary-white);
         .action {
           display: flex;
         }
@@ -129,8 +140,21 @@ export const History = styled.div`
   }
 `
 
-export const Wrapper = styled.div`
+const CanvasChatWidth = '400px'
+const ChatOnlyWidth = '1000px'
+const ChatOnlyHeightDiff = '100px'
+const ModalMargin = '80px'
+const ModalHeaderHeight = '50px'
+const ModalInputHeight = '130px'
+
+export const Wrapper = styled.div<{ showCanvas: boolean }>`
 display: flex;
+.canvas {
+  ${(props) => !props.showCanvas && `
+    display: none;
+  `
+}
+}
 .chat-wrapper {
   overflow: hidden;
   position: relative;
@@ -138,11 +162,19 @@ display: flex;
 .chat {
   border-top-left-radius: 24px;
   border-bottom-left-radius: 24px;
+  ${(props) => !props.showCanvas && `
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+  `
+}
+  ${(props) => props.showCanvas && `
+    background-position: -50px -10px;
+  `
+}
   background-color: var(--acx-primary-white);
-  background-image: url(${WaveBackground});
+  background-image: url(${RuckusAiBackground});
   background-repeat: no-repeat;
-  background-size: 401px 659px;
-  width: 400px;
+  width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
   top: 60px;
   .header {
     // background-color: rgba(255, 255, 255, .4);
@@ -157,16 +189,16 @@ display: flex;
       align-items: center;
       cursor: default;
       span {
-        padding-left: 10px;
+        margin-left: -50px;
         font-family: var(--acx-accent-brand-font);
         font-weight: 600;
-        font-size: var(--acx-headline-4-font-size);
+        font-size: 15px;
       }
     }
     .actions{
       display: flex;
       align-items: center;
-      width: 56px;
+      width: 100px;
       justify-content: space-between;
       color: #000;
       svg {
@@ -183,17 +215,22 @@ display: flex;
   }
   .content {
     background: transparent;
-    height: calc(100vh - 130px);
-    width: 400px;
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
+    width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
     overflow: auto;
     .input {
       background-color: var(--acx-primary-white);
       border-bottom-left-radius: 24px;
+      ${(props) => !props.showCanvas && `
+        border-bottom-right-radius: 24px;
+      `
+}
       height: 120px;
       position: absolute;
       bottom: 0;
-      width: 400px;
+      width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
       padding: 10px 20px 20px 20px;
       .text-counter {
         position: absolute;
@@ -238,23 +275,23 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - 260px);
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+        - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
-      margin-right: 4px;
+      margin-right: 10px;
       margin-top: 4px;
       .placeholder {
-        position: fixed;
-        bottom: 130px;
-        width: 400px;
-        left: 20px;
+        position: absolute;
+        bottom: 0px;
+        left: 14px;
         div{
           background-color: var(--acx-accents-blue-50);
           color: var(--acx-primary-white);
           border-radius: 20px;
           height: 30px;
           width: fit-content;
-          padding: 7px 12px;
+          padding: 7px 10px;
           cursor: pointer;
           float: left;
           margin: 4px;
@@ -277,7 +314,7 @@ display: flex;
         }
         .ant-divider-horizontal.ant-divider-with-text::before, 
         .ant-divider-horizontal.ant-divider-with-text::after {
-          width: 20%;
+          width: 29%;
         }
       }
       .chat-container {
@@ -305,7 +342,7 @@ display: flex;
         background: #F8F8FA;
         border: 1px solid #D4D4D4;
         color: #000;
-        margin-right: 0px;
+        margin-right: 5px;
         font-weight: 400;
       }
       .chat-bubble {
@@ -328,7 +365,7 @@ display: flex;
         margin-top: -5px;
         &.right{
           justify-content: end;
-          margin-right: 2px;
+          margin-right: 7px;
         }
       }
     }

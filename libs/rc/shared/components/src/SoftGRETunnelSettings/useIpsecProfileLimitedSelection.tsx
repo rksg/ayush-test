@@ -360,7 +360,7 @@ export const useIpsecProfileLimitedSelection = (
         apModel,
         serialNumber,
         softGreId: formData.softGreId || '',
-        ipsecId: formData.ipsecId || undefined,
+        ipsecId: formData.enabledIpsec ? formData.ipsecId || undefined : undefined,
         isChangable: true
       }
       setNewSoftGreIpsecList([...newSoftGreIpsecList, newPort])
