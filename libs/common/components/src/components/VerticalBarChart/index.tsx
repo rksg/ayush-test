@@ -47,10 +47,10 @@ export interface VerticalBarChartProps
 }
 
 export const tooltipFormatter = (
-  $t: IntlShape['formatMessage'],
   dataFormatter: ReturnType<typeof formatter>,
   showTooltipName: Boolean,
-  showNameAndValue: string[]
+  showNameAndValue: string[],
+  $t: IntlShape['formatMessage']
 ) => {
   return (params: TooltipComponentFormatterCallbackParams) => {
     const yValue = Array.isArray(params)
@@ -60,34 +60,44 @@ export const tooltipFormatter = (
     const name = Array.isArray(params)
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
 
-    const xAxisName = showNameAndValue[0] + ' '
-    const yAxisName = showNameAndValue[1]
-    const yAxisText = ' ' + $t(
-      { defaultMessage: `{count, plural,
-        one {{single}}
-        other {{plural}}
-      }` },
-      { count: yValue, single: yAxisName, plural: `${yAxisName}s` }
-    )
+    const [xAxisLabel = '', yAxisLabel = ''] = showNameAndValue
+
+    const yAxisText =
+      yAxisLabel &&
+      $t(
+        {
+          defaultMessage: `{count, plural,
+            one {{single}}
+            other {{plural}}
+          }`
+        },
+        {
+          count: yValue,
+          single: yAxisLabel,
+          plural: `${yAxisLabel}s`
+        }
+      )
 
     return renderToString(
       <TooltipWrapper>
-        {showNameAndValue
-          ? (<>
-            {xAxisName}<b>{dataFormatter(xValue)}</b>: <b>{dataFormatter(yValue)}</b>{yAxisText}
-          </>)
-          : ( <>
-            {showTooltipName
-              ? `${(name as string)?.charAt(0).toUpperCase() + (name as string)?.slice(1)}:`
-              : ''}{' '}
+        {showNameAndValue.length > 0 ? (
+          <>
+            {xAxisLabel} <b>{dataFormatter(xValue)}</b>: <b>{dataFormatter(yValue)}</b>{' '}
+            {yAxisText}
+          </>
+        ) : (
+          <>
+            {showTooltipName && name
+              ? `${name.charAt(0).toUpperCase() + name.slice(1)}: `
+              : ''}
             <b>{dataFormatter(yValue)}</b>
           </>
-          )
-        }
+        )}
       </TooltipWrapper>
     )
   }
 }
+
 export function useOnBarAreaClick <BarData> (
   eChartsRef: RefObject<ReactECharts>, onBarAreaClick?: (data: BarData) => void
 ) {
@@ -145,7 +155,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
       axisPointer: {
         type: 'none'
       },
-      formatter: tooltipFormatter($t, dataFormatter, showTooltipName, showNameAndValue)
+      formatter: tooltipFormatter(dataFormatter, showTooltipName, showNameAndValue, $t)
     },
     xAxis: {
       ...xAxisOptions(),
