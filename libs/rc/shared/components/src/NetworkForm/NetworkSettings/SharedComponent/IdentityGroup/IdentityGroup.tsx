@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, useReducer } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
-import { produce }                                      from 'immer'
 import { useIntl }                                      from 'react-intl'
 
 import { Drawer }                 from '@acx-ui/components'
@@ -25,67 +24,6 @@ import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
-export enum UserActions {
-  onClickIdentityGroupInput,
-  onClickIdentityGroupViewDetailButton,
-  onClickIdentityGroupAddButton,
-  turnOnAssociationIdentitySwitch,
-  turnOffAssociationIdentitySwitch,
-  onClickIdentitySelectorButton,
-}
-
-export enum ViewStateActions {
-  Initialize,
-  SetIdentityGroups,
-  SetSelectedIdentity,
-  SetSelectedIdentityGroup
-}
-
-type ViewAction =
-  | { type: UserActions.onClickIdentityGroupInput; personaGroup: PersonaGroup }
-  | { type: UserActions.onClickIdentityGroupViewDetailButton }
-  | { type: UserActions.onClickIdentityGroupAddButton }
-  | { type: UserActions.turnOnAssociationIdentitySwitch }
-  | { type: UserActions.turnOffAssociationIdentitySwitch }
-  | { type: UserActions.onClickIdentitySelectorButton }
-  | { type: ViewStateActions.Initialize; payload: ViewState }
-  | { type: ViewStateActions.SetIdentityGroups; payload: PersonaGroup[] }
-  | { type: ViewStateActions.SetSelectedIdentity; payload: Persona }
-  | { type: ViewStateActions.SetSelectedIdentityGroup; payload: PersonaGroup }
-
-interface ViewState {
-  associationBlockVisible: boolean,
-  identityGroupDetailDrawerVisible: boolean,
-  identityGroupAddDrawerVisible: boolean,
-  identitySelectorDrawerVisible: boolean,
-  selectedIdentityGroup?: PersonaGroup,
-  selectedIdentity?: Persona
-  identityGroups: PersonaGroup[]
-}
-
-const initialViewState: ViewState = {
-  associationBlockVisible: false,
-  identityGroupDetailDrawerVisible: false,
-  identityGroupAddDrawerVisible: false,
-  identitySelectorDrawerVisible: false,
-  selectedIdentityGroup: undefined,
-  selectedIdentity: undefined,
-  identityGroups: []
-}
-
-function resetDrawers (draft: ViewState) {
-  draft.identityGroupDetailDrawerVisible = false
-  draft.identityGroupAddDrawerVisible = false
-  draft.identitySelectorDrawerVisible = false
-}
-
-export function setIdentityGroups (groups: PersonaGroup[]) {
-  return {
-    type: ViewStateActions.SetIdentityGroups,
-    payload: groups
-  } as const
-}
-
 export function IdentityGroup () {
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
@@ -96,42 +34,11 @@ export function IdentityGroup () {
   const formFieldIdentityGroupId = Form.useWatch('identityGroupId', form)
   const enableIdentityAssociation = Form.useWatch('enableIdentityAssociation', form)
 
-  const reducer = produce((draft: ViewState, action: ViewAction) => {
-    switch (action.type) {
-      case UserActions.onClickIdentityGroupInput:
-        resetDrawers(draft)
-        draft.associationBlockVisible = false
-        draft.selectedIdentity = undefined
-        draft.selectedIdentityGroup = action.personaGroup
-        break
-      case UserActions.onClickIdentityGroupViewDetailButton:
-        resetDrawers(draft)
-        draft.identityGroupDetailDrawerVisible = true
-        break
-      case UserActions.onClickIdentityGroupAddButton:
-        resetDrawers(draft)
-        draft.identityGroupAddDrawerVisible = true
-        break
-      case UserActions.turnOnAssociationIdentitySwitch:
-        resetDrawers(draft)
-        break
-      case UserActions.turnOffAssociationIdentitySwitch:
-        resetDrawers(draft)
-        break
-      case UserActions.onClickIdentitySelectorButton:
-        resetDrawers(draft)
-        draft.identitySelectorDrawerVisible = true
-        break
-      case ViewStateActions.SetIdentityGroups:
-        draft.identityGroups = action.payload
-        break
-    }
-  })
-
-  const [viewState, dispatch] = useReducer(reducer, initialViewState)
+  const [display, setDisplay] = useState({ display: 'none' })
   const [detailDrawerVisible, setDetailDrawerVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [identityGroupDrawerVisible, setidentityGroupDrawerVisible] = useState(false)
+  const [identityGroups, setIdentityGroups] = useState<PersonaGroup[]>([])
   const [selectedIdentityGroup, setSelectedIdentityGroup] = useState<PersonaGroup>()
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
 
@@ -150,7 +57,7 @@ export function IdentityGroup () {
     }
   }
   useEffect(() => {
-    const selected = viewState.identityGroups.find((ig) => ig.id === formFieldIdentityGroupId)
+    const selected = identityGroups.find((ig) => ig.id === formFieldIdentityGroupId)
     if (selected) {
       setSelectedIdentityGroup(selected)
     }
@@ -160,11 +67,10 @@ export function IdentityGroup () {
     if(identity) {
       setSelectedIdentity(identity)
     }
-    onAssociationChange(enableIdentityAssociation)
-  }, [])
+  }, [formFieldIdentityGroupId])
 
   useEffect(() => {
-    const initializeUnderEditMode = async () => {
+    const setData = async () => {
       if ((editMode || cloneMode) && data) {
         // These network can bind identity group
         if (
@@ -195,13 +101,13 @@ export function IdentityGroup () {
           if (boundIdentities && boundIdentities.totalCount > 0){
             const persona = boundIdentities.data[0]
             form.setFieldValue('identity', persona)
-            onAssociationChange(true)
+            form.setFieldValue('enableIdentityAssociation', true)
             setSelectedIdentity(persona)
           }
         }
       }
     }
-    initializeUnderEditMode()
+    setData()
   }, [])
 
   useEffect(() => {
@@ -210,13 +116,9 @@ export function IdentityGroup () {
 
   const onAssociationChange = (value: boolean) => {
     if(value) {
-      dispatch({ type: UserActions.turnOnAssociationIdentitySwitch })
+      setDisplay({ display: 'block' })
     } else {
-      dispatch({ type: UserActions.turnOffAssociationIdentitySwitch })
-      setSelectedIdentity(undefined)
-      if (form.getFieldValue('identity')) {
-        form.setFieldValue('identity', undefined)
-      }
+      setDisplay({ display: 'none' })
     }
   }
 
@@ -233,15 +135,6 @@ export function IdentityGroup () {
               placeholder={'Select...'}
               setIdentityGroups={setIdentityGroups}
               onChange={() => {
-                const selected = viewState.identityGroups.find((ig) =>{
-                  return ig.id === formFieldIdentityGroupId
-                })
-                if (selected) {
-                  dispatch({
-                    type: UserActions.onClickIdentityGroupInput,
-                    personaGroup: selected
-                  })
-                }
                 setSelectedIdentity(undefined)
                 if (formFieldIdentityId) {
                   form.setFieldValue('identity', undefined)
@@ -250,20 +143,22 @@ export function IdentityGroup () {
             />
           }
         />
+
         <Space>
+
           <Space split='|'>
             <Button
               type='link'
               disabled={!formFieldIdentityGroupId}
               onClick={() => {
-                dispatch({ type: UserActions.onClickIdentityGroupViewDetailButton })
+                setDetailDrawerVisible(true)
               }}
             >
               {$t({ defaultMessage: 'View Details' })}
             </Button>
             <Button type='link'
               onClick={() => {
-                dispatch({ type: UserActions.onClickIdentityGroupAddButton })
+                setidentityGroupDrawerVisible(true)
               }}>
               {$t({ defaultMessage: 'Add' })}
             </Button>
@@ -285,10 +180,7 @@ export function IdentityGroup () {
               children={<Switch onChange={onAssociationChange} />}
             />
           </UI.FieldLabel>
-          <div style={{
-            marginBottom: '20px',
-            ...(viewState.associationBlockVisible ? { display: 'none' } : { display: 'block' })
-          }}>
+          <div style={{ marginBottom: '20px', ...display }}>
             <UI.FieldLabel width={'400px'}>
               <p style={{ marginBottom: '0px' }}>
                 {$t({ defaultMessage: 'Identity' })}
@@ -306,7 +198,7 @@ export function IdentityGroup () {
                       type='link'
                       style={{ fontSize: '12px' }}
                       onClick={() => {
-                        dispatch({ type: UserActions.onClickIdentitySelectorButton })
+                        setIdentitySelectorDrawerVisible(true)
                       }}
                     >
                       {$t({ defaultMessage: 'Change' })}
@@ -319,7 +211,7 @@ export function IdentityGroup () {
                 type='link'
                 style={{ fontSize: '12px' }}
                 onClick={() => {
-                  dispatch({ type: UserActions.onClickIdentitySelectorButton })
+                  setIdentitySelectorDrawerVisible(true)
                 }}
                 data-testid={'add-identity-button'}
               >
@@ -338,7 +230,7 @@ export function IdentityGroup () {
       <PersonaGroupDrawer
         requiredDpsk
         isEdit={false}
-        visible={viewState.identityGroupAddDrawerVisible}
+        visible={identityGroupDrawerVisible}
         onClose={(result) => {
           if (result) {
             form.setFieldValue('identityGroupId', result?.id)
@@ -347,11 +239,11 @@ export function IdentityGroup () {
         }}
       />
       <IdentityGroupDrawer
-        visible={viewState.identityGroupDetailDrawerVisible}
+        visible={detailDrawerVisible}
         setVisible={setDetailDrawerVisible}
         personaGroup={selectedIdentityGroup}
       />
-      {viewState.identitySelectorDrawerVisible && (
+      {identitySelectorDrawerVisible && (
         <SelectPersonaDrawer
           onSubmit={handleClose}
           onCancel={() => setIdentitySelectorDrawerVisible(false)}
