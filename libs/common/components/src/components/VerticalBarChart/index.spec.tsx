@@ -37,13 +37,25 @@ describe('VerticalBarChart',()=>{
   })
 
   describe('tooltipFormatter', () => {
+    const $t = jest.fn()
     it('should return correct Html string', async () => {
       const params = [{
         data: ['-75', 1100],
         dimensionNames: ['RSS', 'Samples']
       }] as unknown as TooltipComponentFormatterCallbackParams
       const formatter = jest.fn(value=>`formatted-${value}`)
-      expect(tooltipFormatter(formatter, true)(params))
+      expect(tooltipFormatter(formatter, true, ['Rss', 'Samples'], $t)(params))
+        .toMatchSnapshot()
+      expect(formatter).toBeCalledTimes(2)
+    })
+
+    it('should return correct Html string when showNameAndValue is empty', async () => {
+      const params = [{
+        data: ['-75', 1100],
+        dimensionNames: ['RSS', 'Samples']
+      }] as unknown as TooltipComponentFormatterCallbackParams
+      const formatter = jest.fn(value=>`formatted-${value}`)
+      expect(tooltipFormatter(formatter, true, [], $t)(params))
         .toMatchSnapshot()
       expect(formatter).toBeCalledTimes(1)
     })
@@ -54,7 +66,7 @@ describe('VerticalBarChart',()=>{
         dimensionNames: ['RSS', 'Samples']
       }] as unknown as TooltipComponentFormatterCallbackParams
       const formatter = jest.fn(value=>`formatted-${value}`)
-      expect(tooltipFormatter(formatter, false)(params).match(/Samples/)).toBeNull()
+      expect(tooltipFormatter(formatter, false, [], $t)(params).match(/Samples/)).toBeNull()
     })
   })
   let eChartsRef: RefObject<ReactECharts>

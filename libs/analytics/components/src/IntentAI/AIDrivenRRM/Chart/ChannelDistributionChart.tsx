@@ -41,15 +41,19 @@ function ChannelDistributionChart (intent: IntentDetail) {
     ]
   }
 
+  const xName = $t({ defaultMessage: 'Channel' })
+  const yName = $t({ defaultMessage: 'AP' })
+
   return (
     <Loader states={[queryResult]}>
       <Card title={$t({ defaultMessage: 'Channel Distribution' })}>
         {apChannelDistribution?.length ? <VerticalBarChart
           data={data}
           xAxisValues={channelList}
-          xAxisName={$t({ defaultMessage: 'Channel' })}
+          xAxisName={xName}
           barWidth={20}
-          showTooltipName={true}
+          showTooltipName={false}
+          showNameAndValue={[xName, yName]}
           style={{ height: '200px' }}
         /> : <NoData />}
       </Card>
