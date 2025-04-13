@@ -1545,8 +1545,9 @@ function useIdentityGroupOnNetworkActivation () {
     ) {
       const identityGroupId = network?.identityGroupId
       const identityId = network?.identity?.id
+      const enableIdentityAssociation = network?.enableIdentityAssociation
       if (identityGroupId) {
-        if (identityId) {
+        if (identityId && enableIdentityAssociation) {
           return await bindingSpecificIdentityPersonaGroupWithNetwork({
             params: { networkId: networkId, identityGroupId: identityGroupId, identityId: identityId }
           }).unwrap()

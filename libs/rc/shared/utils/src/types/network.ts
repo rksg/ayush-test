@@ -182,6 +182,7 @@ export interface NetworkSaveData extends EnforceableFields {
   ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
   identityGroupId?: string,
   identity?: Persona,
+  enableIdentityAssociation?: boolean,
   samlIdpProfilesId?: string
   samlIdpProfilesName?: string
 }
