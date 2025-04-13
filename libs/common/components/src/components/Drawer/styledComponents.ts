@@ -33,7 +33,7 @@ const leftStyle = css`
 
 const modalLeftStyle = css`
   :root .ant-drawer {
-    height: calc(100vh - 80px);
+    height: 100%;
     margin: 0;
     div.ant-drawer-content-wrapper {
       border-radius: 0px;

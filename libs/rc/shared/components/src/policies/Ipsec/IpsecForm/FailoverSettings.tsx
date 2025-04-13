@@ -20,30 +20,45 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
   const form = Form.useFormInstance()
   const { initIpSecData, loadFailoverSettings, setLoadFailoverSettings } = props
 
-  const [retryDuration, setRetryDuration] =
-  useState<IpSecRetryDurationEnum>(IpSecRetryDurationEnum.FOREVER)
+  const [isRetryDurationForever, setIsRetryDurationForever] = useState(true)
   const [retryMode, setRetryMode] =
   useState<IpSecFailoverModeEnum>(IpSecFailoverModeEnum.NON_REVERTIVE)
 
   useEffect(() => {
-    setRetryDuration(form.getFieldValue('retryDuration'))
-    setRetryMode(form.getFieldValue(['advancedOption', 'failoverMode']))
-    if (loadFailoverSettings && initIpSecData?.advancedOption?.failoverRetryPeriod
+    const retryDurationSelection = form.getFieldValue(['retryDuration'])
+    setIsRetryDurationForever(retryDurationSelection === IpSecRetryDurationEnum.FOREVER)
+
+    if (loadFailoverSettings && initIpSecData) {
+      if (initIpSecData?.advancedOption?.failoverRetryPeriod
         && initIpSecData?.advancedOption?.failoverRetryPeriod !== 0) {
-      setRetryDuration(IpSecRetryDurationEnum.SPECIFIC)
-      form.setFieldValue('retryDuration', IpSecRetryDurationEnum.SPECIFIC)
-    }
-    if (loadFailoverSettings && initIpSecData?.advancedOption?.failoverMode
-        && initIpSecData?.advancedOption?.failoverMode === IpSecFailoverModeEnum.REVERTIVE) {
-      setRetryMode(initIpSecData.advancedOption.failoverMode)
-      form.setFieldValue(['advancedOption', 'failoverMode'], IpSecFailoverModeEnum.REVERTIVE)
+        form.setFieldValue('failoverRetryPeriodIsForever', false)
+        setIsRetryDurationForever(false)
+        form.setFieldValue(['retryDuration'], IpSecRetryDurationEnum.SPECIFIC)
+      } else {
+        form.setFieldValue('failoverRetryPeriodIsForever', true)
+        setIsRetryDurationForever(true)
+        form.setFieldValue(['retryDuration'], IpSecRetryDurationEnum.FOREVER)
+      }
+
+      if (initIpSecData?.advancedOption?.failoverMode
+          && initIpSecData?.advancedOption?.failoverMode === IpSecFailoverModeEnum.REVERTIVE) {
+        setRetryMode(initIpSecData.advancedOption.failoverMode)
+        form.setFieldValue(['advancedOption', 'failoverMode'], IpSecFailoverModeEnum.REVERTIVE)
+      }
     }
 
     setLoadFailoverSettings(false)
   }, [initIpSecData])
 
   const onRetryDurationChange = (value: IpSecRetryDurationEnum) => {
-    setRetryDuration(value)
+    setIsRetryDurationForever(value === IpSecRetryDurationEnum.FOREVER)
+    form.setFieldValue('failoverRetryPeriodIsForever', value === IpSecRetryDurationEnum.FOREVER)
+    if (value === IpSecRetryDurationEnum.SPECIFIC) {
+      let originalValue =form.getFieldValue(['advancedOption','failoverRetryPeriod'])
+      if (originalValue === 0) {
+        form.setFieldValue(['advancedOption','failoverRetryPeriod'], 3) // Set default value when checkbox is checked
+      }
+    }
   }
 
   const retryDurationOptions = [
@@ -62,7 +77,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'Retry Duration' })}
           name={'retryDuration'}
-          initialValue={retryDuration}
+          initialValue={IpSecRetryDurationEnum.FOREVER}
           children={
             <Select style={{ width: '150px' }}
               onChange={onRetryDurationChange}
@@ -71,10 +86,11 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
                   {option.label}
                 </Select.Option>)} />
           } />
-        { retryDuration === IpSecRetryDurationEnum.SPECIFIC && <>&nbsp;&nbsp;
+        { !isRetryDurationForever && <>&nbsp;&nbsp;
           <Space>
             <Form.Item
               label={' '}
+              data-testid='advOpt-retryPeriod'
               name={['advancedOption','failoverRetryPeriod']}
               initialValue={3}
               children={

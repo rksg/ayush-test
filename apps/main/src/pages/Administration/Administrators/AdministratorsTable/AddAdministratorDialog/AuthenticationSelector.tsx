@@ -31,7 +31,7 @@ export const GetAuthTypeString = (type: AuthTypeRadioButtonEnum) => {
     case AuthTypeRadioButtonEnum.idm:
       return defineMessage({ defaultMessage: 'RUCKUS Identity Management' })
     case AuthTypeRadioButtonEnum.commonAccount:
-      return defineMessage({ defaultMessage: 'Common Account Management' })
+      return defineMessage({ defaultMessage: 'Ruckus Account Management' })
   }
 }
 
@@ -56,10 +56,6 @@ export const getAuthTypesWithCAM = () => {
     {
       label: GetAuthTypeString(AuthTypeRadioButtonEnum.commonAccount),
       value: AuthTypeRadioButtonEnum.commonAccount
-    },
-    {
-      label: GetAuthTypeString(AuthTypeRadioButtonEnum.idm),
-      value: AuthTypeRadioButtonEnum.idm
     }]
 }
 
@@ -84,7 +80,9 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
     <Form.Item
       name='authType'
       label={$t({ defaultMessage: 'Authentication Type' })}
-      initialValue={AuthTypeRadioButtonEnum.idm}
+      initialValue={isCAMFFEnabled
+        ? AuthTypeRadioButtonEnum.commonAccount
+        : AuthTypeRadioButtonEnum.idm}
       rules={[{ required: true }]}
     >
       <Radio.Group
@@ -108,7 +106,7 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
           dependencies={['authType']}
         >
           {({ getFieldValue }) => {
-            return (getFieldValue('authType') === AuthTypeRadioButtonEnum.idm)
+            return (getFieldValue('authType') === AuthTypeRadioButtonEnum.idm && !isCAMFFEnabled)
               ? (
                 <UI.RadioLabel>
                   {$t({ defaultMessage: 'To use this authentication type,'+
