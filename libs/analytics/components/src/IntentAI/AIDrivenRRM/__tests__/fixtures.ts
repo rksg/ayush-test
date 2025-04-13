@@ -510,5 +510,5 @@ export const mockedApPowerDistribution = [
   { txPower: '_7DB', apCount: 5 },
   { txPower: '_6DB', apCount: 6 },
   { txPower: '_5DB', apCount: 7 },
-  { txPower: '_4DB', apCount: 8 },
+  { txPower: '_4DB', apCount: 8 }
 ]

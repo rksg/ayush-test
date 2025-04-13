@@ -81,7 +81,7 @@ export const tooltipFormatter = (
       <TooltipWrapper>
         {showNameAndValue.length > 0 ? (
           <>
-            {xAxisLabel} <b>{dataFormatter(xValue)}</b>: <b>{dataFormatter(yValue)}</b>{' '}
+            {xAxisLabel} <b>{(xValue).toString()}</b>: <b>{dataFormatter(yValue)}</b>{' '}
             {yAxisText}
           </>
         ) : (

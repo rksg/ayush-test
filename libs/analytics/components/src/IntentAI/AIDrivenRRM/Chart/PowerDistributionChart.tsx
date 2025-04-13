@@ -34,6 +34,9 @@ function PowerDistributionChart (intent: IntentDetail) {
     ]
   }
 
+  const xName = $t({ defaultMessage: 'Tx Power' })
+  const yName = $t({ defaultMessage: 'AP' })
+
   return (
     <Loader states={[queryResult]}>
       <Card title={$t({ defaultMessage: 'Power Transmission' })}>
@@ -42,7 +45,8 @@ function PowerDistributionChart (intent: IntentDetail) {
           xAxisName={$t({ defaultMessage: 'Tx Power' })}
           barWidth={20}
           xAxisValues={txPowerList}
-          showTooltipName={true}
+          showTooltipName={false}
+          showNameAndValue={[xName, yName]}
           style={{ height: '200px' }}
         /> : <NoData />}
       </Card>
