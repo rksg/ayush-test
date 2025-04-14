@@ -78,7 +78,7 @@ import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-route
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
-import { getOpsApi }                                   from '@acx-ui/utils'
+import { AccountTier, getOpsApi }                      from '@acx-ui/utils'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -1196,7 +1196,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          <AuthRoute scopes={[WifiScopes.CREATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={false} />
           </AuthRoute>
         }
@@ -1204,18 +1204,25 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <AuthRoute scopes={[WifiScopes.UPDATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={true} />
           </AuthRoute>
         }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
-        element={<LbsServerProfileTable />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileTable />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
-        element={<LbsServerProfileDetail />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileDetail />
+          </AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
@@ -1389,17 +1396,25 @@ function PolicyRoutes () {
       <>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
-          element={<WorkflowTable/>}
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowTable/>
+            </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
-          element={<WorkflowDetails />} />
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowDetails />
+            </AuthRoute>} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm/>
-            </PolicyAuthRoute>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
+                <WorkflowPageForm/>
+              </PolicyAuthRoute>
+            </AuthRoute>
           } />
       </>
       }

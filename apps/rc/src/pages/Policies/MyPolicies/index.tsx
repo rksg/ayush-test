@@ -51,6 +51,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -153,10 +154,12 @@ interface PolicyCardData {
 
 function useCardData (): PolicyCardData[] {
   const params = useParams()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -342,7 +345,7 @@ function useCardData (): PolicyCardData[] {
       }, { skip: !isWorkflowFFEnabled || !isWorkflowTierEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
-      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled
+      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled || isCore
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,

@@ -37,7 +37,7 @@ describe('IkeAssociationSettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form initialValues={initialValues}>
-          <IkeAssociationSettings />
+          <IkeAssociationSettings loadIkeSettings setLoadIkeSettings={jest.fn()} />
         </Form>
       </IntlProvider>
     )
