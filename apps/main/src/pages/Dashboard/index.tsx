@@ -111,6 +111,7 @@ export interface DashboardInfo {
   isLanding?: boolean
   isDefault?: boolean
   key: string
+  index: number
 }
 
 const DashboardFilterContext = createContext<DashboardFilterContextProps>({
@@ -214,7 +215,10 @@ export default function Dashboard () {
 
   const getDashboardList = () => {
     return mockDashboardList.map((item, index) => {
-      return { ...item, key: item.id,
+      return {
+        ...item,
+        key: item.id,
+        index,
         isLanding: index === 0,
         isDefault: item.id === DEFAULT_DASHBOARD_ID
       }

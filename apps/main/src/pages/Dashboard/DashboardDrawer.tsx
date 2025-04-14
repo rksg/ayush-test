@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
-import { Dropdown, Menu, MenuProps, Tooltip } from 'antd'
-import moment                                 from 'moment-timezone'
-import { useIntl }                            from 'react-intl'
+import { Dropdown, Menu, MenuProps, Tooltip }          from 'antd'
+import moment                                          from 'moment-timezone'
+import { DndProvider, useDrag, useDragLayer, useDrop } from 'react-dnd'
+import { HTML5Backend }                                from 'react-dnd-html5-backend'
+import { IntlShape, useIntl }                          from 'react-intl'
 
 import { Button, Drawer }            from '@acx-ui/components'
 import { MoveSolid, PentagramSolid } from '@acx-ui/icons'
@@ -11,11 +13,145 @@ import {
   MoreVertical
 }                    from '@acx-ui/icons-new'
 
+import { ItemTypes } from '../AICanvas/components/GroupItem'
+
 import * as UI from './styledComponents'
 
 import { DashboardInfo } from './index'
 
-import type { DataNode, TreeProps } from 'antd/es/tree'
+type ListItemProps = {
+  item: DashboardInfo;
+  index: number;
+  handleReorder: (from: number, to: number) => void;
+  handleMenuClick: MenuProps['onClick'],
+  setSelectedItem: (item: DashboardInfo) => void
+  isDraggingItemRef: React.MutableRefObject<boolean>
+}
+
+function CustomDragPreview () {
+  const { $t } = useIntl()
+  const { item, isDragging, currentOffset } = useDragLayer((monitor) => ({
+    item: monitor.getItem(),
+    isDragging: monitor.isDragging(),
+    currentOffset: monitor.getSourceClientOffset()
+  }))
+
+  if (!isDragging || !item || !currentOffset) {
+    return null
+  }
+
+  const style: React.CSSProperties = {
+    position: 'fixed',
+    pointerEvents: 'none',
+    top: 0,
+    left: 0,
+    transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
+    zIndex: 100,
+    width: '380px',
+    cursor: 'grab'
+  }
+
+  return (
+    <div style={style}>
+      <UI.DashboardItem
+        className='dragged'
+        style={{ cursor: 'grab' }}
+      >
+        { getItemInfo(item, $t) }
+      </UI.DashboardItem>
+    </div>
+  )
+}
+
+const getActionMenu = (
+  data: DashboardInfo,
+  handleMenuClick: MenuProps['onClick'],
+  $t: IntlShape['$t']
+) => {
+  const isEditable = !data.author
+  const isLanding = data.isLanding
+  const isDefault = data.isDefault
+  return <Menu
+    onClick={handleMenuClick}
+    items={[
+      ...(!isLanding ? [{
+        label: $t({ defaultMessage: 'Set as Landing Page' }),
+        key: 'landing'
+      }] : []),
+      ...(!isDefault ? [{ //TODO: can view default dashboard
+        label: $t({ defaultMessage: 'View' }),
+        key: 'view'
+      }] : []),
+      ...(isEditable && !isDefault ? [{
+        label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
+        key: 'edit'
+      }, {
+        label: $t({ defaultMessage: 'Remove from Dashboard' }),
+        key: 'remove'
+      }] : [])
+    ]}
+  />
+}
+
+const getItemInfo = (
+  data: DashboardInfo,
+  $t: IntlShape['$t'],
+  isDraggingItem?: boolean,
+  handleMenuClick?: MenuProps['onClick'],
+  setSelectedItem?: (item: DashboardInfo) => void
+) => {
+  const dropdownMenu = getActionMenu(data, handleMenuClick, $t)
+  const hasDropdownMenu = dropdownMenu.props.items.length > 0
+
+  return <>
+    <div className={`mark ${data?.isLanding ? 'star' : 'move'}`}>{
+      data?.isLanding
+      // eslint-disable-next-line max-len
+        ? <Tooltip title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}>
+          <PentagramSolid />
+        </Tooltip>
+        : <MoveSolid />
+    }</div>
+    <div className='info'>
+      <div className='title'>{
+        data.isDefault ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : data.name
+      }</div>
+      { data.widgetIds && <div className='desp'>
+        { data.widgetIds && <span className='count'>{
+          $t({ defaultMessage: '{count} widgets' }, { count: data.widgetIds?.length })
+        }</span>
+        }
+        { data.updatedDate && <span className='date'>{
+          moment(data.updatedDate).format('YYYY/MM/DD')
+        }</span> }
+        { data.author && <span className='author'>
+          <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
+          <span className='name'>{ data.author }</span>
+        </span>
+        }
+      </div>}
+    </div>
+    {hasDropdownMenu && <div className='action'>
+      <Dropdown
+        overlay={dropdownMenu}
+        trigger={['click']} //TODO: Fix bug
+        {...(isDraggingItem && { visible: false })}
+        key='actionMenu'
+      >
+        <Button
+          data-testid='dashboard-more-btn'
+          type='link'
+          size='small'
+          icon={<MoreVertical size='sm' />}
+          onClick={() => {
+            setSelectedItem?.(data)
+          }}
+        />
+      </Dropdown>
+      {/* </span> */}
+    </div>}
+  </>
+}
 
 export const DashboardDrawer = (props: {
   data: DashboardInfo[],
@@ -26,63 +162,12 @@ export const DashboardDrawer = (props: {
 }) => {
   const { $t } = useIntl()
   const [selectedItem, setSelectedItem] = useState({} as DashboardInfo)
-  const [dashboardList, setDashboardList] = useState(props.data as DataNode[])
+  const [dashboardList, setDashboardList] = useState(props.data as DashboardInfo[])
+  const isDraggingItemRef = useRef(false)
 
   useEffect(() => {
     setDashboardList(props.data)
   }, [props.data])
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onDragEnter: TreeProps['onDragEnter'] = (info) => {
-  }
-
-  const onDrop: TreeProps['onDrop'] = (info) => {
-    const dropKey = info.node.key
-    const dragKey = info.dragNode.key
-    const dropPos = info.node.pos.split('-')
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
-    const isDraggable = !((info.dragNode as unknown as DashboardInfo)?.isLanding === true)
-
-    const loop = (
-      data: DataNode[],
-      key: React.Key,
-      callback: (node: DataNode, i: number, data: DataNode[]) => void
-    ) => {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].key === key) {
-          return callback(data[i], i, data)
-        }
-        if (data[i].children) {
-          loop(data[i].children!, key, callback)
-        }
-      }
-    }
-
-    const data = [...dashboardList]
-    if (!isDraggable || dropPosition === -1 ) {
-      return
-    }
-
-    let dragObj: DataNode
-    loop(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1)
-      dragObj = item
-    })
-
-    let ar: DataNode[] = []
-    let i: number
-    loop(data, dropKey, (_item, index, arr) => {
-      ar = arr
-      i = index
-    })
-    if (dropPosition === -1) {
-      ar.splice(i!, 0, dragObj!)
-    } else {
-      ar.splice(i! + 1, 0, dragObj!)
-    }
-
-    setDashboardList(data)
-  }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -98,30 +183,87 @@ export const DashboardDrawer = (props: {
     }
   }
 
-  const getActionMenu = (data: DashboardInfo) => {
-    const isEditable = !data.author
-    const isLanding = data.isLanding
-    const isDefault = data.isDefault
-    return <Menu
-      onClick={handleMenuClick}
-      items={[
-        ...(!isLanding ? [{
-          label: $t({ defaultMessage: 'Set as Landing Page' }),
-          key: 'landing'
-        }] : []),
-        ...(!isDefault ? [{ //TODO: can view default dashboard
-          label: $t({ defaultMessage: 'View' }),
-          key: 'view'
-        }] : []),
-        ...(isEditable && !isDefault ? [{
-          label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
-          key: 'edit'
-        }, {
-          label: $t({ defaultMessage: 'Remove from Dashboard' }),
-          key: 'remove'
-        }] : [])
-      ]}
-    />
+  const ListItem: React.FC<ListItemProps> = ({
+    item, index, isDraggingItemRef, handleReorder, handleMenuClick, setSelectedItem
+  }) => {
+    const ref = useRef<HTMLDivElement>(null)
+    const originalIndexRef = useRef<number | undefined>()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [{ isDragging, draggedItem }, drag, preview] = useDrag({
+      type: ItemTypes.CARD,
+      canDrag: () => index !== 0,
+      item: () => {
+        originalIndexRef.current = index
+        isDraggingItemRef.current = true
+        return { ...item, index }
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+        draggedItem: monitor.getItem()
+      }),
+      end: (item, monitor) => {
+        const didDrop = monitor.didDrop()
+        const originalIndex = originalIndexRef.current
+        if (!didDrop && originalIndex !== undefined) {
+          handleReorder(item.index, originalIndex)
+        }
+        originalIndexRef.current = undefined
+        isDraggingItemRef.current = false
+      }
+    })
+
+    const [, drop] = useDrop({
+      accept: ItemTypes.CARD,
+      hover (dragged: { index: number }, monitor) { //TODO
+        const dragIndex = dragged.index
+        const hoverIndex = index
+        if (!ref.current) return
+        if (dragIndex === hoverIndex) return
+
+        const hoverBoundingRect = ref.current.getBoundingClientRect()
+        const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+        const clientOffset = monitor.getClientOffset()
+        if (!clientOffset) return
+
+        const hoverClientY = clientOffset.y - hoverBoundingRect.top
+        const shouldInsertAtIndex1 =
+          hoverIndex === 1 && hoverClientY < hoverMiddleY
+
+        if (hoverIndex === 0) return
+
+        const targetIndex = shouldInsertAtIndex1 ? 1 : hoverIndex
+        if (targetIndex === 0) return
+        if (dragIndex === targetIndex) return
+
+        handleReorder(dragIndex, targetIndex)
+        dragged.index = targetIndex
+      },
+      drop: () => {
+        isDraggingItemRef.current = false
+      }
+    })
+
+    useEffect(() => {
+      preview(null, { captureDraggingState: true })
+    }, [preview])
+
+    drag(drop(ref))
+
+    return (
+      <UI.DashboardItem ref={ref}
+        className={`${draggedItem?.id === item.id ? 'dragging' : ''}`}
+      >
+        { getItemInfo(item, $t, isDraggingItemRef.current, handleMenuClick, setSelectedItem) }
+      </UI.DashboardItem>
+    )
+  }
+
+  const handleReorder = (from: number, to: number) => {
+    if (from === to || to === 0) return
+    const updated = [...dashboardList]
+    const [moved] = updated.splice(from, 1)
+    updated.splice(to, 0, moved)
+    setDashboardList(updated)
   }
 
   return <Drawer
@@ -130,61 +272,22 @@ export const DashboardDrawer = (props: {
     visible={props.visible}
     onClose={props.onClose}
     children={<>
-      <UI.DashboardList
-        className='draggable-tree'
-        blockNode
-        onDragEnter={onDragEnter}
-        onDrop={onDrop}
-        draggable={node => !(node as DashboardInfo).isLanding}
-        treeData={dashboardList}
-        titleRender={item => {
-          const data = item as DashboardInfo
-          const dropdownMenu = getActionMenu(data)
-          const hasDropdownMenu = dropdownMenu.props.items.length > 0
-          return (<span title=''>
-            <div className={`mark ${data?.isLanding ? 'star' : 'move'}`}>{
-              data?.isLanding
-                // eslint-disable-next-line max-len
-                ? <Tooltip title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}>
-                  <PentagramSolid />
-                </Tooltip>
-                : <MoveSolid />
-            }</div>
-            <div className='info'>
-              <div className='title'>{
-                data.isDefault ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : data.name
-              }</div>
-              { data.widgetIds && <div className='desp'>
-                { data.widgetIds && <span className='count'>{
-                  $t({ defaultMessage: '{count} widgets' }, { count: data.widgetIds.length })
-                }</span>
-                }
-                { data.updatedDate && <span className='date'>{
-                  moment(data.updatedDate).format('YYYY/MM/DD')
-                }</span> }
-                { data.author && <span className='author'>
-                  <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-                  <span className='name'>{ data.author }</span>
-                </span>
-                }
-              </div>}
-            </div>
-            {hasDropdownMenu && <div className='action'>
-              <Dropdown overlay={dropdownMenu} trigger={['click']} key='actionMenu'>
-                <Button
-                  data-testid='dashboard-more-btn'
-                  type='link'
-                  size='small'
-                  icon={<MoreVertical size='sm' />}
-                  onClick={() => {
-                    setSelectedItem(data)
-                  }}
-                />
-              </Dropdown>
-            </div>}
-          </span>) as React.ReactNode
-        }}
-      />
+      <DndProvider backend={HTML5Backend}>
+        <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>
+          {dashboardList.map((item, index) => (
+            <ListItem
+              key={item.id}
+              item={item}
+              index={index}
+              isDraggingItemRef={isDraggingItemRef}
+              handleReorder={handleReorder}
+              handleMenuClick={handleMenuClick}
+              setSelectedItem={setSelectedItem}
+            />
+          ))}
+          <CustomDragPreview />
+        </UI.DashboardList>
+      </DndProvider>
 
       <Button
         type='link'

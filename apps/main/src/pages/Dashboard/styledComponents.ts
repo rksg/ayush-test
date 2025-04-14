@@ -1,5 +1,5 @@
-import { Input, Tree, List as AntList } from 'antd'
-import styled, { createGlobalStyle }    from 'styled-components/macro'
+import { Input, List as AntList }    from 'antd'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 
 import { Select }            from '@acx-ui/components'
 import { ArrowChevronRight } from '@acx-ui/icons'
@@ -85,129 +85,120 @@ export const DashboardSelector = styled(Select)`
   }
 `
 
-export const DashboardList = styled(Tree)`
+export const DashboardList = styled.div`
   margin: 4px 0 36px;
-  .ant-tree-treenode {
+  &.dragging {
+    .mark.move {
+      opacity: 0 !important;
+    }
+  }
+
+  
+`
+
+export const DashboardItem = styled.div`
+  display: flex;
+  align-items: center;
+  height: 76px;
+  padding: 0 20px 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--acx-neutrals-20);
+  background: var(--acx-neutrals-10);
+  margin-bottom: 8px;
+  cursor: grab;
+  overflow: hidden;
+  width: 100%;
+  gap: 8px;
+
+  .mark {
     display: flex;
     align-items: center;
-    height: 76px;
-    padding: 0 20px 0 12px;
-    border-radius: 8px;
-    border: 1px solid var(--acx-neutrals-20);
-    background: var(--acx-neutrals-10);
-    margin-bottom: 8px;
 
-    .ant-tree-node-content-wrapper {
-      max-width: 100%;
-      padding: 0;
-      background: transparent;
+    &.star {
+      color: var(--acx-accents-orange-50);
     }
-
-    .ant-tree-draggable-icon {
-      display: none;
+    &.move {
+      opacity: 0;
+      transition: .2s;
+      color: var(--acx-accents-orange-30);
     }
-
-    .ant-tree-title {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      > span {
-        display: flex;
-        overflow: hidden;
-        width: 100%;
-        gap: 8px;
-      }
-      .mark {
-        display: flex;
-        align-items: center;
-
-        &.star {
-          color: var(--acx-accents-orange-50);
-        }
-        &.move {
-          opacity: 0;
-          transition: .2s;
-          color: var(--acx-accents-orange-30);
-        }
-      }
-      .info {
-        flex: 1;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-      .title {
-        font-size: var(--acx-subtitle-4-font-size);
-        line-height: var(--acx-subtitle-4-line-height);
-        font-weight: var(--acx-subtitle-4-font-weight);
-        color: var(--acx-neutrals-100);
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-      .desp {
-        display: flex;
-        align-items: center;
-        margin-top: 3px;
-      }
-      .count, .date, .author {
-        display: inline-flex;
-        vertical-align: middle;
-        font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-4-line-height);
-        margin-right: 10px;
-        color: var(--acx-neutrals-70);
-      }
-      .author {
-        overflow: hidden;
-        svg {
-          flex-shrink: 0;
-        }
-        .name {
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-      }
-      .action {
-        display: inline-flex;
-        align-items: center;
-        svg {
-          path {
-            color: var( --acx-neutrals-70);
-          }
-        }
+  }
+  .info {
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .title {
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
+    font-weight: var(--acx-subtitle-4-font-weight);
+    color: var(--acx-neutrals-100);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .desp {
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+  }
+  .count, .date, .author {
+    display: inline-flex;
+    vertical-align: middle;
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    margin-right: 10px;
+    color: var(--acx-neutrals-70);
+  }
+  .author {
+    overflow: hidden;
+    svg {
+      flex-shrink: 0;
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    z-index: 1;
+    svg {
+      path {
+        color: var( --acx-neutrals-70);
       }
     }
-
-    .ant-tree-node-selected {
-      background: transparent;
+  }
+  &:hover {
+    .mark.move {
+      opacity: 1;
+    }  
+  }
+  &.dragged {
+    border: 1px solid var(--acx-accents-orange-30);
+    background: var(--acx-accents-orange-10);
+    opacity: 0.92;
+    .mark,
+    .action {
+      opacity: 0;
     }
-
-    .ant-tree-switcher {
-      display: none;
+  }
+  &.dragging {
+    border: 1px dashed var(--acx-accents-orange-30);
+    background: rgba(254, 246, 237, 0.30);
+    .info,
+    .mark,
+    .action {
+      opacity: 0;
     }
-    .ant-tree-drop-indicator {
-      display: none;
-      &:after {
-        display: none;
-      }
-    }
-    &.dragging {
-      border: 1px solid var(--acx-accents-orange-25);
-      background: var(--acx-accents-orange-10);
-
-      &:after {
-        display: none;
-      }
-    }
-    
-    &:hover {
-      .ant-tree-title {
-        .mark.move {
-          opacity: 1;
-        }
-      }    
+  }
+  &.disabled-hover,
+  &.dragging {
+    .mark.move {
+      opacity: 0;
     }
   }
 `
@@ -219,7 +210,7 @@ export const SearchInput = styled(Input)`
   padding: 4px 12px 4px 8px;
 `
 
-export const ListItem = styled(AntList.Item)`
+export const CanvasListItem = styled(AntList.Item)`
   display: flex;
   height: 68px;
   border-radius: 8px;

@@ -140,7 +140,7 @@ export const ImportDashboardDrawer = (props: {
         itemLayout='vertical'
         size='small'
         renderItem={(item) => {
-          return <UI.ListItem>
+          return <UI.CanvasListItem>
             <Checkbox
               checked={selectedCanvases.includes(item.key)}
               onChange={e => handleCheck(e.target.checked, item.key)}
@@ -180,7 +180,7 @@ export const ImportDashboardDrawer = (props: {
               </Dropdown>
             </div>
 
-          </UI.ListItem>
+          </UI.CanvasListItem>
         }}
       />
     </>}
