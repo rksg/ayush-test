@@ -89,12 +89,12 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('usedProfileData: ', usedProfileData?.data,
-      '\t\toperations: ', usedProfileData?.operations)
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {
+      form.setFieldValue(['lan', index, 'softGreProfileId'], '')
+      form.setFieldValue(['lan', index, 'ipsecProfileId'], '')
+      form.setFieldValue(ipsecFieldName, false)
       setSoftGreProfileDisabled(false)
       setIsIpsecDisabled(false)
       return
@@ -103,9 +103,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       let standardOp = target.find(a => isUnderAPNetworking ?
         a.portId === portId && a.serialNumber === serialNumber :
         a.portId === portId && a.apModel === apModel)
-      let isDbRecord = true
       if (!!!standardOp) {
-        isDbRecord = false
         standardOp = target[0]
       }
       if (!!standardOp.ipsecId) {
@@ -113,22 +111,15 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         setSoftGreProfileDisabled(true)
         form.setFieldValue(ipsecFieldName, true)
         form.setFieldValue(['lan', index, 'softGreProfileId'], target[0].softGreId)
-        if (isDbRecord) {
-          return
-        }
         if (ipsecProfileId !== standardOp.ipsecId) {
           form.setFieldValue(['lan', index, 'ipsecProfileId'], target[0].ipsecId)
           onFormChange()
         }
       } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
-        form.setFieldValue(ipsecFieldName, '')
-        if (isDbRecord) {
-          return
-        }
-        if (softGreProfileId !== standardOp.softGreId) {
-          onFormChange()
-        }
+        form.setFieldValue(ipsecFieldName, false)
+        form.setFieldValue(['lan', index, 'softGreProfileId'], standardOp.softGreId)
+        onFormChange()
       }
     } else if (operations.length > 0) {
       const currentOps = isUnderAPNetworking ?
@@ -140,7 +131,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             operations.filter(a => a.serialNumber !== serialNumber || a.portId !== portId) :
             operations.filter(a => a.apModel !== apModel || a.portId !== portId)
           if (!!standardOps[0].ipsecId) {
-            console.log('ipsecProfileId:', ipsecProfileId) // eslint-disable-line no-console
             if (ipsecProfileId !== standardOps[0].ipsecId) {
               form.setFieldValue(['lan', index, 'softGreProfileId'], standardOps[0].softGreId)
               form.setFieldValue(['lan', index, 'ipsecProfileId'], standardOps[0].ipsecId)
@@ -155,7 +145,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             onFormChange()
           } else if (!!standardOps[0].softGreId) {
             setIsIpsecDisabled(true)
-            form.setFieldValue(ipsecFieldName, '')
+            form.setFieldValue(ipsecFieldName, false)
             onFormChange()
           }
         } else {
@@ -164,7 +154,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         }
       }
     } else {
-      form.setFieldValue(ipsecFieldName, '')
+      form.setFieldValue(ipsecFieldName, false)
       setSoftGreProfileDisabled(false)
       setIsIpsecDisabled(false)
       onFormChange()

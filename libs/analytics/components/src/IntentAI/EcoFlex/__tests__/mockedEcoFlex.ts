@@ -135,30 +135,30 @@ export const mockKpiResultData = {
   data: {
     timestamp: '2024-09-25T03:16:17.999Z',
     data: [ { value: 10,
-      name: 'are not supporting EcoFlex.',
+      name: 'are not supporting Energy Saving.',
       color: categoryStyles[0].color
     },
     { value: 15,
-      name: 'are not supporting and disabling EcoFlex.',
+      name: 'are not supporting and disabling Energy Saving.',
       color: categoryStyles[1].color
     },
     { value: 35,
-      name: 'are not supporting and enabling EcoFlex.',
+      name: 'are not supporting and enabling Energy Saving.',
       color: categoryStyles[2].color
     }]
   },
   compareData: {
     timestamp: '2024-09-24T03:16:17.999Z',
     data: [ { value: 10,
-      name: 'are not supporting EcoFlex.',
+      name: 'are not supporting Energy Saving.',
       color: categoryStyles[0].color
     },
     { value: 20,
-      name: 'are not supporting and disabling EcoFlex.',
+      name: 'are not supporting and disabling Energy Saving.',
       color: categoryStyles[1].color
     },
     { value: 30,
-      name: 'are not supporting and enabling EcoFlex.',
+      name: 'are not supporting and enabling Energy Saving.',
       color: categoryStyles[2].color
     }]
   }
