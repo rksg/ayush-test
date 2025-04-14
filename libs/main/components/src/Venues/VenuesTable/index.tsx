@@ -27,7 +27,7 @@ import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
-  useGetVenueTagListQuery,
+  // useGetVenueTagListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useVenuesTableQuery
@@ -412,7 +412,7 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityList()
   const tableData = useVenueEdgeCompatibilities(tableQuery)
-  const { tagFilterOptions } = useGetVenueTagList()
+  // const { tagFilterOptions } = useGetVenueTagList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -438,7 +438,8 @@ export function VenuesTable () {
         tableData={tableData}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
-        filterables={{ city: cityFilterOptions, tags: tagFilterOptions }}
+        filterables={{ city: cityFilterOptions }}
+        // filterables={{ city: cityFilterOptions, tags: tagFilterOptions }}
       />
     </>
   )
@@ -467,21 +468,21 @@ function useGetVenueCityList () {
   return venueCityList
 }
 
-function useGetVenueTagList () {
-  const params = useParams()
+// function useGetVenueTagList () {
+//   const params = useParams()
 
-  let tagList = useGetVenueTagListQuery({
-    params
-  }, {
-    selectFromResult: ({ data }) => ({
-      tagFilterOptions: data?.map(item => (
-        { key: item, value: item }
-      ))
-    })
-  })
+//   let tagList = useGetVenueTagListQuery({
+//     params
+//   }, {
+//     selectFromResult: ({ data }) => ({
+//       tagFilterOptions: data?.map(item => (
+//         { key: item, value: item }
+//       ))
+//     })
+//   })
 
-  return tagList
-}
+//   return tagList
+// }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
