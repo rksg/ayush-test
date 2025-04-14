@@ -7,10 +7,6 @@ export const userLogout = () => {
   sessionStorage.removeItem('jwt')
   sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
 
-  Object.keys(localStorage)
-    ?.filter(s => s.includes('SPLITIO') || s.includes('pagesize'))
-    ?.forEach(s => localStorage.removeItem(s))
-
   Object.keys(sessionStorage)
     ?.filter(s => s.includes('pagesize') || s.includes('-filter'))
     ?.forEach(s => sessionStorage.removeItem(s))
