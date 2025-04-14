@@ -1,12 +1,13 @@
 import { Provider } from 'react-redux'
 
+import { Features }                                                                     from '@acx-ui/feature-toggle'
 import { EdgeSdLanFixtures, NetworkTunnelSdLanAction, NetworkTypeEnum, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { store } from '@acx-ui/store'
-import { renderHook } from '@acx-ui/test-utils'
+import { store }                                                                        from '@acx-ui/store'
+import { renderHook }                                                                   from '@acx-ui/test-utils'
 
-import { Features } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }   from './types'
 import { mergeSdLanCacheAct, useUpdateNetworkTunnelAction } from './utils'
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
@@ -19,10 +20,10 @@ jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
 }))
 
 const mockedToggleNetworkChangeFn = jest.fn()
-const mockedDeactivateNetwork = jest.fn();
-const mockedActivateNetwork = jest.fn();
+const mockedDeactivateNetwork = jest.fn()
+const mockedActivateNetwork = jest.fn()
 jest.mock('@acx-ui/edge/components', () => {
-  const actualModule = jest.requireActual('@acx-ui/edge/components');
+  const actualModule = jest.requireActual('@acx-ui/edge/components')
   return {
     ...actualModule,
     useEdgeSdLanActions: () => ({
@@ -41,52 +42,52 @@ jest.mock('@acx-ui/edge/components', () => {
           currentTunnelProfileId,
           originTunnelProfileId,
           cb
-        );
+        )
 
-        const isChangeTunneling = currentTunnelProfileId !== originTunnelProfileId;
+        const isChangeTunneling = currentTunnelProfileId !== originTunnelProfileId
         if (!isChangeTunneling) {
-          return Promise.resolve();
+          return Promise.resolve()
         }
 
         if (originTunnelProfileId !== undefined && originTunnelProfileId !== null) {
           mockedDeactivateNetwork({
             customHeaders: {
-              'Content-Type': 'application/vnd.ruckus.v1.1+json',
+              'Content-Type': 'application/vnd.ruckus.v1.1+json'
             },
             params: {
               serviceId,
               venueId: venueId,
-              wifiNetworkId: networkId,
+              wifiNetworkId: networkId
             },
-            callback: cb,
-          });
+            callback: cb
+          })
         }
 
         if (currentTunnelProfileId !== undefined && currentTunnelProfileId !== null) {
           mockedActivateNetwork({
             customHeaders: {
-              'Content-Type': 'application/vnd.ruckus.v1.1+json',
+              'Content-Type': 'application/vnd.ruckus.v1.1+json'
             },
             params: {
               serviceId,
               venueId: venueId,
-              wifiNetworkId: networkId,
+              wifiNetworkId: networkId
             },
             payload: {
               ...(currentTunnelProfileId
                 ? { forwardingTunnelProfileId: currentTunnelProfileId }
-                : {}),
+                : {})
             },
-            callback: cb,
-          });
+            callback: cb
+          })
         }
-        return Promise.resolve();
+        return Promise.resolve()
       },
       useDeactivateNetworkMutation: () => [mockedDeactivateNetwork],
-      useActivateNetworkMutation: () => [mockedActivateNetwork],
-    }),
-  };
-});
+      useActivateNetworkMutation: () => [mockedActivateNetwork]
+    })
+  }
+})
 
 jest.mock('../useEdgeActions', () => ({
   ...jest.requireActual('../useEdgeActions'),
@@ -248,7 +249,9 @@ describe('useUpdateNetworkTunnelAction', () => {
       })
       mockedDeactivateNetwork.mockClear()
       mockedActivateNetwork.mockClear()
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
+
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
     })
 
     it('should correctly activate SDLAN tunneling', async () => {
