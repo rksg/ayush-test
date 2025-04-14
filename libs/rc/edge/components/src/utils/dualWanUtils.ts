@@ -51,9 +51,9 @@ export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum) => 
 
   switch (type) {
     case EdgeLinkDownCriteriaEnum.ALL_TARGETS_DOWN:
-      return $t({ defaultMessage: 'All destinations were unreachable' })
+      return $t({ defaultMessage: 'All targets were unreachable' })
     case EdgeLinkDownCriteriaEnum.ANY_TARGET_DOWN:
-      return $t({ defaultMessage: 'One or more of the destinations were unreachable' })
+      return $t({ defaultMessage: 'One or more of the targets were unreachable' })
     case EdgeLinkDownCriteriaEnum.INVALID:
     default:
       return ''

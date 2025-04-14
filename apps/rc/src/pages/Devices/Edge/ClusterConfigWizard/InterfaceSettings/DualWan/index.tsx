@@ -20,6 +20,7 @@ export const DualWanForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => 
     form: configWizardForm,
     current: currentStep
   } = useStepFormContext<InterfaceSettingsFormType>()
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   useEffect(() => onInit?.(), [onInit])
 
@@ -44,7 +45,7 @@ export const DualWanForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => 
           {
           // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Configure the dual WAN settings for all RUCKUS Edges in this cluster ({clusterName}):' },
-              { clusterName: 'clusterName' })
+              { clusterName: clusterInfo?.name })
           }
         </Typography.Text>
       </Space>}

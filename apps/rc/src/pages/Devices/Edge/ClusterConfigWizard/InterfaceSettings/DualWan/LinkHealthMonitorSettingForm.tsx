@@ -95,29 +95,34 @@ export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingForm
       />
     </Form.Item>
 
-    <Form.List name='targetIpAddresses'>
-      {(fields, { add, remove }) => {
-        return <>
-          {fields?.map((field, index) =>
-            <StyledFormItem
-              {...field}
-              rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
-              ]}
-            >
-              <InputInlineEditor
-                index={index}
-                onDelete={remove}
-              />
-            </StyledFormItem>
-          )}
-          <Button type='link' onClick={() => add()}>
-            {$t({ defaultMessage: 'Add Target' })}
-          </Button>
-        </>
-      }}
-    </Form.List>
+    <Form.Item
+      label={$t({ defaultMessage: 'Target IP Addresses (Up to {max})' }, { max: MAX_TARGET_IP })}
+      required
+    >
+      <Form.List name='targetIpAddresses'>
+        {(fields, { add, remove }) => {
+          return <>
+            {fields?.map((field, index) =>
+              <StyledFormItem
+                {...field}
+                rules={[
+                  { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
+                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                ]}
+              >
+                <InputInlineEditor
+                  index={index}
+                  onDelete={remove}
+                />
+              </StyledFormItem>
+            )}
+            <Button type='link' onClick={() => add()}>
+              {$t({ defaultMessage: 'Add Target' })}
+            </Button>
+          </>
+        }}
+      </Form.List>
+    </Form.Item>
 
     <StyledHiddenFormItem
       name='validateTargetIpAddresses'
