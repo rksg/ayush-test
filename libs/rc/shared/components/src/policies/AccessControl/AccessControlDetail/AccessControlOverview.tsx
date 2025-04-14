@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, SummaryCard }                                      from '@acx-ui/components'
 import { EnabledStatus, EnhancedAccessControlInfoType, PolicyType } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier }                               from '@acx-ui/user'
 
 import {
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
@@ -21,8 +22,10 @@ interface SubPolicyDetailProps {
 export default function AccessControlOverview (props: { data: EnhancedAccessControlInfoType | undefined }) {
   const { $t } = useIntl()
   const { data } = props
+  const { accountTier } = getUserProfile()
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
+  const isCore = isCoreTier(accountTier)
 
   const SubPolicyDetail = ({ policyType, policyId } : SubPolicyDetailProps ) => {
     return <Button
@@ -70,7 +73,7 @@ export default function AccessControlOverview (props: { data: EnhancedAccessCont
         />
         : EnabledStatus.OFF
     },
-    {
+    ...((isCore) ? [] : [{
       title: $t({ defaultMessage: 'Applications' }),
       content: data && data.applicationPolicyId
         ? <SubPolicyDetail
@@ -78,7 +81,7 @@ export default function AccessControlOverview (props: { data: EnhancedAccessCont
           policyId={data.applicationPolicyId}
         />
         : EnabledStatus.OFF
-    },
+    }]),
     {
       title: $t({ defaultMessage: 'Client Rate Limit' }),
       content: data && (data.clientRateUpLinkLimit || data.clientRateDownLinkLimit)

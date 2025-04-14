@@ -2,8 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, showToast }      from '@acx-ui/components'
-import { handleBlobDownloadFile } from '@acx-ui/utils'
+import { Button, showToast }          from '@acx-ui/components'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
+import { handleBlobDownloadFile }     from '@acx-ui/utils'
 
 import { useClientPcapMutation }           from './services'
 import { PcapSpin, PcapText, PcapWrapper } from './styledComponents'
@@ -17,6 +18,9 @@ export function DownloadPcap ({
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const { $t } = useIntl()
+  const { accountTier, profile } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+  const isSupportUser = Boolean(profile?.support)
   const onClick = () => {
     setIsLoading(true)
     getPcap({ filename: pcapFilename })
@@ -37,10 +41,12 @@ export function DownloadPcap ({
       })
   }
 
+  const hasPermission = isCore ? isSupportUser: true
+
   return <PcapWrapper>
     {isLoading
       ? <PcapSpin />
-      : <Button
+      : (hasPermission && <Button
         type='default'
         disabled={Boolean(error)}
         onClick={() => onClick()}
@@ -48,6 +54,6 @@ export function DownloadPcap ({
         <PcapText>
           {$t({ defaultMessage: 'Download .pcap' })}
         </PcapText>
-      </Button>}
+      </Button>)}
   </PcapWrapper>
 }

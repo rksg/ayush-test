@@ -1,13 +1,15 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { SwitchViewModel, isOperationalSwitch }  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasRaiPermission }                      from '@acx-ui/user'
+import { Tabs }                                         from '@acx-ui/components'
+import { SwitchViewModel, isOperationalSwitch }         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
+import { getUserProfile, hasRaiPermission, isCoreTier } from '@acx-ui/user'
 
 function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const params = useParams()
   const basePath = useTenantLink(`/devices/switch/${params.switchId}/${params.serialNumber}/details/`)
   const navigate = useNavigate()
@@ -24,7 +26,7 @@ function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' /> }
+      { (hasRaiPermission('READ_INCIDENTS') && !isCore) && <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' /> }
       {isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />}
       <Tabs.TabPane

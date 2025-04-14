@@ -10,14 +10,15 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
-import { getUserProfile }                                 from '@acx-ui/user'
+import { getUserProfile, isCoreTier }                     from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
   dateRangeMap,
   resetRanges,
   dateRangeForLast,
-  AccountTier
+  AccountTier,
+  defaultCoreTierRanges
 } from '@acx-ui/utils'
 
 import { Tooltip } from '../Tooltip'
@@ -82,8 +83,10 @@ export const RangePicker = ({
   allowedMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const { translatedRanges, translatedOptions } = useMemo(() => {
-    const ranges = defaultRanges(rangeOptions)
+    const ranges = isCore ? defaultCoreTierRanges(rangeOptions) : defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
     const translatedOptions: Record<string, DateRange> = {}
     for (const rangeOption in ranges) {
@@ -97,15 +100,17 @@ export const RangePicker = ({
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const { accountTier } = getUserProfile()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const allowedDateRange = (showResetMsg && allowedMonthRange)
+  let allowedDateRange = (showResetMsg && allowedMonthRange)
     ? dateRangeForLast(allowedMonthRange,'months')
     : (accountTier === AccountTier.GOLD
       ? dateRangeForLast(1, 'month')
       : dateRangeForLast(isReport ? 12 : 3, 'months'))
 
+  if (isCoreTier(accountTier)) {
+    allowedDateRange = dateRangeForLast(14, 'days')
+  }
 
   const disabledDate = useCallback(
     (current: Moment) => (
