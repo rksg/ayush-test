@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/components'
 import { useDeleteWebhookMutation, useGetWebhooksQuery }                                             from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission }                                   from '@acx-ui/user'
+import { filterByAccess, getUserProfile, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
 import { getOpsApi }                                                                                 from '@acx-ui/utils'
 
 import { getWebhookPayloadEnumString } from './webhookConfig'
@@ -24,6 +24,7 @@ const R1Webhooks = () => {
   // null      = no webhook selected
   const [selectedWebhook, setSelectedWebhook] = useState<Webhook>()
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const tableQuery = useTableQuery<Webhook>({
     useQuery: useGetWebhooksQuery,
@@ -110,6 +111,9 @@ const R1Webhooks = () => {
     }
   }]
 
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : (hasCrossVenuesPermission() && hasPermission({ permission: 'WRITE_WEBHOOKS' }))
+
   return <Loader states={[tableQuery]}>
     {drawerVisible && <WebhookForm
       visible={drawerVisible}
@@ -123,8 +127,7 @@ const R1Webhooks = () => {
       dataSource={tableQuery.data?.data}
       actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
       rowActions={rowActions}
-      rowSelection={hasCrossVenuesPermission() &&
-        hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
+      rowSelection={hasRowPermissions && {
         type: 'radio'
       }}
       data-testid='WebhooksTable'
