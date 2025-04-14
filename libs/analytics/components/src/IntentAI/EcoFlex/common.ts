@@ -7,7 +7,7 @@ import { IntentConfigurationConfig } from '../IntentContext'
 import { IntentKPIConfig }           from '../useIntentDetailsQuery'
 
 export const configuration: IntentConfigurationConfig = {
-  label: defineMessage({ defaultMessage: 'EcoFlex' }),
+  label: defineMessage({ defaultMessage: 'Energy Saving' }),
   valueFormatter: formatter('enabledFormat')
 }
 

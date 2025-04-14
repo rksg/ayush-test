@@ -1,7 +1,8 @@
-import { Modal, Button, Form } from 'antd'
-import TextArea                from 'antd/lib/input/TextArea'
-import { useIntl }             from 'react-intl'
+import { Button, Form } from 'antd'
+import TextArea         from 'antd/lib/input/TextArea'
+import { useIntl }      from 'react-intl'
 
+import { cssStr, Modal }          from '@acx-ui/components'
 import { SamlIdpProfileFormType } from '@acx-ui/rc/utils'
 
 interface SamlIdpMetadataModalProps {
@@ -34,7 +35,12 @@ export const SamlIdpMetadataModal = (props: SamlIdpMetadataModalProps) => {
       }
     >
       <TextArea
-        style={{ width: '100%', height: 500 }}
+        style={{
+          width: '100%',
+          height: 500,
+          marginBottom: '16px',
+          backgroundColor: cssStr('--acx-neutrals-10')
+        }}
         value={samlIdpData.metadataContent}
         readOnly
       ></TextArea>
