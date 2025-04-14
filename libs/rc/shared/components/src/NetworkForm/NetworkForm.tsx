@@ -548,7 +548,6 @@ export function NetworkForm (props:{
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOnboarding = async (data: any) => {
-    delete data.walledGardensString
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     } else {
@@ -944,6 +943,8 @@ export function NetworkForm (props:{
         return
       }
 
+      removeApiUnusedAttributes(payload)
+
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({
         params,
@@ -1143,6 +1144,8 @@ export function NetworkForm (props:{
         modalCallBack?.(payload)
         return
       }
+
+      removeApiUnusedAttributes(payload)
 
       // Due to proxy mode validation, the Radius proxy mode update must execute before the network update
       if(formData.wlanSecurity === WlanSecurityEnum.WPA23Mixed && formData.isCloudpathEnabled) {
@@ -1681,3 +1684,7 @@ function useUpdateHotspot20Activation () {
   return updateHotspot20Activations
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeApiUnusedAttributes (data: any) {
+  delete data.walledGardensString
+}
