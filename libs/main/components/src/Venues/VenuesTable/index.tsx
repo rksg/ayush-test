@@ -27,7 +27,6 @@ import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
-  // useGetVenueTagListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useVenuesTableQuery
@@ -253,9 +252,7 @@ function useColumns (
       key: 'tags',
       dataIndex: 'tags',
       sorter: true,
-      filterKey: 'tags',
       searchable: searchable,
-      // filterable: filterables ? filterables['tags'] : false,
       render: (data: ReactNode, row: Venue) => (
         row.tags?.join(', ')
       )
@@ -412,7 +409,6 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityList()
   const tableData = useVenueEdgeCompatibilities(tableQuery)
-  // const { tagFilterOptions } = useGetVenueTagList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -439,7 +435,6 @@ export function VenuesTable () {
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
         filterables={{ city: cityFilterOptions }}
-        // filterables={{ city: cityFilterOptions, tags: tagFilterOptions }}
       />
     </>
   )
@@ -467,22 +462,6 @@ function useGetVenueCityList () {
 
   return venueCityList
 }
-
-// function useGetVenueTagList () {
-//   const params = useParams()
-
-//   let tagList = useGetVenueTagListQuery({
-//     params
-//   }, {
-//     selectFromResult: ({ data }) => ({
-//       tagFilterOptions: data?.map(item => (
-//         { key: item, value: item }
-//       ))
-//     })
-//   })
-
-//   return tagList
-// }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
