@@ -2,10 +2,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }        from '@acx-ui/components'
-import { EdgeDHCPFixtures } from '@acx-ui/rc/utils'
+import { StepsForm }             from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  EdgeDhcpPool,
+  EdgeDHCPFixtures, EdgeDhcpPool,
   EdgeDhcpUrls,
   ServiceOperation,
   ServiceType,
@@ -75,7 +76,8 @@ jest.mock('@acx-ui/rc/components', () => ({
         props.setVisible(false)
       }}>Add</button>
     </div>
-  }
+  },
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const mockedFinishFn = jest.fn()
@@ -298,5 +300,33 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })}`,
       search: ''
     }))
+  })
+
+  describe('test L2GRE case', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show edge cluster field correctly', async () => {
+      render(
+        <Provider>
+          <PersonalIdentityNetworkFormContext.Provider
+            value={mockContextData}
+          >
+            <StepsForm onFinish={mockedFinishFn}>
+              <StepsForm.StepForm>
+                <SmartEdgeForm />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </PersonalIdentityNetworkFormContext.Provider>
+        </Provider>,
+        { route: { params, path: createPinPath } })
+
+      expect(screen.getByText('Edge Cluster')).toBeVisible()
+    })
   })
 })

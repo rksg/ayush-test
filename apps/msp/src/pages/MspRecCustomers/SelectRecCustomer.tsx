@@ -37,6 +37,8 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
   const MAX_ALLOWED_SELECTED_PROPERTIES = 100
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isRecToMspREcConversionEnabled =
+    useIsSplitOn(Features.DURGA_TENANT_CONVERSION_REC_TO_MSP_REC)
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
     enableRbac: isRbacEnabled })
@@ -64,7 +66,19 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       key: 'account_name',
       sorter: true,
       searchable: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
+        return (isRecToMspREcConversionEnabled && !row?.is_tenant_onboarded)
+          ? <span
+            style={{ fontWeight: 'bold' }}>
+            { row.account_name }
+            <span style={{
+              color: 'var(--acx-accents-orange-50)',
+              paddingLeft: '4px'
+            }}>*</span>
+          </span>
+          : row.account_name
+      }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
@@ -97,11 +111,28 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     </Space>
 
   const footer =<div>
-    <div style={{ marginBottom: '18px', color: 'red' }}>
+    <div style={
+      {
+        marginBottom: '18px',
+        display: 'flex',
+        flexDirection: 'column'
+      }
+    }>
       {selectedRows.length > MAX_ALLOWED_SELECTED_PROPERTIES &&
-      <label>{$t({ defaultMessage:
+      <label style={{
+        color: 'var(--acx-semantics-red-40)',
+        marginBottom: '4px'
+      }}>{$t({ defaultMessage:
         'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
-      { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
+        { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
+
+      { isRecToMspREcConversionEnabled && <label>{ $t({ defaultMessage: 'Property names with' }) }
+        <span style={{
+          color: 'var(--acx-accents-orange-50)',
+          margin: '0 4px'
+        }}>*</span>
+        { $t({ defaultMessage: 'have RUCKUS One subscription but haven’t been onboarded.' })}
+      </label> }
     </div>
 
     <Button

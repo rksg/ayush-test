@@ -104,7 +104,7 @@ export const APStatus = (
       { isSupportPowerSavingMode &&
         getPowerSavingStatusEnabledApStatus(status, powerSavingStatus) &&
         <Tooltip
-          title={$t({ defaultMessage: 'Device is controlled by EcoFlexAI. Radio may not be broadcasting.' })}
+          title={$t({ defaultMessage: 'Device is controlled by Energy Saving AI. Radio may not be broadcasting.' })}
           placement='bottom'
         >
           <LeafSolidIcon/>

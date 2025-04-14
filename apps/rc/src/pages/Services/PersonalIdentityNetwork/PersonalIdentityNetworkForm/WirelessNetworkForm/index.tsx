@@ -26,6 +26,7 @@ export const WirelessNetworkForm = () => {
 
   const { $t } = useIntl()
   const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
@@ -68,27 +69,29 @@ export const WirelessNetworkForm = () => {
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
-      <Row gutter={20} align='middle'>
-        <Col span={8}>
-          <Form.Item
-            name='vxlanTunnelProfileId'
-            label={$t({ defaultMessage: 'Tunnel Profile' })}
-            rules={[{ required: true }]}
-            children={
-              <Select
-                loading={isTunnelLoading}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                options={tunnelProfileOptions}
-              />}
-          />
-        </Col>
-        {
-          hasCreateTunnelPermission &&
+      {
+        !isL2GreEnabled && <Row gutter={20} align='middle'>
+          <Col span={8}>
+            <Form.Item
+              name='vxlanTunnelProfileId'
+              label={$t({ defaultMessage: 'Tunnel Profile' })}
+              rules={[{ required: true }]}
+              children={
+                <Select
+                  loading={isTunnelLoading}
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  options={tunnelProfileOptions}
+                />}
+            />
+          </Col>
+          {
+            hasCreateTunnelPermission &&
           <TunnelProfileAddModal
             initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
           />
-        }
-      </Row>
+          }
+        </Row>
+      }
       <Row gutter={20}>
         <Col>
           <Space direction='vertical'>

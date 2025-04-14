@@ -25,7 +25,8 @@ import { getJwtTokenPayload, isDelegationMode, AccountTier } from '@acx-ui/utils
 
 enum SubscriptionTierType {
   Platinum = 'Professional',
-  Gold = 'Essentials'
+  Gold = 'Essentials',
+  Core = 'Core'
 }
 
 const subscriptionUtilizationTransformer = (
@@ -72,8 +73,13 @@ export const SubscriptionHeader = () => {
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
-  const subscriptionVal = ( tier === AccountTier.GOLD? SubscriptionTierType.Gold
-    : SubscriptionTierType.Platinum )
+  const subscriptionVal = (
+    tier === AccountTier.GOLD
+      ? SubscriptionTierType.Gold
+      : tier === AccountTier.CORE
+        ? SubscriptionTierType.Core
+        : SubscriptionTierType.Platinum
+  )
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))

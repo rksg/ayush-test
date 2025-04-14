@@ -42,6 +42,7 @@ export const EthernetPortProfileDetail = () => {
   const { isTemplate } = useConfigTemplate()
 
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const supportWiredClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
 
   const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
@@ -137,6 +138,18 @@ export const EthernetPortProfileDetail = () => {
         return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
       }
     }]),
+    ...(supportWiredClientVisibility ? [
+      {
+        title: $t({ defaultMessage: 'Client Visibility' }),
+        content: () => {
+          return (
+            ethernetPortProfileData?.authType === EthernetPortAuthType.OPEN ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.PORT_BASED ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED
+          )? 'On' : 'Off'
+        }
+      }
+    ] : []),
     ...(supportDynamicVLAN && !isTemplate &&
       ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
       [{

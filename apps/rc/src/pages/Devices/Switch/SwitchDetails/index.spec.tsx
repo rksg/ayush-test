@@ -1,12 +1,26 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { get }                                              from '@acx-ui/config'
-import { apApi, switchApi }                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
-import { mockRestApiQuery, mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }                from '@acx-ui/user'
+import { get }              from '@acx-ui/config'
+import { apApi, switchApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockRestApiQuery,
+  mockServer,
+  render,
+  screen }     from '@acx-ui/test-utils'
+import {
+  getUserProfile,
+  RaiPermissions,
+  setRaiPermissions,
+  setUserProfile
+}                from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
 
 import { switchDetailData, switchDetailsContextData } from './__tests__/fixtures'
 import { activities }                                 from './SwitchTimelineTab/__tests__/fixtures'
@@ -268,6 +282,25 @@ describe('SwitchDetails', () => {
   it('should hide incidents when role is READ_ONLY', async () => {
     mockGet.mockReturnValue('true')
     setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'incidents'
+    }
+    render(<Provider><SwitchDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-SwitchIncidentsTab')).toBeNull()
+  })
+
+  it('should hide incidents with Core Tier', async () => {
+    mockGet.mockReturnValue('true')
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
