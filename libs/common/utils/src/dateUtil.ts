@@ -11,6 +11,7 @@ export enum DateRange {
   last8Hours = 'Last 8 Hours',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
+  last14Days = 'Last 14 Days',
   last30Days = 'Last 30 Days',
   custom = 'Custom',
   allTime = 'All Time'
@@ -25,9 +26,9 @@ export type DateRangeFilter = {
 const ceilMinute = () => moment().add(1, 'minutes').seconds(0).milliseconds(0)
 
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
-let ranges = defaultRanges()
+let ranges = defaultAllRanges()
 
-export const resetRanges = () => { ranges = defaultRanges() }
+export const resetRanges = () => { ranges = defaultAllRanges() }
 
 export function getDateRangeFilter (
   range: DateRange,
@@ -49,6 +50,16 @@ export function getDatePickerValues (state: DateFilter) {
     ? getDateRangeFilter(state.range)
     : state
 }
+
+export function defaultAllRanges (subRange?: DateRange[]) {
+  const merged = {
+    ...defaultRanges(),
+    ...defaultCoreTierRanges()
+  }
+
+  return subRange ? pick(merged, subRange) : merged
+}
+
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
@@ -57,6 +68,22 @@ export function defaultRanges (subRange?: DateRange[]) {
     [DateRange.last30Days]: [ceilMinute().subtract(30, 'days'), ceilMinute()],
     [DateRange.allTime]: [moment(), moment()]
   }
+
+  if (subRange) {
+    return pick(defaultRange, subRange)
+  }
+  return defaultRange
+}
+
+export function defaultCoreTierRanges (subRange?: DateRange[]) {
+  const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+    [DateRange.last8Hours]: [ceilMinute().subtract(8, 'hours'), ceilMinute()],
+    [DateRange.last24Hours]: [ceilMinute().subtract(1, 'days'), ceilMinute()],
+    [DateRange.last7Days]: [ceilMinute().subtract(7, 'days'), ceilMinute()],
+    [DateRange.last14Days]: [ceilMinute().subtract(14, 'days'), ceilMinute()],
+    [DateRange.allTime]: [moment(), moment()]
+  }
+
   if (subRange) {
     return pick(defaultRange, subRange)
   }
@@ -101,6 +128,9 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
   }),
   [DateRange.last7Days]: defineMessage({
     defaultMessage: 'Last 7 Days'
+  }),
+  [DateRange.last14Days]: defineMessage({
+    defaultMessage: 'Last 14 Days'
   }),
   [DateRange.last30Days]: defineMessage({
     defaultMessage: 'Last 30 Days'

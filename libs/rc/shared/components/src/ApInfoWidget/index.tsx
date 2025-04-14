@@ -15,9 +15,9 @@ import {
   EventSeverityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { WrapIfAccessible }     from '@acx-ui/user'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier, WrapIfAccessible } from '@acx-ui/user'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -77,6 +77,8 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
   const { $t } = useIntl()
   const { apId } = useParams()
   const { currentAP, filters } = props
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
   // Alarms list query
   const alarmQuery = useTableQuery({
@@ -136,60 +138,62 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
             </Loader>
           </UI.Wrapper>
         </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <UI.Wrapper>
-            <WrapIfAccessible wrapper={children =>
-              <UI.TenantLinkSvg
-                to={`/devices/wifi/${apId}/details/analytics`}
-                children={children}
-              />
-            }>
-              <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
-            </WrapIfAccessible>
-          </UI.Wrapper>
-        </GridCol>
-        <GridCol col={{ span: 5 }}>
-          <UI.Wrapper>
-            <WrapIfAccessible wrapper={children =>
-              <UI.TenantLinkBlack
-                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
-                children={children}
-              />
-            }>
-              <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
-            </WrapIfAccessible>
-          </UI.Wrapper>
-        </GridCol>
-        <GridCol col={{ span: 5 }}>
-          <UI.Wrapper>
-            <WrapIfAccessible wrapper={children =>
-              <UI.TenantLinkBlack
-                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
-                children={children}
-              />
-            }>
-              <TtcTimeWidget filters={filters}/>
-            </WrapIfAccessible>
-          </UI.Wrapper>
-        </GridCol>
-        <GridCol col={{ span: 5 }}>
-          <UI.Wrapper>
-            <WrapIfAccessible wrapper={children =>
-              <UI.TenantLinkBlack
-                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
-                children={children}
-              />
-            }>
-              <KpiWidget
-                type='no-chart-style'
-                filters={filters}
-                name='clientThroughput'
-                threshold={healthData?.clientThroughputThreshold?.value ??
+        {!isCore && <>
+          <GridCol col={{ span: 4 }}>
+            <UI.Wrapper>
+              <WrapIfAccessible wrapper={children =>
+                <UI.TenantLinkSvg
+                  to={`/devices/wifi/${apId}/details/analytics`}
+                  children={children}
+                />
+              }>
+                <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+              </WrapIfAccessible>
+            </UI.Wrapper>
+          </GridCol>
+          <GridCol col={{ span: 5 }}>
+            <UI.Wrapper>
+              <WrapIfAccessible wrapper={children =>
+                <UI.TenantLinkBlack
+                  to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                  children={children}
+                />
+              }>
+                <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
+              </WrapIfAccessible>
+            </UI.Wrapper>
+          </GridCol>
+          <GridCol col={{ span: 5 }}>
+            <UI.Wrapper>
+              <WrapIfAccessible wrapper={children =>
+                <UI.TenantLinkBlack
+                  to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                  children={children}
+                />
+              }>
+                <TtcTimeWidget filters={filters}/>
+              </WrapIfAccessible>
+            </UI.Wrapper>
+          </GridCol>
+          <GridCol col={{ span: 5 }}>
+            <UI.Wrapper>
+              <WrapIfAccessible wrapper={children =>
+                <UI.TenantLinkBlack
+                  to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                  children={children}
+                />
+              }>
+                <KpiWidget
+                  type='no-chart-style'
+                  filters={filters}
+                  name='clientThroughput'
+                  threshold={healthData?.clientThroughputThreshold?.value ??
                   kpiConfig.clientThroughput.histogram.initialThreshold}
-              />
-            </WrapIfAccessible>
-          </UI.Wrapper>
-        </GridCol>
+                />
+              </WrapIfAccessible>
+            </UI.Wrapper>
+          </GridCol>
+        </>}
       </GridRow>
     </Card>
   )
