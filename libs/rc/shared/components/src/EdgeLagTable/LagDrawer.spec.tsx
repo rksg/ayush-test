@@ -373,6 +373,69 @@ describe('Edge LAG table drawer', () => {
       })
     expect(setVisibleSpy).toHaveBeenCalledWith(false)
   })
+
+  // eslint-disable-next-line max-len
+  it('should be able to add LAN Lag when there is already a core port configured', async () => {
+    const setVisibleSpy = jest.fn()
+    const onAddSpy = jest.fn()
+
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          setVisible={setVisibleSpy}
+          portList={mockEdgeCorePortPortConfig as EdgePort[]}
+          onAdd={onAddSpy}
+          onEdit={async () => {}}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await screen.findByText('Add LAG')
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: '' }),
+      '2'
+    )
+    // eslint-disable-next-line max-len
+    const corePortEnabled = await screen.findByRole('checkbox', { name: /Use this LAG as Core LAG/ })
+    const port3 = screen.getByRole('checkbox', { name: 'Port3' })
+    await click(port3)
+    expect(corePortEnabled).toBeDisabled()
+
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'IP Address' }),
+      '12.12.12.11'
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Subnet Mask' }),
+      '255.255.255.0'
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByText('Existing Port Configuration Clean-up')
+    await userEvent.click(screen.getByRole('button', { name: 'Replace with LAG settings' }))
+    expect(onAddSpy).toHaveBeenCalledWith(
+      'test-edge',
+      {
+        corePortEnabled: false,
+        id: '2',
+        ip: '12.12.12.11',
+        ipMode: EdgeIpModeEnum.STATIC,
+        lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+        lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+        lagEnabled: true,
+        lagMembers: [{
+          portId: mockEdgeCorePortPortConfig[1].id,
+          portEnabled: true
+        }],
+        lagType: EdgeLagTypeEnum.LACP,
+        natEnabled: false,
+        portType: EdgePortTypeEnum.LAN,
+        subnet: '255.255.255.0'
+      })
+    expect(setVisibleSpy).toHaveBeenCalledWith(false)
+  })
 })
 
 const checkLoaded = async (): Promise<void> => {

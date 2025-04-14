@@ -2,8 +2,10 @@ import userEvent              from '@testing-library/user-event'
 import { Form, FormInstance } from 'antd'
 import { cloneDeep }          from 'lodash'
 
-import { StepsForm } from '@acx-ui/components'
-import { Provider }  from '@acx-ui/store'
+import { StepsForm }             from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Provider }              from '@acx-ui/store'
 import {
   render,
   renderHook,
@@ -18,6 +20,10 @@ import { PropertyManagementInfo } from './PropertyManagementInfo'
 jest.mock('./PropertyManagementDrawer', () => ({
   PropertyManagementDrawer: (props: { visible: boolean }) =>
     <div data-testid='PropertyManagementDrawer'>{''+props.visible}</div>
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 // eslint-disable-next-line max-len
@@ -118,5 +124,35 @@ describe('PropertyManagementInfo', () => {
     const activateBtn = screen.getByRole('button', { name: 'Activate Property Management' })
     await userEvent.click(activateBtn)
     expect(screen.getByTestId('PropertyManagementDrawer')).toHaveTextContent('true')
+  })
+
+  describe('test L2GRE case', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render venue name correctly', async () => {
+      const venueId = 'venue-id'
+
+      render(<MockComponent
+        venueId={venueId}
+        editMode={false}
+      />)
+
+      expect(screen.getByText('Venue:')).toBeInTheDocument()
+
+      expect(screen.getByText('Property management:')).toBeInTheDocument()
+      expect(screen.getByText('On')).toBeInTheDocument()
+
+      expect(screen.getByText('Identity Group:')).toBeInTheDocument()
+      expect(screen.getByText('TestPersona')).toBeInTheDocument()
+
+      expect(screen.getByText('DPSK Service:')).toBeInTheDocument()
+      expect(screen.getByText('TestDpsk')).toBeInTheDocument()
+    })
   })
 })

@@ -4,7 +4,8 @@ import styled, { createGlobalStyle, css } from 'styled-components'
 export enum DrawerTypes {
   Default = 'default',
   FullHeight = 'fullHeight',
-  Left='left'
+  Left='left',
+  ModalLeft='modalLeft'
 }
 
 const fullHeightStyle = css`
@@ -15,13 +16,31 @@ const fullHeightStyle = css`
 `
 
 const leftStyle = css`
+:root .ant-drawer {
+  height: calc(100vh - var(--acx-header-height));
+  margin-top: var(--acx-header-height);
+  div.ant-drawer-content-wrapper {
+    border-radius: 0px;
+    .ant-drawer-content {
+      background: var(--acx-neutrals-10);
+      .ant-drawer-header {
+        border: 0px;
+      }
+    }
+  }
+}
+`
+
+const modalLeftStyle = css`
   :root .ant-drawer {
-    height: calc(100vh - var(--acx-header-height));
-    margin-top: var(--acx-header-height);
+    height: 100%;
+    margin: 0;
     div.ant-drawer-content-wrapper {
       border-radius: 0px;
       .ant-drawer-content {
         background: var(--acx-neutrals-10);
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
         .ant-drawer-header {
           border: 0px;
         }
@@ -32,7 +51,8 @@ const leftStyle = css`
 const styles = {
   default: '',
   fullHeight: fullHeightStyle,
-  left: leftStyle
+  left: leftStyle,
+  modalLeft: modalLeftStyle
 }
 
 export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`

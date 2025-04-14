@@ -29,7 +29,8 @@ import {
   portSetting,
   portsSetting,
   vlansByVenue,
-  availablePortProfileList
+  availablePortProfileList,
+  macAclList
 } from './__tests__/fixtures'
 import {
   EditPortDrawer
@@ -169,7 +170,18 @@ describe('EditPortDrawer', () => {
         rest.post(
           SwitchUrlsInfo.getPortProfileOptionsForMultiSwitches.url,
           (req, res, ctx) => res(ctx.json(availablePortProfileList))
-        )
+        ),
+        rest.post(SwitchUrlsInfo.getSwitchMacAcls.url,
+          (_, res, ctx) => res(ctx.json(macAclList))
+        ),
+        rest.post(SwitchUrlsInfo.getLayer2Acls.url, (req, res, ctx) => {
+          return res(ctx.json({
+            data: [
+              { id: 'acl-1', name: 'ACL 1' },
+              { id: 'acl-2', name: 'ACL 2' }
+            ]
+          }))
+        })
       )
     })
 

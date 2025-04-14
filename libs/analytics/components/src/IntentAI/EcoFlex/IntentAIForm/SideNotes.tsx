@@ -25,7 +25,7 @@ export const Introduction: React.FC = () => {
   </SideNotes>
 }
 
-export const tradeoff = defineMessage({ defaultMessage: 'EcoFlex enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.' })
+export const tradeoff = defineMessage({ defaultMessage: 'Energy Saving enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.' })
 export const Priority: React.FC = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<IntentDetail>()

@@ -14,7 +14,7 @@ import {
   NetworkTunnelTypeEnum,
   SdLanScopedVenueNetworksData,
   getNetworkTunnelType,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   useDeactivateNetworkTunnelByType,
   useEdgeAllPinData,
   useGetIpsecScopeVenueMap,
@@ -52,9 +52,16 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const ipsecVenueMap = useGetIpsecScopeVenueMap(refetchFnRef)
 
   // eslint-disable-next-line max-len
-  const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const { venuePins: allPins, refetch } = useEdgeAllPinData({}, isTemplate)
-  refetchFnRef.current.pin = refetch
+  const sdLanVenueMap = transformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
+  const {
+    venuePins: allPins,
+    isUninitialized: isPinUninitialized,
+    refetch
+  } = useEdgeAllPinData({}, isTemplate)
+
+  if (refetchFnRef && !isPinUninitialized) {
+    refetchFnRef.current.pin = refetch
+  }
 
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))

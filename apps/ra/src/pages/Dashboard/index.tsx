@@ -10,8 +10,6 @@ import {
   SLA,
   ReportTile,
   SANetworkFilter,
-  AIDrivenRRM,
-  AIOperations,
   ChatWithMelissa,
   AppInsights,
   IntentAIWidget
@@ -80,13 +78,7 @@ type DashboardViewProps = {
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
-  const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
-  const hasRecommendation = (
-    hasPermission({ permission: 'READ_INTENT_AI' }) ||
-    hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
-    hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
-  )
-  if (!hasRecommendation) {
+  if (!hasPermission({ permission: 'READ_INTENT_AI' })) {
     return (
       <UI.NetworkAdminGrid style={{ height }}>
         <div style={{ gridArea: 'a1' }}>
@@ -131,25 +123,11 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
-      {isIntentAIEnabled
-        ? <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end' }}>
-          <IntentAIWidget
-            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-          />
-        </div>
-        : <>
-          <div style={{ gridArea: 'b2' }}>
-            <AIDrivenRRM
-              pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-            />
-          </div>
-          <div style={{ gridArea: 'c2' }}>
-            <AIOperations
-              pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-            />
-          </div>
-        </>
-      }
+      <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end' }}>
+        <IntentAIWidget
+          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+        />
+      </div>
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow filters={pathFilters} />
       </div>
