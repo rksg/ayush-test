@@ -1,4 +1,6 @@
-import { useIntl } from 'react-intl'
+import { scaleLinear } from 'd3-scale'
+import { useIntl }     from 'react-intl'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
 
@@ -46,18 +48,20 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const yName = $t({ defaultMessage: 'AP' })
 
   return (
-    <Loader states={[queryResult]}>
+    <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Channel Distribution' })}</UI.Title>
-        {apChannelDistribution?.length ? <VerticalBarChart
-          data={data}
-          xAxisValues={channelList}
-          xAxisName={xName}
-          barWidth={20}
-          showTooltipName={false}
-          showNameAndValue={[xName, yName]}
-          style={{ height: '200px' }}
-        /> : <NoData />}
+        <AutoSizer>{({ width }) =>
+          apChannelDistribution?.length ? <VerticalBarChart
+            data={data}
+            xAxisValues={channelList}
+            xAxisName={xName}
+            barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
+            showTooltipName={false}
+            showNameAndValue={[xName, yName]}
+            style={{ width, height: '200px' }}
+          /> : <NoData />
+        }</AutoSizer>
       </Card>
     </Loader>
   )

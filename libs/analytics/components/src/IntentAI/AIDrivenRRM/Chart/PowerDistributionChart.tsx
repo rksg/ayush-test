@@ -1,4 +1,6 @@
-import { useIntl } from 'react-intl'
+import { scaleLinear } from 'd3-scale'
+import { useIntl }     from 'react-intl'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
 import { txpowerMapping }                         from '@acx-ui/formatter'
@@ -39,18 +41,20 @@ function PowerDistributionChart (intent: IntentDetail) {
   const yName = $t({ defaultMessage: 'AP' })
 
   return (
-    <Loader states={[queryResult]}>
+    <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Power Transmission' })}</UI.Title>
-        {apPowerDistribution?.length ? <VerticalBarChart
-          data={data}
-          xAxisName={$t({ defaultMessage: 'Tx Power' })}
-          barWidth={20}
-          xAxisValues={txPowerList}
-          showTooltipName={false}
-          showNameAndValue={[xName, yName]}
-          style={{ height: '200px' }}
-        /> : <NoData />}
+        <AutoSizer>{({ width }) =>
+          apPowerDistribution?.length ? <VerticalBarChart
+            data={data}
+            xAxisName={$t({ defaultMessage: 'Tx Power' })}
+            barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
+            xAxisValues={txPowerList}
+            showTooltipName={false}
+            showNameAndValue={[xName, yName]}
+            style={{ width, height: '200px' }}
+          /> : <NoData />
+        }</AutoSizer>
       </Card>
     </Loader>
   )
