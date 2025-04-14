@@ -3,8 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import {
+  ColumnType,
+  Loader,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -23,6 +28,7 @@ import {
   WifiNetwork
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                              from '@acx-ui/user'
 
 import { defaultNetworkPayload }            from '../../../NetworkTable'
 import { ApplicationDrawer }                from '../../AccessControlForm/ApplicationDrawer'
@@ -179,7 +185,10 @@ const AccessControlSet = () => {
 
 function useColumns (networkFilterOptions: AclOptionType[]) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const form = Form.useFormInstance()
+
 
   const columns: TableProps<EnhancedAccessControlInfoType>['columns'] = [
     {
@@ -245,7 +254,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
           : '-'
       }
     },
-    {
+    ...((isCore) ? [] : [{
       key: 'applicationPolicyName',
       title: $t({ defaultMessage: 'Applications' }),
       dataIndex: 'applicationPolicyName',
@@ -261,7 +270,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
           /></Form>
           : '-'
       }
-    },
+    } as ColumnType<EnhancedAccessControlInfoType>]),
     {
       key: 'clientRateLimit',
       title: $t({ defaultMessage: 'Client Rate Limit' }),

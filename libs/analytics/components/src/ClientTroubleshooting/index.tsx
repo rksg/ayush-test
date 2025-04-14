@@ -87,11 +87,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const payload = { startDate, endDate, range, clientMac, fetchRoamingType, fetchBtmInfo }
   const clientQuery = useClientInfoQuery(payload)
   const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles }, { skip: isCore })
-  const data = clientQuery.data && incidentsQuery.data
-    ? { ...clientQuery.data, ...incidentsQuery.data }
-    : undefined
-  const coreTierOnlyData = clientQuery.data
-    ? { ...clientQuery.data, incidents: [] }
+  const data = clientQuery.data && (incidentsQuery.data || isCore)
+    ? { ...clientQuery.data, ...(incidentsQuery?.data || { incidents: [] }) }
     : undefined
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
@@ -134,7 +131,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       <History
         setHistoryContentToggle={setHistoryContentToggle}
         historyContentToggle
-        data={coreTierOnlyData}
+        data={data}
         filters={filters}
         supportHistoryCollapse={false}
         onPanelCallback={onPanelCallback}
