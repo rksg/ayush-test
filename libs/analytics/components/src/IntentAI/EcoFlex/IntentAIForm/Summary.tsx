@@ -29,13 +29,13 @@ export const Summary:React.FC<{ kpiQuery:ReturnType<typeof useIntentAIEcoFlexQue
             children={<ComparisonDonutChart kpiQuery={props.kpiQuery} />}
           />
           {enableExcludedHours && <Form.Item
-            label={$t({ defaultMessage: 'Hours not applied for EcoFlex' })}
+            label={$t({ defaultMessage: 'Hours not applied for Energy Saving' })}
           >
             {$t({ defaultMessage: 'PowerSave will not be triggered during specific hours set in the Settings.' })}
           </Form.Item>
           }
           {enableExcludedAPs && <Form.Item
-            label={$t({ defaultMessage: 'APs not applied for EcoFlex' })}
+            label={$t({ defaultMessage: 'APs not applied for Energy Saving' })}
           >
             {$t({ defaultMessage: 'PowerSave will not be triggered for the specific APs set in the Settings.' })}
           </Form.Item>

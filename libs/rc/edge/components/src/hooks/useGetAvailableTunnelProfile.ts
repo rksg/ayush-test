@@ -11,11 +11,11 @@ import { getIntl }                               from '@acx-ui/utils'
 import { getTunnelTypeDisplayName } from '../utils'
 
 interface GetAvailableTunnelProfileProps {
-  sdLanServiceId?: string
+  serviceIds?: (string|undefined)[]
 }
 
 export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfileProps) => {
-  const { sdLanServiceId } = props || {}
+  const { serviceIds } = props || {}
 
   const { allSdLans, isSdLansLoading } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
@@ -23,7 +23,7 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       pageSize: 10000
     } }, {
     selectFromResult: ({ data, isLoading }) => ({
-      allSdLans: data?.data?.filter(sdLan => sdLan.id !== sdLanServiceId),
+      allSdLans: data?.data?.filter(sdLan => !serviceIds?.includes(sdLan.id)),
       isSdLansLoading: isLoading
     })
   })
@@ -34,7 +34,7 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       pageSize: 10000
     } },{
     selectFromResult: ({ data, isLoading }) => ({
-      allPins: data?.data,
+      allPins: data?.data?.filter(pin => !serviceIds?.includes(pin.id)),
       isPinsLoading: isLoading
     })
   })
@@ -45,7 +45,9 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
   } = useGetTunnelProfileViewDataListQuery({
     payload: {
       fields: [
-        'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName'
+        'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
+        'type', 'mtuType', 'forceFragmentation', 'ageTimeMinutes', 'keepAliveInterval',
+        'keepAliveRetry'
       ],
       sortField: 'name',
       sortOrder: 'ASC',

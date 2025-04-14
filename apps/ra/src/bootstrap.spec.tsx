@@ -158,6 +158,7 @@ describe('bootstrap.init', () => {
   describe('if not logged in', () => {
     const { location } = window
     beforeEach(() => {
+      jest.clearAllMocks()
       mockServer.use(
         rest.get(
           '/analytics/api/rsa-mlisa-rbac/users/profile',

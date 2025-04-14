@@ -4,10 +4,11 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PageHeader }                                                          from '@acx-ui/components'
-import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
-import { useGetEdgePinByIdQuery }                                                      from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Loader, PageHeader }                                                                              from '@acx-ui/components'
+import { Features }                                                                                        from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady }                                                        from '@acx-ui/rc/components'
+import { PersonalIdentityNetworkApiVersion, useGetEdgePinByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }                     from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,
@@ -23,6 +24,7 @@ import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetw
 const pinWizardSteps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep]
 
 const EditPersonalIdentityNetwork = () => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { $t } = useIntl()
   const params = useParams()
@@ -33,7 +35,23 @@ const EditPersonalIdentityNetwork = () => {
     data: pinData,
     isLoading: isPinDataLoading,
     isFetching: isPinDataFetching
-  } = useGetEdgePinByIdQuery({ params })
+  } = useGetEdgePinByIdQuery({
+    params,
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
+  })
+
+  const getTunnelProfilePayload = {
+    fields: ['destinationEdgeClusterId'],
+    filters: { id: [params.serviceId] }
+  }
+  const { currentTunnelProfileData } = useGetTunnelProfileViewDataListQuery({
+    payload: getTunnelProfilePayload
+  }, {
+    skip: !isL2GreEnabled || !pinData?.vxlanTunnelProfileId,
+    selectFromResult: ({ data }) => ({
+      currentTunnelProfileData: data?.data?.[0]
+    })
+  })
 
   const tablePath = getServiceRoutePath(
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
@@ -43,10 +61,13 @@ const EditPersonalIdentityNetwork = () => {
       id: pinData?.id,
       name: pinData?.name,
       venueId: pinData?.venueId,
-      edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId,
-      segments: pinData?.edgeClusterInfo?.segments,
-      dhcpId: pinData?.edgeClusterInfo?.dhcpInfoId,
-      poolId: pinData?.edgeClusterInfo?.dhcpPoolId,
+      // eslint-disable-next-line max-len
+      edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId || currentTunnelProfileData?.destinationEdgeClusterId,
+      segments: pinData?.edgeClusterInfo?.segments || pinData?.networkSegmentConfiguration.segments,
+      // eslint-disable-next-line max-len
+      dhcpId: pinData?.edgeClusterInfo?.dhcpInfoId || pinData?.networkSegmentConfiguration.dhcpInfoId,
+      // eslint-disable-next-line max-len
+      poolId: pinData?.edgeClusterInfo?.dhcpPoolId || pinData?.networkSegmentConfiguration.dhcpPoolId,
       vxlanTunnelProfileId: pinData?.vxlanTunnelProfileId,
       personaGroupId: pinData?.personaGroupId,
       networkIds: pinData?.tunneledWlans.map(nw => nw.networkId),
@@ -55,7 +76,7 @@ const EditPersonalIdentityNetwork = () => {
       originalDistributionSwitchInfos: pinData?.distributionSwitchInfos,
       originalAccessSwitchInfos: pinData?.accessSwitchInfos
     }
-  }, [pinData])
+  }, [pinData, currentTunnelProfileData])
 
   return (
     <>

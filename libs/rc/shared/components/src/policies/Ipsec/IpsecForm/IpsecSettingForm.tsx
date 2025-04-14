@@ -55,6 +55,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
   const [showMoreSettings, setShowMoreSettings] = useState(false)
   const [preSharedKey] = useState('')
+  const [loadIkeSettings, setLoadIkeSettings] = useState(true)
+  const [loadEspSettings, setLoadEspSettings] = useState(true)
   const [loadReKeySettings, setLoadReKeySettings] = useState(true)
   const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
@@ -144,12 +146,18 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     {
       key: 'ike',
       display: $t({ defaultMessage: 'IKE' }),
-      content: <IkeAssociationSettings initIpSecData={initIpSecData} />
+      content: <IkeAssociationSettings initIpSecData={initIpSecData}
+        loadIkeSettings={loadIkeSettings}
+        setLoadIkeSettings={setLoadIkeSettings}
+      />
     },
     {
       key: 'esp',
       display: $t({ defaultMessage: 'ESP' }),
-      content: <EspAssociationSettings initIpSecData={initIpSecData} />
+      content: <EspAssociationSettings initIpSecData={initIpSecData}
+        loadEspSettings={loadEspSettings}
+        setLoadEspSettings={setLoadEspSettings}
+      />
     }
   ]
 

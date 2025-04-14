@@ -31,6 +31,8 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import {
   macRegistrationPools,
@@ -193,6 +195,33 @@ describe('MyPolicies', () => {
     expect(await screen.findByText(rogueApTitle)).toBeVisible()
 
     expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
+  })
+
+  it('should render My Policies with Core Tier support', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const createPageLink = `/${params.tenantId}/t/` + getSelectPolicyRoutePath()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('link', { name: 'Add Policy or Profile' })).toHaveAttribute('href', createPageLink)
+
+    const rogueApCount = mockedRogueApPoliciesList.totalCount
+    const rogueApTitle = `Rogue AP Detection (${rogueApCount})`
+    expect(await screen.findByText(rogueApTitle)).toBeVisible()
+
+    expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
+    expect(screen.queryByText('Location Based Service Server')).toBeNull()
+    expect(screen.queryByText('Workflow')).toBeNull()
   })
 
   it('should render breadcrumb correctly', async () => {

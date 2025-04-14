@@ -78,7 +78,7 @@ import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-route
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
-import { getOpsApi }                                   from '@acx-ui/utils'
+import { AccountTier, getOpsApi }                      from '@acx-ui/utils'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -1036,35 +1036,91 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
         element={<VLANPoolTable/>}
       />
-      {!isSwitchMacAclEnabled && <>
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
+            <AccessControlForm editMode={false}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={
+          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
+            <AccessControlForm editMode={true}/>
+          </PolicyAuthRoute>
+        }
+      />
+      <Route
+        path={getPolicyRoutePath(
+          { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+        element={<AccessControlTable />}
+      />
+      {isSwitchMacAclEnabled && <>
         <Route
-          path={getPolicyRoutePath(
-            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+          path='policies/accessControls/create'
           element={
-            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
-              <AccessControlForm editMode={false}/>
-            </PolicyAuthRoute>
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <CreateAccessControl />
+            </AuthRoute>
           }
         />
         <Route
-          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+          path='policies/accessControl/:activeTab/'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/:activeTab/:activeSubTab'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/switch/add'
           element={
-            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
-              <AccessControlForm editMode={true}/>
-            </PolicyAuthRoute>
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchAccessControlSetForm editMode={false} />
+            </AuthRoute>
           }
         />
         <Route
-          path={getPolicyRoutePath(
-            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-          element={<AccessControlDetail />}
+          path='policies/accessControl/switch/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchAccessControlSetForm editMode={true} />
+            </AuthRoute>
+          }
         />
         <Route
-          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-          element={<AccessControlTable />}
+          path='policies/accessControl/switch/:accessControlId/:activeTab'
+          element={<SwitchAccessControlSetDetail />}
         />
-      </>
-      }
+        <Route
+          path='policies/accessControl/switch/layer2/add'
+          element={
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchLayer2ACLForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchLayer2ACLForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
+          element={<SwitchLayer2Detail />}
+        />
+      </>}
       <Route
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={
@@ -1140,7 +1196,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          <AuthRoute scopes={[WifiScopes.CREATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={false} />
           </AuthRoute>
         }
@@ -1148,18 +1204,25 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <AuthRoute scopes={[WifiScopes.UPDATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={true} />
           </AuthRoute>
         }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
-        element={<LbsServerProfileTable />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileTable />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
-        element={<LbsServerProfileDetail />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileDetail />
+          </AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
@@ -1333,17 +1396,25 @@ function PolicyRoutes () {
       <>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
-          element={<WorkflowTable/>}
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowTable/>
+            </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
-          element={<WorkflowDetails />} />
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowDetails />
+            </AuthRoute>} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm/>
-            </PolicyAuthRoute>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
+                <WorkflowPageForm/>
+              </PolicyAuthRoute>
+            </AuthRoute>
           } />
       </>
       }
@@ -1548,74 +1619,6 @@ function PolicyRoutes () {
         />
       </>
       }
-      {isSwitchMacAclEnabled && <>
-        <Route
-          path='policies/accessControl/create'
-          element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
-              <CreateAccessControl />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/:activeTab/'
-          element={<AccessControl />}
-        />
-        <Route
-          path='policies/accessControl/:activeTab/:activeSubTab'
-          element={<AccessControl />}
-        />
-        <Route
-          path='policies/accessControl/wifi/create'
-          element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
-              <AccessControlForm editMode={false}/>
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/switch/add'
-          element={
-            <AuthRoute scopes={[SwitchScopes.CREATE]}>
-              <SwitchAccessControlSetForm editMode={false} />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/switch/:accessControlId/edit'
-          element={
-            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
-              <SwitchAccessControlSetForm editMode={true} />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/switch/:accessControlId/:activeTab'
-          element={<SwitchAccessControlSetDetail />}
-        />
-        <Route
-          path='policies/accessControl/switch/layer2/add'
-          element={
-            <AuthRoute scopes={[SwitchScopes.CREATE]}>
-              <SwitchLayer2ACLForm editMode={false} />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/switch/layer2/:accessControlId/edit'
-          element={
-            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
-              <SwitchLayer2ACLForm editMode={true} />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
-          element={<SwitchLayer2Detail />}
-        />
-      </>}
       {isDirectoryServerEnabled && <>
         <Route
           path={getPolicyRoutePath({
