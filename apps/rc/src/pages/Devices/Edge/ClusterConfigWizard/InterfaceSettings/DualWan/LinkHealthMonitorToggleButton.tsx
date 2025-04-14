@@ -23,6 +23,8 @@ export const LinkHealthMonitorToggleButton = (props: {
   const [ form ] = Form.useForm()
 
   const handleClose = () => {
+    // reset into original values
+    onChange(enabled, linkHealthSettings)
     setVisible(false)
   }
   const handleEdit = () => {
@@ -74,7 +76,7 @@ export const LinkHealthMonitorToggleButton = (props: {
 
   const handleLinkHealthFormFinish = async (formValues: EdgeWanLinkHealthCheckPolicy) => {
     try {
-    // set into context
+      // set into context
       onChange(enabled, formValues)
     } catch (e) {
       // eslint-disable-next-line no-console
