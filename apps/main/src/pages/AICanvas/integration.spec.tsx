@@ -246,6 +246,9 @@ describe('AICanvas Drag', () => {
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText(
       'Older chat conversations have been deleted due to the 30-day retention policy.'))
       .toBeVisible()

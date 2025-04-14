@@ -26,7 +26,7 @@ const pinEnhancedSteps = [PrerequisiteStep].concat(pinSteps)
 
 const AddPersonalIdentityNetwork = () => {
   const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
-
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { tenantId } = useParams()
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -52,7 +52,7 @@ const AddPersonalIdentityNetwork = () => {
           hasPrerequisite={isEdgePinEnhancementReady}
           steps={isEdgePinEnhancementReady ? pinEnhancedSteps : pinSteps}
           initialValues={{
-            vxlanTunnelProfileId: tenantId
+            vxlanTunnelProfileId: isL2GreEnabled ? undefined : tenantId
           }}
           onFinish={addPin}
         />
