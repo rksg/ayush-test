@@ -23,7 +23,7 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
   const {
     isDataLoading,
     availableTunnelProfiles
-  } = useGetAvailableTunnelProfile({ sdLanServiceId: props.serviceId })
+  } = useGetAvailableTunnelProfile({ serviceIds: [props.serviceId] })
 
   const { allSdLans = [], isSdLansLoading } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
