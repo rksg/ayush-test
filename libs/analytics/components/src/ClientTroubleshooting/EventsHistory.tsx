@@ -126,7 +126,7 @@ function WrappedItem (
       description={item.description} />
   </List.Item>
   return item.id
-    ? (Boolean(get('IS_MLISA_SA')) || (hasAccess() && !isCore))
+    ? (Boolean(get('IS_MLISA_SA')) || hasAccess())
       ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
       : Item
     : <ConnectionEventPopover
