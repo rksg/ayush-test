@@ -60,27 +60,30 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
 `
 
 const getStepsFormStyle = (width: number | string) => {
+  const formBodyShiftWidth = 50
+  const formFooterShiftWidth = 20
   const parsedWidth = typeof width === 'number'
-    ? width - 50
+    ? width
     : isNaN(parseInt(width, 10))
-      ? 0
-      : parseInt(width, 10) -50
+      ? formBodyShiftWidth
+      : parseInt(width, 10)
 
   return `
     .ant-pro-steps-form {
-      width: ${parsedWidth}px;
+      width: ${parsedWidth - formBodyShiftWidth}px;
     }
-    [class*="styledComponents__ActionsContainer"] {
+
+    /* ACX-83679: Only apply styles to the StepsForm's footer action container,
+     not to other action containers (e.g., those inside .ant-form-item) */
+
+    .actions-footer[class*="styledComponents__ActionsContainer"] {
+      padding-left: 20px;
+      margin-left: -16px;
       display: flex;
-      justify-content: flex-end;
-      width: ${parsedWidth}px;
+      width: ${parsedWidth - formFooterShiftWidth}px;
       min-width: unset;
-      background-color: transparent;
       &:before {
         position: unset;
-      }
-      .ant-space-horizontal {
-        flex-direction: row-reverse;
       }
     }
   `
