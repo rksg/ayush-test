@@ -14,12 +14,13 @@ import {
 import { RolesEnum } from '@acx-ui/types'
 import {
   DetailLevel,
-  UserProfile as UserProfileInterface,
   useUserProfileContext,
   useUpdateUserProfileMutation,
   roleStringMap,
-  hasRoles
+  hasRoles,
+  LocalUserProfile
 } from '@acx-ui/user'
+import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import AddPhoneDrawer                from './AddPhoneDrawer'
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
@@ -32,7 +33,8 @@ export function UserProfile () {
   const { Option } = Select
   const { tenantId, activeTab } = useParams()
   const navigate = useNavigate()
-  const { data: userProfile } = useUserProfileContext()
+  const localeContext = useLocaleContext()
+  const { data: userProfile, setLocalProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const basePath = useTenantLink('/userprofile')
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -41,7 +43,10 @@ export function UserProfile () {
     useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
   const [phoneDrawerVisible, setPhoneDrawerVisible] = useState(false)
 
-  const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
+  const handleUpdateSettings = async (data: LocalUserProfile) => {
+    localeContext.setLang(data.preferredLanguage as LangKey)
+    setLocalProfile(data)
+
     await updateUserProfile({ payload: data, params: { tenantId } })
     window.location.reload()
     navigate(-1)
