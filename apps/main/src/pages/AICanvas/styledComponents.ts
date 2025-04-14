@@ -298,13 +298,6 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         .timestamp {
           padding: 6px 0px 0px 0px;
         }
-        .user-feedback {
-          display: flex;
-        }
-        .thumb-button {
-          cursor: pointer;
-          margin-left: 4px;
-        }
       }
       .message-tail {
         align-content: end;
@@ -581,7 +574,6 @@ export const Badge = styled(AntBadge)`
 `
 
 const thumbStyles = `
-  cursor: pointer;
   margin: 0px 0px 0px 4px;
   path {
     stroke: var(--acx-neutrals-60);
@@ -589,14 +581,16 @@ const thumbStyles = `
   }
   &:hover {
     path {
-      stroke: var(--acx-neutrals-60) !important;
-      fill: var(--acx-neutrals-15) !important;
+      cursor: pointer;
+      stroke: var(--acx-neutrals-60);
+      fill: var(--acx-neutrals-15);
     }
   }
   &.clicked {
     path {
-      stroke: var(--acx-primary-white);
-      fill: var(--acx-neutrals-70);
+      cursor: default !important;
+      stroke: var(--acx-primary-white)  !important;
+      fill: var(--acx-neutrals-70)  !important;
     }
   }
 `

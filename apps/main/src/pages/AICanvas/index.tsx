@@ -38,6 +38,9 @@ const Message = (props:{
 
   const onSubmitFeedback = (feedback: boolean, message: ChatMessage) => {
     const userFeedback = feedback ? 'THUMBS_UP' : 'THUMBS_DOWN'
+    if (userFeedback === message.userFeedback) {
+      return
+    }
     onUserFeedback(userFeedback, message)
     sendFeedback({
       params: { sessionId: sessionId, messageId: message.id },
@@ -82,7 +85,7 @@ const Message = (props:{
           </div>
           {
             chat.role === 'AI' &&
-            <div className='user-feedback'>
+            <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 // eslint-disable-next-line max-len
                 className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_UP' ? 'clicked' : '') : ''}`}

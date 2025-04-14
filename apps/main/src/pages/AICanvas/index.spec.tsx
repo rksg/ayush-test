@@ -77,7 +77,8 @@ jest.mock('@acx-ui/rc/services', () => {
                     value: 1
                   }
                 ]
-              }]
+              }],
+              userFeedback: 'THUMBS_UP'
             },
             {
               id: '39f10e1e9daa47adba1dffcbd3dcd0cd',
@@ -262,4 +263,23 @@ describe('AICanvas', () => {
     expect(mockedNavigate).toBeCalled()
   })
 
+  it('should render previous chat content correctly', async () => {
+    render(
+      <Provider>
+        <AICanvas />
+      </Provider>
+    )
+    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    expect(await screen.findByText('Canvas')).toBeVisible()
+    const aiMessage = await screen.findByText('Failed to get response from AI....')
+    expect(aiMessage).toBeVisible()
+    // eslint-disable-next-line max-len
+    const feedbackSection = await screen.findByTestId('user-feedback-afa2591ede524f3884e21acd06ccb8b4')
+    expect(feedbackSection).not.toBeVisible()
+    await userEvent.hover(aiMessage)
+    // eslint-disable-next-line max-len
+    const feedbackSectionHovered = await screen.findByTestId('user-feedback-afa2591ede524f3884e21acd06ccb8b4')
+    const computedStyle = window.getComputedStyle(feedbackSectionHovered)
+    expect(computedStyle.display).toBe('block')
+  })
 })
