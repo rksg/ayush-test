@@ -59,7 +59,7 @@ export default function AccessControl () {
         scopeKey={
           getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
         // eslint-disable-next-line max-len
-        to={'/policies/accessControl/wifi/create'}
+        to={'/policies/accessControl/create'}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
       </TenantLink>

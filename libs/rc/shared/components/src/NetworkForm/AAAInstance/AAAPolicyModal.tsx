@@ -52,6 +52,7 @@ export default function AAAPolicyModal (props:{
         destroyOnClose={true}
         onClose={onClose}
         width={500}
+        footer={<div />} // ACX-83553: Prevent parent drawer from closing when this drawer is open
       />
     </>
   )

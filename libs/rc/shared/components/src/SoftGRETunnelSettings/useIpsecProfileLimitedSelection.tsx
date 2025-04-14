@@ -359,7 +359,7 @@ export const useIpsecProfileLimitedSelection = (
         portId,
         apModel,
         serialNumber,
-        softGreId: formData.softGreId || '',
+        softGreId: formData.enabledSoftGre ? formData.softGreId || '' : '',
         ipsecId: formData.enabledIpsec ? formData.ipsecId || undefined : undefined,
         isChangable: true
       }
@@ -370,7 +370,8 @@ export const useIpsecProfileLimitedSelection = (
           setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
             if (p.portId === portId && ((isVenueOperation && p.apModel === apModel)
              || (!isVenueOperation && p.serialNumber === serialNumber))) {
-              return { ...p, softGreId: formData.softGreId || '',
+              return { ...p,
+                softGreId: formData.enabledSoftGre ? formData.softGreId || '' : '',
                 ipsecId: formData.enabledIpsec ? formData.ipsecId || undefined : undefined }
             }
             return p
