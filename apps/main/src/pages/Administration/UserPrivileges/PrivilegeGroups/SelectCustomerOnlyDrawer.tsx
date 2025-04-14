@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import { MspEc, MspEcWithVenue }   from '@acx-ui/msp/utils'
 import { AccountType }             from '@acx-ui/utils'
@@ -41,6 +42,7 @@ export const SelectCustomerOnlyDrawer = (props: SelectCustomerOnlyDrawerProps) =
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspEc[]>([])
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   function getSelectedKeys (ecs: MspEc[], ecId: string[]) {
     return ecs.filter(rec => ecId.includes(rec.id)).map(rec => rec.id)
@@ -51,7 +53,8 @@ export const SelectCustomerOnlyDrawer = (props: SelectCustomerOnlyDrawerProps) =
   }
 
   const { data: customerList } =
-      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload })
+      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload,
+        enableRbac: isViewmodleAPIsMigrateEnabled })
 
   const onClose = () => {
     setVisible(false)

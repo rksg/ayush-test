@@ -96,7 +96,7 @@ export const iconTooltips = {
   />,
   [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlex' })}
+    title={defineMessage({ defaultMessage: 'Energy Saving' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}

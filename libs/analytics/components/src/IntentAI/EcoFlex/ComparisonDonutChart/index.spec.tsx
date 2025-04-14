@@ -51,7 +51,7 @@ describe('ComparisonDonutChart', () => {
     render(<ComparisonDonutChart kpiQuery={mockedQueryResult} />, { wrapper: Provider })
 
     expect(await screen.findByText('(Default)')).toBeVisible()
-    expect(await screen.findByText('(EcoFlex projection)')).toBeVisible()
+    expect(await screen.findByText('(Energy Saving projection)')).toBeVisible()
   })
 
   it('handle beyond data retention', async () => {

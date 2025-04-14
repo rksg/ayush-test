@@ -26,20 +26,20 @@ interface KpiResult {
 export const categoryStyles = [
   {
     key: Type.Unsupported,
-    legendText: defineMessage({ defaultMessage: 'EcoFlex is not supported' }),
-    name: defineMessage({ defaultMessage: 'not supporting EcoFlex.' }),
+    legendText: defineMessage({ defaultMessage: 'Energy Saving is not supported' }),
+    name: defineMessage({ defaultMessage: 'not supporting Energy Saving.' }),
     color: cssStr('--acx-viz-qualitative-1')
   },
   {
     key: Type.Disabled,
-    legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and disabled' }),
-    name: defineMessage({ defaultMessage: 'supporting and disabling EcoFlex.' }),
+    legendText: defineMessage({ defaultMessage: 'Energy Saving is supported and disabled' }),
+    name: defineMessage({ defaultMessage: 'supporting and disabling Energy Saving.' }),
     color: cssStr('--acx-accents-orange-50')
   },
   {
     key: Type.Enabled,
-    legendText: defineMessage({ defaultMessage: 'EcoFlex is supported and enabled' }),
-    name: defineMessage({ defaultMessage: 'supporting and enabling EcoFlex.' }),
+    legendText: defineMessage({ defaultMessage: 'Energy Saving is supported and enabled' }),
+    name: defineMessage({ defaultMessage: 'supporting and enabling Energy Saving.' }),
     color: cssStr('--acx-semantics-green-30')
   }
 ] as {
