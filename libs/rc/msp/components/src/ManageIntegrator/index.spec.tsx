@@ -2,14 +2,14 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { ToastProps }                                                                 from '@acx-ui/components'
-import { AssignedEc, MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                                     from '@acx-ui/rc/utils'
-import { Provider }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor }                             from '@acx-ui/test-utils'
-import { RolesEnum }                                                                  from '@acx-ui/types'
-import { UserUrlsInfo }                                                               from '@acx-ui/user'
-import { AccountType }                                                                from '@acx-ui/utils'
+import { ToastProps }                                                                                  from '@acx-ui/components'
+import { AssignedEc, MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                                                      from '@acx-ui/rc/utils'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor }                                              from '@acx-ui/test-utils'
+import { RolesEnum }                                                                                   from '@acx-ui/types'
+import { UserUrlsInfo }                                                                                from '@acx-ui/user'
+import { AccountType }                                                                                 from '@acx-ui/utils'
 
 import { ManageIntegrator, addressParser } from '.'
 
@@ -232,6 +232,10 @@ describe('ManageIntegrator', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string, type?: string }
   beforeEach(async () => {
     mockServer.use(
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
       rest.get(
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))
