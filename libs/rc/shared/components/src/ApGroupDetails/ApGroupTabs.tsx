@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Tabs }                                   from '@acx-ui/components'
 import { ApGroupDetailHeader, useConfigTemplate } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier }             from '@acx-ui/user'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
@@ -15,6 +16,8 @@ function ApGroupTabs (props: { apGroupDetail: ApGroupDetailHeader }) {
   const basePath = usePathBasedOnConfigTemplate(`devices/apgroups/${params.apGroupId}/details/`)
   const navigate = useNavigate()
   const { apGroupDetail } = props
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
 
   const onTabChange = (tab: string) => {
@@ -36,7 +39,7 @@ function ApGroupTabs (props: { apGroupDetail: ApGroupDetailHeader }) {
           defaultMessage: 'Networks ({networksCount})' },
         { networksCount: apGroupDetail?.headers?.networks || 0 })}
       />
-      {!isTemplate && <Tabs.TabPane key='incidents'
+      {(!isTemplate && !isCore) && <Tabs.TabPane key='incidents'
         tab={$t({ defaultMessage: 'Incidents' })}
       />}
     </Tabs>

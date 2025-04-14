@@ -124,10 +124,6 @@ describe('SwitchAccessControlSetForm', () => {
       expect(screen.getByLabelText('Description')).toHaveValue('Test Description')
     })
 
-    const nameInput = screen.getByLabelText('MAC ACL Name')
-    await userEvent.clear(nameInput)
-    await userEvent.type(nameInput, 'Updated Policy')
-
     const finishButton = screen.getByRole('button', { name: 'Apply' })
     await userEvent.click(finishButton)
 

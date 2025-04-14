@@ -10,7 +10,7 @@ export default function CreateAccessControl () {
   const [form] = Form.useForm()
   const navigate = useNavigate()
   const createWifiAccessControlPath =
-    useTenantLink(`${getPolicyListRoutePath(true)}/accessControl/wifi/create`)
+    useTenantLink(`${getPolicyListRoutePath(true)}/accessControl/create`)
   const createSwitchAccessControlPath =
     useTenantLink(`${getPolicyListRoutePath(true)}/accessControl/switch/add`)
   const wifiAccessControlRoute = getPolicyListRoutePath(true) + '/accessControl/wifi'

@@ -222,7 +222,9 @@ export default function AICanvasModal (props: {
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     await chatAi({
+      customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,

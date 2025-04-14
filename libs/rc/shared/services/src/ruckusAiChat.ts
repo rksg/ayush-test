@@ -86,8 +86,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAiChatUrlInfo.chats)
+      query: ({ payload, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.chats, undefined, customHeaders)
         return {
           ...req,
           body: payload
@@ -103,8 +103,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       }
     }),
     getWidget: build.query<WidgetListData, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(RuckusAiChatUrlInfo.getWidget, params)
+      query: ({ params, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getWidget, params, customHeaders)
         return {
           ...req
         }

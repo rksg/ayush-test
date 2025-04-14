@@ -2,6 +2,8 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
+import { Features }                                         from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                            from '@acx-ui/rc/components'
 import { edgeApi, networkApi, pinApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -16,7 +18,8 @@ import {
   ServiceType,
   SwitchUrlsInfo,
   VenueFixtures,
-  EdgeCompatibilityFixtures
+  EdgeCompatibilityFixtures,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import {
@@ -47,6 +50,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('PersonalIdentityNetworkTableEnhanced', () => {
@@ -254,5 +262,45 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('RUCKUS Edges')
+  })
+
+  describe('test L2GRE case', () => {
+    const mockTunnelProfileViewDataList = [
+      {
+        id: 'test123',
+        name: 'tunnelProfileName1'
+      }
+    ]
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_req, res, ctx) => res(ctx.json({ data: mockTunnelProfileViewDataList }))
+        )
+      )
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render correctly', async () => {
+      render(
+        <Provider>
+          <PersonalIdentityNetworkTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      const rows = await screen.findAllByRole('row', { name: /nsg/i })
+      expect(rows.length).toBe(2)
+
+      // eslint-disable-next-line max-len
+      expect(rows[0]).toHaveTextContent(/nsg1\s*tunnelProfileName1\s*Mock Venue 1\s*0\s*0\s*1\s*Poor/)
+      // eslint-disable-next-line max-len
+      expect(rows[1]).toHaveTextContent(/nsg2\s*tunnelProfileName1\s*Mock Venue 2\s*0\s*0\s*1\s*Unknown/)
+    })
   })
 })
