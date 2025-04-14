@@ -199,7 +199,7 @@ export const useUpdateNetworkTunnelAction = () => {
       || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
       && network.type === NetworkTypeEnum.CAPTIVEPORTAL) {
         const activatedDmz = formValues.sdLan.isGuestTunnelEnabled ||
-          (!currentFwdTunnelProfileId && currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE)
+          (currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE)
         return await new Promise<void | boolean>((resolve) =>
           showSdLanGuestFwdConflictModal({
             currentNetworkVenueId: network?.venueId!,

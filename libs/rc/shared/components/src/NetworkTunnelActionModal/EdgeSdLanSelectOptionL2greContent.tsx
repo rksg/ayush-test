@@ -116,7 +116,7 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
   }
 
   const onChangeTunnel = (value:string) => {
-    form.setFieldValue(['sdLan', 'forwardingTunnelProfileType'],
+    form.setFieldValue(['sdLan', 'forwardingTunnelType'],
       availableTunnelProfiles?.find(item => item.id === value)?.tunnelType ?? '')
   }
 
