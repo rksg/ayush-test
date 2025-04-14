@@ -485,7 +485,7 @@ export const mockedCRRMGraphsApplied = {
   }
 }
 
-export const mockedAPChannelDistribution = [
+export const mockedApChannelDistribution = [
   { channel: 1, apCount: 1 },
   { channel: 2, apCount: 2 },
   { channel: 3, apCount: 3 },
@@ -500,4 +500,15 @@ export const mockedAPChannelDistribution = [
   { channel: 12, apCount: 12 },
   { channel: 13, apCount: 13 },
   { channel: 14, apCount: 14 }
+]
+
+export const mockedApPowerDistribution = [
+  { txPower: '_FULL', apCount: 1 },
+  { txPower: '_10DB', apCount: 2 },
+  { txPower: '_9DB', apCount: 3 },
+  { txPower: '_8DB', apCount: 4 },
+  { txPower: '_7DB', apCount: 5 },
+  { txPower: '_6DB', apCount: 6 },
+  { txPower: '_5DB', apCount: 7 },
+  { txPower: '_4DB', apCount: 8 }
 ]

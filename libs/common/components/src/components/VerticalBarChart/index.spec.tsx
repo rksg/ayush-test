@@ -46,7 +46,7 @@ describe('VerticalBarChart',()=>{
       const formatter = jest.fn(value=>`formatted-${value}`)
       expect(tooltipFormatter(formatter, true, ['Rss', 'Samples'], $t)(params))
         .toMatchSnapshot()
-      expect(formatter).toBeCalledTimes(2)
+      expect(formatter).toBeCalledTimes(1)
     })
 
     it('should return correct Html string when showNameAndValue is empty', async () => {

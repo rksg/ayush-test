@@ -9,6 +9,7 @@ import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { useIntentContext }     from '../../IntentContext'
 import ChannelDistributionChart from '../Chart/ChannelDistributionChart'
+import PowerDistributionChart   from '../Chart/PowerDistributionChart'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
@@ -54,6 +55,9 @@ export function Introduction () {
       </StepsForm.TextContent>
       <UI.ChartWrapper>
         <ChannelDistributionChart {...intent} />
+      </UI.ChartWrapper>
+      <UI.ChartWrapper>
+        <PowerDistributionChart {...intent} />
       </UI.ChartWrapper>
     </Col>
     <Col span={7} offset={2}>

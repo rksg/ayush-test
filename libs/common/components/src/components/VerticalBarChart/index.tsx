@@ -22,7 +22,6 @@ import { TooltipWrapper } from '../Chart/styledComponents'
 import type { EChartsOption, TooltipComponentFormatterCallbackParams, ECharts  } from 'echarts'
 import type { EChartsReactProps }                                                from 'echarts-for-react'
 
-
 type BarData = [number, number]
 export interface VerticalBarChartProps
   <TChartData extends BarChartData>
@@ -82,7 +81,7 @@ export const tooltipFormatter = (
       <TooltipWrapper>
         {showNameAndValue.length > 0 ? (
           <>
-            {xAxisLabel} <b>{dataFormatter(xValue)}</b>: <b>{dataFormatter(yValue)}</b>{' '}
+            {xAxisLabel} <b>{(xValue).toString()}</b>: <b>{dataFormatter(yValue)}</b>{' '}
             {yAxisText}
           </>
         ) : (
