@@ -12,7 +12,7 @@ import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/
 import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation, useSendFeedbackMutation } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
+import { ChatHistory, ChatMessage }                                                             from '@acx-ui/rc/utils'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
