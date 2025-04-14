@@ -188,13 +188,6 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
-
-        {
-          (isWifiIdentityManagementEnable && !isTemplate) &&
-          <Form.Item>
-            <IdentityGroup />
-          </Form.Item>
-        }
         <Form.Item
           label='Security Protocol'
           name={['wlan', 'wlanSecurity']}
@@ -226,6 +219,12 @@ function SettingsForm () {
             </Radio.Group>
           </Form.Item>
         </div>
+        {
+          (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
+          <Form.Item>
+            <IdentityGroup comboWidth='210px' />
+          </Form.Item>
+        }
         <div>
           {useCertificateTemplate ? <CertAuth /> : <AaaService />}
         </div>

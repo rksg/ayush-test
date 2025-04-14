@@ -12,7 +12,7 @@ import {
 import {
   AdaptivePolicy,
   AttributeAssignment, filterByAccessForServicePolicyMutation,
-  getAdaptivePolicyDetailLink,
+  getAdaptivePolicyDetailLink, getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
@@ -110,6 +110,8 @@ export default function RadiusAttributeGroupDetail () {
               policyId: policyId!
             })}
             scopeKey={getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

@@ -4,11 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AaaUrls, AccessControlUrls, CommonUrlsInfo, ExpirationType,
   MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
-  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
+  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo,PersonaUrls,
+  IpsecUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -23,9 +24,12 @@ import {
   mockMacRegistrationPoolList,
   mockUpdatedMacRegistrationPoolList,
   mockAAAPolicyListResponse,
-  mockSoftGreTable, mockedMacRegistrationPools
+  mockSoftGreTable, mockedMacRegistrationPools,
+  mockIdentityGroupQuery,
+  mockIpSecTable
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
+
 
 jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
@@ -53,6 +57,9 @@ jest.mock('../../ApCompatibility', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
+jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -218,6 +225,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ page: 1, totalCount: 0, data: [] }))),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockIpSecTable))),
       rest.post(WifiCallingUrls.queryWifiCalling.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
@@ -260,12 +269,25 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.WIFI_RBAC_API
       && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
-      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
         .split('?')[0],
-      (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
+      (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
+      rest.post(PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (
+            searchParams.get('size') === '10000' &&
+          searchParams.get('page') === '0' &&
+          searchParams.get('sort') === 'name,asc'
+          ) {
+            return res(ctx.json(mockIdentityGroupQuery))
+          }
+          return res(ctx.json(mockIdentityGroupQuery))
+        })
     )
 
     render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
@@ -286,7 +308,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click((await screen.findAllByRole('button', {
       name: /add/i
-    }))[1])
+    }))[0])
 
     await screen.findByText(/add mac registration list/i)
 
@@ -339,7 +361,9 @@ describe('NetworkForm', () => {
   }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_WLAN_DEPRECATE_WEP)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.WIFI_WLAN_DEPRECATE_WEP
+      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
     render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 

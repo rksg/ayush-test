@@ -85,7 +85,7 @@ describe('connectedClientsChartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentContReboot,
         charts: [TimeSeriesChartTypes.ConnectedClientsChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

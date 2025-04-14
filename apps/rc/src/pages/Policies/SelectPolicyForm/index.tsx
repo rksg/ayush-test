@@ -11,13 +11,15 @@ import {
 } from '@acx-ui/components'
 import {
   Features,
+  TierFeatures,
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, LBS_SERVER_PROFILE_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
+  useGetLbsServerProfileListQuery,
   useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -51,6 +53,9 @@ export default function SelectPolicyForm () {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -71,6 +76,12 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
+  const LbsProfileTotalCount = useGetLbsServerProfileListQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }, { skip: !supportLbs }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
@@ -78,6 +89,7 @@ export default function SelectPolicyForm () {
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -92,7 +104,11 @@ export default function SelectPolicyForm () {
   }
 
   const sets = [
-    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
+    {
+      type: isSwitchMacAclEnabled ? PolicyType.SWITCH_ACCESS_CONTROL : PolicyType.ACCESS_CONTROL,
+      categories: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]:
+        [RadioCardCategory.WIFI]
+    },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
@@ -127,6 +143,11 @@ export default function SelectPolicyForm () {
       type: PolicyType.ADAPTIVE_POLICY,
       categories: [RadioCardCategory.WIFI],
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.LBS_SERVER_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !supportLbs || (LbsProfileTotalCount >= LBS_SERVER_PROFILE_MAX_COUNT)
     },
     {
       type: PolicyType.CONNECTION_METERING,

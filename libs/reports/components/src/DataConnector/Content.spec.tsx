@@ -86,18 +86,19 @@ describe('DataConnectorContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {})
     })
+
     it('should render DataConnectorContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
         data: {
           config: {
             connectionType: 'azure',
-            azureConnectionType: 'Azure Files',
+            azureConnectionType: 'azureBlob',
             azureAccountName: 'some name',
             azureAccountKey: 'key',
-            azureShareName: 'share name',
-            azureCustomerName: 'name'
+            azureContainerName: 'name'
           },
-          id: 'id'
+          id: 'id',
+          isConnected: true
         }
       })
       render(<DataConnectorContent />, {
@@ -107,7 +108,7 @@ describe('DataConnectorContent', () => {
       expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(quotaUsageTestId)).toBeVisible()
       expect(screen.getByText('New Connector')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
@@ -117,6 +118,8 @@ describe('DataConnectorContent', () => {
         search: ''
       })
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
+      expect(screen.getByTestId('connected-dot')).toBeVisible()
+      expect(screen.queryByTestId('disconnected-dot')).toBeNull()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataConnector/cloudStorage/edit/id',
@@ -124,6 +127,7 @@ describe('DataConnectorContent', () => {
         search: ''
       })
     })
+
     it('should render DataConnectorContent correct when storage not configured', async () => {
       render(<DataConnectorContent />, {
         route: { params },
@@ -132,11 +136,13 @@ describe('DataConnectorContent', () => {
       expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       const connectorButton = screen.getByRole('button', { name: 'New Connector' })
       expect(connectorButton).toBeVisible()
       expect(connectorButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
+      expect(screen.queryByTestId('connected-dot')).toBeNull()
+      expect(screen.queryByTestId('disconnected-dot')).toBeNull()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataConnector/cloudStorage/create',
@@ -158,12 +164,12 @@ describe('DataConnectorContent', () => {
       })
       expect(await screen.findByText('Data Connector')).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.getByText('New Connector')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
-    it('should render DataConnectorContent correct (no write permisson)', async () => {
+    it('should render DataConnectorContent correct (no write permission)', async () => {
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: false,
@@ -177,7 +183,7 @@ describe('DataConnectorContent', () => {
       expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.queryByText('New Connector')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
@@ -204,16 +210,16 @@ describe('DataConnectorContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {})
     })
+
     it('should render DataConnectorContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
         data: {
           config: {
             connectionType: 'azure',
-            azureConnectionType: 'Azure Files',
+            azureConnectionType: 'azureFiles',
             azureAccountName: 'some name',
             azureAccountKey: 'key',
-            azureShareName: 'share name',
-            azureCustomerName: 'name'
+            azureShareName: 'share name'
           },
           id: 'id'
         }
@@ -225,7 +231,7 @@ describe('DataConnectorContent', () => {
       expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(quotaUsageTestId)).toBeVisible()
       expect(screen.getByText('New Connector')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
@@ -242,6 +248,7 @@ describe('DataConnectorContent', () => {
         search: ''
       })
     })
+
     it('should render DataConnectorContent correct when storage not configured', async () => {
       render(<DataConnectorContent />, {
         route: { params },
@@ -250,7 +257,7 @@ describe('DataConnectorContent', () => {
       expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       const connectorButton = screen.getByRole('button', { name: 'New Connector' })
       expect(connectorButton).toBeVisible()
       expect(connectorButton).toBeDisabled()
@@ -271,12 +278,12 @@ describe('DataConnectorContent', () => {
       })
       expect(await screen.findByText('Data Connector')).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.getByText('New Connector')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
-    it('should render DataConnectorContent correct (no write permisson)', async () => {
+    it('should render DataConnectorContent correct (no write permission)', async () => {
       setRole({ role: RolesEnum.READ_ONLY })
       render(<DataConnectorContent />, {
         route: { params },
@@ -285,7 +292,7 @@ describe('DataConnectorContent', () => {
 
       expect(await screen.findByText('Data Connector')).toBeVisible()
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
       expect(screen.queryByText('New Connector')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()

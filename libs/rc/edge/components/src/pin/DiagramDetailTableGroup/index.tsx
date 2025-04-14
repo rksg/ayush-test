@@ -3,12 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Card }                                   from '@acx-ui/components'
-import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
-import { useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
-import { Persona, TableQuery, useTableQuery }     from '@acx-ui/rc/utils'
+import { useIdentityListQuery }                                                      from '@acx-ui/cloudpath/components'
+import { Card }                                                                      from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                    from '@acx-ui/feature-toggle'
+import { PersonalIdentityNetworkApiVersion, useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
+import { Persona, TableQuery, useTableQuery }                                        from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery }                     from '../../identityGroup'
+import { useIsEdgeFeatureReady }                   from '../../hooks/useIsEdgeFeatureReady'
 import { PersonalIdentityNetworkDetailTableGroup } from '../PersonalIdentityNetworkDetailTableGroup'
 import { defaultApPayload }                        from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
 import  TopologyDiagram                            from '../TopologyDiagram'
@@ -28,6 +29,7 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
     setCurrentTab: (tab: string) => void
       }>()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
 
@@ -35,7 +37,8 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
     data: pinData,
     isLoading: isPinDataLoading
   } = useGetEdgePinByIdQuery({
-    params: { serviceId: pinId }
+    params: { serviceId: pinId },
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
   })
 
   const apListTableQuery = useTableQuery({
@@ -48,7 +51,7 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
     enableRbac: isWifiRbacEnabled
   })
 
-  const personaListTableQuery = usePersonaListQuery({
+  const personaListTableQuery = useIdentityListQuery({
     personaGroupId: pinData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 

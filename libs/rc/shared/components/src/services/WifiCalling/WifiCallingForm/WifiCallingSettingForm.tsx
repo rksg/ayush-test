@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Col, Form, Input, Row, Select } from 'antd'
-import TextArea                          from 'antd/lib/input/TextArea'
-import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
+import { Form, Input, Select } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { StepsForm }                                                     from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }                                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedWifiCallingServiceListQuery, useGetEnhancedWifiCallingServiceTemplateListQuery,
@@ -19,7 +19,8 @@ import {
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { ProtectedEnforceTemplateToggleP1 } from '../../../configTemplates'
+import WifiCallingFormContext               from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'
 
@@ -123,7 +124,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             description: data.description,
             qosPriority: data.qosPriority,
             networkIds: [...data.networkIds ?? []],
-            oldNetworkIds: data.networkIds ?? []
+            oldNetworkIds: data.networkIds ?? [],
+            isEnforced: data.isEnforced
           }
         }
       })
@@ -139,8 +141,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   }, [data, state.ePDG.length])
 
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='serviceName'
@@ -198,11 +200,11 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         >
           <EpdgTable edit={edit} />
         </Form.Item>
-      </Col>
-
-      <Col span={14}>
-      </Col>
-    </Row>
+        <div style={{ marginTop: '20px' }}>
+          <ProtectedEnforceTemplateToggleP1 initValue={data?.isEnforced} />
+        </div>
+      </GridCol>
+    </GridRow>
   )
 }
 

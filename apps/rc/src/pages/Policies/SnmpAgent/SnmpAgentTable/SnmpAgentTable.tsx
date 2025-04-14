@@ -33,20 +33,16 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
-const defaultPayload = {
-  searchString: '',
-  fields: [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
-  searchTargetFields: ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: 1,
-  pageSize: 25
-}
-
-const filterPayload = {
-  searchString: '',
-  fields: [ 'id', 'name', 'venues' ]
-}
+const rbacSnmpFields = [
+  'id',
+  'name',
+  'communityNames',
+  'userNames',
+  'apSerialNumbers',
+  'apNames',
+  'venueIds',
+  'venueNames'
+]
 
 export default function SnmpAgentTable () {
   const { $t } = useIntl()
@@ -55,6 +51,28 @@ export default function SnmpAgentTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const defaultPayload = {
+    searchString: '',
+    fields: (isUseRbacApi) ? rbacSnmpFields:
+      [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
+    searchTargetFields: (isUseRbacApi) ?
+      // communityNames = v2Agents.name
+      // userNames = v3Agents.name
+      ['name', 'communityNames', 'userNames', 'venueNames', 'apNames'] :
+      ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 25
+  }
+
+  const filterPayload = {
+    searchString: '',
+    fields: (isUseRbacApi) ? rbacSnmpFields: [ 'id', 'name', 'venues' ]
+  }
+
+
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const filterResults = useTableQuery({
@@ -211,6 +229,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }) {
   const intl = useIntl()
   const { $t } = intl
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const columns: TableProps<ApSnmpViewModelData>['columns'] = [
     {
@@ -259,7 +278,7 @@ function useColumns (
       dataIndex: 'venues',
       align: 'center',
       sorter: true,
-      filterKey: 'venues.name.keyword',
+      filterKey: (isUseRbacApi) ? 'venueNames' :'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
       render: (_, row) => (
         <CountAndNamesTooltip data={row.venues} maxShow={25}/>

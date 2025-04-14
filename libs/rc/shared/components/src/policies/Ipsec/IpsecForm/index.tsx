@@ -9,6 +9,8 @@ import { useCreateIpsecMutation, useGetIpsecByIdQuery, useUpdateIpsecMutation } 
 import {
   getPolicyRoutePath,
   Ipsec,
+  IpSecAdvancedOptionEnum,
+  IpSecFailoverModeEnum,
   IpSecFormData,
   IpSecProposalTypeEnum,
   IpSecRekeyTimeUnitEnum,
@@ -56,6 +58,15 @@ export const IpsecForm = (props: IpsecFormProps) => {
         iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         advancedOption: {
+          retryLimit: 5,
+          replayWindow: 32,
+          ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
+          enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
+          dpdDelay: 30,
+          keepAliveInterval: 20,
+          failoverRetryInterval: 1,
+          failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
+          failoverPrimaryCheckInterval: 1
         },
         ikeSecurityAssociation: {
           ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
@@ -65,30 +76,36 @@ export const IpsecForm = (props: IpsecFormProps) => {
           espProposalType: IpSecProposalTypeEnum.DEFAULT,
           espProposals: []
         },
-        retryLimitEnabledCheckbox: false,
-        espReplayWindowEnabledCheckbox: false,
-        deadPeerDetectionDelayEnabledCheckbox: false,
-        nattKeepAliveIntervalEnabledCheckbox: false
+        ikeRekeyTimeEnabledCheckbox: true,
+        espRekeyTimeEnabledCheckbox: true,
+        retryLimitEnabledCheckbox: true,
+        espReplayWindowEnabledCheckbox: true,
+        deadPeerDetectionDelayEnabledCheckbox: true,
+        nattKeepAliveIntervalEnabledCheckbox: true,
+        failoverRetryPeriodIsForever: true
       })
     }
   }, [dataFromServer, editMode, form])
 
   const handleFinish = async (data: IpSecFormData) => {
     try {
-      if (data?.advancedOption) {
-        if (!data.advancedOption.failoverRetryPeriod) {
-          data.advancedOption.failoverRetryPeriod = 0
-        }
-      }
       if (data?.ikeSecurityAssociation?.ikeProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.ikeSecurityAssociation.ikeProposals = []
       }
       if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.espSecurityAssociation.espProposals = []
       }
+      if (data.ikeRekeyTimeEnabledCheckbox === false && data.ikeRekeyTime) {
+        data.ikeRekeyTime = 0
+        data.ikeRekeyTimeUnit = IpSecRekeyTimeUnitEnum.HOUR
+      }
+      if (data.espRekeyTimeEnabledCheckbox === false && data.espRekeyTime) {
+        data.espRekeyTime = 0
+        data.espRekeyTimeUnit = IpSecRekeyTimeUnitEnum.HOUR
+      }
       if (data.retryLimitEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.retryLimit)
-          data.advancedOption.retryLimit = 5
+          data.advancedOption.retryLimit = 0
       }
       if (data.deadPeerDetectionDelayEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.dpdDelay)
@@ -96,11 +113,15 @@ export const IpsecForm = (props: IpsecFormProps) => {
       }
       if (data.espReplayWindowEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.replayWindow)
-          data.advancedOption.replayWindow = 32
+          data.advancedOption.replayWindow = 0
       }
       if (data.nattKeepAliveIntervalEnabledCheckbox === false) {
         if (data.advancedOption && data.advancedOption.keepAliveInterval)
-          data.advancedOption.keepAliveInterval = 20
+          data.advancedOption.keepAliveInterval = 0
+      }
+      if (data.failoverRetryPeriodIsForever === true) {
+        if (data.advancedOption && data.advancedOption.failoverRetryPeriod)
+          data.advancedOption.failoverRetryPeriod = 0
       }
 
       // eslint-disable-next-line no-console

@@ -5,10 +5,14 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
+import { Features }               from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
+  EdgeGeneralFixtures,
   EdgePinFixtures,
-  EdgePinUrls
+  EdgePinUrls,
+  EdgeTunnelProfileFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -26,6 +30,8 @@ import { afterSubmitMessage }                from '../PersonalIdentityNetworkFor
 import EditPersonalIdentityNetwork from '.'
 
 const { mockPinSwitchInfoData, mockPinData, mockPinStatsList } = EdgePinFixtures
+const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockValidateEdgePinSwitchConfigMutation = jest.fn()
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
@@ -48,16 +54,19 @@ jest.mock('@acx-ui/rc/services', () => ({
   // mock API response due to all form steps are mocked
   useGetEdgePinByIdQuery: jest.fn(),
   useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false }),
-  useValidateEdgePinSwitchConfigMutation: jest.fn().mockImplementation(() => [mockValidateEdgePinSwitchConfigMutation])
+  useValidateEdgePinSwitchConfigMutation: jest.fn().mockImplementation(() => [mockValidateEdgePinSwitchConfigMutation]),
+  useGetTunnelProfileViewDataListQuery: () => ({ data: mockedTunnelProfileViewData, isLoading: false }),
+  useGetEdgeClusterListQuery: () => ({ data: mockEdgeClusterList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
-
+const mockEditPinRequest = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   useEdgePinActions: () => ({
     editPin: (_originData: unknown, req: RequestPayload) => new Promise((resolve) => {
+      mockEditPinRequest(req.payload)
       resolve(true)
       setTimeout(() => {
         (req.callback as Function)([{
@@ -91,11 +100,9 @@ describe('Edit PersonalIdentityNetwork', () => {
     mockedUsedNavigate.mockClear()
     mockValidateEdgePinSwitchConfigMutation.mockClear()
     mockValidateEdgeClusterConfigFn.mockClear()
+    mockEditPinRequest.mockClear()
 
     mockServer.use(
-      rest.put(
-        EdgePinUrls.updateEdgePin.url,
-        (_req, res, ctx) => res(ctx.status(202))),
       rest.post(
         EdgePinUrls.validateEdgeClusterConfig.url,
         (_req, res, ctx) => {
@@ -103,6 +110,10 @@ describe('Edit PersonalIdentityNetwork', () => {
           return res(ctx.status(202))
         })
     )
+  })
+
+  afterEach(() => {
+    jest.mocked(useGetEdgePinByIdQuery).mockReset()
   })
 
   it('cancel and go back to device list', async () => {
@@ -146,6 +157,14 @@ describe('Edit PersonalIdentityNetwork', () => {
     // step 5
     await screen.findByTestId('AccessSwitchForm')
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(mockEditPinRequest).toBeCalledWith(expect.objectContaining({
+      edgeClusterInfo: {
+        edgeClusterId: mockPinData.edgeClusterInfo?.edgeClusterId,
+        segments: mockPinData.edgeClusterInfo?.segments,
+        dhcpInfoId: mockPinData.edgeClusterInfo?.dhcpInfoId,
+        dhcpPoolId: mockPinData.edgeClusterInfo?.dhcpPoolId
+      }
+    })))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -218,16 +237,16 @@ describe('Test afterSubmitMessage', () => {
   it('afterSubmitMessage', async () => {
     const resError = [
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7] already has VXLAN config,
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7 will overwrite its existing VXLAN configuration,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to overwrite config and reboot.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] already has VXLAN config,
+      Distribution Switch c8:03:f5:3a:95:c6 will overwrite its existing VXLAN configuration,
       [forceOverwriteReboot] set true to overwrite config.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to reboot.` },
-      { message: `The Access Switch [c0:c5:20:aa:35:fd] web auth VLAN not exist or uplink port not exist at VLAN,
+      { message: `The Access Switch c0:c5:20:aa:35:fd web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.` },
       { message: '' }
     ]
@@ -238,16 +257,16 @@ describe('Test afterSubmitMessage', () => {
     ]
 
     const expectMessage= [
-      ['Distribution Switch [FMN4221R00H---DS---3, c8:03:f5:3a:95:c7] already has VXLAN config.',
-        'Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3, c8:03:f5:3a:95:c7  will overwrite its existing VXLAN configuration.',
+        'Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] already has VXLAN config.',
+      ['Distribution Switch FMN4221R00H---DS---3  will overwrite its existing VXLAN configuration.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      [`The Access Switch [FEK3224R09N---AS---3] web auth VLAN not exist or uplink port not exist at VLAN,
+      [`The Access Switch FEK3224R09N---AS---3 web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.`],
-      []
+      ['']
     ]
 
     expect(afterSubmitMessage(
@@ -266,5 +285,77 @@ describe('Test afterSubmitMessage', () => {
       { data: { errors: [resError[4]] } } as CatchErrorResponse, switches
     )).toStrictEqual(expectMessage[4].map(m=><p>{m}</p>))
 
+  })
+})
+
+describe('Edit PersonalIdentityNetwork - L2GRE', () => {
+  const params: { tenantId: string, serviceId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    serviceId: 'testServiceId'
+  }
+  const mockValidateEdgeClusterConfigFn = jest.fn()
+
+  beforeEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    mockedUsedNavigate.mockClear()
+    mockValidateEdgePinSwitchConfigMutation.mockClear()
+    mockValidateEdgeClusterConfigFn.mockClear()
+    mockEditPinRequest.mockClear()
+
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => {
+          mockValidateEdgeClusterConfigFn()
+          return res(ctx.status(202))
+        })
+    )
+  })
+
+  afterEach(() => {
+    jest.mocked(useGetEdgePinByIdQuery).mockReset()
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
+  })
+
+  it('should update PersonalIdentityNetwork successfully', async () => {
+    const mockPinData_noSwitch = cloneDeep(mockPinData)
+    mockPinData_noSwitch.distributionSwitchInfos = []
+    mockPinData_noSwitch.accessSwitchInfos = []
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData_noSwitch, isLoading: false, refetch: jest.fn() }))
+
+    render(
+      <Provider>
+        <EditPersonalIdentityNetwork />
+      </Provider>, {
+        route: { params, path: updatePinPath }
+      })
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByText('Wireless Network'))
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByText('Dist. Switch'))
+    // step 4
+    await screen.findByTestId('DistributionSwitchForm')
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
+    // step 5
+    await screen.findByTestId('AccessSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(mockEditPinRequest).toBeCalledWith(expect.objectContaining({
+      networkSegmentConfiguration: {
+        segments: mockPinData.edgeClusterInfo?.segments,
+        dhcpInfoId: mockPinData.edgeClusterInfo?.dhcpInfoId,
+        dhcpPoolId: mockPinData.edgeClusterInfo?.dhcpPoolId
+      }
+    })))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/services/list`,
+      search: ''
+    }))
   })
 })

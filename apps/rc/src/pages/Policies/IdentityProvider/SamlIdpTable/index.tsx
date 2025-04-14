@@ -2,13 +2,12 @@ import { useState } from 'react'
 
 import { Buffer } from 'buffer'
 
-import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                    from '@acx-ui/feature-toggle'
-import {  CodeDocument }                                             from '@acx-ui/icons'
-import { CertificateToolTip, SimpleListTooltip }                     from '@acx-ui/rc/components'
+import { Button, Loader, Table, TableProps, showActionModal }           from '@acx-ui/components'
+import { useIsSplitOn, Features }                                       from '@acx-ui/feature-toggle'
+import {  CodeDocument }                                                from '@acx-ui/icons'
+import { CertificateInfoItem, SamlIdpMetadataModal, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteSamlIdpProfileMutation,
   useDownloadSamlServiceProviderMetadataMutation,
@@ -30,9 +29,7 @@ import {
   Network,
   KeyValue,
   ServerCertificate,
-  CertificateStatusType,
-  getPolicyRoutePath,
-  transformDisplayOnOff
+  SamlIdpProfileFormType
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -46,7 +43,8 @@ const SamlIdpTable = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
-  const [idpMetadata, setIdpMetadata] = useState('')
+  const [samlIdpData, setSamlIdpData] =
+    useState<SamlIdpProfileFormType>({} as SamlIdpProfileFormType)
 
   const [deleteSamlIdpProfile] = useDeleteSamlIdpProfileMutation()
   const [lazyGetSamlIdpProfile] = useLazyGetSamlIdpProfileByIdQuery()
@@ -83,7 +81,6 @@ const SamlIdpTable = () => {
     })
   })
 
-  // eslint-disable-next-line max-len
   const { certificateNameMap } = useGetServerCertificatesQuery({
     payload: {
       fields: ['name', 'id', 'status'],
@@ -104,7 +101,11 @@ const SamlIdpTable = () => {
     const data = await lazyGetSamlIdpProfile({
       params: { id: id }
     }).unwrap()
-    setIdpMetadata(Buffer.from(data?.metadata, 'base64').toString('ascii'))
+    const samlIdpData = {
+      ...data,
+      metadataContent: Buffer.from(data?.metadata, 'base64').toString('utf-8')
+    } as SamlIdpProfileFormType
+    setSamlIdpData(samlIdpData)
     setIdpMetadataModalVisible(true)
   }
 
@@ -129,7 +130,7 @@ const SamlIdpTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Idp Metadata' }),
+      title: $t({ defaultMessage: 'IdP Metadata' }),
       key: 'metadata',
       dataIndex: 'metadata',
       render: (_, row) => {
@@ -146,44 +147,31 @@ const SamlIdpTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Require SAML requests to be signed' }),
-      key: 'authnRequestSignedEnabled',
-      dataIndex: 'authnRequestSignedEnabled',
-      render: (_, row) => transformDisplayOnOff(row.authnRequestSignedEnabled)
+      title: $t({ defaultMessage: 'SAML Request Signature' }),
+      key: 'signingCertificateEnabled',
+      dataIndex: 'signingCertificateEnabled',
+      render: (_, row) => {
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={row.signingCertificateEnabled ?? false}
+            certificatId={row.signingCertificateId ?? ''}
+          />
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'SAML Response Encryption' }),
-      key: 'responseEncryptionEnabled',
-      dataIndex: 'responseEncryptionEnabled',
-      render: (_, row) => transformDisplayOnOff(row.responseEncryptionEnabled)
-    },
-    {
-      title: $t({ defaultMessage: 'Server sertificate' }),
-      key: 'encryptionCertificateId',
-      dataIndex: 'encryptionCertificateId',
-      filterKey: 'encryptionCertificateId',
-      filterable: certificateNameMap,
-      sorter: false,
+      key: 'encryptionCertificateEnabled',
+      dataIndex: 'encryptionCertificateEnabled',
       render: (_, row) => {
-        const serverCert = certificateNameMap.find(
-          cert => cert.key === row.encryptionCertificateId)
-        return (!row.encryptionCertificateId)
-          ? ''
-          : (<>
-            <TenantLink
-              to={getPolicyRoutePath({
-                type: PolicyType.SERVER_CERTIFICATES,
-                oper: PolicyOperation.LIST
-              })}>
-              {serverCert?.value || ''}
-            </TenantLink>
-            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
-              <CertificateToolTip
-                placement='bottom'
-                policyType={PolicyType.SERVER_CERTIFICATES}
-                status={serverCert.status} /> : []}
-          </>
-          )
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={row.encryptionCertificateEnabled ?? false}
+            certificatId={row.encryptionCertificateId ?? ''}
+          />
+        )
       }
     },
     {
@@ -263,27 +251,11 @@ const SamlIdpTable = () => {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
       />
-      <Modal
-        title={$t({ defaultMessage: 'IdP Metadata' })}
+      <SamlIdpMetadataModal
+        samlIdpData={samlIdpData}
         visible={idpMetadataModalVisible}
-        // onCancel={handleCancel}
-        width={800}
-        footer={
-          <Button
-            type='primary'
-            onClick={() => {
-              setIdpMetadataModalVisible(false)
-            }}
-          >
-            {$t({ defaultMessage: 'OK' })}
-          </Button>
-        }
-      >
-        <TextArea
-          style={{ width: '100%', height: 500 }}
-          value={idpMetadata}
-        ></TextArea>
-      </Modal>
+        setVisible={setIdpMetadataModalVisible}
+      />
     </Loader>
   )
 }

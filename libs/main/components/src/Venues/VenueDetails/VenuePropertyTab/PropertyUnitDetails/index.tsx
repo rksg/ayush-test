@@ -18,13 +18,13 @@ import {
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, filterByOperations } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -78,7 +78,7 @@ export function PropertyUnitDetails () {
   const copyButtonTooltipDefaultText = $t({ defaultMessage: 'Copy Passphrase' })
   const copyButtonTooltipCopiedText = $t({ defaultMessage: 'Passphrase Copied' })
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
-  const [ guestCopyButtonTooltip, setGuestCopyTooltip ] = useState(copyButtonTooltipDefaultText)
+  const [guestCopyButtonTooltip, setGuestCopyTooltip] = useState(copyButtonTooltipDefaultText)
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
@@ -305,6 +305,7 @@ export function PropertyUnitDetails () {
       [
         {
           label: $t({ defaultMessage: 'Block' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           visible: (selectedItems => selectedItems.length > 0 &&
             selectedItems.some(p => !p.revoked)),
           onClick: (identities, clearSelection) => {
@@ -335,6 +336,7 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Unblock' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           visible: (selectedItems => selectedItems.length > 0 &&
             selectedItems.some(p => p.revoked)),
           onClick: (identities, clearSelection) => {
@@ -348,6 +350,7 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Remove Association' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)],
           visible: (selectedItems => selectedItems.length > 0),
           onClick: (identities, clearSelection) => {
             showActionModal({
@@ -378,6 +381,7 @@ export function PropertyUnitDetails () {
   const actions: TableProps<PropertyUnit>['actions'] =
       [{
         label: $t({ defaultMessage: 'Add Identity Association' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addUnitLinkedIdentity)],
         onClick: () => {setAddIdentityAssociationDrawerVisible(true)}
       }]
 
@@ -393,9 +397,10 @@ export function PropertyUnitDetails () {
     <PageHeader
       title={unitResult.data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={[
+      extra={filterByOperations([
         <Button
           onClick={handleSuspend}
+          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.updatePropertyUnit)]}
         >{unitData?.status === PropertyUnitStatus.ENABLED
             ? $t({ defaultMessage: 'Suspend' }) : $t({ defaultMessage: 'Activate' }) } </Button>,
         <Button
@@ -405,9 +410,10 @@ export function PropertyUnitDetails () {
         >{$t({ defaultMessage: 'View Portal' })} </Button>,
         <Button
           type='primary'
+          rbacOpsIds={[getOpsApi(PropertyUrlsInfo.updatePropertyUnit)]}
           onClick={() => {setConfigurePropertyUnitDrawerVisible(true)}}
         >{$t({ defaultMessage: 'Configure' })} </Button>
-      ]}
+      ])}
     />
     <UnitDetails />
     <Subtitle level={3} style={{ marginTop: '20px', marginBottom: '0' }}>
@@ -447,6 +453,7 @@ export function PropertyUnitDetails () {
         venueId={venueId}
         unitId={unitId}
         groupId={personaGroupId}
+        identityCount={identitiesCount}
         onClose={() => {
           setAddIdentityAssociationDrawerVisible(false)
           identities.refetch()

@@ -12,12 +12,13 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileLimitedSelection
+  useSoftGreProfileLimitedSelection,
+  useIpsecProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
 import {
@@ -61,7 +62,8 @@ import {
   WifiNetworkMessages,
   SoftGreDuplicationChangeState,
   Voter,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -228,6 +230,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    ipsecOptionList, ipsecOptionDispatch, usedProfileData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!,
+    isVenueOperation: true,
+    duplicationChangeDispatch: duplicationChangeDispatch })
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -448,14 +456,14 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const handleDeactivateIpSecProfile = async (
+  const handleDeactivateSoftGreIpSecProfile = async (
     model:string,
     lanPort:LanPort,
     originLanPort?:LanPort
   ) => {
     const originSoftGreId = originLanPort?.softGreProfileId
     const originIpsecId = originLanPort?.ipsecProfileId
-    if(!originSoftGreId || !originIpsecId) {
+    if(!originSoftGreId) {
       return
     }
 
@@ -467,15 +475,26 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
     if(isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged
       || isIpSecDisabled || isIpSecProfileChanged) {
-      await updateDeactivateIpSecProfile({
-        params: {
-          venueId: venueId,
-          apModel: model,
-          portId: lanPort.portId,
-          softGreProfileId: originSoftGreId,
-          ipsecProfileId: originIpsecId
-        }
-      }).unwrap()
+      if (originLanPort?.ipsecEnabled) {
+        await updateDeactivateIpSecProfile({
+          params: {
+            venueId: venueId,
+            apModel: model,
+            portId: lanPort.portId,
+            softGreProfileId: originSoftGreId,
+            ipsecProfileId: originIpsecId
+          }
+        }).unwrap()
+      } else {
+        await updateDeactivateSoftGreProfile({
+          params: {
+            venueId: venueId,
+            apModel: model,
+            portId: lanPort.portId,
+            policyId: originSoftGreId
+          }
+        }).unwrap()
+      }
     }
   }
 
@@ -511,7 +530,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const isSoftGreEnabled = lanPort.softGreEnabled
     const isSoftGreProfileChanged = originLanPort?.softGreProfileId !== lanPort.softGreProfileId
 
-    if(isLanPortEnabled && isSoftGreEnabled && isSoftGreProfileChanged) {
+    if((isLanPortEnabled && isSoftGreEnabled && isSoftGreProfileChanged)) {
       await updateActivateSoftGreProfile({
         params: {
           venueId: venueId,
@@ -523,7 +542,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const handleActivateIpSecProfile = async (
+  const handleActivateSoftGreIpSecProfile = async (
     model:string,
     lanPort:LanPort,
     originLanPort?:LanPort
@@ -534,8 +553,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const isIpsecEnabled = lanPort.ipsecEnabled
     const isIpSecProfileChanged = originLanPort?.ipsecProfileId !== lanPort.ipsecProfileId
 
-    if(isLanPortEnabled && isSoftGreEnabled
-      && isIpsecEnabled && isIpSecProfileChanged) {
+    if(isLanPortEnabled && isIpsecEnabled && isIpSecProfileChanged) {
       await updateActivateIpSecProfile({
         params: {
           venueId: venueId,
@@ -543,6 +561,16 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           portId: lanPort.portId,
           softGreProfileId: lanPort.softGreProfileId,
           ipsecProfileId: lanPort.ipsecProfileId
+        }
+      }).unwrap()
+    }
+    if(isLanPortEnabled && isSoftGreEnabled && !isIpsecEnabled) {
+      await updateActivateSoftGreProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: lanPort.softGreProfileId
         }
       }).unwrap()
     }
@@ -661,6 +689,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       voters: voters
     })
 
+    if (isIpSecOverNetworkEnabled) {
+      ipsecOptionDispatch({
+        state: IpsecOptionChangeState.ResetToDefault,
+        voters: voters
+      })
+    }
 
     customGuiChagedRef.current = true
   }
@@ -703,12 +737,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
               return oldLanPort.portId === lanPort.portId
             })
 
-            if(isEthernetSoftgreEnabled && !isTemplate) {
+            if(isEthernetSoftgreEnabled && !isTemplate && !isIpSecOverNetworkEnabled) {
               await handleDeactivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
             if(isIpSecOverNetworkEnabled && !isTemplate) {
-              await handleDeactivateIpSecProfile(venueLanPort.model, lanPort, originLanPort)
+              await handleDeactivateSoftGreIpSecProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
             // Update ethernet port profile
@@ -724,12 +758,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             // Update Lan settings
             await handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
 
-            if(isEthernetSoftgreEnabled && !isTemplate) {
+            if(isEthernetSoftgreEnabled && !isTemplate && !isIpSecOverNetworkEnabled) {
               await handleActivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
             if (isIpSecOverNetworkEnabled && !isTemplate) {
-              await handleActivateIpSecProfile(venueLanPort.model, lanPort, originLanPort)
+              await handleActivateSoftGreIpSecProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
             // Activate Client Isolation must wait Lan settings enable client isolation saved
@@ -820,6 +854,9 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                    ipsecOptionDispatch={isIpSecOverNetworkEnabled ? ipsecOptionDispatch : undefined}
+                    ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
+                    usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
                   />
                 </Col>
               </Row>

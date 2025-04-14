@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
 import { Divider, Form, Spin } from 'antd'
 import { debounce }            from 'lodash'
@@ -8,30 +8,94 @@ import { HTML5Backend }        from 'react-dnd-html5-backend'
 import { useIntl }             from 'react-intl'
 import { v4 as uuidv4 }        from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
 
-export default function AICanvas () {
+const Message = (props:{
+    chat: ChatMessage,
+    sessionId:string,
+    groups: Group[],
+    canvasRef?: React.RefObject<CanvasRef>
+  }) => {
+  const { chat, sessionId, groups, canvasRef } = props
+  const { $t } = useIntl()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations have been deleted due to the 30-day retention policy.' })
+  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+    : <div className='message'>
+      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+        <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+      </div>
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+        ...chat.widgets[0],
+        sessionId,
+        id: chat.id,
+        chatId: chat.id
+      }}
+      groups={groups}
+      removeShadowCard={canvasRef?.current?.removeShadowCard}
+      /> }
+      {
+        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+          {moment(chat.created).format('hh:mm A')}
+        </div>
+      }
+    </div>
+}
+
+const Messages = memo((props:{
+  moreloading: boolean,
+  aiBotLoading: boolean,
+  chats: ChatMessage[],
+  sessionId:string,
+  groups: Group[],
+  canvasRef: React.RefObject<CanvasRef>
+})=> {
+  const { $t } = useIntl()
+  const welcomeMessage = {
+    id: 'welcomeMessage',
+    role: 'AI',
+    text: $t({ defaultMessage:
+      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+  }
+  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef } = props
+  return <div className='messages-wrapper'>
+    {
+      !chats?.length && <Message key={welcomeMessage.id}
+        chat={welcomeMessage}
+        sessionId={sessionId}
+        groups={groups} />
+    }
+    {moreloading && <div className='loading'><Spin /></div>}
+    {chats?.map((i) => (
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef}/>
+    ))}
+    {aiBotLoading && <div className='loading'><Spin /></div>}
+  </div>})
+
+export default function AICanvasModal (props: {
+  isModalOpen: boolean,
+  setIsModalOpen: (p: boolean) => void
+}) {
+  const { isModalOpen, setIsModalOpen } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
-  const linkToDashboard = useTenantLink('/dashboard')
-  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
   const [getChats] = useGetChatsMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
+  const [reload, setReload] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -41,18 +105,20 @@ export default function AICanvas () {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
+  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
 
+  const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
-  const deletedHint = $t({ defaultMessage:
-    'Older chat conversations have been deleted due to the 30-day retention policy.' })
   const questions = [
     'What can you do?',
-    'Show me the top-consuming clients',
-    'Generate a graph of my APs usage over the past 24 hours',
-    'Can you give me the trending network traffic from last week?'
+    'Give me a table for the Top 10 clients based on traffic.',
+    'Show me the trending of the network traffic for last week.',
+    'How many clients were connected to my network yesterday?'
   ] // Only support english default questions in phase 1
+
+
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -74,6 +140,7 @@ export default function AICanvas () {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
         setSessionId(latestId)
+        setReload(true)
       }
     } else if(historyData?.length === 0) {
       setIsChatsLoading(false)
@@ -88,8 +155,11 @@ export default function AICanvas () {
   }
 
   useEffect(() => {
-    if(!isNewChat && sessionId) {
+    if((!isNewChat && sessionId) || reload) {
       getLatestPageChats()
+      if(reload) {
+        setReload(false)
+      }
     }
   }, [sessionId])
 
@@ -152,7 +222,9 @@ export default function AICanvas () {
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     await chatAi({
+      customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,
@@ -183,7 +255,7 @@ export default function AICanvas () {
       })
   }
 
-  const onClickClose = () => {
+  const checkChanges = (callback:()=>void, handleSave:()=>void) => {
     if (canvasHasChanges) {
       showActionModal({
         type: 'confirm',
@@ -198,23 +270,30 @@ export default function AICanvas () {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: handleSaveCanvas
-          }, {
             text: $t({ defaultMessage: 'Discard Changes' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
-            handler: onClose
+            handler: callback
+          }, {
+            text: $t({ defaultMessage: 'Save Canvas' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: handleSave
           }]
         }
       })
     } else {
-      onClose()
+      callback()
     }
+  }
+
+  const onClickClose = () => {
+    checkChanges(onClose, ()=> {
+      handleSaveCanvas()
+      onClose()
+    })
   }
 
   const handleCanvasChange = useCallback((hasChanges: boolean) => {
@@ -224,12 +303,12 @@ export default function AICanvas () {
   const handleSaveCanvas = async () => {
     await canvasRef.current?.save()
     setCanvasHasChanges(false)
-    onClose()
   }
 
   const onClose = () => {
-    navigate(linkToDashboard)
+    setIsModalOpen(false)
   }
+
 
   const onClickChat = (id: string) => {
     setIsNewChat(false)
@@ -250,95 +329,122 @@ export default function AICanvas () {
     setChats([])
   }
 
-  const Message = (props:{ chat: ChatMessage }) => {
-    const { chat } = props
-    return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
-      : <div className='message'>
-        <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-          <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
-        </div>
-        { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-          ...chat.widgets[0],
-          sessionId,
-          id: chat.id,
-          chatId: chat.id
-        }}
-        groups={groups}
-        /> }
-        {
-          chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-            {moment(chat.created).format('hh:mm A')}
-          </div>
-        }
-      </div>
+  const onClickCanvasMode = () => {
+    checkChanges(()=>{
+      setCanvasMode(!showCanvas)
+      setCanvasHasChanges(false)
+    }, ()=>{
+      handleSaveCanvas()
+      setCanvasMode(!showCanvas)
+    })
+  }
+
+  const setCanvasMode = (value: boolean) => {
+    setShowCanvas(value)
+    localStorage.setItem('show-canvas', value.toString())
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <UI.Wrapper>
-        <div className='chat-wrapper'>
-          <div className='chat'>
-            <div className='header'>
-              <div className='actions'>
-                {historyData?.length ?
-                  <>
-                    <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
-                    <Tooltip
-                      placement='right'
-                      title={historyData && historyData.length >= 10
-                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
+    <UI.ChatModal
+      visible={isModalOpen}
+      onCancel={onClose}
+      width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
+      style={showCanvas ? { top: 40, height: 'calc(100vh - 40px)' } : { top: 70 }}
+      footer={null}
+      closable={false}
+      maskClosable={false}
+      showCanvas={showCanvas}
+    >
+      <DndProvider backend={HTML5Backend}>
+        <UI.Wrapper showCanvas={showCanvas}>
+          <div className='chat-wrapper'>
+            {
+              historyVisible && <HistoryDrawer
+                visible={historyVisible}
+                onClose={onHistoryDrawer}
+                historyData={historyData as ChatHistory[]}
+                sessionId={sessionId}
+                onClickChat={onClickChat}
+              />
+            }
+            <div className='chat'>
+              <div className='header'>
+                <div className='actions'>
+                  {historyData?.length ?
+                    <>
+                      <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
+                      <Tooltip
+                        placement='right'
+                        title={historyData && historyData.length >= 10
+                          ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
-                        : ''}
-                    >
-                      <Plus
-                        data-testid='newChatIcon'
-                        className={
-                          'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
-                        }
-                        onClick={onNewChat}
-                      />
-                    </Tooltip>
-                  </> : null
-                }
-              </div>
-              <div className='title'>
-                <RuckusAiDog size='lg' />
-                <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
-              </div>
-              <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close data-testid='close-icon' onClick={onClickClose}/>
-              </div>
-            </div>
-            <div className='content'>
-              <Loader states={[{ isLoading: isChatsLoading }]}>
-                <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <div className='messages-wrapper'>
-                    {moreloading && <div className='loading'><Spin /></div>}
-                    {chats?.map((i) => (
-                      <Message key={i.id} chat={i} />
-                    ))}
-                    {aiBotLoading && <div className='loading'><Spin /></div>}
-                  </div>
-                  {
-                    !chats?.length && <div className='placeholder'>
+                          : ''}
+                      >
+                        <Plus
+                          data-testid='newChatIcon'
+                          className={
+                            'newChat' + (historyData && historyData.length >= 10 ?
+                              ' disabled' : '')
+                          }
+                          onClick={onNewChat}
+                        />
+                      </Tooltip>
                       {
-                        questions.map(question => <div
-                          key={question}
-                          onClick={()=> {
-                            handleSearch(question)
-                          }}
-                        >
-                          {question}
-                        </div>)
+                        showCanvas ? <CanvasCollapse
+                          data-testid='canvasCollapseIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                          : <CanvasExpand
+                            data-testid='canvasExpandIcon'
+                            onClick={onClickCanvasMode}
+                          />
                       }
-                    </div>
+                    </> : null
                   }
+                </div>
+                <div className='title'>
+                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                </div>
+                <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
+                  <Close data-testid='close-icon' onClick={onClickClose}/>
+                </div>
+              </div>
+              <div className='content'>
+                <Loader states={[{ isLoading: isChatsLoading }]}
+                  style={{
+                    borderBottomLeftRadius: '24px',
+                    borderBottomRightRadius: '24px'
+                  }}>
+                  <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                    <Messages
+                      moreloading={moreloading}
+                      aiBotLoading={aiBotLoading}
+                      chats={chats}
+                      sessionId={sessionId}
+                      canvasRef={canvasRef}
+                      groups={groups} />
+                    {
+                      !chats?.length && <div className='placeholder'>
+                        {
+                          questions.map(question => <div
+                            key={question}
+                            onClick={()=> {
+                              handleSearch(question)
+                            }}
+                          >
+                            {question}
+                          </div>)
+                        }
+                      </div>
+                    }
+                  </div>
                   <div className='input'>
                     <Form form={form} >
                       <Form.Item
                         name='searchInput'
                         children={<UI.Input
                           autoFocus
+                          maxLength={maxSearchTextNumber}
                           data-testid='search-input'
                           onKeyDown={onKeyDown}
                           onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
@@ -347,6 +453,10 @@ export default function AICanvas () {
                         />}
                       />
                     </Form>
+                    {
+                      searchText.length > 0 && <div className='text-counter'>
+                        {searchText.length + '/' + maxSearchTextNumber}</div>
+                    }
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}
@@ -354,27 +464,20 @@ export default function AICanvas () {
                       onClick={()=> { handleSearch() }}
                     />
                   </div>
-                </div>
-              </Loader>
+                </Loader>
+              </div>
             </div>
           </div>
-        </div>
-        <Canvas
-          ref={canvasRef}
-          onCanvasChange={handleCanvasChange}
-          groups={groups}
-          setGroups={setGroups}
-        />
-        {
-          historyVisible && <HistoryDrawer
-            visible={historyVisible}
-            onClose={onHistoryDrawer}
-            historyData={historyData as ChatHistory[]}
-            sessionId={sessionId}
-            onClickChat={onClickChat}
-          />
-        }
-      </UI.Wrapper>
-    </DndProvider>
+          {
+            showCanvas && <Canvas
+              ref={canvasRef}
+              onCanvasChange={handleCanvasChange}
+              groups={groups}
+              setGroups={setGroups}
+            />
+          }
+        </UI.Wrapper>
+      </DndProvider>
+    </UI.ChatModal>
   )
 }

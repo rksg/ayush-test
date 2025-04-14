@@ -1,5 +1,6 @@
-import { RadiusServer } from '../../models/RadiusServer'
-export interface AAAPolicyType{
+import { RadiusServer }      from '../../models/RadiusServer'
+import { EnforceableFields } from '../configTemplate'
+export interface AAAPolicyType extends EnforceableFields {
   id?: string,
   name: string,
   primary?: RadiusServer,
@@ -14,7 +15,7 @@ export interface AAATacacsServer{
   sharedSecret: string,
   purpose: AAAPurposeEnum
 }
-export interface AAAViewModalType {
+export interface AAAViewModalType extends EnforceableFields {
   id?: string,
   name: string,
   primary: string, // Primary server IP:Port

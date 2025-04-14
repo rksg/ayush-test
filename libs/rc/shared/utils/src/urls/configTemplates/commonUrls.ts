@@ -334,7 +334,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getNetworkVenuesTemplateRbac: {
-    method: 'get',
+    method: 'post',
     url: '/templates/venues/wifiNetworks/query',
     newApi: true
   },
@@ -383,6 +383,6 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PUT:/templates/{id}/enforce'
+    opsApi: 'PUT:/templates/{id}/enforcementSettings'
   }
 }

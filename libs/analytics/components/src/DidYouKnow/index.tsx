@@ -4,15 +4,13 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Carousel }                 from '@acx-ui/components'
+import { Loader }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import {
-  useAvailableFactsQuery,
-  useFactsQuery
-} from './services'
+import { useAvailableFactsQuery, useFactsQuery } from './services'
+import { Carousel }                              from './styledComponent'
 
 export { DidYouKnowWidget as DidYouKnow }
 

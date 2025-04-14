@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { DateFormatEnum, formatter }                                        from '@acx-ui/formatter'
-import { MspRbacUrlsInfo }                                                  from '@acx-ui/msp/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
+import { MspRbacUrlsInfo }                       from '@acx-ui/msp/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import MaxPeriod from './MaxPeriod'
 
@@ -56,9 +56,7 @@ describe('MaxPeriod Card', () => {
 
     await userEvent.click(claculateBtn)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const date = formatter(DateFormatEnum.DateFormat)(response.data.expirationDate)
+    const date = await formatter(DateFormatEnum.DateFormat)(response.data.expirationDate)
 
     await expect(await screen.findByText(date)).toBeVisible()
   })

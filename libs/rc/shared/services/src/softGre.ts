@@ -16,13 +16,16 @@ import { CommonResult,
   VenueApModelLanPortSettingsV1,
   VenueTableSoftGreActivation,
   CommonRbacUrlsInfo,
-  NewAPModel
+  NewAPModel,
+  IpsecUrls,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import consolidateActivations from './softGreUtils'
+import consolidateActivations             from './softGreUtils'
+import { handleCallbackWhenActivityDone } from './utils'
 
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
@@ -55,7 +58,11 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             'UpdateSoftGreProfile',
             'DeleteSoftGreProfile',
             'ActivateSoftGreProfileOnVenueWifiNetwork',
-            'DeactivateSoftGreProfileOnVenueWifiNetwork'
+            'DeactivateSoftGreProfileOnVenueWifiNetwork',
+            'ActivateSoftGreProfileOnVenueApModelLanPort',
+            'DeactivateSoftGreProfileOnVenueApModelLanPort',
+            'ActivateSoftGreProfileOnVenueApLanPort',
+            'DeactivateSoftGreProfileOnVenueApLanPort'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
@@ -203,7 +210,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSoftGreOptions: build.query<SoftGreOptionsData, RequestPayload>({
-      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+      queryFn: async ( { params, payload, enableIpsec }, _api, _extraOptions, fetchWithBQ) => {
         const { venueId, networkId } = params as { venueId: string, networkId?: string }
         const gatewayIps = new Set<string>()
         const gatewayIpMaps:Record<string, string[]> = {}
@@ -272,6 +279,51 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           activationProfiles
         }
 
+        if (enableIpsec && venueTotal > 0) {
+          const ipsecQueryPayload = {
+            fields: ['id', 'activations', 'venueActivations', 'apActivations'],
+            filters: {},
+            page: 1,
+            pageSize: 10_000
+          }
+          const ipsecReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+          // eslint-disable-next-line max-len
+          const ipsecRes = await fetchWithBQ({ ...ipsecReq, body: JSON.stringify(ipsecQueryPayload) })
+          const { data: ipsecData } = ipsecRes.data as TableResult<IpsecViewData>
+          let bindSoftGreId = ''
+          const ipsec = ipsecData.find(i => i.activations.find(a => a.venueId === venueId)
+            || i.apActivations.find(a => a.venueId === venueId)
+            || i.venueActivations.find(a => a.venueId === venueId))
+          if (ipsec) {
+            console.log('ipsecInSoftGreAPI:',ipsec) // eslint-disable-line no-console
+            bindSoftGreId = ipsec.activations
+              .find(a => a.venueId === venueId)?.softGreProfileId || ''
+            if (bindSoftGreId.length === 0) {
+              bindSoftGreId = ipsec.apActivations
+                .find(a => a.venueId === venueId)?.softGreProfileId || ''
+            }
+            if (bindSoftGreId.length === 0) {
+              bindSoftGreId = ipsec.venueActivations
+                .find(a => a.venueId === venueId)?.softGreProfileId || ''
+            }
+          }
+          if (bindSoftGreId.length > 0) {
+            options.forEach(op => {
+              if (op.value !== bindSoftGreId) {
+                op.disabled = true
+              }
+            })
+            return {
+              data: {
+                options: options,
+                id: bindSoftGreId,
+                isLockedOptions: true,
+                ...commonData
+              } as SoftGreOptionsData
+            }
+          }
+        }
+
         if (venueTotal >= 3) {
           return {
             data: {
@@ -299,13 +351,35 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.activateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'ActivateSoftGreProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     dectivateSoftGre: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'DeactivateSoftGreProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     activateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, ItemType }                                  from '@acx-ui/components'
+import { LayoutProps }                                            from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
@@ -27,21 +27,26 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { useIsEdgeReady } from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { useIsEdgeReady }  from '@acx-ui/rc/components'
 import {
+  AdministrationUrlsInfo,
+  AdminRbacUrlsInfo,
   getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  hasAdministratorTab
+  hasAdministratorTab,
+  MigrationUrlsInfo,
+  LicenseUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
-import { useTenantId }                                    from '@acx-ui/utils'
+import { RolesEnum }                                              from '@acx-ui/types'
+import { hasRoles, useUserProfileContext,  hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi, useTenantId }                                 from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData, isCustomRole } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -61,39 +66,10 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-
-  type Item = ItemType & {
-    permission?: RaiPermission
-    hidden?: boolean
-    children?: Item[]
-  }
-  const aiAnalyticsMenu = [{
-    permission: 'READ_INCIDENTS',
-    uri: '/analytics/incidents',
-    label: $t({ defaultMessage: 'Incidents' })
-  }] as Item[]
-  if (isIntentAIEnabled) {
-    aiAnalyticsMenu.push({
-      permission: 'READ_INTENT_AI',
-      uri: '/analytics/intentAI',
-      label: $t({ defaultMessage: 'IntentAI' })
-    })
-  } else {
-    aiAnalyticsMenu
-      .push({
-        permission: 'READ_AI_DRIVEN_RRM',
-        uri: '/analytics/recommendations/crrm',
-        label: $t({ defaultMessage: 'AI-Driven RRM' })
-      }, {
-        permission: 'READ_AI_OPERATIONS',
-        uri: '/analytics/recommendations/aiOps',
-        label: $t({ defaultMessage: 'AI Operations' })
-      })
-  }
+  const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -110,7 +86,16 @@ export function useMenuConfig () {
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'AI Analytics' }),
-          children: aiAnalyticsMenu
+          children: [
+            {
+              uri: '/analytics/incidents',
+              label: $t({ defaultMessage: 'Incidents' })
+            },
+            {
+              uri: '/analytics/intentAI',
+              label: $t({ defaultMessage: 'IntentAI' })
+            }
+          ]
         },
         {
           type: 'group' as const,
@@ -348,7 +333,8 @@ export function useMenuConfig () {
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         ...(isDataConnectorEnabled && isAdmin ? [{
           uri: '/dataConnector',
-          label: $t({ defaultMessage: 'Data Connector' })
+          label: $t({ defaultMessage: 'Data Connector' }),
+          superscript: $t({ defaultMessage: 'beta' })
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
@@ -382,38 +368,55 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
             ...(
-              !isCustomRole ? [
-                {
-                  uri: '/administration/accountSettings',
-                  label: $t({ defaultMessage: 'Settings' })
-                }
-              ] : []
+              !isCustomRoleCheck &&
+              hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getTenantDetails)]) ? [
+                  {
+                    uri: '/administration/accountSettings',
+                    label: $t({ defaultMessage: 'Settings' })
+                  }
+                ] : []
             ),
-            ...(isAdministratorAccessible && !isCustomRole ? [
-              isAbacToggleEnabled ? {
-                uri: '/administration/userPrivileges',
-                label: $t({ defaultMessage: 'Users & Privileges' })
-              } : {
-                uri: '/administration/administrators',
-                label: $t({ defaultMessage: 'Administrators' })
-              }
-            ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
-              {
-                uri: '/administration/privacy',
-                label: $t({ defaultMessage: 'Privacy' })
-              }
-            ] : []),
-            ...(
-              !isCustomRole ? [
-                {
-                  uri: '/administration/notifications',
-                  label: $t({ defaultMessage: 'Notifications' })
-                },
-                {
-                  uri: '/administration/subscriptions',
-                  label: $t({ defaultMessage: 'Subscriptions' })
+            ...(isAdministratorAccessible && !isCustomRoleCheck &&
+              hasAllowedOperations([
+                getOpsApi(AdministrationUrlsInfo.getAdministrators),
+                getOpsApi(AdministrationUrlsInfo.getDelegations),
+                getOpsApi(AdminRbacUrlsInfo.getPrivilegeGroups),
+                getOpsApi(AdministrationUrlsInfo.getCustomRoles)
+              ]) ? [
+                isAbacToggleEnabled ? {
+                  uri: '/administration/userPrivileges',
+                  label: $t({ defaultMessage: 'Users & Privileges' })
+                } : {
+                  uri: '/administration/administrators',
+                  label: $t({ defaultMessage: 'Administrators' })
                 }
+              ] : []),
+            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck &&
+              hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+              ? [
+                {
+                  uri: '/administration/privacy',
+                  label: $t({ defaultMessage: 'Privacy' })
+                }
+              ] : []),
+            ...(
+              !isCustomRoleCheck ? [
+                ...(
+                  hasAllowedOperations([
+                    getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ?
+                    [{
+                      uri: '/administration/notifications',
+                      label: $t({ defaultMessage: 'Notifications' })
+                    }] : []
+                ) ,
+                ...(hasAllowedOperations([
+                  getOpsApi(LicenseUrlsInfo.getMspEntitlement),
+                  getOpsApi(AdministrationUrlsInfo.getEntitlementsActivations),
+                  getOpsApi(MspRbacUrlsInfo.getEntitlementsCompliances)
+                ]) ? [{
+                    uri: '/administration/subscriptions',
+                    label: $t({ defaultMessage: 'Subscriptions' })
+                  }] : [])
               ] : []
             ),
             {
@@ -421,18 +424,20 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Version Management' })
             },
             ...(
-              !isCustomRole ? [
-                {
-                  uri: '/administration/webhooks',
-                  label: $t({ defaultMessage: 'Webhooks' })
-                },
-                {
-                  uri: '/administration/onpremMigration',
-                  label: $t({ defaultMessage: 'ZD Migration' })
-                }
+              !isCustomRoleCheck ? [
+                ...(hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getWebhooks)])
+                  ? [{
+                    uri: '/administration/webhooks',
+                    label: $t({ defaultMessage: 'Webhooks' })
+                  }]: []),
+                ...(hasAllowedOperations([getOpsApi(MigrationUrlsInfo.getZdConfigurationList)])
+                  ? [{
+                    uri: '/administration/onpremMigration',
+                    label: $t({ defaultMessage: 'ZD Migration' })
+                  }]: [])
               ] : []
             ),
-            ...(isRadiusClientEnabled && !isCustomRole ? [{
+            ...(isRadiusClientEnabled && !isCustomRoleCheck ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])

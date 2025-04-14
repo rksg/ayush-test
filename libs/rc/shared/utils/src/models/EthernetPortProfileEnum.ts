@@ -8,7 +8,8 @@ export enum EthernetPortAuthType {
     DISABLED= 'DISABLED',
     SUPPLICANT= 'SUPPLICANT',
     PORT_BASED= 'PORT_BASED_AUTHENTICATOR',
-    MAC_BASED= 'MAC_BASED_AUTHENTICATOR'
+    MAC_BASED= 'MAC_BASED_AUTHENTICATOR',
+    OPEN= 'OPEN'
 }
 
 export enum EthernetPortSupplicantType {

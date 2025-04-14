@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
 import { cloneDeep, isObject }                  from 'lodash'
@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                           from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -39,7 +39,9 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState,
+  SoftGreDuplicationChangeDispatcher,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -161,6 +163,15 @@ export function LanPorts (props: ApEditItemProps) {
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    ipsecOptionList, ipsecOptionDispatch, usedProfileData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!, isVenueOperation: false,
+    duplicationChangeDispatch: duplicationChangeDispatch,
+    formRef: formRef
+  } as { venueId: string, isVenueOperation: boolean,
+    duplicationChangeDispatch: React.Dispatch<SoftGreDuplicationChangeDispatcher>,
+    formRef?: MutableRefObject<StepsFormLegacyInstance<WifiApSetting>> })
 
   const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -335,12 +346,12 @@ export function LanPorts (props: ApEditItemProps) {
       if (isEthernetPortProfileEnabled) {
 
         // Must deactivate existing SoftGre relation before add new
-        if (isSoftGREOnEthernetEnabled) {
+        if (isSoftGREOnEthernetEnabled && !isIpSecOverNetworkEnabled) {
           handleSoftGreDeactivate(values)
         }
 
         if (isIpSecOverNetworkEnabled) {
-          handleIpSecDeactivate(values)
+          handleSoftGreIpSecDeactivate(values)
         }
 
         if (isEthernetClientIsolationEnabled) {
@@ -376,36 +387,48 @@ export function LanPorts (props: ApEditItemProps) {
     }
   }
 
-  const handleSoftGreDeactivate = (values: WifiApSetting) => {
+  const handleSoftGreDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+    for (let i = 0; i < values.lan?.length!; i++) {
+      const lanPort = values.lan?.[i] || { portId: '', softGreEnabled: false, enabled: false }
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
       if (
         originSoftGreId &&
         (!lanPort.enabled || !lanPort.softGreEnabled || useVenueSettings)
       ) {
-        deactivateSoftGreProfileSettings({
+        await deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
-    })
+    }
   }
 
-  const handleIpSecDeactivate = (values: WifiApSetting) => {
+  const handleSoftGreIpSecDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+    for (let i = 0; i < values.lan?.length!; i++) {
+      const lanPort = values.lan?.[i] || {
+        portId: '', softGreEnabled: false, enabled: false,
+        softGreProfileId: '', ipsecEnabled: false, ipsecProfileId: '' }
+      const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
       const originIpsecId = lanData.find(l => l.portId === lanPort.portId)?.ipsecProfileId
       if (
         originIpsecId &&
-        (!lanPort.enabled || !lanPort.ipsecEnabled || useVenueSettings)
+        (!lanPort.enabled || !lanPort.softGreEnabled || !lanPort.ipsecEnabled || useVenueSettings)
       ) {
-        deactivateIpSecProfileSettings({
+        await deactivateIpSecProfileSettings({
           params: {
             venueId, serialNumber, portId: lanPort.portId,
-            softGreProfileId: lanPort.softGreProfileId, ipsecProfileId: originIpsecId }
+            softGreProfileId: originSoftGreId, ipsecProfileId: originIpsecId }
+        }).unwrap()
+      } else if (
+        originSoftGreId &&
+        (!lanPort.enabled || !lanPort.softGreEnabled || lanPort.ipsecEnabled || useVenueSettings)
+      ) {
+        await deactivateSoftGreProfileSettings({
+          params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
-    })
+    }
   }
 
   const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
@@ -505,6 +528,13 @@ export function LanPorts (props: ApEditItemProps) {
         state: SoftGreDuplicationChangeState.ResetToDefault,
         voters: voters
       })
+
+      if (isIpSecOverNetworkEnabled) {
+        ipsecOptionDispatch({
+          state: IpsecOptionChangeState.ResetToDefault,
+          voters: voters
+        })
+      }
     }
   }
 
@@ -515,7 +545,6 @@ export function LanPorts (props: ApEditItemProps) {
   const onGUIChanged = () => {
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
-
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||
@@ -568,6 +597,7 @@ export function LanPorts (props: ApEditItemProps) {
               <Tabs
                 type='third'
                 onChange={onTabChange}
+                activeKey={`lan-${activeTabIndex + 1}`}
                 animated={true}
               >
                 {selectedModel?.lanPorts?.map((lan: LanPort, index: number) =>
@@ -594,6 +624,10 @@ export function LanPorts (props: ApEditItemProps) {
                           softGREProfileOptionList={softGREProfileOptionList}
                           optionDispatch={duplicationChangeDispatch}
                           validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                          ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
+                          ipsecOptionDispatch={isIpSecOverNetworkEnabled ?
+                            ipsecOptionDispatch : undefined}
+                          usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
                         />
                       </Col>
                     </Row>

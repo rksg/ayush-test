@@ -6,8 +6,10 @@ import { useIntl } from 'react-intl'
 import { showActionModal, showToast, Table, TableProps, Tooltip }        from '@acx-ui/components'
 import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
+  PoliciesConfigTemplateUrlsInfo,
   RogueAPDetectionActionPayload,
-  RogueAPDetectionActionTypes, useConfigTemplate,
+  RogueAPDetectionActionTypes, RogueApUrls, useActivativationPermission, useConfigTemplate,
   useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
@@ -34,7 +36,17 @@ export const RogueVenueTable = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const {
+    activateOpsApi,
+    deactivateOpsApi,
+    hasFullActivationPermission
+  } = useActivativationPermission({
+    activateApiInfo: RogueApUrls.activateRoguePolicy,
+    activateTemplateApiInfo: PoliciesConfigTemplateUrlsInfo.activateRoguePolicy,
+    deactivateApiInfo: RogueApUrls.deactivateRoguePolicy,
+    deactivateTemplateApiInfo: PoliciesConfigTemplateUrlsInfo.deactivateRoguePolicy
+  })
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
     if (selectRows.filter(row =>
@@ -133,12 +145,12 @@ export const RogueVenueTable = () => {
       render: (_, row) => {
         if (row.rogueDetection?.enabled) {
           return <div style={{ textAlign: 'center', whiteSpace: 'pre-wrap' }}>
-            <div>ON</div>
+            <div>{$t({ defaultMessage: 'ON' })}</div>
             <div>({row.rogueDetection.policyName})</div>
           </div>
         }
         return <div style={{ textAlign: 'center' }}>
-          OFF
+          {$t({ defaultMessage: 'OFF' })}
         </div>
       }
     },
@@ -156,7 +168,7 @@ export const RogueVenueTable = () => {
           placement='bottom'>
           <Switch
             data-testid={`switchBtn_${row.id}`}
-            disabled={isEnforcedByTemplate}
+            disabled={isEnforcedByTemplate || !hasFullActivationPermission}
             checked={
               state.venues
                 ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
@@ -193,6 +205,7 @@ export const RogueVenueTable = () => {
 
   const rowActions: TableProps<VenueRoguePolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    rbacOpsIds: [activateOpsApi],
     disabled: (selectedRows: VenueRoguePolicyType[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: VenueRoguePolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
@@ -210,6 +223,7 @@ export const RogueVenueTable = () => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    rbacOpsIds: [deactivateOpsApi],
     disabled: (selectedRows: VenueRoguePolicyType[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: VenueRoguePolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
@@ -219,6 +233,8 @@ export const RogueVenueTable = () => {
     }
   }]
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <Table
       columns={basicColumns}
@@ -226,8 +242,8 @@ export const RogueVenueTable = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowActions={allowedRowActions}
+      rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
     />
   )
 }

@@ -42,10 +42,10 @@ import {
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }                                     from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { filterByAccess, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                from '@acx-ui/utils'
+import { TenantLink }                                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                      from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi }                                from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }         from './PropertyUnitDrawer'
@@ -109,6 +109,7 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const PropertyUnitStatusOptions = [
     { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
@@ -152,7 +153,9 @@ export function VenuePropertyTab () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
-  const hasPropertyUnitPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPropertyUnitPermission = rbacOpsApiEnabled
+    ? true
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const hasBulkUpdateUnitsPermission
     = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.bulkUpdateUnitProfile)])
 
@@ -420,6 +423,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Add Identity Association' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addUnitLinkedIdentity)],
           visible: (selectedItems => selectedItems.length <= 1 && isMultipleIdentityUnits),
           onClick: (units, clearSelection) => {
             setSelectedUnit(units.at(0))
@@ -429,6 +433,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Resend' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.notifyPropertyUnits)],
           onClick: (selectedItems, clearSelection) => {
             notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
               .unwrap()

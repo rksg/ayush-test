@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { Form, Space } from 'antd'
-import TextArea        from 'antd/lib/input/TextArea'
-import _               from 'lodash'
-import { useIntl }     from 'react-intl'
+import { Form, Space }             from 'antd'
+import TextArea                    from 'antd/lib/input/TextArea'
+import _, { cloneDeep, findIndex } from 'lodash'
+import { useIntl }                 from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -19,7 +19,8 @@ import {
   EdgeSerialNumber,
   convertEdgePortsConfigToApiPayload,
   getEdgePortTypeOptions,
-  isInterfaceInVRRPSetting
+  isInterfaceInVRRPSetting,
+  validateEdgeGateway
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -64,6 +65,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
@@ -80,14 +83,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
       form.resetFields()
       const corePortInfo = getEnabledCorePortInfo(portList ?? [], existedLagList ?? [])
       const hasCorePortEnabled = !!corePortInfo.key
-      let defaultPortType = defaultFormValues.portType
+
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
-        defaultPortType = EdgePortTypeEnum.LAN
+        form.setFieldsValue({
+          ...defaultFormValues,
+          portType: EdgePortTypeEnum.LAN,
+          ipMode: EdgeIpModeEnum.STATIC,
+          ...data
+        })
+        return
       }
 
       form.setFieldsValue({
         ...defaultFormValues,
-        portType: defaultPortType,
         ...data
       })
     }
@@ -300,7 +308,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
         lagEnabled={lagEnabled}/>}
     />
 
-
     <Form.Item
       noStyle
       shouldUpdate={(prev, cur) => forceUpdateCondition(prev, cur)}
@@ -320,7 +327,17 @@ export const LagDrawer = (props: LagDrawerProps) => {
           formFieldsProps={{
             portType: {
               options: portTypeOptions,
-              disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig)
+              disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
+              rules: [{ validator: () => {
+                const dryRunPorts = cloneDeep(portList ?? [])
+                allValues.lagMembers.forEach(member => {
+                  const idx = findIndex(dryRunPorts, { id: member.portId })
+                  if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
+                })
+
+                // eslint-disable-next-line max-len
+                return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
+              } }]
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })

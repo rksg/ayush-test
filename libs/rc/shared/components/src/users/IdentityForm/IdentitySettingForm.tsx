@@ -79,6 +79,7 @@ export function IdentitySettingForm ({ modalMode } : { modalMode?: boolean }) {
             { validator: (_, value) => phoneRegExp(value) }
           ]}
           children={<PhoneInput
+            key={id}
             name={'phoneNumber'}
             callback={(value: string) => {
               form.setFieldValue('phoneNumber', value)

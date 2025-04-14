@@ -51,11 +51,21 @@ export const renderStatusWithBadge = (
         title={error}
         dottedUnderline={Boolean(error)}
       >
-        {status}
+        {getAuditStatusLabel(status)}
       </Tooltip>
     }
   />
 )
+
+const getAuditStatusLabel = (status: AuditDto['status']) => {
+  const { $t } = getIntl()
+  switch (status) {
+    case AuditStatusEnum.Success:     return $t({ defaultMessage: 'Success' })
+    case AuditStatusEnum.Failure:     return $t({ defaultMessage: 'Failure' })
+    case AuditStatusEnum.InProgress:  return $t({ defaultMessage: 'In Progress' })
+    case AuditStatusEnum.Scheduled:   return $t({ defaultMessage: 'Scheduled' })
+  }
+}
 
 interface AuditLogTableProps {
   dataConnectorId: string;
@@ -67,7 +77,7 @@ export const getRetryError = (audit?: AuditDto): string | undefined => {
   const { status, start } = audit
 
   if (!retryableStatus.includes(status)) {
-    return $t({ defaultMessage: 'Connector is {status}' }, { status })
+    return $t({ defaultMessage: 'Connector is {status}' }, { status: getAuditStatusLabel(status) })
   }
 
   const inputDate = moment(start)
@@ -146,17 +156,18 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
         render: (_, { size }) => formats.bytesFormat(size)
       },
       {
-        title: $t({ defaultMessage: 'Export start date' }),
+        title: $t({ defaultMessage: 'Export start' }),
         dataIndex: 'start',
         key: 'start',
         render: (_, { start }) =>
           formatter(DateFormatEnum.DateTimeFormat)(start)
       },
       {
-        title: $t({ defaultMessage: 'Export end date' }),
+        title: $t({ defaultMessage: 'Export end' }),
         dataIndex: 'end',
         key: 'end',
-        render: (_, { end }) => formatter(DateFormatEnum.DateTimeFormat)(end)
+        render: (_, { end }) =>
+          formatter(DateFormatEnum.DateTimeFormat)(end)
       }
     ],
     [$t]

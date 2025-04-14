@@ -1,9 +1,9 @@
 
 import { rest } from 'msw'
 
-import { ClientUrlsInfo, PersonaUrls }         from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, waitFor, screen } from '@acx-ui/test-utils'
+import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, PersonaUrls, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                            from '@acx-ui/store'
+import { mockServer, render, waitFor, screen }                                                 from '@acx-ui/test-utils'
 
 import IdentityClientTable from './IdentityClientTable'
 
@@ -23,7 +23,8 @@ const mockedIdentityClientList = {
       tenantId: 'tenant-id',
       groupId: testPersonaGroupId,
       identityId: testPersonaId,
-      clientMac: '11:11:11:11:11:11'
+      clientMac: '11:11:11:11:11:11',
+      networkId: 'network-id-1'
     },
     {
       id: 'device-without-mapping',
@@ -68,7 +69,7 @@ describe('IdentityClientTable', () => {
               hostname: 'Persona_Host_name',
               venueInformation: { id: 'VENUE_ID', name: 'UI-TEST-VENUE' },
               apInformation: { serialNumber: 'AP_SERIAL_NUMBER', name: 'UI team ONLY' },
-              networkInformation: { authenticationMethod: 'Standard+Mac' },  // for MAC auth devices
+              networkInformation: { id: 'network-id-1',authenticationMethod: 'Standard+Mac' },  // for MAC auth devices
               lastUpdatedTime: '2022-01-01T00:00:00.000Z'
             },
             {
@@ -83,7 +84,23 @@ describe('IdentityClientTable', () => {
               lastUpdatedTime: '2022-01-01T00:00:00.000Z'
             }
           ] }))
-        })
+        }),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      )
     )
   })
 
@@ -110,7 +127,7 @@ describe('IdentityClientTable', () => {
     await waitFor(() => expect(searchIdentityClientFn).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(getClientsFn).toHaveBeenCalledTimes(1))
 
-    expect(screen.getByText('11-11-11-11-11-11')).toBeInTheDocument()
+    await screen.findByText('11:11:11:11:11:11')
     expect(await screen.findByText('Persona_Host_name')).toBeInTheDocument()
     expect(setCountFn).toHaveBeenCalledTimes(1)
   })

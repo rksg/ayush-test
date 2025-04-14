@@ -10,7 +10,7 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockCertId2, mockCertName2, mockSamlIdpProfileId, mockSamlIdpProfileName } from '../__tests__/fixtures'
+import { certList, mockCertId2, mockCertId3, mockCertName2, mockCertName3, mockedMetadata, mockedMetadata2, mockSamlIdpProfileId, mockSamlIdpProfileName } from '../__tests__/fixtures'
 
 import { AddSamlIdp } from '.'
 
@@ -20,6 +20,49 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+// Add mock for ImportFileDrawer
+jest.mock('../../../ImportFileDrawer', () => ({
+  ImportFileDrawer: ({
+    importRequest
+  }: {
+    importRequest: (
+      formData: FormData,
+      values: object,
+      content?: string
+    ) => void
+  }) => (
+    <button
+      onClick={() => importRequest(
+        {} as FormData, // Mocked since we don't use it
+        {}, // Mocked since we don't use it
+        mockedMetadata
+      )}
+      data-testid='mock-import-drawer'
+    >
+      Mock Import
+    </button>
+  ),
+  ImportFileDrawerType: { DPSK: 'DPSK' },
+  CsvSize: { '5MB': 5242880 }
+}))
+
+// Add mock for CertificateDrawer
+jest.mock('../../CertificateUtil/CertificateDrawer', () => ({
+  __esModule: true,
+  default: ({
+    handleSave
+  }: {
+    handleSave: (createdCertId?: string) => void
+  }) => (
+    <button
+      onClick={() => handleSave(mockCertId2)}
+      data-testid='mock-certificate-drawer'
+    >
+      Mock Certificate
+    </button>
+  )
+}))
+
 let params: { tenantId: string }
 const createViewPath = '/:tenantId/' + getPolicyRoutePath({
   type: PolicyType.SAML_IDP,
@@ -27,7 +70,8 @@ const createViewPath = '/:tenantId/' + getPolicyRoutePath({
 })
 
 const mockedMainSamlIdpProfile = jest.fn()
-const mockedActivateCertificate = jest.fn()
+const mockedActivateEncryptionCertificate = jest.fn()
+const mockedActivateSigningCertificate = jest.fn()
 
 describe('Add SAML IDP Profile', () => {
   beforeEach(() => {
@@ -37,7 +81,8 @@ describe('Add SAML IDP Profile', () => {
     }
 
     mockedMainSamlIdpProfile.mockClear()
-    mockedActivateCertificate.mockClear()
+    mockedActivateEncryptionCertificate.mockClear()
+    mockedActivateSigningCertificate.mockClear()
 
     mockServer.use(
       rest.post(
@@ -53,9 +98,17 @@ describe('Add SAML IDP Profile', () => {
       ),
 
       rest.put(
-        SamlIdpProfileUrls.activateSamlIdpProfileCertificate.url,
+        SamlIdpProfileUrls.activateEncryptionCertificate.url,
         (req, res, ctx) => {
-          mockedActivateCertificate()
+          mockedActivateEncryptionCertificate()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.put(
+        SamlIdpProfileUrls.activateSigningCertificate.url,
+        (req, res, ctx) => {
+          mockedActivateSigningCertificate()
           return res(ctx.status(202))
         }
       ),
@@ -82,16 +135,14 @@ describe('Add SAML IDP Profile', () => {
 
     // Find metadata textarea and input
     const metadataField = screen.getByTestId('metadata-textarea')
-    await user.type(metadataField, 'xmlContent')
+    await user.click(metadataField)
+    await user.type(metadataField, 'Invalid Content')
 
     await user.click(screen.getByRole('button', { name: 'Clear' }))
-    await user.type(metadataField, 'xmlContent2')
+    await user.type(metadataField, mockedMetadata2)
 
-    await user.click(screen.getByTestId('import-xml-button'))
-
-    // Expect there have a drawer displayed with import button
-    const importButton = screen.getByRole('button', { name: 'Import' })
-    expect(importButton).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'Clear' }))
+    await user.type(metadataField, 'https://www.valid.samlxml.com')
 
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -133,7 +184,7 @@ describe('Add SAML IDP Profile', () => {
     })
   })
 
-  it('If enable encryption and select certificate will call certificate api', async () => {
+  it('If enable certificate and select certificate will call certificate api', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -147,23 +198,121 @@ describe('Add SAML IDP Profile', () => {
 
     // Find metadata textarea and input
     const metadataField = screen.getByTestId('metadata-textarea')
-    await user.type(metadataField, 'xmlContent')
+    await user.type(metadataField, mockedMetadata)
 
     await user.click(screen.getByRole('switch', { name: 'Enable SAML Response Encryption' }))
 
-    const certCombo = screen.getByRole('combobox', { name: 'Server Certificate' })
+    const certCombo = screen.getByRole('combobox', { name: 'Select Encryption Certificate' })
     await user.click(certCombo)
     await user.click(await screen.findByText(mockCertName2))
+
+    await user.click(screen.getByRole('switch', { name: 'Enable SAML Request Signature' }))
+
+    const signingCertCombo = screen.getByRole('combobox', { name: 'Select Signing Certificate' })
+    await user.click(signingCertCombo)
+    await user.click((await screen.findAllByText(mockCertName3))[0])
+
+    await user.click(screen.getByRole('button', { name: 'Add custom field' }))
+    const attributeMappingTypeCombo = screen.getByRole('combobox', { name: 'Attribute Type' })
+    await user.click(attributeMappingTypeCombo)
+    await user.click(await screen.findByText('Last Name'))
+
+    const mappedByNameField = screen.getByRole('textbox', { name: 'Claim Name' })
+    await user.type(mappedByNameField, 'lastName')
 
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(mockedMainSamlIdpProfile).toBeCalledWith({
-      metadata: Buffer.from('xmlContent').toString('base64'),
+      metadata: Buffer.from(mockedMetadata).toString('base64'),
       name: mockSamlIdpProfileName,
-      responseEncryptionEnabled: true,
-      encryptionCertificateId: mockCertId2
+      encryptionCertificateEnabled: true,
+      encryptionCertificateId: mockCertId2,
+      signingCertificateEnabled: true,
+      signingCertificateId: mockCertId3,
+      attributeMappings: [
+        {
+          name: 'lastName',
+          mappedByName: 'lastName'
+        },
+        {
+          name: 'displayName',
+          mappedByName: 'displayName'
+        },
+        {
+          name: 'email',
+          mappedByName: 'email'
+        },
+        {
+          name: 'phoneNumber',
+          mappedByName: 'phone'
+        }
+      ]
     }))
 
-    await waitFor(() => expect(mockedActivateCertificate).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedActivateEncryptionCertificate).toBeCalledTimes(1))
+
+    await waitFor(() => expect(mockedActivateSigningCertificate).toBeCalledTimes(1))
+  })
+
+
+  it('should handle import function correctly', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddSamlIdp />
+      </Provider>
+      , { route: { path: createViewPath, params } }
+    )
+
+    // Fill in the profile name
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await user.type(policyNameField, mockSamlIdpProfileName)
+
+    // Click import XML button to show drawer
+    await user.click(screen.getByTestId('import-xml-button'))
+
+    // Click the mocked import button which will trigger handleImportRequest
+    await user.click(screen.getByTestId('mock-import-drawer'))
+
+    // Verify the metadata textarea is updated with the imported content
+    const metadataField = screen.getByTestId('metadata-textarea')
+    expect(metadataField).toHaveValue(mockedMetadata)
+  })
+
+  it('should add certificate successfully and call back to form', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddSamlIdp />
+      </Provider>
+      , { route: { path: createViewPath, params } }
+    )
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await user.type(policyNameField, mockSamlIdpProfileName)
+
+    // Enable encryption certificate
+    await user.click(screen.getByRole('switch', { name: 'Enable SAML Response Encryption' }))
+
+    // Click Generate Encryption Certificate button
+    await user.click(
+      screen.getByRole('button', { name: 'Generate an encryption certificate' })
+    )
+
+    // Click the mocked certificate drawer button which will trigger handleSave
+    await user.click((await screen.findAllByTestId('mock-certificate-drawer'))[0])
+    expect(await screen.findByText(mockCertName2)).toBeInTheDocument()
+
+
+    // Enable signing certificate
+    await user.click(screen.getByRole('switch', { name: 'Enable SAML Request Signature' }))
+
+    // Click Generate Signing Certificate button
+    await user.click(
+      screen.getByRole('button', { name: 'Generate a signing certificate' })
+    )
+
+    // Click the mocked certificate drawer button which will trigger handleSave
+    await user.click((await screen.findAllByTestId('mock-certificate-drawer'))[1])
+    expect((await screen.findAllByText(mockCertName2))[0]).toBeInTheDocument()
   })
 })

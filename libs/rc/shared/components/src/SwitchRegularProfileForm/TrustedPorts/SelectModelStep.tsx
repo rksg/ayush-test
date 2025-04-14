@@ -4,10 +4,16 @@ import { useState, useEffect, SetStateAction } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                              from '@acx-ui/utils'
+import { Card, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES,
+  TrustedPort,
+  TrustedPortTypeEnum,
+  isRodanAvSubModel,
+  isBabyRodanXSubModel,
+  is7550ZippySubModel,
+  getFamilyAndModel } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -46,6 +52,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [trustedPorts, setTrustedPorts] =
     useState<TrustedPort>({
@@ -66,8 +74,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setFamilies(familiesData)
     }
     if(editRecord){
-      const selectedFamily = editRecord.model.split('-')[0]
-      const selectedModel = editRecord.model.split('-')[1]
+      const [ family, model ] = getFamilyAndModel(editRecord.model)
       const selectedEnable2 = editRecord.slots.filter(
         (item: { slotNumber: number }) => item.slotNumber === 2)[0] || {}
       const selectedEnable3 = editRecord.slots.filter(
@@ -75,8 +82,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       const selectedEnable4 = editRecord.slots.filter(
         (item: { slotNumber: number }) => item.slotNumber === 4)[0] || {}
       form.setFieldsValue({
-        family: selectedFamily,
-        model: selectedModel,
+        family: family,
+        model: model,
         enableSlot2: selectedEnable2.enable,
         enableSlot3: selectedEnable3.enable,
         enableSlot4: selectedEnable4.enable,
@@ -85,14 +92,14 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         selectedOptionOfSlot4: selectedEnable4.option,
         trustedPorts: editRecord
       })
-      setFamily(selectedFamily)
-      setModel(selectedModel)
-      familyChangeAction(selectedFamily)
-      modelChangeAction(selectedFamily, selectedModel)
+      setFamily(family)
+      setModel(model)
+      familyChangeAction(family)
+      modelChangeAction(family, model)
       setEnableSlot2(selectedEnable2.enable)
       setEnableSlot3(selectedEnable3.enable)
       setEnableSlot4(selectedEnable4.enable)
-      checkIfModuleFixed(selectedFamily, selectedModel)
+      checkIfModuleFixed(family, model)
       setTrustedPorts(editRecord)
     }else if(form.getFieldsValue()){
       const {
@@ -222,7 +229,13 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
 
     const filterModels = (modelsData: { label: string; value: string }[]) => {
       if (!isSupport8200AV && index === 'ICX8200') {
-        return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+        return modelsData.filter(model => !isRodanAvSubModel(model.value))
+      }
+      if (!isSupport8100X && index === 'ICX8100') {
+        return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
+      }
+      if (!isSupport7550Zippy && index === 'ICX7550') {
+        return modelsData.filter(model => !is7550ZippySubModel(model.value))
       }
       return modelsData
     }

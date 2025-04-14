@@ -55,6 +55,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
   const [showMoreSettings, setShowMoreSettings] = useState(false)
   const [preSharedKey] = useState('')
+  const [loadReKeySettings, setLoadReKeySettings] = useState(true)
   const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
   const [authType, setAuthType] = useState('')
@@ -96,6 +97,39 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'IPsec' }))
   }
 
+  const pskValidator = (value: string) => {
+    let pass = false
+    if (value.startsWith('0x')) { // HEX
+      pass = new RegExp('0x[A-Fa-f0-9]{44,128}$').test(value)
+    } else if (value.startsWith('0s') || value.indexOf('"') !== -1) { // No base64 and exclude double-quote
+      pass = false
+    } else if (value.length >= 8 && value.length <= 64) { // ASCII
+      pass = validateASCII(value) && validateAPConfigInput(value)
+    }
+
+    return pass? Promise.resolve() :
+      Promise.reject($t(messageMapping.psk_invalid_message))
+  }
+
+  //A valid ascii character must from (space)(char 32) to ~(char 126)
+  const validateASCII = (v: string) => {
+    for (let i = 0; i < v.length; i++) {
+      let character = v.charCodeAt(i)
+      if (character < 32 || character > 126) {
+        return false
+      }
+    }
+    return true
+  }
+
+  //AP's configuration will reject any input containing ` or $(
+  const validateAPConfigInput = (v: string) => {
+    if(v && v.indexOf('`') === -1 && v.indexOf('$(') === -1) {
+      return true
+    }
+    return false
+  }
+
   const onAuthTypeChange = (value: IpSecAuthEnum) => {
     setAuthType(value)
   }
@@ -125,7 +159,9 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     {
       key: 'rekey',
       display: $t({ defaultMessage: 'Rekey' }),
-      content: <RekeySettings />
+      content: <RekeySettings initIpSecData={initIpSecData}
+        loadReKeySettings={loadReKeySettings}
+        setLoadReKeySettings={setLoadReKeySettings} />
     },
     {
       key: 'gatewayConnection',
@@ -174,9 +210,6 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
               </Tooltip>
             </>}
             rules={readMode ? undefined : [
-              { type: 'string', required: true,
-                message: $t({ defaultMessage: 'Please enter FQDN / IP' })
-              },
               { validator: (_, value) => domainNameRegExp(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               }
@@ -184,7 +217,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             validateFirst
             hasFeedback
             children={
-              readMode ? ipsecData?.serverAddress : <Input />
+              readMode ? <div>{ipsecData?.serverAddress}</div> : <Input />
             }
           />
           <Form.Item
@@ -195,8 +228,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             children={
               readMode ?
                 (ipsecData?.authenticationType=== IpSecAuthEnum.PSK ?
-                  $t({ defaultMessage: 'Pre-shared Key' }) :
-                  $t({ defaultMessage: 'Certificate' })) :
+                  <div>{$t({ defaultMessage: 'Pre-shared Key' })}</div> :
+                  <div>{$t({ defaultMessage: 'Certificate' })}</div>) :
                 <Select
                   style={{ width: '380px' }}
                   placeholder={$t({ defaultMessage: 'Select...' })}
@@ -223,7 +256,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
               data-testid='pre-shared-key'
               name='preSharedKey'
               label={$t({ defaultMessage: 'Pre-shared Key' })}
-              rules={[{ required: true }]}
+              rules={[{ required: true },
+                { validator: (_, value) => pskValidator(value) }]}
               children={
                 <PasswordInput value={preSharedKey} />
               }
@@ -261,7 +295,19 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
           {!readMode &&
             <>
               <Tabs type='third'
-                onChange={(key) => setActiveSecurityTabKey(key)}
+                onChange={async (key) => {
+                  try {
+                    await form.validateFields([
+                      ['ikeSecurityAssociation',
+                        'ikeProposals', 'combinationValidator'],
+                      ['espSecurityAssociation',
+                        'espProposals', 'combinationValidator']])
+                    setActiveSecurityTabKey(key)
+                  } catch(e) {
+                    // eslint-disable-next-line no-console
+                    console.error(e)
+                  }
+                }}
                 activeKey={activeSecurityTabKey}
               >
                 {secAssociationTabsInfo.map(({ key, display }) =>

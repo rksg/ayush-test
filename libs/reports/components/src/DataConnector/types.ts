@@ -7,12 +7,17 @@ export type DataQuotaUsage = {
     allowed: number
 }
 
-type AzureStoragePayload = {
-  azureConnectionType: string,
+export enum AzureConnectionType {
+  Blob = 'azureBlob',
+  Files = 'azureFiles'
+}
+
+export type AzureStoragePayload = {
+  azureConnectionType: AzureConnectionType,
   azureAccountName: string,
   azureAccountKey: string,
   azureShareName: string,
-  azureCustomerName: string
+  azureContainerName: string
 }
 
 type FTPStoragePayload = {
@@ -30,8 +35,14 @@ type SFTPStoragePayload = {
   sftpPrivateKey: string
 }
 
+export enum ConnectionType {
+  Azure = 'azure',
+  FTP = 'ftp',
+  SFTP = 'sftp'
+}
+
 export type StoragePayload = {
-  connectionType: 'azure' | 'ftp' | 'sftp',
+  connectionType: ConnectionType,
   id?: string
 } & (AzureStoragePayload | FTPStoragePayload | SFTPStoragePayload) & { isEdit: boolean }
 
@@ -50,6 +61,8 @@ export type ConnectorPayload = {
 export type StorageData = {
   config: StoragePayload,
   id: string
+  isConnected: boolean
+  error?: string
 }
 
 type DataSource = { name: MessageDescriptor; value: string }

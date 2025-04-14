@@ -4,10 +4,10 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 import { DefaultOptionType }                                                            from 'antd/lib/select'
 
-import { Card, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES }                from '@acx-ui/rc/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { Card, Tooltip, useStepFormContext }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, isRodanAvSubModel, isBabyRodanXSubModel, is7550ZippySubModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                          from '@acx-ui/utils'
 
 import { checkIfModuleFixed, PortSetting, ModulePorts } from '../index.utils'
 
@@ -31,6 +31,8 @@ export function SelectModelStep (props: {
   const [optionList, setOptionList] = useState<DefaultOptionType[][]>([])
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const data = form?.getFieldsValue(true)
 
@@ -44,8 +46,13 @@ export function SelectModelStep (props: {
     modelsData: { label: string; value: string }[]
   ) => {
     if (!isSupport8200AV && family === 'ICX8200') {
-      // eslint-disable-next-line max-len
-      return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+      return modelsData.filter(model => !isRodanAvSubModel(model.value))
+    }
+    if (!isSupport8100X && family === 'ICX8100') {
+      return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
+    }
+    if (!isSupport7550Zippy && family === 'ICX7550') {
+      return modelsData.filter(model => !is7550ZippySubModel(model.value))
     }
     return modelsData
   }

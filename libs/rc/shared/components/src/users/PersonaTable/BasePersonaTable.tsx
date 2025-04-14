@@ -4,6 +4,7 @@ import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
+import { useIdentityListQuery }                                               from '@acx-ui/cloudpath/components'
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
@@ -13,7 +14,9 @@ import {
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
   useLazyBatchGetPropertyUnitsByIdsQuery,
-  useSearchPersonaGroupListQuery
+  useSearchPersonaGroupListQuery,
+  useGetUnitsLinkedIdentitiesQuery,
+  useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
@@ -23,7 +26,6 @@ import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }    
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
-import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
@@ -36,17 +38,97 @@ function useColumns (
   groupData: PersonaGroup | undefined,
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
-  venueId: string
+  venueId: string,
+  useByIdentityGroup: boolean
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
+
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery
+  ({
+    params: { venueId: venueId },
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }
+  ).data?.data?.map(identity => [identity.personaId, identity.unitId]))
+
+  const units = new Map(useGetPropertyUnitListQuery({
+    params: { venueId: venueId },
+    payload: {
+      page: 1,
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
+
+  const shrinkedColumns: TableProps<Persona>['columns'] = [
+    {
+      key: 'name',
+      dataIndex: 'name',
+      title: $t({ defaultMessage: 'Identity Name' }),
+      render: (_, row) =>
+        <IdentityDetailsLink
+          name={row.name}
+          personaId={row.id}
+          personaGroupId={row.groupId}
+        />
+      ,
+      sorter: true,
+      ...props.name
+    },
+    {
+      key: 'revoked',
+      dataIndex: 'revoked',
+      title: $t({ defaultMessage: 'Status' }),
+      align: 'center',
+      sorter: true,
+      render: (_, row) => {
+        return (row.revoked) ? $t({ defaultMessage: 'Inactive' }) : $t({ defaultMessage: 'Active' })
+      },
+      ...props.revoked
+    },
+    {
+      key: 'email',
+      dataIndex: 'email',
+      title: $t({ defaultMessage: 'Email' }),
+      sorter: true,
+      ...props.email
+    },
+    {
+      key: 'deviceCount',
+      dataIndex: 'deviceCount',
+      title: $t({ defaultMessage: 'Devices' }),
+      align: 'center',
+      ...props.deviceCount
+    },
+    {
+      key: 'identityId',
+      dataIndex: 'identityId',
+      title: $t({ defaultMessage: 'Unit' }),
+      sorter: true,
+      render: (_, row) =>
+        <PropertyUnitLink
+          venueId={venueId}
+          unitId={row.identityId ? row.identityId : identities.get(row.id)}
+          name={row.identityId
+            ? unitPool.get(row.identityId)
+            : units.get(identities.get(row.id) ?? '')}
+        />
+      ,
+      ...props.identityId
+    }
+  ]
+
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -123,8 +205,10 @@ function useColumns (
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
-            unitId={row.identityId}
-            name={unitPool.get(row.identityId ?? '')}
+            unitId={row.identityId ? row.identityId : identities.get(row.id)}
+            name={row.identityId
+              ? unitPool.get(row.identityId)
+              : units.get(identities.get(row.id) ?? '')}
           />
         ,
         ...props.identityId
@@ -183,7 +267,7 @@ function useColumns (
     }] : [])
   ]
 
-  return columns
+  return useByIdentityGroup ? shrinkedColumns : columns
 }
 
 interface PersonaTableCol extends
@@ -199,7 +283,8 @@ export interface PersonaTableProps {
   personaGroupId?: string,
   colProps: PersonaTableColProps,
   settingsId?: string,
-  disableAddDevices?: boolean
+  disableAddDevices?: boolean,
+  useByIdentityGroup?: boolean
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
@@ -207,7 +292,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const {
     mode, personaGroupId,
     colProps, settingsId = 'base-persona-table', onChange,
-    disableAddDevices
+    disableAddDevices, useByIdentityGroup = false
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
@@ -233,10 +318,11 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
+  // eslint-disable-next-line max-len
+  const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId, useByIdentityGroup)
   const isSelectMode = mode === 'selectable'
 
-  const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
+  const personaListQuery = useIdentityListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
     if (!propertyEnabled || personaGroupQuery.isLoading) return
@@ -456,7 +542,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
               onChange: (items) => onChange?.(personaListQuery.data?.data
                 ?.find(p => p.id === items[0]))
             }
-            : hasCrossVenuesPermission({ needGlobalPermission: true })
+            : filterByAccess(rowActions).length !== 0
             && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={isSelectMode ? undefined : {

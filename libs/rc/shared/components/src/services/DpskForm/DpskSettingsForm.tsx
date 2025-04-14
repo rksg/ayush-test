@@ -43,13 +43,14 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   DpskSaveData,
   TableResult,
-  useConfigTemplate
+  useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation
 } from '@acx-ui/rc/utils'
-import { RolesEnum } from '@acx-ui/types'
-import { hasRoles }  from '@acx-ui/user'
-import { getIntl }   from '@acx-ui/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
+import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'
 import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
 import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
 import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
@@ -58,11 +59,12 @@ import { FieldSpace } from './styledComponents'
 
 interface DpskSettingsFormProps {
   modalMode?: boolean,
-  editMode?: boolean
+  editMode?: boolean,
+  isEnforced?: boolean
 }
 
 export default function DpskSettingsForm (props: DpskSettingsFormProps) {
-  const { modalMode = false, editMode = false } = props
+  const { modalMode = false, editMode = false, isEnforced } = props
   const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
@@ -164,6 +166,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
+        <ProtectedEnforceTemplateToggleP1 initValue={isEnforced} />
       </GridCol>
     </GridRow>
     {isCloudpathEnabled && <CloudpathFormItems editMode={editMode} />}
@@ -341,7 +344,9 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                 />
               </Form.Item>
               {
-                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <>
+                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                  // eslint-disable-next-line max-len
+                  hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) && <>
                   <Button
                     id={'AddPolicySetButton'}
                     type='link'

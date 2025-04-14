@@ -1,9 +1,10 @@
 export interface SamlIdpProfileViewData {
     id: string
     name: string
-    authnRequestSignedEnabled: boolean
-    responseEncryptionEnabled: boolean
-    encryptionCertificateId: string
+    signingCertificateEnabled: boolean
+    signingCertificateId?: string
+    encryptionCertificateEnabled: boolean
+    encryptionCertificateId?: string
     wifiNetworkIds: string[]
 }
 
@@ -11,10 +12,24 @@ export interface SamlIdpProfile {
     id: string
     name: string
     metadata: string
-    authnRequestSignedEnabled: boolean
+    metadataUrl: string
+    attributeMappings?: AttributeMapping[]
 }
 
 export interface SamlIdpProfileFormType extends SamlIdpProfile {
-    responseEncryptionEnabled: boolean
-    encryptionCertificateId: string
+    encryptionCertificateEnabled: boolean
+    encryptionCertificateId?: string
+    signingCertificateEnabled: boolean
+    signingCertificateId?: string
+    metadataContent?: string // store The content converted from base64 format
+    wifiNetworkIds: string[]
+    updatedDate?: string
+    identityName?: string
+    identityEmail?: string
+    identityPhone?: string
+}
+
+export interface AttributeMapping {
+    name: string
+    mappedByName: string
 }
