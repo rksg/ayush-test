@@ -71,7 +71,8 @@ import {
   hasPermission,
   hasRoles,
   getUserProfile,
-  hasAllowedOperations
+  hasAllowedOperations,
+  isCoreTier
 } from '@acx-ui/user'
 import {
   AnalyticsFilter,
@@ -140,8 +141,10 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -235,7 +238,7 @@ export default function Dashboard () {
       {
         dashboardId === DEFAULT_DASHBOARD_ID
           ? <>
-            <CommonDashboardWidgets />
+            {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
             <Divider dashed
               style={{
                 borderColor: 'var(--acx-neutrals-30)',
@@ -518,6 +521,9 @@ function DashboardPageHeader (props: {
 
 function ApWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -529,9 +535,10 @@ function ApWidgets () {
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopWiFiNetworks filters={dashboardFilters}/>
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+      {!isCore && <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopAppsByTraffic filters={dashboardFilters}/>
-      </GridCol>
+      </GridCol>}
+
     </GridRow>
   )
 }
@@ -587,6 +594,41 @@ function EdgeWidgets () {
     </GridRow>
   )
 }
+
+function CoreDashboardWidgets () {
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  return (
+    <GridRow>
+      <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
+        <GridRow>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <AlarmWidgetV2 />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <VenuesDashboardWidgetV2 />
+          </GridCol>
+        </GridRow>
+        <GridRow style={{ marginTop: '10px' }}>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <DevicesDashboardWidgetV2 />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <ClientsWidgetV2 />
+          </GridCol>
+        </GridRow>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
+        <DidYouKnow filters={dashboardFilters}/>
+      </GridCol>
+    </GridRow>
+  )
+}
+
 
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()

@@ -5,7 +5,8 @@ import { ItemType }    from 'antd/lib/menu/hooks/useItems'
 import moment          from 'moment'
 import { useIntl }     from 'react-intl'
 
-import { DateRange, dateRangeMap, defaultRanges } from '@acx-ui/utils'
+import { getUserProfile, isCoreTier }                                    from '@acx-ui/user'
+import { DateRange, dateRangeMap, defaultCoreTierRanges, defaultRanges } from '@acx-ui/utils'
 
 import { Dropdown, Button, CaretDownSolidIcon } from '../..'
 
@@ -46,7 +47,10 @@ export const TimeRangeDropDownProvider: React.FC<TimeRangeDropDownProviderProps>
   const [selectedRange, setTimeRangeDropDownRange] = useState<DateRange>(
     availableRanges[0]
   )
-  const timeRange = defaultRanges()[selectedRange]!
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+  const timeRange = isCore ?
+    defaultCoreTierRanges()[selectedRange]! : defaultRanges()[selectedRange]!
   return (
     <TimeRangeDropDownContext.Provider
       value={{ availableRanges, timeRange, selectedRange, setTimeRangeDropDownRange }}>

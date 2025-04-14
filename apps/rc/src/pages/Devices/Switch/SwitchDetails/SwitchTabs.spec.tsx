@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { get }                                from '@acx-ui/config'
-import { Provider }                           from '@acx-ui/store'
-import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }  from '@acx-ui/user'
+import { get }                                                               from '@acx-ui/config'
+import { Provider }                                                          from '@acx-ui/store'
+import { render, screen, waitFor, fireEvent }                                from '@acx-ui/test-utils'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                                                       from '@acx-ui/utils'
 
 import { switchDetailData } from './__tests__/fixtures'
 import SwitchTabs           from './SwitchTabs'
@@ -31,6 +32,24 @@ describe('SwitchTabs', () => {
       <SwitchTabs switchDetail={switchDetailData} />
     </Provider>, { route: { params } })
     expect(await screen.findByText('Clients (1)')).toBeVisible()
+  })
+
+  it('should render correctly with Core Tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+
+    render(<Provider>
+      <SwitchTabs switchDetail={switchDetailData} />
+    </Provider>, { route: { params } })
+
+
+
+    expect(await screen.findByText('Clients (1)')).toBeVisible()
+    const downIcon = screen.queryByText('Incidents')
+    expect(downIcon).toBeNull()
   })
 
   it('should handle tab changes', async () => {

@@ -62,7 +62,7 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent(/intelligent PowerSave modes for access points during off-peak hours/)
       expect(await screen.findByTestId('Potential Trade-off'))
-        .toHaveTextContent(/EcoFlex enabled network will operate in reduced capacity during/)
+        .toHaveTextContent(/Energy Saving enabled network will operate in reduced capacity during/)
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
     }
 
