@@ -144,7 +144,8 @@ export function FrontViewPort (props:{
           </>)}
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
-          children={port.neighborName || port.neighborMacAddress || '--'}
+          children={port.neighborName || port.neighborMacAddress ||
+            port.stackingNeighborPort || '--'}
         />
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' })}

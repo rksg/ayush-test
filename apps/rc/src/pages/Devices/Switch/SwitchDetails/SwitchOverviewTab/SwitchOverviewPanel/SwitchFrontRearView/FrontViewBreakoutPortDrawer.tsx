@@ -117,7 +117,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
       dataIndex: 'neighborName',
       key: 'neighborName',
       render: (data, row) => {
-        return row.neighborName || row.neighborMacAddress || '--'
+        return row.neighborName || row.neighborMacAddress || row.stackingNeighborPort || '--'
       }
     },
     {
