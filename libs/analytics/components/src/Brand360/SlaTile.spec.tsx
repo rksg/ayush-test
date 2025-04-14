@@ -1,12 +1,13 @@
-import { Settings } from '@acx-ui/analytics/utils'
-import { Provider } from '@acx-ui/store'
-import {
-  render,
-  screen,
-  fireEvent
-} from '@acx-ui/test-utils'
-
+import { Settings }                  from '@acx-ui/analytics/utils'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
+import {
+  getUserProfile,
+  setUserProfile
+} from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
+
 import {
   fetchBrandProperties,
   mockBrandTimeseries,
@@ -14,7 +15,7 @@ import {
   currTimeseries,
   zeroPrevTimeseries,
   zeroCurrTimeseries
-}         from './__tests__/fixtures'
+} from './__tests__/fixtures'
 import { SlaTile } from './SlaTile'
 
 import type { FranchisorTimeseries, Response } from './services'
@@ -270,4 +271,23 @@ describe('SlaTile', () => {
     const downIcon = screen.queryByTestId('DownArrow')
     expect(downIcon).toBeNull()
   })
+
+  it('should render tooltip for Core tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    const props = {
+      chartKey: 'experience' as const,
+      ...baseProps,
+      tableData: [],
+      sliceType: 'property' as const
+    }
+    render(<SlaTile {...props}/>, { wrapper: Provider })
+    expect(await screen.findByText('Guest Experience')).toBeInTheDocument()
+    const tooltipIcon = await screen.findByTestId('InformationOutlined')
+    expect(tooltipIcon).toBeInTheDocument()
+  })
+
 })

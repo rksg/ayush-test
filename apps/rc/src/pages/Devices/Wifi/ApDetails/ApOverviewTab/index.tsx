@@ -13,6 +13,7 @@ import { Features, useIsSplitOn }                                               
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                                  from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                                 from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, useApContext } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier }                                                                                             from '@acx-ui/user'
 import type { AnalyticsFilter }                                                                                                   from '@acx-ui/utils'
 
 import { useApFilter } from '../apFilter'
@@ -94,21 +95,28 @@ export function ApOverviewTab () {
 }
 
 function ApWidgets (props: { filters: AnalyticsFilter }) {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const filters = props.filters
+
   return (
     <>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TrafficByVolume filters={filters} />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <NetworkHistory filters={filters} />
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <NetworkHistory filters={filters} />
+        </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
+      {!isCore &&
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopApplicationsByTraffic filters={filters} tabId={'ap-overview-ap-top-traffic'} />
       </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSSIDsByTraffic filters={filters} />
       </GridCol>

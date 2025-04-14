@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                                               
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery, useGetSwitchListQuery } from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { UseQueryResult }                                                       from '@acx-ui/types'
-import { goToNotFound, hasRaiPermission }                                       from '@acx-ui/user'
+import { getUserProfile, goToNotFound, hasRaiPermission, isCoreTier }           from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
@@ -22,15 +22,6 @@ import SwitchPageHeader             from './SwitchPageHeader'
 import { SwitchTimelineTab }        from './SwitchTimelineTab'
 import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
-const tabs = {
-  overview: SwitchOverviewTab,
-  incidents: () => hasRaiPermission('READ_INCIDENTS') ? <SwitchIncidentsTab/> : null,
-  troubleshooting: SwitchTroubleshootingTab,
-  clients: SwitchClientsTab,
-  configuration: SwitchConfigurationTab,
-  dhcp: SwitchDhcpTab,
-  timeline: SwitchTimelineTab
-}
 
 export interface SwitchDetails {
   switchData?: Switch
@@ -49,7 +40,19 @@ export const SwitchDetailsContext = createContext({} as {
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const navigate = useNavigate()
+
+  const tabs = {
+    overview: SwitchOverviewTab,
+    incidents: () => ( hasRaiPermission('READ_INCIDENTS') && !isCore) ? <SwitchIncidentsTab/> : null,
+    troubleshooting: SwitchTroubleshootingTab,
+    clients: SwitchClientsTab,
+    configuration: SwitchConfigurationTab,
+    dhcp: SwitchDhcpTab,
+    timeline: SwitchTimelineTab
+  }
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
