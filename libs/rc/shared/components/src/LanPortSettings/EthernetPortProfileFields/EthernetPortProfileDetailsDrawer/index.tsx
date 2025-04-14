@@ -102,7 +102,8 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
       <Form.Item
         label={$t({ defaultMessage: '802.1X' })}
         children={
-          (ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED)?
+          (ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED ||
+           ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN)?
             'Off': 'On'
         }
       />
