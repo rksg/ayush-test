@@ -23,8 +23,8 @@ export function Settings () {
     // eslint-disable-next-line max-len
     description: $t({ defaultMessage: 'You may direct RUCKUS AI to exclude certain time slots and/or specific APs from being moved to reduced power mode.' }),
     // eslint-disable-next-line max-len
-    option1: $t({ defaultMessage: 'Do not apply EcoFlex during the following time slots of the week' }),
-    option2: $t({ defaultMessage: 'Do not apply EcoFlex to the following APs' })
+    option1: $t({ defaultMessage: 'Do not apply Energy Saving during the following time slots of the week' }),
+    option2: $t({ defaultMessage: 'Do not apply Energy Saving to the following APs' })
   }
 
   return <Row gutter={20}>
