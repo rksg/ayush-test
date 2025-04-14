@@ -11,7 +11,7 @@ import {
   SubInterface,
   edgePortIpValidator,
   generalSubnetMskRegExp,
-  lanPortsubnetValidator
+  lanPortSubnetValidator
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -191,7 +191,7 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) },
                 {
                   validator: () =>
-                    lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                    lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
                 }
               ]}
               children={<Input />}

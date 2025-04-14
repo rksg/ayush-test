@@ -1,5 +1,6 @@
-import { rest }          from 'msw'
-import { BrowserRouter } from 'react-router-dom'
+import { rest }                        from 'msw'
+import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+
 
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
@@ -63,7 +64,7 @@ jest.mock('@splitsoftware/splitio-react', () => ({
 }))
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
-  SPLIT_PROXY_ENDPOINT: string }) {
+  SPLIT_PROXY_ENDPOINT: string, text?: string }) {
   jest.resetModules()
   jest.doMock('@acx-ui/config', () => ({
     get: jest.fn().mockImplementation(name => {
@@ -78,12 +79,12 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
     useTenantId: () => props.tenant
   }))
   jest.doMock('@splitsoftware/splitio-react', () => ({
-    SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
+    SplitFactory: jest.fn().mockImplementation(() => props.text || 'rendered'),
     SplitSdk: jest.fn().mockImplementation(() => 'factory1')
   }))
   split = require('@splitsoftware/splitio-react')
   const { SplitProvider } = require('./SplitProvider')
-  return <BrowserRouter><div>{SplitProvider({ children: 'child1' })}</div></BrowserRouter>
+  return <MemoryRouter><div>{SplitProvider({ children: 'child1' })}</div></MemoryRouter>
 }
 
 describe('SplitProvider', () => {
@@ -107,7 +108,6 @@ describe('SplitProvider', () => {
         events: 'https://splitproxy.dev.ruckus.cloud/api',
         sdk: 'https://splitproxy.dev.ruckus.cloud/api'
       },
-      storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
@@ -120,10 +120,33 @@ describe('SplitProvider', () => {
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
-      storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
+  })
+  it('handles tenant switch for RA', async () => {
+    const { rerender } = render(<TestSplitProvider IS_MLISA_SA='true'
+      tenant='0015000000GlI7SAAV'
+      SPLIT_PROXY_ENDPOINT={''}
+    />)
+    await screen.findByText('rendered')
+    expect(split.SplitSdk).toHaveBeenCalledWith({
+      scheduler: { featuresRefreshRate: 30 },
+      core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
+      debug: false
+    })
+    expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
+    rerender(<TestSplitProvider IS_MLISA_SA='true'
+      tenant='1015000000GlI7SAAV'
+      SPLIT_PROXY_ENDPOINT={''}
+      text='rerendered'
+    />)
+    await screen.findByText('rerendered')
+    expect(split.SplitSdk).toHaveBeenCalledWith({
+      scheduler: { featuresRefreshRate: 30 },
+      core: { authorizationKey: '0123456789', key: '1015000000GlI7SAAV' },
+      debug: false
+    })
   })
 })
 

@@ -8,6 +8,7 @@ export interface ImpactedSwitch {
   mac: string
   serial: string
   switchGroup: string
+  domains: string[]
 }
 
 export interface ImpactedVlan {
@@ -30,6 +31,7 @@ const document = gql`
           mac
           serial
           switchGroup
+          domains
         }
       }
     }

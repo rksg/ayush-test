@@ -4,7 +4,7 @@ import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render,
   within, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { ImpactedSwitch } from './services'
+import { ImpactedSwitch } from '../ImpactedSwitchesTable/services'
 
 import { ImpactedSwitchDDoSTable } from '.'
 
@@ -56,7 +56,7 @@ describe('ImpactedSwitchDDoS',()=>{
     ...sample1
   ]) => ({
     incident: {
-      impactedSwitchDDoS: data,
+      impactedSwitches: data,
       switchCount: 5
     }
   })
@@ -64,7 +64,7 @@ describe('ImpactedSwitchDDoS',()=>{
   describe('ImpactedSwitchDDoSTable', () => {
     beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
     it('should render for R1', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
           <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
@@ -88,7 +88,7 @@ describe('ImpactedSwitchDDoS',()=>{
           writeText
         }
       })
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',
@@ -105,7 +105,7 @@ describe('ImpactedSwitchDDoS',()=>{
     })
     it('should render for RA', async () => {
       jest.mocked(get).mockReturnValue('true')
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
           <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
@@ -125,7 +125,7 @@ describe('ImpactedSwitchDDoS',()=>{
     })
     it('should hide table when under druidRollup', async () => {
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',

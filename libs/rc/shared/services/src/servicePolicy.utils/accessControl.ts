@@ -599,7 +599,8 @@ export function getEnhancedL3AclProfileListFn (isTemplate: boolean = false) : Qu
 
         return {
           ...policy,
-          l3Rules: l3AclData.l3Rules
+          l3Rules: l3AclData.l3Rules,
+          networkIds: policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -646,7 +647,8 @@ export function getEnhancedDeviceProfileListFn (isTemplate: boolean = false) : Q
 
         return {
           ...policy,
-          added_check: deviceData
+          added_check: deviceData,
+          networkIds: policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -694,7 +696,8 @@ export function getEnhancedApplicationProfileListFn (isTemplate: boolean = false
 
         return {
           ...policy,
-          added_check: applicationData
+          added_check: applicationData,
+          networkIds: policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console

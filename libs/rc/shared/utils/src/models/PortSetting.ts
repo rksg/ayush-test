@@ -45,6 +45,8 @@ export class PortSettingModel {
   authTimeoutAction?: string
   enableAuthPorts?: string[]
   switchPortProfileId?: string
+  portSecurity?: boolean
+  portSecurityMaxEntries?: number
 
   constructor () {
     this.dhcpSnoopingTrust = false

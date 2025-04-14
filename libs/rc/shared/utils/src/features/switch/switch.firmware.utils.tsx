@@ -60,6 +60,13 @@ export const invalidVersionFor81X = (version: string): boolean => {
   }
 }
 
+export const invalidVersionFor75Zippy = (version: string): boolean => {
+  if (_.isEmpty(version)) {
+    return false
+  }
+  return !(_.isString(version) && isVerGEVer(version, '10020b_cd1', true))
+}
+
 export const versionAbove10020a = (version: string): boolean => {
   return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
 }

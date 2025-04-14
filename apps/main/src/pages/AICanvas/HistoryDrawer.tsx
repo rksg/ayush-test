@@ -143,7 +143,7 @@ export default function HistoryDrawer (props: DrawerProps) {
   }
 
   const editChatTitle = (j: ChatHistory) =>
-    <div className={'chat' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
+    <div className={'chat-title' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
       <div className='edit-input'>
         <Form.Item
           name='chatTitle'
@@ -183,25 +183,26 @@ export default function HistoryDrawer (props: DrawerProps) {
             i.history.map(j =>
               isEditMode(j) ? (
                 editChatTitle(j)
-              ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
-                <Tooltip title={j.name}>
-                  <div className='title' onClick={() => onClickChat(j.id)}>
-                    {j.name}
+              ) : (
+                <div className={'chat-title' + (sessionId === j.id ? ' active' : '')} key={j.id}>
+                  <Tooltip title={j.name}>
+                    <div className='title' onClick={() => onClickChat(j.id)}>
+                      {j.name}
+                    </div>
+                  </Tooltip>
+                  <div className='action'>
+                    <div className='button'
+                      data-testid='edit'
+                      onClick={()=> { onEditChatTitle(j) }}>
+                      <EditOutlined size='sm' />
+                    </div>
+                    <div className='button'
+                      data-testid='delete'
+                      onClick={()=> { onDeleteChat(j) }}>
+                      <DeleteOutlined size='sm' />
+                    </div>
                   </div>
-                </Tooltip>
-                <div className='action'>
-                  <div className='button'
-                    data-testid='edit'
-                    onClick={()=> { onEditChatTitle(j) }}>
-                    <EditOutlined size='sm' />
-                  </div>
-                  <div className='button'
-                    data-testid='delete'
-                    onClick={()=> { onDeleteChat(j) }}>
-                    <DeleteOutlined size='sm' />
-                  </div>
-                </div>
-              </div>))
+                </div>))
           }
         </div>)
       }
@@ -211,7 +212,7 @@ export default function HistoryDrawer (props: DrawerProps) {
 
   return (
     <Drawer
-      drawerType={DrawerTypes.Left}
+      drawerType={DrawerTypes.ModalLeft}
       visible={visible}
       onClose={handleDrawerClose}
       children={content}
@@ -219,6 +220,8 @@ export default function HistoryDrawer (props: DrawerProps) {
       width={'320px'}
       mask={true}
       maskClosable={true}
+      getContainer={false}
+      style={{ position: 'absolute' }}
     />
   )
 }

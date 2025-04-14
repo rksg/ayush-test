@@ -23,11 +23,7 @@ jest.mock('./components/WidgetChart', () => ({
   DraggableChart: () => <div>DraggableChart</div>
 }))
 
-const mockedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  useNavigate: () => mockedNavigate,
-  useTenantLink: jest.fn()
-}))
+const mockedSetModal = jest.fn()
 
 const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
@@ -191,11 +187,18 @@ describe('AICanvas', () => {
   it('should render a chat content correctly', async () => {
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
+    const canvasCollapseIcon = await screen.findByTestId('canvasCollapseIcon')
+    expect(canvasCollapseIcon).toBeVisible()
+    fireEvent.click(canvasCollapseIcon)
+    expect(localStorage.getItem('show-canvas')).toBe('false')
     expect(await screen.findByText(
       'Older chat conversations have been deleted due to the 30-day retention policy.'))
       .toBeVisible()
@@ -229,10 +232,13 @@ describe('AICanvas', () => {
     )
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
@@ -248,10 +254,13 @@ describe('AICanvas', () => {
     HTMLElement.prototype.scrollTo = scrollTo
     render(
       <Provider>
-        <AICanvas />
+        <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal} />
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
+    const canvasExpandIcon = await screen.findByTestId('canvasExpandIcon')
+    expect(canvasExpandIcon).toBeVisible()
+    fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
@@ -260,7 +269,7 @@ describe('AICanvas', () => {
     expect(await screen.findByText('hello')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
     fireEvent.click(closeBtn)
-    expect(mockedNavigate).toBeCalled()
+    expect(mockedSetModal).toBeCalled()
   })
 
   it('should render previous chat content correctly', async () => {

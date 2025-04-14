@@ -114,17 +114,20 @@ export type SwitchModelParams = {
   isSupport8200AV: boolean;
   isSupport8100: boolean;
   isSupport8100X: boolean;
+  isSupport7550Zippy: boolean;
   activeSerialNumber?: string;
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X, activeSerialNumber } = props
+  const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X,
+    isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
   const re = createSwitchSerialPattern({
     isSupport8200AV: isSupport8200AV,
     isSupport8100: isSupport8100,
-    isSupport8100X: isSupport8100X
+    isSupport8100X: isSupport8100X,
+    isSupport7550Zippy: isSupport7550Zippy
   })
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
@@ -176,6 +179,7 @@ export function StackForm () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -711,6 +715,7 @@ export function StackForm () {
                   isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
                   isSupport8100X: isSupport8100X,
+                  isSupport7550Zippy: isSupport7550Zippy,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
                 return validatorSwitchModel(switchModelParams)}
@@ -1128,14 +1133,15 @@ export function StackForm () {
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     {readOnly &&
                       <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                    <SwitchStackSetting
+                    {switchData && switchDetail && <SwitchStackSetting
+                      switchData={switchData}
                       switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
-                    />
+                    />}
                   </div>
                 }
               </Col>

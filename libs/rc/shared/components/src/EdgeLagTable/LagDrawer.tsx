@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { Form, Space } from 'antd'
-import TextArea        from 'antd/lib/input/TextArea'
-import _               from 'lodash'
-import { useIntl }     from 'react-intl'
+import { Form, Space }             from 'antd'
+import TextArea                    from 'antd/lib/input/TextArea'
+import _, { cloneDeep, findIndex } from 'lodash'
+import { useIntl }                 from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -83,14 +83,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
       form.resetFields()
       const corePortInfo = getEnabledCorePortInfo(portList ?? [], existedLagList ?? [])
       const hasCorePortEnabled = !!corePortInfo.key
-      let defaultPortType = defaultFormValues.portType
+
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
-        defaultPortType = EdgePortTypeEnum.LAN
+        form.setFieldsValue({
+          ...defaultFormValues,
+          portType: EdgePortTypeEnum.LAN,
+          ipMode: EdgeIpModeEnum.STATIC,
+          ...data
+        })
+        return
       }
 
       form.setFieldsValue({
         ...defaultFormValues,
-        portType: defaultPortType,
         ...data
       })
     }
@@ -324,8 +329,14 @@ export const LagDrawer = (props: LagDrawerProps) => {
               options: portTypeOptions,
               disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
               rules: [{ validator: () => {
+                const dryRunPorts = cloneDeep(portList ?? [])
+                allValues.lagMembers.forEach(member => {
+                  const idx = findIndex(dryRunPorts, { id: member.portId })
+                  if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
+                })
+
                 // eslint-disable-next-line max-len
-                return validateEdgeGateway(portList ?? [], getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
+                return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
               } }]
             },
             corePortEnabled: {

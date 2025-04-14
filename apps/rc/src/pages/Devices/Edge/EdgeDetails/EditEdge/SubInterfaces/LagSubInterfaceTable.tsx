@@ -7,7 +7,7 @@ import {
   useImportLagSubInterfacesCSVMutation,
   useUpdateLagSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { EdgeSubInterface, convertEdgeSubinterfaceToApiPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { EdgeSubInterface, convertEdgeSubInterfaceToApiPayload, useTableQuery } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -42,7 +42,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const [uploadCSV, uploadCSVResult] = useImportLagSubInterfacesCSVMutation()
 
   const handleAdd = async (data: EdgeSubInterface) => {
-    const payloadData = convertEdgeSubinterfaceToApiPayload(data)
+    const payloadData = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
       params: {
@@ -57,7 +57,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   }
 
   const handleUpdate = async (data: EdgeSubInterface) => {
-    const { id, ...payloadData } = convertEdgeSubinterfaceToApiPayload(data)
+    const { id, ...payloadData } = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
       params: {

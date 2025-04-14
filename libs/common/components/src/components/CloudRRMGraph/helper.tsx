@@ -101,19 +101,22 @@ export const categoryStyles = {
     color: cssStr('--acx-semantics-red-50'),
     emphasisColor: cssStr('--acx-semantics-red-30'),
     lineStyle: Type.LineStyle.Solid,
-    legendText: defineMessage({ defaultMessage: 'Has interfering links' })
+    legendText: defineMessage({ defaultMessage: 'Has interfering links' }),
+    tooltip: null
   },
   [Type.CategoryState.TxPower]: {
     color: cssStr('--acx-accents-orange-50'), //30
     emphasisColor: cssStr('--acx-accents-orange-30'), //25
     lineStyle: Type.LineStyle.Dotted,
-    legendText: defineMessage({ defaultMessage: 'Reduction in transmit power' })
+    legendText: defineMessage({ defaultMessage: 'Reduction in transmit power' }),
+    tooltip: null
   },
   [Type.CategoryState.Normal]: {
     color: cssStr('--acx-neutrals-50'),
     emphasisColor: cssStr('--acx-neutrals-50'),
     lineStyle: Type.LineStyle.Solid,
-    legendText: defineMessage({ defaultMessage: 'No interfering links' })
+    legendText: defineMessage({ defaultMessage: 'No interfering links' }),
+    tooltip: null
   }
 }
 

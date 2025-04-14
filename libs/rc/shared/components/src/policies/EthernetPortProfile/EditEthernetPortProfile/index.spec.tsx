@@ -40,7 +40,8 @@ jest.mock('react-router-dom', () => ({
 // jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 jest.mocked(useIsSplitOn).mockImplementation(
-  ff => ff === Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE
+  ff => ff === Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE ||
+  ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE
 )
 
 let params: { tenantId: string, policyId: string }
@@ -150,6 +151,7 @@ describe('EditEthernetPortProfile', () => {
 
     const policyNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'ab')
+    expect(screen.queryByRole('switch', { name: 'Client Visibility' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/ethernetPortProfile/list`,
