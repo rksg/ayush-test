@@ -6,6 +6,7 @@ import { txpowerMapping }                         from '@acx-ui/formatter'
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
 import { useApPowerDistributionQuery } from './services'
+import * as UI                         from './styledComponents'
 
 function PowerDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
@@ -39,7 +40,8 @@ function PowerDistributionChart (intent: IntentDetail) {
 
   return (
     <Loader states={[queryResult]}>
-      <Card title={$t({ defaultMessage: 'Power Transmission' })}>
+      <Card>
+        <UI.Title>{$t({ defaultMessage: 'Power Transmission' })}</UI.Title>
         {apPowerDistribution?.length ? <VerticalBarChart
           data={data}
           xAxisName={$t({ defaultMessage: 'Tx Power' })}

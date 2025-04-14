@@ -51,5 +51,5 @@ export const LabelStyleAfter = styled.div`
 `
 
 export const ChartWrapper = styled.div`
-  margin-top: 40px;
+  margin-block-end: 20px;
 `

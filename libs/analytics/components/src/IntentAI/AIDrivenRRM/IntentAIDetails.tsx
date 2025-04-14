@@ -113,12 +113,12 @@ export function IntentAIDetails () {
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection>
+              <DetailsSection style={{ minHeight: '254px' }}>
                 <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
               </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection>
+              <DetailsSection style={{ minHeight: '254px' }}>
                 <DetailsSection.Details children={<PowerDistributionChart {...intent} />} />
               </DetailsSection>
             </GridCol>

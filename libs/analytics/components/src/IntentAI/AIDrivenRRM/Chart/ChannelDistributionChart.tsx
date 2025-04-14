@@ -6,6 +6,7 @@ import { IntentDetail } from '../../useIntentDetailsQuery'
 
 import channelListJson                   from './mapping/channelList.json'
 import { useApChannelDistributionQuery } from './services'
+import * as UI                           from './styledComponents'
 
 function ChannelDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
@@ -46,7 +47,8 @@ function ChannelDistributionChart (intent: IntentDetail) {
 
   return (
     <Loader states={[queryResult]}>
-      <Card title={$t({ defaultMessage: 'Channel Distribution' })}>
+      <Card>
+        <UI.Title>{$t({ defaultMessage: 'Channel Distribution' })}</UI.Title>
         {apChannelDistribution?.length ? <VerticalBarChart
           data={data}
           xAxisValues={channelList}
