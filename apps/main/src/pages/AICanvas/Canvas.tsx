@@ -1,13 +1,13 @@
 import { forwardRef, ReactElement, useEffect, useImperativeHandle, useState } from 'react'
 
-import { Menu }    from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { Menu, MenuProps } from 'antd'
+import _                   from 'lodash'
+import { useIntl }         from 'react-intl'
 
-import { Button, Dropdown, Tooltip }                      from '@acx-ui/components'
-import { ArrowExpand, Lock, GlobeOutlined }               from '@acx-ui/icons-new'
-import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
-import { Canvas as CanvasType }                           from '@acx-ui/rc/utils'
+import { Button, Dropdown, Tooltip }                                                                  from '@acx-ui/components'
+import { ArrowExpand, Lock, GlobeOutlined }                                                           from '@acx-ui/icons-new'
+import { useGetCanvasQuery, useLazyGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation } from '@acx-ui/rc/services'
+import { Canvas as CanvasType }                                                                       from '@acx-ui/rc/utils'
 
 import Layout                                     from './components/Layout'
 import * as UI                                    from './styledComponents'
@@ -104,13 +104,18 @@ interface CanvasProps {
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, setGroups }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
-  const [canvasList, setCanvasList] = useState([] as CanvasType[])
+  // const [canvasList, setCanvasList] = useState([] as CanvasType[])
   const [canvasId, setCanvasId] = useState('')
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
+  const [canvasMenu, setCanvasMenu] = useState<
+    ReactElement<MenuProps>>(null as unknown as ReactElement<MenuProps>)
+
   const [getCanvas] = useLazyGetCanvasQuery()
+  const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
+  const { data: canvasList } = useGetCanvasQuery({})
 
   useEffect(() => {
     // const data = getFromLS()
@@ -119,6 +124,36 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     // setGroups(group)
     getDefaultCanvas()
   }, [])
+
+  useEffect(() => {
+    if(canvasList) {
+      setCanvasMenu(<Menu
+        onClick={handleMenuClick}
+        defaultSelectedKeys={[canvasId]}
+        items={[
+          ...canvasList.map(c => ({
+            icon: c.visible ? <GlobeOutlined size='sm' /> : <Lock size='sm' />,
+            key: c.id,
+            label: c.name,
+            itemIcon: c.dashboardIds && <UI.DashboardIcon size='sm' />
+            // style: canvasId == c.id ? {
+            //     background: cssStr('--acx-accents-orange-20')
+            //   } : {}
+          })),
+          {
+            type: 'divider'
+          },
+          {
+            key: 'New_Canvas',
+            label: $t({ defaultMessage: 'New Canvas' })
+          },
+          {
+            key: 'Manage_Canvases',
+            label: $t({ defaultMessage: 'Manage My Canvases' })
+          }
+        ]}/>)
+    }
+  }, [canvasList])
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -142,12 +177,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     }
   }
 
-  const getDefaultCanvas = async () => {
-    const response = await getCanvas({}).unwrap()
-    if (response?.length && response[0].content) {
-      setCanvasList(response)
-      const canvasId = response[0].id
-      let data = JSON.parse(response[0].content) as Section[]
+  const setupCanvas = (response: CanvasType) => {
+    const canvasId = response.id
+    setCanvasId(canvasId)
+    setCurrentCanvas(response)
+    if(response.content) {
+      let data = JSON.parse(response.content) as Section[]
       data = data.map(section => ({
         ...section,
         groups: section.groups.map(group => ({
@@ -156,15 +191,23 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
         }))
       }))
       const groups = data.flatMap(section => section.groups)
-
-      setCanvasId(canvasId)
-      setCurrentCanvas(response[0])
       setSections(data)
       setGroups(groups)
       setCanvasChange(false)
     } else {
+      emptyCanvas()
+    }
+  }
+
+  const getDefaultCanvas = async () => {
+    const response = await getCanvas({}).unwrap()
+    if (response?.length && response[0].content) {
+      // setCanvasList(response)
+      setupCanvas(response[0])
+    } else {
       if (response?.length && response[0].id) {
         setCanvasId(response[0].id)
+        setCurrentCanvas(response[0])
       }
       emptyCanvas()
     }
@@ -233,33 +276,17 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     setShadowCard({} as CardInfo)
   }
 
-  // const handleMenuClick: MenuProps['onClick'] = (e) => {
+  const onNewCanvas = async () => {
+    await createCanvas({}).unwrap().then((res)=>{
+      setupCanvas(res)
+    })
+  }
 
-  // }
-
-  const canvasMenu = (
-    <Menu
-      onClick={()=>{}}
-      items={[
-        ...canvasList.map(c => ({
-          icon: c.visible ? <GlobeOutlined size='sm' /> : <Lock size='sm' />,
-          key: c.id,
-          label: c.name,
-          itemIcon: c.dashboardIds? <UI.DashboardIcon size='sm' /> : <></>
-        })),
-        {
-          type: 'divider'
-        },
-        {
-          key: 'New_Canvas',
-          label: $t({ defaultMessage: 'New Canvas' })
-        },
-        {
-          key: 'Manage_Canvases',
-          label: $t({ defaultMessage: 'Manage My Canvases' })
-        }
-      ]}/>
-  )
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    if(e.key === 'New_Canvas') {
+      onNewCanvas()
+    }
+  }
 
   const visibilityMap: { [key:string]: { icon: ReactElement, label: string } } = {
     private: {
@@ -295,19 +322,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
   return (
     <UI.Canvas>
       <div className='header'>
-        <Dropdown overlay={canvasMenu}>{() =>
-          <div className='title'>
-            {
-              currentCanvas.name && <>
-                <span>
-                  {currentCanvas.name}
-                </span>
-                <ArrowExpand size='sm' />
-                {currentCanvas.dashboardIds && <UI.DashboardIcon size='sm' />}
-              </>
-            }
-          </div>
-        }</Dropdown>
+        {
+          canvasMenu && <Dropdown overlay={canvasMenu}>{() =>
+            <div className='title'>
+              {
+                currentCanvas.name && <>
+                  <span>
+                    {currentCanvas.name}
+                  </span>
+                  <ArrowExpand size='sm' />
+                  {currentCanvas.dashboardIds && <UI.DashboardIcon size='sm' />}
+                </>
+              }
+            </div>
+          }</Dropdown>
+        }
         <div className='actions'>
           <Dropdown overlay={visibilityMenu}>{(selectedKeys) =>
             <div className='visibility-type'>

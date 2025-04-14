@@ -387,17 +387,17 @@ export default function AICanvasModal (props: {
                           onClick={onNewChat}
                         />
                       </Tooltip>
-                      {
-                        showCanvas ? <CanvasCollapse
-                          data-testid='canvasCollapseIcon'
-                          onClick={onClickCanvasMode}
-                        />
-                          : <CanvasExpand
-                            data-testid='canvasExpandIcon'
-                            onClick={onClickCanvasMode}
-                          />
-                      }
                     </> : null
+                  }
+                  {
+                    showCanvas ? <CanvasCollapse
+                      data-testid='canvasCollapseIcon'
+                      onClick={onClickCanvasMode}
+                    />
+                      : <CanvasExpand
+                        data-testid='canvasExpandIcon'
+                        onClick={onClickCanvasMode}
+                      />
                   }
                 </div>
                 <div className='title'>

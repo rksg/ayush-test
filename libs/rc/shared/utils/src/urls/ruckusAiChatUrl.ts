@@ -41,7 +41,7 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas',
     newApi: true
   },
-  saveCanvas: {
+  createCanvas: {
     method: 'post',
     url: '/ruckusAi/canvas',
     newApi: true

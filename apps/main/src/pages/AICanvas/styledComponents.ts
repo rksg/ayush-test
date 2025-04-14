@@ -9,12 +9,12 @@ import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
+    transition: all 0.1s ease-in-out; 
     transform: scale(1); 
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
+    transition: all 0.1s ease-in-out; 
     transform: scale(1); 
   `
 }
