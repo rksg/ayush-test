@@ -23,6 +23,7 @@ export const handleSdLanTunnelAction = async (
   otherData: {
     network: NetworkTunnelActionModalProps['network'],
     venueSdLan?: EdgeMvSdLanViewData,
+    isL2oGreReady?: boolean
   }
 }) => {
   const { form, modalFormValues, otherData } = props
@@ -68,6 +69,7 @@ export const handleSdLanTunnelAction = async (
           activatedDmz: modalFormValues.sdLan.isGuestTunnelEnabled,
           tunneledWlans: venueSdLan!.tunneledWlans,
           tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+          isL2oGreReady: otherData.isL2oGreReady,
           onOk: async (impactVenueIds: string[]) => {
             if (impactVenueIds.length) {
               // has conflict and confirmed

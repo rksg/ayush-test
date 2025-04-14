@@ -10,7 +10,7 @@ export interface NetworkTunnelActionForm {
   sdLan: {
     isGuestTunnelEnabled: boolean,
     forwardingTunnelProfileId: string
-    forwardingTunnelProfileType: string
+    forwardingTunnelType: string
   },
   softGre: {
     newProfileId: string,

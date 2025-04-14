@@ -1,8 +1,8 @@
 import { find } from 'lodash'
 
-import { showActionModal }                               from '@acx-ui/components'
-import { EdgeMvSdLanFormNetwork, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
-import { getIntl }                                       from '@acx-ui/utils'
+import { showActionModal }                                               from '@acx-ui/components'
+import { EdgeMvSdLanFormNetwork, EdgeSdLanTunneledWlan, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 interface showSdLanGuestFwdConflictModalProps {
   currentNetworkVenueId: string
@@ -13,6 +13,7 @@ interface showSdLanGuestFwdConflictModalProps {
   tunneledGuestWlans: EdgeSdLanTunneledWlan[] | EdgeMvSdLanFormNetwork | undefined
   onOk: (impactVenueIds: string[]) => Promise<void> | void
   onCancel?: () => void
+  isL2oGreReady?: boolean
 }
 export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictModalProps) => {
   const {
@@ -22,6 +23,7 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     activatedDmz,
     tunneledWlans,
     tunneledGuestWlans,
+    isL2oGreReady,
     onOk,
     onCancel
   } = props
@@ -58,16 +60,21 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
       .filter(v => !!v) as string[]
   } else {
     const typedTunneledWlans = (tunneledWlans ?? []) as EdgeSdLanTunneledWlan[]
+    const typedTunneledGuestWlans = (tunneledGuestWlans ?? []) as EdgeSdLanTunneledWlan[]
 
     networkName = find(typedTunneledWlans, { networkId: currentNetworkId })?.networkName ?? ''
 
     impactVenueIds = (typedTunneledWlans)
       .filter(n => n.networkId === currentNetworkId
-        && n.venueId !== currentNetworkVenueId
-        && typedTunneledWlans
-          // eslint-disable-next-line max-len
-          ?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
-      .map(i => i.venueId)
+         && n.venueId !== currentNetworkVenueId
+         && (isL2oGreReady === true ?
+           // eslint-disable-next-line max-len
+           (((Boolean(n.forwardingTunnelProfileId) && (n.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE)) === !activatedDmz)
+          || (n.forwardingTunnelProfileId === '' && activatedDmz))
+           // eslint-disable-next-line max-len
+           : (typedTunneledGuestWlans?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
+         )
+      ).map(i => i.venueId)
   }
 
   const impactVenueCount = impactVenueIds.length

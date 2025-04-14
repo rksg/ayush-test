@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { EdgeSdLanFixtures, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import {
   render,
   renderHook,
@@ -146,6 +146,53 @@ describe('isDmzTunnelUtilized', () => {
   it('should return true when it is DMZ scenario', async () => {
     const result = isDmzTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(true)
+  })
+
+  it('should return true when tunnel type is VXLAN_GPE', async () => {
+    const mockData = cloneDeep(mockDmzData)
+    mockData.tunneledGuestWlans = []
+    mockData.tunneledWlans = [{
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.VXLAN_GPE
+    }]
+    const result = isDmzTunnelUtilized(mockData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(true)
+  })
+
+  it('should return false when tunnel type is L2OGRE', async () => {
+    const mockL2greData = cloneDeep(mockDmzData)
+    mockL2greData.tunneledGuestWlans = []
+    const mockL2greNetwork = {
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.L2GRE
+    }
+    mockL2greData.tunneledWlans = [mockL2greNetwork]
+    const result = isDmzTunnelUtilized(mockL2greData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
+  })
+
+  it('should return false when tunnel type is CorePort', async () => {
+    const mockCorePortData = cloneDeep(mockDmzData)
+    mockCorePortData.tunneledGuestWlans = []
+    const mockCorePortNetwork = {
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.L2GRE
+    }
+    mockCorePortData.tunneledWlans = [mockCorePortNetwork]
+    const result = isDmzTunnelUtilized(mockCorePortData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
   })
 })
 

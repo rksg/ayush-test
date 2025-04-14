@@ -29,6 +29,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
   const { venueId: sdLanVenueId }= useParams()
   const { $t } = useIntl()
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const {
     id: serviceId,
@@ -91,6 +92,7 @@ export const NetworkTable = ({ data }: { data: EdgeMvSdLanViewData }) => {
             activatedDmz: checked,
             tunneledWlans,
             tunneledGuestWlans,
+            isL2oGreReady: isEdgeL2oGreReady,
             onOk: async (impactVenueIds: string[]) => {
 
               if (impactVenueIds.length !== 0) {

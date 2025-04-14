@@ -117,7 +117,7 @@ export const getTunnelTypeDisplayText = (tunnelType: NetworkTunnelTypeEnum | und
 export const useUpdateNetworkTunnelAction = () => {
   const { toggleNetwork } = useEdgeMvSdLanActions()
   const { toggleNetworkChange } = useEdgeSdLanActions()
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const updateSdLanNetworkTunnel = async (
     formValues: NetworkTunnelActionForm,
@@ -141,7 +141,7 @@ export const useUpdateNetworkTunnelAction = () => {
     }
 
     const currentFwdTunnelProfileId = formValues.sdLan?.forwardingTunnelProfileId
-    const currentFwdTunnelType = formValues.sdLan?.forwardingTunnelProfileType
+    const currentFwdTunnelType = formValues.sdLan?.forwardingTunnelType
     const originFwdTunnelId = (venueSdLanInfo?.tunneledWlans || [])
       ?.find(item => item.venueId === networkVenueId && item.networkId === networkId)
       ?.forwardingTunnelProfileId
@@ -152,7 +152,7 @@ export const useUpdateNetworkTunnelAction = () => {
 
     const triggerSdLanOperations = async () => {
       return new Promise<void | boolean>((resolve, reject) => {
-        isEdgeL2greReady?
+        isEdgeL2oGreReady?
           toggleNetworkChange(
           venueSdLanInfo?.id!,
           networkVenueId,
@@ -161,7 +161,8 @@ export const useUpdateNetworkTunnelAction = () => {
           originFwdTunnelId!,
           () => resolve()
           ).catch(() => reject())
-          :toggleNetwork(
+          :
+          toggleNetwork(
             venueSdLanInfo?.id!,
             networkVenueId,
             networkId!,
@@ -207,13 +208,14 @@ export const useUpdateNetworkTunnelAction = () => {
             activatedDmz: activatedDmz,
             tunneledWlans: venueSdLanInfo!.tunneledWlans,
             tunneledGuestWlans: venueSdLanInfo!.tunneledGuestWlans,
+            isL2oGreReady: isEdgeL2oGreReady,
             onOk: async (impactVenueIds: string[]) => {
               if (impactVenueIds.length) {
                 // has conflict and confirmed
                 const actions = [triggerSdLanOperations()]
                 actions.push(...impactVenueIds.map(impactVenueId =>
                   new Promise<void | boolean>((resolve, reject) => {
-                    isEdgeL2greReady?
+                    isEdgeL2oGreReady?
                       toggleNetworkChange(
                         venueSdLanInfo?.id!,
                         impactVenueId,

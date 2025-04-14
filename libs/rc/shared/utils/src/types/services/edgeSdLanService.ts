@@ -127,7 +127,7 @@ export interface EdgeSdLanTunneledWlan {
   networkName: string
   wlanId: string
   forwardingTunnelProfileId?: string
-  forwardingTunnelType?: TunnelTypeEnum
+  forwardingTunnelType?: TunnelTypeEnum | string
 }
 
 export interface EdgeMvSdLanViewData {
