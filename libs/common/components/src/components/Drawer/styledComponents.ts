@@ -60,17 +60,28 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
 `
 
 const getStepsFormStyle = (width: number | string) => {
-  const formBodyShiftWidth = 50
-  const formFooterShiftWidth = 20
-  const parsedWidth = typeof width === 'number'
-    ? width
-    : isNaN(parseInt(width, 10))
-      ? formBodyShiftWidth
-      : parseInt(width, 10)
+  const STEPS_FORM_PADDING = 50
+  const STEPS_FORM_FOOTER_PADDING = 20
+  const isPercentage = typeof width === 'string' && width.endsWith('%')
+  let formWidth, formFooterWidth
+
+  if (isPercentage) {
+    formWidth = `calc(100% - ${STEPS_FORM_PADDING}px)`
+    formFooterWidth = `calc(${width} - ${STEPS_FORM_FOOTER_PADDING}px)`
+  } else {
+    const parsedWidth = typeof width === 'number'
+      ? width
+      : isNaN(parseInt(width, 10))
+        ? 0
+        : parseInt(width, 10)
+
+    formWidth = `${parsedWidth - STEPS_FORM_PADDING}px`
+    formFooterWidth = `${parsedWidth - STEPS_FORM_FOOTER_PADDING}px`
+  }
 
   return `
     .ant-pro-steps-form {
-      width: ${parsedWidth - formBodyShiftWidth}px;
+      width: ${formWidth};
     }
 
     /* ACX-83679: Only apply styles to the StepsForm's footer action container,
@@ -80,7 +91,7 @@ const getStepsFormStyle = (width: number | string) => {
       padding-left: 20px;
       margin-left: -16px;
       display: flex;
-      width: ${parsedWidth - formFooterShiftWidth}px;
+      width: ${formFooterWidth};
       min-width: unset;
       &:before {
         position: unset;
