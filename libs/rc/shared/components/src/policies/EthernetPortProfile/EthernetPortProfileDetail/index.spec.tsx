@@ -122,6 +122,7 @@ describe('EthernetPortProfileDetail', () => {
 
     await screen.findByText(mockAuthRadiusName)
     await screen.findAllByText(mockAccuntingRadiusName)
+    expect(screen.getByText('Client Visibility')).toBeVisible()
     expect(screen.queryByText('Dynamic VLAN')).not.toBeInTheDocument()
 
   })
@@ -154,6 +155,7 @@ describe('EthernetPortProfileDetail', () => {
       })
     expect(await screen.findByText(mockEthernetPortProfileId7)).toBeVisible()
     expect(screen.getByText('On (MAC-based Authenticator)')).toBeVisible()
+    expect(screen.getByText('Client Visibility')).toBeVisible()
     expect(screen.getByText('Dynamic VLAN')).toBeVisible()
 
   })

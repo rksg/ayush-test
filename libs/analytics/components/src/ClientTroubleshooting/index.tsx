@@ -86,9 +86,12 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const fetchRoamingType = Boolean(isMLISA || isRoamingTypeEnabled)
   const payload = { startDate, endDate, range, clientMac, fetchRoamingType, fetchBtmInfo }
   const clientQuery = useClientInfoQuery(payload)
-  const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
+  const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles }, { skip: isCore })
   const data = clientQuery.data && incidentsQuery.data
     ? { ...clientQuery.data, ...incidentsQuery.data }
+    : undefined
+  const coreTierOnlyData = clientQuery.data
+    ? { ...clientQuery.data, incidents: [] }
     : undefined
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
@@ -127,11 +130,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         intl
       )}</span>
     </UI.ErrorPanel>
-    : isCore ? <Loader states={[clientQuery, incidentsQuery]}>
+    : isCore ? <Loader states={[clientQuery]}>
       <History
         setHistoryContentToggle={setHistoryContentToggle}
         historyContentToggle
-        data={data}
+        data={coreTierOnlyData}
         filters={filters}
         supportHistoryCollapse={false}
         onPanelCallback={onPanelCallback}

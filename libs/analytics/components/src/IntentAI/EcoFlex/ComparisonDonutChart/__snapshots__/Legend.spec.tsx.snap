@@ -77,7 +77,7 @@ exports[`Legend should render correctly 1`] = `
       <div
         class="c4"
       >
-        EcoFlex is not supported
+        Energy Saving is not supported
       </div>
       <span
         class="c5"
@@ -85,7 +85,7 @@ exports[`Legend should render correctly 1`] = `
       <div
         class="c4"
       >
-        EcoFlex is supported and disabled
+        Energy Saving is supported and disabled
       </div>
       <span
         class="c6"
@@ -93,7 +93,7 @@ exports[`Legend should render correctly 1`] = `
       <div
         class="c4"
       >
-        EcoFlex is supported and enabled
+        Energy Saving is supported and enabled
       </div>
     </div>
   </div>
