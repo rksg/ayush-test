@@ -33,6 +33,7 @@ import * as UI                     from '../styledComponents'
 
 import { CloudpathServerForm }      from './CloudpathServerForm'
 import MacRegistrationListComponent from './MacRegistrationListComponent'
+import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
 
 const { useWatch } = Form
 
@@ -307,6 +308,9 @@ function SettingsForm () {
           </>}
 
         </>}
+        { ( !isMacRegistrationList &&
+            !isTemplate ) &&
+          <IdentityGroup comboWidth='200px' />}
       </div>
     </>
   )
