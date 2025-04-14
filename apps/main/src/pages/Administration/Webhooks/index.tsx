@@ -8,10 +8,10 @@ import {
   TableProps,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteWebhookMutation, useGetWebhooksQuery }                     from '@acx-ui/rc/services'
-import { defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
-import { SwitchScopes, WifiScopes }                                          from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission }           from '@acx-ui/user'
+import { useDeleteWebhookMutation, useGetWebhooksQuery }                                             from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission }                                   from '@acx-ui/user'
+import { getOpsApi }                                                                                 from '@acx-ui/utils'
 
 import { getWebhookPayloadEnumString } from './webhookConfig'
 import { WebhookForm }                 from './WebhookForm'
@@ -81,14 +81,14 @@ const R1Webhooks = () => {
 
   const rowActions: TableProps<Webhook>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
-    scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateWebhook)],
     onClick: ([webhook]) => {
       setSelectedWebhook(webhook)
       setDrawerVisible(true)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
+    rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteWebhook)],
     onClick: ([webhook], clearSelection) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
@@ -103,7 +103,7 @@ const R1Webhooks = () => {
   const actions: TableProps<Webhook>['actions'] = [{
     label: $t({ defaultMessage: 'Create Webhook' }),
     disabled: isDisabledCreate(),
-    scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
+    rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addWebhook)],
     onClick: () => {
       setSelectedWebhook(undefined)
       setDrawerVisible(true)
