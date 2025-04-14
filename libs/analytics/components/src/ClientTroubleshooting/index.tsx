@@ -9,6 +9,7 @@ import { Cascader, Button, Loader, getDefaultEarliestStart } from '@acx-ui/compo
 import { get }                                               from '@acx-ui/config'
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                         from '@acx-ui/formatter'
+import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 import { useEncodedParameter, useDateFilter }                from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
@@ -73,6 +74,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { startDate, endDate, range } = useDateFilter({
     showResetMsg,
     earliestStart: getDefaultEarliestStart() })
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const toggles = useIncidentToggles()
   const isMLISA = get('IS_MLISA_SA')
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
@@ -83,9 +86,9 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const fetchRoamingType = Boolean(isMLISA || isRoamingTypeEnabled)
   const payload = { startDate, endDate, range, clientMac, fetchRoamingType, fetchBtmInfo }
   const clientQuery = useClientInfoQuery(payload)
-  const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
-  const data = clientQuery.data && incidentsQuery.data
-    ? { ...clientQuery.data, ...incidentsQuery.data }
+  const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles }, { skip: isCore })
+  const data = clientQuery.data && (incidentsQuery.data || isCore)
+    ? { ...clientQuery.data, ...(incidentsQuery?.data || { incidents: [] }) }
     : undefined
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
@@ -124,7 +127,15 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         intl
       )}</span>
     </UI.ErrorPanel>
-    : (<Row gutter={[20, 16]} style={{ flex: 1 }}>
+    : isCore ? <Loader states={[clientQuery]}>
+      <History
+        setHistoryContentToggle={setHistoryContentToggle}
+        historyContentToggle
+        data={data}
+        filters={filters}
+        supportHistoryCollapse={false}
+        onPanelCallback={onPanelCallback}
+      /></Loader> : (<Row gutter={[20, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row style={{ justifyContent: 'end' }} gutter={[20, 32]}>
           <Col span={historyContentToggle ? 24 : 21}>

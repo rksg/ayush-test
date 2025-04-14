@@ -11,9 +11,10 @@ import {
   DataConnectorAuditLog,
   CloudStorageForm
 } from '@acx-ui/reports/components'
-import { Provider }                   from '@acx-ui/store'
-import { RolesEnum }                  from '@acx-ui/types'
-import { hasRaiPermission, hasRoles } from '@acx-ui/user'
+import { Provider }                              from '@acx-ui/store'
+import { RolesEnum }                             from '@acx-ui/types'
+import { AuthRoute, hasRaiPermission, hasRoles } from '@acx-ui/user'
+import { AccountTier }                           from '@acx-ui/utils'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
@@ -48,7 +49,11 @@ export default function ReportsRoutes () {
       <Route path='reports/aps' element={reports.aps} />
       <Route path='reports/switches' element={reports.switches} />
       <Route path='reports/clients' element={reports.clients}/>
-      <Route path='reports/applications' element={reports.applications} />
+      <Route path='reports/applications'
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            {reports.applications}
+          </AuthRoute>} />
       <Route path='reports/edgeApplications' element={reports.edgeApplications} />
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
