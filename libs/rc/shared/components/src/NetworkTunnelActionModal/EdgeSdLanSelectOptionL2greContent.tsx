@@ -73,7 +73,8 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     ?.filter((id): id is string => typeof id === 'string') || []
 
   const { isDataLoading,
-    availableTunnelProfiles } = useGetAvailableTunnelProfile({ sdLanServiceId: venueSdLan?.id })
+    // eslint-disable-next-line max-len
+    availableTunnelProfiles } = useGetAvailableTunnelProfile({ serviceIds: venueSdLan?.id ? [venueSdLan.id] : [undefined] })
 
   const tunnelProfileOptions = useMemo(() => [
     {
