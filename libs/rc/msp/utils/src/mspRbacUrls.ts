@@ -1,40 +1,41 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
-  // getMspCustomersList: {
-  //   method: 'post',
-  //   url: '/mspecs/query',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
-  //   newApi: true
-  // },
+  getMspCustomersList: {
+    method: 'post',
+    url: '/tenants/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
+    newApi: true,
+    opsApi: 'POST:/tenants/query'
+  },
   // getMspECList: {
   //   method: 'post',
   //   url: '/ecs/query?delegations=true',
   //   oldUrl: '/mspecs/query',
   //   newApi: true
   // },
-  // getIntegratorCustomersList: {
-  //   method: 'post',
-  //   url: '/techpartners/mspecs/query',
-  //   oldUrl: '/techpartners/mspecs/query',
-  //   newApi: true
-  // },
-  // getMspDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:tenantId/ecInventories/query',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
-  //   newApi: true
-  // },
-  // getIntegratorDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:mspTenantId/ecInventories/query',
-  //   oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
-  //   newApi: true
-  // },
+  getIntegratorCustomersList: {
+    method: 'post',
+    url: '/tenants/query?type=techpartner',
+    oldUrl: '/techpartners/mspecs/query',
+    newApi: true
+  },
+  getMspDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
+    newApi: true
+  },
+  getIntegratorDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query',
+    oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
+    newApi: true
+  },
   getVarDelegations: {
     method: 'post',
-    url: '/delegations',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/delegations',
+    url: '/delegations/query',
+    oldUrl: '/delegations',
     newApi: true
   },
   deleteMspEcAccount: {
@@ -118,11 +119,10 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   resendEcInvitation: {
-    // method: 'post',
-    method: 'get',
+    method: 'put',
     url: '/tenants/:mspEcTenantId/invitations',
     oldUrl: '/mspCustomers/:mspEcTenantId/invitations',
-    opsApi: 'GET:/tenants/{id}/invitations',
+    opsApi: 'PUT:/tenants/{id}/invitations',
     newApi: true
   },
   // getMspCustomersListDropdown: {
@@ -248,12 +248,13 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   method: 'put',
   //   url: '/api/mspservice/tenant/:mspEcTenantId/delegation/assignedmspadmins'
   // },
-  // exportMspEcDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:tenantId/ecInventories/query/csvFiles',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
-  //   newApi: true
-  // },
+  exportMspEcDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query/csv',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
+    newApi: true,
+    opsApi: 'POST:/tenants/inventories/query/csv'
+  },
   deactivateMspEcAccount: {
     method: 'delete',
     url: '/tenantActivations/:mspEcTenantId',

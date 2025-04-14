@@ -6,14 +6,27 @@ import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 import { defineMessage }      from 'react-intl'
 
-import { defaultSort, dateSort, sortProp, TrendTypeEnum }                            from '@acx-ui/analytics/utils'
-import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToast } from '@acx-ui/components'
-import { Loader }                                                                    from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
-import { TenantLink }                                                                from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
-import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp, TrendTypeEnum } from '@acx-ui/analytics/utils'
+import {
+  Button,
+  Table,
+  TableProps,
+  Tooltip,
+  TrendPill,
+  showActionModal,
+  showToast
+} from '@acx-ui/components'
+import { Loader }                    from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
+import { WifiScopes }                from '@acx-ui/types'
+import {
+  filterByAccess,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
 
@@ -190,6 +203,7 @@ export function VideoCallQoeTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [aiOpsApis.deleteVideoCallQoe],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -212,6 +226,12 @@ export function VideoCallQoeTable () {
     }
   ]
 
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_VIDEO_CALL_QOE',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.deleteVideoCallQoe]
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Table
@@ -219,10 +239,7 @@ export function VideoCallQoeTable () {
         dataSource={meetingList}
         rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={hasCrossVenuesPermission() && hasPermission({
-          permission: 'WRITE_VIDEO_CALL_QOE',
-          scopes: [WifiScopes.UPDATE]
-        }) && { type: 'radio' }}
+        rowSelection={hasRowSelection && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE

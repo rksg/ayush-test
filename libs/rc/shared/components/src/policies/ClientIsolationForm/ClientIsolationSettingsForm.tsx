@@ -14,8 +14,13 @@ import {
 import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
 import * as UI                           from './styledComponents'
 
-export default function ClientIsolationSettingsForm (props: { editMode: boolean }) {
-  const { editMode } = props
+interface ClientIsolationSettingsFormProps {
+  editMode: boolean
+  isEmbedded?: boolean
+}
+
+export default function ClientIsolationSettingsForm (props: ClientIsolationSettingsFormProps) {
+  const { editMode, isEmbedded } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const params = useParams()
@@ -23,6 +28,7 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
   const id = Form.useWatch<string>('id', form)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ clientIsolationList ] = useLazyGetClientIsolationListQuery()
+  const colSpan = isEmbedded ? 24 : 8
 
   const nameValidator = async (value: string) => {
     try {
@@ -44,7 +50,7 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
   return (
     <>
       <Row gutter={20}>
-        <Col span={7}>
+        <Col span={colSpan}>
           <Form.Item name='id' noStyle>
             <Input type='hidden' />
           </Form.Item>
@@ -74,7 +80,7 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
         </Col>
       </Row>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={colSpan}>
           <Space direction='vertical' size={2}>
             <UI.TableLabel>
               {$t(

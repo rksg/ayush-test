@@ -66,10 +66,6 @@ describe('Services for notification apis', () => {
               P2: ['email'],
               P3: ['email'],
               P4: []
-            },
-            configRecommendation: {
-              crrm: [],
-              aiOps: []
             }
           }
         })

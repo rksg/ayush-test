@@ -557,7 +557,7 @@ export function VenuesForm (props: VenuesFormProps) {
             {!modalMode &&
               <Row gutter={20}>
                 <Col span={8}>
-                  <ProtectedEnforceTemplateToggleVenue templateId={data?.id} />
+                  <ProtectedEnforceTemplateToggleVenue initValue={data?.isEnforced} />
                 </Col>
               </Row>
             }

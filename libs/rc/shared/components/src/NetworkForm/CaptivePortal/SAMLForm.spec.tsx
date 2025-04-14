@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }    from '@acx-ui/components'
-import { directoryServerApi } from '@acx-ui/rc/services'
+import { StepsFormLegacy }        from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { directoryServerApi }     from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonUrlsInfo,
@@ -258,4 +259,59 @@ describe('CaptiveNetworkForm - SAML', () => {
     await userEvent.click(option)
     expect(option).toBeInTheDocument()
   })
+
+  it('should make WalledGarden required when SAML toggle is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+
+    render(WalledGardenTextAreaEmptyTestCase(), { route: { params } })
+
+    const addButton = await screen.findAllByRole('button', { name: 'Add' })
+    await userEvent.click(addButton[1])
+    expect(await screen.findByText('Walled Garden is required')).toBeVisible()
+  })
+
+  it('should not make WalledGarden required when SAML toggle is false', async () => {
+
+    render(WalledGardenTextAreaEmptyTestCase(), { route: { params } })
+
+    const addButton = await screen.findAllByRole('button', { name: 'Add' })
+    await userEvent.click(addButton[1])
+    expect(screen.queryByText('Walled Garden is required')).toBeNull()
+
+  })
+
+  function WalledGardenTextAreaEmptyTestCase () {
+    const network = {
+      ...cloudPathDataNone,
+      guestPortal: {
+        ...cloudPathDataNone.guestPortal,
+        walledGardens: []
+      }
+    }
+
+    return (<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: true,
+          cloneMode: false,
+          data: network,
+          isRuckusAiMode: false
+        }}
+      >
+        <MLOContext.Provider
+          value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}
+        >
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <SAMLForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </MLOContext.Provider>
+      </NetworkFormContext.Provider>
+    </Provider>)
+  }
 })

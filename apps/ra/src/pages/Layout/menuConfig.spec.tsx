@@ -89,8 +89,6 @@ describe('useMenuConfig', () => {
       READ_DASHBOARD: false,
       READ_INCIDENTS: false,
       READ_HEALTH: false,
-      READ_AI_DRIVEN_RRM: false,
-      READ_AI_OPERATIONS: false,
       READ_SERVICE_VALIDATION: false,
       READ_CONFIG_CHANGE: false,
       READ_ACCESS_POINTS_LIST: false,
@@ -133,9 +131,7 @@ describe('useMenuConfig', () => {
     setRaiPermissions({
       ...permissions,
       READ_SERVICE_VALIDATION: false,
-      READ_VIDEO_CALL_QOE: false,
-      READ_AI_DRIVEN_RRM: false,
-      READ_AI_OPERATIONS: false
+      READ_VIDEO_CALL_QOE: false
     })
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [

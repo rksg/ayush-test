@@ -649,7 +649,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
               children={<PasswordInput />}
             /></Fieldset>}
-          <ProtectedEnforceTemplateToggleP1 templateId={saveState.id} />
+          <ProtectedEnforceTemplateToggleP1 initValue={saveState.isEnforced} />
         </Space>
 
         <CertificateAuthorityDrawer

@@ -6,7 +6,7 @@ export const questionIconStyle = {
   verticalAlign: 'text-top'
 }
 
-export const PrerequisiteListContiner = styled.div`
+export const PrerequisiteListContainer = styled.div`
   padding: 10px;
 
   & > ol > li:not(:last-child) {
@@ -14,7 +14,7 @@ export const PrerequisiteListContiner = styled.div`
   }
 `
 
-export const PrerequisiteListItemContiner = styled.ul`
+export const PrerequisiteListItemContainer = styled.ul`
   padding: 14px 15px 14px 30px;
 
   background-color: #f8f8fa;

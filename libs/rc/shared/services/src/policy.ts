@@ -78,9 +78,9 @@ import {
   ServerClientCertificateResult,
   NewAPModel
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }                                 from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { basePolicyApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -2567,38 +2567,24 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     /* eslint-disable max-len */
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn, customHeaders }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
           const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-          const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
-            body: JSON.stringify({})
+            body: JSON.stringify(payload)
           }
           const res = await fetchWithBQ(req)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
           const rbacApSnmpViewModels = tableResult.data
-          const rbacPolicies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModels.map(async (profile) => {
-            // eslint-disable-next-line max-len
-            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy,
-              { profileId: profile.id },
-              {
-                ...ignoreErrorModal,
-                ...apiCustomHeader
-              })
-            const res = await fetchWithBQ(req)
-            return res.data as RbacApSnmpPolicy
-          })
-          const policies = await asyncConvertRbacSnmpPolicyToOldFormat(rbacPolicies, rbacApSnmpViewModels)
-          const apSnmpViewModelData = policies.map((oldPolicy) => {
-            const rbacApSnmpViewModel = rbacApSnmpViewModels.find((model) => model.id === oldPolicy.id)
+          const apSnmpViewModelData = rbacApSnmpViewModels.map((profile) => {
             return {
-              id: oldPolicy.id,
-              name: oldPolicy.policyName,
-              v2Agents: convertToCountAndNumber(oldPolicy.snmpV2Agents),
-              v3Agents: convertToCountAndNumber(oldPolicy.snmpV3Agents),
-              venues: convertToCountAndNumber(rbacApSnmpViewModel?.venueNames),
-              aps: convertToCountAndNumber(rbacApSnmpViewModel?.apNames)
+              id: profile.id,
+              name: profile.name,
+              v2Agents: convertToCountAndNumber(profile.communityNames),
+              v3Agents: convertToCountAndNumber(profile.userNames),
+              venues: convertToCountAndNumber(profile.venueNames),
+              aps: convertToCountAndNumber(profile.apNames)
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>
