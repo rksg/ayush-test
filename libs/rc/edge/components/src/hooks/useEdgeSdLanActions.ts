@@ -21,10 +21,14 @@ export const useEdgeSdLanActions = () => {
     originData?: EdgeSdLanServiceProfile['activeNetwork']
   ) => {
     const rmNetworks = originData?.filter(origin =>
-      !currentData.some(current => current.networkId === origin.networkId)
+      !currentData.some(current =>
+        origin.venueId === current.venueId &&
+        current.networkId === origin.networkId
+      )
     )
     const addNetworks = currentData.filter(current =>
       !originData?.some(origin =>
+        origin.venueId === current.venueId &&
         origin.networkId === current.networkId &&
         origin.tunnelProfileId === current.tunnelProfileId
       )
