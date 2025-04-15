@@ -193,14 +193,14 @@ export const transformAps = (
   )
 }
 
-const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
+const _getRadioString = (deprecatedRadio?: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
   const { $t } = getIntl()
   if (radioTypes && radioTypes.length > 0) {
     return radioTypes.length === 3 ?
       $t({ defaultMessage: 'All' }) :
       radioTypes.join(', ').replace(/-/g, ' ')
   } else {
-    return deprecatedRadio !== 'Both' ?
+    return (deprecatedRadio && deprecatedRadio !== 'Both') ?
       deprecatedRadio.replace(/-/g, ' ') :
       $t({ defaultMessage: '2.4 GHz / 5 GHz' })
   }

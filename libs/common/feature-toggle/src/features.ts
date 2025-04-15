@@ -19,6 +19,7 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
+  CANVAS_Q2 = 'ruckus-gen-ai-customized-canvas-phase2',
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
@@ -70,8 +71,8 @@ export enum Features {
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
-  EDGE_L2GRE_TOGGLE = 'edge-l2ogre-toggle',
   EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
+  EDGE_L2OGRE_TOGGLE = 'edge-l2ogre-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -191,6 +192,7 @@ export enum Features {
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE = 'acx-ui-viewmodel-apis-migrate-msp',
   VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
   WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
@@ -236,9 +238,7 @@ export enum Features {
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
-  RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   RUCKUS_AI_JWT_TOGGLE = 'ruckus-ai-jwt-toggle',
-  INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
@@ -318,8 +318,14 @@ export enum Features {
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
   MSP_APP_VISIBILITY = 'mspservice-app-visibility',
+  AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle',
+  RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle',
   SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle',
-  WIFI_WIRED_CLIENT_VISIBILITY_TOOGLE = 'wifi-wired-client-visibility-for-lanport-toggle'
+  LOGIN_SSO_SAML_MSPEC = 'login-sso-saml-mspec',
+  DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
+  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
+  WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
+  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -336,7 +342,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_ARPT = 'EDGE-ARPT',
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
   EDGE_HQOS = 'EDGE-HQOS',
-  EDGE_L2GRE = 'EDGE-L2OGRE',
+  EDGE_L2OGRE = 'EDGE-L2OGRE',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -369,7 +375,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: true },
   { key: TierFeatures.EDGE_MDNS_PROXY, description: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge: RUCKUS Edge mDNS gateway enables seamless service discovery across VLANs by overcoming Bonjour/mDNS’s Layer 2 limitations. It records services and processes client requests, allowing devices to discover and access services across network segments.' }), status: true },
   { key: TierFeatures.EDGE_HQOS, description: defineMessage({ defaultMessage: 'Edge HQoS Bandwidth: RUCKUS Edge HQoS-Driven Egress Scheduling to enforce strict SLAs, intelligent bandwidth management, LLQ prioritization, and DSCP-based classification for seamless, end-to-end QoS.' }), status: true },
-  { key: TierFeatures.EDGE_L2GRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
+  { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

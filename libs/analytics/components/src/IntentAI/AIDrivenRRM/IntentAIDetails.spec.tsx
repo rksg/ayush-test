@@ -1,8 +1,8 @@
 import _ from 'lodash'
 
-import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { intentAIUrl, Provider, store, intentAIApi }         from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within, waitFor } from '@acx-ui/test-utils'
+import { useAnySplitsOn, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
@@ -22,7 +22,8 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
   DownloadRRMComparison: () => <div data-testid='DownloadRRMComparison' />
 }))
 
-const mockIntentContextWith = (data: Partial<IntentDetail>) => {
+
+export const mockIntentContextWith = (data: Partial<IntentDetail>) => {
   const intent = _.merge({}, mockedIntentCRRM, data) as IntentDetail
   mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
     { data: { intent: mockedIntentCRRMStatusTrail } })
@@ -39,9 +40,11 @@ describe('IntentAIDetails', () => {
       data: { intent: mockedCRRMGraphs }
     })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useAnySplitsOn).mockReturnValue(true)
   })
 
   it('handle cold tier data retention', async () => {
+    jest.mocked(useAnySplitsOn).mockReturnValue(false)
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
       dataCheck: {
@@ -92,8 +95,8 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
-      const details = await screen.findByTestId('Details')
-      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
+      expect(await screen.findByTestId('KPI')).toBeVisible()
+      expect(await screen.findByText('Interfering Links')).toBeVisible()
     }
 
     it('handles 2.4 GHz', async () => {
@@ -264,5 +267,6 @@ describe('IntentAIDetails', () => {
       expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
       expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
     })
+
   })
 })

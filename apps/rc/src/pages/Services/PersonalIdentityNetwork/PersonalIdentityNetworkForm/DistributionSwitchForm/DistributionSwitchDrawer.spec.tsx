@@ -10,7 +10,7 @@ import {
   screen, waitFor, within
 } from '@acx-ui/test-utils'
 
-import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
+import { DistributionSwitchDrawer, validateLoopbackIpUnique } from './DistributionSwitchDrawer'
 
 const { mockPinSwitchInfoData, mockPinData } = EdgePinFixtures
 
@@ -99,5 +99,33 @@ describe('DistributionSwitchDrawer', () => {
     await user.click(await screen.findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(saveSpy).toHaveBeenCalledTimes(1))
+  })
+})
+
+describe('validateLoopbackIpUnique', () => {
+  it('Should reject if IP is already used by another distribution switch', async () => {
+    // Create a new array with two distribution switches based on the mock data
+    const distributionSwitchInfos = [...mockPinSwitchInfoData.distributionSwitches]
+
+    // Test when IP is already used by another switch
+    await expect(validateLoopbackIpUnique('1.2.3.4', 'ds3', distributionSwitchInfos))
+      .rejects.toBeDefined()
+
+    // Test when IP is used by the current switch being edited
+    await expect(
+      validateLoopbackIpUnique(
+        '1.2.3.4',
+        distributionSwitchInfos[0].id,
+        distributionSwitchInfos
+      )
+    ).resolves.toEqual(undefined)
+
+    // Test when IP is not used by any switch
+    await expect(validateLoopbackIpUnique('1.2.3.6', 'ds3', distributionSwitchInfos))
+      .resolves.toEqual(undefined)
+
+    // Test with empty IP
+    await expect(validateLoopbackIpUnique('', 'ds3', distributionSwitchInfos))
+      .resolves.toEqual(undefined)
   })
 })

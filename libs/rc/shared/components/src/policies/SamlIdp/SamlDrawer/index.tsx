@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import {  Col, Form, Row, Button } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Col, Form, Row, Button } from 'antd'
+import { useIntl }                from 'react-intl'
 
 import { Drawer }                              from '@acx-ui/components'
 import {
@@ -14,13 +14,14 @@ import {
   transformDisplayOnOff,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  SamlIdpAttributeMappingNameType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { AddSamlIdp }           from '../AddSamlIdp'
 import { SamlIdpMetadataModal } from '../SamlIdpMetadataModal'
-
 
 
 interface SAMLDrawerProps {
@@ -74,23 +75,17 @@ interface SamlIdpDetailProps {
 }
 
 const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
-
   const { $t } = useIntl()
-
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
 
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
-    payload: {
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: {
-        id: [policy.id]
-      }
-    },
     params: {
       id: policy.id
     }
+  }, {
+    skip: !policy.id
   })
+
 
   const { certificateNameMap } = useGetServerCertificatesQuery({
     payload: {
@@ -132,56 +127,86 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                 transformDisplayOnOff(policy.signingCertificateEnabled)
               }
             />
-            <Form.Item
-              label={$t({ defaultMessage: 'Signing Certificate' })}
-              children={
-                (policy.signingCertificateId ?
-                  <TenantLink
-                    to={getPolicyRoutePath({
-                      type: PolicyType.SERVER_CERTIFICATES,
-                      oper: PolicyOperation.LIST
-                    })}>
-                    {
-                      certificateNameMap.find(cert => {
-                        return cert.key === policy.signingCertificateId
-                      })?.value || ''
-                    }
-                  </TenantLink> : ''
-                )
-              }
-            />
+            {policy.signingCertificateEnabled && (
+              <Form.Item
+                label={$t({ defaultMessage: 'Signing Certificate' })}
+                children={
+                  (policy.signingCertificateId ?
+                    <TenantLink
+                      to={getPolicyRoutePath({
+                        type: PolicyType.SERVER_CERTIFICATES,
+                        oper: PolicyOperation.LIST
+                      })}>
+                      {
+                        certificateNameMap.find(cert => {
+                          return cert.key === policy.signingCertificateId
+                        })?.value || ''
+                      }
+                    </TenantLink> : ''
+                  )
+                }
+              />
+            )}
             <Form.Item
               label={$t({ defaultMessage: 'SAML Response Encryption' })}
               children={
                 transformDisplayOnOff(policy.encryptionCertificateEnabled)
               }
             />
+            {policy.encryptionCertificateEnabled && (
+              <Form.Item
+                label={$t({ defaultMessage: 'Encryption Certificate' })}
+                children={
+                  (policy.encryptionCertificateId ?
+                    <TenantLink
+                      to={getPolicyRoutePath({
+                        type: PolicyType.SERVER_CERTIFICATES,
+                        oper: PolicyOperation.LIST
+                      })}>
+                      {
+                        certificateNameMap.find(cert => {
+                          return cert.key === policy.encryptionCertificateId
+                        })?.value || ''
+                      }
+                    </TenantLink> : ''
+                  )
+                }
+              />
+            )}
             <Form.Item
-              label={$t({ defaultMessage: 'Encryption Certificate' })}
+              label={$t({ defaultMessage: 'Identity Name' })}
               children={
-                (policy.encryptionCertificateId ?
-                  <TenantLink
-                    to={getPolicyRoutePath({
-                      type: PolicyType.SERVER_CERTIFICATES,
-                      oper: PolicyOperation.LIST
-                    })}>
-                    {
-                      certificateNameMap.find(cert => {
-                        return cert.key === policy.encryptionCertificateId
-                      })?.value || ''
-                    }
-                  </TenantLink> : ''
-                )
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+                )?.mappedByName || noDataDisplay
+              }
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Email' })}
+              children={
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+                )?.mappedByName || noDataDisplay
+              }
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Phone' })}
+              children={
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+                )?.mappedByName || noDataDisplay
               }
             />
           </Col>
         </Row>
       </Form>
-      <SamlIdpMetadataModal
-        metadata={samlIdpData?.metadataContent ?? ''}
-        visible={idpMetadataModalVisible}
-        setVisible={setIdpMetadataModalVisible}
-      />
+      {samlIdpData && (
+        <SamlIdpMetadataModal
+          samlIdpData={samlIdpData}
+          visible={idpMetadataModalVisible}
+          setVisible={setIdpMetadataModalVisible}
+        />
+      )}
     </>
   )
 }

@@ -71,7 +71,8 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setEspReplayWindowEnabled(false)
         form.setFieldValue('espReplayWindowEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.dpdDelay) {
+      if (initIpSecData.advancedOption?.dpdDelay
+        || initIpSecData.advancedOption?.dpdDelay !== 0) {
         setDeadPeerDetectionDelayEnabled(true)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       } else {
@@ -118,6 +119,54 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     return Promise.resolve()
   }
 
+  const handleRetryLimitChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setRetryLimitEnabled(e.target.checked)
+    form.setFieldValue('retryLimitEnabledCheckbox', e.target.checked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['advancedOption','retryLimit'])
+      if (originalValue === 0) {
+        form.setFieldValue(['advancedOption','retryLimit'], 5) // Set default value when checkbox is checked
+      }
+    }
+  }
+
+  const handleEspRelayWindowChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setEspReplayWindowEnabled(e.target.checked)
+    form.setFieldValue('espReplayWindowEnabledCheckbox', e.target.checked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['advancedOption','replayWindow'])
+      if (originalValue === 0) {
+        form.setFieldValue(['advancedOption','replayWindow'], 32) // Set default value when checkbox is checked
+      }
+    }
+  }
+
+  const handleDpDCheckboxChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setDeadPeerDetectionDelayEnabled(isChecked)
+    form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', isChecked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['advancedOption', 'dpdDelay'])
+      if (originalValue === 0) {
+        form.setFieldValue(['advancedOption', 'dpdDelay'], 30) // Set default value when checkbox is checked
+      }
+    }
+  }
+
+  const handleNattKeepAliveIntervalChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setNattKeepAliveIntervalEnabled(e.target.checked)
+    form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', e.target.checked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['advancedOption','keepAliveInterval'])
+      if (originalValue === 0) {
+        form.setFieldValue(['advancedOption','keepAliveInterval'], 20) // Set default value when checkbox is checked
+      }
+    }
+  }
+
   return (
     <>
       <Subtitle level={3} style={{ height: '40px' }}>
@@ -160,10 +209,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 <Checkbox
                   checked={retryLimitEnabled}
                   data-testid='retryLimitEnabled'
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setRetryLimitEnabled(e.target.checked)
-                    form.setFieldValue('retryLimitEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleRetryLimitChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'Retry Limit' })}
@@ -210,10 +256,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
               <>
                 <Checkbox data-testid='espReplayWindowEnabled'
                   checked={espReplayWindowEnabled}
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setEspReplayWindowEnabled(e.target.checked)
-                    form.setFieldValue('espReplayWindowEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleEspRelayWindowChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'ESP Replay Window' })}
@@ -268,7 +311,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','ipcompEnable']}
             style={{ marginTop: '-19px' }}
-            initialValue={ipCompressionEnabled}
             children={
               <Switch
                 checked={ipCompressionEnabled === IpSecAdvancedOptionEnum.ENABLED ? true : false}
@@ -291,10 +333,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
               <>
                 <Checkbox data-testid='deadPeerDetectionDelayEnabled'
                   checked={deadPeerDetectionDelayEnabled}
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setDeadPeerDetectionDelayEnabled(e.target.checked)
-                    form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleDpDCheckboxChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'Dead Peer Detection Delay' })}
@@ -317,7 +356,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    initialValue={1}
+                    initialValue={30}
                     children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
@@ -348,7 +387,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','enforceNatt']}
             style={{ marginTop: '-17px' }}
-            initialValue={forceNATTEnabled}
             children={
               <Switch
                 // eslint-disable-next-line max-len
@@ -369,10 +407,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
               <>
                 <Checkbox data-testid='nattKeepAliveIntervalEnabled'
                   checked={nattKeepAliveIntervalEnabled}
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setNattKeepAliveIntervalEnabled(e.target.checked)
-                    form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleNattKeepAliveIntervalChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'NAT-T Keep Alive Interval' })}

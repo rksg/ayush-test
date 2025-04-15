@@ -89,6 +89,7 @@ export default function SelectPolicyForm () {
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -103,7 +104,11 @@ export default function SelectPolicyForm () {
   }
 
   const sets = [
-    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
+    {
+      type: isSwitchMacAclEnabled ? PolicyType.SWITCH_ACCESS_CONTROL : PolicyType.ACCESS_CONTROL,
+      categories: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]:
+        [RadioCardCategory.WIFI]
+    },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },

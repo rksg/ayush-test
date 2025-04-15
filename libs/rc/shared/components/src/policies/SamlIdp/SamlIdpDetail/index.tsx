@@ -1,18 +1,23 @@
 import { useState } from 'react'
 
-import { Space }     from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { SyncOutlined } from '@ant-design/icons'
+import { Space }        from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
 import { Button, PageHeader, SummaryCard, Tooltip } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
 import {
   useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileWithRelationsByIdQuery,
-  useGetServerCertificatesQuery
+  useGetServerCertificatesQuery,
+  useRefreshSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
+  AttributeMapping,
   PolicyOperation,
   PolicyType,
+  SamlIdpAttributeMappingNameType,
   SamlIdpMessages,
   ServerCertificate,
   filterByAccessForServicePolicyMutation,
@@ -20,6 +25,7 @@ import {
   usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { CertificateInfoItem }              from '../CertificateInfoItem'
@@ -32,14 +38,8 @@ export const SamlIdpDetail = () => {
   const { policyId } = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
   const [samlIdpMetadataModalVisible, setSamlIdpMetadataModalVisible] = useState(false)
+  const [isSyncingMetadata, setIsSyncingMetadata] = useState(false)
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
-    payload: {
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: {
-        id: [policyId]
-      }
-    },
     params: {
       id: policyId
     }
@@ -63,18 +63,59 @@ export const SamlIdpDetail = () => {
     })
   })
 
+  const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
+
+  const handleSyncMetadata = async () => {
+    setIsSyncingMetadata(true)
+    await refreshSamlServiceProviderMetadata({
+      params: { id: samlIdpData?.id },
+      payload: {
+        action: 'REFRESH_METADATA'
+      }
+    })
+      .unwrap()
+      .finally(() => {
+        setIsSyncingMetadata(false)
+      })
+  }
+
   const samlIdpProfileInfo =[
     {
       title: $t({ defaultMessage: 'Identity Provider (IdP) Metadata' }),
       content: () => {
         return (
-          <Button
-            type='link'
-            size={'small'}
-            onClick={() => setSamlIdpMetadataModalVisible(true)}
-          >
-            {$t({ defaultMessage: 'View Metadata' })}
-          </Button>
+          <Space direction='vertical' size={1} style={{ lineHeight: 1 }}>
+            <Space size={1} style={{ marginBottom: '8px' }}>
+              <Button
+                type='link'
+                size={'small'}
+                onClick={() => setSamlIdpMetadataModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'View Metadata' })}
+              </Button>
+              {(samlIdpData?.metadataUrl) && (
+                <Button
+                  data-testid='sync-metadata-button'
+                  style={{ borderStyle: 'none', width: '14px', height: '14px' }}
+                  icon={<SyncOutlined spin={isSyncingMetadata} style={{ width: '14px' }} />}
+                  type='link'
+                  onClick={() => handleSyncMetadata()}
+                >
+                </Button>
+              )}
+            </Space>
+            {(samlIdpData?.metadataUrl) && (
+              <span style={{ fontSize: '12px' }}>
+                {$t({ defaultMessage: 'Last Update:' })} {
+                  (samlIdpData?.updatedDate )
+                    ? formatter(DateFormatEnum.DateFormat)(
+                      samlIdpData?.updatedDate
+                    )
+                    : noDataDisplay
+                }
+              </span>
+            )}
+          </Space>
         )
       }
     }, {
@@ -99,6 +140,36 @@ export const SamlIdpDetail = () => {
           />
         )
       }
+    }, {
+      title: $t({ defaultMessage: 'Identity Name' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+          )?.mappedByName || noDataDisplay
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Email' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+          )?.mappedByName || noDataDisplay
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Phone' }),
+      content: () => {
+        return (
+          samlIdpData?.attributeMappings?.find(
+            (mapping: AttributeMapping) =>
+              mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+          )?.mappedByName || noDataDisplay
+        )
+      }
     }
   ]
 
@@ -113,7 +184,7 @@ export const SamlIdpDetail = () => {
             downloadSamlServiceProviderMetadata({ params: { id: samlIdpData?.id } })
           }
         >
-          <Tooltip title={$t(SamlIdpMessages.DOWNLOAD_SAML_METADATA)}>
+          <Tooltip title={$t(SamlIdpMessages.DOWNLOAD_SAML_METADATA)} >
             {$t({ defaultMessage: 'Download SAML Metadata' })}
           </Tooltip>
         </Button>,
@@ -141,11 +212,13 @@ export const SamlIdpDetail = () => {
         networkIds={samlIdpData?.wifiNetworkIds ?? []}
       />
     </Space>
-    <SamlIdpMetadataModal
-      metadata={samlIdpData?.metadataContent ?? ''}
-      visible={samlIdpMetadataModalVisible}
-      setVisible={setSamlIdpMetadataModalVisible}
-    />
+    {samlIdpData && (
+      <SamlIdpMetadataModal
+        samlIdpData={samlIdpData}
+        visible={samlIdpMetadataModalVisible}
+        setVisible={setSamlIdpMetadataModalVisible}
+      />
+    )}
   </>
   )
 }

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
@@ -10,11 +12,45 @@ import {
   Loader,
   NoData,
   qualitativeColorSet
-}                                         from '@acx-ui/components'
-import { formatter }            from '@acx-ui/formatter'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+}                               from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { formatter }                  from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery } from '@acx-ui/rc/services'
+import { PrivacyFeatureName }         from '@acx-ui/rc/utils'
+import { getJwtTokenPayload }         from '@acx-ui/utils'
+import type { AnalyticsFilter }       from '@acx-ui/utils'
 
 import { App, useTopApplicationsQuery } from './services'
+
+const useAppVisibility = (tenantId: string) => {
+  const isRA = Boolean(get('IS_MLISA_SA'))
+  const isAppPrivacyFFEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+
+  const { data: privacySettings } = useGetPrivacySettingsQuery({
+    params: { tenantId },
+    customHeaders: { 'x-rks-tenantid': tenantId },
+    payload: { ignoreDelegation: true }
+  })
+
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+
+  useEffect(() => {
+    if (!isAppPrivacyFFEnabled || isRA) {
+      setIsAppVisibilityEnabled(true)
+      return
+    }
+
+    if (privacySettings) {
+      const privacyVisibilitySetting = privacySettings
+        .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
+      setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
+    }
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
+
+  return isAppVisibilityEnabled
+}
 
 function getTopApplicationsDonutChartData (data: App[]): DonutChartData[] {
   const chartData: DonutChartData[] = []
@@ -48,13 +84,18 @@ function TopApplicationsWidget ({ filters, type }: {
   filters: AnalyticsFilter,
   type: 'donut' | 'line' }) {
   const { $t } = useIntl()
+  const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
+  const { tenantId } = getJwtTokenPayload()
+  const isAppVisibilityEnabled = useAppVisibility(tenantId)
+
   const queryResults = useTopApplicationsQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
       data,
       ...rest
     })
   })
-  const isDataAvailable = queryResults.data && queryResults.data.length > 0
+  const isDataAvailable = isAppVisibilityEnabled &&
+    queryResults.data && queryResults.data.length > 0
 
   return (
     <Loader states={[queryResults]}>
@@ -85,7 +126,7 @@ function TopApplicationsWidget ({ filters, type }: {
                   legendFormatter={() => ''}
                 />
               )
-              : <NoData />
+              : <NoData text={!isAppVisibilityEnabled ? noPermissionText : undefined} />
           )}
         </AutoSizer>
       </HistoricalCard>

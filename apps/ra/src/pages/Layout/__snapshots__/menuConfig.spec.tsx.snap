@@ -286,19 +286,10 @@ Array [
             "label": Array [
               Object {
                 "type": 0,
-                "value": "AI-Driven RRM",
+                "value": "IntentAI",
               },
             ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
+            "uri": "/intentAI",
           },
         ],
         "label": Array [
@@ -768,19 +759,10 @@ Array [
             "label": Array [
               Object {
                 "type": 0,
-                "value": "AI-Driven RRM",
+                "value": "IntentAI",
               },
             ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
+            "uri": "/intentAI",
           },
         ],
         "label": Array [
@@ -1285,19 +1267,10 @@ Array [
             "label": Array [
               Object {
                 "type": 0,
-                "value": "AI-Driven RRM",
+                "value": "IntentAI",
               },
             ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
+            "uri": "/intentAI",
           },
         ],
         "label": Array [

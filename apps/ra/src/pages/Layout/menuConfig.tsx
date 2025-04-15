@@ -73,32 +73,8 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
   const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
   const isDataConnectorEnabled = useIsSplitOn(Features.RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE)
-  const aiAnalyticsMenu = [{
-    canAccess: canAccess('READ_INCIDENTS'),
-    uri: '/incidents',
-    label: $t({ defaultMessage: 'Incidents' })
-  }] as Item[]
-  if (isIntentAIEnabled) {
-    aiAnalyticsMenu.push({
-      canAccess: canAccess('READ_INTENT_AI'),
-      uri: '/intentAI',
-      label: $t({ defaultMessage: 'IntentAI' })
-    })
-  } else {
-    aiAnalyticsMenu
-      .push({
-        canAccess: canAccess('READ_AI_DRIVEN_RRM'),
-        uri: '/recommendations/crrm',
-        label: $t({ defaultMessage: 'AI-Driven RRM' })
-      }, {
-        canAccess: canAccess('READ_AI_OPERATIONS'),
-        uri: '/recommendations/aiOps',
-        label: $t({ defaultMessage: 'AI Operations' })
-      })
-  }
   return buildMenu([{
     uri: '/dashboard',
     canAccess: canAccess('READ_DASHBOARD'),
@@ -112,7 +88,15 @@ export function useMenuConfig () {
     children: [{
       type: 'group' as const,
       label: $t({ defaultMessage: 'AI Analytics' }),
-      children: aiAnalyticsMenu
+      children: [{
+        canAccess: canAccess('READ_INCIDENTS'),
+        uri: '/incidents',
+        label: $t({ defaultMessage: 'Incidents' })
+      }, {
+        canAccess: canAccess('READ_INTENT_AI'),
+        uri: '/intentAI',
+        label: $t({ defaultMessage: 'IntentAI' })
+      }]
     }, {
       type: 'group' as const,
       label: $t({ defaultMessage: 'Network Assurance' }),
@@ -230,7 +214,8 @@ export function useMenuConfig () {
     ...(isDataConnectorEnabled ? [{
       canAccess: canAccess('READ_DATA_CONNECTOR'),
       uri: '/dataConnector',
-      label: $t({ defaultMessage: 'Data Connector' })
+      label: $t({ defaultMessage: 'Data Connector' }),
+      superscript: $t({ defaultMessage: 'beta' })
     }] : []),
     {
       canAccess: canAccess('READ_REPORTS'),

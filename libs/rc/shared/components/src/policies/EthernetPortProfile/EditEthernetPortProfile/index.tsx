@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
 import { Loader }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
   useGetEthernetPortProfileTemplateQuery,
@@ -29,6 +30,8 @@ export const EditEthernetPortProfile = () => {
   const { policyId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const [form] = Form.useForm()
+
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { data: ethernetPortProfileData, isLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
@@ -55,7 +58,7 @@ export const EditEthernetPortProfile = () => {
 
   const handleEditEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
+      const payload = requestPreProcess(isWiredClientVisibilityEnabled, data)
 
       await updateEthernetPortProfile({
         payload,
@@ -113,13 +116,18 @@ export const EditEthernetPortProfile = () => {
 
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
-      sourceData.authEnabled = true
-      sourceData.accountingEnabled = false
+      sourceData.authEnabled = sourceData.authType !== EthernetPortAuthType.OPEN
       sourceData.authTypeRole = sourceData.authType
 
-      sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
+      sourceData.accountingEnabled = !!sourceData.accountingRadiusId
     }
-    form.setFieldsValue(sourceData)
+    const forceEnableClientVisibility = sourceData.authType === EthernetPortAuthType.OPEN
+    form.setFieldsValue({
+      ...sourceData,
+      ...(forceEnableClientVisibility && {
+        clientVisibilityEnabled: true
+      })
+    })
 
   }, [ethernetPortProfileData])
 

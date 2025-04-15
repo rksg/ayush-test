@@ -28,7 +28,7 @@ export default function DhcpPoolTable ({
 }: DhcpPoolTableProps) {
   const { $t } = useIntl()
   const isDHCPCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_DHCP_CSV_TOGGLE)
-  const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
+  const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
   const form = Form.useFormInstance()
   const {
     openDrawer,
@@ -128,7 +128,7 @@ export default function DhcpPoolTable ({
   const importHandler = (formData: FormData, values: object, content?: string) => {
     const dataArray = mapCSVToModel(content!)
     onChange && onChange(value.concat(dataArray))
-    setImportModalvisible(false)
+    setImportModalVisible(false)
   }
 
   return (
@@ -144,7 +144,7 @@ export default function DhcpPoolTable ({
             <PoolTable
               data={value}
               openDrawer={openDrawer}
-              openImportModal={setImportModalvisible}
+              openImportModal={setImportModalVisible}
               onDelete={onDelete}
               isRelayOn={isRelayOn}
             />
@@ -167,12 +167,12 @@ export default function DhcpPoolTable ({
           maxEntries={MAX_IMPORT_ENTRIES}
           acceptType={['csv']}
           templateLink={importTemplateLink}
-          visible={importModalvisible}
+          visible={importModalVisible}
           readAsText={true}
           skipCsvTextConvert={true}
           validator={importContentValidator}
           importRequest={importHandler}
-          onClose={() => setImportModalvisible(false)}
+          onClose={() => setImportModalVisible(false)}
         />}
     </>
   )

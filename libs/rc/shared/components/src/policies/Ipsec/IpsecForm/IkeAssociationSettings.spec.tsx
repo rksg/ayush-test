@@ -10,13 +10,16 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
+  const Select = ({ children, onChange, ...otherProps }) => {
+    delete otherProps.dropdownClassName
+    return ( <select
       role='combobox'
       onChange={e => onChange(e.target.value)}
       {...otherProps}>
       {children}
-    </select>
+    </select>)
+  }
+
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
@@ -34,7 +37,7 @@ describe('IkeAssociationSettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form initialValues={initialValues}>
-          <IkeAssociationSettings />
+          <IkeAssociationSettings loadIkeSettings setLoadIkeSettings={jest.fn()} />
         </Form>
       </IntlProvider>
     )

@@ -9,7 +9,7 @@ import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaStrin
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
     const result = getDualWanModeString(EdgeMultiWanModeEnum.ACTIVE_BACKUP)
-    expect(result).toBe('Aactive / Backup')
+    expect(result).toBe('Active / Backup')
   })
 
   it('returns an empty string for NONE', () => {
@@ -50,12 +50,12 @@ describe('getWanProtocolString', () => {
 describe('getWanLinkDownCriteriaString', () => {
   it('returns correct string for ALL_TARGETS_DOWN', () => {
     const result = getWanLinkDownCriteriaString(EdgeLinkDownCriteriaEnum.ALL_TARGETS_DOWN)
-    expect(result).toBe('All destinations were unreachable')
+    expect(result).toBe('All targets were unreachable')
   })
 
   it('returns correct string for ANY_TARGET_DOWN', () => {
     const result = getWanLinkDownCriteriaString(EdgeLinkDownCriteriaEnum.ANY_TARGET_DOWN)
-    expect(result).toBe('One or more of the destinations were unreachable')
+    expect(result).toBe('One or more of the targets were unreachable')
   })
 
   it('returns empty string for INVALID', () => {
