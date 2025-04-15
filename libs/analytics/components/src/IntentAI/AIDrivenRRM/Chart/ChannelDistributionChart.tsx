@@ -47,24 +47,22 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const xName = $t({ defaultMessage: 'Channel' })
   const yName = $t({ defaultMessage: 'AP' })
 
-  return (
-    <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
+  return (<AutoSizer disableHeight>{({ width }) =>
+    <Loader states={[queryResult]} style={{ width }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Channel Distribution' })}</UI.Title>
-        <AutoSizer>{({ width }) =>
-          apChannelDistribution?.length ? <VerticalBarChart
-            data={data}
-            xAxisValues={channelList}
-            xAxisName={xName}
-            barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
-            showTooltipName={false}
-            showNameAndValue={[xName, yName]}
-            style={{ width, height: '200px' }}
-          /> : <NoData />
-        }</AutoSizer>
+        {apChannelDistribution?.length ? <VerticalBarChart
+          data={data}
+          xAxisValues={channelList}
+          xAxisName={xName}
+          barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
+          showTooltipName={false}
+          showNameAndValue={[xName, yName]}
+          style={{ height: '200px' }}
+        /> : <NoData />}
       </Card>
     </Loader>
-  )
+  }</AutoSizer>)
 }
 
 export default ChannelDistributionChart
