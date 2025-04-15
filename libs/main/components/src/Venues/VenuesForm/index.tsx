@@ -202,7 +202,7 @@ export function VenuesForm (props: VenuesFormProps) {
   })
   const { saveEnforcementConfig } = useConfigTemplate()
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
-  const venueTagList = useGetVenueTagListQuery({ params })
+  const venueTagList = useGetVenueTagListQuery({ params }, { skip: !isTagsEnabled })
 
   useEffect(() => {
     if (venueTagList.data) {
