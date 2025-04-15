@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { EdgeWanLinkHealthCheckPolicy, EdgeWanMember } from '@acx-ui/rc/utils'
 import { render, screen, within }                      from '@acx-ui/test-utils'
 
-import { WanPriorityTable } from './WanPriorityTable'
+import { WanPortPriorityTable } from './WanPortPriorityTable'
 
 jest.mock('./LinkHealthMonitorToggleButton', () => ({
   LinkHealthMonitorToggleButton: (props: {
@@ -19,7 +19,7 @@ jest.mock('./LinkHealthMonitorToggleButton', () => ({
     </div>
 }))
 
-describe('WanPriorityTable', () => {
+describe('WanPortPriorityTable', () => {
   const defaultProps = {
     data: [
       { priority: 1, serialNumber: 'node1_sn', portName: 'port1', healthCheckEnabled: true },
@@ -30,14 +30,14 @@ describe('WanPriorityTable', () => {
   }
 
   it('should render the table with the correct columns and data', () => {
-    render(<WanPriorityTable {...defaultProps} />)
+    render(<WanPortPriorityTable {...defaultProps} />)
     expect(screen.getByRole('columnheader', { name: 'Port' })).toBeInTheDocument()
     expect(screen.getByText('Node 1 / port1')).toBeInTheDocument()
     expect(screen.getByText('Node 2 / port1')).toBeInTheDocument()
   })
 
   it('should toggle health check when the toggle button is clicked', async () => {
-    render(<WanPriorityTable {...defaultProps} />)
+    render(<WanPortPriorityTable {...defaultProps} />)
     const targetRow = screen.getByRole('row', { name: /Node 1/ })
     await userEvent.click(within(targetRow).getByText('Toggle'))
     expect(defaultProps.onChange).toHaveBeenCalledWith([
