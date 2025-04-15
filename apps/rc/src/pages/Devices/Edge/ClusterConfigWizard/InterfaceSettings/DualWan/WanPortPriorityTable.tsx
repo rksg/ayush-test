@@ -74,7 +74,7 @@ export const useDefaultColumns = (
         return <LinkHealthMonitorToggleButton
           portName={row.portName}
           enabled={row.healthCheckEnabled}
-          data={row.linkHealthCheckPolicy}
+          linkHealthSettings={row.linkHealthCheckPolicy}
           // eslint-disable-next-line max-len
           onChange={(checked: boolean, healthCheckData: EdgeWanLinkHealthCheckPolicy | undefined) => {
             onChange(checked, healthCheckData, row.priority)
@@ -86,12 +86,12 @@ export const useDefaultColumns = (
   return columns
 }
 
-interface WanPriorityTableProps {
+interface WanPortPriorityTableProps {
   data?: EdgeWanMember[]
   onChange?: (data: EdgeWanMember[]) => void
   nodeNameMapping: Record<string, string>
 }
-export const WanPriorityTable = (props: WanPriorityTableProps) => {
+export const WanPortPriorityTable = (props: WanPortPriorityTableProps) => {
   const { data, onChange, nodeNameMapping } = props
 
   const onSortEnd = useCallback(

@@ -65,6 +65,7 @@ export function MspRecCustomers () {
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -117,7 +118,8 @@ export function MspRecCustomers () {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
@@ -402,7 +404,8 @@ export function MspRecCustomers () {
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -498,7 +501,8 @@ export function MspRecCustomers () {
       },
       pagination: {
         settingsId: 'integrator-customers-table'
-      }
+      },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     return (

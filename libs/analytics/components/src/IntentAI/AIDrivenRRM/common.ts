@@ -7,7 +7,7 @@ import { IntentKPIConfig } from '../useIntentDetailsQuery'
 
 export const kpis: IntentKPIConfig[] = [{
   key: 'number-of-interfering-links',
-  label: defineMessage({ defaultMessage: 'Interfering links' }),
+  label: defineMessage({ defaultMessage: 'Interfering Links' }),
   format: formatter('countFormat'),
   deltaSign: '-'
 }]
