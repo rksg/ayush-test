@@ -96,7 +96,14 @@ const getStepsFormStyle = (width: number | string) => {
       &:before {
         position: unset;
       }
+      &.single-step {
+        justify-content: flex-end;
+        .ant-space-horizontal {
+          flex-direction: row-reverse;
+        }
+      }
     }
+
   `
 }
 
