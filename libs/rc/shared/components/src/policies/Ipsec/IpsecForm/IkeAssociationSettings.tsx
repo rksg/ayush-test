@@ -70,7 +70,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
       if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
         setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
       } else {
-        setIkeProposalType(form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType']))
+        setIkeProposalType(IpSecProposalTypeEnum.DEFAULT)
       }
     }
     setLoadIkeSettings(false)
