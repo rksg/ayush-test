@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`VerticalBarChart tooltipFormatter should return correct Html string 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\">Rss<!-- --> <b>-75</b>: <b>formatted-1100</b> </div>"`;
+exports[`VerticalBarChart tooltipFormatter should return correct Html string 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\">Samples: <b>formatted-1100</b></div>"`;
 
-exports[`VerticalBarChart tooltipFormatter should return correct Html string when showNameAndValue is empty 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\">Samples: <b>formatted-1100</b></div>"`;
+exports[`VerticalBarChart tooltipFormatter should return correct Html when customTooltipText is provided 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"></div>"`;
