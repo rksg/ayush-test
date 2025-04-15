@@ -31,7 +31,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
   const { $t } = useIntl()
   let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
   const [ikeProposalType, setIkeProposalType] = useState(proposalType
-    ? proposalType : initIpSecData?.ikeSecurityAssociation?.ikeProposalType)
+    ? proposalType : IpSecProposalTypeEnum.DEFAULT)
 
   const initialAlgValue = {
     encAlg: IpSecEncryptionAlgorithmEnum.AES128,

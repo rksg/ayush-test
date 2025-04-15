@@ -30,7 +30,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
   const { $t } = useIntl()
   let proposalType = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
   const [espProposalType, setEspProposalType] = useState(proposalType
-    ? proposalType : initIpSecData?.espSecurityAssociation?.espProposalType)
+    ? proposalType : IpSecProposalTypeEnum.DEFAULT)
 
   const initialAlgValue = {
     encAlg: IpSecEncryptionAlgorithmEnum.AES128,
