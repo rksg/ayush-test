@@ -640,7 +640,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
+      return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
     }
     return data
   }
@@ -1546,9 +1546,10 @@ function useIdentityGroupOnNetworkActivation () {
       )
     ) {
       const identityGroupId = network?.identityGroupId
-      const identityId = network?.identityId
+      const identityId = network?.identity?.id
+      const enableIdentityAssociation = network?.enableIdentityAssociation
       if (identityGroupId) {
-        if (identityId) {
+        if (identityId && enableIdentityAssociation) {
           return await bindingSpecificIdentityPersonaGroupWithNetwork({
             params: { networkId: networkId, identityGroupId: identityGroupId, identityId: identityId }
           }).unwrap()
