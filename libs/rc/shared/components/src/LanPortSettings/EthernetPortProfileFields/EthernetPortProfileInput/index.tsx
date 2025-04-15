@@ -96,7 +96,8 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
         {$t({ defaultMessage: '802.1X' })}
         <Form.Item
           children={
-            transformDisplayOnOff(!(currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
+            transformDisplayOnOff(
+             !(currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
              currentEthernetPortData?.authType === EthernetPortAuthType.OPEN))
           }
         />
