@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Typography, Space }                              from 'antd'
-import { isNil, pick, remove, cloneDeep, unionBy, unset } from 'lodash'
+import { Space, Typography }                              from 'antd'
+import { cloneDeep, isNil, pick, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer }                                                            from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
-import { Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
+import { Drawer }                                                                                   from '@acx-ui/components'
+import { Features }                                                                                 from '@acx-ui/feature-toggle'
+import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { EdgeMvSdLanFormNetwork, Network, NetworkTypeEnum }                                         from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -59,6 +60,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   } = props
 
   const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
+  const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   useEffect(() => {
     if (visible) {
@@ -80,9 +82,10 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
       currentNetworkVenueId: venueId,
       currentNetworkId: networkData.id,
       currentNetworkName: networkData.name,
-      activatedGuest: checked,
+      activatedDmz: checked,
       tunneledWlans: activatedNetworks,
       tunneledGuestWlans: activatedGuestNetworks,
+      isL2oGreReady: isEdgeL2oGreReady,
       onOk: (impactVenueIds: string[]) => {
         let newSelectedNetworks = activatedGuestNetworks
         if (impactVenueIds.length !== 0) {
