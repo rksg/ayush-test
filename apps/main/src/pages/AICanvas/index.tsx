@@ -349,7 +349,7 @@ export default function AICanvasModal (props: {
       visible={isModalOpen}
       onCancel={onClose}
       width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
-      style={showCanvas ? { top: 40, height: 'calc(100vh - 40px)' } : { top: 70 }}
+      style={{ top: 40, height: 'calc(100vh - 40px)' }}
       footer={null}
       closable={false}
       maskClosable={false}

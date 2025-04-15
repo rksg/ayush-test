@@ -143,7 +143,7 @@ export const History = styled.div`
 
 const CanvasChatWidth = '400px'
 const ChatOnlyWidth = '1000px'
-const ChatOnlyHeightDiff = '100px'
+const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
 const ModalInputHeight = '130px'

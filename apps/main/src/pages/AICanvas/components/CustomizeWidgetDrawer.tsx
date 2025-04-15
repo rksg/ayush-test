@@ -39,6 +39,8 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
+      mask={true}
+      maskClosable={true}
       width={400}
       children={
         <Form layout='vertical'
