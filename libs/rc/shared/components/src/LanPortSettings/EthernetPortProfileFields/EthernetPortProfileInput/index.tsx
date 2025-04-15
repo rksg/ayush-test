@@ -12,6 +12,7 @@ import {
   EthernetPortType,
   checkVlanMember,
   getEthernetPortTypeString,
+  transformDisplayOnOff,
   validateVlanId
 } from '@acx-ui/rc/utils'
 
@@ -95,9 +96,8 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
         {$t({ defaultMessage: '802.1X' })}
         <Form.Item
           children={
-            (currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
-             currentEthernetPortData?.authType === EthernetPortAuthType.OPEN)?
-              'Off': 'On'
+            transformDisplayOnOff(!(currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
+             currentEthernetPortData?.authType === EthernetPortAuthType.OPEN))
           }
         />
       </StepsForm.FieldLabel>
