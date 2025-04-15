@@ -6,12 +6,12 @@ import { render, screen }                                           from '@acx-u
 import { DualWanSettingsForm, DualWanSettingsFormProps } from './DualWanSettingsForm'
 const { mockDualWanData } = EdgeDualWanFixtures
 
-jest.mock('./WanPriorityTable', () => ({
-  WanPriorityTable: (props: {
+jest.mock('./WanPortPriorityTable', () => ({
+  WanPortPriorityTable: (props: {
       data?: EdgeWanMember[],
       onChange?: (data: EdgeWanMember[]) => void
     }) =>
-    <div data-testid='WanPriorityTable'>
+    <div data-testid='WanPortPriorityTable'>
       {props.data && <p>{JSON.stringify(props.data)}</p>}
     </div>
 }))
@@ -60,6 +60,6 @@ describe('DualWanSettingsForm', () => {
     render(<MockComponent nodeNameMapping={nodeNameMapping} />)
     expect(screen.getByText('WAN Links Management')).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.getByTestId('WanPriorityTable')).toHaveTextContent(JSON.stringify(mockDualWanData.wanMembers))
+    expect(screen.getByTestId('WanPortPriorityTable')).toHaveTextContent(JSON.stringify(mockDualWanData.wanMembers))
   })
 })
