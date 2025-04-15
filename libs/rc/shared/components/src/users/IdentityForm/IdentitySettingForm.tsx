@@ -45,7 +45,7 @@ export function IdentitySettingForm ({ modalMode } : { modalMode?: boolean }) {
 
   return (
     <GridRow>
-      <GridCol col={{ span: modalMode ? 8 : 6 }}>
+      <GridCol col={{ span: modalMode ? 22: 6 }}>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
         </Form.Item>

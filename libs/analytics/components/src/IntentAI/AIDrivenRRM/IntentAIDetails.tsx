@@ -13,6 +13,7 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
@@ -102,11 +103,16 @@ export function IntentAIDetails () {
         {!noData ? <>
           <DetailsSection data-testid='Details'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <Tabs>
-              <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
-              </Tabs.TabPane>
-            </Tabs>
+            <GridRow>
+              <KPIGrid />
+              <GridCol col={{ span: 24 }}>
+                <Tabs stickyTop={false}>
+                  <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
+                    <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+                  </Tabs.TabPane>
+                </Tabs>
+              </GridCol>
+            </GridRow>
           </DetailsSection>
 
           <GridRow>

@@ -639,7 +639,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
+      return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
     }
     return data
   }
@@ -824,12 +824,13 @@ export function NetworkForm (props:{
           networkVenue.networkId = networkId
         }
 
-        const { networkId: curNetworkId, venueId } = networkVenue
+        const { venueId } = networkVenue
         if (!oldVenueIds.includes(venueId)) { // new networkVenue
-          added.push(networkVenue)
-          update.push(networkVenue)
+          const nv = omit(networkVenue, ['clientIsolationAllowlistId'])
+          added.push(nv)
+          update.push(nv)
         } else { // networkVenue has existed
-          newVenueIds.push(networkVenue.venueId!)
+          newVenueIds.push(venueId!)
         }
       })
     }
@@ -843,12 +844,13 @@ export function NetworkForm (props:{
           } else if (newNetworkVenues?.length) {
             const newNetworkVenue = newNetworkVenues.find(venue => venue.venueId === venueId)
             if (newNetworkVenue) {
-              // remove the undeifned or null field
-              const oldNVenue = omitBy(networkVenue, isNil)
-              const newNVenue = omitBy(newNetworkVenue, isNil)
-
+              const oldNv = omit(networkVenue, ['clientIsolationAllowlistId'])
+              const newNv = omit(newNetworkVenue, ['clientIsolationAllowlistId'])
+              // remove the undefined or null field
+              const oldNVenue = omitBy(oldNv, isNil)
+              const newNVenue = omitBy(newNv, isNil)
               if (!isEqual(oldNVenue, newNVenue)) {
-                update.push(newNetworkVenue) // config changed need to update
+                update.push(newNVenue) // config changed need to update
               }
             }
           }
@@ -1547,9 +1549,10 @@ function useIdentityGroupOnNetworkActivation () {
       )
     ) {
       const identityGroupId = network?.identityGroupId
-      const identityId = network?.identityId
+      const identityId = network?.identity?.id
+      const enableIdentityAssociation = network?.enableIdentityAssociation
       if (identityGroupId) {
-        if (identityId) {
+        if (identityId && enableIdentityAssociation) {
           return await bindingSpecificIdentityPersonaGroupWithNetwork({
             params: { networkId: networkId, identityGroupId: identityGroupId, identityId: identityId }
           }).unwrap()
