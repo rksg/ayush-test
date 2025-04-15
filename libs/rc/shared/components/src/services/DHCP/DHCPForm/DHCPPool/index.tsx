@@ -106,7 +106,7 @@ export default function DHCPPoolTable ({
   isDefaultService
 }: DHCPPoolTableProps) {
   const { $t } = useIntl()
-  const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const [form] = Form.useForm<DHCPPool>()
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
@@ -255,9 +255,9 @@ export default function DHCPPoolTable ({
             { validator: (_, value) => {
               if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
                 if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
-                  if (showDatePicker) {
+                  if (showWarning) {
                     // eslint-disable-next-line max-len
-                    return Promise.reject($t({ defaultMessage: 'An additional 10 IPs on top of the number of clients desired are needed for the DCHP servers and gateways used in multiple mode' }))
+                    return Promise.reject($t({ defaultMessage: 'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' }))
                   } else {
                     // eslint-disable-next-line max-len
                     return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))

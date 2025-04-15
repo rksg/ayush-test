@@ -21,7 +21,7 @@ export function PoolTable (props:{
 }) {
   const { $t } = useIntl()
   const { data, readonly } = props
-  const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -109,7 +109,7 @@ export function PoolTable (props:{
       dataIndex: 'numberOfHosts',
       sorter: { compare: sortProp('numberOfHosts', defaultSort) },
       render: (_, row) => {
-        if (showDatePicker && !!row.numberOfHosts) {
+        if (showWarning && !!row.numberOfHosts) {
           return row.numberOfHosts - 10
         } else  {
           return row.numberOfHosts
