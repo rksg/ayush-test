@@ -9,10 +9,10 @@ import { IntentDetail } from '../../useIntentDetailsQuery'
 
 import { useApPowerDistributionQuery } from './services'
 import * as UI                         from './styledComponents'
+import { customTooltipText }           from './utils'
 
 function PowerDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
-  const intl = useIntl()
 
   const queryResult = useApPowerDistributionQuery({
     root: intent.root,
@@ -39,22 +39,6 @@ function PowerDistributionChart (intent: IntentDetail) {
   }
 
   const xName = $t({ defaultMessage: 'Tx Power' })
-
-  const customTooltipText = (values: { xValue: string, yValue: number }) => {
-    const { xValue, yValue } = values
-
-    return intl.formatMessage(
-      {
-        defaultMessage:
-          'Tx Power <b>{xValue}</b>: <b>{yValue}</b> {yValue, plural, one {AP} other {APs}}'
-      },
-      {
-        xValue,
-        yValue,
-        b: (chunks: React.ReactNode) => <b>{chunks}</b>
-      }
-    )
-  }
 
   return (<AutoSizer disableHeight>{({ width }) =>
     <Loader states={[queryResult]} style={{ width, minHeight: '248px' }}>

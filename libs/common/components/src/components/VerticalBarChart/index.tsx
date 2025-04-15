@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, RefObject } from 'react'
 
-import ReactECharts       from 'echarts-for-react'
-import { GridOption }     from 'echarts/types/dist/shared'
-import { renderToString } from 'react-dom/server'
+import ReactECharts           from 'echarts-for-react'
+import { GridOption }         from 'echarts/types/dist/shared'
+import { renderToString }     from 'react-dom/server'
+import { IntlShape, useIntl } from 'react-intl'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 import { formatter }         from '@acx-ui/formatter'
@@ -41,13 +42,17 @@ export interface VerticalBarChartProps
   grid?: GridOption
   showXaxisLabel?: boolean
   onBarAreaClick?: (data: BarData) => void
-  customTooltipText?: (values: { xValue: string, yValue: number }) => React.ReactNode
+  customTooltipText?: (values: {
+    xValue: string, yValue: number, xName: string, intl: IntlShape }) => React.ReactNode
 }
 
 export const tooltipFormatter = (
   dataFormatter: ReturnType<typeof formatter>,
   showTooltipName: Boolean,
-  customTooltipText?: (values: { xValue: string, yValue: number }) => React.ReactNode
+  intl: IntlShape,
+  xAxisName?: string,
+  customTooltipText?: (values: {
+    xValue: string, yValue: number, xName: string, intl: IntlShape }) => React.ReactNode
 ) => {
   return (params: TooltipComponentFormatterCallbackParams) => {
     const yValue = Array.isArray(params)
@@ -56,7 +61,12 @@ export const tooltipFormatter = (
       && Array.isArray(params[0].data) && params[0].data[0]
     const name = Array.isArray(params)
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
-    const values = { xValue: xValue.toString(), yValue: Number(yValue) }
+    const values = {
+      xValue: xValue.toString(),
+      yValue: Number(yValue),
+      xName: xAxisName || '',
+      intl
+    }
 
     return renderToString(
       <TooltipWrapper>
@@ -108,6 +118,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
   customTooltipText,
   ...props
 }: VerticalBarChartProps<TChartData>) {
+  const intl = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   useOnBarAreaClick(eChartsRef, onBarAreaClick)
   const option: EChartsOption = {
@@ -129,7 +140,8 @@ export function VerticalBarChart<TChartData extends BarChartData>
       axisPointer: {
         type: 'none'
       },
-      formatter: tooltipFormatter(dataFormatter, showTooltipName, customTooltipText)
+      formatter: tooltipFormatter(
+        dataFormatter, showTooltipName, intl, xAxisName, customTooltipText)
     },
     xAxis: {
       ...xAxisOptions(),
