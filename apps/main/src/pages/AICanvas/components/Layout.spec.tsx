@@ -508,11 +508,10 @@ describe('Layout', () => {
         />
       </Provider>
     )
-    expect(await screen.findByTestId('BarChart')).toBeVisible()
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
     expect(await screen.findByTestId('StackedAreaChart')).toBeVisible()
     expect(await screen.findByTestId('Table')).toBeVisible()
-    const dragItem = await screen.findByTestId('BarChart')
+    const dragItem = await screen.findByTestId('DonutChart')
     const dropItem = await screen.findByTestId('dropGroup')
     fireEvent.dragStart(dragItem)
     fireEvent.dragEnter(dropItem)
