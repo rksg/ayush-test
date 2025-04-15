@@ -1,9 +1,8 @@
 import { useRef, useEffect, RefObject } from 'react'
 
-import ReactECharts           from 'echarts-for-react'
-import { GridOption }         from 'echarts/types/dist/shared'
-import { renderToString }     from 'react-dom/server'
-import { IntlShape, useIntl } from 'react-intl'
+import ReactECharts       from 'echarts-for-react'
+import { GridOption }     from 'echarts/types/dist/shared'
+import { renderToString } from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 import { formatter }         from '@acx-ui/formatter'
@@ -39,17 +38,16 @@ export interface VerticalBarChartProps
   xAxisName?: string
   xAxisOffset?: number
   showTooltipName?: Boolean
-  showNameAndValue?: string[]
   grid?: GridOption
   showXaxisLabel?: boolean
   onBarAreaClick?: (data: BarData) => void
+  customTooltipText?: (values: { xValue: string, yValue: number }) => string
 }
 
 export const tooltipFormatter = (
   dataFormatter: ReturnType<typeof formatter>,
   showTooltipName: Boolean,
-  showNameAndValue: string[],
-  $t: IntlShape['formatMessage']
+  customTooltipText?: (values: { xValue: string, yValue: number }) => string
 ) => {
   return (params: TooltipComponentFormatterCallbackParams) => {
     const yValue = Array.isArray(params)
@@ -58,33 +56,11 @@ export const tooltipFormatter = (
       && Array.isArray(params[0].data) && params[0].data[0]
     const name = Array.isArray(params)
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
-
-    const [xAxisLabel = '', yAxisLabel = ''] = showNameAndValue
-
-    const yAxisText =
-      yAxisLabel &&
-      $t(
-        {
-          defaultMessage: `{count, plural,
-            one {{single}}
-            other {{plural}}
-          }`
-        },
-        {
-          count: yValue,
-          single: yAxisLabel,
-          plural: `${yAxisLabel}s`
-        }
-      )
+    const values = { xValue: xValue.toString(), yValue: Number(yValue) }
 
     return renderToString(
       <TooltipWrapper>
-        {showNameAndValue.length > 0 ? (
-          <>
-            {xAxisLabel} <b>{(xValue).toString()}</b>: <b>{dataFormatter(yValue)}</b>{' '}
-            {yAxisText}
-          </>
-        ) : (
+        {customTooltipText ? customTooltipText(values) : (
           <>
             {showTooltipName && name
               ? `${name.charAt(0).toUpperCase() + name.slice(1)}: `
@@ -126,13 +102,12 @@ export function VerticalBarChart<TChartData extends BarChartData>
   xAxisOffset,
   yAxisOffset,
   showTooltipName = true,
-  showNameAndValue = [],
   grid: gridProps,
   showXaxisLabel = true,
   onBarAreaClick,
+  customTooltipText,
   ...props
 }: VerticalBarChartProps<TChartData>) {
-  const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   useOnBarAreaClick(eChartsRef, onBarAreaClick)
   const option: EChartsOption = {
@@ -154,7 +129,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
       axisPointer: {
         type: 'none'
       },
-      formatter: tooltipFormatter(dataFormatter, showTooltipName, showNameAndValue, $t)
+      formatter: tooltipFormatter(dataFormatter, showTooltipName, customTooltipText)
     },
     xAxis: {
       ...xAxisOptions(),

@@ -3,6 +3,7 @@ import { useIntl }     from 'react-intl'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/formatter'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
@@ -47,6 +48,27 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const xName = $t({ defaultMessage: 'Channel' })
   const yName = $t({ defaultMessage: 'AP' })
 
+  const customTooltipText = (values: { xValue: string, yValue: number }) => {
+    const { xValue, yValue } = values
+    const count = formatter('countFormat')(yValue)
+    const yLabel = $t(
+      {
+        defaultMessage: `{count, plural,
+            one {{single}}
+            other {{plural}}
+          }`
+      },
+      {
+        count: values.yValue,
+        single: yName,
+        plural: `${yName}s`
+      }
+    )
+
+    return $t(
+      { defaultMessage: 'Channel {xValue}: {count} {yLabel}' }, { xValue, count, yLabel })
+  }
+
   return (
     <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
       <Card>
@@ -58,8 +80,8 @@ function ChannelDistributionChart (intent: IntentDetail) {
             xAxisName={xName}
             barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
             showTooltipName={false}
-            showNameAndValue={[xName, yName]}
             style={{ width, height: '200px' }}
+            customTooltipText={customTooltipText}
           /> : <NoData />
         }</AutoSizer>
       </Card>
