@@ -37,9 +37,11 @@ jest.mock('antd', () => {
 })
 jest.mock('@acx-ui/config')
 const mockNavigate = jest.fn()
+const mockNavigateToPath = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockNavigate
+  useNavigate: () => mockNavigate,
+  useNavigateToPath: () => mockNavigateToPath
 }))
 jest.mock('../../IntentContext')
 jest.mock('../../common/ScheduleTiming', () => ({
@@ -125,6 +127,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
+    expect(mockNavigateToPath).toBeCalled()
     await click(await screen.findByText('View'))
     expect(mockNavigate).toBeCalled()
   }
