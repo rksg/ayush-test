@@ -60,24 +60,11 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
 `
 
 const getStepsFormStyle = (width: number | string) => {
-  const STEPS_FORM_PADDING = 50
-  const STEPS_FORM_FOOTER_PADDING = 20
-  const isPercentage = typeof width === 'string' && width.endsWith('%')
-  let formWidth, formFooterWidth
+  const padding = 20
 
-  if (isPercentage) {
-    formWidth = `calc(100% - ${STEPS_FORM_PADDING}px)`
-    formFooterWidth = `calc(${width} - ${STEPS_FORM_FOOTER_PADDING}px)`
-  } else {
-    const parsedWidth = typeof width === 'number'
-      ? width
-      : isNaN(parseInt(width, 10))
-        ? 0
-        : parseInt(width, 10)
-
-    formWidth = `${parsedWidth - STEPS_FORM_PADDING}px`
-    formFooterWidth = `${parsedWidth - STEPS_FORM_FOOTER_PADDING}px`
-  }
+  const formWidth = `calc(100% - ${padding}px)`
+  let formFooterWidth = typeof width === 'number' ? `${width}px` : width
+  formFooterWidth = `calc(${formFooterWidth} - ${padding}px)`
 
   return `
     .ant-pro-steps-form {
@@ -87,7 +74,8 @@ const getStepsFormStyle = (width: number | string) => {
     /* ACX-83679: Only apply styles to the StepsForm's footer action container,
      not to other action containers (e.g., those inside .ant-form-item) */
 
-    .actions-footer[class*="styledComponents__ActionsContainer"] {
+    .ant-pro-steps-form > [class*="styledComponents__ActionsContainer"],
+    .ant-form > [class*="styledComponents__ActionsContainer"] {
       padding-left: 20px;
       margin-left: -16px;
       display: flex;
