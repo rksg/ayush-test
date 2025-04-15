@@ -2,6 +2,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
@@ -15,6 +16,7 @@ export default function MspCustomersLicences () {
 
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const mspEcTenantsPayload = {
     filters: {
@@ -38,7 +40,8 @@ export default function MspCustomersLicences () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })

@@ -22,6 +22,7 @@ export default function SolutionTokenLicenses () {
   const pmsIntegrationToggle = useIsSplitOn(Features.ENTITLEMENT_PMS_INTEGRATION_TOGGLE)
   const hybridCloudSecToggle = useIsSplitOn(Features.ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE)
   const piNetworkToggle = useIsSplitOn(Features.ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const mspEcTenantsPayload = {
     filters: {
@@ -45,7 +46,8 @@ export default function SolutionTokenLicenses () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })

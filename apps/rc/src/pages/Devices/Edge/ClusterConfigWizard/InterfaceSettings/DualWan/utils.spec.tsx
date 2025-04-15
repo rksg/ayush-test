@@ -1,3 +1,4 @@
+import { emptyDualWanLinkSettings }                         from '@acx-ui/edge/components'
 import { EdgePortTypeEnum, EdgePort, EdgeMultiWanModeEnum } from '@acx-ui/rc/utils'
 
 import { getDisplayPortString, getDisplayWanRole, getDualWanDataFromClusterWizard } from './utils'
@@ -39,7 +40,7 @@ describe('getDualWanDataFromClusterWizard', () => {
       },
       lagSettings: [{ lags: [] }]
     }
-    expect(getDualWanDataFromClusterWizard(formData)).toBeUndefined()
+    expect(getDualWanDataFromClusterWizard(formData)).toStrictEqual(emptyDualWanLinkSettings)
   })
 
   it('should return undefined for multi-node case', () => {
@@ -54,7 +55,7 @@ describe('getDualWanDataFromClusterWizard', () => {
       },
       lagSettings: [{ lags: [] }]
     }
-    expect(getDualWanDataFromClusterWizard(formData)).toBeUndefined()
+    expect(getDualWanDataFromClusterWizard(formData)).toStrictEqual(emptyDualWanLinkSettings)
   })
 
   it('single-node case with 2 or more WAN interfaces and no existing WAN members', () => {

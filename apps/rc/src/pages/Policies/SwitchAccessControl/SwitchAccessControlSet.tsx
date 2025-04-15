@@ -12,7 +12,7 @@ import { Features, useIsSplitOn }                                               
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
-  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
@@ -112,7 +112,7 @@ export function SwitchAccessControlSet () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchAccessControlSet)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateSwitchAccessControlSet)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
@@ -126,7 +126,7 @@ export function SwitchAccessControlSet () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchAccessControlSet)],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteSwitchAccessControlSet)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',

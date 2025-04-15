@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 
-import { get } from '@acx-ui/config'
+import { get }                        from '@acx-ui/config'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 const granularities = [
   { granularity: 'PT24H', hours: 24 * 7 },
@@ -13,7 +14,7 @@ export const calculateGranularity = (
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
   let gran = getGranularity(interval)
-  if (overlapsRollup(start)) minGranularity = 'PT1H'
+  if (overlapsRollup(start) || isCoreTierUser()) minGranularity = 'PT1H'
   return minGranularity &&
     moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
     ? minGranularity
@@ -38,4 +39,9 @@ export const overlapsRollup = (start: string) => {
   const rollupDays = parseInt(get('DRUID_ROLLUP_DAYS'), 10)
   const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days')
   return moment(start) < rollupDate
+}
+
+const isCoreTierUser = () => {
+  const { accountTier } = getUserProfile()
+  return isCoreTier(accountTier)
 }

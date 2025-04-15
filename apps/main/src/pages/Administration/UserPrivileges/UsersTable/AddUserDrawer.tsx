@@ -64,15 +64,17 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const [form] = Form.useForm()
   const [addAdmin] = useAddAdminMutation()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
+  const isCAMFFEnabled = useIsSplitOn(Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
   const [selectedAuth, setSelectedAuth] =
-    useState<AuthTypeRadioButtonEnum>(AuthTypeRadioButtonEnum.idm)
+    useState<AuthTypeRadioButtonEnum>(isCAMFFEnabled
+      ? AuthTypeRadioButtonEnum.commonAccount
+      : AuthTypeRadioButtonEnum.idm)
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const [isSystemRoleSelected, setSelectedRole] = useState<Boolean>()
 
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const notificationAdminContextualEnabled =
     useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
-  const isCAMFFEnabled = useIsSplitOn(Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
 
   const tenantAuthenticationData =
     useGetTenantAuthenticationsQuery({ params })
@@ -108,7 +110,10 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   }
 
   const onClose = () => {
-    setSelectedAuth(AuthTypeRadioButtonEnum.idm)
+    const _selectedAuth = isCAMFFEnabled
+      ? AuthTypeRadioButtonEnum.commonAccount
+      : AuthTypeRadioButtonEnum.idm
+    setSelectedAuth(_selectedAuth)
     form.resetFields()
     setVisible(false)
   }
@@ -200,7 +205,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
         layout='vertical'
         onFinish={handleSubmit}
       >
-        {isSsoConfigured && <AuthenticationSelector
+        {(isCAMFFEnabled || isSsoConfigured) && <AuthenticationSelector
           ssoConfigured={isSsoConfigured}
           setSelected={setSelectedAuth}
         />}

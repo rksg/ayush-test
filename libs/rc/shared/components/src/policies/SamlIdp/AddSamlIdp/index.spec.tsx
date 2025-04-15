@@ -212,6 +212,14 @@ describe('Add SAML IDP Profile', () => {
     await user.click(signingCertCombo)
     await user.click((await screen.findAllByText(mockCertName3))[0])
 
+    await user.click(screen.getByRole('button', { name: 'Add custom field' }))
+    const attributeMappingTypeCombo = screen.getByRole('combobox', { name: 'Attribute Type' })
+    await user.click(attributeMappingTypeCombo)
+    await user.click(await screen.findByText('Last Name'))
+
+    const mappedByNameField = screen.getByRole('textbox', { name: 'Claim Name' })
+    await user.type(mappedByNameField, 'lastName')
+
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(mockedMainSamlIdpProfile).toBeCalledWith({
@@ -220,7 +228,25 @@ describe('Add SAML IDP Profile', () => {
       encryptionCertificateEnabled: true,
       encryptionCertificateId: mockCertId2,
       signingCertificateEnabled: true,
-      signingCertificateId: mockCertId3
+      signingCertificateId: mockCertId3,
+      attributeMappings: [
+        {
+          name: 'lastName',
+          mappedByName: 'lastName'
+        },
+        {
+          name: 'displayName',
+          mappedByName: 'displayName'
+        },
+        {
+          name: 'email',
+          mappedByName: 'email'
+        },
+        {
+          name: 'phoneNumber',
+          mappedByName: 'phone'
+        }
+      ]
     }))
 
     await waitFor(() => expect(mockedActivateEncryptionCertificate).toBeCalledTimes(1))

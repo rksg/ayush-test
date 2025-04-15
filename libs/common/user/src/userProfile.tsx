@@ -9,6 +9,7 @@ import {
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 import {
   type UserProfile,
@@ -263,27 +264,37 @@ export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
     rbacOpsIds?: RbacOpsIds,
+    unsupportedTiers?: AccountTier[]
     requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsIds = [] } = props
-  const { rbacOpsApiEnabled } = getUserProfile()
+  const { scopes = [], children,
+    requireCrossVenuesPermission, rbacOpsIds = [], unsupportedTiers } = props
+  const { rbacOpsApiEnabled, accountTier } = getUserProfile()
+
+  let authorizedElement = children
+
+  if (Array.isArray(unsupportedTiers) && unsupportedTiers.length > 0) {
+    authorizedElement = unsupportedTiers.includes(accountTier as AccountTier)
+      ? <TenantNavigate replace to='/no-permissions' /> : children
+  }
 
   if (rbacOpsApiEnabled) {
     const shouldSkipRBACCheck = rbacOpsIds.length === 0
-    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds)) ?
-      children : <TenantNavigate replace to='/no-permissions' />
+    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds))
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
 
   if(typeof requireCrossVenuesPermission === 'object') {
     return hasCrossVenuesPermission(requireCrossVenuesPermission)
-      ? children : <TenantNavigate replace to='/no-permissions' />
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
 
   if(requireCrossVenuesPermission) {
     return hasScope(scopes) && hasCrossVenuesPermission()
-      ? children : <TenantNavigate replace to='/no-permissions' />
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
-  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
+
+  return hasScope(scopes) ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
 }
 
 
