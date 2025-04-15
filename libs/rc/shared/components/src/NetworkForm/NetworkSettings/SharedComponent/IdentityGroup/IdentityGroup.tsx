@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Drawer }                 from '@acx-ui/components'
+import { Drawer }                  from '@acx-ui/components'
 import {
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetDpskQuery,
@@ -251,7 +251,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
           if (result) {
             form.setFieldValue('identityGroupId', result?.id)
             form.setFieldValue('enableIdentityAssociation', undefined)
-            form.setFieldValue('identityId', undefined)
+            form.setFieldValue('identity', undefined)
             setSelectedIdentity(undefined)
           }
           resetAllDrawer()
