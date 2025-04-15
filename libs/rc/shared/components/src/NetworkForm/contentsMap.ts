@@ -153,7 +153,7 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
   [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
   [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
   [GuestNetworkTypeEnum.Directory]: 'Users are required to enter an organizational username and password to gain access to the network',
-  [GuestNetworkTypeEnum.SAML]: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.'
+  [GuestNetworkTypeEnum.SAML]: 'Users authenticate through the organization\'s SAML Identity Provider (IdP)'
 }
 
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
@@ -235,7 +235,7 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
     description: 'Description for Active Directory/ LDAP Server'
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
-    defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.',
+    defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP)',
     description: 'Description for SAML Identity Provider (IdP)'
   })
 }
