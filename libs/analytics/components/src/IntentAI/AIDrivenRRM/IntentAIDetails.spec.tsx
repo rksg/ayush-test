@@ -95,6 +95,7 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
+      expect(await screen.findByTestId('KPI')).toBeVisible()
       expect(await screen.findByText('Interfering Links')).toBeVisible()
     }
 

@@ -4,10 +4,10 @@ import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
 import { formatter }                              from '@acx-ui/formatter'
+import { channelList as channelListJson }         from '@acx-ui/utils'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
-import channelListJson                   from './mapping/channelList.json'
 import { useApChannelDistributionQuery } from './services'
 import * as UI                           from './styledComponents'
 
@@ -70,24 +70,22 @@ function ChannelDistributionChart (intent: IntentDetail) {
       { xValue: <b>{xValue}</b>, count: <b>{count}</b>, yLabel })
   }
 
-  return (
-    <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
+  return (<AutoSizer disableHeight>{({ width }) =>
+    <Loader states={[queryResult]} style={{ width, minHeight: '248px' }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Channel Distribution' })}</UI.Title>
-        <AutoSizer>{({ width }) =>
-          apChannelDistribution?.length ? <VerticalBarChart
-            data={data}
-            xAxisValues={channelList}
-            xAxisName={xName}
-            barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
-            showTooltipName={false}
-            style={{ width, height: '200px' }}
-            customTooltipText={customTooltipText}
-          /> : <NoData />
-        }</AutoSizer>
+        {apChannelDistribution?.length ? <VerticalBarChart
+          data={data}
+          xAxisValues={channelList}
+          xAxisName={xName}
+          barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
+          showTooltipName={false}
+          style={{ height: '200px' }}
+          customTooltipText={customTooltipText}
+        /> : <NoData />}
       </Card>
     </Loader>
-  )
+  }</AutoSizer>)
 }
 
 export default ChannelDistributionChart
