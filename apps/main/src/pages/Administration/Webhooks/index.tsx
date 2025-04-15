@@ -105,9 +105,9 @@ const R1Webhooks = () => {
   }]
 
   const actions: TableProps<Webhook>['actions'] = [{
-    scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     label: $t({ defaultMessage: 'Create Webhook' }),
     disabled: isDisabledCreate(),
+    scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addWebhook)],
     onClick: () => {
       setSelectedWebhook(undefined)
