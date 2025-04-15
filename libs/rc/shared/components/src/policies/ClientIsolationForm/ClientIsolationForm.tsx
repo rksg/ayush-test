@@ -132,7 +132,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <ClientIsolationSettingsForm editMode={editMode} />
+          <ClientIsolationSettingsForm editMode={editMode} isEmbedded={isEmbedded} />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>

@@ -14,12 +14,12 @@ import { FieldLabel }          from '../styledComponents'
 
 import ClientIsolationAllowListDetailsDrawer from './ClientIsolationListDetailsDrawer'
 
-interface ClientIsplationSettingFieldsProps {
+interface ClientIsolationSettingFieldsProps {
     index: number,
     readOnly?: boolean,
     onGUIChanged?: (fieldName: string) => void
 }
-const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps) => {
+const ClientIsolationSettingsFields = (props: ClientIsolationSettingFieldsProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const params = useParams()
@@ -173,7 +173,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
                 updateInstance={updateClientIsolationInstance}
               />
             }
-            width={'80%'}
+            width={'600px'}
           />
         </Space>
       </>}
