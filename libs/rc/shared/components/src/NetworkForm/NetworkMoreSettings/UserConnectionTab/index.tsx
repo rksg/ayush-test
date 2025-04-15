@@ -17,6 +17,7 @@ export function UserConnectionTab () {
   const isShowMaxDevices = guestNetworkType === GuestNetworkTypeEnum.HostApproval
     || guestNetworkType === GuestNetworkTypeEnum.SelfSignIn
     || guestNetworkType === GuestNetworkTypeEnum.Directory
+    || guestNetworkType === GuestNetworkTypeEnum.SAML
 
 
   const UserConnectionComponent = () => {

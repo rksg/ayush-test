@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }       from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -78,6 +78,10 @@ describe('Add user drawer component', () => {
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
       ),
       rest.get(

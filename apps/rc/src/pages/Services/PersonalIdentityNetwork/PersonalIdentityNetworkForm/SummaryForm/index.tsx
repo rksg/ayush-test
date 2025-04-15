@@ -4,9 +4,10 @@ import { Col, Form, Row }            from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 import styled                        from 'styled-components'
 
-import { Alert, StepsForm, Subtitle, useStepFormContext }                    from '@acx-ui/components'
-import { AccessSwitchTable, AccessSwitchTableDataType }                      from '@acx-ui/rc/components'
-import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
+import { Alert, StepsForm, Subtitle, useStepFormContext }                      from '@acx-ui/components'
+import { Features }                                                            from '@acx-ui/feature-toggle'
+import { AccessSwitchTable, AccessSwitchTableDataType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData }   from '@acx-ui/rc/utils'
 
 import { DistributionSwitchTable }            from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                           from '../GeneralSettingsForm/styledComponents'
@@ -17,6 +18,7 @@ styled(Subtitle).attrs({ level: 4 })`
   margin-top: 1.2em;
 `
 export const SummaryForm = () => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { $t } = useIntl()
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
@@ -25,7 +27,9 @@ export const SummaryForm = () => {
     getClusterName,
     getDhcpName,
     getTunnelProfileName,
-    getNetworksName
+    getNetworksName,
+    personaGroupData,
+    dpskData
   } = useContext(PersonalIdentityNetworkFormContext)
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
@@ -84,10 +88,31 @@ export const SummaryForm = () => {
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={pinName} />
       </Col>
-      <Col flex={1}>{/* eslint-disable-next-line max-len */}
-        <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
-          children={getVenueName(venueId)} />
-      </Col>
+      {
+        isL2GreEnabled ?
+          <>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })}
+                children={getTunnelProfileName(tunnelProfileId)} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+                children={getVenueName(venueId)} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'Identity Group' })}
+                children={personaGroupData?.name} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'DPSK Service' })}
+                children={dpskData?.name} />
+            </Col>
+          </> :
+          <Col flex={1}>{/* eslint-disable-next-line max-len */}
+            <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
+              children={getVenueName(venueId)} />
+          </Col>
+      }
     </Row>
     <Subtitle level={4}>
       { $t({ defaultMessage: 'RUCKUS Edge' }) }
@@ -98,20 +123,23 @@ export const SummaryForm = () => {
     <Subtitle level={4}>
       { $t({ defaultMessage: 'Wireless Network' }) }
     </Subtitle>
-    <Row gutter={20}>
-      <Col flex={1}>
-        <Form.Item
-          label={$t({ defaultMessage: 'Tunnel Profile' })}
-          children={getTunnelProfileName(tunnelProfileId)}
-        />
-      </Col>
-    </Row>
+    {
+      !isL2GreEnabled &&
+      <Row gutter={20}>
+        <Col flex={1}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Tunnel Profile' })}
+            children={getTunnelProfileName(tunnelProfileId)}
+          />
+        </Col>
+      </Row>
+    }
     <Row gutter={20}>
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Wireless Networks ({num})' },
           { num: networkIds?.length??0 })}
         children={
-          (networkIds?.length ?? 0) === 0 ? '0' :
+          (networkIds?.length ?? 0) === 0 ? undefined :
             getNetworksName(networkIds)?.map((item, index) => (
               <Row key={`networkNames-${index}`}>
                 {item}
