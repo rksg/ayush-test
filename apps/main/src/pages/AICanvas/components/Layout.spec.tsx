@@ -453,7 +453,8 @@ jest.mock('@acx-ui/components', () => {
     BarChart: () => <div data-testid='BarChart' />,
     DonutChart: () => <div data-testid='DonutChart' />,
     StackedAreaChart: () => <div data-testid='StackedAreaChart' />,
-    Table: () => <div data-testid='Table' />
+    Table: () => <div data-testid='Table' />,
+    NoDataIcon: () => <div data-testid='NoDataIcon' />
   }
 })
 
