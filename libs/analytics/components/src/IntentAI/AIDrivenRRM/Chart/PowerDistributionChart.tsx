@@ -40,24 +40,22 @@ function PowerDistributionChart (intent: IntentDetail) {
   const xName = $t({ defaultMessage: 'Tx Power' })
   const yName = $t({ defaultMessage: 'AP' })
 
-  return (
-    <Loader states={[queryResult]} style={{ minHeight: '254px' }}>
+  return (<AutoSizer disableHeight>{({ width }) =>
+    <Loader states={[queryResult]} style={{ width }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Power Transmission' })}</UI.Title>
-        <AutoSizer>{({ width }) =>
-          apPowerDistribution?.length ? <VerticalBarChart
-            data={data}
-            xAxisName={$t({ defaultMessage: 'Tx Power' })}
-            barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
-            xAxisValues={txPowerList}
-            showTooltipName={false}
-            showNameAndValue={[xName, yName]}
-            style={{ width, height: '200px' }}
-          /> : <NoData />
-        }</AutoSizer>
+        {apPowerDistribution?.length ? <VerticalBarChart
+          data={data}
+          xAxisName={$t({ defaultMessage: 'Tx Power' })}
+          barWidth={scaleLinear([300, 1000], [4, 20]).clamp(true)(width)}
+          xAxisValues={txPowerList}
+          showTooltipName={false}
+          showNameAndValue={[xName, yName]}
+          style={{ height: '200px' }}
+        /> : <NoData />}
       </Card>
     </Loader>
-  )
+  }</AutoSizer>)
 }
 
 export default PowerDistributionChart
