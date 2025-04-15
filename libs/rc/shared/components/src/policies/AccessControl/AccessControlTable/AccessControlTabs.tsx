@@ -6,6 +6,7 @@ import { Tabs }                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import { useTableQuery }                               from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier }                  from '@acx-ui/user'
 
 import AccessControlSet           from './AccessControlSet'
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'
@@ -24,6 +25,9 @@ const defaultPayload = {
 
 export function AccessControlTabs () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const paddingStyle = { paddingTop: '8px' }
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
@@ -75,13 +79,15 @@ export function AccessControlTabs () {
       >
         <DevicePolicyComponent />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Applications' })}
-        key='application'
-        style={paddingStyle}
-      >
-        <ApplicationPolicyComponent />
-      </Tabs.TabPane>
+      {
+        !isCore && <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Applications' })}
+          key='application'
+          style={paddingStyle}
+        >
+          <ApplicationPolicyComponent />
+        </Tabs.TabPane>
+      }
     </Tabs>
   )
 }
