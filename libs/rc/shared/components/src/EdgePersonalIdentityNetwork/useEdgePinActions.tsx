@@ -1,5 +1,6 @@
 import { difference, isEqual, omit } from 'lodash'
 
+import { Features }          from '@acx-ui/feature-toggle'
 import {
   useActivateEdgePinNetworkMutation,
   useCreateEdgePinMutation,
@@ -15,12 +16,19 @@ import {
   CatchErrorDetails
 } from '@acx-ui/utils'
 
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 // return the networks NOT included in `second`
 const differenceNetworks = (first: string[], second: string[]) => {
   return difference(first, second)
 }
 
+const customHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v1.1+json'
+}
+
 export const useEdgePinActions = () => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const [createPin] = useCreateEdgePinMutation()
   const [updatePin] = useUpdateEdgePinMutation()
 
@@ -55,6 +63,7 @@ export const useEdgePinActions = () => {
     const { payload, callback } = req
 
     return await createPin({
+      ...(isL2GreEnabled ? { customHeaders } : {}),
       payload,
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
@@ -84,7 +93,7 @@ export const useEdgePinActions = () => {
       | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { callback } = req
-    const { id: serviceId, ...payload } = req.payload
+    const { id: serviceId, vxlanTunnelProfileId, ...payload } = req.payload
 
     try {
       const isProfileNoChange = isEqual(omit(originData, 'networkIds'), omit(payload, 'networkIds'))
@@ -95,8 +104,9 @@ export const useEdgePinActions = () => {
         callback?.(reqResult)
       } else {
         const updateResult = await updatePin({
+          ...(isL2GreEnabled ? { customHeaders } : {}),
           params: { serviceId },
-          payload
+          payload: isL2GreEnabled ? payload : { ...payload, vxlanTunnelProfileId }
         }).unwrap()
 
 

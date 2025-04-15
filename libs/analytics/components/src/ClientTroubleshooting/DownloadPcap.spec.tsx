@@ -1,7 +1,8 @@
 import { showToast }                                            from '@acx-ui/components'
 import { dataApiURL, Provider }                                 from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery, waitFor } from '@acx-ui/test-utils'
-import { handleBlobDownloadFile }                               from '@acx-ui/utils'
+import { getUserProfile, setUserProfile }                       from '@acx-ui/user'
+import { AccountTier, handleBlobDownloadFile }                  from '@acx-ui/utils'
 
 import { DownloadPcap } from './DownloadPcap'
 import { b64ToBlob }    from './services'
@@ -45,6 +46,31 @@ describe('DownloadPcap', () => {
   })
 
   it('should render correctly', async () => {
+    render(<DownloadPcap pcapFilename={filename} />, { wrapper: Provider })
+    expect(mockTrigger).toBeCalledTimes(0)
+    expect(screen.getByRole('button', { name: 'Download .pcap' })).toBeVisible()
+  })
+
+  it('should not render the "Download .pcap" button for Core Tier users', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    render(<DownloadPcap pcapFilename={filename} />, { wrapper: Provider })
+    expect(mockTrigger).toBeCalledTimes(0)
+    expect(screen.queryByRole('button', { name: 'Download .pcap' })).toBeNull()
+  })
+
+  it('should render the "Download .pcap" button for Core Tier users with support', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        support: true
+      },
+      accountTier: AccountTier.CORE
+    })
     render(<DownloadPcap pcapFilename={filename} />, { wrapper: Provider })
     expect(mockTrigger).toBeCalledTimes(0)
     expect(screen.getByRole('button', { name: 'Download .pcap' })).toBeVisible()

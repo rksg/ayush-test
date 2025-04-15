@@ -7,6 +7,7 @@ import {
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Select }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import { SpaceWrapper }            from '@acx-ui/rc/components'
 import { useTableQuery }           from '@acx-ui/rc/utils'
@@ -51,6 +52,7 @@ const MspCustomerSelector = () => {
   const form = Form.useFormInstance()
   const ecType = Form.useWatch('ecType', form)
   const role = Form.useWatch('role', form)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   useEffect(() => {
     (role === RolesEnum.PRIME_ADMIN)
@@ -79,7 +81,8 @@ const MspCustomerSelector = () => {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const options = tableQuery.data?.data.map((item) => {
