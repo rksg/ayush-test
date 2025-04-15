@@ -3,19 +3,15 @@ import { useEffect } from 'react'
 import { Form, Select, Tooltip, Typography } from 'antd'
 
 import { Drawer, Loader }         from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
-  EdgeSdLanUrls,
-  hasPolicyPermission,
-  hasServicePermission,
-  NetworkTypeEnum,
-  PolicyOperation,
-  PolicyType,
   getServiceDetailsLink,
+  NetworkTypeEnum,
   ServiceOperation,
-  ServiceType } from '@acx-ui/rc/utils'
+  ServiceType
+} from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
 import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
@@ -28,6 +24,7 @@ import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelec
 import { messageMappings }                                from './messageMappings'
 import { NetworkTunnelActionModalProps }                  from './NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
+import { usePermissionResult }                            from './usePermissionResult'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreSelectOption                            from './WifiSoftGreSelectOption'
 
@@ -42,7 +39,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const hasChangePermission = usePermissionResult()
+  const { hasEdgeSdLanPermission, hasSoftGrePermission } = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
   const [form] = Form.useForm()
@@ -89,7 +86,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   }, [visible, tunnelTypeInitVal])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
-  const noChangePermission = !hasChangePermission
+  const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
   return (<Drawer
     title={$t({ defaultMessage: 'Tunnel: {name}' }, { name: networkVenueName })
@@ -121,7 +118,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
                 data-testid='softgre-option'
                 hidden={hiddenSoftGre}
                 value={NetworkTunnelTypeEnum.SoftGre}
-                disabled={isDisabledAll || noChangePermission || hiddenSoftGre}>
+                disabled={isDisabledAll || !hasSoftGrePermission || hiddenSoftGre}>
                 <Tooltip
                   title={isDisabledAll
                     ? $t(messageMappings.disable_deactivate_last_network)
@@ -132,7 +129,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               <Select.Option
                 data-testid='sd-lan-option'
                 value={NetworkTunnelTypeEnum.SdLan}
-                disabled={isDisabledAll || noChangePermission
+                disabled={isDisabledAll || !hasEdgeSdLanPermission
                   || isPinNetwork || !!!venueSdLanInfo}>
                 <Tooltip
                   title={isPinNetwork
@@ -152,10 +149,10 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             venueId={networkVenueId!}
             networkId={networkId!}
             cachedSoftGre={cachedSoftGre}
-            disabledInfo={(isDisabledAll || noChangePermission)
+            disabledInfo={(isDisabledAll || !hasSoftGrePermission)
               ? {
                 isDisabled: isDisabledAll,
-                noChangePermission,
+                noChangePermission: !hasSoftGrePermission,
                 tooltip: isDisabledAll
                   ? $t(messageMappings.disable_deactivate_last_network)
                   : undefined
@@ -173,10 +170,10 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             networkType={networkType!}
             venueSdLan={venueSdLanInfo}
             networkVlanPool={networkVlanPool}
-            disabledInfo={(isDisabledAll || noChangePermission || isPinNetwork)
+            disabledInfo={(isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork)
               ? {
                 isDisabled: isDisabledAll || !!isPinNetwork,
-                noChangePermission,
+                noChangePermission: !hasEdgeSdLanPermission,
                 tooltip: isPinNetwork
                   ? $t(messageMappings.disable_pin_network)
                   : (isDisabledAll
@@ -233,32 +230,4 @@ const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNet
   if (!isSdLanLastNetwork) return false
 
   return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
-}
-export const usePermissionResult = () => {
-  const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
-
-  const hasSdLanPermission = () => {
-    return isAllowOpsEnabled ?
-      hasPermission({
-        rbacOpsIds: [
-          [
-            getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
-            getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
-          ]
-        ]
-      }):
-      hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
-  }
-
-  // eslint-disable-next-line max-len
-  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasSdLanPermission() : true
-  // eslint-disable-next-line max-len
-  const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
-  // eslint-disable-next-line max-len
-  const hasIpSecPermission = isIpSecEnabled ? hasPolicyPermission({ type: PolicyType.IPSEC, oper: PolicyOperation.EDIT }) : true
-
-  return hasEdgeSdLanPermission && hasSoftGrePermission && hasIpSecPermission
 }

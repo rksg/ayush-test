@@ -7,16 +7,11 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
-  EdgeSdLanUrls,
   NetworkTunnelSdLanAction,
   NetworkTypeEnum,
-  PolicyOperation,
-  PolicyType,
   ServiceOperation,
   ServiceType,
-  getServiceDetailsLink,
-  hasPolicyPermission,
-  hasServicePermission
+  getServiceDetailsLink
 } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
 import { hasPermission }      from '@acx-ui/user'
@@ -29,6 +24,7 @@ import { EdgeSdLanRadioOption }                           from './EdgeSdLanRadio
 import { messageMappings }                                from './messageMappings'
 import * as UI                                            from './styledComponents'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
+import { usePermissionResult }                            from './usePermissionResult'
 import { SoftGreNetworkTunnel }                           from './useSoftGreTunnelActions'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreRadioOption                             from './WifiSoftGreRadioOption'
@@ -68,7 +64,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const hasChangePermission = usePermissionResult()
+  const { hasEdgeSdLanPermission, hasSoftGrePermission } = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -134,7 +130,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   }, [visible, tunnelType, isSoftGreEnabled, isEdgeSdLanMvEnabled, isEdgePinHaEnabled, venueSdLanInfo, softGreProfileId])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
-  const noChangePermission = !hasChangePermission
+  const noChangePermission = !hasEdgeSdLanPermission && !hasSoftGrePermission
 
   const localBreakoutRadio = (<Radio
     value={NetworkTunnelTypeEnum.None}
@@ -186,10 +182,10 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
                 venueId={networkVenueId!}
                 networkId={networkId!}
                 cachedSoftGre={cachedSoftGre}
-                disabledInfo={(isDisabledAll || noChangePermission)
+                disabledInfo={(isDisabledAll || !hasSoftGrePermission)
                   ? {
                     isDisabled: isDisabledAll,
-                    noChangePermission,
+                    noChangePermission: !hasSoftGrePermission,
                     tooltip: isDisabledAll
                       ? $t(messageMappings.disable_deactivate_last_network)
                       : undefined
@@ -208,10 +204,10 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
                 networkType={networkType!}
                 venueSdLan={venueSdLanInfo}
                 networkVlanPool={networkVlanPool}
-                disabledInfo={(isDisabledAll || noChangePermission || isPinNetwork)
+                disabledInfo={(isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork)
                   ? {
                     isDisabled: isDisabledAll || !!isPinNetwork,
-                    noChangePermission,
+                    noChangePermission: !hasEdgeSdLanPermission,
                     tooltip: isPinNetwork
                       ? $t(messageMappings.disable_pin_network)
                       : (isDisabledAll
@@ -256,30 +252,4 @@ const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNet
   if (!isSdLanLastNetwork) return false
 
   return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
-}
-
-export const usePermissionResult = () => {
-  const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-
-  const hasSdLanPermission = () => {
-    return isAllowOpsEnabled ?
-      hasPermission({
-        rbacOpsIds: [
-          [
-            getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
-            getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
-          ]
-        ]
-      }):
-      hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
-  }
-
-  // eslint-disable-next-line max-len
-  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasSdLanPermission() : true
-  // eslint-disable-next-line max-len
-  const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
-
-  return hasEdgeSdLanPermission && hasSoftGrePermission
 }
