@@ -4,7 +4,11 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasRaiPermission }                      from '@acx-ui/user'
+import {
+  getUserProfile,
+  hasRaiPermission,
+  isCoreTier
+}                      from '@acx-ui/user'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -12,6 +16,8 @@ function NetworkTabs () {
   const basePath = useTenantLink(`/networks/wireless/${params.networkId}/network-details/`)
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -46,7 +52,7 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview'
       />
-      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane
+      { (hasRaiPermission('READ_INCIDENTS') && !isCore) && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       />

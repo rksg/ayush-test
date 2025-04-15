@@ -19,7 +19,7 @@ describe('KPICard', () => {
         defaultMessage: [
           {
             type: 0,
-            value: 'Interfering links'
+            value: 'Interfering Links'
           }
         ]
       },
@@ -32,7 +32,7 @@ describe('KPICard', () => {
     }
     render(<KPICard kpi={mockedKPI} />)
 
-    expect(screen.getByText('Interfering links')).toBeInTheDocument()
+    expect(screen.getByText('Interfering Links')).toBeInTheDocument()
     expect(screen.getByText('0')).toBeInTheDocument()
     expect(screen.getByText('-100%')).toBeInTheDocument()
   })
@@ -68,7 +68,7 @@ describe('KPIFields', () => {
     const loader = screen.getByRole('img', { name: 'loader' })
     expect(loader).toBeVisible()
 
-    const kpiField = await screen.findByText('Interfering links')
+    const kpiField = await screen.findByText('Interfering Links')
     expect(kpiField).toBeInTheDocument()
   })
 })
