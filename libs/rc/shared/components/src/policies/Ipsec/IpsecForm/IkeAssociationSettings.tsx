@@ -64,7 +64,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
 
   useEffect (() => {
     let ikeProposalSelection = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
-    setIkeProposalType(ikeProposalSelection)
+    setIkeProposalType(ikeProposalSelection ? ikeProposalSelection : IpSecProposalTypeEnum.DEFAULT)
 
     if (loadIkeSettings && initIpSecData) {
       if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
