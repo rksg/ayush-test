@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
@@ -21,18 +21,20 @@ import {
 } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
-  NetworkSaveData,
-  NetworkVenue,
-  useTableQuery,
-  Venue,
-  generateDefaultNetworkVenue,
-  SchedulingModalState,
-  RadioTypeEnum,
-  IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
+  ConfigTemplateType,
+  EdgeMvSdLanViewData,
+  generateDefaultNetworkVenue,
+  IsNetworkSupport6g,
+  NetworkSaveData,
   NetworkTunnelSoftGreAction,
-  ConfigTemplateType
+  NetworkVenue,
+  RadioTypeEnum,
+  SchedulerTypeEnum,
+  SchedulingModalState,
+  useConfigTemplate,
+  useTableQuery,
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -44,10 +46,10 @@ import {
   NetworkTunnelActionDrawer,
   NetworkTunnelActionModal,
   NetworkTunnelActionModalProps,
-  useGetSoftGreScopeVenueMap,
-  useGetIpsecScopeVenueMap
+  useGetIpsecScopeVenueMap,
+  useGetSoftGreScopeVenueMap
 } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                            from '../../NetworkTunnelActionModal/types'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }     from '../../NetworkTunnelActionModal/types'
 import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
 import { useIsEdgeFeatureReady }                              from '../../useEdgeActions'
@@ -177,6 +179,7 @@ export function Venues (props: VenuesProps) {
 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -670,7 +673,8 @@ export function Venues (props: VenuesProps) {
     modalFormValues: NetworkTunnelActionForm,
     otherData: {
       network: NetworkTunnelActionModalProps['network'],
-      venueSdLan?: EdgeMvSdLanViewData
+      venueSdLan?: EdgeMvSdLanViewData,
+      isL2greReady?: boolean
     }
   ) => {
     try {
@@ -680,19 +684,23 @@ export function Venues (props: VenuesProps) {
         networkInfo: otherData.network,
         otherData
       }
-      if (isSoftGreEnabled) {
+      if (isSoftGreEnabled
+        && modalFormValues.tunnelType === NetworkTunnelTypeEnum.SoftGre) {
         handleSoftGreTunnelAction(args)
         if (isIpSecEnabled) {
           handleIpsecAction(args)
         }
       }
 
-      const networkVenueId = otherData.network?.venueId ?? ''
-      // eslint-disable-next-line max-len
-      const originalVenueSdLan = sdLanScopedNetworkVenues.sdLansVenueMap[networkVenueId]?.[0]
-      const shouldCloseModal = await handleSdLanTunnelAction(originalVenueSdLan, args)
-      if (shouldCloseModal !== false)
-        handleCloseTunnelModal()
+      if(modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan) {
+        const networkVenueId = otherData.network?.venueId ?? ''
+        // eslint-disable-next-line max-len
+        const originalVenueSdLan = sdLanScopedNetworkVenues.sdLansVenueMap[networkVenueId]?.[0]
+        args.otherData.isL2greReady = isEdgeL2oGreReady
+        const shouldCloseModal = await handleSdLanTunnelAction(originalVenueSdLan, args)
+        if (shouldCloseModal !== false)
+          handleCloseTunnelModal()
+      }
     }catch (e) {
       console.error('Error on handleNetworkTunnelActionFinish', e)  // eslint-disable-line no-console
       handleCloseTunnelModal()
