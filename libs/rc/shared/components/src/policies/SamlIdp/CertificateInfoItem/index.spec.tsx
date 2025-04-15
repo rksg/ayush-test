@@ -58,6 +58,6 @@ describe('CertificateInfoItem', () => {
       , { route: { path: detailViewPath, params } }
     )
 
-    expect(screen.getByText('OFF')).toBeVisible()
+    expect(screen.getByText('Off')).toBeVisible()
   })
 })
