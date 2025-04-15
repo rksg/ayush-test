@@ -132,7 +132,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       data: [rootNode, ...graphNodes],
       links,
       top: '20%',
-      left: '17.5%',
+      left: '25%',
       center: ['50%', '50%'],
       width: '50%',
       height: '50%',
