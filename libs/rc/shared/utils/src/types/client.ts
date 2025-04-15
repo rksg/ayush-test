@@ -171,15 +171,13 @@ export type WiredClientInfo = {
   apMac: string
   portNumber: number
   macAddress: string
-  osType: string
+  deviceType: string
   ipAddress: string
   hostname: string
   venueId: string
   venueName: string
   vlanId: number
-  connectedTime: string
-  connectedTimeString: string // form GUI
-  connectedTimeParssed: boolean // form GUI
+  authStatus: string
 }
 
 type VenueInformation = {

@@ -679,12 +679,6 @@ export const aggregatedApWiredClientListData = (wiredClientList: TableResult<Wir
       macAddress: client.macAddress.toLowerCase()
     }
 
-    if (tmp.connectedTime && !tmp.connectedTimeParssed) {
-      tmp.connectedTimeString =
-        formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
-      tmp.connectedTimeParssed = true
-    }
-
     data.push(tmp)
   })
 
