@@ -40,7 +40,7 @@ export const useEdgeSdLanActions = () => {
     serviceId: string,
     venueId: string,
     networkId: string,
-    currentTunnelProfileId: string,
+    currentTunnelProfileId: string | undefined,
     originTunnelProfileId: string | undefined,
     cb?: () => void
   ) => {

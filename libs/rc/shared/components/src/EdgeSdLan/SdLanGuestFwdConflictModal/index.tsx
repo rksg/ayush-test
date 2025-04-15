@@ -65,15 +65,18 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     networkName = find(typedTunneledWlans, { networkId: currentNetworkId })?.networkName ?? ''
 
     impactVenueIds = (typedTunneledWlans)
-      .filter(n => n.networkId === currentNetworkId
+      .filter(n => {
+        // eslint-disable-next-line max-len
+        const isDiffL2oGreDmzState =(((Boolean(n.forwardingTunnelProfileId) && (n.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE)) === !activatedDmz)
+          || (n.forwardingTunnelProfileId === '' && activatedDmz))
+        // eslint-disable-next-line max-len
+        const isDiffDmzState = (typedTunneledGuestWlans?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
+        return n.networkId === currentNetworkId
          && n.venueId !== currentNetworkVenueId
          && (isL2oGreReady === true ?
-           // eslint-disable-next-line max-len
-           (((Boolean(n.forwardingTunnelProfileId) && (n.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE)) === !activatedDmz)
-          || (n.forwardingTunnelProfileId === '' && activatedDmz))
-           // eslint-disable-next-line max-len
-           : (typedTunneledGuestWlans?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
-         )
+           isDiffL2oGreDmzState
+           : isDiffDmzState
+         )}
       ).map(i => i.venueId)
   }
 
