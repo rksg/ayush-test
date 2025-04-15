@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                          from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
 import { ApDeviceStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                             from '@acx-ui/store'
 import {
@@ -247,6 +247,10 @@ describe('Device Inventory Table', () => {
     mockServer.use(
       rest.post(
         MspUrlsInfo.exportMspEcDeviceInventory.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.exportMspEcDeviceInventory.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
       rest.get(

@@ -4,35 +4,21 @@ import { Form, Space, Typography } from 'antd'
 import { reduce }                  from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Loader, useStepFormContext } from '@acx-ui/components'
-import { TypeForm }                   from '@acx-ui/rc/components'
-import { EdgeStatus }                 from '@acx-ui/rc/utils'
+import { Loader }     from '@acx-ui/components'
+import { TypeForm }   from '@acx-ui/rc/components'
+import { EdgeStatus } from '@acx-ui/rc/utils'
 
-import { ClusterConfigWizardContext }                                     from '../../ClusterConfigWizardDataProvider'
-import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from '../types'
+import { ClusterConfigWizardContext }          from '../../ClusterConfigWizardDataProvider'
+import { InterfaceSettingFormStepCommonProps } from '../types'
 
-import { DualWanSettingsForm }             from './DualWanSettingsForm'
-import { getDualWanDataFromClusterWizard } from './utils'
+import { DualWanSettingsForm } from './DualWanSettingsForm'
 
 export const DualWanForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
-  const {
-    form: configWizardForm,
-    current: currentStep
-  } = useStepFormContext<InterfaceSettingsFormType>()
+
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   useEffect(() => onInit?.(), [onInit])
-
-  useEffect(() => {
-    if (currentStep !== 2) {
-      return
-    }
-
-    const configWizardFormData = configWizardForm.getFieldsValue(true)
-    // eslint-disable-next-line max-len
-    const dualWanData = getDualWanDataFromClusterWizard(configWizardFormData)
-    configWizardForm.setFieldValue('multiWanSettings', dualWanData)
-  }, [currentStep])
 
   return (
     <TypeForm
@@ -44,7 +30,7 @@ export const DualWanForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => 
           {
           // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Configure the dual WAN settings for all RUCKUS Edges in this cluster ({clusterName}):' },
-              { clusterName: 'clusterName' })
+              { clusterName: clusterInfo?.name })
           }
         </Typography.Text>
       </Space>}
