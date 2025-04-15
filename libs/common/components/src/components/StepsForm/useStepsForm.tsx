@@ -297,10 +297,7 @@ export function useStepsForm <T> ({
     {buttons.cancel}
   </>
 
-  const buttonEls = <UI.ActionsContainer
-    data-testid='steps-form-actions'
-    className='actions-footer'
-  >
+  const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
     <UI.ActionsButtons
       $editMode={!!editMode}
       $multipleSteps={steps.length > 1}
