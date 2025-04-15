@@ -289,6 +289,10 @@ describe('NewManageIntegrator', () => {
   })
   beforeEach(async () => {
     mockServer.use(
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
       rest.get(
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))

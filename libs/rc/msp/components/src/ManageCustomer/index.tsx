@@ -193,6 +193,7 @@ export function ManageCustomer () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -287,7 +288,8 @@ export function ManageCustomer () {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    option: { skip: action !== 'edit' }
+    option: { skip: action !== 'edit' },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))

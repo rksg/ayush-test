@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { CancelCircle }                   from '@acx-ui/icons'
 import { useGetMspEcWithVenuesListQuery } from '@acx-ui/msp/services'
 import { MspEcWithVenue }                 from '@acx-ui/msp/utils'
@@ -45,6 +46,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
   const [totalCount, setTotalCount] = useState<number>(0)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   function getSelectedKeys (selected: MspEcWithVenue[]) {
     const customers = selected.filter(ec => !ec.allVenues
@@ -61,7 +63,8 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const { data: customerList, isLoading, isFetching }
-  = useGetMspEcWithVenuesListQuery({ params: useParams(), payload: customerListPayload })
+  = useGetMspEcWithVenuesListQuery({ params: useParams(), payload: customerListPayload,
+    enableRbac: isViewmodleAPIsMigrateEnabled })
 
   const onClose = () => {
     setVisible(false)
