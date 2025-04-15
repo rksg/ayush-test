@@ -3,10 +3,10 @@ import { useIntl }     from 'react-intl'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
+import { channelList as channelListJson }         from '@acx-ui/utils'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
-import channelListJson                   from './mapping/channelList.json'
 import { useApChannelDistributionQuery } from './services'
 import * as UI                           from './styledComponents'
 
