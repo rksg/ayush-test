@@ -187,9 +187,24 @@ describe('Dashboard', () => {
       expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
       expect(await screen.findByTestId('expanded-button')).toBeVisible()
       await userEvent.click(await screen.findByTestId('close-button'))
+    })
 
-      // await userEvent.click(dashboardMoreBtn[0])
-      // await userEvent.click(await screen.findByRole('menuitem', { name: 'Set as Landing Page' }))
+    it('should set dashboard as landing Page correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      let dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      expect(dashboardMoreBtn).toHaveLength(3)
+      await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(await screen.findByRole('menuitem', { name: 'Set as Landing Page' }))
+      dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      expect(dashboardMoreBtn).toHaveLength(4)
     })
 
     it('should switch dashboard correctly', async () => {
@@ -213,11 +228,11 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       await userEvent.click(
-        await within(dashboardDrawer).findByText('Import dashboards from available canvases')
+        await within(dashboardDrawer).findByText('Import Canvas')
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('Import Dashboards')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
 
       const canvasMoreBtn = await screen.findAllByTestId('canvas-more-btn')
       await userEvent.click(canvasMoreBtn[0])
@@ -234,11 +249,30 @@ describe('Dashboard', () => {
       await userEvent.click(await screen.findByTestId('collapsed-button'))
       expect(screen.queryByTestId('collapsed-button')).toBeNull()
       await userEvent.click(await screen.findByTestId('close-button'))
+    })
 
+    it('should delate canvas correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Canvas')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+
+      let canvasMoreBtn = await screen.findAllByTestId('canvas-more-btn')
       await userEvent.click(canvasMoreBtn[1])
+
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Delete' }))
       expect(await screen.findByText('Delete Canvas')).toBeVisible()
-
     })
 
   })

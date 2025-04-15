@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import { Dropdown, Menu, MenuProps, Tooltip }          from 'antd'
+import { Dropdown, Menu, MenuProps, Tooltip, Space }   from 'antd'
 import moment                                          from 'moment-timezone'
 import { DndProvider, useDrag, useDragLayer, useDrop } from 'react-dnd'
 import { HTML5Backend }                                from 'react-dnd-html5-backend'
@@ -15,9 +15,9 @@ import {
 
 import { ItemTypes } from '../AICanvas/components/GroupItem'
 
-import * as UI from './styledComponents'
+import { DashboardInfo, updateDashboardList } from './index.utils'
+import * as UI                                from './styledComponents'
 
-import { DashboardInfo } from './index'
 
 type ListItemProps = {
   item: DashboardInfo;
@@ -133,19 +133,21 @@ const getItemInfo = (props: {
         }
       </div>}
     </div>
-    {hasDropdownMenu &&
+    {hasDropdownMenu && <div className='action'>
       <Dropdown
         overlay={dropdownMenu}
         key='actionMenu'
         trigger={['click']}
       >
-        <MoreVertical size='sm'
+        <MoreVertical
+          size='sm'
           data-testid='dashboard-more-btn'
         // onClick={(e) => e.stopPropagation()}
         />
-      </Dropdown>}
+      </Dropdown>
+    </div>}
 
-    {/* {hasDropdownMenu && <div className='action' style={{ background: 'yellow' }}>
+    {/* {hasDropdownMenu && <div className='action'>
       <Dropdown
         overlay={dropdownMenu}
         trigger={['click']} //TODO: Fix bug
@@ -185,12 +187,25 @@ export const DashboardDrawer = (props: {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     const [action, id] = e.key.split('_')
     console.log('selectedItem: ', id) // eslint-disable-line no-console
-    switch (action) {
+    let updated = dashboardList
+    const targetIndex = dashboardList.findIndex(item => item.id === id)
+    switch (action) { // TODO: should call api
       case 'landing':
+        updated = [
+          dashboardList[targetIndex],
+          ...dashboardList.slice(0, targetIndex),
+          ...dashboardList.slice(targetIndex + 1)
+        ]
+        setDashboardList(updateDashboardList(updated))
         break
       case 'edit':
         break
       case 'remove':
+        updated = [
+          ...dashboardList.slice(0, targetIndex),
+          ...dashboardList.slice(targetIndex + 1)
+        ]
+        setDashboardList(updateDashboardList(updated))
         break
       default: // view
         props.handlePreview(id)
@@ -252,6 +267,7 @@ export const DashboardDrawer = (props: {
 
         handleReorder(dragIndex, targetIndex)
         dragged.index = targetIndex
+        isDraggingItemRef.current = false
       },
       drop: () => {
         isDraggingItemRef.current = false
@@ -283,36 +299,42 @@ export const DashboardDrawer = (props: {
 
   return <Drawer
     title={$t({ defaultMessage: 'My Dashboards ({count})' }, { count: dashboardList?.length })}
+    subTitle={$t({ defaultMessage: 'Imports from private or public canvases' })}
     width={420}
     visible={props.visible}
     onClose={props.onClose}
-    children={<>
-      <DndProvider backend={HTML5Backend}>
-        <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>
-          {dashboardList.map((item, index) => (
-            <ListItem
-              key={item.id}
-              item={item}
-              index={index}
-              isDraggingItemRef={isDraggingItemRef}
-              handleReorder={handleReorder}
-              handleMenuClick={handleMenuClick}
-            />
-          ))}
-          <CustomDragPreview />
-        </UI.DashboardList>
-      </DndProvider>
-
-      <Button
-        type='link'
-        size='small'
-        style={{ marginBottom: '30px' }}
-        onClick={() => {
-          props.onNextClick(true)
-        }}
-      >{
-          $t({ defaultMessage: 'Import dashboards from available canvases' })
-        }</Button>
-    </>}
+    children={<DndProvider backend={HTML5Backend}>
+      <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>
+        {dashboardList.map((item, index) => (
+          <ListItem
+            key={item.id}
+            item={item}
+            index={index}
+            isDraggingItemRef={isDraggingItemRef}
+            handleReorder={handleReorder}
+            handleMenuClick={handleMenuClick}
+          />
+        ))}
+        <CustomDragPreview />
+      </UI.DashboardList>
+    </DndProvider>}
+    footer={
+      <Space style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+        <Tooltip title={dashboardList?.length === 10
+          ? $t({ defaultMessage: 'Maximum of 10 dashboards reached, import unavailable' })
+          : ''
+        }>
+          <span>
+            <Button
+              onClick={() => props.onNextClick(true)}
+              type='primary'
+              disabled={dashboardList?.length === 10}
+            >
+              {$t({ defaultMessage: 'Import Canvas' })}
+            </Button>
+          </span>
+        </Tooltip>
+      </Space>
+    }
   />
 }

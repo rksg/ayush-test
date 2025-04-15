@@ -94,4 +94,36 @@ export const mockCanvasList = [{
   widgetCount: 0,
   visible: true,
   usedAsOwnDashboard: false
+}, {
+  id: '879973540cfe4e5b95e0ebe7606a78dg',
+  name: 'Dashboard 5',
+  updatedDate: '2025-04-09T08:19:56.973+00:00',
+  widgetCount: 2,
+  visible: true,
+  author: 'FisrtName 120 LastName 120\n',
+  usedAsOwnDashboard: true
+}, {
+  id: '879973540cfe4e5b95e0ebe7606a78dh',
+  name: 'Dashboard 6',
+  updatedDate: '2025-04-09T08:19:56.973+00:00',
+  widgetCount: 12,
+  visible: true,
+  author: 'FisrtName 129 LastName 129\n',
+  usedAsOwnDashboard: false
+}, {
+  id: '879973540cfe4e5b95e0ebe7606a79dg',
+  name: 'Dashboard 5',
+  updatedDate: '2025-04-09T08:19:56.973+00:00',
+  widgetCount: 2,
+  visible: true,
+  author: 'FisrtName 120 LastName 120\n',
+  usedAsOwnDashboard: false
+}, {
+  id: '879973540cfe4e5b95e0ebe7606a80dh',
+  name: 'Dashboard 6',
+  updatedDate: '2025-04-09T08:19:56.973+00:00',
+  widgetCount: 3,
+  visible: true,
+  author: 'author name',
+  usedAsOwnDashboard: false
 }]

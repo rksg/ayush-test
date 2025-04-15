@@ -1,8 +1,8 @@
 import { Input, List as AntList }    from 'antd'
 import styled, { createGlobalStyle } from 'styled-components/macro'
 
-import { Select }            from '@acx-ui/components'
-import { ArrowChevronRight } from '@acx-ui/icons'
+import { Select, Tabs as AcxTabs } from '@acx-ui/components'
+import { ArrowChevronRight }       from '@acx-ui/icons'
 
 export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
   width: 16px;
@@ -109,6 +109,7 @@ export const DashboardItem = styled.div`
   overflow: hidden;
   width: 100%;
   gap: 8px;
+
   &[draggable=true] {
     cursor: grab;
   }
@@ -168,7 +169,7 @@ export const DashboardItem = styled.div`
   .action {
     display: inline-flex;
     align-items: center;
-    z-index: 1;
+    cursor: pointer;
     svg {
       path {
         color: var( --acx-neutrals-70);
@@ -178,29 +179,25 @@ export const DashboardItem = styled.div`
   &:hover {
     .mark.move {
       opacity: 1;
-    }  
+    }
   }
   &.dragged {
     border: 1px solid var(--acx-accents-orange-30);
     background: var(--acx-accents-orange-10);
     opacity: 0.92;
-    .mark,
     .action {
       opacity: 0;
+    }
+    .mark.move {
+      opacity: 1;
     }
   }
   &.dragging {
     border: 1px dashed var(--acx-accents-orange-30);
     background: rgba(254, 246, 237, 0.30);
     .info,
-    .mark,
+    .mark.move,
     .action {
-      opacity: 0;
-    }
-  }
-  &.disabled-hover,
-  &.dragging {
-    .mark.move {
       opacity: 0;
     }
   }
@@ -209,8 +206,17 @@ export const DashboardItem = styled.div`
 export const SearchInput = styled(Input)`
   border-radius: 4px;
   border: 1px solid var(--acx-neutrals-30);
-  margin: 10px 0 8px;
+  margin: 0 0 8px;
   padding: 4px 12px 4px 8px;
+`
+
+export const Tabs = styled(AcxTabs)`
+  .ant-tabs-nav {
+    margin: 4px 0 12px !important;
+  }
+  .ant-tabs-nav-wrap {
+    justify-content: center;
+  }
 `
 
 export const CanvasListItem = styled(AntList.Item)`
@@ -227,7 +233,7 @@ export const CanvasListItem = styled(AntList.Item)`
   }
 
   .ant-checkbox + span {
-    padding: 0 14px 0 12px;
+    padding: 0 15px 0 12px;
     max-width: 100%;
   }
 

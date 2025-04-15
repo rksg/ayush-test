@@ -94,25 +94,13 @@ import * as CanvasUI                                                     from '.
 
 import { DashboardDrawer }               from './DashboardDrawer'
 import { ImportDashboardDrawer }         from './ImportDashboardDrawer'
+import { DashboardInfo }                 from './index.utils'
 import { mockDashboardList, mockCanvas } from './mockData'
 import * as UI                           from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
   setDateFilterState: Dispatch<SetStateAction<DateFilter>>;
-}
-
-export interface DashboardInfo {
-  id: string
-  name: string
-  author?: string
-  updatedDate?: string
-  widgetIds?: string[]
-  diffWidgetIds?: string[]
-  isLanding?: boolean
-  isDefault?: boolean
-  key: string
-  index: number
 }
 
 const DashboardFilterContext = createContext<DashboardFilterContextProps>({
@@ -496,6 +484,7 @@ function DashboardPageHeader (props: {
 
       <ImportDashboardDrawer
         visible={importDashboardDrawerVisible}
+        dashboardList={dashboardList}
         handlePreview={handlePreview}
         onBackClick={() => {
           setDashboardDrawerVisible(true)
