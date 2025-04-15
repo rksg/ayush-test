@@ -3,7 +3,7 @@ import { useIntl }     from 'react-intl'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
-import { formatter, txpowerMapping }              from '@acx-ui/formatter'
+import { txpowerMapping }                         from '@acx-ui/formatter'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
@@ -12,6 +12,7 @@ import * as UI                         from './styledComponents'
 
 function PowerDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
+  const intl = useIntl()
 
   const queryResult = useApPowerDistributionQuery({
     root: intent.root,
@@ -38,28 +39,21 @@ function PowerDistributionChart (intent: IntentDetail) {
   }
 
   const xName = $t({ defaultMessage: 'Tx Power' })
-  const yName = $t({ defaultMessage: 'AP' })
 
   const customTooltipText = (values: { xValue: string, yValue: number }) => {
     const { xValue, yValue } = values
-    const count = formatter('countFormat')(yValue)
-    const yLabel = $t(
+
+    return intl.formatMessage(
       {
-        defaultMessage: `{count, plural,
-            one {{single}}
-            other {{plural}}
-          }`
+        defaultMessage:
+          'Tx Power <b>{xValue}</b>: <b>{yValue}</b> {yValue, plural, one {AP} other {APs}}'
       },
       {
-        count: values.yValue,
-        single: yName,
-        plural: `${yName}s`
+        xValue,
+        yValue,
+        b: (chunks: React.ReactNode) => <b>{chunks}</b>
       }
     )
-
-    return $t(
-      { defaultMessage: 'Tx Power {xValue}: {count} {yLabel}' },
-      { xValue: <b>{xValue}</b>, count: <b>{count}</b>, yLabel })
   }
 
   return (<AutoSizer disableHeight>{({ width }) =>

@@ -3,7 +3,6 @@ import { useIntl }     from 'react-intl'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import { Card, Loader, NoData, VerticalBarChart } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/formatter'
 import { channelList as channelListJson }         from '@acx-ui/utils'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
@@ -13,6 +12,8 @@ import * as UI                           from './styledComponents'
 
 function ChannelDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
+  const intl = useIntl()
+
   const queryResult = useApChannelDistributionQuery({
     root: intent.root,
     sliceId: intent.sliceId,
@@ -46,28 +47,21 @@ function ChannelDistributionChart (intent: IntentDetail) {
   }
 
   const xName = $t({ defaultMessage: 'Channel' })
-  const yName = $t({ defaultMessage: 'AP' })
 
   const customTooltipText = (values: { xValue: string, yValue: number }) => {
     const { xValue, yValue } = values
-    const count = formatter('countFormat')(yValue)
-    const yLabel = $t(
+
+    return intl.formatMessage(
       {
-        defaultMessage: `{count, plural,
-            one {{single}}
-            other {{plural}}
-          }`
+        defaultMessage:
+          'Channel <b>{xValue}</b>: <b>{yValue}</b> {yValue, plural, one {AP} other {APs}}'
       },
       {
-        count: values.yValue,
-        single: yName,
-        plural: `${yName}s`
+        xValue,
+        yValue,
+        b: (chunks: React.ReactNode) => <b>{chunks}</b>
       }
     )
-
-    return $t(
-      { defaultMessage: 'Channel {xValue}: {count} {yLabel}' },
-      { xValue: <b>{xValue}</b>, count: <b>{count}</b>, yLabel })
   }
 
   return (<AutoSizer disableHeight>{({ width }) =>
