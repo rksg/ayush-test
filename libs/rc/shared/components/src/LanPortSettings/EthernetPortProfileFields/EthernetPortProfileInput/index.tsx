@@ -97,7 +97,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
         <Form.Item
           children={
             transformDisplayOnOff(
-             !(currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
+              !(currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED ||
              currentEthernetPortData?.authType === EthernetPortAuthType.OPEN))
           }
         />
