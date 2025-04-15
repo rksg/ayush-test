@@ -58,7 +58,8 @@ function PowerDistributionChart (intent: IntentDetail) {
     )
 
     return $t(
-      { defaultMessage: '{xName} {xValue}: {count} {yLabel}' }, { xName, xValue, count, yLabel })
+      { defaultMessage: 'Tx Power {xValue}: {count} {yLabel}' },
+      { xValue: <b>{xValue}</b>, count: <b>{count}</b>, yLabel })
   }
 
   return (

@@ -1,4 +1,4 @@
-import { useRef, useEffect, RefObject } from 'react'
+import React, { useRef, useEffect, RefObject } from 'react'
 
 import ReactECharts       from 'echarts-for-react'
 import { GridOption }     from 'echarts/types/dist/shared'
@@ -41,13 +41,13 @@ export interface VerticalBarChartProps
   grid?: GridOption
   showXaxisLabel?: boolean
   onBarAreaClick?: (data: BarData) => void
-  customTooltipText?: (values: { xValue: string, yValue: number }) => string
+  customTooltipText?: (values: { xValue: string, yValue: number }) => React.ReactNode
 }
 
 export const tooltipFormatter = (
   dataFormatter: ReturnType<typeof formatter>,
   showTooltipName: Boolean,
-  customTooltipText?: (values: { xValue: string, yValue: number }) => string
+  customTooltipText?: (values: { xValue: string, yValue: number }) => React.ReactNode
 ) => {
   return (params: TooltipComponentFormatterCallbackParams) => {
     const yValue = Array.isArray(params)

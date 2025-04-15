@@ -66,7 +66,8 @@ function ChannelDistributionChart (intent: IntentDetail) {
     )
 
     return $t(
-      { defaultMessage: 'Channel {xValue}: {count} {yLabel}' }, { xValue, count, yLabel })
+      { defaultMessage: 'Channel {xValue}: {count} {yLabel}' },
+      { xValue: <b>{xValue}</b>, count: <b>{count}</b>, yLabel })
   }
 
   return (
