@@ -165,6 +165,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         } else {
           setSoftGreProfileDisabled(false)
           setIsIpsecDisabled(false)
+          if (currentOps[0].ipsecId) {
+            form.setFieldValue(['lan', index, 'ipsecProfileId'], currentOps[0].ipsecId)
+          }
         }
       }
     } else {
