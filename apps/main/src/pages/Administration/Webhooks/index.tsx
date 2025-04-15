@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/components'
 import { useDeleteWebhookMutation, useGetWebhooksQuery }                                             from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { SwitchScopes, WifiScopes }                                                                  from '@acx-ui/types'
 import { filterByAccess, getUserProfile, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
 import { getOpsApi }                                                                                 from '@acx-ui/utils'
 
@@ -82,6 +83,7 @@ const R1Webhooks = () => {
 
   const rowActions: TableProps<Webhook>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
     rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateWebhook)],
     onClick: ([webhook]) => {
       setSelectedWebhook(webhook)
@@ -89,6 +91,7 @@ const R1Webhooks = () => {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
     rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteWebhook)],
     onClick: ([webhook], clearSelection) => showActionModal({
       type: 'confirm',
@@ -102,6 +105,7 @@ const R1Webhooks = () => {
   }]
 
   const actions: TableProps<Webhook>['actions'] = [{
+    scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     label: $t({ defaultMessage: 'Create Webhook' }),
     disabled: isDisabledCreate(),
     rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addWebhook)],
