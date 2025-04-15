@@ -825,12 +825,13 @@ export function NetworkForm (props:{
           networkVenue.networkId = networkId
         }
 
-        const { networkId: curNetworkId, venueId } = networkVenue
+        const { venueId } = networkVenue
         if (!oldVenueIds.includes(venueId)) { // new networkVenue
-          added.push(networkVenue)
-          update.push(networkVenue)
+          const nv = omit(networkVenue, ['clientIsolationAllowlistId'])
+          added.push(nv)
+          update.push(nv)
         } else { // networkVenue has existed
-          newVenueIds.push(networkVenue.venueId!)
+          newVenueIds.push(venueId!)
         }
       })
     }
@@ -844,12 +845,13 @@ export function NetworkForm (props:{
           } else if (newNetworkVenues?.length) {
             const newNetworkVenue = newNetworkVenues.find(venue => venue.venueId === venueId)
             if (newNetworkVenue) {
-              // remove the undeifned or null field
-              const oldNVenue = omitBy(networkVenue, isNil)
-              const newNVenue = omitBy(newNetworkVenue, isNil)
-
+              const oldNv = omit(networkVenue, ['clientIsolationAllowlistId'])
+              const newNv = omit(newNetworkVenue, ['clientIsolationAllowlistId'])
+              // remove the undefined or null field
+              const oldNVenue = omitBy(oldNv, isNil)
+              const newNVenue = omitBy(newNv, isNil)
               if (!isEqual(oldNVenue, newNVenue)) {
-                update.push(newNetworkVenue) // config changed need to update
+                update.push(newNVenue) // config changed need to update
               }
             }
           }
