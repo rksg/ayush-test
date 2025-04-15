@@ -140,7 +140,15 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
-export interface EdgePortStatus {
+interface EdgeMultiWanStatus {
+  wanLinkHealth?: string
+  wanLinkStatus?: string
+  wanLinkTargets?: { ip: string, status: string }[]
+  wanPortRole?: string
+  wanPortStatus?: string
+}
+
+export interface EdgePortStatus extends EdgeMultiWanStatus {
   type: EdgePortTypeEnum
   portId: string
   name: string
@@ -344,7 +352,7 @@ export interface EdgeLagMemberStatus {
   peerKey?: string
 }
 
-export interface EdgeLagStatus {
+export interface EdgeLagStatus extends EdgeMultiWanStatus {
   lagId: number
   tenantId: string
   serialNumber: string

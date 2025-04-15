@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
@@ -9,7 +9,7 @@ import {
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { ClusterStatusEnum } from '@acx-ui/rc/utils'
+import { ClusterStatusEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
@@ -24,62 +24,65 @@ enum OverviewInfoType {
     LAGS = 'lags',
     SUB_INTERFACES = 'subInterfaces'
 }
+
+const edgeLagStatusPayload = {
+  fields: [
+    'lagId',
+    'serialNumber',
+    'name',
+    'description',
+    'lagType',
+    'status',
+    'adminStatus',
+    'lagMembers',
+    'portType',
+    'mac',
+    'ip',
+    'ipMode',
+    'lacpTimeout'
+  ],
+  sortField: 'lagId',
+  sortOrder: 'ASC'
+}
+
+const edgePortStatusPayload = {
+  fields: [
+    'port_id',
+    'name',
+    'type',
+    'serial_number',
+    'ip',
+    'status',
+    'admin_status',
+    'speed_kbps',
+    'mac',
+    'duplex',
+    'sort_idx',
+    'interface_name',
+    'ip_mode'
+  ],
+  sortField: 'sortIdx',
+  sortOrder: 'ASC'
+}
+
 export const EdgeClusterOverview = () => {
   const { $t } = useIntl()
-  const { clusterId, activeSubTab } = useParams()
+  const { activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
   const {
-    currentCluster,
+    clusterInfo,
     isClusterLoading
   } = useContext(EdgeClusterDetailsDataContext)
 
-  const isConfigurable = currentCluster?.clusterStatus !== ClusterStatusEnum.CLUSTER_CONFIGS_NEEDED
-
-  const edgePortStatusPayload = {
-    fields: [
-      'port_id',
-      'name',
-      'type',
-      'serial_number',
-      'ip',
-      'status',
-      'admin_status',
-      'speed_kbps',
-      'mac',
-      'duplex',
-      'sort_idx',
-      'interface_name',
-      'ip_mode'
-    ],
-    filters: { clusterId: [clusterId] },
-    sortField: 'sortIdx',
-    sortOrder: 'ASC'
-  }
-
-  const edgeLagStatusPayload = {
-    fields: [
-      'lagId',
-      'name',
-      'description',
-      'lagType',
-      'status',
-      'adminStatus',
-      'lagMembers',
-      'portType',
-      'mac',
-      'ip',
-      'ipMode',
-      'lacpTimeout'
-    ],
-    sortField: 'lagId',
-    sortOrder: 'ASC'
-  }
+  const isConfigurable = clusterInfo?.clusterStatus !== ClusterStatusEnum.CLUSTER_CONFIGS_NEEDED
 
   const {
     portStatusList,
     isPortListLoading
   } = useGetEdgePortsStatusListQuery({
-    params: { clusterId },
+    // TODO: temporarily use the first edge serial number
+    // params: { clusterId },
+    params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
     payload: edgePortStatusPayload
   }, { selectFromResult: ({ data, isLoading }) => ({
     portStatusList: data?.data ?? [],
@@ -90,7 +93,9 @@ export const EdgeClusterOverview = () => {
     lagStatusList = [],
     isLagListLoading
   } = useGetEdgeLagsStatusListQuery({
-    params: { clusterId },
+    // TODO: temporarily use the first edge serial number
+    // params: { clusterId },
+    params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
     payload: edgeLagStatusPayload
   }, {
     selectFromResult ({ data, isLoading }) {
@@ -119,10 +124,23 @@ export const EdgeClusterOverview = () => {
       setCurrentTab(activeSubTab)
   }, [activeSubTab])
 
+  const wanPortIfNames = useMemo(() => {
+    return portStatusList
+      .filter(port => port.type === EdgePortTypeEnum.WAN)
+      .map(port => ({ edgeId: port.serialNumber!, ifName: port.interfaceName! }))
+      .concat(lagStatusList
+        .filter(lag => lag.portType === EdgePortTypeEnum.WAN)
+        // TODO: temporarily use the first edge serial number
+        // eslint-disable-next-line max-len
+        .map(lag => ({ edgeId: lag.serialNumber!, ifName: `lag${lag.lagId}` })))
+  }, [portStatusList, lagStatusList])
+
   const tabs = [{
     label: $t({ defaultMessage: 'Monitor' }),
     value: 'monitor',
-    children: <MonitorTab clusterData={currentCluster} />
+    children: <MonitorTab
+      wanPortIfNames={wanPortIfNames}
+    />
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: 'ports',
@@ -147,7 +165,7 @@ export const EdgeClusterOverview = () => {
     <GridRow>
       <Col span={24}>
         <EdgeClusterInfoWidget
-          currentCluster={currentCluster}
+          currentCluster={clusterInfo}
           clusterPortsSetting={portStatusList}
           isEdgeClusterLoading={isClusterLoading}
           isPortListLoading={isPortListLoading}

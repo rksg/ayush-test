@@ -28,7 +28,7 @@ export const EdgeClusterDetailsPageHeader = () => {
     useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { clusterId } = useParams()
   const {
-    currentCluster
+    clusterInfo
   } = useContext(EdgeClusterDetailsDataContext)
 
   const navigate = useNavigate()
@@ -36,7 +36,7 @@ export const EdgeClusterDetailsPageHeader = () => {
 
   return (
     <PageHeader
-      title={currentCluster?.name || ''}
+      title={clusterInfo?.name || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'RUCKUS Edges' }), link: '/devices/edge' }
       ]}

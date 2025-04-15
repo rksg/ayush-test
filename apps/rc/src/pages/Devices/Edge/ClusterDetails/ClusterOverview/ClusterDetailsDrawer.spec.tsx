@@ -1,5 +1,6 @@
 
-import { render, screen } from '@acx-ui/test-utils'
+import { ClusterHighAvailabilityModeEnum } from '@acx-ui/rc/utils'
+import { render, screen }                  from '@acx-ui/test-utils'
 
 import { EdgeClusterDetailsDrawer } from './ClusterDetailsDrawer'
 
@@ -15,7 +16,7 @@ describe('EdgeClusterDetailsDrawer', () => {
           description: 'Test description',
           edgeList: [],
           clusterStatus: 'ACTIVE',
-          highAvailabilityMode: 'ACTIVE_STANDBY',
+          highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
           firmwareVersion: '1.0.0'
         }}
       />
@@ -34,7 +35,7 @@ describe('EdgeClusterDetailsDrawer', () => {
           description: 'Test description',
           edgeList: [],
           clusterStatus: 'ACTIVE',
-          highAvailabilityMode: 'ACTIVE_STANDBY',
+          highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
           firmwareVersion: '1.0.0'
         }}
       />
@@ -55,7 +56,7 @@ describe('EdgeClusterDetailsDrawer', () => {
           description: 'Test description',
           edgeList: [],
           clusterStatus: 'ACTIVE',
-          highAvailabilityMode: 'ACTIVE_STANDBY',
+          highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
           firmwareVersion: '1.0.0'
         }}
       />

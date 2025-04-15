@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { cloneDeep } from 'lodash'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum }                 from '../../../../models/EdgeEnum'
 import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus } from '../../../../types/edge'
@@ -393,3 +393,11 @@ export const mockClusterInterfaceOptionData = {
     }
   ]
 }
+
+
+export const mockedEdgePortWithDualWan = cloneDeep(edgePortsSetting)
+mockedEdgePortWithDualWan[0].wanLinkHealth = 'ON'
+mockedEdgePortWithDualWan[0].wanLinkStatus = 'UP',
+mockedEdgePortWithDualWan[0].wanLinkTargets = [{ targetIp: '8.8.8.8', status: 'UP' }],
+mockedEdgePortWithDualWan[0].wanPortRole = 'Primary',
+mockedEdgePortWithDualWan[0].wanPortStatus = 'Active'

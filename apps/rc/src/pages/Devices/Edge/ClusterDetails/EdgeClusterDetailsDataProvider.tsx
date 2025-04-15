@@ -5,7 +5,7 @@ import { useGetEdgeClusterListQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus }          from '@acx-ui/rc/utils'
 
 export interface EdgeClusterDetailsDataContextType {
-  currentCluster?: EdgeClusterStatus
+  clusterInfo?: EdgeClusterStatus
   isClusterLoading: boolean
 }
 
@@ -22,7 +22,6 @@ export const EdgeClusterDetailsDataProvider = (props:EdgeClusterDetailsDataProvi
     fields: [
       'clusterId',
       'firmwareVersion',
-
       'name',
       'virtualIp',
       'venueId',
@@ -31,14 +30,13 @@ export const EdgeClusterDetailsDataProvider = (props:EdgeClusterDetailsDataProvi
       'haStatus',
       'edgeList',
       'highAvailabilityMode',
-
       'type',
       'deviceStatus'
     ],
     filters: { clusterId: [clusterId] } }
 
   const {
-    data: currentCluster,
+    data: clusterInfo,
     isLoading: isClusterLoading
   } = useGetEdgeClusterListQuery({ payload }, {
     skip: !clusterId,
@@ -47,7 +45,7 @@ export const EdgeClusterDetailsDataProvider = (props:EdgeClusterDetailsDataProvi
 
   return <EdgeClusterDetailsDataContext.Provider
     value={{
-      currentCluster,
+      clusterInfo,
       isClusterLoading
     }}
   >

@@ -34,22 +34,22 @@ export const getDualWanDataFromClusterWizard = (
     // eslint-disable-next-line max-len
     const ports = Object.values((portSettings[nodeSnList[0]]) as { [portId:string]: EdgePort[] }).flat()
     const lags = formData.lagSettings[0].lags ?? []
-    const wans = getEdgeWanInterfaces(ports as EdgePort[], lags as EdgeLag[])
+    const wanPorts = getEdgeWanInterfaces(ports as EdgePort[], lags as EdgeLag[])
 
     // clear dualWanSettings if WAN count < 2
-    if (wans.length < 2) {
+    if (wanPorts.length < 2) {
       return emptyDualWanSettings
     }
 
     const currentMembers = formData?.multiWanSettings?.wanMembers
 
-    let resultWanMembers: EdgeWanMember[] = new Array(wans.length)
+    let resultWanMembers: EdgeWanMember[] = new Array(wanPorts.length)
     const newAddMembers: EdgeWanMember[] = []
 
     // check if wan interface different from those in currentMembers
     // wan interface changed, reset multiWanSettings
     // if not changed, keep its current settings
-    wans.forEach((wanInterface) => {
+    wanPorts.forEach((wanInterface) => {
       const existMember = wanInterface.hasOwnProperty('interfaceName')
         ? find(currentMembers, { portName: (wanInterface as EdgePort).interfaceName })
         : find(currentMembers, { portName: `lag${(wanInterface as EdgeLag).id}` })
