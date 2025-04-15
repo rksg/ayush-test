@@ -258,8 +258,8 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 readAsText={true}
                 type={ImportFileDrawerType.DPSK}
                 acceptType={['xml']}
-                maxSize={CsvSize['5MB']}
-                maxEntries={1024}
+                maxSize={CsvSize['512KB']}
+                maxEntries={512}
                 importRequest={handleImportRequest}
                 formDataName={'unitImports'}
                 onClose={() => setUploadXmlDrawerVisible(false)}

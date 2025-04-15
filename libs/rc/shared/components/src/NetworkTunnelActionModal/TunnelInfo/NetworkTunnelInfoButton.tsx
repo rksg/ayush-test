@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { Button }                                               from '@acx-ui/components'
 import { EdgeMvSdLanViewData, Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
-import { isGuestTunnelUtilized } from '../../EdgeSdLan/edgeSdLanUtils'
-import { SoftGreNetworkTunnel }  from '../useSoftGreTunnelActions'
+import { isDmzTunnelUtilized }  from '../../EdgeSdLan/edgeSdLanUtils'
+import { SoftGreNetworkTunnel } from '../useSoftGreTunnelActions'
 
 interface NetworkTunnelInfoButtonProps {
   network?: Network | NetworkSaveData | null
@@ -14,6 +14,7 @@ interface NetworkTunnelInfoButtonProps {
   venueSoftGre?: SoftGreNetworkTunnel
 }
 
+//Deprecated, PIN and SDLAN FF has global on
 export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => {
   const { $t } = useIntl()
   const { network, currentVenue, onClick, venueSdLan, venueSoftGre } = props
@@ -23,7 +24,7 @@ export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => 
 
     const isTunneled = !!venueSdLan || !!venueSoftGre
     // eslint-disable-next-line max-len
-    const clusterName = (isGuestTunnelUtilized(venueSdLan, network?.id!, venueId))
+    const clusterName = (isDmzTunnelUtilized(venueSdLan, network?.id!, venueId))
       ? venueSdLan?.guestEdgeClusterName
       : venueSdLan?.edgeClusterName
 

@@ -221,13 +221,17 @@ export const mockedMvSdLanDataList = [{
     venueName: 'Mocked-Venue-1',
     networkId: 'network_1',
     networkName: 'Mocked_network',
-    wlanId: '3'
+    wlanId: '3',
+    forwardingTunnelProfileId: '',
+    forwardingTunnelType: ''
   }, {
     venueId: 'a307d7077410456f8f1a4fc41d861567',
     venueName: 'Mocked-Venue-1',
     networkId: 'network_4',
     networkName: 'Mocked_network_4',
-    wlanId: '6'
+    wlanId: '6',
+    forwardingTunnelProfileId: '',
+    forwardingTunnelType: ''
   }],
   tunneledGuestWlans: [{
     venueId: 'a307d7077410456f8f1a4fc41d861567',
