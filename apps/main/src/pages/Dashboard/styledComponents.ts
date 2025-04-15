@@ -105,10 +105,13 @@ export const DashboardItem = styled.div`
   border: 1px solid var(--acx-neutrals-20);
   background: var(--acx-neutrals-10);
   margin-bottom: 8px;
-  cursor: grab;
+  cursor: default;
   overflow: hidden;
   width: 100%;
   gap: 8px;
+  &[draggable=true] {
+    cursor: grab;
+  }
 
   .mark {
     display: flex;

@@ -675,6 +675,8 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   }
   .ant-modal-body {
     padding: 0px 0 24px;
+    height: calc(80vh - 68px);
+    overflow: auto;    
   }
   .ant-modal-footer {
     display: none;
@@ -688,7 +690,10 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     .ant-modal-content {
       height: 100vh;
       max-height: 100%;
-    }  
+    }
+    .ant-modal-body {
+      height: calc(100vh - 68px);   
+    }
   }
 
 `

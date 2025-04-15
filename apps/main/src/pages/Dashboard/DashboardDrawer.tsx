@@ -24,7 +24,6 @@ type ListItemProps = {
   index: number;
   handleReorder: (from: number, to: number) => void;
   handleMenuClick: MenuProps['onClick'],
-  setSelectedItem: (item: DashboardInfo) => void
   isDraggingItemRef: React.MutableRefObject<boolean>
 }
 
@@ -57,7 +56,7 @@ function CustomDragPreview () {
         className='dragged'
         style={{ cursor: 'grab' }}
       >
-        { getItemInfo(item, $t) }
+        { getItemInfo({ item, $t }) }
       </UI.DashboardItem>
     </div>
   )
@@ -76,36 +75,39 @@ const getActionMenu = (
     items={[
       ...(!isLanding ? [{
         label: $t({ defaultMessage: 'Set as Landing Page' }),
-        key: 'landing'
+        key: `landing_${data.id}`
       }] : []),
       ...(!isDefault ? [{ //TODO: can view default dashboard
         label: $t({ defaultMessage: 'View' }),
-        key: 'view'
+        key: `view_${data.id}`
       }] : []),
       ...(isEditable && !isDefault ? [{
         label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
-        key: 'edit'
+        key: `edit_${data.id}`
       }, {
         label: $t({ defaultMessage: 'Remove from Dashboard' }),
-        key: 'remove'
+        key: `remove_${data.id}`
       }] : [])
     ]}
   />
 }
 
-const getItemInfo = (
-  data: DashboardInfo,
+
+
+const getItemInfo = (props: {
+  item: DashboardInfo,
   $t: IntlShape['$t'],
-  isDraggingItem?: boolean,
+  // isDraggingItem?: boolean,
   handleMenuClick?: MenuProps['onClick'],
-  setSelectedItem?: (item: DashboardInfo) => void
-) => {
-  const dropdownMenu = getActionMenu(data, handleMenuClick, $t)
+  // setSelectedItem?: (item: DashboardInfo) => void
+}) => {
+  const { item, $t, handleMenuClick } = props
+  const dropdownMenu = getActionMenu(item, handleMenuClick, $t)
   const hasDropdownMenu = dropdownMenu.props.items.length > 0
 
   return <>
-    <div className={`mark ${data?.isLanding ? 'star' : 'move'}`}>{
-      data?.isLanding
+    <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
+      item?.isLanding
       // eslint-disable-next-line max-len
         ? <Tooltip title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}>
           <PentagramSolid />
@@ -114,24 +116,36 @@ const getItemInfo = (
     }</div>
     <div className='info'>
       <div className='title'>{
-        data.isDefault ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : data.name
+        item.isDefault ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : item.name
       }</div>
-      { data.widgetIds && <div className='desp'>
-        { data.widgetIds && <span className='count'>{
-          $t({ defaultMessage: '{count} widgets' }, { count: data.widgetIds?.length })
+      { item.widgetIds && <div className='desp'>
+        { item.widgetIds && <span className='count'>{
+          $t({ defaultMessage: '{count} widgets' }, { count: item.widgetIds?.length })
         }</span>
         }
-        { data.updatedDate && <span className='date'>{
-          moment(data.updatedDate).format('YYYY/MM/DD')
+        { item.updatedDate && <span className='date'>{
+          moment(item.updatedDate).format('YYYY/MM/DD')
         }</span> }
-        { data.author && <span className='author'>
+        { item.author && <span className='author'>
           <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name'>{ data.author }</span>
+          <span className='name'>{ item.author }</span>
         </span>
         }
       </div>}
     </div>
-    {hasDropdownMenu && <div className='action'>
+    {hasDropdownMenu &&
+      <Dropdown
+        overlay={dropdownMenu}
+        key='actionMenu'
+        trigger={['click']}
+      >
+        <MoreVertical size='sm'
+          data-testid='dashboard-more-btn'
+        // onClick={(e) => e.stopPropagation()}
+        />
+      </Dropdown>}
+
+    {/* {hasDropdownMenu && <div className='action' style={{ background: 'yellow' }}>
       <Dropdown
         overlay={dropdownMenu}
         trigger={['click']} //TODO: Fix bug
@@ -144,12 +158,11 @@ const getItemInfo = (
           size='small'
           icon={<MoreVertical size='sm' />}
           onClick={() => {
-            setSelectedItem?.(data)
+            setSelectedItem?.(item)
           }}
         />
       </Dropdown>
-      {/* </span> */}
-    </div>}
+    </div>} */}
   </>
 }
 
@@ -161,7 +174,7 @@ export const DashboardDrawer = (props: {
   handlePreview: (id: string) => void
 }) => {
   const { $t } = useIntl()
-  const [selectedItem, setSelectedItem] = useState({} as DashboardInfo)
+  // const [selectedItem, setSelectedItem] = useState({} as DashboardInfo)
   const [dashboardList, setDashboardList] = useState(props.data as DashboardInfo[])
   const isDraggingItemRef = useRef(false)
 
@@ -170,7 +183,9 @@ export const DashboardDrawer = (props: {
   }, [props.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    switch (e.key) {
+    const [action, id] = e.key.split('_')
+    console.log('selectedItem: ', id) // eslint-disable-line no-console
+    switch (action) {
       case 'landing':
         break
       case 'edit':
@@ -178,13 +193,13 @@ export const DashboardDrawer = (props: {
       case 'remove':
         break
       default: // view
-        props.handlePreview(selectedItem.id)
+        props.handlePreview(id)
         break
     }
   }
 
   const ListItem: React.FC<ListItemProps> = ({
-    item, index, isDraggingItemRef, handleReorder, handleMenuClick, setSelectedItem
+    item, index, isDraggingItemRef, handleReorder, handleMenuClick
   }) => {
     const ref = useRef<HTMLDivElement>(null)
     const originalIndexRef = useRef<number | undefined>()
@@ -250,10 +265,10 @@ export const DashboardDrawer = (props: {
     drag(drop(ref))
 
     return (
-      <UI.DashboardItem ref={ref}
+      <UI.DashboardItem {...!item.isLanding && { ref: ref }}
         className={`${draggedItem?.id === item.id ? 'dragging' : ''}`}
       >
-        { getItemInfo(item, $t, isDraggingItemRef.current, handleMenuClick, setSelectedItem) }
+        { getItemInfo({ item, $t, handleMenuClick }) }
       </UI.DashboardItem>
     )
   }
@@ -282,7 +297,6 @@ export const DashboardDrawer = (props: {
               isDraggingItemRef={isDraggingItemRef}
               handleReorder={handleReorder}
               handleMenuClick={handleMenuClick}
-              setSelectedItem={setSelectedItem}
             />
           ))}
           <CustomDragPreview />
