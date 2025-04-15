@@ -83,6 +83,7 @@ export function AddRecCustomer () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -112,7 +113,8 @@ export function AddRecCustomer () {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    option: { skip: !isEditMode }
+    option: { skip: !isEditMode },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isSystemAdmin = userProfileData?.roles?.some(role => adminRoles.includes(role as RolesEnum))

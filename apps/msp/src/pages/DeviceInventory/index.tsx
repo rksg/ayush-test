@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -92,6 +93,7 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const {
     state
@@ -142,7 +144,8 @@ export function DeviceInventory () {
       sortField: 'tenantId',
       sortOrder: 'ASC'
     },
-    defaultPayload: filterPayload
+    defaultPayload: filterPayload,
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const list = filterResults.data

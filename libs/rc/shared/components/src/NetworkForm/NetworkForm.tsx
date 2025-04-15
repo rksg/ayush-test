@@ -548,7 +548,6 @@ export function NetworkForm (props:{
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOnboarding = async (data: any) => {
-    delete data.walledGardensString
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     } else {
@@ -640,7 +639,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
+      return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
     }
     return data
   }
@@ -825,12 +824,13 @@ export function NetworkForm (props:{
           networkVenue.networkId = networkId
         }
 
-        const { networkId: curNetworkId, venueId } = networkVenue
+        const { venueId } = networkVenue
         if (!oldVenueIds.includes(venueId)) { // new networkVenue
-          added.push(networkVenue)
-          update.push(networkVenue)
+          const nv = omit(networkVenue, ['clientIsolationAllowlistId'])
+          added.push(nv)
+          update.push(nv)
         } else { // networkVenue has existed
-          newVenueIds.push(networkVenue.venueId!)
+          newVenueIds.push(venueId!)
         }
       })
     }
@@ -844,12 +844,13 @@ export function NetworkForm (props:{
           } else if (newNetworkVenues?.length) {
             const newNetworkVenue = newNetworkVenues.find(venue => venue.venueId === venueId)
             if (newNetworkVenue) {
-              // remove the undeifned or null field
-              const oldNVenue = omitBy(networkVenue, isNil)
-              const newNVenue = omitBy(newNetworkVenue, isNil)
-
+              const oldNv = omit(networkVenue, ['clientIsolationAllowlistId'])
+              const newNv = omit(newNetworkVenue, ['clientIsolationAllowlistId'])
+              // remove the undefined or null field
+              const oldNVenue = omitBy(oldNv, isNil)
+              const newNVenue = omitBy(newNv, isNil)
               if (!isEqual(oldNVenue, newNVenue)) {
-                update.push(newNetworkVenue) // config changed need to update
+                update.push(newNVenue) // config changed need to update
               }
             }
           }
@@ -943,6 +944,8 @@ export function NetworkForm (props:{
         modalCallBack?.(payload)
         return
       }
+
+      removeApiUnusedAttributes(payload)
 
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({
@@ -1143,6 +1146,8 @@ export function NetworkForm (props:{
         modalCallBack?.(payload)
         return
       }
+
+      removeApiUnusedAttributes(payload)
 
       // Due to proxy mode validation, the Radius proxy mode update must execute before the network update
       if(formData.wlanSecurity === WlanSecurityEnum.WPA23Mixed && formData.isCloudpathEnabled) {
@@ -1544,9 +1549,10 @@ function useIdentityGroupOnNetworkActivation () {
       )
     ) {
       const identityGroupId = network?.identityGroupId
-      const identityId = network?.identityId
+      const identityId = network?.identity?.id
+      const enableIdentityAssociation = network?.enableIdentityAssociation
       if (identityGroupId) {
-        if (identityId) {
+        if (identityId && enableIdentityAssociation) {
           return await bindingSpecificIdentityPersonaGroupWithNetwork({
             params: { networkId: networkId, identityGroupId: identityGroupId, identityId: identityId }
           }).unwrap()
@@ -1681,3 +1687,7 @@ function useUpdateHotspot20Activation () {
   return updateHotspot20Activations
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeApiUnusedAttributes (data: any) {
+  delete data.walledGardensString
+}
