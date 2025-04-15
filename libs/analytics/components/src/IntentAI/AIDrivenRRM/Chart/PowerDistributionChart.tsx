@@ -41,7 +41,7 @@ function PowerDistributionChart (intent: IntentDetail) {
   const yName = $t({ defaultMessage: 'AP' })
 
   return (<AutoSizer disableHeight>{({ width }) =>
-    <Loader states={[queryResult]} style={{ width }}>
+    <Loader states={[queryResult]} style={{ width, minHeight: '248px' }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Power Transmission' })}</UI.Title>
         {apPowerDistribution?.length ? <VerticalBarChart

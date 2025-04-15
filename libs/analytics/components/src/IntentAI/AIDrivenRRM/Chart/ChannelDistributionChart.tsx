@@ -48,7 +48,7 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const yName = $t({ defaultMessage: 'AP' })
 
   return (<AutoSizer disableHeight>{({ width }) =>
-    <Loader states={[queryResult]} style={{ width }}>
+    <Loader states={[queryResult]} style={{ width, minHeight: '248px' }}>
       <Card>
         <UI.Title>{$t({ defaultMessage: 'Channel Distribution' })}</UI.Title>
         {apChannelDistribution?.length ? <VerticalBarChart
