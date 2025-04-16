@@ -3,20 +3,12 @@ import React from 'react'
 import { Space, Typography }         from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { useStepFormContext }              from '@acx-ui/components'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { SideNotes }            from '../../common/SideNotes'
 import { useIntentContext }     from '../../IntentContext'
-import { IntentDetail }         from '../../useIntentDetailsQuery'
 import { useDownloadData }      from '../RRMGraph/DownloadRRMComparison'
-
-import {
-  Priority as PriorityPage,
-  priorities
-} from './Priority'
-
 
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()
@@ -71,10 +63,7 @@ export const Priority: React.FC = () => {
 
 export const Summary: React.FC = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<IntentDetail>()
   const { intent, state } = useIntentContext()
-  const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
-  const priority = isFullOptimization ? priorities.full : priorities.partial
   const { url, filename } = useDownloadData(intent)
 
   const resources = [
@@ -97,10 +86,6 @@ export const Summary: React.FC = () => {
   ))
 
   return <SideNotes>
-    <SideNotes.Section
-      title={priority.title}
-      children={priority.content}
-    />
     {state !== 'no-data' && (
       <SideNotes.Section title={$t({ defaultMessage: 'Resources' })}>
         <Typography.Paragraph children={resources} />

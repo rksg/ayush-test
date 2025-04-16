@@ -1,6 +1,7 @@
 import userEvent        from '@testing-library/user-event'
 import { FormInstance } from 'antd'
 
+import { defaultDualWanLinkHealthCheckPolicy }               from '@acx-ui/edge/components'
 import { EdgeDualWanFixtures, EdgeWanLinkHealthCheckPolicy } from '@acx-ui/rc/utils'
 import { render, screen, waitFor }                           from '@acx-ui/test-utils'
 
@@ -40,7 +41,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     render(<LinkHealthMonitorToggleButton
       portName='Port 1'
       enabled={false}
-      data={undefined}
+      linkHealthSettings={undefined}
       onChange={mockOnChange}
     />)
     const switchElement = screen.getByRole('switch')
@@ -48,7 +49,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     const editButton = screen.queryByTestId('EditOutlined')
     expect(editButton).toBeNull()
     await userEvent.click(switchElement)
-    expect(mockOnChange).toHaveBeenCalledWith(true, undefined)
+    expect(mockOnChange).toHaveBeenCalledWith(true, defaultDualWanLinkHealthCheckPolicy)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
@@ -56,7 +57,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     render(<LinkHealthMonitorToggleButton
       portName='Port 2'
       enabled={false}
-      data={mockWanLinkHealthCheckPolicy}
+      linkHealthSettings={mockWanLinkHealthCheckPolicy}
       onChange={mockOnChange}
     />)
     const switchElement = screen.getByRole('switch')
@@ -72,7 +73,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     render(<LinkHealthMonitorToggleButton
       portName='Port 1'
       enabled={true}
-      data={undefined}
+      linkHealthSettings={undefined}
       onChange={mockOnChange}
     />)
     const editButton = screen.getByTestId('EditOutlined')
@@ -89,7 +90,7 @@ describe('LinkHealthMonitorToggleButton', () => {
       <LinkHealthMonitorToggleButton
         portName='Port 1'
         enabled={true}
-        data={undefined}
+        linkHealthSettings={undefined}
         onChange={mockOnChange}
       />
     )
