@@ -170,17 +170,7 @@ describe('NeighborAPGraph', () => {
 
 describe('DataGraph', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<DataGraph data={mockCrrmData} isDrawer={false} />)
-
-    // eslint-disable-next-line testing-library/no-node-access
-    const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
-    expect(graphs).toHaveLength(2)
-    const arrow = screen.queryByTestId('ArrowChevronRight')
-    expect(arrow).toBeVisible()
-  })
-
-  it('should render correctly when drawer is open', async () => {
-    const { asFragment } = render(<DataGraph data={mockCrrmData} isDrawer={true} />)
+    const { asFragment } = render(<DataGraph data={mockCrrmData} />)
 
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
@@ -190,7 +180,7 @@ describe('DataGraph', () => {
   })
 
   it('should not render when data is empty', () => {
-    const { asFragment } = render(<DataGraph data={[]} isDrawer={false} />)
+    const { asFragment } = render(<DataGraph data={[]} />)
 
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')

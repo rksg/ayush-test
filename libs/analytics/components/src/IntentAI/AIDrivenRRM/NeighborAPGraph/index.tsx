@@ -14,7 +14,11 @@ import * as UI                                 from '../RRMGraph/styledComponent
 
 export function DataGraph (props: {
   data: ProcessedCloudRRMGraph[],
-  isDrawer: boolean
+  graphFactors?: {
+    zoom: number,
+    repulsion: number,
+    leftOffset: string
+  }
 }) {
   const nodeSize = {
     max: 120,
@@ -31,7 +35,9 @@ export function DataGraph (props: {
       width={width}
       height={height}
       backgroundColor='transparent'
-      isDrawer={props.isDrawer}
+      zoom={props.graphFactors?.zoom}
+      repulsion={props.graphFactors?.repulsion}
+      leftOffset={props.graphFactors?.leftOffset}
     />}</AutoSizer>
     </div>
     <UI.CrrmArrow children={<UI.RightArrow/>} />
@@ -42,7 +48,9 @@ export function DataGraph (props: {
       width={width}
       height={height}
       backgroundColor='transparent'
-      isDrawer={props.isDrawer}
+      zoom={props.graphFactors?.zoom}
+      repulsion={props.graphFactors?.repulsion}
+      leftOffset={props.graphFactors?.leftOffset}
     />}</AutoSizer>
     </div>
   </>
@@ -77,13 +85,19 @@ export const NeighborAPGraph = () => {
     </Card>
   }
 
+  const graphFactors = {
+    zoom: 0.5,
+    repulsion: 10,
+    leftOffset: '15%'
+  }
+
   return <UI.Wrapper>
     <Loader states={[queryResult]}>
       <Card>
         <UI.GraphWrapper data-testid='graph-wrapper'
           key={'graph-details'}
         >
-          <DataGraph data={result} isDrawer={false}/>
+          <DataGraph data={result} graphFactors={graphFactors} />
           <GraphTitle details={intent} />
           <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
         </UI.GraphWrapper>
@@ -104,7 +118,7 @@ export const NeighborAPGraph = () => {
         onClose={closeDrawer}
         children={
           <UI.GraphWrapper>
-            <DataGraph data={result} isDrawer={true}/>
+            <DataGraph data={result} />
             <GraphTitle details={intent} />
             <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
           </UI.GraphWrapper>
