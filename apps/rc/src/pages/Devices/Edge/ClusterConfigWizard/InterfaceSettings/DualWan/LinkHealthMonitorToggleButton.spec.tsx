@@ -1,5 +1,6 @@
 import userEvent        from '@testing-library/user-event'
 import { FormInstance } from 'antd'
+import { cloneDeep }    from 'lodash'
 
 import { defaultDualWanLinkHealthCheckPolicy }               from '@acx-ui/edge/components'
 import { EdgeDualWanFixtures, EdgeWanLinkHealthCheckPolicy } from '@acx-ui/rc/utils'
@@ -9,7 +10,9 @@ import { LinkHealthMonitorToggleButton } from './LinkHealthMonitorToggleButton'
 const { mockDualWanData } = EdgeDualWanFixtures
 
 // eslint-disable-next-line max-len
-const mockWanLinkHealthCheckPolicy = mockDualWanData.wanMembers[0].linkHealthCheckPolicy as EdgeWanLinkHealthCheckPolicy
+const mockExpectedData = mockDualWanData.wanMembers[0].linkHealthCheckPolicy as EdgeWanLinkHealthCheckPolicy
+const mockEditData = cloneDeep(mockExpectedData)
+mockEditData.targetIpAddresses = ['7.7.7.7']
 
 jest.mock('./LinkHealthMonitorSettingForm', () => {
   const { Form } = jest.requireActual('antd')
@@ -24,7 +27,7 @@ jest.mock('./LinkHealthMonitorSettingForm', () => {
         {props.editData && <p>{JSON.stringify(props.editData)}</p>}
         <Form
           form={props.form}
-          onFinish={() => props.onFinish(mockWanLinkHealthCheckPolicy)}
+          onFinish={() => props.onFinish(mockExpectedData)}
         />
       </div>
   }
@@ -57,7 +60,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     render(<LinkHealthMonitorToggleButton
       portName='Port 2'
       enabled={false}
-      linkHealthSettings={mockWanLinkHealthCheckPolicy}
+      linkHealthSettings={mockEditData}
       onChange={mockOnChange}
     />)
     const switchElement = screen.getByRole('switch')
@@ -66,7 +69,7 @@ describe('LinkHealthMonitorToggleButton', () => {
     const form = screen.getByTestId('LinkHealthMonitorSettingForm')
     expect(form).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(form).toHaveTextContent(JSON.stringify(mockDualWanData.wanMembers[0].linkHealthCheckPolicy))
+    expect(form).toHaveTextContent(JSON.stringify(mockEditData))
   })
 
   it('should call onClose when the drawer is closed', async () => {
@@ -102,6 +105,24 @@ describe('LinkHealthMonitorToggleButton', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     await userEvent.click(saveButton)
     await waitFor(() => expect(dialog).not.toBeInTheDocument())
+  })
 
+  it('should call handleFinish with correct data', async () => {
+    render(
+      <LinkHealthMonitorToggleButton
+        portName='Port 1'
+        enabled={true}
+        linkHealthSettings={mockEditData}
+        onChange={mockOnChange}
+      />
+    )
+    await userEvent.click(screen.getByTestId('EditOutlined'))
+    const dialog= await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(dialog).not.toBeInTheDocument())
+    expect(mockOnChange).toBeCalledTimes(1)
+    expect(mockOnChange).toBeCalledWith(true, mockExpectedData)
   })
 })
