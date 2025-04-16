@@ -89,7 +89,7 @@ export const useIpsecProfileLimitedSelection = (
       fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
       filters: {}
     } }, {
-    skip: !allowIpsecGetPorfiles,
+    skip: !allowIpsecGetPorfiles && !softGreData,
     selectFromResult: ({ data }) => {
       return { ipsecData: data?.data }
     }
@@ -194,6 +194,8 @@ export const useIpsecProfileLimitedSelection = (
         && ipsecData && ipsecData?.length > 0) ? ipsecData : [])
       const { softGreIds, boundSoftGreList } = getUsedSoftGreProfiles(softGreList)
 
+
+
       if (softGreList.length > 0) {
         setSoftGreOptionList(softGreList.map((softGre) => {
           return { label: softGre.name, value: softGre.id }
@@ -201,6 +203,19 @@ export const useIpsecProfileLimitedSelection = (
       }
 
       const boundIpsecList = getUsedIpsecProfiles(ipsecProfileList)
+
+      if (hasCleanOperations) {
+        if (newSoftGreIpsecList.length > 0 && !!newSoftGreIpsecList[0].ipsecId) {
+          if (!!!boundIpsecList || boundIpsecList.length === 0 || (boundIpsecList?.[0].ipsecId
+            && newSoftGreIpsecList[0].ipsecId !== boundIpsecList[0].ipsecId)
+          ) {
+            return
+          }
+        }
+        // load data from backend, clean all user actions
+        setNewSoftGreIpsecList([])
+        setHasCleanOperations(false)
+      }
 
       if (boundIpsecList.length > 0) {
         setBoundSoftGreIpsecData(boundIpsecList)
@@ -230,11 +245,7 @@ export const useIpsecProfileLimitedSelection = (
         }
       }
 
-      if (hasCleanOperations) {
-        // load data from backend, clean all user actions
-        setNewSoftGreIpsecList([])
-        setHasCleanOperations(false)
-      }
+
     }
     if (ipsecData && softGreData) {
       setData()
