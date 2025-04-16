@@ -7,8 +7,8 @@ export function transformDisplayText (value?: string) {
 
 export function transformDisplayOnOff (value: boolean) {
   const { $t } = getIntl()
-  return value ? $t({ defaultMessage: 'ON' }) :
-    $t({ defaultMessage: 'OFF' })
+  return value ? $t({ defaultMessage: 'On' }) :
+    $t({ defaultMessage: 'Off' })
 }
 
 export function transformDisplayEnabledDisabled (value: boolean) {
