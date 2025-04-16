@@ -51,6 +51,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },
+  deleteCanvas: {
+    method: 'delete',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
   createWidget: {
     method: 'post',
     url: '/ruckusAi/canvas/:canvasId/widgets',

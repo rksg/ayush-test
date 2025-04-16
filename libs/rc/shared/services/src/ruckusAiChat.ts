@@ -73,7 +73,17 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
+    deleteCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.deleteCanvas, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     createCanvas: build.mutation<Canvas, RequestPayload>({
       query: () => {
@@ -141,6 +151,7 @@ export const {
   useGetCanvasQuery,
   useLazyGetCanvasQuery,
   useUpdateCanvasMutation,
+  useDeleteCanvasMutation,
   useCreateCanvasMutation,
   useChatAiMutation,
   useUpdateChatMutation,

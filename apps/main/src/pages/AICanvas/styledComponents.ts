@@ -1,5 +1,5 @@
-import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled                                          from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
+import styled                                                           from 'styled-components/macro'
 
 import { Card }      from '@acx-ui/components'
 import { Dashboard } from '@acx-ui/icons-new'
@@ -406,6 +406,9 @@ export const Canvas = styled.div`
       svg {
         margin-right: 10px;
       }
+      .name {
+        // cursor: pointer;
+      }
     }
     .visibility-type {
       display: flex;
@@ -630,6 +633,95 @@ export const Badge = styled(AntBadge)`
     color: var(--acx-primary-white);
     b {
       font-weight: var(--acx-body-font-weight-bold);
+    }
+  }
+`
+
+export const CanvasListItem = styled(AntList.Item)`
+  display: flex;
+  height: 68px;
+  border-radius: 8px;
+  border: 1px solid var(--acx-neutrals-20) !important;
+  background: var(--acx-neutrals-10);
+  margin-bottom: 6px;
+  padding: 12px 15px !important;
+
+  .info {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .title {
+    display: inline-flex;
+    max-width: 100%;
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
+    font-weight: var(--acx-subtitle-4-font-weight);
+    color: var(--acx-neutrals-100);
+    margin-bottom: 4px;    
+    align-items: center;
+    svg {
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+  .desp {
+    display: flex
+  }
+  .count, .date {
+    display: inline-flex;
+    vertical-align: middle;
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    margin-right: 10px;
+    color: var(--acx-neutrals-70);
+  }
+  .count {
+    display: inline-block;
+    margin-right: 0;
+    &:after {
+      display: inline-block;
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--acx-neutrals-70);
+      margin: 0 6px;
+      vertical-align: middle;
+    }
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    color: var(--acx-accents-blue-50);
+    .button {
+      margin-left: 16px;
+      cursor: pointer;
+    }
+  }
+`
+
+export const EditCanvasModal = styled(Modal)`
+  .ant-modal-content {
+    .ant-modal-body {
+      padding-top: 4px;
+    }
+    .ant-radio-wrapper {
+      .label {
+        display: flex;
+        align-item: center;
+        svg {
+          margin-left: 5px;
+        }
+      }
+      .desp {
+        padding: 8px 0px;
+        color: var(--acx-neutrals-60);     
+      }
     }
   }
 `

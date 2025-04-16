@@ -92,4 +92,5 @@ export interface Canvas {
   content: string,
   visible?: boolean,
   dashboardIds?: string[]
+  widgetIds?: string[]
 }
