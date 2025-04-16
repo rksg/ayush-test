@@ -16,8 +16,7 @@ export function DataGraph (props: {
   data: ProcessedCloudRRMGraph[],
   graphFactors?: {
     zoom: number,
-    repulsion: number,
-    leftOffset: string
+    repulsion: number
   }
 }) {
   const nodeSize = {
@@ -37,7 +36,6 @@ export function DataGraph (props: {
       backgroundColor='transparent'
       zoom={props.graphFactors?.zoom}
       repulsion={props.graphFactors?.repulsion}
-      leftOffset={props.graphFactors?.leftOffset}
     />}</AutoSizer>
     </div>
     <UI.CrrmArrow children={<UI.RightArrow/>} />
@@ -50,7 +48,6 @@ export function DataGraph (props: {
       backgroundColor='transparent'
       zoom={props.graphFactors?.zoom}
       repulsion={props.graphFactors?.repulsion}
-      leftOffset={props.graphFactors?.leftOffset}
     />}</AutoSizer>
     </div>
   </>
@@ -87,8 +84,7 @@ export const NeighborAPGraph = () => {
 
   const graphFactors = {
     zoom: 0.5,
-    repulsion: 10,
-    leftOffset: '15%'
+    repulsion: 10
   }
 
   return <UI.Wrapper>
