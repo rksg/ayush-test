@@ -365,6 +365,10 @@ export function LanPorts (props: ApEditItemProps) {
           payload,
           useVenueSettings
         }).unwrap()
+
+        isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
+          state: IpsecOptionChangeState.OnSave
+        })
       } else {
         await updateApCustomization({
           params: { tenantId, serialNumber, venueId },
