@@ -1,5 +1,6 @@
 import userEvent        from '@testing-library/user-event'
 import { FormInstance } from 'antd'
+import { cloneDeep }    from 'lodash'
 
 import { defaultDualWanLinkHealthCheckPolicy }               from '@acx-ui/edge/components'
 import { EdgeDualWanFixtures, EdgeWanLinkHealthCheckPolicy } from '@acx-ui/rc/utils'
@@ -102,6 +103,26 @@ describe('LinkHealthMonitorToggleButton', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     await userEvent.click(saveButton)
     await waitFor(() => expect(dialog).not.toBeInTheDocument())
+  })
 
+  it('should call handleFinish with correct data', async () => {
+    const originalData = cloneDeep(mockWanLinkHealthCheckPolicy)
+    originalData.targetIpAddresses = ['7.7.7.7']
+
+    render(
+      <LinkHealthMonitorToggleButton
+        portName='Port 1'
+        enabled={true}
+        linkHealthSettings={originalData}
+        onChange={mockOnChange}
+      />
+    )
+    await userEvent.click(screen.getByTestId('EditOutlined'))
+    const dialog= await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(dialog).not.toBeInTheDocument())
+    expect(mockOnChange).toHaveBeenCalledWith(true, mockWanLinkHealthCheckPolicy)
   })
 })
