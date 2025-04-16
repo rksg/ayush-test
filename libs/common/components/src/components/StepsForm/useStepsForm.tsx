@@ -297,7 +297,10 @@ export function useStepsForm <T> ({
     {buttons.cancel}
   </>
 
-  const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
+  const buttonEls = <UI.ActionsContainer
+    data-testid='steps-form-actions'
+    className={`action-footer${steps.length === 1 ? ' single-step' : ''}`}
+  >
     <UI.ActionsButtons
       $editMode={!!editMode}
       $multipleSteps={steps.length > 1}
