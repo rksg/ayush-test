@@ -132,14 +132,14 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   const { $t } = useIntl()
   return <UI.GraphTitleWrapperLegacy>
     <div>
-      <UI.GraphTitle>{$t({ defaultMessage: 'Before' })}</UI.GraphTitle>
+      <UI.GraphTitleLegacy>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleLegacy>
       <UI.GraphSubTitle>
         {$t({ defaultMessage: 'As at {dateTime}' }, {
           dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.metadata.dataEndTime)
         })}
       </UI.GraphSubTitle>
     </div>
-    <UI.GraphTitle>{$t({ defaultMessage: 'Recommended' })}</UI.GraphTitle>
+    <UI.GraphTitleLegacy>{$t({ defaultMessage: 'Recommended' })}</UI.GraphTitleLegacy>
   </UI.GraphTitleWrapperLegacy>
 }
 

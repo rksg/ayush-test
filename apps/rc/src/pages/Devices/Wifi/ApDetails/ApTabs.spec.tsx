@@ -3,7 +3,13 @@ import '@testing-library/jest-dom'
 import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions  } from '@acx-ui/user'
+import {
+  RaiPermissions,
+  setRaiPermissions,
+  setUserProfile,
+  getUserProfile
+} from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApTabs           from './ApTabs'
@@ -34,6 +40,19 @@ describe('ApTabs', () => {
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
     expect(screen.getAllByRole('tab')).toHaveLength(8)
+  })
+
+  it('should render correctly with CORE tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+
+    render(<Provider>
+      <ApTabs apDetail={apDetailData} />
+    </Provider>, { route: { params } })
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should handle tab changes', async () => {
@@ -71,4 +90,5 @@ describe('ApTabs', () => {
     </Provider>, { route: { params } })
     expect(screen.queryByText('AI Analytics')).toBeNull()
   })
+
 })

@@ -199,11 +199,6 @@ export const useIpsecProfileLimitedSelection = (
         }))
       }
 
-      // load data from backend, clean all user actions
-      if (newSoftGreIpsecList.length > 0) {
-        setNewSoftGreIpsecList([])
-      }
-
       const boundIpsecList = getUsedIpsecProfiles(ipsecProfileList)
 
       if (boundIpsecList.length > 0) {
@@ -293,8 +288,10 @@ export const useIpsecProfileLimitedSelection = (
         .filter(data => data.softGreId.length > 0 && !!!data.ipsecId)
       if (setIpSec.length > 0 && newSoftGreIpsecList.length > 1) {
         restrictIpsecOptionsToSpecificIpsec(setIpSec[0].ipsecId)
-        restrictSoftGreOptionsToSpecificSoftGre(
-          setIpSec.filter(data => data.softGreId.length > 0)[0].softGreId)
+        const chooseSoftGre = setIpSec.find(data => data.softGreId.length > 0)
+        if (chooseSoftGre) {
+          restrictSoftGreOptionsToSpecificSoftGre(chooseSoftGre.softGreId)
+        }
       } else if (setSoftGre.length > 0 && newSoftGreIpsecList.length > 1) {
         disableAllIpsecOptions()
         if (boundSoftGre) {
@@ -359,7 +356,7 @@ export const useIpsecProfileLimitedSelection = (
         portId,
         apModel,
         serialNumber,
-        softGreId: formData.softGreId || '',
+        softGreId: formData.enabledSoftGre ? formData.softGreId || '' : '',
         ipsecId: formData.enabledIpsec ? formData.ipsecId || undefined : undefined,
         isChangable: true
       }
@@ -370,7 +367,8 @@ export const useIpsecProfileLimitedSelection = (
           setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
             if (p.portId === portId && ((isVenueOperation && p.apModel === apModel)
              || (!isVenueOperation && p.serialNumber === serialNumber))) {
-              return { ...p, softGreId: formData.softGreId || '',
+              return { ...p,
+                softGreId: formData.enabledSoftGre ? formData.softGreId || '' : '',
                 ipsecId: formData.enabledIpsec ? formData.ipsecId || undefined : undefined }
             }
             return p
@@ -392,6 +390,25 @@ export const useIpsecProfileLimitedSelection = (
         newOption.disabled = true
       }
       setIpsecOptionList([...ipsecOptionList, newOption])
+      setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
+        return { ...p, ipsecId: newOption.value } as SoftGreIpsecProfile
+      }))
+    }
+  }
+
+
+  const addSoftGreOption = (newOption?: DefaultOptionType,
+    portId?: string, apModel?: string, serialNumber?: string) => {
+    if (newOption && portId) {
+      setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
+        if ((isVenueOperation && p.apModel === apModel && p.portId === portId)
+          || (!isVenueOperation && p.serialNumber === serialNumber && p.portId === portId)
+        ) {
+          return { ...p, softGreId: newOption.value } as SoftGreIpsecProfile
+        } else {
+          return p
+        }
+      }))
     }
   }
 
@@ -413,8 +430,16 @@ export const useIpsecProfileLimitedSelection = (
       case IpsecOptionChangeState.ReloadOptionList:
         reloadOptionList(next.newOption)
         break
+      case IpsecOptionChangeState.AddSoftGreOption:
+        addSoftGreOption(
+          next.newOption, next.portId, next.apModel, next.serialNumber)
+        break
       case IpsecOptionChangeState.ResetToDefault:
         resetToDefault(next?.voters)
+        break
+      case IpsecOptionChangeState.OnSave:
+        // load data from backend, clean all user actions
+        setNewSoftGreIpsecList([])
         break
     }
     return next

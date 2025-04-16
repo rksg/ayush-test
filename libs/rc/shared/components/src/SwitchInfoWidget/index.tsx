@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, SwitchStatusEnum, SWITCH_DISCONNECTED, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                                           from '@acx-ui/user'
 import type { AnalyticsFilter }                                                 from '@acx-ui/utils'
 
 
@@ -80,8 +81,10 @@ export function SwitchInfoWidget (props:{
   const params = useParams()
   const { $t } = useIntl()
   const { switchDetail, filters } = props
+  const { accountTier } = getUserProfile()
   const [visible, setVisible] = useState(false)
 
+  const isCore = isCoreTier(accountTier)
   const isDisconnected
     = switchDetail?.deviceStatus === SwitchStatusEnum.DISCONNECTED
 
@@ -153,7 +156,7 @@ export function SwitchInfoWidget (props:{
       >
         <GridRow style={{ flexGrow: '1' }}>
           <GridCol col={{ span: 1 }} />
-          <GridCol col={{ span: 4 }}>
+          <GridCol col={{ span: isCore ? 5 : 4 }}>
             <UI.Wrapper>
               <Loader states={[alarmQuery]}>
                 { alarmData && alarmData.length > 0
@@ -178,16 +181,18 @@ export function SwitchInfoWidget (props:{
               </Loader>
             </UI.Wrapper>
           </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              <UI.TenantLinkSvg
-                to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/incidents`}
-              >
-                <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
-              </UI.TenantLinkSvg>
-            </UI.Wrapper>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
+          {!isCore &&
+            <GridCol col={{ span: 4 }}>
+              <UI.Wrapper>
+                <UI.TenantLinkSvg
+                  to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/incidents`}
+                >
+                  <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+                </UI.TenantLinkSvg>
+              </UI.Wrapper>
+            </GridCol>
+          }
+          <GridCol col={{ span: isCore ? 5 : 4 }}>
             <TenantLink
               // eslint-disable-next-line max-len
               to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/ports`}

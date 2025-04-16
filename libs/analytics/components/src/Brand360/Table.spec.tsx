@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import { BrandTable } from './Table'
 
@@ -140,5 +142,39 @@ describe('Brand 360 Table', () => {
     })
     expect(await screen.findByText('Property')).toBeVisible()
     expect(screen.queryByText('LSP')).toBeNull()
+  })
+
+  it('should render table correctly for Core tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    const data = [{
+      id: '1',
+      property: 'p',
+      lsps: ['l'],
+      p1Incidents: 10,
+      ssidCompliance: [10,100] as [number, number],
+      deviceCount: 2,
+      avgConnSuccess: [10,100] as [number, number],
+      avgTTC: [1,10] as [number, number],
+      avgClientThroughput: [1,10] as [number, number]
+    }]
+    render(<BrandTable
+      sliceType='property'
+      data={data}
+      isLSP={true}
+      {...nameProps}
+    />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    expect(await screen.findByText('Property')).toBeVisible()
+    expect(screen.queryByText('LSP')).toBeNull()
+    const tooltipIcon = await screen.findByTestId('InformationOutlined')
+    expect(tooltipIcon).toBeInTheDocument()
   })
 })

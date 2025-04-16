@@ -15,10 +15,11 @@ interface IdentityFormProps {
   editMode?: boolean,
   modalMode?: boolean,
   callback?: (identityId?: string) => void
+  selectedPersonaGroupId?: string
 }
 
 export function IdentityForm (props: IdentityFormProps) {
-  const { editMode, modalMode, callback } = props
+  const { editMode, modalMode, callback, selectedPersonaGroupId } = props
   const { $t } = useIntl()
   const [ form ] = Form.useForm<Persona>()
   const navigate = useNavigate()
@@ -37,6 +38,12 @@ export function IdentityForm (props: IdentityFormProps) {
       form.setFieldsValue(dataFromServer)
     }
   }, [editMode, dataFromServer])
+
+  useEffect(() => {
+    if(modalMode) {
+      form.setFieldValue('groupId', selectedPersonaGroupId)
+    }
+  }, [selectedPersonaGroupId])
 
   const handleSubmit = async () => {
     try {

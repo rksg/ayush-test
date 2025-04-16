@@ -1,5 +1,6 @@
-import { Typography } from 'antd'
-import styled         from 'styled-components/macro'
+import styled from 'styled-components/macro'
+
+import { Card } from '@acx-ui/components'
 
 export const Wrapper = styled.div`
   margin-block-end: 40px;
@@ -8,10 +9,8 @@ export const Wrapper = styled.div`
   flex: 1;
 `
 
-export const Title = styled(Typography.Title).attrs({ level: 4 })`
-  &&& {
-    font-weight: var(--acx-headline-4-font-weight-bold);
-  }
+export const Title = styled(Card.Title)`
+  margin-block-end: 0.5em;
   svg {
     vertical-align: text-top;
     margin-inline: 3px;

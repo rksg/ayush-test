@@ -139,6 +139,7 @@ export interface EventMeta {
   isRemoteApExists: boolean,
   networkId?: string
   networkName?: string
+  serviceName?: string,
   switchMac?: string
   switchName: string
   venueName: string
