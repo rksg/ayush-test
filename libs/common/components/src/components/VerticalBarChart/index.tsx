@@ -1,8 +1,9 @@
-import { useRef, useEffect, RefObject } from 'react'
+import React, { useRef, useEffect, RefObject } from 'react'
 
-import ReactECharts       from 'echarts-for-react'
-import { GridOption }     from 'echarts/types/dist/shared'
-import { renderToString } from 'react-dom/server'
+import ReactECharts           from 'echarts-for-react'
+import { GridOption }         from 'echarts/types/dist/shared'
+import { renderToString }     from 'react-dom/server'
+import { IntlShape, useIntl } from 'react-intl'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 import { formatter }         from '@acx-ui/formatter'
@@ -21,7 +22,6 @@ import { TooltipWrapper } from '../Chart/styledComponents'
 import type { EChartsOption, TooltipComponentFormatterCallbackParams, ECharts  } from 'echarts'
 import type { EChartsReactProps }                                                from 'echarts-for-react'
 
-
 type BarData = [number, number]
 export interface VerticalBarChartProps
   <TChartData extends BarChartData>
@@ -35,33 +35,54 @@ export interface VerticalBarChartProps
     max?: number
     min?: number
   }
+  xAxisValues?: string[] | number[]
   xAxisName?: string
   xAxisOffset?: number
   showTooltipName?: Boolean
   grid?: GridOption
   showXaxisLabel?: boolean
   onBarAreaClick?: (data: BarData) => void
+  customTooltipText?: (values: {
+    xValue: string, yValue: number, xName: string, intl: IntlShape }) => React.ReactNode
 }
 
 export const tooltipFormatter = (
   dataFormatter: ReturnType<typeof formatter>,
-  showTooltipName: Boolean
+  showTooltipName: Boolean,
+  intl: IntlShape,
+  xAxisName?: string,
+  customTooltipText?: (values: {
+    xValue: string, yValue: number, xName: string, intl: IntlShape }) => React.ReactNode
 ) => {
   return (params: TooltipComponentFormatterCallbackParams) => {
-    const value = Array.isArray(params)
+    const yValue = Array.isArray(params)
       && Array.isArray(params[0].data) && params[0].data[1]
+    const xValue = Array.isArray(params)
+      && Array.isArray(params[0].data) && params[0].data[0]
     const name = Array.isArray(params)
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
+    const values = {
+      xValue: xValue.toString(),
+      yValue: Number(yValue),
+      xName: xAxisName || '',
+      intl
+    }
+
     return renderToString(
       <TooltipWrapper>
-        {showTooltipName
-          ? `${(name as string)?.charAt(0).toUpperCase() + (name as string)?.slice(1)}:`
-          : ''}{' '}
-        <b>{dataFormatter(value)}</b>
+        {customTooltipText ? customTooltipText(values) : (
+          <>
+            {showTooltipName && name
+              ? `${name.charAt(0).toUpperCase() + name.slice(1)}: `
+              : ''}
+            <b>{dataFormatter(yValue)}</b>
+          </>
+        )}
       </TooltipWrapper>
     )
   }
 }
+
 export function useOnBarAreaClick <BarData> (
   eChartsRef: RefObject<ReactECharts>, onBarAreaClick?: (data: BarData) => void
 ) {
@@ -86,6 +107,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
   barWidth = 20,
   dataFormatter = formatter('countFormat'),
   yAxisProps,
+  xAxisValues,
   xAxisName,
   xAxisOffset,
   yAxisOffset,
@@ -93,9 +115,10 @@ export function VerticalBarChart<TChartData extends BarChartData>
   grid: gridProps,
   showXaxisLabel = true,
   onBarAreaClick,
+  customTooltipText,
   ...props
 }: VerticalBarChartProps<TChartData>) {
-
+  const intl = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   useOnBarAreaClick(eChartsRef, onBarAreaClick)
   const option: EChartsOption = {
@@ -117,7 +140,8 @@ export function VerticalBarChart<TChartData extends BarChartData>
       axisPointer: {
         type: 'none'
       },
-      formatter: tooltipFormatter(dataFormatter, showTooltipName)
+      formatter: tooltipFormatter(
+        dataFormatter, showTooltipName, intl, xAxisName, customTooltipText)
     },
     xAxis: {
       ...xAxisOptions(),
@@ -125,6 +149,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
       offset: xAxisOffset,
       axisPointer: { type: 'shadow' },
       type: 'category',
+      data: xAxisValues,
       axisLabel: {
         ...axisLabelOptions(),
         formatter: (value: string) => value.trim(),

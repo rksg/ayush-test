@@ -3,16 +3,19 @@ import _                                                               from 'lod
 import { renderToString }                                              from 'react-dom/server'
 import { FormattedMessage, IntlShape, RawIntlProvider, defineMessage } from 'react-intl'
 
-import { formatter }              from '@acx-ui/formatter'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { formatter }    from '@acx-ui/formatter'
+import {
+  getIntl,
+  noDataDisplay,
+  channelGroupOf24gMap,
+  channelGroupOf5gMap,
+  channelGroupOf6gMap
+} from '@acx-ui/utils'
 
 import { cssStr }         from '../../theme/helper'
 import { TooltipWrapper } from '../Chart'
 
-import channelGroupOf24gMap from './mapping/channelGroupOf24gMap.json'
-import channelGroupOf5gMap  from './mapping/channelGroupOf5gMap.json'
-import channelGroupOf6gMap  from './mapping/channelGroupOf6gMap.json'
-import * as Type            from './type'
+import * as Type from './type'
 
 export function band2radio (band: Type.BandEnum, index: number) {
   const map = {

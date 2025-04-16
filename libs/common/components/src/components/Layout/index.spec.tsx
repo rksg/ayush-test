@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import * as config      from '@acx-ui/config'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
@@ -120,6 +121,33 @@ describe('Layout', () => {
       }
     })
     await screen.findByTestId('SpeedIndicatorSolid')
+  })
+  it('should render the dashboard page with a grey background correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const config = [
+      {
+        uri: '/dashboard',
+        label: 'Dashboard',
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid,
+        adminItem: true
+      }
+    ]
+    const { asFragment } = render(<Layout
+      logo={<div />}
+      menuConfig={config}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/t/dashboard',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
+    expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly when adminItem = true', async () => {
     const config = [

@@ -67,7 +67,7 @@ export interface Section {
   groups: Group[]
 }
 
-const layoutConfig:LayoutConfig = {
+export const layoutConfig:LayoutConfig = {
   containerWidth: 1200,
   containerHeight: 700, // min height
   calWidth: 380,
