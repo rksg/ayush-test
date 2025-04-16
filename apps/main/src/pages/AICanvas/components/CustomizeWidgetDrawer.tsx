@@ -55,9 +55,6 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
   }]
 
   useEffect(()=> {
-    form.setFieldsValue({
-      defaultTimeRange: 'Last 3 days'
-    })
     if (widget.timeRange) {
       setEnabledReset(true)
       setEnabledTimeRangeOption(true)

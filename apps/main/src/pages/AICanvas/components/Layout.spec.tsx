@@ -541,11 +541,8 @@ describe('Layout', () => {
       </Provider>
     )
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
-    const increaseCard = await screen.findByTestId('increaseCard')
-    await userEvent.click(increaseCard)
-    expect(mockedSetGroups).toBeCalled()
-    const decreaseCard = await screen.findByTestId('decreaseCard')
-    await userEvent.click(decreaseCard)
+    const resizCard = await screen.findByTestId('resizCard')
+    await userEvent.click(resizCard)
     expect(mockedSetGroups).toBeCalled()
     const deleteCard = await screen.findByTestId('deleteCard')
     await userEvent.click(deleteCard)

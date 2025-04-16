@@ -491,6 +491,7 @@ overflow: auto;
     border-bottom: 2px solid #888;
   }
   .card-resizer{
+    display: none;
     width: inherit;
     position: absolute;
     bottom: 0;
