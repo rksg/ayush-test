@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
-import { Provider }            from '@acx-ui/store'
+import { useSendFeedbackMutation } from '@acx-ui/rc/services'
+import { RuckusAiChatUrlInfo }     from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -118,6 +119,8 @@ jest.mock('@acx-ui/rc/services', () => {
   }
 })
 
+const mockedSendFeedback = jest.fn().mockResolvedValue({})
+
 const chats = [
   {
     id: '2c5e6092-3f76-455e-aba3-d3a978420f6a',
@@ -177,7 +180,8 @@ describe('AICanvas', () => {
         RuckusAiChatUrlInfo.getAllChats.url,
         (req, res, ctx) => res(ctx.json(chats))
       )
-    )
+    );
+    (useSendFeedbackMutation as jest.Mock).mockReturnValue([mockedSendFeedback])
   })
 
   afterEach(() => {
@@ -272,7 +276,7 @@ describe('AICanvas', () => {
     expect(mockedSetModal).toBeCalled()
   })
 
-  it('should render previous chat content correctly', async () => {
+  it('should render previous chat content and send feedback correctly', async () => {
     render(
       <Provider>
         <AICanvas isModalOpen={true} setIsModalOpen={mockedSetModal}/>
@@ -284,5 +288,20 @@ describe('AICanvas', () => {
     // eslint-disable-next-line max-len
     const feedbackSection = await screen.findByTestId('user-feedback-afa2591ede524f3884e21acd06ccb8b4')
     expect(feedbackSection).not.toBeVisible()
+
+    const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
+    expect(thumbsUpButtons).toHaveLength(1)
+    await userEvent.click(thumbsUpButtons[0])
+    expect(mockedSendFeedback).toBeCalledTimes(0)
+    const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
+    expect(thumbsDownButtons).toHaveLength(1)
+    await userEvent.click(thumbsDownButtons[0])
+    expect(mockedSendFeedback).toHaveBeenCalledWith({
+      params: expect.objectContaining({
+        sessionId: expect.any(String),
+        messageId: expect.any(String)
+      }),
+      payload: false
+    })
   })
 })

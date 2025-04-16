@@ -86,6 +86,7 @@ const Message = (props:{
             chat.role === 'AI' &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
+                data-testid='thumbs-up-btn'
                 // eslint-disable-next-line max-len
                 className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_UP' ? 'clicked' : '') : ''}`}
                 onClick={() => {
@@ -93,6 +94,7 @@ const Message = (props:{
                 }}
               />
               <UI.ThumbsDown
+                data-testid='thumbs-down-btn'
                 // eslint-disable-next-line max-len
                 className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_DOWN' ? 'clicked' : '') : ''}`}
                 onClick={() => {

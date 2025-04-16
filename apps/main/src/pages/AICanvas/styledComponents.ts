@@ -637,7 +637,7 @@ const thumbStyles = `
   &.clicked {
     path {
       cursor: default !important;
-      stroke: var(--acx-primary-white)  !important;
+      stroke: transparent !important;
       fill: var(--acx-neutrals-70)  !important;
     }
   }
