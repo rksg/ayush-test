@@ -260,4 +260,61 @@ describe('useEdgeSdLanActions', () => {
       expect(mockUpdateReq).not.toHaveBeenCalled()
     })
   })
+
+  describe('toggleNetworkChange', () => {
+    const mockServiceId = 'service-123'
+    const mockVenueId = 'venue-123'
+    const mockNetworkId = 'network-123'
+
+    it('should not call when tunnel IDs are the same', async () => {
+      const mockCallback = jest.fn()
+      const { result } = renderHook(() => useEdgeSdLanActions(), {
+        wrapper: ({ children }) => <Provider>{children}</Provider>
+      })
+
+      const currentTunnelProfileId = 'tunnel-123'
+      const originTunnelProfileId = currentTunnelProfileId
+      await result.current.toggleNetworkChange(
+        mockServiceId,
+        mockVenueId,
+        mockNetworkId,
+        currentTunnelProfileId,
+        originTunnelProfileId,
+        mockCallback
+      )
+
+      expect(mockCallback).not.toHaveBeenCalled()
+    })
+
+    it('should call deactivate and activate when tunnel IDs are the different', async () => {
+      const mockCallback = jest.fn()
+      const { result } = renderHook(() => useEdgeSdLanActions(), {
+        wrapper: ({ children }) => <Provider>{children}</Provider>
+      })
+      const currentTunnelProfileId = 'tunnel-456'
+      const originTunnelProfileId = 'tunnel-123'
+
+      await result.current.toggleNetworkChange(
+        mockServiceId,
+        mockVenueId,
+        mockNetworkId,
+        currentTunnelProfileId,
+        originTunnelProfileId,
+        mockCallback
+      )
+
+      await waitFor(() => expect(mockDeactivateNetworkReq).toBeCalledTimes(1))
+      expect(mockDeactivateNetworkReq).toBeCalledWith({
+        venueId: mockVenueId,
+        wifiNetworkId: mockNetworkId,
+        serviceId: mockServiceId
+      })
+      await waitFor(() => expect(mockActivateNetworkReq).toBeCalledTimes(1))
+      expect(mockActivateNetworkReq).toBeCalledWith({
+        venueId: mockVenueId,
+        wifiNetworkId: mockNetworkId,
+        serviceId: mockServiceId
+      }, { forwardingTunnelProfileId: currentTunnelProfileId })
+    })
+  })
 })
