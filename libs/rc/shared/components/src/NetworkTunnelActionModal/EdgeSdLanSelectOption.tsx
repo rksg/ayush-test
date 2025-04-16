@@ -31,7 +31,6 @@ interface SdLanSelectOptionProps {
   venueSdLan: EdgeMvSdLanViewData | undefined
   networkVlanPool?: VLANPoolViewModelType
   disabledInfo?: {
-    noChangePermission: boolean
     isDisabled: boolean
     tooltip: string | undefined
   }
@@ -88,45 +87,43 @@ export const EdgeSdLanSelectOption = (props: SdLanSelectOptionProps) => {
     }
   }, [currentTunnelType, venueSdLan, tunnelTypeInitVal, networkType])
 
-  return <>
-    {(disabledInfo?.isDisabled || disabledInfo?.noChangePermission) && <div></div>}
-    {!disabledInfo?.isDisabled && !disabledInfo?.noChangePermission && <>
-      <Row>
-        <Form.Item noStyle dependencies={['sdLan', 'isGuestTunnelEnabled']}>
-          {({ getFieldValue }) => {
-            const isFormGuestTunnelEnabled = getFieldValue(['sdLan', 'isGuestTunnelEnabled'])
+  return !disabledInfo?.isDisabled ? <>
+    <Row>
+      <Form.Item noStyle dependencies={['sdLan', 'isGuestTunnelEnabled']}>
+        {({ getFieldValue }) => {
+          const isFormGuestTunnelEnabled = getFieldValue(['sdLan', 'isGuestTunnelEnabled'])
 
-            return <Typography.Text style={{ color: 'inherit' }}>
-              {
-                isVenueSdLanExist
+          return <Typography.Text style={{ color: 'inherit' }}>
+            {
+              isVenueSdLanExist
                 // eslint-disable-next-line max-len
-                  ? <div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location' })}</label><br /><br />
-                    <label>{$t({ defaultMessage: 'Associated SD-LAN service: {sdLan}' }, {
-                      sdLan: <b>{sdlanName}</b>
-                    })}</label><br />
-                    <label>{$t({ defaultMessage: 'Destination cluster: {clusterName}' }, {
-                      clusterName: <b>
-                        {isFormGuestTunnelEnabled
-                          ? venueSdLan?.guestEdgeClusterName
-                          : venueSdLan?.edgeClusterName}
-                      </b>
-                    })}</label>
-                  </div>
+                ? <div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location' })}</label><br /><br />
+                  <label>{$t({ defaultMessage: 'Associated SD-LAN service: {sdLan}' }, {
+                    sdLan: <b>{sdlanName}</b>
+                  })}</label><br />
+                  <label>{$t({ defaultMessage: 'Destination cluster: {clusterName}' }, {
+                    clusterName: <b>
+                      {isFormGuestTunnelEnabled
+                        ? venueSdLan?.guestEdgeClusterName
+                        : venueSdLan?.edgeClusterName}
+                    </b>
+                  })}</label>
+                </div>
                 // eslint-disable-next-line max-len
-                  : <div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location. {infoLink}' }, {
-                    infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
-                      {$t({ defaultMessage: 'See more information' })}
-                    </a>
-                  })}</label></div>
-              }
-            </Typography.Text>
-          }}
-        </Form.Item>
-      </Row>
-      <Row>
-        <UI.SwitchContainer>
-          <Space size={10} style={{ marginTop: cssStr('--acx-content-vertical-space') }}>
-            {showFwdGuestSwitch &&
+                : <div className={'ant-form-item-label'}><label>{$t({ defaultMessage: 'Tunnel the traffic to a central location. {infoLink}' }, {
+                  infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+                    {$t({ defaultMessage: 'See more information' })}
+                  </a>
+                })}</label></div>
+            }
+          </Typography.Text>
+        }}
+      </Form.Item>
+    </Row>
+    <Row>
+      <UI.SwitchContainer>
+        <Space size={10} style={{ marginTop: cssStr('--acx-content-vertical-space') }}>
+          {showFwdGuestSwitch &&
           <>
             <Form.Item name={['sdLan', 'isGuestTunnelEnabled']} valuePropName='checked' noStyle>
               <Switch disabled={hasVlanPool} />
@@ -135,11 +132,9 @@ export const EdgeSdLanSelectOption = (props: SdLanSelectOptionProps) => {
               {$t({ defaultMessage: 'Forward guest traffic to DMZ' })}
             </Typography.Text>
           </>
-            }
-          </Space>
-        </UI.SwitchContainer>
-      </Row>
-    </>
-    }
-  </>
+          }
+        </Space>
+      </UI.SwitchContainer>
+    </Row>
+  </> : <></>
 }

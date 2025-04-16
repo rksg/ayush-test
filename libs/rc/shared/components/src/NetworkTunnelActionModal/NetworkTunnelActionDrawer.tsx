@@ -151,8 +151,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             cachedSoftGre={cachedSoftGre}
             disabledInfo={(isDisabledAll || !hasSoftGrePermission)
               ? {
-                isDisabled: isDisabledAll,
-                noChangePermission: !hasSoftGrePermission,
+                isDisabled: isDisabledAll || !hasSoftGrePermission,
                 tooltip: isDisabledAll
                   ? $t(messageMappings.disable_deactivate_last_network)
                   : undefined
@@ -172,8 +171,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             networkVlanPool={networkVlanPool}
             disabledInfo={(isDisabledAll || !hasEdgeSdLanPermission || isPinNetwork)
               ? {
-                isDisabled: isDisabledAll || !!isPinNetwork,
-                noChangePermission: !hasEdgeSdLanPermission,
+                isDisabled: isDisabledAll || !hasEdgeSdLanPermission || !!isPinNetwork,
                 tooltip: isPinNetwork
                   ? $t(messageMappings.disable_pin_network)
                   : (isDisabledAll
