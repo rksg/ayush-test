@@ -206,7 +206,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
     if (duplicateACL) {
       return Promise.reject($t({
-        defaultMessage: 'MAC ACL name is duplicated.'
+        defaultMessage: 'Policy name is duplicated.'
       }))
     }
 
