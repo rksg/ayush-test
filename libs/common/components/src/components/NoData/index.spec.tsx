@@ -52,6 +52,10 @@ describe('NoDataIcon', () => {
     const { asFragment } = render(<NoDataIcon iconText='Empty' text='No data available'/>)
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render correctly without text', () => {
+    const { asFragment } = render(<NoDataIcon hideText={true} />)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
 
 describe('NoGranularityText', () => {
