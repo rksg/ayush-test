@@ -29,7 +29,8 @@ jest.mock('@acx-ui/components', () => {
     BarChart: () => <div data-testid='BarChart' />,
     DonutChart: () => <div data-testid='DonutChart' />,
     StackedAreaChart: () => <div data-testid='StackedAreaChart' />,
-    Table: () => <div data-testid='Table' />
+    Table: () => <div data-testid='Table' />,
+    NoDataIcon: () => <div data-testid='NoDataIcon' />
   }
 })
 
@@ -44,6 +45,14 @@ describe('WidgetChart', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
+
+  const noData = {
+    chartType: 'bar',
+    sessionId: '053fd23c-c362-4306-af03-73a26013c61a',
+    id: 'e3ec9fdedc1e47c6b69415265798b457',
+    chatId: 'e3ec9fdedc1e47c6b69415265798b457',
+    chartOption: []
+  }
 
   const pieChartData = {
     chartType: 'pie',
@@ -268,6 +277,17 @@ describe('WidgetChart', () => {
     }
   ]
 
+  it('should render No data Chart correctly', async () => {
+    renderWithDndProvider(
+      <Provider>
+        <DraggableChart
+          data={noData as unknown as WidgetListData}
+          groups={groupsData}
+        />
+      </Provider>
+    )
+    expect(await screen.findByTestId('NoDataIcon')).toBeVisible()
+  })
   it('should render Draggable Pie Chart correctly', async () => {
     renderWithDndProvider(
       <Provider>
