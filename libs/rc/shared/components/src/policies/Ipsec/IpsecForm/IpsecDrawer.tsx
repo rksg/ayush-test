@@ -122,6 +122,8 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
         }
       }
       setVisible(false)
+      form.resetFields()
+      form.setFieldValue('authType', '')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
