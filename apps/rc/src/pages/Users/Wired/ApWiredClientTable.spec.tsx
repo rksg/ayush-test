@@ -13,14 +13,13 @@ const ApWiredClientData = [{
   apMac: 'aa:11:11:11:11:11',
   portNumber: 2,
   macAddress: '11:ff:11:11:11:11',
-  osType: 'macOs',
+  deviceType: 'laptop',
   ipAddress: '192.168.0.10',
   hostname: 'wiredDevice1',
   venueId: 'venue_id_1',
   venueName: 'venue_01',
   vlanId: 10,
-  connectedTime: '2025-04-08T22:02:10.778Z',
-  connectedTimeString: '8 hours 34 minutes'
+  authStatus: 'Authorized'
 }]
 
 describe('ApWiredClientTable', () => {
