@@ -98,7 +98,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
       }
     }
-    if (disabledInfo?.isDisabled || disabledInfo?.noChangePermission) {
+    if (disabledInfo?.isDisabled) {
       setEnableOption(false)
     }
   }, [])
