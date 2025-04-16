@@ -1244,7 +1244,7 @@ describe('RcRoutes: Devices', () => {
 
     /* Wired Client */
     test('should redirect users/wired to users/wired/switch/clients', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOOGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/users/wired',
@@ -1254,7 +1254,7 @@ describe('RcRoutes: Devices', () => {
       expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
     })
     test('should redirect to users/wired/switch/clients correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOOGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/users/wired/switch/clients',
@@ -1264,7 +1264,7 @@ describe('RcRoutes: Devices', () => {
       expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
     })
     test('should redirect to users/wired/wifi/clients correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOOGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/users/wired/wifi/clients',
