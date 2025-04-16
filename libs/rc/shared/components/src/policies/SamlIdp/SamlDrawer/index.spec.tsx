@@ -92,7 +92,7 @@ describe('SAML Drawer', () => {
     })
 
     expect(screen.getByTestId('display-metadata-button')).toBeInTheDocument()
-    expect(screen.getAllByText('ON').length).toEqual(2)
+    expect(screen.getAllByText('On').length).toEqual(2)
   })
 
   it('SAML Drawer - should call visible false when click Close button', async () => {

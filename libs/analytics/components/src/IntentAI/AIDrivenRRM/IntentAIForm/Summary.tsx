@@ -23,7 +23,7 @@ export function Summary () {
         <StepsForm.FieldSummary<boolean>
           convert={(isFullOptimization) => {
             const priority = isFullOptimization ? priorities.full : priorities.partial
-            return <Tooltip title={priority.content} dottedUnderline={true}>
+            return <Tooltip title={priority.content} dottedUnderline={true} placement='right'>
               {$t(priority.title)}
             </Tooltip>
           }}
