@@ -252,6 +252,7 @@ export enum Features {
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE = 'wifi-ap-poe-operating-mode-setting-toggle',
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
@@ -324,7 +325,8 @@ export enum Features {
   LOGIN_SSO_SAML_MSPEC = 'login-sso-saml-mspec',
   DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
   SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
-  WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle'
+  WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
+  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

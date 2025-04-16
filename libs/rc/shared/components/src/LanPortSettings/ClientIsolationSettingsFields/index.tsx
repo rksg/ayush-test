@@ -3,11 +3,18 @@ import { useEffect, useState } from 'react'
 import { Form, Space, Switch } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Button, Drawer, Select, StepsForm, Tooltip, Alert }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { useGetClientIsolationListQuery }                                                from '@acx-ui/rc/services'
-import { ClientIsolationMessages, IsolatePacketsTypeEnum, getIsolatePacketsTypeOptions } from '@acx-ui/rc/utils'
-import { useParams }                                                                     from '@acx-ui/react-router-dom'
+import { Button, Drawer, Select, StepsForm, Tooltip, Alert } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetClientIsolationListQuery }                    from '@acx-ui/rc/services'
+import {
+  ClientIsolationMessages,
+  IsolatePacketsTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  getIsolatePacketsTypeOptions,
+  hasPolicyPermission
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ClientIsolationForm } from '../../policies/ClientIsolationForm/ClientIsolationForm'
 import { FieldLabel }          from '../styledComponents'
@@ -69,7 +76,6 @@ const ClientIsolationSettingsFields = (props: ClientIsolationSettingFieldsProps)
       setClientIsoCreateId('')
     }
   }, [clientIsolationAllowListOptions])
-
 
   return (
     <>
@@ -145,17 +151,19 @@ const ClientIsolationSettingsFields = (props: ClientIsolationSettingFieldsProps)
           <Space split='|'>
             <Button
               type='link'
+              children={$t({ defaultMessage: 'Policy Details' })}
               onClick={()=>setDetailVisible(true)}
               disabled={!clientIsolationProfileId}
-            >
-              {$t({ defaultMessage: 'Policy Details' })}
-            </Button>
+            />
+            {hasPolicyPermission(
+              { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE }) &&
             <Button
               type='link'
+              children={$t({ defaultMessage: 'Add Policy' })}
               onClick={()=>setFormVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add Policy' })}
-            </Button>
+            />
+            }
+
           </Space>
           <ClientIsolationAllowListDetailsDrawer
             visible={detailVisible}

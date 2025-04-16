@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ greyBg?: boolean }>`
   position: sticky;
   top: calc(
     var(--acx-header-height) +
@@ -8,7 +8,10 @@ export const Wrapper = styled.div`
     (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner))
   );
   z-index: 7;
-  background-color: var(--acx-primary-white);
+  ${({ greyBg }) => (greyBg
+    ? 'background-color: var(--acx-neutrals-10);'
+    : 'background-color: var(--acx-primary-white);'
+  )}
   padding: 0 var(--acx-content-horizontal-space);
   margin: 0 calc(var(--acx-content-horizontal-space) * -1);
   .ant-page-header {

@@ -6,13 +6,14 @@ import { Table, TableProps, Card, Loader }                                      
 import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  captiveNetworkTypes, ConfigTemplateType,
+  ConfigTemplateType,
   GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
   useConfigTemplate, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
+import { captiveNetworkTypes }                  from '../../NetworkForm/contentsMap'
 import { useGetAAAPolicyInstanceList }          from '../AAAForm/aaaPolicyQuerySwitcher'
 
 export default function AAAInstancesTable () {
