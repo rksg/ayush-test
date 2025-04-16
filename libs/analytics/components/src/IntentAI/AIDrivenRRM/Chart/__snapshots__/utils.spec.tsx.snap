@@ -13,3 +13,12 @@ exports[`customTooltipText formats tooltip correctly for plural > 1 1`] = `
    APs
 </DocumentFragment>
 `;
+
+exports[`customTooltipText renders correctly 1`] = `
+<DocumentFragment>
+  Channel 6: 
+  <b>
+    3 APs
+  </b>
+</DocumentFragment>
+`;
