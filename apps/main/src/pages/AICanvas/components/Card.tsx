@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
+import { Slider }                     from 'antd'
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
 import { getEmptyImage }              from 'react-dnd-html5-backend'
 
-import { DeleteOutlined, EditOutlined, Plus, Minus } from '@acx-ui/icons-new'
-import { WidgetListData }                            from '@acx-ui/rc/utils'
+import { DeleteOutlined, EditOutlined } from '@acx-ui/icons-new'
+import { WidgetListData }               from '@acx-ui/rc/utils'
 
 import { CardInfo, Group, LayoutConfig } from '../Canvas'
 import utils                             from '../utils'
@@ -114,20 +115,6 @@ function Card (props: CardProps) {
     props.updateGroupList(groupsTmp)
   }
 
-  const increaseCard = () => {
-    const nextSizeIndex = card.currentSizeIndex + 1
-    if(nextSizeIndex < card.sizes.length) {
-      changeCardsLayout(nextSizeIndex)
-    }
-  }
-
-  const decreaseCard = () => {
-    const nextSizeIndex = card.currentSizeIndex - 1
-    if(nextSizeIndex >= 0) {
-      changeCardsLayout(nextSizeIndex)
-    }
-  }
-
   const widgetRef = useRef(null)
   // const [resizing, setResizing] = useState(false)
   // const handler = (mouseDownEvent, card) => {
@@ -203,25 +190,6 @@ function Card (props: CardProps) {
           >
             <div className='card-actions'>
               <div
-                data-testid='increaseCard'
-                className={`icon ${
-                  card.currentSizeIndex+1 >= card.sizes?.length ? 'disabled' : ''}`}
-                onClick={() => {
-                  increaseCard()
-                }}
-              >
-                <Plus />
-              </div>
-              <div
-                data-testid='decreaseCard'
-                className={`icon ${card.currentSizeIndex <= 0 ? 'disabled' : ''}`}
-                onClick={() => {
-                  decreaseCard()
-                }}
-              >
-                <Minus />
-              </div>
-              <div
                 data-testid='editCard'
                 className='icon'
                 onClick={() => {
@@ -238,6 +206,24 @@ function Card (props: CardProps) {
                 }}
               >
                 <DeleteOutlined />
+              </div>
+            </div>
+            <div className='card-resizer'>
+              <div className='label'>
+                Resize
+              </div>
+              <div
+                data-testid='resizCard'
+                className='slider'
+              >
+                <Slider
+                  min={0}
+                  max={3}
+                  marks={{ 0: '1x', 1: '2x', 2: '3x', 3: '4x' }}
+                  value={card.currentSizeIndex}
+                  tooltipVisible={false}
+                  onChange={changeCardsLayout}
+                />
               </div>
             </div>
             {

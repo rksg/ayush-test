@@ -8,13 +8,13 @@ import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -215,7 +215,7 @@ display: flex;
   }
   .content {
     background: transparent;
-    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
       - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
     width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
@@ -267,7 +267,7 @@ display: flex;
       /* Track */
       &::-webkit-scrollbar-track {
         border-radius: 6px;
-        background: transparent; 
+        background: transparent;
       }
 
       /* Handle */
@@ -275,7 +275,7 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
         - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
@@ -312,7 +312,7 @@ display: flex;
         .ant-divider-horizontal.ant-divider-with-text {
           border-top-color: var(--acx-neutrals-30);
         }
-        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::before,
         .ant-divider-horizontal.ant-divider-with-text::after {
           width: 29%;
         }
@@ -422,7 +422,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000 //transparent; 
+  background: #000; //transparent;
   padding-bottom: 10px;
 }
 
@@ -490,6 +490,37 @@ overflow: auto;
     border-right: 2px solid #888;
     border-bottom: 2px solid #888;
   }
+  .card-resizer{
+    width: inherit;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    background: var(--acx-primary-black);
+    color: var(--acx-primary-white);
+    padding: 8px 16px;
+    border-radius: 0 0 4px 4px;
+    opacity: 0.9;
+    .label{
+      margin: 4px;
+    }
+    .slider{
+      cursor: pointer;
+      margin: 0 16px;
+      width: 75%;
+      .ant-slider-mark-text {
+        color: var(--acx-primary-white);
+        margin: 6px 0;
+      }
+      .ant-slider-handle::before {
+        display: none !important;
+      }
+    }
+  }
+  &:hover .card-resizer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 .rglb_group-item .group-item-container #card-container .card .card-footer {
   display: flex;
@@ -555,7 +586,7 @@ export const Widget = styled(Card)`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
