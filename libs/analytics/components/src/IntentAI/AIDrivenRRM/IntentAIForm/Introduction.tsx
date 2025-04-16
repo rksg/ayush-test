@@ -49,10 +49,14 @@ export function Introduction () {
         <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
         <Tabs stickyTop={false}>
           <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-            <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
+            <UI.ChartWrapper>
+              <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
+            </UI.ChartWrapper>
           </Tabs.TabPane>
           <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
-            <NeighborAPGraph />
+            <UI.ChartWrapper>
+              <NeighborAPGraph />
+            </UI.ChartWrapper>
           </Tabs.TabPane>
         </Tabs>
       </StepsForm.TextContent>
