@@ -8,6 +8,8 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import { NetworkTabsEnum } from '.'
 import { NetworksList }    from '.'
@@ -54,6 +56,16 @@ describe('NetworksList with feature toggle', () => {
     render(<NetworksList tab={NetworkTabsEnum.APPLICATIONS_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId(ReportType.APPLICATION)).toBeVisible()
+  })
+  it('should not render applications report tab for Core Tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    render(<NetworksList tab={NetworkTabsEnum.LIST}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByTestId(ReportType.APPLICATION)).toBeNull()
   })
   it('should render wireless report tab', async () => {
     render(<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT}/>,

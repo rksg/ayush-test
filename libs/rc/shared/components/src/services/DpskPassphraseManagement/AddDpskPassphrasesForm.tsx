@@ -58,6 +58,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isPassphraseEnforcement = useIsSplitOn(Features.PASSPHRASE_ENFORCEMENT)
+  const { data: dpskPoolData } = useGetDpskQuery(
+    { params: { serviceId } },
+    { skip: !isPassphraseEnforcement }
+  )
 
   const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
     ? NEW_MAX_DEVICES_PER_PASSPHRASE
@@ -242,8 +247,26 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           }
           name='passphrase'
           rules={[
-            { min: 8 },
-            { max: 63 }
+            {
+              validator: async (_, value) => {
+                if (!value) {
+                  return Promise.resolve()
+                }
+                if (isPassphraseEnforcement) {
+                  if (value.length !== dpskPoolData?.passphraseLength) {
+                    throw new Error(
+                      // eslint-disable-next-line max-len
+                      $t({ defaultMessage: 'Passphrase must be {length} characters' }, { length: dpskPoolData?.passphraseLength })
+                    )
+                  }
+                } else if (value.length < 8 || value.length > 63) {
+                  const message = value.length < 8
+                    ? $t({ defaultMessage: 'Passphrase must be at least 8 characters' })
+                    : $t({ defaultMessage: 'Passphrase must be less than 64 characters' })
+                  throw new Error(message)
+                }
+              }
+            }
           ]}
           children={<PasswordInput />}
         />

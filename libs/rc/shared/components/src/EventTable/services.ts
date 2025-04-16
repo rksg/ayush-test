@@ -32,6 +32,7 @@ const defaultPayload = {
     'switchName',
     'serialNumber',
     'networkName',
+    'serviceName',
     'networkId',
     'ssid',
     'radio',

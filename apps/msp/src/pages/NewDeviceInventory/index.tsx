@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCustomerNamesFilterListQuery,
   useDeviceInventoryListQuery,
@@ -109,6 +110,7 @@ export function NewDeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const {
     state
@@ -136,7 +138,8 @@ export function NewDeviceInventory () {
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const filterQueryParams = {
@@ -153,7 +156,8 @@ export function NewDeviceInventory () {
     const csvPayload = { ...defaultPayload, pageSize: 10000 }
     downloadCsv({
       params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
-      payload: csvPayload })
+      payload: csvPayload,
+      enableRbac: isViewmodleAPIsMigrateEnabled })
   }
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [

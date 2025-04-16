@@ -20,14 +20,18 @@ import { messageMapping } from './messageMapping'
 
 interface IkeAssociationSettingsFormProps {
   initIpSecData?: Ipsec
+  loadIkeSettings: boolean
+  setLoadIkeSettings: (state: boolean) => void
 }
 
 export default function IkeAssociationSettings (props: IkeAssociationSettingsFormProps) {
-  const { initIpSecData } = props
+  const { initIpSecData, loadIkeSettings, setLoadIkeSettings } = props
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
-  const [ikeProposalType, setIkeProposalType] = useState(IpSecProposalTypeEnum.DEFAULT)
+  let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
+  const [ikeProposalType, setIkeProposalType] = useState(proposalType
+    ? proposalType : IpSecProposalTypeEnum.DEFAULT)
 
   const initialAlgValue = {
     encAlg: IpSecEncryptionAlgorithmEnum.AES128,
@@ -59,11 +63,17 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
   }
 
   useEffect (() => {
-    if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
-      setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
-    } else {
-      setIkeProposalType(form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType']))
+    let ikeProposalSelection = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
+    setIkeProposalType(ikeProposalSelection ? ikeProposalSelection : IpSecProposalTypeEnum.DEFAULT)
+
+    if (loadIkeSettings && initIpSecData) {
+      if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
+        setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
+      } else {
+        setIkeProposalType(IpSecProposalTypeEnum.DEFAULT)
+      }
     }
+    setLoadIkeSettings(false)
   }, [initIpSecData, form])
 
   const onProposalTypeChange = (value: IpSecProposalTypeEnum) => {

@@ -74,6 +74,7 @@ export interface PersonalIdentityNetworkFormContextType {
   requiredSwitchModels?: string[]
   getClusterInfoByTunnelProfileId: (tunnelId: string) => EdgeClusterStatus | undefined
   availableTunnelProfiles?: TunnelProfileViewData[]
+  getClusterInfoByClusterId: (clusterId: string) => EdgeClusterStatus | undefined
 }
 
 // eslint-disable-next-line max-len
@@ -400,6 +401,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     return allClusterData?.find(item => item.clusterId === targetClusterId)
   }
 
+  const getClusterInfoByClusterId = (value: string) => {
+    return allClusterData?.find(item => item.clusterId === value)
+  }
+
   const addNetworkCallback = useCallback((dpskPoolId?: string) => {
     getDpsk({ params: { serviceId: dpskPoolId } }).unwrap()
       .then(data => {
@@ -442,7 +447,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         requiredFw_AS,
         requiredSwitchModels,
         getClusterInfoByTunnelProfileId,
-        availableTunnelProfiles
+        availableTunnelProfiles,
+        getClusterInfoByClusterId
       }}
     >
       {props.children}
