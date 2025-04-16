@@ -332,4 +332,3 @@ export const TextContent = styled.div`
 
   ${greyTextStyles}
 `
-

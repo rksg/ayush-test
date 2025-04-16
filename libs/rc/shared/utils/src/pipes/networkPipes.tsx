@@ -215,13 +215,11 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   }),
   [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Active Directory / LDAP Server',
-    // eslint-disable-next-line max-len
-    description: 'Users are required to enter an organizational username and password to gain access to the network'
+    description: 'Guest network type - Active Directory / LDAP Server'
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
-    defaultMessage: 'SSO via SAML Identity Provider (IdP)',
-    // eslint-disable-next-line max-len
-    description: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.'
+    defaultMessage: 'SAML Identity Provider (IdP)',
+    description: 'Guest network type - SAML Identity Provider (IdP)'
   })
 }
 

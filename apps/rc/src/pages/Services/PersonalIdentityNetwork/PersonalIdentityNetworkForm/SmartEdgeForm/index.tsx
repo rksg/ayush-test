@@ -23,6 +23,7 @@ import { getOpsApi }     from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
+import { CompatibilityCheck }   from './CompatibilityCheck'
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
@@ -41,7 +42,7 @@ export const SmartEdgeForm = () => {
     dhcpList,
     dhcpOptions,
     isDhcpOptionsLoading,
-    getClusterName
+    getClusterInfoByClusterId
   } = useContext(PersonalIdentityNetworkFormContext)
 
   const edgeClusterId = Form.useWatch('edgeClusterId', form) || form.getFieldValue('edgeClusterId')
@@ -186,6 +187,8 @@ export const SmartEdgeForm = () => {
     }}
   />
 
+  const currentClusterInfo = getClusterInfoByClusterId(edgeClusterId)
+
   return (
     <>
       <SelectDhcpPoolDrawer
@@ -207,7 +210,14 @@ export const SmartEdgeForm = () => {
                 <Col span={24}>
                   <Form.Item
                     label={$t({ defaultMessage: 'Edge Cluster' })}
-                    children={getClusterName(edgeClusterId)}
+                    children={
+                      <Space>
+                        {currentClusterInfo?.name}
+                        <CompatibilityCheck
+                          clusterData={currentClusterInfo}
+                        />
+                      </Space>
+                    }
                   />
                 </Col>
               </Row> :

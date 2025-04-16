@@ -907,7 +907,7 @@ h5.c7.ant-typography {
         </div>
       </div>
       <div
-        class="c11"
+        class="c11 action-footer"
         data-testid="steps-form-actions"
       >
         <div
@@ -1925,7 +1925,7 @@ h5.c5.ant-typography {
         </div>
       </div>
       <div
-        class="c14"
+        class="c14 action-footer"
         data-testid="steps-form-actions"
       >
         <div
@@ -8943,7 +8943,7 @@ h5.c6.ant-typography {
         </div>
       </div>
       <div
-        class="c20"
+        class="c20 action-footer"
         data-testid="steps-form-actions"
       >
         <div

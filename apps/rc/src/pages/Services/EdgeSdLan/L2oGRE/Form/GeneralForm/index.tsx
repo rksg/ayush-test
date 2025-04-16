@@ -4,18 +4,21 @@ import { Col, Form, Input, Row, Select, Tooltip, Typography, Space } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }           from '@acx-ui/components'
+import { InformationSolid }                                from '@acx-ui/icons'
 import { CompatibilityWarningTriangleIcon }                from '@acx-ui/rc/components'
 import { useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanFormModel,
   IncompatibilityFeatures,
   servicePolicyNameRegExp,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useHelpPageLink
 } from '@acx-ui/rc/utils'
 import { TenantLink }      from '@acx-ui/react-router-dom'
 import { compareVersions } from '@acx-ui/utils'
 
 import { useEdgeSdLanContext }    from '../EdgeSdLanContextProvider'
+import { messageMappings }        from '../messageMappings'
 import { StyledAntdDescriptions } from '../SummaryForm/styledComponents'
 
 import * as UI from './styledComponents'
@@ -24,7 +27,8 @@ import * as UI from './styledComponents'
 export const GeneralForm = () => {
   const { $t } = useIntl()
   const { form, editMode } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { availableTunnelProfiles } = useEdgeSdLanContext()
+  const { availableTunnelProfiles, associatedEdgeClusters } = useEdgeSdLanContext()
+  const helpUrl = useHelpPageLink()
   const tunnelProfileId = Form.useWatch('tunnelProfileId', form)
 
   const tunnelProfileOptions = useMemo(() => {
@@ -38,6 +42,25 @@ export const GeneralForm = () => {
 
   const currentTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
     tunnelProfile.id === tunnelProfileId)
+
+  const checkCorePortConfigured = (tunnelProfileId: string) => {
+    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+    const associatedEdgeCluster = associatedEdgeClusters?.find((cluster) =>
+      cluster.clusterId === targetTunnelProfile?.destinationEdgeClusterId)
+    if (associatedEdgeCluster?.hasCorePort) {
+      return Promise.resolve()
+    } else {
+      return Promise.reject(<UI.ClusterSelectorHelper>
+        <InformationSolid />
+        {$t(messageMappings.setting_cluster_helper, {
+          infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+            {$t({ defaultMessage: 'See more information' })}
+          </a>
+        })}
+      </UI.ClusterSelectorHelper>)
+    }
+  }
 
   const onTunnelProfileChange = (tunnelProfileId: string) => {
     const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
@@ -78,7 +101,8 @@ export const GeneralForm = () => {
                 {
                   required: true,
                   message: $t({ defaultMessage: 'Please select a Tunnel Profile' })
-                }
+                },
+                { validator: (_, value) => checkCorePortConfigured(value) }
               ]}
             >
               <Select
@@ -166,7 +190,7 @@ const ClusterFirmwareInfo = (props: {
 
   return !isFwVerFetching
     ? ( <Space align='center' size='small'>
-      <Typography>
+      <Typography style={{ fontSize: '12px' }}>
         {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },
           { fwVersion: minNodeVersion }) }
       </Typography>

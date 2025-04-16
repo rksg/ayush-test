@@ -60,6 +60,7 @@ export default function SnmpAgentDetail () {
         id: [params.policyId]
       }
     },
+    enableRbac: isUseRbacApi,
     customHeaders:
     ( isUseRbacApi ?
       GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):

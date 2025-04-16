@@ -24,10 +24,11 @@ import { getOpsApi }     from '@acx-ui/utils'
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { DualWanForm }        from './DualWan'
-import { LagForm }            from './LagForm'
-import { PortForm }           from './PortForm'
-import { Summary }            from './Summary'
+import { DualWanForm }                     from './DualWan'
+import { getDualWanDataFromClusterWizard } from './DualWan/utils'
+import { LagForm }                         from './LagForm'
+import { PortForm }                        from './PortForm'
+import { Summary }                         from './Summary'
 import {
   CompatibilityCheckResult,
   InterfacePortFormCompatibility,
@@ -190,7 +191,8 @@ export const InterfaceSettings = () => {
       const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
       // eslint-disable-next-line max-len
       const wanCount = getEdgeWanInterfaceCount(ports as EdgePort[], lags as EdgeLag[])
-      setDynamicStepsVisible({ dualWanSettings: wanCount > 1 })
+      const isDualWan = wanCount > 1
+      setDynamicStepsVisible({ dualWanSettings: isDualWan })
     }
 
     configWizardForm.validateFields()
@@ -267,6 +269,15 @@ export const InterfaceSettings = () => {
 
         const checkResult = getCompatibleCheckResult(typeKey)
         updateAlertMessage(checkResult, typeKey)
+
+        // dual WAN check
+        if (isEdgeDualWanEnabled) {
+          // clear dualWanSettings if cluster is multi-nodes
+          const configWizardFormData = configWizardForm.getFieldsValue(true)
+          // eslint-disable-next-line max-len
+          configWizardForm.setFieldValue(['multiWanSettings'], getDualWanDataFromClusterWizard(configWizardFormData))
+        }
+
         return !checkResult.isError
       }
     },

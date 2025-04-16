@@ -60,6 +60,7 @@ interface ImportFileDrawerProps extends DrawerProps {
 }
 
 export const CsvSize = {
+  '512KB': 1024*512,
   '1MB': 1024*1*1024,
   '2MB': 1024*2*1024,
   '5MB': 1024*5*1024,

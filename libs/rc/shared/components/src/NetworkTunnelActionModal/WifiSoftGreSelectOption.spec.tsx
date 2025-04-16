@@ -24,6 +24,12 @@ jest.mock('../policies/Ipsec/IpsecForm/IpsecDrawer', () => ({
   default: () => <div data-testid={'rc-IpsecDrawer'} title='IpsecDrawer' />
 }))
 
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown, disabled: boolean }>
+  loading?: boolean
+  dropdownClassName?: string
+}>
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
@@ -65,8 +71,8 @@ describe('WifiSoftGreSelectOption', () => {
           mockedGetFn()
           return res(ctx.json(mockIpSecTable.data))
         })
-    )}
-  )
+    )
+  })
 
   it('should correctly render softGRE tunneling', async () => {
     const venueId = 'venueId-2'
