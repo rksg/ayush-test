@@ -2,10 +2,10 @@ import { useEffect } from 'react'
 
 import { Col, Form, Input, Radio, Row, Space } from 'antd'
 
-import { GlobeOutlined, Lock }     from '@acx-ui/icons-new'
-import { useUpdateCanvasMutation } from '@acx-ui/rc/services'
-import { Canvas }                  from '@acx-ui/rc/utils'
-import { getIntl }                 from '@acx-ui/utils'
+import { GlobeOutlined, LockOutlined } from '@acx-ui/icons-new'
+import { useUpdateCanvasMutation }     from '@acx-ui/rc/services'
+import { Canvas }                      from '@acx-ui/rc/utils'
+import { getIntl }                     from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -78,7 +78,7 @@ export function EditCanvasModal (props:{
               <Space direction='vertical'>
                 <Radio value={false}>
                   <div className='label'>
-                    {$t({ defaultMessage: 'Make Private' })} <Lock size='sm' />
+                    {$t({ defaultMessage: 'Make Private' })} <LockOutlined size='sm' />
                   </div>
                   <div className='desp'>
                     {/* eslint-disable-next-line max-len */}

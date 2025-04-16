@@ -5,7 +5,7 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 
 import { Button, Dropdown, Tooltip }                                                                  from '@acx-ui/components'
-import { ArrowExpand, Lock, GlobeOutlined }                                                           from '@acx-ui/icons-new'
+import { ArrowExpand, LockOutlined, GlobeOutlined }                                                   from '@acx-ui/icons-new'
 import { useGetCanvasQuery, useLazyGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 import { Canvas as CanvasType }                                                                       from '@acx-ui/rc/utils'
 
@@ -161,7 +161,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
         defaultSelectedKeys={[canvasId]}
         items={[
           ...canvasList.map(c => ({
-            icon: c.visible ? <GlobeOutlined size='sm' /> : <Lock size='sm' />,
+            icon: c.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
             key: c.id,
             label: c.name,
             itemIcon: c.dashboardIds && <div
@@ -307,7 +307,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
 
   const visibilityMap: { [key:string]: { icon: ReactElement, label: string } } = {
     private: {
-      icon: <Lock size='sm' />,
+      icon: <LockOutlined size='sm' />,
       label: $t({ defaultMessage: 'Private' })
     },
     public: {

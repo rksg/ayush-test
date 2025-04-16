@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, DrawerTypes, showActionModal }              from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined, GlobeOutlined, Lock } from '@acx-ui/icons-new'
-import { useDeleteCanvasMutation }                           from '@acx-ui/rc/services'
-import { Canvas }                                            from '@acx-ui/rc/utils'
+import { Drawer, DrawerTypes, showActionModal }                      from '@acx-ui/components'
+import { DeleteOutlined, EditOutlined, GlobeOutlined, LockOutlined } from '@acx-ui/icons-new'
+import { useDeleteCanvasMutation }                                   from '@acx-ui/rc/services'
+import { Canvas }                                                    from '@acx-ui/rc/utils'
 
 import { DashboardIcon } from '../Canvas'
 import * as UI           from '../styledComponents'
@@ -51,7 +51,7 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
         <div className='info'>
           <div className='title'>
             <span className='name'>{ item.name }</span>
-            { item.visible ? <GlobeOutlined size='sm' /> : <Lock size='sm' /> }
+            { item.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
             { item.dashboardIds && <DashboardIcon /> }
           </div>
           <div className='desp'>

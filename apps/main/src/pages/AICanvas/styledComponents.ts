@@ -1,5 +1,5 @@
 import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
-import styled, { css }                                 from 'styled-components/macro'
+import styled, { css }                                                  from 'styled-components/macro'
 
 import { Card }      from '@acx-ui/components'
 import { Dashboard } from '@acx-ui/icons-new'
