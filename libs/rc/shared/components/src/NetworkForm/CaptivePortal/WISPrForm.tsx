@@ -115,16 +115,14 @@ export function WISPrForm () {
     // eslint-disable-next-line max-len
     form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], resolvedCustomExternalProvider)
     form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], resolvedCaptivePortalUrl)
-    if (resolvedRedirectUrl) {
-      form.setFieldValue(['guestPortal','redirectUrl'], resolvedRedirectUrl)
-    }
+    form.setFieldValue(['guestPortal','redirectUrl'], resolvedRedirectUrl)
     form.setFieldValue('redirectCheckbox', !!resolvedRedirectUrl)
     setIsOtherProvider(resolvedCustomExternalProvider)
     setRegionOption(regions)
 
     setData && setData(_.merge({}, data, {
       guestPortal: {
-        ...(resolvedRedirectUrl ? { redirectUrl: resolvedRedirectUrl } : {}),
+        redirectUrl: resolvedRedirectUrl,
         wisprPage: {
           externalProviderName: value,
           externalProviderRegion: resolvedExternalProviderRegion,
