@@ -120,12 +120,43 @@ describe('NeighborAPGraph', () => {
       }
     })
 
-    render(
-      <NeighborAPGraph />,
-      { route: { params }, wrapper: Provider }
-    )
+    render(<NeighborAPGraph />, { route: { params }, wrapper: Provider })
 
-    expect(await screen.findByText('View More')).not.toBeVisible()
+    expect(await screen.findByText('Graph modeling will be generated once Intent is activated.'))
+      .toBeVisible()
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
+    expect(screen.queryByText('View More')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
+  })
+
+  it('should handle cold tier data', async () => {
+    const coldTierDataMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
+    }
+    mockIntentContext({ intent: coldTierDataMock })
+
+    const { container } = render(<NeighborAPGraph />, { route: { params }, wrapper: Provider })
+    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
+  })
+
+  it('should render correctly when data is not retained', async () => {
+    const beyondDataRetentionMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: true,
+        isDataRetained: false
+      }
+    }
+    mockIntentContext({ intent: beyondDataRetentionMock })
+
+    const { container } = render(<NeighborAPGraph />, { route: { params }, wrapper: Provider })
+    expect(container).toHaveTextContent('Beyond data retention period')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
   })
 
   it('should handle drawer', async () => {
@@ -139,7 +170,17 @@ describe('NeighborAPGraph', () => {
 
 describe('DataGraph', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<DataGraph data={mockCrrmData} zoom={0.8} />)
+    const { asFragment } = render(<DataGraph data={mockCrrmData} isDrawer={false} />)
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
+    expect(graphs).toHaveLength(2)
+    const arrow = screen.queryByTestId('ArrowChevronRight')
+    expect(arrow).toBeVisible()
+  })
+
+  it('should render correctly when drawer is open', async () => {
+    const { asFragment } = render(<DataGraph data={mockCrrmData} isDrawer={true} />)
 
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
@@ -149,7 +190,7 @@ describe('DataGraph', () => {
   })
 
   it('should not render when data is empty', () => {
-    const { asFragment } = render(<DataGraph data={[]} zoom={0.8} />)
+    const { asFragment } = render(<DataGraph data={[]} isDrawer={false} />)
 
     // eslint-disable-next-line testing-library/no-node-access
     const graphs = asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')
