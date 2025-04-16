@@ -139,13 +139,9 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   }
 
   const handleNetworkModalSubmit = (
-    venueId: string,
-    activatedNetworks: NetworkActivationType['venueId']
+    activatedNetworks: NetworkActivationType
   ) => {
-    formRef.setFieldValue('activatedNetworks', {
-      ...formRef.getFieldValue('activatedNetworks'),
-      [venueId]: activatedNetworks
-    })
+    formRef.setFieldValue('activatedNetworks', activatedNetworks)
     formRef.validateFields(['activatedNetworks'])
     closeNetworkModal()
   }
@@ -169,7 +165,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         onSubmit={handleNetworkModalSubmit}
         venueId={networkDrawerVenueId!}
         venueName={availableVenues.find(item => item.id === networkDrawerVenueId)?.name}
-        tunneledNetworks={formRef.getFieldValue('activatedNetworks')?.[networkDrawerVenueId]}
+        activatedNetworks={formRef.getFieldValue('activatedNetworks')}
         pinNetworkIds={pinNetworkIds}
       />}
     </>

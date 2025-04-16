@@ -1,9 +1,11 @@
 import { createContext, ReactNode, useContext } from 'react'
 
-import { Loader }                                                                       from '@acx-ui/components'
-import { useGetAvailableTunnelProfile }                                                 from '@acx-ui/edge/components'
-import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery }           from '@acx-ui/rc/services'
-import { EdgeMvSdLanViewData, PersonalIdentityNetworksViewData, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { Loader }                                                                                          from '@acx-ui/components'
+import { useGetAvailableTunnelProfile }                                                                    from '@acx-ui/edge/components'
+import { Features }                                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
+import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgeClusterListQuery }  from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeMvSdLanViewData, PersonalIdentityNetworksViewData, TunnelProfileViewData } from '@acx-ui/rc/utils'
 
 export interface EdgeSdLanContextType {
   allSdLans: Pick<EdgeMvSdLanViewData, 'id' | 'venueId' | 'edgeClusterId' | 'guestEdgeClusterId'
@@ -11,6 +13,7 @@ export interface EdgeSdLanContextType {
   allPins: Pick<PersonalIdentityNetworksViewData, 'id' | 'venueId' | 'edgeClusterInfo'
    | 'tunneledWlans'>[]
   availableTunnelProfiles: TunnelProfileViewData[]
+  associatedEdgeClusters?: EdgeClusterStatus[]
 }
 
 export const EdgeSdLanContext = createContext({} as EdgeSdLanContextType)
@@ -20,6 +23,8 @@ export function useEdgeSdLanContext () {
 }
 
 export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceId?: string }) {
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+
   const {
     isDataLoading,
     availableTunnelProfiles
@@ -41,20 +46,39 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
       fields: ['id', 'tunnelProfileId', 'tunneledWlans'],
       pageSize: 10000
     } },{
+    skip: !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => ({
       allPins: data?.data,
       isPinsLoading: isLoading
     })
   })
 
+  const { associatedEdgeClusters, isAssociatedEdgeClustersLoading } = useGetEdgeClusterListQuery({
+    payload: {
+      fields: ['clusterId', 'hasCorePort'],
+      filters: {
+        clusterId: availableTunnelProfiles?.map(profile =>
+          profile.destinationEdgeClusterId).filter(Boolean)
+      },
+      pageSize: 10000
+    }
+  }, {
+    skip: !availableTunnelProfiles?.length,
+    selectFromResult: ({ data, isLoading }) => ({
+      associatedEdgeClusters: data?.data,
+      isAssociatedEdgeClustersLoading: isLoading
+    })
+  })
+
   const loadingStates = [{
-    isLoading: isDataLoading || isSdLansLoading || isPinsLoading
+    isLoading: isDataLoading || isSdLansLoading || isPinsLoading || isAssociatedEdgeClustersLoading
   }]
 
   return <EdgeSdLanContext.Provider value={{
     allSdLans,
     allPins,
-    availableTunnelProfiles
+    availableTunnelProfiles,
+    associatedEdgeClusters
   }}>
     <Loader states={loadingStates}>
       {props.children}

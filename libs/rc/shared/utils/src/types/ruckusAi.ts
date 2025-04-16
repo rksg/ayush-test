@@ -84,6 +84,7 @@ export interface WidgetListData {
   canvasId?: string
   widgetId?: string
   name?: string
+  updated?: boolean //TODO
 }
 
 export interface Canvas {
