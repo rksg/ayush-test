@@ -18,8 +18,9 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
+  RadiusAttributeGroup, RulesManagementUrlsInfo, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
+import { getOpsApi } from '@acx-ui/utils'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -58,6 +59,11 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
+
+  const conditionRbacOpsIds = editMode ? [getOpsApi(RulesManagementUrlsInfo.addConditions),
+    getOpsApi(RulesManagementUrlsInfo.deleteConditions),
+    getOpsApi(RulesManagementUrlsInfo.updateConditions)]
+    : [getOpsApi(RulesManagementUrlsInfo.addConditions)]
 
   useEffect( () =>{
     if(attributeGroupId) {
@@ -140,6 +146,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const rowActions: TableProps<AccessCondition>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: conditionRbacOpsIds,
       onClick: (selectedRows, clearSelection) => {
         setEditConditionMode(true)
         setAccessConditionsVisible(true)
@@ -149,6 +156,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: conditionRbacOpsIds,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -246,6 +254,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                   // eslint-disable-next-line max-len
                   tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
                   label: $t({ defaultMessage: 'Add' }),
+                  rbacOpsIds: conditionRbacOpsIds,
                   onClick: () => {
                     setEditConditionMode(false)
                     setEditCondition(undefined)
