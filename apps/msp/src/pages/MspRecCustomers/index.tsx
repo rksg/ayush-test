@@ -52,9 +52,6 @@ export function MspRecCustomers () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
-     && isPrimeAdmin
-
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
@@ -68,6 +65,7 @@ export function MspRecCustomers () {
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -77,6 +75,8 @@ export function MspRecCustomers () {
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
   const { rbacOpsApiEnabled } = getUserProfile()
+  const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) &&
+    (rbacOpsApiEnabled ? true : isPrimeAdmin)
   const hasAddPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)]) : isAdmin
   const hasAssignAdminPermission = rbacOpsApiEnabled
@@ -118,7 +118,8 @@ export function MspRecCustomers () {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
@@ -403,7 +404,8 @@ export function MspRecCustomers () {
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -499,7 +501,8 @@ export function MspRecCustomers () {
       },
       pagination: {
         settingsId: 'integrator-customers-table'
-      }
+      },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     return (

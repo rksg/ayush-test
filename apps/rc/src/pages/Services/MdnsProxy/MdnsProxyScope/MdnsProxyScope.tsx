@@ -4,11 +4,12 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
-import { useVenuesListQuery }                         from '@acx-ui/rc/services'
-import { useTableQuery, Venue, ApMdnsProxyScopeData } from '@acx-ui/rc/utils'
-import { WifiScopes }                                 from '@acx-ui/types'
-import { filterByAccess,  hasPermission }             from '@acx-ui/user'
+import { StepsFormLegacy, Table, Loader, TableProps }                from '@acx-ui/components'
+import { useVenuesListQuery }                                        from '@acx-ui/rc/services'
+import { useTableQuery, Venue, ApMdnsProxyScopeData, MdnsProxyUrls } from '@acx-ui/rc/utils'
+import { WifiScopes }                                                from '@acx-ui/types'
+import { filterByAccess,  hasPermission }                            from '@acx-ui/user'
+import { getOpsApi }                                                 from '@acx-ui/utils'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -139,8 +140,10 @@ export function MdnsProxyScope () {
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
             rowSelection={
-              hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.CREATE] }) &&
-              { type: 'radio' }
+              hasPermission({
+                scopes: [WifiScopes.UPDATE, WifiScopes.CREATE],
+                rbacOpsIds: [getOpsApi(MdnsProxyUrls.addMdnsProxyApsRbac)]
+              }) && { type: 'radio' }
             }
             columns={columns}
             dataSource={tableData}

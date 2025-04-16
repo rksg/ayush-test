@@ -83,14 +83,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
       form.resetFields()
       const corePortInfo = getEnabledCorePortInfo(portList ?? [], existedLagList ?? [])
       const hasCorePortEnabled = !!corePortInfo.key
-      let defaultPortType = defaultFormValues.portType
+
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
-        defaultPortType = EdgePortTypeEnum.LAN
+        form.setFieldsValue({
+          ...defaultFormValues,
+          portType: EdgePortTypeEnum.LAN,
+          ipMode: EdgeIpModeEnum.STATIC,
+          ...data
+        })
+        return
       }
 
       form.setFieldsValue({
         ...defaultFormValues,
-        portType: defaultPortType,
         ...data
       })
     }

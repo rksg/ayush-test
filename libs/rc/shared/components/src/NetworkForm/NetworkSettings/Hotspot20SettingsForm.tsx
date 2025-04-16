@@ -151,7 +151,7 @@ function Hotspot20Form () {
       </Form.Item>
 
       <Hotspot20Service />
-      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
+      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup comboWidth='175px' />}
     </>
   )
 

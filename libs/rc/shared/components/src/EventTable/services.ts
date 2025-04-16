@@ -32,6 +32,7 @@ const defaultPayload = {
     'switchName',
     'serialNumber',
     'networkName',
+    'serviceName',
     'networkId',
     'ssid',
     'radio',
@@ -66,7 +67,8 @@ const defaultPayload = {
     'profileName',
     'action',
     'macOui',
-    'lldpTlv'
+    'lldpTlv',
+    'macAcl'
   ]
 }
 

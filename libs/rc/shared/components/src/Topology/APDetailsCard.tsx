@@ -89,7 +89,7 @@ export function APDetailsCard (props: {
           apDetail?.powerSavingStatus as PowerSavingStatusEnum) &&
           <Tooltip zIndex={9999}
             title={$t(
-              { defaultMessage: 'Device is controlled by EcoFlexAI. '
+              { defaultMessage: 'Device is controlled by Energy Saving AI. '
                 + 'Radio may not be broadcasting.' }
             )}
             placement='top'

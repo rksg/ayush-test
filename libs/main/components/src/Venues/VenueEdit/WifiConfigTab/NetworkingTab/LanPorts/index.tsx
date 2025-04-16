@@ -786,6 +786,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       }).unwrap()
     }
 
+    isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
+      state: IpsecOptionChangeState.OnSave
+    })
+
     setResetModels([])
   }
 

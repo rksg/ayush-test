@@ -21,7 +21,9 @@ import {
   SwitchUrlsInfo,
   VlanPoolRbacUrls,
   WifiUrlsInfo,
-  EthernetPortProfileUrls
+  EthernetPortProfileUrls,
+  RulesManagementUrlsInfo,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -29,8 +31,11 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
 
 import {
+  macRegistrationPools,
   mockedClientIsolationQueryData,
   mockedRogueApPoliciesList,
   mockedVlanPoolProfilesQueryData,
@@ -146,6 +151,27 @@ describe('MyPolicies', () => {
           totalCount: 1,
           data: []
         }))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({
+          paging: {
+            totalCount: 1,
+            page: 0,
+            pageSize: 0,
+            pageCount: 1
+          },
+          content: [],
+          links: []
+        }))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationPools))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getAccessControlCount.url,
+        (req, res, ctx) => res(ctx.json(5))
       )
     )
   })
@@ -169,6 +195,33 @@ describe('MyPolicies', () => {
     expect(await screen.findByText(rogueApTitle)).toBeVisible()
 
     expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
+  })
+
+  it('should render My Policies with Core Tier support', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const createPageLink = `/${params.tenantId}/t/` + getSelectPolicyRoutePath()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('link', { name: 'Add Policy or Profile' })).toHaveAttribute('href', createPageLink)
+
+    const rogueApCount = mockedRogueApPoliciesList.totalCount
+    const rogueApTitle = `Rogue AP Detection (${rogueApCount})`
+    expect(await screen.findByText(rogueApTitle)).toBeVisible()
+
+    expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
+    expect(screen.queryByText('Location Based Service Server')).toBeNull()
+    expect(screen.queryByText('Workflow')).toBeNull()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -322,5 +375,20 @@ describe('MyPolicies', () => {
     )
 
     expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
+  })
+  it('should render Access Control combined count when switch MAC ACL is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE
+    )
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Access Control (5)')).toBeVisible()
   })
 })

@@ -13,7 +13,7 @@ export function removeRowIds<T extends Object> (data: Array<T>) {
   return data.map((item) => ( omit(item, ['rowId'])))
 }
 
-export function AddRowIdToIdenetityProvider (data: IdentityProvider) {
+export function AddRowIdToIdentityProvider (data: IdentityProvider) {
   const newData = cloneDeep(data)
   const { naiRealms, plmns, roamConsortiumOIs } = newData
 

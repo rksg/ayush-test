@@ -68,12 +68,12 @@ export const allowRebootShutdownForStatus = (edgeStatus: string) => {
 }
 
 export const allowResetForStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = resettabaleEdgeStatuses
+  const stringStatus: string[] = resettableEdgeStatuses
   return stringStatus.includes(edgeStatus)
 }
 
 export const allowSendOtpForStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = unconfigedEdgeStatuses
+  const stringStatus: string[] = unconfiguredEdgeStatuses
   return stringStatus.includes(edgeStatus)
 }
 
@@ -88,9 +88,9 @@ export const rebootShutdownEdgeStatusWhiteList = [
   EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
-export const resettabaleEdgeStatuses = rebootShutdownEdgeStatusWhiteList
+export const resettableEdgeStatuses = rebootShutdownEdgeStatusWhiteList
 
-export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
+export const unconfiguredEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
 export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
@@ -193,7 +193,7 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   return payload
 }
 
-export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
+export const convertEdgeSubInterfaceToApiPayload = (formData: EdgeSubInterface) => {
   const payload = { ...formData }
   if (payload.ipMode === EdgeIpModeEnum.DHCP) {
     if (payload.ip) payload.ip = ''
@@ -275,7 +275,7 @@ export const optionSorter = (
   return 0
 }
 
-export async function lanPortsubnetValidator (
+export async function lanPortSubnetValidator (
   currentSubnet: { ip: string, subnetMask: string },
   allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
@@ -373,7 +373,7 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], i
   // eslint-disable-next-line max-len
   const hasCorePhysicalPort = portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
   const hasCoreLag = lagData.some(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
     && (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
 
   const hasCorePort = hasCorePhysicalPort || hasCoreLag
@@ -497,7 +497,7 @@ export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCom
                 requiredFw: feature.featureRequirement.requiredFw
               }],
               incompatible: 0,
-              // `total` should beyound features
+              // `total` should beyond features
               total: totalScoped
             } as ApCompatibility
           }

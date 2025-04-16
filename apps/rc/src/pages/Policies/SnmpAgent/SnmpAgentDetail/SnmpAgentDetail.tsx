@@ -23,14 +23,16 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 import SnmpAgentInstancesTable from './SnmpAgentInstancesTable'
 import SnmpAgentOverview       from './SnmpAgentOverview'
 
-const defaultPayload = {
-  searchString: '',
-  fields: [ 'id', 'name', 'v2Agents', 'v3Agents' ],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: 1,
-  pageSize: 25
-}
+const rbacSnmpFields = [
+  'id',
+  'name',
+  'communityNames',
+  'userNames',
+  'apSerialNumbers',
+  'apNames',
+  'venueIds',
+  'venueNames'
+]
 
 export default function SnmpAgentDetail () {
   const { $t } = useIntl()
@@ -41,6 +43,15 @@ export default function SnmpAgentDetail () {
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
+  const defaultPayload = {
+    searchString: '',
+    fields: (isUseRbacApi) ? rbacSnmpFields: [ 'id', 'name', 'v2Agents', 'v3Agents' ],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 25
+  }
+
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
     defaultPayload: {
@@ -49,6 +60,7 @@ export default function SnmpAgentDetail () {
         id: [params.policyId]
       }
     },
+    enableRbac: isUseRbacApi,
     customHeaders:
     ( isUseRbacApi ?
       GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):

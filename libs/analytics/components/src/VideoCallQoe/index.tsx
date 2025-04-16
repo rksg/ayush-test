@@ -3,10 +3,15 @@ import { createContext, useEffect, useState } from 'react'
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Tooltip, PageHeader }                                                 from '@acx-ui/components'
-import { TenantLink }                                                          from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                          from '@acx-ui/types'
-import { getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { Tooltip, PageHeader } from '@acx-ui/components'
+import { TenantLink }          from '@acx-ui/react-router-dom'
+import { WifiScopes }          from '@acx-ui/types'
+import {
+  getShowWithoutRbacCheckKey,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
@@ -52,12 +57,15 @@ export function useVideoCallQoe () {
     <VideoCallQoeTable />
   </CountContext.Provider>
 
+  const hasCreateVideoCallQoePermission = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_VIDEO_CALL_QOE',
+    scopes: [WifiScopes.CREATE],
+    rbacOpsIds: [aiOpsApis.createVideoCallQoe]
+  })
+
   return {
     title: $t(title, { count }),
-    headerExtra: hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_VIDEO_CALL_QOE',
-      scopes: [WifiScopes.CREATE]
-    }) ? headerExtra : [],
+    headerExtra: hasCreateVideoCallQoePermission ? headerExtra : [],
     component
   }
 }

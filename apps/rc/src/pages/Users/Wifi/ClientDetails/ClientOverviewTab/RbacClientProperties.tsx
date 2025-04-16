@@ -35,8 +35,8 @@ import {
   transformQosPriorityType,
   QosPriorityEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }               from '@acx-ui/utils'
+import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -58,7 +58,7 @@ const getRadioTypeFromRbacAndNonRbacAPI = (nonRbacRadioType: any, rbacRadioType:
   }
 
   if(radioType === undefined || radioType === '') {
-    radioType = '--'
+    radioType = noDataDisplay
   }
   return radioType
 }
@@ -156,7 +156,7 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
           enableLinkToAp: !!apData,
           enableLinkToVenue: !!venueData,
           enableLinkToNetwork: !!networkData,
-          radioType: (clientMacAndRadioType === null ? '--' : clientMacAndRadioType)
+          radioType: (clientMacAndRadioType === null ? noDataDisplay : clientMacAndRadioType)
         })
 
         setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
@@ -181,7 +181,9 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
     return networkType === NetworkTypeEnum.CAPTIVEPORTAL && (
       guestType === GuestNetworkTypeEnum.GuestPass ||
       guestType === GuestNetworkTypeEnum.HostApproval ||
-      guestType === GuestNetworkTypeEnum.SelfSignIn
+      guestType === GuestNetworkTypeEnum.SelfSignIn ||
+      guestType === GuestNetworkTypeEnum.Directory ||
+      guestType === GuestNetworkTypeEnum.SAML
     )
   }
 
@@ -239,7 +241,7 @@ function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'MAC Address' })}
-        children={clientInfo?.macAddress || '--'}
+        children={clientInfo?.macAddress || noDataDisplay}
       />
       { clientInfo?.mldMacAddress &&
         <Descriptions.Item
@@ -249,26 +251,26 @@ function ClientDetails ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
       }
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
-        children={clientInfo?.ipAddress || '--'}
+        children={clientInfo?.ipAddress || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'OS' })}
         children={clientInfo?.osType ? <UI.OsType size={4}>
           {getOsTypeIcon(clientInfo?.osType || '')}
           {clientInfo?.osType}
-        </UI.OsType> : '--'}
+        </UI.OsType> : noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Host Name' })}
-        children={clientInfo?.hostname || '--'}
+        children={clientInfo?.hostname || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Username' })}
-        children={clientInfo?.username || '--'}
+        children={clientInfo?.username || noDataDisplay}
       />
       {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
-        children={'--'}
+        children={noDataDisplay}
       /> */}
     </Descriptions>
   </>
@@ -294,9 +296,9 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           clientInfo?.enableLinkToAp ?
             <TenantLink
               to={`devices/wifi/${clientInfo.apInformation?.serialNumber}/details/overview`}>
-              {clientInfo?.apInformation?.name || '--'}
+              {clientInfo?.apInformation?.name || noDataDisplay}
             </TenantLink>
-            : clientInfo?.apInformation?.name || '--'
+            : clientInfo?.apInformation?.name || noDataDisplay
         }
       />
       {clientInfo?.hasSwitch && <Descriptions.Item
@@ -309,9 +311,9 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           clientInfo?.enableLinkToAp ?
             // eslint-disable-next-line max-len
             <TenantLink to={`devices/switches/${clientInfo?.switchInformation?.serialNumber}/details/overview`}>
-              {clientInfo?.switchInformation?.name || '--'}
+              {clientInfo?.switchInformation?.name || noDataDisplay}
             </TenantLink>
-            : clientInfo?.switchInformation?.name || '--'
+            : clientInfo?.switchInformation?.name || noDataDisplay
         }
       />}
       <Descriptions.Item
@@ -320,9 +322,9 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           clientInfo?.enableLinkToVenue ?
             // eslint-disable-next-line max-len
             <TenantLink to={`venues/${clientInfo?.venueInformation?.id}/venue-details/overview`}>
-              {clientInfo?.venueInformation?.name || '--'}
+              {clientInfo?.venueInformation?.name || noDataDisplay}
             </TenantLink>
-            : clientInfo?.venueInformation?.name || '--'
+            : clientInfo?.venueInformation?.name || noDataDisplay
         }
       />
       <Descriptions.Item
@@ -331,9 +333,9 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           clientInfo?.enableLinkToNetwork ?
           // eslint-disable-next-line max-len
             <TenantLink to={`networks/wireless/${clientInfo?.networkInformation?.id}/network-details/overview`}>
-              {clientInfo?.networkInformation?.ssid || '--'}
+              {clientInfo?.networkInformation?.ssid || noDataDisplay}
             </TenantLink>
-            : clientInfo?.networkInformation?.ssid || '--'
+            : clientInfo?.networkInformation?.ssid || noDataDisplay
         }
       />
       <Descriptions.Item
@@ -342,7 +344,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Service Set Identifier' })}
         >{$t({ defaultMessage: 'SSID' })}
         </Tooltip>}
-        children={clientInfo?.networkInformation?.ssid || '--'}
+        children={clientInfo?.networkInformation?.ssid || noDataDisplay}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -350,7 +352,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Virtual Local Area Network Identifier' })}
         >{$t({ defaultMessage: 'VLAN ID' })}
         </Tooltip>}
-        children={clientInfo?.networkInformation?.vlan || '--'}
+        children={clientInfo?.networkInformation?.vlan || noDataDisplay}
       />
       { showVni &&
         <Descriptions.Item
@@ -359,7 +361,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
             title={$t({ defaultMessage: 'VXLAN network identifier' })}
           >{$t({ defaultMessage: 'VNI' })}
           </Tooltip>}
-          children={clientInfo?.networkInformation?.vni || '--'}
+          children={clientInfo?.networkInformation?.vni || noDataDisplay}
         />
       }
       <Descriptions.Item
@@ -368,7 +370,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={$t({ defaultMessage: 'Basic Service Set Identifier' })}
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
-        children={clientInfo?.apInformation?.bssid || '--'}
+        children={clientInfo?.apInformation?.bssid || noDataDisplay}
       />
       { wifiEDAClientRevokeToggle && <Descriptions.Item
         label={<Tooltip
@@ -380,7 +382,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
       /> }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
-        children={clientInfo?.networkInformation?.authenticationMethod || '--'}
+        children={clientInfo?.networkInformation?.authenticationMethod || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Status' })}
@@ -388,7 +390,7 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Encryption' })}
-        children={clientInfo?.networkInformation?.encryptionMethod || '--'}
+        children={clientInfo?.networkInformation?.encryptionMethod || noDataDisplay}
       />
     </Descriptions>
   </>
@@ -410,7 +412,7 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={intl.$t({ defaultMessage: 'Radio Frequency Channel' })}
         >{intl.$t({ defaultMessage: 'RF Channel' })}
         </Tooltip>}
-        children={clientInfo?.radioStatus?.channel || '--'}
+        children={clientInfo?.radioStatus?.channel || noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
@@ -419,12 +421,12 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           title={`${numberFormatter(parseInt(clientInfo?.trafficStatus?.trafficFromClient))} B`}
         >
           {bytesFormatter(parseInt(clientInfo?.trafficStatus?.trafficFromClient))}
-        </Tooltip> : '--'}
+        </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets From Client' })}
         children={clientInfo?.trafficStatus?.packetsFromClient ?
-          numberFormatter(clientInfo?.trafficStatus?.packetsFromClient) : '--'}
+          numberFormatter(clientInfo?.trafficStatus?.packetsFromClient) : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
@@ -432,17 +434,17 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
           placement='bottom'
           title={`${numberFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))} B`}
         >{bytesFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))}
-        </Tooltip> : '--'}
+        </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets To Client' })}
         children={clientInfo?.trafficStatus?.packetsToClient ?
-          numberFormatter(clientInfo?.trafficStatus?.packetsToClient) : '--'}
+          numberFormatter(clientInfo?.trafficStatus?.packetsToClient) : noDataDisplay}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Frames Dropped' })}
         children={clientInfo?.trafficStatus?.framesDropped ?
-          numberFormatter(clientInfo?.trafficStatus?.framesDropped) : '--'}
+          numberFormatter(clientInfo?.trafficStatus?.framesDropped) : noDataDisplay}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -452,7 +454,8 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         </Tooltip>}
         children={<WifiSignal
           snr={clientInfo?.signalStatus?.snr}
-          text={clientInfo?.signalStatus?.snr ? clientInfo?.signalStatus?.snr + ' dB' : '--'}
+          text={clientInfo?.signalStatus?.snr
+            ? clientInfo?.signalStatus?.snr + ' dB' : noDataDisplay}
         />}
       />
       <Descriptions.Item
@@ -468,13 +471,14 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
             placement='bottom'
             title={getRssiStatus(intl, clientInfo?.signalStatus?.rssi)?.tooltip}
           >
-            {clientInfo?.signalStatus?.rssi ? clientInfo?.signalStatus?.rssi + ' dBm' : '--'}
+            {clientInfo?.signalStatus?.rssi
+              ? clientInfo?.signalStatus?.rssi + ' dBm' : noDataDisplay}
           </Tooltip>
         </Space>}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Radio Type' })}
-        children={clientInfo?.radioStatus?.type ? clientInfo?.radioStatus?.type : '--'}
+        children={clientInfo?.radioStatus?.type ? clientInfo?.radioStatus?.type : noDataDisplay}
       />
     </Descriptions>
   </>
@@ -491,35 +495,35 @@ function WiFiCallingDetails ({ clientInfo }: { clientInfo: ClientInfoExtended })
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Carrier Name' })}
-        children={clientInfo?.wifiCallingStatus.carrierName || '--'}
+        children={clientInfo?.wifiCallingStatus.carrierName || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'QoS Priority' })}
         children={
           clientInfo?.wifiCallingStatus.qosPriority
             ? transformQosPriorityType(clientInfo?.wifiCallingStatus.qosPriority as QosPriorityEnum)
-            : '--'
+            : noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Total Traffic' })}
         children={
           (clientInfo?.wifiCallingStatus.totalTraffic &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.totalTraffic)) || '--'
+            bytesFormatter(clientInfo?.wifiCallingStatus.totalTraffic)) || noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Transmitted Traffic' })}
         children={
           (clientInfo?.wifiCallingStatus.trafficToClient &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.trafficToClient)) || '--'
+            bytesFormatter(clientInfo?.wifiCallingStatus.trafficToClient)) || noDataDisplay
         }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Recieved Traffic' })}
+        label={$t({ defaultMessage: 'Received Traffic' })}
         children={
           (clientInfo?.wifiCallingStatus.trafficFromClient &&
-            bytesFormatter(clientInfo?.wifiCallingStatus.trafficFromClient)) || '--'
+            bytesFormatter(clientInfo?.wifiCallingStatus.trafficFromClient)) || noDataDisplay
         }
       />
     </Descriptions>
@@ -538,31 +542,35 @@ function GuestDetails ({ guestDetail, clientMac }: {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Name' })}
-        children={guestDetail?.name || '--'}
+        children={guestDetail?.name || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Mobile Phone' })}
-        children={guestDetail?.mobilePhoneNumber || '--'}
+        children={guestDetail?.mobilePhoneNumber || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Email' })}
-        children={guestDetail?.emailAddress || '--'}
+        children={guestDetail?.emailAddress || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Notes' })}
-        children={guestDetail?.notes || '--'}
+        children={guestDetail?.notes || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.creationDate) || '--'}
+        children={guestDetail?.creationDate
+          ? formatter(DateFormatEnum.DateTimeFormat)(guestDetail.creationDate)
+          : noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Expires' })}
-        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.expiryDate) || '--'}
+        children={guestDetail?.expiryDate
+          ? formatter(DateFormatEnum.DateTimeFormat)(guestDetail.expiryDate)
+          : noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Max no. of clients' })}
-        children={guestDetail?.maxNumberOfClients || '--'}
+        children={guestDetail?.maxNumberOfClients || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
@@ -574,7 +582,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
               key={client.macAddress}
             >
               {client.macAddress}
-            </TenantLink>) || '--'}
+            </TenantLink>) || noDataDisplay}
       />
     </Descriptions>
   </>
@@ -680,9 +688,9 @@ function getGuestsPayload (clientMacAddress: string) {
 
 function getAuthStatus (statusInt: number) {
   const { $t } = getIntl()
-  if (isNaN(statusInt)) return '--'
+  if (isNaN(statusInt)) return noDataDisplay
 
-  let statusText = '--'
+  let statusText: string = noDataDisplay
   if (statusInt === 1) {
     statusText = $t({ defaultMessage: 'Authorized' })
   } else if (statusInt === 0) {
