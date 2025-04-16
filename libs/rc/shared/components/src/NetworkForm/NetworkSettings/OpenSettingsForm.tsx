@@ -310,11 +310,9 @@ function SettingsForm () {
           </>}
 
         </>}
-        { (
-          // SANTODO: Remove always true
-          (isOpenNetworkIntegrateIdentityGroupEnable || true) &&
+        {(isOpenNetworkIntegrateIdentityGroupEnable &&
           !isMacRegistrationList &&
-            !isTemplate ) &&
+          !isTemplate ) &&
           <IdentityGroup comboWidth='200px' />}
       </div>
     </>
