@@ -92,13 +92,15 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     title: $t({ defaultMessage: 'Configuration Conflict Detected' }),
     content: $t({ defaultMessage:
         // eslint-disable-next-line max-len
-        `The "Forward the guest traffic to DMZ" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
+        `The "{forwardingDescription}" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
         Changing this setting for Network {networkName} 
         will also affect <b>{impactVenueCount}</b> associated {impactVenueCount, plural,
         one {<venueSingular></venueSingular>}
         other {<venuePlural></venuePlural>}}. 
         Do you want to continue?` },
     {
+      // eslint-disable-next-line max-len
+      forwardingDescription: isL2oGreReady?'Forwarding Destination':'Forward the guest traffic to DMZ',
       networkName: <b>{currentNetworkName || networkName}</b>,
       impactVenueCount: impactVenueCount,
       b: chunks => <b>{chunks}</b>
