@@ -3,10 +3,11 @@ import { useState } from 'react'
 import { Col, Form, Row, Button } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Drawer }                              from '@acx-ui/components'
+import { Drawer }                                  from '@acx-ui/components'
 import {
   useGetServerCertificatesQuery,
-  useGetSamlIdpProfileWithRelationsByIdQuery
+  useGetSamlIdpProfileWithRelationsByIdQuery,
+  useDownloadSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
   SamlIdpProfileViewData,
@@ -46,6 +47,8 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
     setVisible(false)
   }
 
+  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
+
   return (
     <Drawer
       title={readMode
@@ -66,6 +69,26 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       }
       onClose={handleClose}
       destroyOnClose={true}
+      footer={
+        readMode && (
+          <>
+            <Button
+              type='primary'
+              onClick={() => downloadSamlServiceProviderMetadata({ params: { id: policy?.id } })}
+            >
+              {$t({ defaultMessage: 'Download SAML Metadata' })}
+            </Button>
+            <Button
+              type='primary'
+              onClick={() => {
+                setVisible(false)
+              }}
+            >
+              {$t({ defaultMessage: 'OK' })}
+            </Button>
+          </>
+        )
+      }
     />
   )
 }
