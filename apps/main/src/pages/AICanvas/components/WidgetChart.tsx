@@ -61,8 +61,12 @@ export const getChartConfig = (data: WidgetListData) => {
           height: 8
         },
         {
-          width: 4,
+          width: 3,
           height: 12
+        },
+        {
+          width: 4,
+          height: 16
         }
       ]
     },
@@ -74,6 +78,10 @@ export const getChartConfig = (data: WidgetListData) => {
         {
           width: 2,
           height: 6
+        },
+        {
+          width: 3,
+          height: 7
         },
         {
           width: 4,
@@ -108,6 +116,10 @@ export const getChartConfig = (data: WidgetListData) => {
         {
           width: 2,
           height: 6
+        },
+        {
+          width: 3,
+          height: 8
         },
         {
           width: 4,

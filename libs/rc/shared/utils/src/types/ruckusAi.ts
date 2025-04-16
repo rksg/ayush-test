@@ -84,6 +84,8 @@ export interface WidgetListData {
   canvasId?: string
   widgetId?: string
   name?: string
+  timeRange?: string
+  defaultTimeRange?: string
 }
 
 export interface Canvas {
