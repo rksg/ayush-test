@@ -61,6 +61,7 @@ export const useIpsecProfileLimitedSelection = (
   const [boundSoftGreIpsecData, setBoundSoftGreIpsecData] = useState<SoftGreIpsecProfile[]>([])
   const [newSoftGreIpsecList, setNewSoftGreIpsecList] = useState<SoftGreIpsecProfile[]>([])
   const [boundSoftGre, setBoundSoftGre] = useState(false)
+  const [hasCleanOperations, setHasCleanOperations] = useState(false)
 
   const allowSoftGetGrePorfiles = !isTemplate
     && isEthernetSoftgreEnabled
@@ -227,6 +228,12 @@ export const useIpsecProfileLimitedSelection = (
             return { label: ipsec.name, value: ipsec.id }
           }))
         }
+      }
+
+      if (hasCleanOperations) {
+        // load data from backend, clean all user actions
+        setNewSoftGreIpsecList([])
+        setHasCleanOperations(false)
       }
     }
     if (ipsecData && softGreData) {
@@ -438,8 +445,7 @@ export const useIpsecProfileLimitedSelection = (
         resetToDefault(next?.voters)
         break
       case IpsecOptionChangeState.OnSave:
-        // load data from backend, clean all user actions
-        setNewSoftGreIpsecList([])
+        setHasCleanOperations(true)
         break
     }
     return next
