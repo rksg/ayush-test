@@ -1108,7 +1108,9 @@ export enum IpsecOptionChangeState {
   Init,
   OnChange,
   ReloadOptionList,
-  ResetToDefault
+  AddSoftGreOption,
+  ResetToDefault,
+  OnSave
 }
 
 export interface IpsecOptionChangeDispatcher {
