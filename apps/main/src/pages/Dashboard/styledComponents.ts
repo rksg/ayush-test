@@ -227,8 +227,12 @@ export const CanvasListItem = styled(AntList.Item)`
   margin-bottom: 6px;
   padding: 12px 15px !important;
 
+  .ant-checkbox-inner {
+    background: var(--acx-primary-white);
+  }
+
   .ant-checkbox-wrapper {
-    overflow: hidden;
+    overflow: hidden;  
   }
 
   .ant-checkbox + span {

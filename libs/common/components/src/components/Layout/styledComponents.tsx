@@ -400,7 +400,10 @@ export const Content = styled.div<{ greyBg?: boolean }>`
     position: sticky;
     top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
     z-index: 6;
-    box-shadow: var(--acx-primary-white) 0px 5px 0 15px;
+    ${({ greyBg }) => (greyBg
+    ? 'box-shadow: var(--acx-neutrals-10) 0px 5px 0 15px;'
+    : 'box-shadow: var(--acx-primary-white) 0px 5px 0 15px;')}
+    
   }
 `
 

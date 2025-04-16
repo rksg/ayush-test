@@ -228,7 +228,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       await userEvent.click(
-        await within(dashboardDrawer).findByText('Import Canvas')
+        await within(dashboardDrawer).findByText('Import Dashboard')
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
@@ -262,7 +262,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       await userEvent.click(
-        await within(dashboardDrawer).findByText('Import Canvas')
+        await within(dashboardDrawer).findByText('Import Dashboard')
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]

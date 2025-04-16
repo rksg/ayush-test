@@ -76,7 +76,7 @@ export const ImportDashboardDrawer = (props: {
     list: myCanvasList
   }, {
     key: TabKey.Shared,
-    label: $t({ defaultMessage: 'Shared with me' }),
+    label: $t({ defaultMessage: 'Public Canvases' }),
     list: sharedCanvasList
   }]
 
@@ -195,9 +195,7 @@ export const ImportDashboardDrawer = (props: {
   }
 
   return <Drawer
-    title={$t({
-      defaultMessage: 'Import Dashboards (up to {maximum})' }, { maximum: maximumImportCount }
-    )}
+    title={$t({ defaultMessage: 'Select Canvases for your Dashboards' })}
     width={420}
     onBackClick={props.onBackClick}
     visible={props.visible}

@@ -330,7 +330,7 @@ export const DashboardDrawer = (props: {
               type='primary'
               disabled={dashboardList?.length === 10}
             >
-              {$t({ defaultMessage: 'Import Canvas' })}
+              {$t({ defaultMessage: 'Import Dashboard' })}
             </Button>
           </span>
         </Tooltip>
