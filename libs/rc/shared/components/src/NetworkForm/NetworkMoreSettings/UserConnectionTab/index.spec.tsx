@@ -61,4 +61,30 @@ describe('UserConnectionTab', () => {
     expect(numberElm).toBeNull()
   })
 
+  it('should rander correctly when guestNetworkType is SAML', async () => {
+    const network = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.SAML,
+        maxDevices: 2
+      }
+    } as NetworkSaveData
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          data: network, cloneMode: false, editMode: false, setData: () => {}
+        }} >
+          <Form>
+            <UserConnectionTab />
+          </Form>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    // eslint-disable-next-line max-len
+    const numberElm = await screen.findByRole('spinbutton', { name: 'Max number of devices per credentials' })
+    expect(numberElm).toBeVisible()
+  })
+
 })
