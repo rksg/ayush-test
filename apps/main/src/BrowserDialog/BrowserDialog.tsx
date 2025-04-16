@@ -1,15 +1,19 @@
-import { IntlShape } from 'react-intl'
+import { useCallback } from 'react'
+
+import { useIntl } from 'react-intl'
 
 import { showActionModal }                from '@acx-ui/components'
 import { browserSupportedLocales as bsl } from '@acx-ui/types'
-import { DetailLevel }                    from '@acx-ui/user'
+import {
+  DetailLevel,
+  useUpdateUserProfileMutation,
+  useUserProfileContext
+} from '@acx-ui/user'
 import {
   LangKey,
   DEFAULT_SYS_LANG,
-  getIntl,
-  setUpIntl,
-  IntlSetUpError
-}          from '@acx-ui/utils'
+  useLocaleContext
+} from '@acx-ui/utils'
 
 export interface PartialUserData {
   detailLevel: DetailLevel,
@@ -28,30 +32,25 @@ export const detectBrowserLang = () => {
   return bsl[locale as keyof typeof bsl] as LangKey
 }
 
-interface BrowserDialogResult {
-  lang: string,
-  isLoading: boolean
-}
+export const useBrowserDialog = () => {
+  const { $t } = useIntl()
+  const { lang: userLang, setLang } = useLocaleContext()
+  const [updateUserProfile] = useUpdateUserProfileMutation()
 
-export const showBrowserLangDialog = (userLang: LangKey):Promise<BrowserDialogResult> => {
-  const browserLang = detectBrowserLang()
-  const bLang = browserLang.slice(0, 2)
-  const uLang = userLang.slice(0, 2)
-  const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
-  const bLangDisplay = browserLangDisplay.of(bLang)
-  const uLangDisplay = browserLangDisplay.of(uLang)
-  let intl: IntlShape
-  try {
-    intl = getIntl()
-  } catch (error) {
-    if (!(error instanceof IntlSetUpError)) throw error
-    setUpIntl({ locale: DEFAULT_SYS_LANG })
-    intl = getIntl()
-  }
-  const { $t } = intl
+  const { data: userProfile } = useUserProfileContext()
 
-  return new Promise(( async (resolve, reject) => {
-    showActionModal({
+  const showBrowserLangDialog = useCallback(() => {
+    const browserLang = detectBrowserLang()
+    const browserCacheLang = localStorage.getItem('browserLang')
+    if (userLang === browserLang || browserCacheLang === browserLang) {
+      return
+    }
+    const bLang = browserLang.slice(0, 2)
+    const uLang = userLang.slice(0, 2)
+    const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
+    const bLangDisplay = browserLangDisplay.of(bLang)
+    const uLangDisplay = browserLangDisplay.of(uLang)
+    return showActionModal({
       type: 'confirm',
       customContent: {
         action: 'CUSTOM_BUTTONS',
@@ -61,19 +60,26 @@ export const showBrowserLangDialog = (userLang: LangKey):Promise<BrowserDialogRe
           key: 'cancel',
           closeAfterAction: true,
           handler: () => {
-            const result = { lang: '', isLoading: false }
             updateBrowserCached(browserLang)
-            reject(result)
           }
         }, {
           text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
           type: 'primary',
           key: 'ok',
           closeAfterAction: true,
-          handler: () => {
-            const result = { lang: browserLang, isLoading: false }
+          handler: async () => {
             updateBrowserCached(browserLang)
-            resolve(result)
+
+            await updateUserProfile({
+              payload: {
+                detailLevel: userProfile?.detailLevel,
+                dateFormat: userProfile?.dateFormat,
+                preferredLanguage: browserLang
+              },
+              params: { tenantId: userProfile?.tenantId }
+            }).unwrap()
+
+            setLang(browserLang)
           }
         }]
       },
@@ -82,5 +88,7 @@ export const showBrowserLangDialog = (userLang: LangKey):Promise<BrowserDialogRe
             + ' Would you like to change the system\'s language to {bLangDisplay}?' },
       { bLangDisplay })
     })
-  }))
+  }, [$t, userLang, updateUserProfile, userProfile, setLang])
+
+  return { showBrowserLangDialog }
 }

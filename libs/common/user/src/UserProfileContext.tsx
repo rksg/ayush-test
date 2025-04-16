@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext } from 'react'
 
 import { useParams } from 'react-router-dom'
 
@@ -34,13 +34,7 @@ export interface UserProfileContextProps {
   venuesList?: string[]
   selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
-  setLocalProfile: (profile?: LocalUserProfile) => void
 }
-export type LocalUserProfile = Pick<UserProfile,
-  'preferredLanguage' |
-  'dateFormat' |
-  'detailLevel'
->
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
 const hasRole = hasRoles
@@ -52,13 +46,9 @@ export const useUserProfileContext = () => useContext(UserProfileContext)
 export function UserProfileProvider (props: React.PropsWithChildren) {
   const tenantId = useTenantId()
   const {
-    data: remoteProfile,
+    data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
-
-  const [localProfile, setLocalProfile] = useState<LocalUserProfile | undefined>(remoteProfile)
-
-  const profile = { ...remoteProfile, ...localProfile } as UserProfile | undefined
 
   let abacEnabled = false,
     isCustomRole = false,
@@ -166,8 +156,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
-      betaFeaturesList,
-      setLocalProfile
+      betaFeaturesList
     }}
     children={props.children}
   />

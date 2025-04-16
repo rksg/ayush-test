@@ -34,7 +34,8 @@ import { RolesEnum }                                                            
 import { hasCrossVenuesPermission, hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
-import RuckusAiButton from '../RuckusAiButton'
+import { useBrowserDialog } from '../../BrowserDialog/BrowserDialog'
+import RuckusAiButton       from '../RuckusAiButton'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -62,6 +63,12 @@ function Layout () {
   const isMspEc = MSPUtils().isMspEc(mspEcProfile)
   const { data: mspBrandData } = useGetBrandingDataQuery({ params, enableRbac: isRbacEnabled },
     { skip: !isMspEc })
+
+  const { showBrowserLangDialog } = useBrowserDialog()
+  useEffect(() => {
+    const modal = showBrowserLangDialog()
+    return () => modal && modal.destroy()
+  }, [showBrowserLangDialog])
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
