@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Tooltip }                                           from '@acx-ui/components'
+import { defaultRichTextFormatValues, Tooltip }              from '@acx-ui/components'
 import { compareVersions, CompatibilityWarningTriangleIcon } from '@acx-ui/rc/components'
 import { useGetEdgeFeatureSetsQuery }                        from '@acx-ui/rc/services'
 import { EdgeClusterStatus, IncompatibilityFeatures }        from '@acx-ui/rc/utils'
@@ -47,8 +47,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
                   running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
                   <venueSingular></venueSingular> firmware from {targetLink}` },
         {
-          b: (txt) => <b>{txt}</b>,
-          br: () => <br></br>,
+          ...defaultRichTextFormatValues,
           currentFw: minNodeVersion,
           requiredFw,
           targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
