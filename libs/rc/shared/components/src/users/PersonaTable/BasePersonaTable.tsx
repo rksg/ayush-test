@@ -4,10 +4,10 @@ import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { useIdentityListQuery }                                               from '@acx-ui/cloudpath/components'
-import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                   from '@acx-ui/icons'
+import { useIdentityListQuery }                                                                 from '@acx-ui/cloudpath/components'
+import { Loader, showActionModal, showToast, Table, TableColumn, TableProps, Modal, ModalType } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                     from '@acx-ui/icons'
 import {
   useDeletePersonasMutation,
   useGetPersonaGroupByIdQuery,
@@ -26,6 +26,7 @@ import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }    
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
+import { IdentityForm }                                             from '../IdentityForm'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
@@ -304,6 +305,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
+  const [identityFormModalVisible, setIdentityFormModalVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
@@ -402,7 +404,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
         label: $t({ defaultMessage: 'Add Identity' }),
         rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
-          if (isIdentityRefactor) {
+          if (useByIdentityGroup) {
+            setIdentityFormModalVisible(true)
+          } else if (isIdentityRefactor) {
             let pathname = basePath.pathname
             if (personaGroupId) {
               pathname = pathname.concat(`/${personaGroupId}`)
@@ -580,6 +584,23 @@ export function BasePersonaTable (props: PersonaTableProps) {
           <PersonaGroupSelect disabled={!!personaGroupId}/>
         </Form.Item>
       </ImportFileDrawer>}
+      {identityFormModalVisible && (
+        <Modal
+          title={$t({ defaultMessage: 'Create Identity' })}
+          visible={identityFormModalVisible}
+          type={ModalType.ModalStepsForm}
+          onCancel={() => setIdentityFormModalVisible(false)}
+          width={600}
+          destroyOnClose={true}
+          children={<IdentityForm
+            selectedPersonaGroupId={personaGroupId}
+            modalMode={true}
+            callback={() => {
+              setIdentityFormModalVisible(false)
+            }}
+          />}
+        />
+      )}
     </Loader>
   )
 }
