@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Divider, Space, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { cssStr, Descriptions, GridCol, GridRow, Loader }              from '@acx-ui/components'
+import { cssStr, Descriptions, Loader }                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }                                     from '@acx-ui/msp/services'
 import { AccessControlSubPolicyVisibility }                            from '@acx-ui/rc/components'
@@ -86,15 +86,11 @@ export function DetailsContent (props: DetailsContentProps) {
         />}
       />
     </Descriptions>
+    {template.type !== ConfigTemplateType.AP_GROUP &&
+      <><Divider/><ProtectedActivationViewer type={template.type} templateId={template.id!} /></>
+    }
     <Divider/>
-    <GridRow>
-      <GridCol col={{ span: 12 }}>
-        <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
-      </GridCol>
-      <GridCol col={{ span: 12 }}>
-        <ProtectedActivationViewer type={template.type} templateId={template.id!} />
-      </GridCol>
-    </GridRow>
+    <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
     {showDriftsDrawerVisible &&
       <ShowDriftsDrawer
         setVisible={setShowDriftsDrawerVisible}
