@@ -162,4 +162,20 @@ describe('Edge SD-LAN form: General', () => {
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('2.1.0.600')
   })
+
+  it('should show core port validation error when the bound cluster has no core port', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />, {
+      route: { params: { tenantId }, path: '/:tenantId' }
+    })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: 'Tunnel Profile (AP to Cluster)' }),
+      'tunnelProfileId7'
+    )
+    expect(await screen.findByText('Destination RUCKUS Edge cluster')).toBeVisible()
+    expect(await screen.findByText('Edge Cluster 3')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/To use the SD-LAN service, each RUCKUS Edge within the cluster must set up a Core port or Core LAG/i)).toBeVisible()
+  })
 })

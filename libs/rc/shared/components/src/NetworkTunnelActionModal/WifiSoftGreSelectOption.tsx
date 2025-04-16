@@ -98,7 +98,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
       }
     }
-    if (disabledInfo?.isDisabled || disabledInfo?.noChangePermission) {
+    if (disabledInfo?.isDisabled) {
       setEnableOption(false)
     }
   }, [])
@@ -156,6 +156,10 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         form.setFieldValue(['ipsec', 'newProfileName'], option?.label)
       } else if (enabledIpsecOption === 0) {
         setIpsecDisabled(true)
+      } else if (form.getFieldValue(['ipsec', 'newProfileId'])) {
+        form.setFieldValue(['ipsec', 'enableIpsec'], true)
+        setIpsecDisabled(false)
+        setEnableIpsec(true)
       }
     }
   }, [ipsecOption, softGreOption])
