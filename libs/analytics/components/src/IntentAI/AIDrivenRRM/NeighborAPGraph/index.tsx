@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card, nodeTypes, Drawer, DrawerTypes, Loader, NeighborAPGraph as NeighborAPGraphComponent, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
@@ -13,7 +14,7 @@ import * as UI                  from '../RRMGraph/styledComponents'
 
 export function DataGraph (props: {
   data: ProcessedCloudRRMGraph[],
-  zoom: number
+  isDrawer: boolean
 }) {
   const nodeSize = {
     max: 120,
@@ -23,32 +24,26 @@ export function DataGraph (props: {
   if (!props.data?.length) return null
 
   return <>
-    <div style={{
-      margin: 'auto',
-      zoom: props.zoom
-    }}>
-      <NeighborAPGraphComponent
-        title=''
-        nodeSize={nodeSize}
-        nodes={props.data[0].neighborAP!}
-        width={500}
-        height={400}
-        backgroundColor='transparent'
-      />
+    <div><AutoSizer>{({ height, width }) => <NeighborAPGraphComponent
+      title=''
+      nodeSize={nodeSize}
+      nodes={props.data[0].neighborAP!}
+      width={width}
+      height={height}
+      backgroundColor='transparent'
+      isDrawer={props.isDrawer}
+    />}</AutoSizer>
     </div>
     <UI.CrrmArrow children={<UI.RightArrow/>} />
-    <div style={{
-      margin: 'auto',
-      zoom: props.zoom
-    }}>
-      <NeighborAPGraphComponent
-        title=''
-        nodeSize={nodeSize}
-        nodes={props.data[1].neighborAP!}
-        width={500}
-        height={400}
-        backgroundColor='transparent'
-      />
+    <div><AutoSizer>{({ height, width }) => <NeighborAPGraphComponent
+      title=''
+      nodeSize={nodeSize}
+      nodes={props.data[1].neighborAP!}
+      width={width}
+      height={height}
+      backgroundColor='transparent'
+      isDrawer={props.isDrawer}
+    />}</AutoSizer>
     </div>
   </>
 }
@@ -79,7 +74,7 @@ export const NeighborAPGraph = () => {
         <UI.GraphWrapper data-testid='graph-wrapper'
           key={'graph-details'}
         >
-          <DataGraph data={result} zoom={0.8}/>
+          <DataGraph data={result} isDrawer={false}/>
           <GraphTitle details={intent} />
           <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
         </UI.GraphWrapper>
@@ -100,7 +95,7 @@ export const NeighborAPGraph = () => {
         onClose={closeDrawer}
         children={
           <UI.GraphWrapper>
-            <DataGraph data={result} zoom={1.5}/>
+            <DataGraph data={result} isDrawer={true}/>
             <GraphTitle details={intent} />
             <UI.GraphLegendWrapper><Legend {...trimmed}/></UI.GraphLegendWrapper>
           </UI.GraphWrapper>

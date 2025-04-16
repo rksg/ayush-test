@@ -23,6 +23,7 @@ interface NeighborAPGraphProps {
   width: number
   height: number
   backgroundColor?: string
+  isDrawer?: boolean
 }
 
 const genericLabel = {
@@ -78,7 +79,7 @@ export const nodeTypes = {
 
 export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
   const { $t } = useIntl()
-  const { nodeSize, nodes, width, height, backgroundColor } = props
+  const { nodeSize, nodes, width, height, backgroundColor, isDrawer = false } = props
   const max = Math.max(...Object.values(nodes))
   const scale = scalePow()
     .exponent(0.75)
@@ -129,17 +130,18 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       type: 'graph',
       layout: 'force',
       cursor: 'default',
+      zoom: isDrawer ? 1 : 0.5,
       data: [rootNode, ...graphNodes],
       links,
       top: '20%',
-      left: '25%',
+      left: isDrawer ? '25%' : '15%',
       center: ['50%', '50%'],
       width: '50%',
       height: '50%',
       roam: false,
       force: {
         layoutAnimation: false,
-        repulsion: width * 4.5,
+        repulsion: width * (isDrawer ? 4.5 : 15),
         initLayout: 'circular'
       },
       emphasis: { focus: 'none' }
