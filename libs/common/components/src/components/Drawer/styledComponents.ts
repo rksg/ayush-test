@@ -74,8 +74,7 @@ const getStepsFormStyle = (width: number | string) => {
     /* ACX-83679: Only apply styles to the StepsForm's footer action container,
      not to other action containers (e.g., those inside .ant-form-item) */
 
-    .ant-pro-steps-form > [class*="styledComponents__ActionsContainer"],
-    .ant-form > [class*="styledComponents__ActionsContainer"] {
+    .action-footer[class*="styledComponents__ActionsContainer"] {
       padding-left: 20px;
       margin-left: -16px;
       display: flex;

@@ -299,7 +299,7 @@ export function useStepsForm <T> ({
 
   const buttonEls = <UI.ActionsContainer
     data-testid='steps-form-actions'
-    {...(steps.length === 1 ? { className: 'single-step' } : {})}
+    className={`action-footer${steps.length === 1 ? ' single-step' : ''}`}
   >
     <UI.ActionsButtons
       $editMode={!!editMode}

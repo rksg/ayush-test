@@ -117,7 +117,9 @@ export function StepsFormLegacy <FormValue = any> (
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
       {form}
-      <UI.ActionsContainer {...(items.length === 1 ? { className: 'single-step' } : {})}>
+      <UI.ActionsContainer
+        className={`action-footer${items.length === 1 ? ' single-step' : ''}`}
+      >
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
     </>
