@@ -5,12 +5,12 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card, nodeTypes, Drawer, DrawerTypes, Loader, NeighborAPGraph as NeighborAPGraphComponent, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { useIntentContext }     from '../../IntentContext'
-import { GraphTitle }           from '../RRMGraph'
-import { Legend }               from '../RRMGraph/Legend'
-import { useIntentAICRRMQuery } from '../RRMGraph/services'
-import * as UI                  from '../RRMGraph/styledComponents'
-
+import { useIntentContext }                    from '../../IntentContext'
+import { coldTierDataText, dataRetentionText } from '../../utils'
+import { GraphTitle }                          from '../RRMGraph'
+import { Legend }                              from '../RRMGraph/Legend'
+import { useIntentAICRRMQuery }                from '../RRMGraph/services'
+import * as UI                                 from '../RRMGraph/styledComponents'
 
 export function DataGraph (props: {
   data: ProcessedCloudRRMGraph[],
@@ -50,7 +50,7 @@ export function DataGraph (props: {
 
 export const NeighborAPGraph = () => {
   const { $t } = useIntl()
-  const { intent, state } = useIntentContext()
+  const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
 
@@ -67,6 +67,15 @@ export const NeighborAPGraph = () => {
   const entries = Object.entries(nodeTypes)
   const [, ...rest] = entries
   const trimmed = Object.fromEntries(rest)
+
+  if (!isHotTierData) return <Card>{$t(coldTierDataText)}</Card>
+  if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
+
+  if (noData) {
+    return <Card>
+      {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
+    </Card>
+  }
 
   return <UI.Wrapper>
     <Loader states={[queryResult]}>

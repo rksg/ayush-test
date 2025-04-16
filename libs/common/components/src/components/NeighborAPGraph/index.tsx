@@ -141,7 +141,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       roam: false,
       force: {
         layoutAnimation: false,
-        repulsion: width * (isDrawer ? 4.5 : 15),
+        repulsion: width * (isDrawer ? 4.5 : 10),
         initLayout: 'circular'
       },
       emphasis: { focus: 'none' }
