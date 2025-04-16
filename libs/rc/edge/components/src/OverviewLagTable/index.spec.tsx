@@ -12,6 +12,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigator
 }))
 
+jest.mock('../WanLinkHealthStatusLight', () => ({
+  EdgeWanLinkHealthStatusLight: () => <div data-testid='EdgeWanLinkHealthStatusLight'></div>
+}))
+
 describe('EdgeOverviewLagTable', () => {
   const mockNavigate = jest.requireMock('react-router-dom').useNavigate
 
@@ -109,25 +113,6 @@ describe('EdgeOverviewLagTable', () => {
       expect(screen.getByText('Up')).toBeInTheDocument()
       expect(screen.getByText('00:11:22:33:44:55')).toBeInTheDocument()
     })
-
-    it('navigates to LAG configuration page', () => {
-      render(
-        <Router>
-          <EdgeOverviewLagTable
-            isConfigurable={true}
-            data={mockData}
-            isLoading={false}
-            isClusterLevel={true}
-            edgeNodes={mockEdgeNodes}
-          />
-        </Router>
-      )
-
-      const configButton = screen.getByText('Edit LAGs')
-      fireEvent.click(configButton)
-
-      expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/edit/lags') }))
-    })
   })
 
   describe('Dual WAN disabled', () => {
@@ -216,6 +201,7 @@ describe('EdgeOverviewLagTable', () => {
       const configButton = screen.getByText('Edit LAGs')
       fireEvent.click(configButton)
 
+      // eslint-disable-next-line max-len
       expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/edit/lags') }))
     })
   })

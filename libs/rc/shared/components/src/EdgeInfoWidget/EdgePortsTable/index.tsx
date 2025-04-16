@@ -85,8 +85,9 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
       render: (_, row) => {
         return row.wanLinkStatus
           ? <EdgeWanLinkHealthStatusLight
-            status={row.wanLinkStatus}
-            targetIpStatus={row.wanLinkTargets}
+            status={row.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
+            // eslint-disable-next-line max-len
+            targetIpStatus={row.wanLinkTargets as { ip: string; status: EdgeWanLinkHealthStatusEnum; }[]}
           />
           : noDataDisplay
       }

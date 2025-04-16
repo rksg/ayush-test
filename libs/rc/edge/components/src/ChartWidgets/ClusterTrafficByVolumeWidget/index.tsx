@@ -27,28 +27,6 @@ import { useDateFilter, getIntl  }                                   from '@acx-
 
 import type { EChartsOption, TooltipComponentOption } from 'echarts'
 
-const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
-  const { $t } = getIntl()
-
-  const seriesMapping = [
-    { key: 'total', name: $t({ defaultMessage: 'Total Traffic' }) },
-    { key: 'rx', name: $t({ defaultMessage: 'Inbound' }) },
-    { key: 'tx', name: $t({ defaultMessage: 'Outbound' }) }
-  ] as Array<{ key: string; name: string }>
-
-  return seriesMapping.map(({ key, name }) => {
-    return {
-      key,
-      name,
-      data: data.timeSeries.time.map((time, index) => {
-        // eslint-disable-next-line max-len
-        const sum = data.timeSeries.ports.reduce((sum, port) => sum + (get(port, key)[index] || 0), 0)
-        return [time, sum]
-      }) as [TimeStamp, number | null][]
-    }
-  })
-}
-
 export const EdgeClusterTrafficByVolumeWidget = (props: {
   edges: EdgeStatus[] | undefined,
   wanPortIfNames: { edgeId: string, ifName: string }[],
@@ -167,4 +145,27 @@ export const EdgeClusterTrafficByVolumeWidget = (props: {
       </Loader>
     }
   </HistoricalCard>
+}
+
+export const transformTimeSeriesChartData =
+(data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
+  const { $t } = getIntl()
+
+  const seriesMapping = [
+    { key: 'total', name: $t({ defaultMessage: 'Total Traffic' }) },
+    { key: 'rx', name: $t({ defaultMessage: 'Inbound' }) },
+    { key: 'tx', name: $t({ defaultMessage: 'Outbound' }) }
+  ] as Array<{ key: string; name: string }>
+
+  return seriesMapping.map(({ key, name }) => {
+    return {
+      key,
+      name,
+      data: data.timeSeries.time.map((time, index) => {
+        // eslint-disable-next-line max-len
+        const sum = data.timeSeries.ports.reduce((sum, port) => sum + (get(port, key)[index] || 0), 0)
+        return [time, sum]
+      }) as [TimeStamp, number | null][]
+    }
+  })
 }

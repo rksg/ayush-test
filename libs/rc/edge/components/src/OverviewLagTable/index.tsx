@@ -1,38 +1,34 @@
 import { useState } from 'react'
 
-import { Col }                    from 'antd'
-import { SortOrder }              from 'antd/lib/table/interface'
-import { ExpandableConfig }       from 'antd/lib/table/interface'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Col }                         from 'antd'
+import { ExpandableConfig, SortOrder } from 'antd/lib/table/interface'
+import { capitalize }                  from 'lodash'
+import { useIntl }                     from 'react-intl'
 
-import { 
-  Button, GridRow, Loader, 
-  NestedTableExpandableDefaultConfig, 
+import {
+  Button, GridRow, Loader,
+  NestedTableExpandableDefaultConfig,
   Table, TableProps,
   ColumnType
- }                                       from '@acx-ui/components'
-import { EdgeWanLinkHealthDetailsDrawer }                                                                                       from '@acx-ui/edge/components'
-import { Features, useIsSplitOn }                                                                                                             from '@acx-ui/feature-toggle'
-import { 
-  EdgeLagMemberStatus, EdgeLagStatus, 
-  EdgeLagTimeoutEnum, 
-  getEdgePortIpModeString, 
-  EdgeUrlsInfo, 
+}                                       from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  EdgeLagMemberStatus, EdgeLagStatus,
+  EdgeLagTimeoutEnum,
+  getEdgePortIpModeString,
   transformDisplayOnOff,
   sortProp,
   defaultSort,
-  EdgeWanLinkHealthStatusEnum,
   EdgeStatus,
   EdgeLinkDownCriteriaEnum,
-  EdgeMultiWanProtocolEnum
- } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                            from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                                                                                           from '@acx-ui/types'
-import { hasPermission }                                                                                                        from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay }                                                                                    from '@acx-ui/utils'
-import { EdgeWanLinkHealthStatusLight } from '../WanLinkHealthStatusLight'
+  EdgeMultiWanProtocolEnum,
+  EdgeWanLinkHealthStatusEnum
+} from '@acx-ui/rc/utils'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
+
+import { EdgeWanLinkHealthDetailsDrawer } from '../WanLinkHealthDetails'
+import { EdgeWanLinkHealthStatusLight }   from '../WanLinkHealthStatusLight'
 
 interface EdgeOverviewLagTableProps {
   isConfigurable: boolean
@@ -54,16 +50,13 @@ interface LagMemberTableType extends EdgeLagMemberStatus {
 }
 
 export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
-  const { 
-    data, isLoading = false, isConfigurable, 
+  const {
+    data, isLoading = false,
     isClusterLevel,
     filterables,
     edgeNodes
   } = props
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
-  const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
   const isEdgeDualWanEnabled = useIsSplitOn(Features.EDGE_DUAL_WAN_TOGGLE)
 
   // eslint-disable-next-line max-len
@@ -92,8 +85,9 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
       render: (_, row) => {
         return row.wanLinkStatus
           ? <EdgeWanLinkHealthStatusLight
-            status={row.wanLinkStatus}
-            targetIpStatus={row.wanLinkTargets}
+            status={row.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
+            // eslint-disable-next-line max-len
+            targetIpStatus={row.wanLinkTargets as { ip: string; status: EdgeWanLinkHealthStatusEnum; }[]}
           />
           : noDataDisplay
       }
@@ -185,19 +179,11 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
     ...(isEdgeDualWanEnabled ? dualWanColumns : [])
   ]
 
-  const navigateToLagConfigPage = () => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/edit/lags`
-    })
-  }
-
   return (
     <GridRow justify='end'>
       <Col span={24}>
         <Loader states={[{ isLoading }]}>
           <Table<LagsTableDataType>
-            key='id'
             columns={columns}
             expandable={{
               ...NestedTableExpandableDefaultConfig,
@@ -235,7 +221,7 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
       dataIndex: 'name',
-      render: (_data, row) => _.capitalize(row.name)
+      render: (_data, row) => capitalize(row.name)
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),
@@ -258,7 +244,7 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
       key: 'lacpTimeout',
       dataIndex: 'lacpTimeout',
       render: (_data, row) => {
-        return row.lacpTimeout && `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
+        return row.lacpTimeout && `${row.lacpTimeout} (${capitalize(row.lacpTimeout)})`
       }
     },
     {
@@ -297,6 +283,6 @@ LagsTableDataType[] => {
       ...member,
       lacpTimeout: item.lacpTimeout
     })),
-    edgeName: edgeNodes.find(edge => edge.serialNumber === item.serialNumber)?.name,
+    edgeName: edgeNodes.find(edge => edge.serialNumber === item.serialNumber)?.name
   }))
 }

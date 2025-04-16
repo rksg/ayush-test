@@ -46,7 +46,6 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
     totalUptime: queryResults?.reduce((sum, result) => sum + (result.totalUptime || 0), 0) || 0,
     totalDowntime: queryResults?.reduce((sum, result) => sum + (result.totalDowntime || 0), 0) || 0
   }), [queryResults])
-  console.log(isLoading)
 
   return <Loader states={[{ isLoading }]}>
     <GridRow>
@@ -88,7 +87,7 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
           // eslint-disable-next-line max-len
           const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
 
-          return <GridRow style={{ height: '30px', marginTop: 5 }}>
+          return <GridRow key={nodeIndex} style={{ height: '30px', marginTop: 5 }}>
             <GridCol col={{ span: 3 }} style={{ minWidth: '100px', justifyContent: 'center' }}>
               <Typography.Title
                 level={5}

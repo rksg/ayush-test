@@ -1,15 +1,15 @@
 import { useContext } from 'react'
 
-import { Col }                    from 'antd'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Col }     from 'antd'
+import { useIntl } from 'react-intl'
+
 
 import { Button, GridRow, Loader }                 from '@acx-ui/components'
 import { EdgeOverviewLagTable }                    from '@acx-ui/edge/components'
 import { Features }                                from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
 import { EdgeLagStatus, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { useTenantLink }                           from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EdgeScopes }                              from '@acx-ui/types'
 import { hasPermission }                           from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'

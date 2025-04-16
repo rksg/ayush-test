@@ -84,10 +84,12 @@ export const EdgeClusterOverview = () => {
     // params: { clusterId },
     params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
     payload: edgePortStatusPayload
-  }, { selectFromResult: ({ data, isLoading }) => ({
-    portStatusList: data?.data ?? [],
-    isPortListLoading: isLoading
-  }) })
+  }, {
+    skip: !clusterInfo?.edgeList?.[0].serialNumber,
+    selectFromResult: ({ data, isLoading }) => ({
+      portStatusList: data?.data ?? [],
+      isPortListLoading: isLoading
+    }) })
 
   const {
     lagStatusList = [],
@@ -98,6 +100,7 @@ export const EdgeClusterOverview = () => {
     params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
     payload: edgeLagStatusPayload
   }, {
+    skip: !clusterInfo?.edgeList?.[0].serialNumber,
     selectFromResult ({ data, isLoading }) {
       return {
         lagStatusList: data?.data,

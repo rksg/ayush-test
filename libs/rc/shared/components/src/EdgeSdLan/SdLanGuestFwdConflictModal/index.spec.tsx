@@ -74,7 +74,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
 
     it('should have multiple impacts', async () => {
       const mockData = cloneDeep(mockedSdLanNoGuestFwd)
-      
+
       const otherNetworks = [
         anotherVenueNetwork,
         {

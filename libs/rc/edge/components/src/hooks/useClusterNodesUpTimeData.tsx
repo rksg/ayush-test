@@ -95,7 +95,7 @@ export const useClusterNodesUpTimeData = (props: {
   return useMemo(() => ({ queryResults, isLoading }), [queryResults])
 }
 
-function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
+export function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
   return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
     const [time, value] = dataPoint
     if (index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]) {

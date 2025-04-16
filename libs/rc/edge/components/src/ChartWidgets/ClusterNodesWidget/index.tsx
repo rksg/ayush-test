@@ -6,6 +6,25 @@ import { EdgeClusterStatus, EdgeStatus, EdgeStatusSeverityEnum } from '@acx-ui/r
 import { getEdgeStatusDisplayName }                  from '../../utils/general'
 import { EdgeOverviewDonutWidget, ReduceReturnType } from '../EdgeOverviewDonutWidget'
 
+interface EdgePortsWidgetProps {
+  isLoading: boolean
+  clusterData: EdgeClusterStatus | undefined
+}
+
+export const EdgeClusterNodesWidget = (props: EdgePortsWidgetProps) => {
+  const { isLoading, clusterData } = props
+  const { $t } = useIntl()
+
+  const chartData = getClusterNodesChartData(clusterData?.edgeList)
+
+  return <EdgeOverviewDonutWidget
+    title={$t({ defaultMessage: 'Nodes' })}
+    data={chartData}
+    isLoading={isLoading}
+    size={{ width: 100, height: 100 }}
+  />
+}
+
 export const getClusterNodesChartData =
 (nodes: EdgeStatus[] | undefined): DonutChartData[] => {
   const seriesMapping = [
@@ -46,23 +65,4 @@ export const getClusterNodesChartData =
   }
 
   return chartData
-}
-
-interface EdgePortsWidgetProps {
-  isLoading: boolean
-  clusterData: EdgeClusterStatus | undefined
-}
-
-export const EdgeClusterNodesWidget = (props: EdgePortsWidgetProps) => {
-  const { isLoading, clusterData } = props
-  const { $t } = useIntl()
-
-  const chartData = getClusterNodesChartData(clusterData?.edgeList)
-
-  return <EdgeOverviewDonutWidget
-    title={$t({ defaultMessage: 'Nodes' })}
-    data={chartData}
-    isLoading={isLoading}
-    size={{ width: 100, height: 100 }}
-  />
 }

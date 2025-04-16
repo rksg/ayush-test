@@ -397,7 +397,7 @@ export const mockClusterInterfaceOptionData = {
 
 export const mockedEdgePortWithDualWan = cloneDeep(edgePortsSetting)
 mockedEdgePortWithDualWan[0].wanLinkHealth = 'ON'
-mockedEdgePortWithDualWan[0].wanLinkStatus = 'UP',
-mockedEdgePortWithDualWan[0].wanLinkTargets = [{ targetIp: '8.8.8.8', status: 'UP' }],
-mockedEdgePortWithDualWan[0].wanPortRole = 'Primary',
+mockedEdgePortWithDualWan[0].wanLinkStatus = 'UP'
+mockedEdgePortWithDualWan[0].wanLinkTargets = [{ ip: '8.8.8.8', status: 'UP' }]
+mockedEdgePortWithDualWan[0].wanPortRole = 'Primary'
 mockedEdgePortWithDualWan[0].wanPortStatus = 'Active'

@@ -29,15 +29,15 @@ export const PortsTab = (props: PortsTabProps) => {
   const { $t } = useIntl()
   const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
-  const { serialNumber } = useParams()
+  const { clusterId } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
+  const basePath = useTenantLink(`/devices/edge/cluster/${clusterId}`)
   const { clusterInfo } = useContext(EdgeClusterDetailsDataContext)
 
   const handleClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports`
+      pathname: `${basePath.pathname}/configure`
     })
   }
 

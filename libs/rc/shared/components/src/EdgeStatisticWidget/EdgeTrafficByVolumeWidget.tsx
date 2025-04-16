@@ -95,7 +95,7 @@ export function EdgeTrafficByVolumeWidget () {
         const graphParameters = Array.isArray(parameters) ? parameters : [parameters]
         const [ time ] = graphParameters[0].data as [TimeStamp, number]
         const graphDataIndex = graphParameters[0].dataIndex as number
-        console.log(graphParameters)
+
         return renderToString(<RawIntlProvider value={intl}>
           <TooltipWrapper maxWidth={300}>
             <time dateTime={new Date(time).toJSON()}>
