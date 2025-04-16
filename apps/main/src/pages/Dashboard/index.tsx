@@ -397,9 +397,9 @@ function DashboardPageHeader (props: {
       <UI.DashboardSelector
         defaultActiveFirstOption
         defaultValue={dashboardId}
-        dropdownMatchSelectWidth={true}
+        dropdownMatchSelectWidth={false}
         dropdownClassName='dashboard-select-dropdown'
-        optionLabelProp='title'
+        optionLabelProp='label'
         onChange={handleDashboardChange}
       >{
           dashboardList.map(item => {
@@ -409,7 +409,7 @@ function DashboardPageHeader (props: {
             return <Select.Option
               key={item.id}
               value={item.id}
-              title={item.name}
+              label={item.name}
               className={isDefault ? 'default' : (hasUpdated ? 'hasUpdated' : '')}
             >
               { !isDefault && icon }{ item.name }

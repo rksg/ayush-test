@@ -104,6 +104,8 @@ const getItemInfo = (props: {
   const { item, $t, handleMenuClick } = props
   const dropdownMenu = getActionMenu(item, handleMenuClick, $t)
   const hasDropdownMenu = dropdownMenu.props.items.length > 0
+  const dashboardName = item.isDefault
+    ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : item.name
 
   return <>
     <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
@@ -115,9 +117,7 @@ const getItemInfo = (props: {
         : <MoveSolid />
     }</div>
     <div className='info'>
-      <div className='title'>{
-        item.isDefault ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : item.name
-      }</div>
+      <div className='title' title={dashboardName}>{ dashboardName }</div>
       { item.widgetIds && <div className='desp'>
         { item.widgetIds && <span className='count'>{
           $t({ defaultMessage: '{count} widgets' }, { count: item.widgetIds?.length })
@@ -128,7 +128,7 @@ const getItemInfo = (props: {
         }</span> }
         { item.author && <span className='author'>
           <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name'>{ item.author }</span>
+          <span className='name' title={item.author}>{ item.author }</span>
         </span>
         }
       </div>}

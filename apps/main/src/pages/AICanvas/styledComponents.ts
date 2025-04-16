@@ -643,9 +643,9 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     .title {
       flex: 1;
       margin: 4px 0;
-      font-size: var(--acx-headline-3-font-size);
-      font-weight: var(--acx-headline-3-font-weight);
-      line-height: var(--acx-headline-3-line-height);
+      font-size: var(--acx-subtitle-3-font-size);
+      font-weight: var(--acx-subtitle-3-font-weight);
+      line-height: var(--acx-subtitle-3-line-height);
     }
     .action {
       display: flex;

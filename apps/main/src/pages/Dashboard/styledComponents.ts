@@ -65,7 +65,6 @@ export const DashboardSelectDropdown = createGlobalStyle`
 export const DashboardSelector = styled(Select)`
   margin-left: -10px;
   .ant-select-selector {
-    min-width: 240px;
     background-color: transparent !important;
     border: 0 !important;
     padding: 0 !important;

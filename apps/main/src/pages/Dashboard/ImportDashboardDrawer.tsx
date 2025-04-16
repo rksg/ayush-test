@@ -156,7 +156,7 @@ export const ImportDashboardDrawer = (props: {
           >
             <div className='info'>
               <div className='title'>
-                <span className='name'>{ item.name }</span>
+                <span className='name' title={item.name}>{ item.name }</span>
                 { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
               </div>
               <div className='desp'>
@@ -168,7 +168,7 @@ export const ImportDashboardDrawer = (props: {
                 }</span> }
                 { item?.author && <span className='author'>
                   <AccountCircleSolid size='sm' />
-                  <span className='name'>{ item.author }</span>
+                  <span className='name' title={item.author}>{ item.author }</span>
                 </span>
                 }
               </div>
