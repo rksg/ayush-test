@@ -25,7 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { AddRowIdToIdenetityProvider, removeRowIds } from '../utils'
+import { AddRowIdToIdentityProvider, removeRowIds } from '../utils'
 
 import AaaSettingsForm                              from './AaaSettingsForm'
 import IdentityProviderFormContext, { mainReducer } from './IdentityProviderFormContext'
@@ -78,7 +78,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       // update state from API data
       if (state.name === '') {
         // add RowId
-        const newData = AddRowIdToIdenetityProvider(data)
+        const newData = AddRowIdToIdentityProvider(data)
 
         dispatch({
           type: IdentityProviderActionType.UPDATE_STATE,

@@ -60,7 +60,7 @@ describe('LinkHealthMonitorSettingForm', () => {
 
     expect(screen.getByRole('button', { name: 'Add Target' })).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.getByRole('radio', { name: 'All destinations were unreachable' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'All targets were unreachable' })).toBeChecked()
     const selects = screen.getAllByRole('combobox')
     selects.forEach((select) => {
       if ( select.getAttribute('id') === 'protocol' ) return
@@ -84,7 +84,7 @@ describe('LinkHealthMonitorSettingForm', () => {
     expect(screen.getByText('10.10.10.10')).toBeVisible()
 
     // eslint-disable-next-line max-len
-    expect(screen.getByRole('radio', { name: 'One or more of the destinations were unreachable' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'One or more of the targets were unreachable' })).toBeChecked()
 
     const selects = screen.getAllByRole('combobox')
     const intervalSeconds = find(selects, { id: 'intervalSeconds' })
@@ -107,8 +107,8 @@ describe('LinkHealthMonitorSettingForm', () => {
     />)
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('radio', { name: 'One or more of the destinations were unreachable' })).toBeChecked()
-    await userEvent.click(screen.getByRole('radio', { name: 'All destinations were unreachable' }))
+    expect(await screen.findByRole('radio', { name: 'One or more of the targets were unreachable' })).toBeChecked()
+    await userEvent.click(screen.getByRole('radio', { name: 'All targets were unreachable' }))
 
     const selects = screen.getAllByRole('combobox')
     const intervalSeconds = find(selects, { id: 'intervalSeconds' }) as HTMLElement

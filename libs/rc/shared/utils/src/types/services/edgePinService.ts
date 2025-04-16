@@ -9,6 +9,7 @@ export interface PersonalIdentityNetworks {
   tunneledWlans: EdgePinTunneledWlan[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
+  networkSegmentConfiguration: Omit<EdgeClusterInfo, 'edgeClusterId'>
 }
 
 export interface PersonalIdentityNetworksViewData {

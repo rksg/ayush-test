@@ -363,6 +363,10 @@ export function LanPorts (props: ApEditItemProps) {
           payload,
           useVenueSettings
         }).unwrap()
+
+        isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
+          state: IpsecOptionChangeState.OnSave
+        })
       } else {
         await updateApCustomization({
           params: { tenantId, serialNumber, venueId },
@@ -418,7 +422,7 @@ export function LanPorts (props: ApEditItemProps) {
         await deactivateIpSecProfileSettings({
           params: {
             venueId, serialNumber, portId: lanPort.portId,
-            softGreProfileId: lanPort.softGreProfileId, ipsecProfileId: originIpsecId }
+            softGreProfileId: originSoftGreId, ipsecProfileId: originIpsecId }
         }).unwrap()
       } else if (
         originSoftGreId &&
@@ -545,7 +549,6 @@ export function LanPorts (props: ApEditItemProps) {
   const onGUIChanged = () => {
     updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
-  console.log('render ap edit') // eslint-disable-line no-console
   return <Loader states={[{
     isLoading: formInitializing,
     isFetching: isApLanPortsUpdating ||

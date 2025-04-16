@@ -17,7 +17,8 @@ import {
   useParams,
   useSearchParams
 } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
+import { useDateFilter }              from '@acx-ui/utils'
 
 import { ClientOverviewWidget }     from './ClientOverviewWidget'
 import { ClientProperties }         from './ClientProperties'
@@ -36,7 +37,9 @@ export function ClientOverviewTab () {
     ...dateFilter
   }), [dateFilter])
   const { tenantId, clientId } = useParams()
+  const { accountTier } = getUserProfile()
   const [searchParams] = useSearchParams()
+  const isCore = isCoreTier(accountTier)
   const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const clientStats = useClientStatisticsQuery({ ...filters, clientMac: clientId!.toUpperCase() })
   const clientInfo = useGetClientsQuery({ payload: {
@@ -69,12 +72,14 @@ export function ClientOverviewTab () {
             />
           </UI.CardWrapper>
         </GridCol>
-        <GridCol col={{ span: 8 }} style={{ height: '292px' }}>
-          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='donut' />
-        </GridCol>
-        <GridCol col={{ span: 16 }} style={{ height: '292px' }}>
-          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='line' />
-        </GridCol>
+        {!isCore && <>
+          <GridCol col={{ span: 8 }} style={{ height: '292px' }}>
+            <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='donut' />
+          </GridCol>
+          <GridCol col={{ span: 16 }} style={{ height: '292px' }}>
+            <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='line' />
+          </GridCol>
+        </>}
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
         </GridCol>

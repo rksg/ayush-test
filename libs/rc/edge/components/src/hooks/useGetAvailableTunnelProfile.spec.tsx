@@ -47,7 +47,7 @@ describe('useGetAvailableTunnelProfile', () => {
 
   it('should return the correct available tunnel profiles when sdLanServiceId is provided', () => {
     const { result } = renderHook(() =>
-      useGetAvailableTunnelProfile({ sdLanServiceId: modifiedMockSdLanDataList[0].id }), {
+      useGetAvailableTunnelProfile({ serviceIds: [modifiedMockSdLanDataList[0].id] }), {
       wrapper: ({ children }) => <Provider>{children}</Provider>
     })
 

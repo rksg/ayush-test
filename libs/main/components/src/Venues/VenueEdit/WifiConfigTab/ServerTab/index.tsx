@@ -16,9 +16,9 @@ import {
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useNavigate }          from '@acx-ui/react-router-dom'
-import { hasAllowedOperations } from '@acx-ui/user'
-import { getOpsApi }            from '@acx-ui/utils'
+import { useNavigate }                                      from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations, isCoreTier } from '@acx-ui/user'
+import { getOpsApi }                                        from '@acx-ui/utils'
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 import { useVenueConfigTemplateOpsApiSwitcher }      from '../../../venueConfigTemplateApiSwitcher'
@@ -46,12 +46,14 @@ export interface ServerSettingContext {
 export function ServerTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
