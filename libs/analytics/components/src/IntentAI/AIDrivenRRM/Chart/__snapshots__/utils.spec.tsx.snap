@@ -1,19 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`customTooltipText formats tooltip correctly for plural > 1 1`] = `
-<DocumentFragment>
-  Channel 
-  <b>
-    6
-  </b>
-  : 
-  <b>
-    3
-  </b>
-   APs
-</DocumentFragment>
-`;
-
 exports[`customTooltipText renders correctly 1`] = `
 <DocumentFragment>
   Channel 6: 
