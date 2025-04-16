@@ -249,12 +249,12 @@ function useColumns (
     },
     ...(isTagsColumnEnabled ? [{
       title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'tagList',
+      dataIndex: 'tagList',
       sorter: true,
       searchable: searchable,
       render: (data: ReactNode, row: Venue) => (
-        row.tags?.join(', ')
+        row.tagList?.join(', ')
       )
     }] : [])
   ]
@@ -286,9 +286,9 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'id',
       'isEnforced',
       'addressLine',
-      'tags'
+      'tagList'
     ],
-    searchTargetFields: ['name', 'addressLine', 'description', 'tags'],
+    searchTargetFields: ['name', 'addressLine', 'description', 'tagList'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
