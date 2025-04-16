@@ -13,12 +13,15 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
+import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
+import PowerDistributionChart    from './Chart/PowerDistributionChart'
 import { NeighborAPGraph }       from './NeighborAPGraph'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
@@ -103,15 +106,33 @@ export function IntentAIDetails () {
         {!noData ? <>
           <DetailsSection data-testid='Details'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <Tabs>
-              <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
-                <NeighborAPGraph />
-              </Tabs.TabPane>
-            </Tabs>
+            <GridRow>
+              <KPIGrid />
+              <GridCol col={{ span: 24 }}>
+                <Tabs stickyTop={false}>
+                  <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
+                    <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+                    <NeighborAPGraph />
+                  </Tabs.TabPane>
+                </Tabs>
+              </GridCol>
+            </GridRow>
           </DetailsSection>
+
+          <GridRow>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection>
+                <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
+              </DetailsSection>
+            </GridCol>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection>
+                <DetailsSection.Details children={<PowerDistributionChart {...intent} />} />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>

@@ -8,10 +8,13 @@ import { StepsForm, Tabs } from '@acx-ui/components'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { useIntentContext }     from '../../IntentContext'
+import ChannelDistributionChart from '../Chart/ChannelDistributionChart'
+import PowerDistributionChart   from '../Chart/PowerDistributionChart'
 import { NeighborAPGraph }      from '../NeighborAPGraph'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
+import * as UI        from './styledComponents'
 
 export function Introduction () {
   const { $t } = useIntl()
@@ -39,13 +42,12 @@ export function Introduction () {
                 <b>High client throughput in sparse network:</b>
                 In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
               </p>
-              <br></br>
             `}
         />
       </StepsForm.TextContent>
       <StepsForm.TextContent>
         <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
-        <Tabs>
+        <Tabs stickyTop={false}>
           <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
             <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
           </Tabs.TabPane>
@@ -54,6 +56,13 @@ export function Introduction () {
           </Tabs.TabPane>
         </Tabs>
       </StepsForm.TextContent>
+      <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Metrics'/>}/>
+      <UI.ChartWrapper>
+        <ChannelDistributionChart {...intent} />
+      </UI.ChartWrapper>
+      <UI.ChartWrapper>
+        <PowerDistributionChart {...intent} />
+      </UI.ChartWrapper>
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

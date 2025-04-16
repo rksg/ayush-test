@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { CaretDownSolid }                              from '@acx-ui/icons'
 import {
   useMspCustomerListDropdownQuery,
@@ -44,6 +45,7 @@ export function MspEcDropdownList () {
 
   // user profile for tenant from jwt token
   const { data: userProfile } = useUserProfileContext()
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   useEffect(()=>{
     if (tenantDetail && userProfile) {
@@ -280,7 +282,8 @@ export function MspEcDropdownList () {
     option: { skip: delegationType !== DelegationType.MSP_EC },
     pagination: {
       settingsId: settingsIdMspEc
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const settingsIdMspRec = 'msp-rec-dropdown-table'
@@ -294,7 +297,8 @@ export function MspEcDropdownList () {
     option: { skip: delegationType !== DelegationType.MSP_REC },
     pagination: {
       settingsId: settingsIdMspRec
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const settingsIdIntegratorMspEc = 'integrator-mspec-dropdown-table'
@@ -358,7 +362,8 @@ export function MspEcDropdownList () {
     option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR },
     pagination: {
       settingsId: settingsIdIntegrator
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const settingsIdVarRec = 'var-dropdown-table'

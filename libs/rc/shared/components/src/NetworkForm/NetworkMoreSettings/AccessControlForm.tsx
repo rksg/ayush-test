@@ -34,9 +34,13 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+import { useParams }  from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasPermission,
+  isCoreTier
+} from '@acx-ui/user'
 
 import {
   AccessControlSettingForm,
@@ -385,6 +389,10 @@ function SelectAccessProfileProfile (props: {
 
   const { selectedApplicationPolicy } = useAppAclPolicyListFromNwInstance(state)
 
+  const { accountTier } = getUserProfile()
+
+  const isCore = isCoreTier(accountTier)
+
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
     = useAclPolicyListFromNwInstance()
@@ -506,10 +514,12 @@ function SelectAccessProfileProfile (props: {
       <span>{selectedDevicePolicy}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width={labelWidth}>
-      {$t({ defaultMessage: 'Applications' })}
-      <span>{selectedApplicationPolicy}</span>
-    </UI.FieldLabel>
+    {!isCore && (
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'Applications' })}
+        <span>{selectedApplicationPolicy}</span>
+      </UI.FieldLabel>
+    )}
 
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
@@ -779,6 +789,9 @@ const useAclPolicyListFromNwInstance = () => {
 function AccessControlConfigForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const [
     enableLayer2,
     enableLayer3,
@@ -876,8 +889,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-
-    <UI.FieldLabel width={labelWidth}>
+    {!isCore && (<UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Applications' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -893,6 +905,8 @@ function AccessControlConfigForm () {
         />}
       </div>
     </UI.FieldLabel>
+    )}
+
 
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}

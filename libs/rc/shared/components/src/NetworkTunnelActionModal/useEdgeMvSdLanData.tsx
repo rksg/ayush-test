@@ -28,6 +28,7 @@ export const useEdgeMvSdLanData = (networkInfo: useEdgeMvSdLanDataProps | undefi
         'venueId',
         'edgeClusterId', 'guestEdgeClusterId', 'edgeClusterName', 'guestEdgeClusterName',
         'isGuestTunnelEnabled',
+        'tunnelProfileId', 'tunnelProfileName',
         'tunneledWlans', 'tunneledGuestWlans'],
       filters: { 'tunneledWlans.venueId': [networkVenueId!] },
       pageSize: 1

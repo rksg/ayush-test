@@ -19,6 +19,7 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
@@ -136,6 +137,7 @@ export function EditPrivilegeGroup () {
   const [disableNameChange, setDisableNameChange] = useState(false)
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
   const [selectedRole, setCustomRole] = useState('')
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -158,8 +160,8 @@ export function EditPrivilegeGroup () {
       useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
   const { data: customerList } =
-      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
-        { skip: !isOnboardedMsp })
+      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload,
+        enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isOnboardedMsp })
 
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
   useEffect(() => {
