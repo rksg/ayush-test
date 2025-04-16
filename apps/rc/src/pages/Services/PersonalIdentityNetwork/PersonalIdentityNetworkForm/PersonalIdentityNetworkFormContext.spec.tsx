@@ -447,5 +447,19 @@ describe('PersonalIdentityNetworkFormContext', () => {
       // eslint-disable-next-line max-len
       await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[0]))
     })
+
+    it('should get cluster info by cluster id', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: createPinPath }
+      })
+
+      // eslint-disable-next-line max-len
+      await waitFor(() => expect(result.current.getClusterInfoByClusterId(mockEdgeClusterList.data[0].clusterId)).toStrictEqual(mockEdgeClusterList.data[0]))
+    })
   })
 })
