@@ -23,8 +23,8 @@ import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, filterByOperations } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
+import { filterByAccess, filterByOperations, hasPermission } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                          from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -79,6 +79,11 @@ export function PropertyUnitDetails () {
   const copyButtonTooltipCopiedText = $t({ defaultMessage: 'Passphrase Copied' })
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
   const [guestCopyButtonTooltip, setGuestCopyTooltip] = useState(copyButtonTooltipDefaultText)
+
+  const hasLinkedIdentityUpdatePermission = (hasPermission({
+    rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)] })
+  || hasPermission({
+    rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)]}))
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
@@ -431,7 +436,7 @@ export function PropertyUnitDetails () {
         onFilterChange={handleFilterChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasLinkedIdentityUpdatePermission && { type: 'checkbox' }}
       />
     </Loader>
     {venueId && configurePropertyUnitDrawerVisible &&
