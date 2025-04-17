@@ -74,6 +74,7 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
           <>
             <Button
               type='primary'
+              disabled={!policy?.id}
               onClick={() => downloadSamlServiceProviderMetadata({ params: { id: policy?.id } })}
             >
               {$t({ defaultMessage: 'Download SAML Metadata' })}
