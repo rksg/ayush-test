@@ -139,6 +139,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
           ipsecOptionDispatch && ipsecOptionDispatch({
             state: IpsecOptionChangeState.ReloadOptionList, newOption
           })
+          onGUIChanged && onGUIChanged('ipsecProfileId')
         }}
       />
     </>
