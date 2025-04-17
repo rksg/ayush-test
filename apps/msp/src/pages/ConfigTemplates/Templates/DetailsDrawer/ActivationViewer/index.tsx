@@ -9,16 +9,17 @@ export { ApGroupVenueViewer } from './ApGroupVenueViewer'
 export interface ActivationViewerProps {
   type: ConfigTemplateType
   templateId: string
+  upperSplit?: React.ReactNode;
 }
 
-export function ActivationViewer ({ type, templateId }: ActivationViewerProps) {
+export function ActivationViewer ({ type, templateId, upperSplit = null }: ActivationViewerProps) {
   if (!isAllowedDisplayActivationType(type)) {
     return null
   }
 
   const ActivationViewerComponent = activationViewerMap[type]
 
-  return <ActivationViewerComponent type={type} templateId={templateId} />
+  return <>{upperSplit}<ActivationViewerComponent type={type} templateId={templateId} /></>
 }
 
 export const ProtectedActivationViewer = withTemplateFeatureGuard({

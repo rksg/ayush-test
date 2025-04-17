@@ -86,9 +86,11 @@ export function DetailsContent (props: DetailsContentProps) {
         />}
       />
     </Descriptions>
-    {template.type !== ConfigTemplateType.AP_GROUP &&
-      <><Divider/><ProtectedActivationViewer type={template.type} templateId={template.id!} /></>
-    }
+    <ProtectedActivationViewer
+      type={template.type}
+      templateId={template.id!}
+      upperSplit={<Divider/>}
+    />
     <Divider/>
     <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
     {showDriftsDrawerVisible &&
