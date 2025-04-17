@@ -203,6 +203,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               { model: apModel, portId: portId }
             )
           })
+          onGUIChanged && onGUIChanged('softGreProfileId')
         }}
       />
     </>
