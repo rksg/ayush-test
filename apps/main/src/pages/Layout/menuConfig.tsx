@@ -77,6 +77,7 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -313,7 +314,22 @@ export function useMenuConfig () {
       ]
     }] : []
     ),
-    {
+    ...(isNewServiceCatalogEnabled ? [{
+      label: $t({ defaultMessage: 'Network Control' }),
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid,
+      children: [
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
+    }] : [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -331,7 +347,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Policies & Profiles' })
         }
       ]
-    },
+    }]),
     ...(isCore ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
