@@ -93,13 +93,14 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     content: $t({ defaultMessage:
         // eslint-disable-next-line max-len
         `The "{isL2oGreReady, select, true {Forwarding Destination} other {Forward the guest traffic to DMZ}}" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
-        Changing this setting for Network {networkName} 
+        Changing this setting for Network <b>{networkName}</b>
         will also affect <b>{impactVenueCount}</b> associated {impactVenueCount, plural,
         one {<venueSingular></venueSingular>}
         other {<venuePlural></venuePlural>}}. 
         Do you want to continue?` },
     {
       ...defaultRichTextFormatValues,
+      isL2oGreReady,
       networkName: currentNetworkName || networkName,
       impactVenueCount: impactVenueCount
     }),
