@@ -100,6 +100,7 @@ interface FormFooterProps {
     cancel?: string
     save?: string
   }
+  disableCancelBtn?: boolean
 }
 
 const FormFooter = (props: FormFooterProps) => {
@@ -111,7 +112,8 @@ const FormFooter = (props: FormFooterProps) => {
     showSaveButton = true,
     extra = null,
     onCancel,
-    onSave
+    onSave,
+    disableCancelBtn = false
   } = props
   const buttonLabel = {
     ...{
@@ -134,7 +136,7 @@ const FormFooter = (props: FormFooterProps) => {
         {extra}
       </div>
       <div>
-        <Button onClick={onCancel}>
+        <Button onClick={onCancel} disabled={disableCancelBtn}>
           {buttonLabel.cancel}
         </Button>
         {showSaveButton && onSave && <Button
