@@ -360,6 +360,7 @@ export default function DHCPPoolTable ({
     <>
       <PoolTable
         data={values()}
+        configureType={dhcpMode}
         onAdd={onAddOrEdit}
         onEdit={onAddOrEdit}
         onDelete={onDelete}

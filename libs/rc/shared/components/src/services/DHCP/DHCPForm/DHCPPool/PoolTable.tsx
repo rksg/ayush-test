@@ -7,12 +7,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
-import { defaultSort, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess }                             from '@acx-ui/user'
+import { useIsSplitOn, Features }                                         from '@acx-ui/feature-toggle'
+import { defaultSort, DHCPConfigTypeEnum, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                 from '@acx-ui/user'
 
 export function PoolTable (props:{
   readonly?: boolean
+  configureType?: DHCPConfigTypeEnum | undefined
   data: DHCPPool[]
   onAdd?: () => void
   onEdit?: (data?: DHCPPool) => void
@@ -20,7 +21,7 @@ export function PoolTable (props:{
   isDefaultService?: Boolean
 }) {
   const { $t } = useIntl()
-  const { data, readonly } = props
+  const { data, configureType, readonly } = props
   const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
@@ -109,7 +110,7 @@ export function PoolTable (props:{
       dataIndex: 'numberOfHosts',
       sorter: { compare: sortProp('numberOfHosts', defaultSort) },
       render: (_, row) => {
-        if (showWarning && !!row.numberOfHosts) {
+        if (showWarning && configureType === DHCPConfigTypeEnum.MULTIPLE && !!row.numberOfHosts) {
           return row.numberOfHosts - 10
         } else  {
           return row.numberOfHosts
