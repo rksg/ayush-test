@@ -17,7 +17,7 @@ export function VenueActivationViewer ({ type, templateId }: ActivationViewerPro
   const { names, isLoading } = useVenueActivationNames(type, templateId)
 
   return <DetailsItemList
-    title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+    title={$t({ defaultMessage: 'Active on <VenuePlural></VenuePlural>' })}
     items={names}
     isLoading={isLoading}
   />

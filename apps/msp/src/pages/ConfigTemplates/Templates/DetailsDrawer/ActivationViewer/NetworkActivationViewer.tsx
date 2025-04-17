@@ -14,7 +14,7 @@ export function NetworkActivationViewer ({ type, templateId }: ActivationViewerP
   const { names, isLoading } = useNetworkActivationNames(type, templateId)
 
   return <DetailsItemList
-    title={$t({ defaultMessage: 'Networks' })}
+    title={$t({ defaultMessage: 'Active on Networks' })}
     items={names}
     isLoading={isLoading}
   />

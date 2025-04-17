@@ -53,7 +53,7 @@ describe('NetworkActivationViewer', () => {
       <VenueActivationViewer type={ConfigTemplateType.NETWORK} templateId={mockTemplateId} />
     </Provider>)
 
-    expect(screen.getByText('Venues')).toBeInTheDocument()
+    expect(screen.getByText('Active on Venues')).toBeInTheDocument()
     expect(await screen.findByText('Venue 1')).toBeInTheDocument()
   })
 
