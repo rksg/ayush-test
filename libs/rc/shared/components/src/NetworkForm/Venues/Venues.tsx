@@ -700,6 +700,8 @@ export function Venues (props: VenuesProps) {
         const shouldCloseModal = await handleSdLanTunnelAction(originalVenueSdLan, args)
         if (shouldCloseModal !== false)
           handleCloseTunnelModal()
+      } else {
+        handleCloseTunnelModal()
       }
     }catch (e) {
       console.error('Error on handleNetworkTunnelActionFinish', e)  // eslint-disable-line no-console

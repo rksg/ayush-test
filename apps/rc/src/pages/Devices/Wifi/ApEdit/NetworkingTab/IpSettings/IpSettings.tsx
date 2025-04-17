@@ -126,7 +126,7 @@ export function IpSettings (props: ApEditItemProps) {
           serialNumber
         },
         payload,
-        enableRabc: isWifiRbacEnabled
+        enableRbac: isWifiRbacEnabled
       }).unwrap()
 
     } catch (error) {
