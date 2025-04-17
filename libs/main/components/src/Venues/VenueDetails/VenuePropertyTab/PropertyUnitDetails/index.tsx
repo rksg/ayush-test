@@ -83,7 +83,7 @@ export function PropertyUnitDetails () {
   const hasLinkedIdentityUpdatePermission = (hasPermission({
     rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)] })
   || hasPermission({
-    rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)]}))
+    rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)] }))
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
