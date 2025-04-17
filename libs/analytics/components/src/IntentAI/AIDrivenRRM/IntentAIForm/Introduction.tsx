@@ -8,9 +8,13 @@ import { StepsForm, Tabs } from '@acx-ui/components'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { useIntentContext }     from '../../IntentContext'
+import ChannelDistributionChart from '../Chart/ChannelDistributionChart'
+import PowerDistributionChart   from '../Chart/PowerDistributionChart'
+import { NeighborAPGraph }      from '../NeighborAPGraph'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
+import * as UI        from './styledComponents'
 
 export function Introduction () {
   const { $t } = useIntl()
@@ -45,10 +49,24 @@ export function Introduction () {
         <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
         <Tabs stickyTop={false}>
           <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-            <IntentAIRRMGraph isFullOptimization={isFullOptimization}/>
+            <UI.ChartWrapper>
+              <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
+            </UI.ChartWrapper>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+            <UI.ChartWrapper>
+              <NeighborAPGraph />
+            </UI.ChartWrapper>
           </Tabs.TabPane>
         </Tabs>
       </StepsForm.TextContent>
+      <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Metrics'/>}/>
+      <UI.ChartWrapper>
+        <ChannelDistributionChart {...intent} />
+      </UI.ChartWrapper>
+      <UI.ChartWrapper>
+        <PowerDistributionChart {...intent} />
+      </UI.ChartWrapper>
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

@@ -45,7 +45,8 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
       authToken: smsProviderData.data?.authToken,
       authTemplateSid: smsProviderData.data?.authTemplateSid
     }
-  }, { skip: !smsProviderData.data })
+  }, { skip: !smsProviderData.data || !smsProviderData.data.enableWhatsapp })
+
 
   useEffect(() => {
     if (!twilioData.data) return
@@ -68,7 +69,8 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
   const isAlert = isTemplate
     ? false
     // eslint-disable-next-line max-len
-    : enableWhatsappLogin && data?.guestPortal?.enableWhatsappLogin && provider !== SmsProviderType.TWILIO
+    : ((enableWhatsappLogin && data?.guestPortal?.enableWhatsappLogin && provider !== SmsProviderType.TWILIO)
+      || (enableWhatsappLogin && !smsProviderData?.data?.enableWhatsapp))
 
   const isDisabled = isTemplate
     ? false
