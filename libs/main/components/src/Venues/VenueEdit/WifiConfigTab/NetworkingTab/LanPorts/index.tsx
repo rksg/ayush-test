@@ -485,7 +485,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             ipsecProfileId: originIpsecId
           }
         }).unwrap()
-      } else if(isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged) {
+      } else if (isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged) {
         await updateDeactivateSoftGreProfile({
           params: {
             venueId: venueId,
