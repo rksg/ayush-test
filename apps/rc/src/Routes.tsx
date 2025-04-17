@@ -78,7 +78,7 @@ import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-route
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
-import { getOpsApi }                                   from '@acx-ui/utils'
+import { AccountTier, getOpsApi }                      from '@acx-ui/utils'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -101,6 +101,8 @@ import Wired                                        from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControl                                from './pages/Policies/AccessControl'
+import CreateAccessControl                          from './pages/Policies/AccessControl/create'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -131,46 +133,51 @@ import IpsecDetail                                  from './pages/Policies/Ipsec
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
 import LbsServerProfileDetail                       from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
 import LbsServerProfileTable                        from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
-import MacRegistrationListDetails
-  from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
-import MacRegistrationListsTable             from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MyPolicies                            from './pages/Policies/MyPolicies'
-import PortProfile                           from './pages/Policies/PortProfile'
-import CreatePortProfile                     from './pages/Policies/PortProfile/create'
-import SwitchPortProfileDetail               from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
-import SwitchPortProfileForm                 from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
-import SelectPolicyForm                      from './pages/Policies/SelectPolicyForm'
-import SnmpAgentDetail                       from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
-import SnmpAgentForm                         from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
-import SnmpAgentTable                        from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
-import SoftGreDetail                         from './pages/Policies/SoftGre/SoftGreDetail'
-import SoftGreTable                          from './pages/Policies/SoftGre/SoftGreTable'
-import SyslogTable                           from './pages/Policies/Syslog/SyslogTable/SyslogTable'
-import AddTunnelProfile                      from './pages/Policies/TunnelProfile/AddTunnelProfile'
-import EditTunnelProfile                     from './pages/Policies/TunnelProfile/EditTunnelProfile'
-import TunnelProfileDetail                   from './pages/Policies/TunnelProfile/TunnelProfileDetail'
-import TunnelProfileTable                    from './pages/Policies/TunnelProfile/TunnelProfileTable'
-import VLANPoolTable                         from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
-import { WifiOperatorDetailView }            from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
-import WifiOperatorTable                     from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
-import WorkflowDetails                       from './pages/Policies/Workflow/WorkflowDetail'
-import WorkflowPageForm                      from './pages/Policies/Workflow/WorkflowPageForm'
-import WorkflowTable                         from './pages/Policies/Workflow/WorkflowTable'
-import DHCPTable                             from './pages/Services/DHCP/DHCPTable/DHCPTable'
-import AddDHCP                               from './pages/Services/DHCP/Edge/AddDHCP'
-import EdgeDHCPDetail                        from './pages/Services/DHCP/Edge/DHCPDetail'
-import EdgeDhcpTable                         from './pages/Services/DHCP/Edge/DHCPTable'
-import EditDhcp                              from './pages/Services/DHCP/Edge/EditDHCP'
-import DpskDetails                           from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskTable                             from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddFirewall                           from './pages/Services/EdgeFirewall/AddFirewall'
-import EditFirewall                          from './pages/Services/EdgeFirewall/EditFirewall'
-import FirewallDetail                        from './pages/Services/EdgeFirewall/FirewallDetail'
-import FirewallTable                         from './pages/Services/EdgeFirewall/FirewallTable'
-import { AddEdgeSdLan }                      from './pages/Services/EdgeSdLan/AddEdgeSdLan'
-import { EdgeSdLanDetail }                   from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
-import { EdgeSdLanTable }                    from './pages/Services/EdgeSdLan/EdgeSdLanTable'
-import { EditEdgeSdLan }                     from './pages/Services/EdgeSdLan/EditEdgeSdLan'
+import MacRegistrationListDetails                   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
+import MacRegistrationListsTable                    from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MyPolicies                                   from './pages/Policies/MyPolicies'
+import PortProfile                                  from './pages/Policies/PortProfile'
+import CreatePortProfile                            from './pages/Policies/PortProfile/create'
+import SwitchPortProfileDetail                      from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import SwitchPortProfileForm                        from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
+import SelectPolicyForm                             from './pages/Policies/SelectPolicyForm'
+import SnmpAgentDetail                              from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
+import SnmpAgentForm                                from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
+import SnmpAgentTable                               from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SoftGreDetail                                from './pages/Policies/SoftGre/SoftGreDetail'
+import SoftGreTable                                 from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlSetDetail }             from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetDetail'
+import { SwitchAccessControlSetForm }               from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetForm'
+import { SwitchLayer2ACLForm }                      from './pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2ACLForm'
+import { SwitchLayer2Detail }                       from './pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2Detail'
+import SyslogTable                                  from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import AddTunnelProfile                             from './pages/Policies/TunnelProfile/AddTunnelProfile'
+import EditTunnelProfile                            from './pages/Policies/TunnelProfile/EditTunnelProfile'
+import TunnelProfileDetail                          from './pages/Policies/TunnelProfile/TunnelProfileDetail'
+import TunnelProfileTable                           from './pages/Policies/TunnelProfile/TunnelProfileTable'
+import VLANPoolTable                                from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
+import { WifiOperatorDetailView }                   from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
+import WifiOperatorTable                            from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                              from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                             from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                from './pages/Policies/Workflow/WorkflowTable'
+import DHCPTable                                    from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                                      from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail                               from './pages/Services/DHCP/Edge/DHCPDetail'
+import EdgeDhcpTable                                from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                                     from './pages/Services/DHCP/Edge/EditDHCP'
+import DpskDetails                                  from './pages/Services/Dpsk/DpskDetail/DpskDetails'
+import DpskTable                                    from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddFirewall                                  from './pages/Services/EdgeFirewall/AddFirewall'
+import EditFirewall                                 from './pages/Services/EdgeFirewall/EditFirewall'
+import FirewallDetail                               from './pages/Services/EdgeFirewall/FirewallDetail'
+import FirewallTable                                from './pages/Services/EdgeFirewall/FirewallTable'
+import {
+  AddEdgeSdLan,
+  EdgeSdLanDetail,
+  EdgeSdLanTable,
+  EditEdgeSdLan
+} from './pages/Services/EdgeSdLan'
 import { EdgeTnmDetails }                    from './pages/Services/EdgeTnm/EdgeTnmDetails'
 import { EdgeTnmServiceTable }               from './pages/Services/EdgeTnm/EdgeTnmServiceTable'
 import AddEdgeMdnsProxy                      from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
@@ -895,6 +902,8 @@ function PolicyRoutes () {
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -1028,7 +1037,8 @@ function PolicyRoutes () {
         element={<VLANPoolTable/>}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+        path={getPolicyRoutePath(
+          { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
         element={
           <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
             <AccessControlForm editMode={false}/>
@@ -1044,13 +1054,73 @@ function PolicyRoutes () {
         }
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        path={getPolicyRoutePath(
+          { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
         element={<AccessControlDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
         element={<AccessControlTable />}
       />
+      {isSwitchMacAclEnabled && <>
+        <Route
+          path='policies/accessControls/create'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/:activeTab/'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/:activeTab/:activeSubTab'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/switch/add'
+          element={
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchAccessControlSetForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchAccessControlSetForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/:activeTab'
+          element={<SwitchAccessControlSetDetail />}
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/add'
+          element={
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchLayer2ACLForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchLayer2ACLForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
+          element={<SwitchLayer2Detail />}
+        />
+      </>}
       <Route
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={
@@ -1126,7 +1196,7 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          <AuthRoute scopes={[WifiScopes.CREATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={false} />
           </AuthRoute>
         }
@@ -1134,18 +1204,25 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <AuthRoute scopes={[WifiScopes.UPDATE]} unsupportedTiers={[AccountTier.CORE]}>
             <LbsServerProfileForm editMode={true} />
           </AuthRoute>
         }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
-        element={<LbsServerProfileTable />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileTable />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
-        element={<LbsServerProfileDetail />}
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            <LbsServerProfileDetail />
+          </AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
@@ -1319,17 +1396,25 @@ function PolicyRoutes () {
       <>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
-          element={<WorkflowTable/>}
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowTable/>
+            </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
-          element={<WorkflowDetails />} />
+          element={
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <WorkflowDetails />
+            </AuthRoute>} />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
-              <WorkflowPageForm/>
-            </PolicyAuthRoute>
+            <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
+                <WorkflowPageForm/>
+              </PolicyAuthRoute>
+            </AuthRoute>
           } />
       </>
       }

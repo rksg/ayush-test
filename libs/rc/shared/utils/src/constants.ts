@@ -255,7 +255,8 @@ export enum ConfigTypeEnum {
   VLAN = 'VLAN',
   AUTHENTICATION = 'AUTHENTICATION',
   PORT_PROFILE = 'PORT_PROFILE',
-  PORT_DISABLE_RECOVERY = 'PORT_DISABLE_RECOVERY'
+  PORT_DISABLE_RECOVERY = 'PORT_DISABLE_RECOVERY',
+  MAC_ACL = 'MAC_ACL'
 }
 
 export enum ConfigStatusEnum {
@@ -531,7 +532,8 @@ export enum PortalViewEnum{
   HostApproval = 'HostApproval',
   Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
-  TermCondition = 'TermCondition'
+  TermCondition = 'TermCondition',
+  SAML = 'SAML'
 }
 export enum PortalLanguageEnum{
   zh_TW = 'zh-hant',
@@ -983,8 +985,14 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }
       ]
+    },
+    '24XZP': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
     }
-
   },
   ICX7650: {
     '48P': {

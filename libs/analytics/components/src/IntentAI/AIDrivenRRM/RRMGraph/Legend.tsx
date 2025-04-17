@@ -1,19 +1,26 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
+import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { categoryStyles } from '@acx-ui/components'
+import { Tooltip } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
-export const Legend = () => {
+export const Legend = (style: {
+  [key: string]: {
+    color: string,
+    legendText: MessageDescriptor,
+    tooltip: MessageDescriptor | null
+  }
+}) => {
   const { $t } = useIntl()
   return <UI.LegendWrapper>
-    <UI.LegendTitle>{$t({ defaultMessage: 'Legend' })}</UI.LegendTitle>
     <UI.LegendItems>
-      {Object.entries(categoryStyles).map(([key, value]) => <React.Fragment key={key}>
+      {Object.entries(style).map(([key, value]) => <React.Fragment key={key}>
         <UI.LegendSquare $color={value.color} />
-        <UI.LegendText>{$t(value.legendText)}</UI.LegendText>
+        {value.tooltip ? <Tooltip title={$t(value.tooltip)} placement='bottomRight'>
+          <UI.LegendText>{$t(value.legendText)}</UI.LegendText>
+        </Tooltip> : <UI.LegendText>{$t(value.legendText)}</UI.LegendText>}
       </React.Fragment>)}
     </UI.LegendItems>
   </UI.LegendWrapper>

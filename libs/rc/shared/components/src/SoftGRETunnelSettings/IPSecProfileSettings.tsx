@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Button, Space } from 'antd'
+import { useWatch }                    from 'antd/lib/form/Form'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
 import {
-  useGetIpsecViewDataListQuery,
-  useLazyGetIpsecOptionsQuery
-} from '@acx-ui/rc/services'
-import {
+  IpsecOptionChangeDispatcher,
+  IpsecOptionChangeState,
   PolicyOperation,
   PolicyType,
   hasPolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import IpsecDrawer from '../policies/Ipsec/IpsecForm/IpsecDrawer'
 
@@ -27,51 +25,30 @@ interface IPSecProfileSettingsProps {
   readonly: boolean
   portId?: string
   apModel?: string
-  serialNumber?: string
+  serialNumber?: string,
+  ipsecProfileOptionList: DefaultOptionType[],
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }
 
 export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const {
     index,
+    portId,
     ipsecProfileId,
-    softGreProfileId,
     onGUIChanged,
-    readonly
+    readonly,
+    apModel,
+    serialNumber,
+    ipsecProfileOptionList,
+    ipsecOptionDispatch
   } = props
   const { $t } = useIntl()
-  const params = useParams()
   const ipsecProfileIdFieldName = ['lan', index, 'ipsecProfileId']
   const form = Form.useFormInstance()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ ipsecProfile, setIpSecProfile ] = useState<DefaultOptionType>(defaultIpsecOption)
-  const [ ipsecOptions, setIpsecOptions ] = useState<DefaultOptionType[]>([])
-
-  const ipsecViewDataList = useGetIpsecViewDataListQuery({
-    params,
-    payload: {}
-  })
-
-  useEffect(() => {
-    loadOptions()
-  },[softGreProfileId])
-
-  const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
-
-  const loadOptions = async () => {
-    const queryData = await getIpsecOptions(
-      { params: {
-        venueId: params.venueId,
-        softGreId: props.softGreProfileId },
-      payload: {},
-      skip: !params.venueId }
-    ).unwrap()
-
-    if (queryData) {
-      const { options } = queryData
-      setIpsecOptions(options)
-    }
-  }
+  const isIpSecToggleEnabled = useWatch<boolean>(['lan', index, 'ipsecEnabled'], form)
 
   const onChange = (value: string) => {
     if(!value) {
@@ -80,48 +57,37 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
     onGUIChanged?.('ipsecProfile')
 
     setIpSecProfile(
-      ipsecOptions.find((profile) => profile.value === value) ??
+      ipsecProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
+
+    ipsecOptionDispatch && ipsecOptionDispatch({
+      state: IpsecOptionChangeState.OnChange,
+      index, portId, apModel, serialNumber
+    })
   }
-
-  const addIpsecOption = (value: DefaultOptionType) => {
-    if (ipsecOptions.find((profile) => profile.disabled === true)) {
-      setIpsecOptions([...ipsecOptions, { ...value, disabled: true }])
-    } else {
-      setIpsecOptions([...ipsecOptions, { ...value }])
-    }
-  }
-
-  useEffect(() => {
-    const ipsecProfileList = ipsecViewDataList.data?.data ?? []
-    if(ipsecProfileList.length > 0) {
-      if (ipsecProfileId) {
-        form.setFieldValue(ipsecProfileIdFieldName, ipsecProfileId)
-      }
-    }
-
-  }, [ipsecViewDataList])
 
   useEffect(() => {
     if(!ipsecProfileId) {
       return
     }
-    const selectedProfile = ipsecOptions
-      .find((profile) => profile.value === ipsecProfileId)
+    const selectedProfile = ipsecProfileOptionList
+      .find((profile) => profile.value === ipsecProfileId && profile.disabled === false)
     setIpSecProfile(selectedProfile ? selectedProfile: defaultIpsecOption)
 
-  }, [ipsecProfileId, ipsecOptions])
+    form.setFieldValue(ipsecProfileIdFieldName, selectedProfile ? ipsecProfileId : '')
+
+  }, [ipsecProfileId, ipsecProfileOptionList])
 
   return (
     <>
-      <Space>
+      <Space style={isIpSecToggleEnabled ? {} : { display: 'none' }}>
         <Form.Item
           label={$t({ defaultMessage: 'IPsec Profile' })}
           initialValue=''
           name={ipsecProfileIdFieldName}
           rules={[
-            { required: true }
+            { required: isIpSecToggleEnabled ? true : false }
           ]}
           children={
             <Select
@@ -133,7 +99,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
                 {
                   label: $t({ defaultMessage: 'Select...' }), value: ''
                 },
-                ...ipsecOptions
+                ...ipsecProfileOptionList || []
               ]}
               placeholder={$t({ defaultMessage: 'Select...' })}
             />}
@@ -169,7 +135,12 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
       <IpsecDrawer
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
-        callbackFn={addIpsecOption}
+        callbackFn={async (newOption) => {
+          ipsecOptionDispatch && ipsecOptionDispatch({
+            state: IpsecOptionChangeState.ReloadOptionList, newOption
+          })
+          onGUIChanged && onGUIChanged('ipsecProfileId')
+        }}
       />
     </>
   )

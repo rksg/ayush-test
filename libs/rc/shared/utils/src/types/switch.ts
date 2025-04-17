@@ -11,6 +11,7 @@ export const SWITCH_SERIAL_BASE = '(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|
 export const SWITCH_SERIAL_8100 = '(FNX|FNY|FNZ|FPA|FPB)'
 export const SWITCH_SERIAL_8200AV = '(FPG|FPF)'
 export const SWITCH_SERIAL_8100X = '(FPP|FPQ|FPR|FPS|FPT)'
+export const SWITCH_SERIAL_7550Zippy = '(FPH)'
 export const SWITCH_SERIAL_SUFFIX = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
 
 export const SwitchPortViewModelQueryFields = [
@@ -66,7 +67,10 @@ export const SwitchPortViewModelQueryFields = [
   'vsixEgressAclName',
   'vsixIngressAclName',
   'authDefaultVlan',
-  'errorDisableStatus'
+  'errorDisableStatus',
+  'stickyMacAclAllowList',
+  'stickyMacAclAllowCount',
+  'switchMacAcl'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -161,6 +165,8 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
+  portSecurity?: boolean
+  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''
@@ -540,10 +546,13 @@ export interface SwitchPortViewModel extends GridDataRow {
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction?: string
-	authTimeoutAction?: string,
-  switchPortProfileName?: string,
+	authTimeoutAction?: string
+  switchPortProfileName?: string
   switchPortProfileType?: string
   errorDisableStatus?: string
+  stickyMacAclAllowList?: string[]
+  stickyMacAclAllowCount?: number
+  switchMacAcl?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1082,6 +1091,11 @@ export enum PortProfileTabsEnum {
   SWITCH = 'switch',
 }
 
+export enum NetworkTypeTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
+
 export interface PortDisableRecoverySetting {
   bpduGuard: boolean,
   loopDetection: boolean,
@@ -1096,4 +1110,45 @@ export interface PortDisableRecoverySetting {
 export interface PortDisableRecoverySettingForm {
   recoveryInterval: number,
   recoverySetting: PortDisableRecoverySetting,
+}
+
+export interface SwitchAccessControl {
+  id: string,
+  policyName?: string,
+  description?: string,
+  accessControlPolicyName?: string,
+  layer2AclPolicyId?: string,
+  layer2AclPolicyName?: string
+}
+
+export interface MacAclRule {
+	id?: string,
+  key?: string,
+	action: string,
+	sourceAddress?: string,
+	sourceMask?: string,
+	destinationAddress?: string,
+	destinationMask?: string
+}
+
+export interface MacAclOverview {
+	id: string,
+	switchId: string,
+  switchName: string,
+  serialNumber: string,
+  model: string,
+  venueId: string,
+  venueName: string,
+  ports: string[]
+}
+
+export interface MacAcl {
+	id: string,
+	name: string,
+	appliedSwitchesInfo?: MacAclOverview[],
+	switchMacAclRules?: MacAclRule[],
+  macAclRules?: MacAclRule[],
+	switchId?: string,
+  customized?: boolean,
+  sharedWithPolicyAndProfile?: boolean
 }

@@ -707,8 +707,8 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input = await screen.findByPlaceholderText('Search Switch, Model,' +
-      ' Serial Number, MAC Address, IP Address, Ext. IP Address')
+    // eslint-disable-next-line max-len
+    const input = await screen.findByPlaceholderText(/Search Switch, Model, Serial Number, MAC Address, IP Address/i)
 
     expect(input).toBeVisible()
   })

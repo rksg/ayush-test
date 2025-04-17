@@ -9,6 +9,7 @@ import {
   RaiPermissions,
   setRaiPermissions
 } from '@acx-ui/user'
+import { AccountTier } from '@acx-ui/utils'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -220,6 +221,42 @@ describe('EventsHistory', () => {
     const collapse = screen.getByTestId('history-collapse')
     fireEvent.click(collapse)
     expect(setHistoryContentToggle).toBeCalledWith(false)
+  })
+  it('should toggle history panel with Core tier', async () => {
+    const data = {
+      connectionEvents: [],
+      incidents: [] as Incident[],
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const setHistoryContentToggle = jest.fn()
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={null}
+          historyContentToggle
+          setHistoryContentToggle={setHistoryContentToggle}
+          onPanelCallback={onPanelCallback}
+          supportHistoryCollapse={false}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    expect(screen.queryByTestId('history-collapse')).toBeNull()
   })
   it('should handle event clicks', async () => {
     const data = {

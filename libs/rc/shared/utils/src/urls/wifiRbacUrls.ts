@@ -146,6 +146,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   moveApToTargetApGroup: {
     method: 'put',
     url: '/venues/:venueId/apGroups/:apGroupId/aps/:serialNumber',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/aps/{id}',
     newApi: true
   },
   updateAp: {

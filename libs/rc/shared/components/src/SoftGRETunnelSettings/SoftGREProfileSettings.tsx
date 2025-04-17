@@ -6,6 +6,8 @@ import { useIntl }                     from 'react-intl'
 
 import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  IpsecOptionChangeDispatcher,
+  IpsecOptionChangeState,
   PolicyOperation,
   PolicyType,
   SoftGreDuplicationChangeDispatcher,
@@ -30,6 +32,7 @@ interface SoftGREProfileSettingsProps {
   serialNumber?: string
   isUnderAPNetworking: boolean
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
@@ -44,7 +47,8 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     apModel,
     serialNumber,
     isUnderAPNetworking,
-    validateIsFQDNDuplicate
+    validateIsFQDNDuplicate,
+    ipsecOptionDispatch
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -138,6 +142,10 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
                     { model: apModel, portId: portId }
                   )
                 })
+
+                ipsecOptionDispatch && ipsecOptionDispatch({
+                  state: IpsecOptionChangeState.OnChange, index, portId, apModel, serialNumber
+                })
               }}
               options={[
                 {
@@ -180,6 +188,12 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
         callbackFn={async (option: DefaultOptionType, gatewayIps: string[]) => {
+          ipsecOptionDispatch && ipsecOptionDispatch({
+            state: IpsecOptionChangeState.AddSoftGreOption,
+            newOption: option, portId,
+            apModel: (!isUnderAPNetworking ? apModel : undefined),
+            serialNumber: (isUnderAPNetworking ? serialNumber : undefined)
+          })
           optionDispatch && optionDispatch({
             state: SoftGreDuplicationChangeState.ReloadOptionList,
             index: String(index ?? 0),
@@ -189,6 +203,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               { model: apModel, portId: portId }
             )
           })
+          onGUIChanged && onGUIChanged('softGreProfileId')
         }}
       />
     </>

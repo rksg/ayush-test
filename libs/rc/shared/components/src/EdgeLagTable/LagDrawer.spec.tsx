@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
+import { Features }                                                                                                                                                                 from '@acx-ui/feature-toggle'
 import { EdgeIpModeEnum, EdgeLag, EdgeLagFixtures, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort, EdgePortConfigFixtures, EdgePortTypeEnum, VirtualIpSetting } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                                                 from '@acx-ui/store'
 import {
@@ -10,6 +11,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -51,6 +54,9 @@ jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   useGetEdgeSdLanByEdgeOrClusterId: () => ({
     edgeSdLanData: undefined
   })
+}))
+jest.mock('../useEdgeActions', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('Edge LAG table drawer', () => {
@@ -298,6 +304,138 @@ describe('Edge LAG table drawer', () => {
     expect(portCheckBox).toBeDisabled()
   })
 
+  it('should be able to change 2 physical WAN to physical WAN + LAG WAN', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+
+    const mock2WanPorts = _.cloneDeep(mockEdgePortConfig.ports)
+    mock2WanPorts[0].portType = EdgePortTypeEnum.WAN
+
+    const setVisibleSpy = jest.fn()
+    const onAddSpy = jest.fn()
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          setVisible={setVisibleSpy}
+          portList={mock2WanPorts as EdgePort[]}
+          onAdd={onAddSpy}
+          onEdit={async () => {}}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: '' }),
+      '1'
+    )
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Port2' }))
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: 'Port Type' }),
+      'WAN'
+    )
+    await userEvent.click(await screen.findByRole('radio', { name: 'Static/Manual' }))
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'IP Address' }),
+      '10.12.3.4'
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Subnet Mask' }),
+      '255.255.255.0'
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Gateway' }),
+      '10.12.3.127'
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByText('Existing Port Configuration Clean-up')
+    await userEvent.click(screen.getByRole('button', { name: 'Replace with LAG settings' }))
+    expect(onAddSpy).toHaveBeenCalledWith(
+      'test-edge',
+      {
+        corePortEnabled: false,
+        id: '1',
+        ip: '10.12.3.4',
+        gateway: '10.12.3.127',
+        ipMode: EdgeIpModeEnum.STATIC,
+        lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+        lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+        lagEnabled: true,
+        lagMembers: [{
+          portId: mock2WanPorts[1].id,
+          portEnabled: true
+        }],
+        lagType: EdgeLagTypeEnum.LACP,
+        natEnabled: false,
+        portType: EdgePortTypeEnum.WAN,
+        subnet: '255.255.255.0'
+      })
+    expect(setVisibleSpy).toHaveBeenCalledWith(false)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should be able to add LAN Lag when there is already a core port configured', async () => {
+    const setVisibleSpy = jest.fn()
+    const onAddSpy = jest.fn()
+
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          setVisible={setVisibleSpy}
+          portList={mockEdgeCorePortPortConfig as EdgePort[]}
+          onAdd={onAddSpy}
+          onEdit={async () => {}}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await screen.findByText('Add LAG')
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: '' }),
+      '2'
+    )
+    // eslint-disable-next-line max-len
+    const corePortEnabled = await screen.findByRole('checkbox', { name: /Use this LAG as Core LAG/ })
+    const port3 = screen.getByRole('checkbox', { name: 'Port3' })
+    await click(port3)
+    expect(corePortEnabled).toBeDisabled()
+
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'IP Address' }),
+      '12.12.12.11'
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Subnet Mask' }),
+      '255.255.255.0'
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByText('Existing Port Configuration Clean-up')
+    await userEvent.click(screen.getByRole('button', { name: 'Replace with LAG settings' }))
+    expect(onAddSpy).toHaveBeenCalledWith(
+      'test-edge',
+      {
+        corePortEnabled: false,
+        id: '2',
+        ip: '12.12.12.11',
+        ipMode: EdgeIpModeEnum.STATIC,
+        lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+        lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+        lagEnabled: true,
+        lagMembers: [{
+          portId: mockEdgeCorePortPortConfig[1].id,
+          portEnabled: true
+        }],
+        lagType: EdgeLagTypeEnum.LACP,
+        natEnabled: false,
+        portType: EdgePortTypeEnum.LAN,
+        subnet: '255.255.255.0'
+      })
+    expect(setVisibleSpy).toHaveBeenCalledWith(false)
+  })
 })
 
 const checkLoaded = async (): Promise<void> => {

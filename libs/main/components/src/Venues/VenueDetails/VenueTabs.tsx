@@ -9,9 +9,9 @@ import {
   useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { hasRaiPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                     from '@acx-ui/types'
+import { hasRaiPermission, hasRoles, isCoreTier, useUserProfileContext } from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -33,7 +33,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const propertyConfig = useGetPropertyConfigsQuery({ params }, {
     skip: !enableProperty || isTemplate
   })
-  const { isCustomRole } = useUserProfileContext()
+  const { isCustomRole, accountTier } = useUserProfileContext()
+  const isCore = isCoreTier(accountTier)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
@@ -93,7 +94,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane
+      { (hasRaiPermission('READ_INCIDENTS') && !isCore) && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
       /> }

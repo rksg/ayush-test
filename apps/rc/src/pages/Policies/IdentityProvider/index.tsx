@@ -2,8 +2,10 @@
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
+import { Button, PageHeader, Tabs }                                               from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                 from '@acx-ui/feature-toggle'
+import { IDENTITY_PROVIDER_MAX_COUNT, SAML_MAX_COUNT }                            from '@acx-ui/rc/components'
+import { useGetIdentityProviderListQuery, useGetSamlIdpProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   filterByAccessForServicePolicyMutation,
@@ -11,10 +13,12 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyRoutePath,
-  IdentityProviderTabType
+  IdentityProviderTabType,
+  getPolicyAllowedOperation,
+  TableResult
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { ScopeKeys }                                    from '@acx-ui/types'
+import { Params, Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RbacOpsIds, ScopeKeys, UseQuery }                      from '@acx-ui/types'
 
 import IdentityProviderTable from './IdentityProviderTable/IdentityProviderTable'
 import SamlIdpTable          from './SamlIdpTable'
@@ -65,14 +69,51 @@ const IdentityProvider = (props: IdentityProviderProps) => {
       getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)
   }
 
+  const rbacOpsIdMapping: Record<IdentityProviderTabType, RbacOpsIds | undefined> = {
+    [IdentityProviderTabType.SAML]:
+      getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.CREATE),
+    [IdentityProviderTabType.Hotspot20]:
+      getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)
+  }
+
+  const tableQueryMapping: Record<IdentityProviderTabType, UseQuery<
+    TableResult<unknown, unknown>,
+    {
+      params?: Params<string>,
+      payload?: unknown,
+      customHeaders?: Record<string,unknown>
+      enableRbac?: boolean
+    }
+  >> = {
+    [IdentityProviderTabType.SAML]: useGetSamlIdpProfileViewDataListQuery,
+    [IdentityProviderTabType.Hotspot20]: useGetIdentityProviderListQuery
+  }
+
+  // Profiles max count
+  const maxProfilesMapping: Record<IdentityProviderTabType, number> = {
+    [IdentityProviderTabType.SAML]: SAML_MAX_COUNT,
+    [IdentityProviderTabType.Hotspot20]: IDENTITY_PROVIDER_MAX_COUNT
+  }
+
+  // query the count of profiles
+  const tableQuery = tableQueryMapping[currentTabType](
+    {
+      payload: {
+        fields: ['id']
+      }
+    }
+  )
+
   const onTabChange = (tab: string) => {
     navigate(tabsPathMapping[tab as IdentityProviderTabType])
   }
 
+
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Idnetity Provider' })}
+        title={$t({ defaultMessage: 'Identity Provider' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
@@ -84,8 +125,14 @@ const IdentityProvider = (props: IdentityProviderProps) => {
           <TenantLink
             to={buttonLinkMapping[currentTabType]}
             scopeKey={scopeKeyMapping[currentTabType]}
+            rbacOpsIds={rbacOpsIdMapping[currentTabType]}
           >
-            <Button key='configure' type='primary'>{buttonTextMapping[currentTabType]}</Button>
+            <Button
+              key='configure'
+              type='primary'
+              children={buttonTextMapping[currentTabType]}
+              disabled={(tableQuery.data?.totalCount ?? 0) >= maxProfilesMapping[currentTabType]}
+            />
           </TenantLink>
         ])}
       />

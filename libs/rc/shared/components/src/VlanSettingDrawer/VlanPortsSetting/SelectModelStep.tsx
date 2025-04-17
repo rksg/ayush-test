@@ -4,10 +4,10 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip }                                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, SwitchModelPortData, isRodanAvSubModel, isBabyRodanXSubModel } from '@acx-ui/rc/utils'
-import { getIntl }                                                                          from '@acx-ui/utils'
+import { Card, Tooltip }                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, SwitchModelPortData, isRodanAvSubModel, isBabyRodanXSubModel, is7550ZippySubModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                               from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -51,6 +51,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({
@@ -219,6 +220,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
       }
       if (!isSupport8100X && index === 'ICX8100') {
         return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
+      }
+      if (!isSupport7550Zippy && index === 'ICX7550') {
+        return modelsData.filter(model => !is7550ZippySubModel(model.value))
       }
       return modelsData
     }

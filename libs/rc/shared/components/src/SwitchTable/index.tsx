@@ -144,6 +144,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -335,7 +336,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
                 {
                   isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
-                  isSupport8100X: isSupport8100X
+                  isSupport8100X: isSupport8100X,
+                  isSupport7550Zippy: isSupport7550Zippy
                 },
                 PasswordInput)
             }</Tooltip>
@@ -344,14 +346,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }
     },
     {
-      key: 'activeSerial',
+      key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
-      dataIndex: 'activeSerial',
+      dataIndex: 'serialNumber',
       sorter: true,
       show: !!showAllColumns,
       searchable: searchable,
-      render: (_, { activeSerial }, __, highlightFn) => {
-        return searchable ? highlightFn(activeSerial) : activeSerial
+      render: (_, { serialNumber }, __, highlightFn) => {
+        return searchable ? highlightFn(serialNumber) : serialNumber
       }
     }, {
       key: 'switchMac',

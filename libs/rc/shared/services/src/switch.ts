@@ -68,7 +68,11 @@ import {
   MacOuis,
   SwitchPortProfilesAppliedTargets,
   PortProfilesForMultiSwitches,
-  PortDisableRecoverySetting
+  PortDisableRecoverySetting,
+  MacAcl,
+  MacAclOverview,
+  MacAclRule,
+  SwitchAccessControl
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1977,6 +1981,201 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    getLayer2Acls: build.query<TableResult<MacAcl>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getLayer2Acls, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+    }),
+    getLayer2AclById: build.query<MacAcl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getLayer2AclById, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    getLayer2AclRules: build.query<TableResult<MacAclRule>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getLayer2AclRules, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getLayer2AclOverview: build.query<TableResult<MacAclOverview>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getLayer2AclOverview, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    addLayer2Acl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addLayer2Acl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+    }),
+    updateLayer2Acl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateLayer2Acl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+    }),
+    deleteLayer2Acl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteLayer2Acl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+    }),
+    accessControlsCount: build.query<MacAcl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getAccessControlCount, params, customHeaders.v1)
+        return { ...req }
+      }
+    }),
+    getSwitchMacAcls: build.query<TableResult<MacAcl>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchMacAcls, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    addSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    updateSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    deleteSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    getSwitchStickyMacAcls: build.query<TableResult<{ macAddress: string }>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchStickyMacAcls, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse: (response: TableResult<string>) => {
+        // Transform the string array into objects with macAddress property
+        return {
+          ...response,
+          data: response.data.map(mac => ({ macAddress: mac }))
+        }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'STICKYLIST' }]
+    }),
+    getSwitchAccessControlSetById: build.query<SwitchAccessControl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchAccessControlSetById, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchAccessControlSet: build.query<TableResult<SwitchAccessControl>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchAccessControlSet, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
+    addSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchAccessControlSet, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
+    updateSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateSwitchAccessControlSet, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
+    deleteSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchAccessControlSet, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
     })
   })
 })
@@ -2265,5 +2464,26 @@ export const {
   useLazyPortProfileOptionsForMultiSwitchesQuery,
   usePortProfilesListBySwitchIdQuery,
   usePortDisableRecoverySettingQuery,
-  useUpdatePortDisableRecoverySettingMutation
+  useUpdatePortDisableRecoverySettingMutation,
+  useGetLayer2AclByIdQuery,
+  useGetLayer2AclsQuery,
+  useLazyGetLayer2AclsQuery,
+  useGetLayer2AclRulesQuery,
+  useAccessControlsCountQuery,
+  useAddLayer2AclMutation,
+  useUpdateLayer2AclMutation,
+  useDeleteLayer2AclMutation,
+  useGetLayer2AclOverviewQuery,
+  useGetSwitchMacAclsQuery,
+  useLazyGetSwitchMacAclsQuery,
+  useAddSwitchMacAclMutation,
+  useUpdateSwitchMacAclMutation,
+  useDeleteSwitchMacAclMutation,
+  useGetSwitchStickyMacAclsQuery,
+  useGetSwitchAccessControlSetQuery,
+  useLazyGetSwitchAccessControlSetQuery,
+  useGetSwitchAccessControlSetByIdQuery,
+  useAddSwitchAccessControlSetMutation,
+  useUpdateSwitchAccessControlSetMutation,
+  useDeleteSwitchAccessControlSetMutation
 } = switchApi

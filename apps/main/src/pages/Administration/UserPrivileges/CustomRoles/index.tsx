@@ -24,6 +24,8 @@ import { useTenantLink }  from '@acx-ui/react-router-dom'
 import { RolesEnum }      from '@acx-ui/types'
 import {
   filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
   roleStringMap,
   useUserProfileContext
 } from '@acx-ui/user'
@@ -41,6 +43,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
   const navigate = useNavigate()
   const [customRoleData, setCustomRoleData] = useState([] as CustomRole[])
   const { data: userProfileData } = useUserProfileContext()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const { data: roleList, isLoading, isFetching } = useGetCustomRolesQuery({ params })
   const [deleteCustomRole, { isLoading: isDeleteRoleUpdating }] = useDeleteCustomRoleMutation()
@@ -123,12 +126,19 @@ const CustomRoles = (props: CustomRolesTableProps) => {
   ]
 
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
+  const hasAddRolePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.addCustomRole)])
+    : isPrimeAdminUser
+
+  if (hasAddRolePermission && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Role' }),
       onClick: handleClickAdd
     })
   }
+
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : isPrimeAdminUser
 
   return (
     <Loader states={[
@@ -140,10 +150,10 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         columns={columns}
         dataSource={customRoleData}
         rowKey='id'
-        rowActions={isPrimeAdminUser
+        rowActions={hasRowPermissions
           ? filterByAccess(rowActions)
           : undefined}
-        rowSelection={isPrimeAdminUser ? {
+        rowSelection={hasRowPermissions ? {
           type: 'radio'//,
           // onSelect: handleRowSelectChange
         } : undefined}

@@ -45,7 +45,7 @@ export function IdentitySettingForm ({ modalMode } : { modalMode?: boolean }) {
 
   return (
     <GridRow>
-      <GridCol col={{ span: modalMode ? 8 : 6 }}>
+      <GridCol col={{ span: modalMode ? 22: 6 }}>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
         </Form.Item>
@@ -79,6 +79,7 @@ export function IdentitySettingForm ({ modalMode } : { modalMode?: boolean }) {
             { validator: (_, value) => phoneRegExp(value) }
           ]}
           children={<PhoneInput
+            key={id}
             name={'phoneNumber'}
             callback={(value: string) => {
               form.setFieldValue('phoneNumber', value)

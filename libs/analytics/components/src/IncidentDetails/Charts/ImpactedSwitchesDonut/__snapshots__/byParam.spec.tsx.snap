@@ -61,7 +61,7 @@ exports[`ImpactedSwitchesByParamDonut (firmware) should render 1`] = `
         xml:space="preserve"
         y="8"
       >
-        Switch firmwares
+        Switch Firmwares
       </text>
       <path
         d="M-0.5 20l1 0l0 20l-1 0Z"
@@ -144,7 +144,7 @@ exports[`ImpactedSwitchesByParamDonut (model) should render 1`] = `
         xml:space="preserve"
         y="8"
       >
-        Switch models
+        Switch Models
       </text>
       <path
         d="M-0.5 20l1 0l0 20l-1 0Z"

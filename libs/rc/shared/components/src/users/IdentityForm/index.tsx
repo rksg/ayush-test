@@ -15,10 +15,11 @@ interface IdentityFormProps {
   editMode?: boolean,
   modalMode?: boolean,
   callback?: (identityId?: string) => void
+  selectedPersonaGroupId?: string
 }
 
 export function IdentityForm (props: IdentityFormProps) {
-  const { editMode, modalMode, callback } = props
+  const { editMode, modalMode, callback, selectedPersonaGroupId } = props
   const { $t } = useIntl()
   const [ form ] = Form.useForm<Persona>()
   const navigate = useNavigate()
@@ -38,6 +39,12 @@ export function IdentityForm (props: IdentityFormProps) {
     }
   }, [editMode, dataFromServer])
 
+  useEffect(() => {
+    if(modalMode) {
+      form.setFieldValue('groupId', selectedPersonaGroupId)
+    }
+  }, [selectedPersonaGroupId])
+
   const handleSubmit = async () => {
     try {
       await form.validateFields()
@@ -48,7 +55,11 @@ export function IdentityForm (props: IdentityFormProps) {
       if (modalMode) {
         callback?.(result?.id)
       } else {
-        navigate(previousPath.concat(personaGroupId ? `/${personaGroupId}` : ''), { replace: true })
+        editMode
+          ? navigate(-1)
+          : navigate(
+            previousPath.concat(personaGroupId ? `/${personaGroupId}` : ''),
+            { replace: true })
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -109,7 +120,7 @@ export function IdentityForm (props: IdentityFormProps) {
           editMode={editMode}
           form={form}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-          onCancel={() => modalMode ? callback?.() : navigate(previousPath)}
+          onCancel={() => modalMode ? callback?.() : navigate(-1)}
           onFinish={handleSubmit}
         >
           <StepsForm.StepForm>

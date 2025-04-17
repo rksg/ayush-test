@@ -76,7 +76,7 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: [],
+  scopes?: string[],
   preferredNotifications?: {
     emailPreferences: boolean,
     smsPreferences: boolean
@@ -178,10 +178,6 @@ export enum raiPermissionsList {
   'READ_DASHBOARD',
   'READ_INCIDENTS',
   'WRITE_INCIDENTS',
-  'READ_AI_DRIVEN_RRM',
-  'WRITE_AI_DRIVEN_RRM',
-  'READ_AI_OPERATIONS',
-  'WRITE_AI_OPERATIONS',
   'READ_HEALTH',
   'WRITE_HEALTH',
   'READ_CLIENT_TROUBLESHOOTING',

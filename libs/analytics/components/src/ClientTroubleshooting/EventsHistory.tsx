@@ -5,11 +5,11 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { get }                         from '@acx-ui/config'
-import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { ArrowCollapse }               from '@acx-ui/icons'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
-import { hasAccess, hasRaiPermission } from '@acx-ui/user'
+import { get }                                                     from '@acx-ui/config'
+import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
+import { ArrowCollapse }                                           from '@acx-ui/icons'
+import { TenantLink }                                              from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAccess, hasRaiPermission, isCoreTier } from '@acx-ui/user'
 
 import {
   btmEventCategories,
@@ -27,6 +27,7 @@ import { Filters } from '.'
 
 type HistoryContentProps = {
   historyContentToggle : boolean,
+  supportHistoryCollapse? : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
   filters: Filters | null,
@@ -111,6 +112,8 @@ function WrappedItem (
     selected: boolean | undefined }
 ) {
   const ref = createRef<HTMLDivElement>()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   useEffect(() => {
     if (selected && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -130,7 +133,7 @@ function WrappedItem (
       event={(item as FormattedEvent).event}
       onVisibleChange={onClick}
       visible={selected}
-      placement='leftBottom'>
+      placement={isCore ? 'bottomLeft' : 'leftBottom'}>
       <UI.HistoryItemWrapper $selected={selected} ref={ref}>{Item}</UI.HistoryItemWrapper>
     </ConnectionEventPopover>
 }
@@ -138,7 +141,8 @@ function WrappedItem (
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
-  const { setHistoryContentToggle, historyContentToggle, data, filters, onPanelCallback } = props
+  const { setHistoryContentToggle, historyContentToggle, supportHistoryCollapse = true,
+    data, filters, onPanelCallback } = props
   const { isBtmEventsOn } = useClientTroubleshootingConfig()
 
   const histData = transformData(data!, filters!, intl, isBtmEventsOn)
@@ -148,14 +152,14 @@ export function History (props : HistoryContentProps) {
         <UI.HistoryContentTitle>
           {$t({ defaultMessage: 'History' })}
         </UI.HistoryContentTitle>
-        <UI.HistoryIcon>
+        {supportHistoryCollapse && <UI.HistoryIcon>
           <ArrowCollapse
             data-testid='history-collapse'
             onClick={() => {
               setHistoryContentToggle(!historyContentToggle)
             }}
           />
-        </UI.HistoryIcon>
+        </UI.HistoryIcon>}
       </UI.HistoryHeader>
       <AutoSizer>
         {({ height, width }) => (

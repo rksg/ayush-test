@@ -289,6 +289,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addCustomRole: {
     method: 'post',
     url: '/roleAuthentications/customRoles',
+    opsApi: 'POST:/roleAuthentications/customRoles',
     newApi: true
   },
   updateCustomRole: {
@@ -326,16 +327,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addPrivilegeGroup: {
     method: 'post',
     url: '/roleAuthentications/privilegeGroups',
+    opsApi: 'POST:/roleAuthentications/privilegeGroups',
     newApi: true
   },
   updatePrivilegeGroup: {
     method: 'put',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'PUT:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   deletePrivilegeGroup: {
     method: 'delete',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'DELETE:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   getNotificationSms: {
@@ -393,16 +397,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addWebhook: {
     method: 'post',
     url: '/webhooks',
+    opsApi: 'POST:/webhooks',
     newApi: true
   },
   updateWebhook: {
     method: 'put',
     url: '/webhooks/:webhookId',
+    opsApi: 'PUT:/webhooks/{id}',
     newApi: true
   },
   deleteWebhook: {
     method: 'delete',
     url: '/webhooks/:webhookId',
+    opsApi: 'DELETE:/webhooks/{id}',
     newApi: true
   },
   webhookSendSampleEvent: {

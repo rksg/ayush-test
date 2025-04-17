@@ -181,7 +181,8 @@ export const GuestsTable = () => {
           GuestNetworkTypeEnum.GuestPass,
           GuestNetworkTypeEnum.HostApproval,
           GuestNetworkTypeEnum.SelfSignIn,
-          GuestNetworkTypeEnum.Directory
+          GuestNetworkTypeEnum.Directory,
+          GuestNetworkTypeEnum.SAML
         ].includes(network.captiveType ?? GuestNetworkTypeEnum.GuestPass)
       })
       setGuestNetworkList(networks)

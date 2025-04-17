@@ -5,6 +5,7 @@ import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { RolesEnum }                         from '@acx-ui/types'
 import { AuthRoute, hasRoles }               from '@acx-ui/user'
+import { AccountTier }                       from '@acx-ui/utils'
 
 import Administration                                                            from './pages/Administration'
 import MigrationForm                                                             from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
@@ -12,7 +13,7 @@ import MigrationSummary                                                         
 import { AddNewCustomRole }                                                      from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
 import { AddPrivilegeGroup }                                                     from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                                                    from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
-import AICanvas                                                                  from './pages/AICanvas'
+import AICanvasQ1                                                                from './pages/AICanvas/archived/AICanvasQ1'
 import AnalyticsBase                                                             from './pages/Analytics'
 import Dashboard                                                                 from './pages/Dashboard'
 import DevicesBase                                                               from './pages/Devices'
@@ -39,7 +40,6 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
-
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
@@ -61,11 +61,16 @@ function AllRoutes () {
           <Route path='*' element={<PageNotFound />} />
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
-          <Route path='canvas' element={<AICanvas />} />
+          <Route path='canvas' element={<AICanvasQ1 />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
-          <Route path='analytics/*' element={<AnalyticsBase />}>
-            <Route path='*' element={<AnalyticsRoutes />} />
+          <Route path='analytics/*'
+            element={
+              <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+                <AnalyticsBase />
+              </AuthRoute>}>
+            <Route path='*'
+              element={<AnalyticsRoutes />} />
           </Route>
           <Route path='timeline/*' element={<TimelineBase />}>
             <Route path='*' element={<RcRoutes />} />
@@ -73,7 +78,11 @@ function AllRoutes () {
           <Route path='reports/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
-          <Route path='dataStudio/*' element={<ReportsBase />}>
+          <Route path='dataStudio/*'
+            element={
+              <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+                <ReportsBase />
+              </AuthRoute>}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
           <Route path='dataConnector/*' element={<ReportsBase />}>

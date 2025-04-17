@@ -1,12 +1,16 @@
+import {  Divider }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
-import { Features }                                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
-import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
+import { PageHeader, GridRow, GridCol, RadioCard, Subtitle } from '@acx-ui/components'
+import { Features }                                          from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
+import { useNavigate, useTenantLink }                        from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 
 export function ReportList () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
@@ -27,11 +31,11 @@ export function ReportList () {
       description: $t({ defaultMessage: 'Top access points by airtime utilization, by radio band and trend' }),
       path: 'airtime'
     },
-    {
+    ...(!isCore ? [{
       title: $t({ defaultMessage: 'Applications' }),
       description: $t({ defaultMessage: 'Top applications and traffic distribution by clients and trend' }),
       path: 'applications'
-    },
+    }] : []),
     {
       title: $t({ defaultMessage: 'Switches' }),
       description: $t({ defaultMessage: 'Details of switch inventory including models and software versions' }),
@@ -64,6 +68,28 @@ export function ReportList () {
       disabled: !isEdgeAvReportReady
     }
   ]
+  const adhocReports = [
+    {
+      title: $t({ defaultMessage: 'Wireless : RSS and Traffic by Access Points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and traffic by access points' }),
+      path: 'rssTraffic'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : RSS and Session by Access Points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and session by access points' }),
+      path: 'rssSession'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : Airtime by Access Points' }),
+      description: $t({ defaultMessage: 'Details of airtime by access points' }),
+      path: 'wirelessAirtime'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
+      description: $t({ defaultMessage: 'Details of traffic by applications and access points' }),
+      path: 'trafficApplications'
+    }
+  ]
   /* eslint-enable */
 
   const navigate = useNavigate()
@@ -73,8 +99,9 @@ export function ReportList () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Reports' })}
-        breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+        title={isCore ? $t({ defaultMessage: 'Business Insights' }) :
+          $t({ defaultMessage: 'Reports' })}
+        breadcrumb={isCore ? [] : [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
         {reports.map(({ title, description, path, disabled }) => (
@@ -93,6 +120,26 @@ export function ReportList () {
               />
             </GridCol>
           )
+        ))
+        }
+      </GridRow>
+      <Divider style={{ margin: '24px 0px 20px 0px' }} />
+      <Subtitle level={2}>{$t({ defaultMessage: 'Adhoc Reports' })}</Subtitle>
+      <GridRow style={{ marginTop: '12px' }}>
+        {adhocReports.map(({ title, description, path }) => (
+          <GridCol key={path} col={{ span: 6 }}>
+            <RadioCard
+              type='button'
+              buttonText={viewText}
+              title={title}
+              description={description}
+              value={path}
+              onClick={() => navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/${path}`
+              })}
+            />
+          </GridCol>
         ))
         }
       </GridRow>

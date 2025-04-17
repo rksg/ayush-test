@@ -30,7 +30,8 @@ const drawerWidthMap = {
   [EdgeServiceTypeEnum.SD_LAN]: 500,
   [EdgeServiceTypeEnum.SD_LAN_P2]: 500,
   [EdgeServiceTypeEnum.MV_SD_LAN]: 500,
-  [EdgeServiceTypeEnum.MDNS_PROXY]: 500
+  [EdgeServiceTypeEnum.MDNS_PROXY]: 500,
+  [EdgeServiceTypeEnum.TUNNEL_PROFILE]: 500
 }
 
 const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {

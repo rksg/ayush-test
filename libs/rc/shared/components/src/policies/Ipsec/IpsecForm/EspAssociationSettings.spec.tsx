@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Form }                      from 'antd'
-import { IntlProvider }              from 'react-intl'
+import { render, screen, fireEvent, renderHook } from '@testing-library/react'
+import { Form }                                  from 'antd'
+import { IntlProvider }                          from 'react-intl'
 
 import { IpSecEncryptionAlgorithmEnum, IpSecProposalTypeEnum } from '@acx-ui/rc/utils'
 
@@ -10,13 +10,15 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
+  const Select = ({ children, onChange, ...otherProps }) => {
+    delete otherProps.dropdownClassName
+    return (<select
       role='combobox'
       onChange={e => onChange(e.target.value)}
       {...otherProps}>
       {children}
-    </select>
+    </select>)
+  }
 
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
@@ -31,13 +33,16 @@ describe('EspAssociationSettings', () => {
       espProposalType: IpSecProposalTypeEnum.DEFAULT
     }
   }) => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldsValue(initialValues)
+      return form
+    })
     return render(
       <IntlProvider locale='en'>
-        <Form initialValues={initialValues}>
-          <EspAssociationSettings />
-        </Form>
-      </IntlProvider>
-    )
+        <Form initialValues={initialValues} form={formRef.current}>
+          <EspAssociationSettings loadEspSettings setLoadEspSettings={jest.fn()}/>
+        </Form></IntlProvider>)
   }
 
   it('displays Default form fields', () => {

@@ -12,12 +12,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData, EdgeTableCompatibilityWarningTooltip } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  EdgeServiceStatusLight,
+  CountAndNamesTooltip,
+  useEdgePinsCompatibilityData,
+  EdgeTableCompatibilityWarningTooltip,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
   useGetEdgePinViewDataListQuery,
+  useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery,
   useSwitchListQuery,
   useVenuesListQuery,
@@ -25,6 +32,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink,
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
@@ -32,6 +40,8 @@ import {
   getServiceRoutePath,
   IncompatibilityFeatures,
   PersonalIdentityNetworksViewData,
+  PolicyOperation,
+  PolicyType,
   ServiceOperation,
   ServiceType,
   useTableQuery,
@@ -78,6 +88,12 @@ const venueOptionsDefaultPayload = {
   sortField: 'name',
   sortOrder: 'ASC'
 }
+const tunnelProfileOptionsDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 const PersonalIdentityNetworkTableEnhanced = () => {
   const { $t } = useIntl()
@@ -88,6 +104,7 @@ const PersonalIdentityNetworkTableEnhanced = () => {
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [ deleteEdgePin, { isLoading: isPinDeleting } ] = useDeleteEdgePinMutation()
 
@@ -114,6 +131,7 @@ const PersonalIdentityNetworkTableEnhanced = () => {
   const { clusterOptions } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
+      skip: isL2GreEnabled,
       selectFromResult: ({ data }) => {
         return {
           clusterOptions: data?.data.map(item => ({ value: item.name, key: item.clusterId })) ?? []
@@ -147,6 +165,16 @@ const PersonalIdentityNetworkTableEnhanced = () => {
       })
     })
 
+  const { tunnelProfileOptions } = useGetTunnelProfileViewDataListQuery(
+    { payload: tunnelProfileOptionsDefaultPayload },
+    {
+      skip: !isL2GreEnabled,
+      selectFromResult: ({ data }) => ({
+        tunnelProfileOptions: data?.data.map(item => ({ key: item.id, value: item.name })) ?? []
+      })
+    }
+  )
+
   const columns: TableProps<PersonalIdentityNetworksViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -176,6 +204,28 @@ const PersonalIdentityNetworkTableEnhanced = () => {
         </Space>
       }
     },
+    ...(
+      isL2GreEnabled ? [
+        {
+          title: $t({ defaultMessage: 'Tunnel Profile' }),
+          key: 'vxlanTunnelProfileId',
+          dataIndex: 'vxlanTunnelProfileId',
+          sorter: true,
+          filterable: tunnelProfileOptions,
+          filterKey: 'vxlanTunnelProfileId',
+          render: (_: unknown, row: PersonalIdentityNetworksViewData) => {
+            const tunnelProfileInfo = find(tunnelProfileOptions, { key: row.vxlanTunnelProfileId })
+            return <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.TUNNEL_PROFILE,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.vxlanTunnelProfileId!
+            })}>
+              {tunnelProfileInfo?.value}
+            </TenantLink>
+          }
+        }
+      ]: []
+    ),
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
@@ -188,23 +238,27 @@ const PersonalIdentityNetworkTableEnhanced = () => {
         return <VenueLink venueId={venueInfo?.key} name={venueInfo?.value} />
       }
     },
-    {
-      title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edge',
-      dataIndex: 'edgeClusterInfo',
-      sorter: true,
-      filterable: clusterOptions,
-      filterKey: 'edgeClusterInfo.edgeClusterId',
-      render: (_, row) => {
-        const clusterInfo = row.edgeClusterInfo
-        return (
-          // eslint-disable-next-line max-len
-          <TenantLink to={`/devices/edge/cluster/${clusterInfo?.edgeClusterId}/edit/cluster-details`}>
-            {clusterInfo?.edgeClusterName}
-          </TenantLink>
-        )
-      }
-    },
+    ...(
+      !isL2GreEnabled ? [
+        {
+          title: $t({ defaultMessage: 'Cluster' }),
+          key: 'edge',
+          dataIndex: 'edgeClusterInfo',
+          sorter: true,
+          filterable: clusterOptions,
+          filterKey: 'edgeClusterInfo.edgeClusterId',
+          render: (_: unknown, row: PersonalIdentityNetworksViewData) => {
+            const clusterInfo = row.edgeClusterInfo
+            return (
+            // eslint-disable-next-line max-len
+              <TenantLink to={`/devices/edge/cluster/${clusterInfo?.edgeClusterId}/edit/cluster-details`}>
+                {clusterInfo?.edgeClusterName}
+              </TenantLink>
+            )
+          }
+        }
+      ]: []
+    ),
     {
       title: $t({ defaultMessage: 'Dist. Switches' }),
       key: 'distributionSwitchInfos',

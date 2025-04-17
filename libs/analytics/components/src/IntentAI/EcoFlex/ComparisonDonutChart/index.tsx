@@ -87,7 +87,9 @@ const GraphSubTitle = () => {
     </div>
     <div style={{ width: '24px' }} />
     <div>
-      <UI.GraphSubTitle>{`(${$t({ defaultMessage: 'EcoFlex projection' })})`}</UI.GraphSubTitle>
+      <UI.GraphSubTitle>{`(${$t({
+        defaultMessage: 'Energy Saving projection'
+      })})`}</UI.GraphSubTitle>
     </div>
     <div/>
   </UI.GraphSubTitleWrapper>

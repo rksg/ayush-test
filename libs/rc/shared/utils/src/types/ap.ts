@@ -1047,7 +1047,9 @@ export enum SoftGreDuplicationChangeState {
   TurnOffLanPort,
   ResetToDefault,
   FindTheOnlyVoter,
-  ReloadOptionList
+  ReloadOptionList,
+  BoundIpSec,
+  UnboundIpSec
 }
 
 export interface SoftGreDuplicationChangeDispatcher {
@@ -1109,4 +1111,23 @@ export interface VenueLanPortSettings {
 export interface APLanPortSettings extends VenueLanPortSettings {
   overwriteUntagId?: number
   overwriteVlanMembers?: string
+}
+
+export enum IpsecOptionChangeState {
+  Init,
+  OnChange,
+  ReloadOptionList,
+  AddSoftGreOption,
+  ResetToDefault,
+  OnSave
+}
+
+export interface IpsecOptionChangeDispatcher {
+  state: IpsecOptionChangeState
+  index?: number,
+  portId?: string,
+  apModel?: string
+  serialNumber?: string
+  newOption?: DefaultOptionType,
+  voters?: Voter[]
 }

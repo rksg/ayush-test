@@ -11,8 +11,9 @@ export interface SamlIdpProfileViewData {
 export interface SamlIdpProfile {
     id: string
     name: string
-    metadata: string,
+    metadata: string
     metadataUrl: string
+    attributeMappings?: AttributeMapping[]
 }
 
 export interface SamlIdpProfileFormType extends SamlIdpProfile {
@@ -22,4 +23,13 @@ export interface SamlIdpProfileFormType extends SamlIdpProfile {
     signingCertificateId?: string
     metadataContent?: string // store The content converted from base64 format
     wifiNetworkIds: string[]
+    updatedDate?: string
+    identityName?: string
+    identityEmail?: string
+    identityPhone?: string
+}
+
+export interface AttributeMapping {
+    name: string
+    mappedByName: string
 }

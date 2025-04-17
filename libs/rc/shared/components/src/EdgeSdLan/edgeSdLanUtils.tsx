@@ -1,10 +1,10 @@
 import { groupBy, isNil, transform } from 'lodash'
 
-import { showActionModal }                                                                                                                 from '@acx-ui/components'
-import { Features }                                                                                                                        from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                      from '@acx-ui/react-router-dom'
-import { getIntl }                                                                                                                         from '@acx-ui/utils'
+import { showActionModal }                                                                                                                                 from '@acx-ui/components'
+import { Features }                                                                                                                                        from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, EdgeSdLanViewDataP2, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                      from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -65,14 +65,21 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
   return payload
 }
 
-export const isGuestTunnelUtilized = (
+export const isDmzTunnelUtilized = (
   venueSdLanInfo?: EdgeMvSdLanViewData,
   networkId?: string,
   networkVenueId?: string
 ): boolean => {
-  return !!venueSdLanInfo?.isGuestTunnelEnabled
+
+  const isDmzTunnelUtilized =
+  (!!venueSdLanInfo?.isGuestTunnelEnabled
         && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
-          wlan.networkId === networkId && wlan.venueId === networkVenueId))
+          wlan.networkId === networkId && wlan.venueId === networkVenueId)))
+  || Boolean(!!venueSdLanInfo?.tunneledWlans?.find(wlan =>
+    wlan.networkId === networkId
+    && wlan.venueId === networkVenueId
+    && wlan?.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE))
+  return isDmzTunnelUtilized
         && !!networkId && !!networkVenueId
 }
 
@@ -93,7 +100,7 @@ export const isSdLanGuestUtilizedOnDiffVenue = (
 }
 
 // eslint-disable-next-line max-len
-export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
+export const transformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
   const resultMap:Record<string, EdgeMvSdLanViewData> = {}
 
   sdLans?.forEach(sdlan => {

@@ -25,11 +25,13 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  draggable?: boolean
   // sectionRef?: React.MutableRefObject<null>
 }
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
+    canDrag: props.draggable,
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -48,7 +50,7 @@ const DraggableCard = (props: CardProps) => {
   }, [preview])
 
   return (
-    <div>
+    <div style={{ cursor: props.draggable ? 'grab' : 'default' }}>
       <Card
         {...props}
         drag={drag}
@@ -77,6 +79,8 @@ function Card (props: CardProps) {
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
   const [visible, setVisible] = useState(false)
+
+  const readOnly = !props.draggable
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -116,20 +120,16 @@ function Card (props: CardProps) {
 
   const increaseCard = () => {
     const nextSizeIndex = card.currentSizeIndex + 1
-    if(nextSizeIndex >= card.sizes.length) {
-      return
+    if(nextSizeIndex < card.sizes.length) {
+      changeCardsLayout(nextSizeIndex)
     }
-
-    changeCardsLayout(nextSizeIndex)
   }
 
   const decreaseCard = () => {
     const nextSizeIndex = card.currentSizeIndex - 1
-    if(nextSizeIndex < 0) {
-      return
+    if(nextSizeIndex >= 0) {
+      changeCardsLayout(nextSizeIndex)
     }
-
-    changeCardsLayout(nextSizeIndex)
   }
 
   const widgetRef = useRef(null)
@@ -205,7 +205,7 @@ function Card (props: CardProps) {
               transform: `translate(${x}px, ${y}px)`
             }}
           >
-            <div className='card-actions'>
+            { !readOnly && <div className='card-actions'>
               <div
                 data-testid='increaseCard'
                 className={`icon ${
@@ -243,7 +243,7 @@ function Card (props: CardProps) {
               >
                 <DeleteOutlined />
               </div>
-            </div>
+            </div>}
             {
               card.chartType &&
               <WidgetChart

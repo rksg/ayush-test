@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
+import { isDmzTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
@@ -31,7 +31,6 @@ interface SdLanRadioOptionProps {
   venueSdLan: EdgeMvSdLanViewData | undefined
   networkVlanPool?: VLANPoolViewModelType
   disabledInfo?: {
-    noChangePermission: boolean
     isDisabled: boolean
     tooltip: string | undefined
   }
@@ -73,9 +72,9 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
 
   useEffect(() => {
     // eslint-disable-next-line max-len
-    const isGuestTunnelUtilizedInitState = isGuestTunnelUtilized(venueSdLan, networkId, networkVenueId)
+    const isDmzTunnelUtilizedInitState = isDmzTunnelUtilized(venueSdLan, networkId, networkVenueId)
 
-    form.setFieldValue(['sdLan', 'isGuestTunnelEnabled'], isGuestTunnelUtilizedInitState)
+    form.setFieldValue(['sdLan', 'isGuestTunnelEnabled'], isDmzTunnelUtilizedInitState)
   }, [venueSdLan, networkId, networkVenueId])
 
   useEffect(() => {
@@ -121,7 +120,7 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
       <Tooltip title={disabledInfo?.tooltip}>
         <EdgeSdLanRadioButton
           // eslint-disable-next-line max-len
-          disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission || !isVenueSdLanExist}
+          disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
           sdlanName={sdlanName}
         />
       </Tooltip>

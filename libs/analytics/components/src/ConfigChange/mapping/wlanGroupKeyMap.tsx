@@ -12,5 +12,11 @@ export const wlanGroupKeyMap = [
   { id: 7, value: 'initialState.CcmWlanGroup.member.wlan_id', text: 'NA', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 8, value: 'initialState.CcmWlanGroup.member.override_vlan_id', text: defineMessage({ defaultMessage: 'VLAN ID' }), textAlto: 'TBD', enumType: '', incidents: { 'dhcp-failure': 1, 'ttc': 0.5, 'i-apserv-high-num-reboots': 1, 'i-apserv-continuous-reboots': 1, 'i-switch-vlan-mismatch': 1 }, kpis: { dhcp: 1 } },
   { id: 9, value: 'initialState.CcmWlanGroup.member.override_vlan_pooling_id', text: 'NA', textAlto: 'TBD', enumType: '', incidents: { 'dhcp-failure': 0.5, 'i-apserv-high-num-reboots': 1, 'i-apserv-continuous-reboots': 1, 'i-switch-vlan-mismatch': 1 }, kpis: {} },
-  { id: 10, value: 'initialState.CcmWlanGroup.member.override_nas_id', text: defineMessage({ defaultMessage: 'NAS ID' }), textAlto: 'TBD', enumType: '', incidents: { 'radius-failure': 0.5 }, kpis: {} }
+  { id: 10, value: 'initialState.CcmWlanGroup.member.override_nas_id', text: defineMessage({ defaultMessage: 'NAS ID' }), textAlto: 'TBD', enumType: '', incidents: { 'radius-failure': 0.5 }, kpis: {} },
+  { id: 11, value: 'initialState.CcmWlanGroup.dsae_member.override_nas_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 12, value: 'initialState.CcmWlanGroup.dsae_member.override_vlan_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 13, value: 'initialState.CcmWlanGroup.dsae_member.override_vlan_pooling_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 14, value: 'initialState.CcmWlanGroup.dsae_member.wlan_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 15, value: 'initialState.CcmWlanGroup.management_identifiers.map_entries.key', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 16, value: 'initialState.CcmWlanGroup.management_identifiers.map_entries.value', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} }
 ]

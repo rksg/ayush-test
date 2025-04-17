@@ -20,14 +20,18 @@ import { messageMapping } from './messageMapping'
 
 interface IkeAssociationSettingsFormProps {
   initIpSecData?: Ipsec
+  loadIkeSettings: boolean
+  setLoadIkeSettings: (state: boolean) => void
 }
 
 export default function IkeAssociationSettings (props: IkeAssociationSettingsFormProps) {
-  const { initIpSecData } = props
+  const { initIpSecData, loadIkeSettings, setLoadIkeSettings } = props
   const MAX_PROPOSALS = 2
   const form = Form.useFormInstance()
   const { $t } = useIntl()
-  const [ikeProposalType, setIkeProposalType] = useState(IpSecProposalTypeEnum.DEFAULT)
+  let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
+  const [ikeProposalType, setIkeProposalType] = useState(proposalType
+    ? proposalType : IpSecProposalTypeEnum.DEFAULT)
 
   const initialAlgValue = {
     encAlg: IpSecEncryptionAlgorithmEnum.AES128,
@@ -59,11 +63,17 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
   }
 
   useEffect (() => {
-    if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
-      setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
-    } else {
-      setIkeProposalType(form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType']))
+    let ikeProposalSelection = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
+    setIkeProposalType(ikeProposalSelection ? ikeProposalSelection : IpSecProposalTypeEnum.DEFAULT)
+
+    if (loadIkeSettings && initIpSecData) {
+      if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
+        setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
+      } else {
+        setIkeProposalType(IpSecProposalTypeEnum.DEFAULT)
+      }
     }
+    setLoadIkeSettings(false)
   }, [initIpSecData, form])
 
   const onProposalTypeChange = (value: IpSecProposalTypeEnum) => {
@@ -99,7 +109,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
         name={['ikeSecurityAssociation', 'ikeProposalType']}
         label={$t({ defaultMessage: 'Internet Key Exchange (IKE) Proposal' })}
         style={{ width: '300px' }}
-        initialValue={ikeProposalType}
         children={
           <Select
             onChange={onProposalTypeChange}
@@ -156,9 +165,9 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
           {(fields, { add, remove }) => (
             <>
               {fields?.map((field, index) =>
-                <>
+                <Space direction='vertical' key={`proposal_${index}`}>
                   <Subtitle level={4}>{`Proposal #${index + 1}`}</Subtitle>
-                  <Space key={`proposal_${index}`}>
+                  <Space>
                     {<Form.Item
                       name={[field.name, 'encAlg']}
                       label={$t({ defaultMessage: 'Encryption Mode' })}
@@ -226,7 +235,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                 />
                     }
                   </Space>
-                </>
+                </Space>
               )}
               {(fields.length < MAX_PROPOSALS) &&
                 <Button type='link'
@@ -241,7 +250,9 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
               {fields.length === MAX_PROPOSALS &&
                 <Form.Item name='combinationValidator'
                   style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
-                  rules={[{ validator: () => algorithmValidator() }]} />
+                  rules={[{ validator: () => algorithmValidator() }]}
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  children={<></>} />
               }
             </>
           )}
