@@ -10,6 +10,7 @@ import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { useIntentContext }     from '../../IntentContext'
 import ChannelDistributionChart from '../Chart/ChannelDistributionChart'
 import PowerDistributionChart   from '../Chart/PowerDistributionChart'
+import { NeighborAPGraph }      from '../NeighborAPGraph'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
@@ -49,7 +50,12 @@ export function Introduction () {
         <Tabs stickyTop={false}>
           <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
             <UI.ChartWrapper>
-              <IntentAIRRMGraph isFullOptimization={isFullOptimization}/>
+              <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
+            </UI.ChartWrapper>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+            <UI.ChartWrapper>
+              <NeighborAPGraph />
             </UI.ChartWrapper>
           </Tabs.TabPane>
         </Tabs>
