@@ -24,6 +24,7 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
+  transformDisplayOnOff,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -144,7 +145,8 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
       sorter: true,
       render: (_, { authType }) => {
         const authTypeString = getEthernetPortAuthTypeString(authType)
-        return (authTypeString)? 'ON (' + authTypeString + ')' : 'OFF'
+        const onOff = transformDisplayOnOff(!!authTypeString)
+        return `${onOff}${authTypeString && ` (${authTypeString})`}`
       }
     },
     {
