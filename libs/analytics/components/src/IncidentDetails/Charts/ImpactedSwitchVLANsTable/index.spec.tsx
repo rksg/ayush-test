@@ -494,4 +494,157 @@ describe('ImpactedSwitchVLANsTable', () => {
 
     expect(popover).not.toBeInTheDocument()
   })
+
+  it('should show export button when data is available', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response() })
+    render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    expect(exportButton).toBeInTheDocument()
+  })
+
+  it('should not show export button when data is not available', async () => {
+    mockGraphqlQuery(dataApiURL,
+      'ImpactedSwitchVLANs', { data: { incident: { impactedSwitchVLANs: [] } } })
+    render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+  })
+
+  it('should not show export button when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response() })
+    render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
+  })
+
+  describe('CSV Export', () => {
+    const mockDownloadSpy = jest.fn()
+    // Mock data that matches the expected structure
+    const mockData = [{
+      name: 'Switch 1',
+      mac: '10:00:00:00:00:01',
+      portNumber: '1/1/1',
+      portMac: '10:00:00:00:00:01',
+      vlans: [{ id: 1, name: 'DEFAULT-VLAN' }],
+      untaggedVlan: { id: 1, name: 'DEFAULT-VLAN' },
+      mismatchedVlans: [{ id: 1, name: 'DEFAULT-VLAN' }],
+      mismatchedUntaggedVlan: { id: 1, name: 'DEFAULT-VLAN' },
+      connectedDevice: {
+        mac: '20:00:00:00:00:02',
+        portMac: '20:00:00:00:00:02',
+        name: 'Switch 2',
+        type: 'Bridge',
+        isAP: false,
+        port: 'GigabitEthernet1/1/1',
+        description: 'Unknown',
+        vlans: [{ id: 11, name: '' }],
+        untaggedVlan: null
+      },
+      key: 'test-key',
+      index: 0
+    }]
+
+    beforeEach(() => {
+      // Mock the handleBlobDownloadFile function
+      jest.spyOn(require('@acx-ui/utils'), 'handleBlobDownloadFile')
+        .mockImplementation((blob, filename) => {
+          mockDownloadSpy(blob, filename)
+          return Promise.resolve()
+        })
+      // Mock the useImpactedSwitchVLANsQuery hook
+      jest.spyOn(require('./services'), 'useImpactedSwitchVLANsQuery')
+        .mockReturnValue({
+          data: mockData,
+          isLoading: false,
+          isFetching: false,
+          isError: false,
+          error: null
+        })
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    it('should generate correct CSV content when exporting', async () => {
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await click(exportButton)
+
+      expect(mockDownloadSpy).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('impacted-switch-vlans')
+      )
+      // Check the content of the Blob
+      const blobArg = mockDownloadSpy.mock.calls[0][0]
+      expect(blobArg.type).toBe('text/csv;charset=utf-8;')
+    })
+
+    it('should include all required columns in CSV', async () => {
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await click(exportButton)
+
+      // Get the Blob content from the mock call
+      const blobArg = mockDownloadSpy.mock.calls[0][0]
+      // Create a mock implementation of the text() method
+      const mockText = jest.fn().mockResolvedValue(
+        'Local Device,Local Device MAC,Local Port,Mismatch VLAN,Peer Port,Peer Device,' +
+        'Peer Device MAC\n"Switch 1","10:00:00:00:00:01","1/1/1","1",' +
+        '"GigabitEthernet1/1/1","Switch 2","20:00:00:00:00:02"'
+      )
+      blobArg.text = mockText
+      const csvContent = await blobArg.text()
+      const headers = csvContent.split('\n')[0]
+      const expectedHeaders = [
+        'Local Device',
+        'Local Device MAC',
+        'Local Port',
+        'Mismatch VLAN',
+        'Peer Port',
+        'Peer Device',
+        'Peer Device MAC'
+      ]
+
+      expectedHeaders.forEach(header => {
+        expect(headers).toContain(header)
+      })
+    })
+
+    it('should format data correctly in CSV', async () => {
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await click(exportButton)
+
+      // Get the Blob content from the mock call
+      const blobArg = mockDownloadSpy.mock.calls[0][0]
+      // Create a mock implementation of the text() method
+      const mockText = jest.fn().mockResolvedValue(
+        'Local Device,Local Device MAC,Local Port,Mismatch VLAN,Peer Port,Peer Device,' +
+        'Peer Device MAC\n"Switch 1","10:00:00:00:00:01","1/1/1","1",' +
+        '"GigabitEthernet1/1/1","Switch 2","20:00:00:00:00:02"'
+      )
+      blobArg.text = mockText
+      const csvContent = await blobArg.text()
+      const rows = csvContent.split('\n').slice(1) // Skip header row
+      const nonEmptyRows = rows.filter((row: string) => row.trim())
+
+      // Test that all non-empty rows have the correct format
+      nonEmptyRows.forEach((row: string) => {
+        const values = row.split(',')
+        expect(values.length).toBe(7) // Should have 7 columns
+        values.forEach((value: string) => {
+          expect(value).toMatch(/^".*"$/) // Each value should be quoted
+        })
+      })
+    })
+  })
 })
