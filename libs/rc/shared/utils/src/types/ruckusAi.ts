@@ -91,4 +91,30 @@ export interface Canvas {
   id: string,
   name: string,
   content: string
+  diffWidgetIds: string[]
+}
+
+export interface DashboardInfo {
+  id: string
+  name: string
+  author?: string
+  updatedDate?: string
+  widgetIds?: string[]
+  diffWidgetIds?: string[]
+  isLanding?: boolean
+  isDefault?: boolean
+  key: string
+  index: number
+}
+
+export interface CanvasInfo {
+  key: string
+  id: string
+  name: string
+  updatedDate: string
+  widgetCount: number
+  visible: boolean //public
+  author?: string
+  owned: boolean
+  usedAsOwnDashboard: boolean
 }

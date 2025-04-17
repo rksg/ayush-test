@@ -14,10 +14,8 @@ import {
 } from '@acx-ui/icons-new'
 import { Canvas } from '@acx-ui/rc/utils'
 
-
-import { Section, Group }         from './Canvas'
-import { CardInfo, layoutConfig } from './Canvas'
-import Layout                     from './components/Layout'
+import { CardInfo, layoutConfig, Section, Group } from './Canvas'
+import Layout                                     from './components/Layout'
 import {
   getCalculatedColumnWidth,
   getCanvasData,
@@ -61,12 +59,17 @@ export const PreviewDashboardModal = (props: {
 
   useEffect(() => {
     if (visible) {
-      //TODO: scroll to top when opened
       const { canvasId, sections, groups } = getCanvasData(data)
       if (canvasId && sections) {
         setCanvasId(canvasId)
         setSections(sections)
         setGroups(groups)
+        setTimeout(() => {
+          const modalBody = document.querySelector('.ant-modal-body')
+          if (modalBody) {
+            modalBody.scrollTop = 0
+          }
+        }, 50)
       }
     }
   }, [visible])

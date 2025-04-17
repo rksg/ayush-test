@@ -210,8 +210,9 @@ export const SearchInput = styled(Input)`
 `
 
 export const Tabs = styled(AcxTabs)`
+  margin-top: 4px;
   .ant-tabs-nav {
-    margin: 4px 0 12px !important;
+    margin: 0px 0 12px !important;
   }
   .ant-tabs-nav-wrap {
     justify-content: center;

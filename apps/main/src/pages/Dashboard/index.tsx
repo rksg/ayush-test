@@ -51,13 +51,19 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
+  useGetDashboardsQuery,
+  useUpdateDashboardsMutation
+} from '@acx-ui/rc/services'
+import {
   Canvas,
   CommonUrlsInfo,
+  DashboardInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { UseQueryResult } from '@acx-ui/types'
 import {
   EdgeScopes,
   RolesEnum,
@@ -85,18 +91,17 @@ import {
   useDashboardFilter
 } from '@acx-ui/utils'
 
-import { Section, Group }                                                from '../AICanvas/Canvas'
-import { CardInfo, layoutConfig }                                        from '../AICanvas/Canvas'
+import AICanvasModal                                                     from '../AICanvas'
+import { CardInfo, layoutConfig, Section, Group }                        from '../AICanvas/Canvas'
 import Layout                                                            from '../AICanvas/components/Layout'
 import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/index.utils'
 import { PreviewDashboardModal }                                         from '../AICanvas/PreviewDashboardModal'
 import * as CanvasUI                                                     from '../AICanvas/styledComponents'
 
-import { DashboardDrawer }               from './DashboardDrawer'
-import { ImportDashboardDrawer }         from './ImportDashboardDrawer'
-import { DashboardInfo }                 from './index.utils'
-import { mockDashboardList, mockCanvas } from './mockData'
-import * as UI                           from './styledComponents'
+import { DashboardDrawer }       from './DashboardDrawer'
+import { ImportDashboardDrawer } from './ImportDashboardDrawer'
+import { formatDashboardList }   from './index.utils'
+import * as UI                   from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -176,12 +181,20 @@ export default function Dashboard () {
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
+  const { data: dashboards } = getDashboardsQuery
+
   //TODO
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
-      setDashboardList(getDashboardList())
+    if (isCanvasQ2Enabled && dashboards?.length) {
+      const updatedDashboards = formatDashboardList(dashboards)
+      const dashboardIds = updatedDashboards.map(item => item.id)
+      if (!dashboardIds.includes(dashboardId)) { //TODO: test
+        setDashboardId(dashboardIds[0])
+      }
+      setDashboardList(updatedDashboards)
     }
-  }, [])
+  }, [dashboards])
 
   useEffect(() => {
     if (isCanvasQ2Enabled) {
@@ -194,27 +207,19 @@ export default function Dashboard () {
 
   useEffect(() => {
     if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      //TODO
-      const { canvasId, sections, groups } = getCanvasData(mockCanvas)
-      if (canvasId && sections) {
-        setCanvasId(canvasId)
-        setSections(sections)
-        setGroups(groups)
+      const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
+      if (selectedDashboard) {
+        const { canvasId, sections, groups } = getCanvasData(
+          selectedDashboard as unknown as Canvas[]
+        )
+        if (canvasId && sections) {
+          setCanvasId(canvasId)
+          setSections(sections)
+          setGroups(groups)
+        }
       }
     }
   }, [dashboardId])
-
-  const getDashboardList = () => {
-    return mockDashboardList.map((item, index) => {
-      return {
-        ...item,
-        key: item.id,
-        index,
-        isLanding: index === 0,
-        isDefault: item.id === DEFAULT_DASHBOARD_ID
-      }
-    })
-  }
 
   return (
     <DashboardFilterProvider>
@@ -222,6 +227,7 @@ export default function Dashboard () {
         dashboardId={dashboardId}
         setDashboardId={setDashboardId}
         dashboardList={dashboardList}
+        getDashboardsQuery={getDashboardsQuery}
       />
       {
         dashboardId === DEFAULT_DASHBOARD_ID
@@ -278,6 +284,7 @@ function DashboardPageHeader (props: {
   dashboardId: string,
   setDashboardId: (id: string) => void
   dashboardList: DashboardInfo[]
+  getDashboardsQuery: UseQueryResult<DashboardInfo[]>
 }) {
   const { dashboardId, setDashboardId, dashboardList } = props
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
@@ -290,10 +297,12 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
+  const [updateDashboards] = useUpdateDashboardsMutation()
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -384,11 +393,18 @@ function DashboardPageHeader (props: {
     setDashboardId(value)
   }
 
+  const handleOpenPreview = async (id: string) => {
+    const selectedDashboard = dashboardList.filter(item => item.id === id)
+    if (selectedDashboard) {
+      setPreviewData(selectedDashboard as unknown as Canvas[])
+      setPreviewModalVisible(true)
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePreview = async (id: string) => {
+  const handleOpenCanvas = async (id?: string) => {
     //TODO: get data by id
-    setPreviewData(mockCanvas)
-    setPreviewModalVisible(true)
+    setCanvasModalVisible(true)
   }
 
   const DashboardSelector = () => {
@@ -422,7 +438,7 @@ function DashboardPageHeader (props: {
   return (<>
     <PageHeader
       title={''}
-      titleExtra={isCanvasQ2Enabled &&
+      titleExtra={isCanvasQ2Enabled && dashboardList?.length &&
       <Space size={7} style={{ alignItems: 'center', lineHeight: 1 }}>
         <DashboardSelector />
         <Button
@@ -473,7 +489,8 @@ function DashboardPageHeader (props: {
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
-        handlePreview={handlePreview}
+        handleOpenPreview={handleOpenPreview}
+        handleOpenCanvas={handleOpenCanvas}
         onClose={() => {
           setDashboardDrawerVisible(false)
         }}
@@ -485,14 +502,19 @@ function DashboardPageHeader (props: {
       <ImportDashboardDrawer
         visible={importDashboardDrawerVisible}
         dashboardList={dashboardList}
-        handlePreview={handlePreview}
+        handleOpenPreview={handleOpenPreview}
+        handleOpenCanvas={handleOpenCanvas}
         onBackClick={() => {
           setDashboardDrawerVisible(true)
           setImportDashboardDrawerVisible(false)
         }}
-        onApplyClick={(keys) => {
-          //TODO
-          console.log(keys) // eslint-disable-line no-console
+        onImportClick={async (keys) => {
+          await updateDashboards({
+            payload: keys
+          }).then(() => {
+            props.getDashboardsQuery.refetch()
+            setImportDashboardDrawerVisible(false)
+          })
         }}
         onClose={() => setImportDashboardDrawerVisible(false)}
       />
@@ -502,6 +524,12 @@ function DashboardPageHeader (props: {
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
       />
+
+      { canvasModalVisible && <AICanvasModal
+        isModalOpen={canvasModalVisible}
+        setIsModalOpen={setCanvasModalVisible}
+      />}
+
     </>}
 
   </>

@@ -13,7 +13,7 @@ export interface DashboardInfo {
   index: number
 }
 
-export const updateDashboardList = (list: DashboardInfo[]) => {
+export const formatDashboardList = (list: DashboardInfo[]) => {
   return list.map((item, index) => {
     return {
       ...item,

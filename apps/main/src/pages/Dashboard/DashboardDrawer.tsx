@@ -12,17 +12,23 @@ import {
   AccountCircleSolid,
   MoreVertical
 }                    from '@acx-ui/icons-new'
+import {
+  useReorderDashboardsMutation,
+  useRemoveDashboardsMutation
+} from '@acx-ui/rc/services'
 
-import { ItemTypes } from '../AICanvas/components/GroupItem'
+import { ItemTypes }         from '../AICanvas/components/GroupItem'
+import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
 
-import { DashboardInfo, updateDashboardList } from './index.utils'
+import { DashboardInfo, formatDashboardList } from './index.utils'
 import * as UI                                from './styledComponents'
 
 
 type ListItemProps = {
   item: DashboardInfo;
   index: number;
-  handleReorder: (from: number, to: number) => void;
+  handleDrag: (from: number, to: number) => void;
+  handleReorder: () => void;
   handleMenuClick: MenuProps['onClick'],
   isDraggingItemRef: React.MutableRefObject<boolean>
 }
@@ -70,36 +76,34 @@ const getActionMenu = (
   const isEditable = !data.author
   const isLanding = data.isLanding
   const isDefault = data.isDefault
+  const getKey = (type: string) => `${type}_${data.id}`
   return <Menu
     onClick={handleMenuClick}
     items={[
       ...(!isLanding ? [{
         label: $t({ defaultMessage: 'Set as Landing Page' }),
-        key: `landing_${data.id}`
+        key: getKey('landing')
       }] : []),
       ...(!isDefault ? [{ //TODO: can view default dashboard
         label: $t({ defaultMessage: 'View' }),
-        key: `view_${data.id}`
+        key: getKey('view')
       }] : []),
-      ...(isEditable && !isDefault ? [{
+      ...(!isDefault && isEditable ? [{
         label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
-        key: `edit_${data.id}`
-      }, {
+        key: getKey('edit')
+      }] : []),
+      ...(!isDefault ? [{
         label: $t({ defaultMessage: 'Remove from Dashboard' }),
-        key: `remove_${data.id}`
+        key: getKey('remove')
       }] : [])
     ]}
   />
 }
 
-
-
 const getItemInfo = (props: {
   item: DashboardInfo,
   $t: IntlShape['$t'],
-  // isDraggingItem?: boolean,
   handleMenuClick?: MenuProps['onClick'],
-  // setSelectedItem?: (item: DashboardInfo) => void
 }) => {
   const { item, $t, handleMenuClick } = props
   const dropdownMenu = getActionMenu(item, handleMenuClick, $t)
@@ -146,25 +150,6 @@ const getItemInfo = (props: {
         />
       </Dropdown>
     </div>}
-
-    {/* {hasDropdownMenu && <div className='action'>
-      <Dropdown
-        overlay={dropdownMenu}
-        trigger={['click']} //TODO: Fix bug
-        {...(isDraggingItem && { visible: false })}
-        key='actionMenu'
-      >
-        <Button
-          data-testid='dashboard-more-btn'
-          type='link'
-          size='small'
-          icon={<MoreVertical size='sm' />}
-          onClick={() => {
-            setSelectedItem?.(item)
-          }}
-        />
-      </Dropdown>
-    </div>} */}
   </>
 }
 
@@ -173,20 +158,22 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
-  handlePreview: (id: string) => void
+  handleOpenPreview: (id: string) => void
+  handleOpenCanvas: (id?: string) => void
 }) => {
   const { $t } = useIntl()
   // const [selectedItem, setSelectedItem] = useState({} as DashboardInfo)
   const [dashboardList, setDashboardList] = useState(props.data as DashboardInfo[])
   const isDraggingItemRef = useRef(false)
+  const [reorderDashboards] = useReorderDashboardsMutation()
+  const [removeDashboards] = useRemoveDashboardsMutation()
 
   useEffect(() => {
     setDashboardList(props.data)
   }, [props.data])
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
+  const handleMenuClick: MenuProps['onClick'] = async (e) => {
     const [action, id] = e.key.split('_')
-    console.log('selectedItem: ', id) // eslint-disable-line no-console
     let updated = dashboardList
     const targetIndex = dashboardList.findIndex(item => item.id === id)
     switch (action) { // TODO: should call api
@@ -196,19 +183,29 @@ export const DashboardDrawer = (props: {
           ...dashboardList.slice(0, targetIndex),
           ...dashboardList.slice(targetIndex + 1)
         ]
-        setDashboardList(updateDashboardList(updated))
+        const updatedIds = updated.map(item => item.id)
+        await reorderDashboards({
+          payload: updatedIds
+        }).then(() => {
+          setDashboardList(formatDashboardList(updated))
+        })
         break
       case 'edit':
+        props.handleOpenCanvas(id)
         break
       case 'remove':
         updated = [
           ...dashboardList.slice(0, targetIndex),
           ...dashboardList.slice(targetIndex + 1)
         ]
-        setDashboardList(updateDashboardList(updated))
+        await removeDashboards({
+          payload: [id]
+        }).then(() => {
+          setDashboardList(formatDashboardList(updated))
+        })
         break
       default: // view
-        props.handlePreview(id)
+        props.handleOpenPreview(id)
         break
     }
   }
@@ -235,7 +232,7 @@ export const DashboardDrawer = (props: {
         const didDrop = monitor.didDrop()
         const originalIndex = originalIndexRef.current
         if (!didDrop && originalIndex !== undefined) {
-          handleReorder(item.index, originalIndex)
+          handleDrag(item.index, originalIndex)
         }
         originalIndexRef.current = undefined
         isDraggingItemRef.current = false
@@ -265,11 +262,12 @@ export const DashboardDrawer = (props: {
         if (targetIndex === 0) return
         if (dragIndex === targetIndex) return
 
-        handleReorder(dragIndex, targetIndex)
+        handleDrag(dragIndex, targetIndex)
         dragged.index = targetIndex
-        isDraggingItemRef.current = false
+        // isDraggingItemRef.current = false
       },
       drop: () => {
+        handleReorder()
         isDraggingItemRef.current = false
       }
     })
@@ -289,12 +287,19 @@ export const DashboardDrawer = (props: {
     )
   }
 
-  const handleReorder = (from: number, to: number) => {
+  const handleDrag = async (from: number, to: number) => {
     if (from === to || to === 0) return
     const updated = [...dashboardList]
     const [moved] = updated.splice(from, 1)
     updated.splice(to, 0, moved)
-    setDashboardList(updated)
+    setDashboardList(formatDashboardList(updated))
+  }
+
+  const handleReorder = async () => {
+    const updatedIds = dashboardList.map(item => item.id)
+    await reorderDashboards({
+      payload: updatedIds
+    })
   }
 
   return <Drawer
@@ -311,6 +316,7 @@ export const DashboardDrawer = (props: {
             item={item}
             index={index}
             isDraggingItemRef={isDraggingItemRef}
+            handleDrag={handleDrag}
             handleReorder={handleReorder}
             handleMenuClick={handleMenuClick}
           />
@@ -320,15 +326,16 @@ export const DashboardDrawer = (props: {
     </DndProvider>}
     footer={
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-        <Tooltip title={dashboardList?.length === 10
-          ? $t({ defaultMessage: 'Maximum of 10 dashboards reached, import unavailable' })
+        <Tooltip title={dashboardList?.length === MAXIMUM_DASHBOARD
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'Maximum of ${maximum} dashboards reached, import unavailable' }, { maximum: MAXIMUM_DASHBOARD })
           : ''
         }>
           <span>
             <Button
               onClick={() => props.onNextClick(true)}
               type='primary'
-              disabled={dashboardList?.length === 10}
+              disabled={dashboardList?.length === MAXIMUM_DASHBOARD}
             >
               {$t({ defaultMessage: 'Import Dashboard' })}
             </Button>

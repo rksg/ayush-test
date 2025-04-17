@@ -73,7 +73,7 @@ export const layoutConfig:LayoutConfig = {
   containerPadding: [0, 0] // deprecated
 }
 
-const DEFAULT_CANVAS = [
+export const DEFAULT_CANVAS = [
   {
     id: 'default_section',
     type: 'section',

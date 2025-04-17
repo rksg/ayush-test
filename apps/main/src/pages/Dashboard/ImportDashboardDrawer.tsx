@@ -1,100 +1,129 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 import { Checkbox, List, Dropdown, Menu, Space, MenuProps } from 'antd'
+import _                                                    from 'lodash'
 import moment                                               from 'moment-timezone'
 import { useIntl }                                          from 'react-intl'
 
-import { Button, Drawer, Tabs, showActionModal } from '@acx-ui/components'
-import { SearchOutlined }                        from '@acx-ui/icons'
+import { Button, Drawer, Loader, Tabs, showActionModal } from '@acx-ui/components'
+import { SearchOutlined }                                from '@acx-ui/icons'
 import {
   AccountCircleSolid,
   GlobeOutlined,
   LockOutlined,
   MoreVertical
 }                    from '@acx-ui/icons-new'
+import {
+  useCloenCanvasMutation,
+  useDeleteCanvasMutation,
+  useLazyGetCanvasesQuery
+} from '@acx-ui/rc/services'
+import { CanvasInfo } from '@acx-ui/rc/utils'
 
-import { DashboardInfo }  from './index.utils'
-import { mockCanvasList } from './mockData'
-import * as UI            from './styledComponents'
+import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
+
+import { DashboardInfo } from './index.utils'
+import * as UI           from './styledComponents'
 
 enum TabKey {
-  My = 'my',
+  Owned = 'owned',
   Shared = 'shared',
 }
 
-export interface CanvasInfo {
-  key: string
-  id: string
-  name: string
-  updatedDate: string
-  widgetCount: number
-  visible: boolean //public
-  author?: string
-  usedAsOwnDashboard: boolean
+type CustomPayload = {
+  searchString?: string,
+  filters?: {
+    isOwned: boolean[]
+  }
+}
+
+const getCanvasPayload = (customPayload?: CustomPayload) => {
+  return {
+    page: 1,
+    pageSize: 9999,
+    sortOrder: 'DESC',
+    searchTargetFields: [
+      'name', 'author'
+    ],
+    usedAsOwnDashboard: [false],
+    ...customPayload,
+    filters: {
+      usedAsOwnDashboard: [false],
+      ...customPayload?.filters
+    }
+  }
 }
 
 export const ImportDashboardDrawer = (props: {
   visible: boolean
   dashboardList: DashboardInfo[]
-  handlePreview: (id: string) => void
+  handleOpenPreview: (id: string) => void
+  handleOpenCanvas: (id?: string) => void
   onBackClick: () => void
-  onApplyClick: (keys: React.Key[]) => void
+  onImportClick: (keys: React.Key[]) => void
   onClose: () => void
 }) => {
   const { $t } = useIntl()
   const { visible, dashboardList } = props
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [canvasList, setCanvasList] = useState([] as CanvasInfo[])
-  const [myCanvasList, setMyCanvasList] = useState([] as CanvasInfo[])
+  const [activeTab, setActiveTab] = useState(TabKey.Owned)
+  const [ownedCanvasList, setOwnedCanvasList] = useState([] as CanvasInfo[])
   const [sharedCanvasList, setSharedCanvasList] = useState([] as CanvasInfo[])
   const [selectedItem, setSelectedItem] = useState({} as CanvasInfo)
   const [selectedCanvases, setSelectedCanvases] = useState<React.Key[]>([])
-  const maximumImportCount = 10 - dashboardList.length
+  const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
 
-  useEffect(() => {
-    const list = getCanvasList()
-    const { my, shared } = list.reduce((acc, item) => {
-      if (item.author) {
-        acc.shared.push(item)
-      } else {
-        acc.my.push(item)
-      }
-      return acc
-    }, { shared: [] as CanvasInfo[], my: [] as CanvasInfo[] })
-
-    setCanvasList(list)
-    setMyCanvasList(my)
-    setSharedCanvasList(shared)
-    setSelectedCanvases( //TODO
-      list.filter(canvas => canvas.usedAsOwnDashboard).map(canvas => canvas.key)
-    )
-  }, [visible])
+  const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
+  const [ cloenCanvas ] = useCloenCanvasMutation()
+  const [ deleteCanvas ] = useDeleteCanvasMutation()
 
   const canvasTabs = [{
-    key: TabKey.My,
+    key: TabKey.Owned,
     label: $t({ defaultMessage: 'My canvases' }),
-    list: myCanvasList
+    list: ownedCanvasList
   }, {
     key: TabKey.Shared,
     label: $t({ defaultMessage: 'Public Canvases' }),
     list: sharedCanvasList
   }]
 
-  const getCanvasList = () => {
-    return mockCanvasList.map((item) => {
-      return { ...item, key: item.id }
+  const debouncedSearch = useRef(_.debounce(async (searchText: string) => {
+    const { shared } = await getCanvasList({
+      searchString: searchText,
+      filters: {
+        isOwned: [false]
+      }
     })
+    setSharedCanvasList(shared)
+    setSelectedCanvases([])
+  }, 500)).current
+
+  const getCanvasList = async (customPayload?: CustomPayload) => {
+    const payload = getCanvasPayload(customPayload)
+    const canvasList = await getCanvases({
+      payload }, false // force refetch
+    ).unwrap()
+
+    return canvasList.data
+      .reduce((acc, item) => {
+        if (item.owned) {
+          acc.owned.push(item)
+        } else {
+          acc.shared.push(item)
+        }
+        return acc
+      }, { shared: [] as CanvasInfo[], owned: [] as CanvasInfo[] })
   }
 
-  const handleCheck = (checked: boolean, key: React.Key) => {
+  const handleCheck = (checked: boolean, id: React.Key) => {
     setSelectedCanvases(prev =>
-      checked ? [...prev, key] : prev.filter(k => k !== key)
+      checked ? [...prev, id] : prev.filter(k => k !== id)
     )
   }
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
+  const handleMenuClick: MenuProps['onClick'] = async (e) => {
     switch (e.key) {
       case 'edit':
+        props.handleOpenCanvas()
         break
       case 'delete':
         showActionModal({
@@ -104,14 +133,33 @@ export const ImportDashboardDrawer = (props: {
             entityName: $t({ defaultMessage: 'Canvas' }),
             entityValue: selectedItem.name
           },
-          onOk: () => {
+          onOk: async () => {
+            await deleteCanvas({
+              params: { canvasId: selectedItem.id }
+            }).then(async () => {
+              const { owned } = await getCanvasList()
+              setOwnedCanvasList(owned)
+              setSelectedCanvases([])
+            })
           }
         })
         break
       case 'clone':
+        //TODO
+        await cloenCanvas({
+          params: { canvasId: selectedItem.id },
+          payload: {
+            name: `${selectedItem.name} (${$t({ defaultMessage: 'Copy' })})`
+          }
+        }).then(async () => {
+          const { owned } = await getCanvasList()
+          setOwnedCanvasList(owned)
+          setSelectedCanvases([])
+        })
+        setActiveTab(TabKey.Owned)
         break
       default: // view
-        props.handlePreview(selectedItem.id)
+        props.handleOpenPreview(selectedItem.id)
         break
     }
   }
@@ -138,61 +186,85 @@ export const ImportDashboardDrawer = (props: {
     />
   }
 
-  const getList = (data: CanvasInfo[]) => {
-    return <List
-      bordered={false}
-      dataSource={data}
-      itemLayout='vertical'
-      size='small'
-      renderItem={(item) => {
-        return <UI.CanvasListItem>
-          <Checkbox
-            checked={selectedCanvases.includes(item.key)}
-            onChange={e => handleCheck(e.target.checked, item.key)}
-            disabled={
-              !selectedCanvases.includes(item.key)
-            && selectedCanvases.length === maximumImportCount
-            }
-          >
-            <div className='info'>
-              <div className='title'>
-                <span className='name' title={item.name}>{ item.name }</span>
-                { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
-              </div>
-              <div className='desp'>
-                <span className='count'>{
-                  $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
-                }</span>
-                { item?.updatedDate && <span className='date'>{
-                  moment(item.updatedDate).format('YYYY/MM/DD')
-                }</span> }
-                { item?.author && <span className='author'>
-                  <AccountCircleSolid size='sm' />
-                  <span className='name' title={item.author}>{ item.author }</span>
-                </span>
-                }
-              </div>
-            </div>
-          </Checkbox>
-
-          <div className='action'>
-            <Dropdown overlay={getActionMenu(item)} trigger={['click']} key='actionMenu'>
-              <Button
-                data-testid='canvas-more-btn'
-                type='link'
-                size='small'
-                icon={<MoreVertical size='sm' />}
-                onClick={() => {
-                  setSelectedItem(item)
-                }}
-              />
-            </Dropdown>
-          </div>
-
-        </UI.CanvasListItem>
+  const renderCanvasList = (data: CanvasInfo[]) => {
+    return <Loader
+      style={{ //TODO: check with UX
+        scale: getCanvasesState.isLoading ? '0.8' : '1',
+        background: '#fff', minHeight: '100px'
       }}
-    />
+      states={[{
+        isFetching: false,
+        isLoading: getCanvasesState.isLoading
+      }]}>
+      <List
+        bordered={false}
+        dataSource={data}
+        itemLayout='vertical'
+        size='small'
+        renderItem={(item) => {
+          return <UI.CanvasListItem>
+            <Checkbox
+              checked={selectedCanvases.includes(item.id)}
+              onChange={e => handleCheck(e.target.checked, item.id)}
+              disabled={
+                !selectedCanvases.includes(item.id)
+            && selectedCanvases.length === maximumImportCount
+              }
+            >
+              <div className='info'>
+                <div className='title'>
+                  <span className='name' title={item.name}>{ item.name }</span>
+                  { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
+                </div>
+                <div className='desp'>
+                  <span className='count'>{
+                    $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
+                  }</span>
+                  { item?.updatedDate && <span className='date'>{
+                    moment(item.updatedDate).format('YYYY/MM/DD')
+                  }</span> }
+                  { item?.author && <span className='author'>
+                    <AccountCircleSolid size='sm' />
+                    <span className='name' title={item.author}>{ item.author }</span>
+                  </span>
+                  }
+                </div>
+              </div>
+            </Checkbox>
+
+            <div className='action'>
+              <Dropdown overlay={getActionMenu(item)} trigger={['click']} key='actionMenu'>
+                <Button
+                  data-testid='canvas-more-btn'
+                  type='link'
+                  size='small'
+                  icon={<MoreVertical size='sm' />}
+                  onClick={() => {
+                    setSelectedItem(item)
+                  }}
+                />
+              </Dropdown>
+            </div>
+
+          </UI.CanvasListItem>
+        }}
+      />
+    </Loader>
   }
+
+  useEffect(() => {
+    const fetchCanvasList = async () => {
+      const { owned, shared } = await getCanvasList()
+      setOwnedCanvasList(owned)
+      setSharedCanvasList(shared)
+      setSelectedCanvases([])
+    }
+
+    if (visible) {
+      fetchCanvasList()
+    }
+
+  }, [visible])
 
   return <Drawer
     title={$t({ defaultMessage: 'Select Canvases for your Dashboards' })}
@@ -200,33 +272,35 @@ export const ImportDashboardDrawer = (props: {
     onBackClick={props.onBackClick}
     visible={props.visible}
     onClose={props.onClose}
-    children={<UI.Tabs defaultActiveKey={TabKey.My} type='third'>
-      {canvasTabs.map(tab => (
-        <Tabs.TabPane tab={tab.label} key={tab.key}>
-          { tab.key === TabKey.Shared && <UI.SearchInput
-            data-testid='search-input'
-            allowClear
-            placeholder={$t({ defaultMessage: 'Search by canvas name or owner name..' })}
-            prefix={<SearchOutlined />}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            onChange={(ev: ChangeEvent) => {
-              //TODO: search by api
-              // const text = (ev.target as HTMLInputElement).value
-              // const lowerCaseText = text.toLowerCase()
-              // setFilteredCanvasList(canvasList.filter(item => {
-              //   return item.name.toLowerCase().includes(lowerCaseText)
-              //     || item.author?.toLowerCase().includes(lowerCaseText)
-              // }))
-            }}
-          />}
-          { getList(tab.list as CanvasInfo[]) }
-        </Tabs.TabPane>
-      ))}
-    </UI.Tabs>}
+    children={
+      <UI.Tabs
+        type='third'
+        activeKey={activeTab}
+        defaultActiveKey={TabKey.Owned}
+        onChange={(tab: string) => {
+          setActiveTab(tab as unknown as TabKey)
+        }}
+      >
+        {canvasTabs.map(tab => (
+          <Tabs.TabPane tab={tab.label} key={tab.key} data-title={tab.label}>
+            { tab.key === TabKey.Shared && visible && <UI.SearchInput
+              data-testid='search-input'
+              allowClear
+              placeholder={$t({ defaultMessage: 'Search by canvas name or owner name..' })}
+              prefix={<SearchOutlined />}
+              onChange={async (event: ChangeEvent) => {
+                const searchText = (event.target as HTMLInputElement).value
+                debouncedSearch(searchText)
+              }}
+            />}
+            { renderCanvasList(tab.list as CanvasInfo[]) }
+          </Tabs.TabPane>
+        ))}
+      </UI.Tabs>}
     footer={
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
         <Button
-          onClick={() => {}} //TODO
+          onClick={() => props.handleOpenCanvas()}
           type='primary'
         >
           {$t({ defaultMessage: 'Canvas Editor' })}
@@ -236,9 +310,8 @@ export const ImportDashboardDrawer = (props: {
             {$t({ defaultMessage: 'Cancel' })}
           </Button>
           <Button
-            onClick={() => { //TODO
-              // console.log('selectedCanvases: ', selectedCanvases)
-              props.onApplyClick(selectedCanvases)
+            onClick={() => {
+              props.onImportClick(selectedCanvases)
             }}
             type='primary'
           >

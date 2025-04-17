@@ -384,7 +384,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
   //   }
   // }
   const chartData = data.type === 'card' ? queryResults.data : data
-  const widgetTitle = chartData?.name && chartData?.updated //TODO
+  const widgetTitle = chartData?.name && data?.updated
     ? { title: chartData?.name, icon: <span className='update-indicator' /> }
     : chartData?.name
 
