@@ -1,7 +1,8 @@
 import React, { RefObject } from 'react'
 
-import { ECharts }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
+import { ECharts }               from 'echarts'
+import ReactECharts              from 'echarts-for-react'
+import { createIntl, IntlShape } from 'react-intl'
 
 import { render, screen, renderHook } from '@acx-ui/test-utils'
 
@@ -10,6 +11,8 @@ import { data } from './stories'
 import { VerticalBarChart, tooltipFormatter, useOnBarAreaClick } from '.'
 
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
+
+
 
 describe('VerticalBarChart',()=>{
   it('should render correctly', () => {
@@ -37,15 +40,35 @@ describe('VerticalBarChart',()=>{
   })
 
   describe('tooltipFormatter', () => {
+    const mockCustomTooltipText = jest.fn()
+    const mockIntl: IntlShape = createIntl(
+      {
+        locale: 'en',
+        messages: {}
+      }
+    )
     it('should return correct Html string', async () => {
       const params = [{
         data: ['-75', 1100],
         dimensionNames: ['RSS', 'Samples']
       }] as unknown as TooltipComponentFormatterCallbackParams
       const formatter = jest.fn(value=>`formatted-${value}`)
-      expect(tooltipFormatter(formatter, true)(params))
+      expect(tooltipFormatter(formatter, true, mockIntl)(params))
         .toMatchSnapshot()
       expect(formatter).toBeCalledTimes(1)
+    })
+
+    it('should return correct Html when customTooltipText is provided', async () => {
+      const params = [{
+        data: ['-75', 1100],
+        dimensionNames: ['RSS', 'Samples']
+      }] as unknown as TooltipComponentFormatterCallbackParams
+      const formatter = jest.fn(value=>`formatted-${value}`)
+      expect(tooltipFormatter(
+        formatter, false, mockIntl, 'xAxisName', mockCustomTooltipText)(params))
+        .toMatchSnapshot()
+      expect(formatter).toBeCalledTimes(0)
+      expect(mockCustomTooltipText).toBeCalledTimes(1)
     })
 
     it('should return correct Html when showTooltipName is false', async () => {
@@ -54,7 +77,7 @@ describe('VerticalBarChart',()=>{
         dimensionNames: ['RSS', 'Samples']
       }] as unknown as TooltipComponentFormatterCallbackParams
       const formatter = jest.fn(value=>`formatted-${value}`)
-      expect(tooltipFormatter(formatter, false)(params).match(/Samples/)).toBeNull()
+      expect(tooltipFormatter(formatter, false, mockIntl)(params).match(/Samples/)).toBeNull()
     })
   })
   let eChartsRef: RefObject<ReactECharts>

@@ -453,7 +453,8 @@ jest.mock('@acx-ui/components', () => {
     BarChart: () => <div data-testid='BarChart' />,
     DonutChart: () => <div data-testid='DonutChart' />,
     StackedAreaChart: () => <div data-testid='StackedAreaChart' />,
-    Table: () => <div data-testid='Table' />
+    Table: () => <div data-testid='Table' />,
+    NoDataIcon: () => <div data-testid='NoDataIcon' />
   }
 })
 
@@ -508,11 +509,10 @@ describe('Layout', () => {
         />
       </Provider>
     )
-    expect(await screen.findByTestId('BarChart')).toBeVisible()
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
     expect(await screen.findByTestId('StackedAreaChart')).toBeVisible()
     expect(await screen.findByTestId('Table')).toBeVisible()
-    const dragItem = await screen.findByTestId('BarChart')
+    const dragItem = await screen.findByTestId('DonutChart')
     const dropItem = await screen.findByTestId('dropGroup')
     fireEvent.dragStart(dragItem)
     fireEvent.dragEnter(dropItem)
