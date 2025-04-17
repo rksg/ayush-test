@@ -10,8 +10,14 @@ import { EthernetPortProfileMessages, Radius, useConfigTemplate } from '@acx-ui/
 
 import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 
+interface EthernetPortAAASettingsProps {
+  enableAuth?: boolean
+}
 
-export function EthernetPortAAASettings () {
+export function EthernetPortAAASettings (props: EthernetPortAAASettingsProps) {
+  const {
+    enableAuth = true
+  } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const [accountingEnabled, authRadius, acctRadius] = [useWatch('accountingEnabled', form),
@@ -37,32 +43,34 @@ export function EthernetPortAAASettings () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <div>
-        <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'
-          excludeRadSec={!isSupportProxyRadius} />
-        {isSupportProxyRadius &&
-          <StepsForm.FieldLabel width={labelWidth}>
-            <Space>
-              {$t({ defaultMessage: 'Use Proxy Service' })}
-              <Tooltip.Question
-                title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
-                placement='bottom'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+      {enableAuth &&
+        <div>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+            type='authRadius'
+            excludeRadSec={!isSupportProxyRadius} />
+          {isSupportProxyRadius &&
+            <StepsForm.FieldLabel width={labelWidth}>
+              <Space>
+                {$t({ defaultMessage: 'Use Proxy Service' })}
+                <Tooltip.Question
+                  title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
+                  placement='bottom'
+                  iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+                />
+              </Space>
+              <Form.Item
+                name='enableAuthProxy'
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch
+                  disabled={(supportRadsec && authRadius?.radSecOptions?.tlsEnabled)}
+                />}
               />
-            </Space>
-            <Form.Item
-              name='enableAuthProxy'
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch
-                disabled={(supportRadsec && authRadius?.radSecOptions?.tlsEnabled)}
-              />}
-            />
-          </StepsForm.FieldLabel>
-        }
-      </div>
+            </StepsForm.FieldLabel>
+          }
+        </div>
+      }
       <div>
         <StepsForm.FieldLabel width={labelWidth}>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>

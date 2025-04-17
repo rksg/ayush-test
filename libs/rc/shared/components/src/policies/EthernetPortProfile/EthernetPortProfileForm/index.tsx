@@ -440,7 +440,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               }
               {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
               <>
-                <EthernetPortAAASettings />
+                <EthernetPortAAASettings enableAuth={authEnabled} />
                 <Row>
                   <Col span={12}>
                     <StepsForm.FieldLabel width={'280px'}>
