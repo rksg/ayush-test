@@ -3865,3 +3865,84 @@ export const ApGroupNetworkTableData = [{
   ssid: 'joe-open-owe-transition-owe-tr',
   vlan: 1
 }]
+
+export const apGroupdeviceAps = {
+  fields: [
+    'isMeshEnable',
+    'apUpRssi',
+    'description',
+    'deviceStatus',
+    'meshRole',
+    'apStatusData.APSystem.uptime',
+    'uplink',
+    'deviceGroupId',
+    'deviceStatusSeverity',
+    'venueId',
+    'deviceGroupName',
+    'model',
+    'fwVersion',
+    'lastSeenTime',
+    'serialNumber',
+    'IP',
+    'apMac',
+    'lastUpdTime',
+    'extIp',
+    'tags',
+    'venueName',
+    'deviceModelType',
+    'name',
+    'hops',
+    'apStatusData.cellularInfo',
+    'apStatusData'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      aps: [],
+      serialNumber: '422039000034',
+      lastUpdTime: '2022-12-07T02:32:29.816Z',
+      lastSeenTime: '2022-12-07T08:28:09.161Z',
+      name: 'UI team AP',
+      model: 'R650',
+      fwVersion: '6.2.0.103.513',
+      venueId: '4c778ed630394b76b17bce7fe230cf9f',
+      venueName: 'My-Venue',
+      deviceStatus: '2_00_Operational',
+      deviceStatusSeverity: '2_Operational',
+      IP: '10.206.1.16',
+      extIp: '210.58.90.254',
+      apMac: '28:B3:71:28:6C:10',
+      apStatusData: {
+        APRadio: [
+          {
+            txPower: 'max',
+            channel: 11,
+            band: '2.4G',
+            Rssi: null,
+            operativeChannelBandwidth: '20',
+            radioId: 0
+          },
+          {
+            txPower: 'max',
+            channel: 116,
+            band: '5G',
+            Rssi: null,
+            operativeChannelBandwidth: '80',
+            radioId: 1
+          }
+        ],
+        APSystem: { uptime: 1294308 },
+        lanPortStatus: [
+          { port: '0', phyLink: 'Down  ' },
+          { port: '1', phyLink: 'Up 1000Mbps full' }
+        ]
+      },
+      meshRole: 'DISABLED',
+      deviceGroupId: '9150b159b5f748a1bbf55dab35a60bce',
+      tags: '',
+      deviceGroupName: '',
+      deviceModelType: 'Indoor'
+    }
+  ]
+}

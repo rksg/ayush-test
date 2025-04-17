@@ -7,6 +7,7 @@ import { useIntl }                                    from 'react-intl'
 import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
   useGetApGroupQuery,
@@ -75,6 +76,8 @@ export function ApGroupGeneralTab () {
   const [apInfos, setApInfos] = useState({} as Record<string, NewAPModel>)
   const [tableDataOption, setTableDataOption] = useState([] as TransferItem[])
   const [isHide, setIsHide] = useState(false)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -139,6 +142,7 @@ export function ApGroupGeneralTab () {
   })
 
   useEffect(() => {
+    if (Object.keys(apInfos).length == 0) return
     if (newApTableListQuery.data?.data && Object.keys(apInfos).length === 0) {
       const apInfos = newApTableListQuery.data.data.reduce((acc, data) => {
         if ((data as { children?: NewAPModel[] }).children?.length) {
@@ -214,8 +218,10 @@ export function ApGroupGeneralTab () {
           (item.aps ?? ([] as ApDeep[])).map((ap) => ({
             name: ap.name,
             key: ap.serialNumber,
-            apGroupName: apInfos[ap.serialNumber]?.apGroupName || '',
-            tags: apInfos[ap.serialNumber]?.tags || []
+            ...(isApGroupMoreParameterPhase1Enabled ? {
+              apGroupName: apInfos[ap.serialNumber]?.apGroupName || '',
+              tags: apInfos[ap.serialNumber]?.tags || []
+            } : {})
           })))))
       } else {
         (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
@@ -223,8 +229,10 @@ export function ApGroupGeneralTab () {
             defaultApGroupOption.push({
               name: item.name.toString(),
               key: item.serialNumber,
-              apGroupName: apInfos[item.serialNumber]?.apGroupName || '',
-              tags: apInfos[item.serialNumber]?.tags || []
+              ...(isApGroupMoreParameterPhase1Enabled ? {
+                apGroupName: apInfos[item.serialNumber]?.apGroupName || '',
+                tags: apInfos[item.serialNumber]?.tags || []
+              } : {})
             })
           })
           )
@@ -460,27 +468,43 @@ export function ApGroupGeneralTab () {
                 name='apSerialNumbers'
                 valuePropName='targetKeys'
               >
-                <Transfer
-                  listStyle={{ width: 400, height: 400 }}
-                  type={'table'}
-                  tableData={tableDataOption}
-                  leftColumns={leftColumns}
-                  rightColumns={rightColumns}
-                  showSearch
-                  showSelectAll={false}
-                  filterOption={(inputValue, item) =>
-                    Object.keys(item).some(key => {
+                { isApGroupMoreParameterPhase1Enabled
+                  ? <Transfer
+                    listStyle={{ width: 400, height: 400 }}
+                    type={'table'}
+                    tableData={tableDataOption}
+                    leftColumns={leftColumns}
+                    rightColumns={rightColumns}
+                    showSearch
+                    showSelectAll={false}
+                    filterOption={(inputValue, item) =>
+                      Object.keys(item).some(key => {
+                        // eslint-disable-next-line max-len
+                        return (item[key] && item[key].toString().toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                      })
+                    }
+                    dataSource={apsOption}
+                    render={item => item.name}
+                    footer={renderFooter}
+                    operations={['Add', 'Remove']}
+                    titles={[$t({ defaultMessage: 'Available APs' }),
+                      $t({ defaultMessage: 'Selected APs' })]}
+                  />
+                  : <Transfer
+                    listStyle={{ width: 250, height: 316 }}
+                    showSearch
+                    showSelectAll={false}
+                    filterOption={(inputValue, item) =>
                       // eslint-disable-next-line max-len
-                      return (item[key] && item[key].toString().toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
-                    })
-                  }
-                  dataSource={apsOption}
-                  render={item => item.name}
-                  footer={renderFooter}
-                  operations={['Add', 'Remove']}
-                  titles={[$t({ defaultMessage: 'Available APs' }),
-                    $t({ defaultMessage: 'Selected APs' })]}
-                />
+                      (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                    }
+                    dataSource={apsOption}
+                    render={item => item.name}
+                    operations={['Add', 'Remove']}
+                    titles={[$t({ defaultMessage: 'Available APs' }),
+                      $t({ defaultMessage: 'Selected APs' })]}
+                  />
+                }
               </Form.Item>
             </Col>
           </Row>}

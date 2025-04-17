@@ -89,6 +89,8 @@ const IsSupport6g = (editData: Network, options?: Record<string, boolean>) => {
 export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network, oldData: Network) => void }) {
   const { $t } = useIntl()
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupVlanRadioContext)
@@ -169,13 +171,13 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
                 options={vlanPoolList as unknown as DefaultOptionType[]}
                 style={{ width: '250px' }} />
             } />
-          <Tooltip><VLANPoolModal updateInstance={(data)=>{
+          { isApGroupMoreParameterPhase1Enabled && <Tooltip><VLANPoolModal updateInstance={(data)=>{
             vlanPoolList &&
             setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
             form.setFieldValue(['vlanPoolId'], data.id)
           }}
           vlanCount={vlanPoolList?.length||0}
-          /></Tooltip>
+          /></Tooltip> }
         </Space></Form.Item>
       )}
       <Form.Item
