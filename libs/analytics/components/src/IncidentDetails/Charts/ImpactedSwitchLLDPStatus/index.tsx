@@ -15,6 +15,7 @@ import {
   ImpactedSwitchPortRow
 } from '../ImpactedSwitchesTable/services'
 
+import { formatPortRanges } from './utils'
 
 import type { ChartProps } from '../types'
 
@@ -69,7 +70,11 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     fixed: 'left',
     width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
-    searchable: true
+    searchable: true,
+    render: (_, record: ImpactedSwitchPortRow) => {
+      if (typeof record.portNumbers !== 'string') return ''
+      return formatPortRanges(record.portNumbers.split(', '))
+    }
   }, {
     key: 'action',
     dataIndex: 'action',
