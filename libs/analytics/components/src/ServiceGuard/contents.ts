@@ -262,6 +262,18 @@ export const errorMappings : Record<string, errorMapValue> = {
   SG_APCONFIG_UNSUPPORT: {
     id: 7,
     text: defineMessage({ defaultMessage: 'AP configuration not supported (refer to release notes)' })
+  },
+  SG_AP_UNSUPPORT_GWAP_L3AUTH_DHCPNAT_VRUE: {
+    id: 8,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT Gateway AP does not support L3 authentication' })
+  },
+  SG_AP_UNSUPPORT_GWAP_SPEEDTEST_DHCPNAT_VRUE: {
+    id: 9,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT Gateway AP does not support speedtest' })
+  },
+  SG_AP_UNSUPPORT_GWAP_STATION_DHCPNAT_OTA: {
+    id: 10,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT HN or Multiple Gateway AP does not support OTA STATION operations' })
   }
 }
 
