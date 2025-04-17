@@ -90,6 +90,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   }
 
   useEffect(() => {
+    if (!isIpSecOverNetworkEnabled) {
+      return
+    }
     //eslint-disable-next-line no-console
     console.log('portId:', portId,
       '\tsoftGreProfileId:', softGreProfileId,
