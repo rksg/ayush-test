@@ -498,19 +498,15 @@ overflow: auto;
     z-index: 1;
     background: var(--acx-primary-black);
     color: var(--acx-primary-white);
-    padding: 8px 16px;
     border-radius: 0 0 4px 4px;
-    opacity: 0.9;
-    .label{
-      margin: 4px;
-    }
+    opacity: 0.7;
     .slider{
       cursor: pointer;
-      margin: 0 16px;
-      width: 75%;
+      margin: 0 18px;
+      width: 201px;
       .ant-slider-mark-text {
         color: var(--acx-primary-white);
-        margin: 6px 0;
+        margin: 4px 0;
       }
       .ant-slider-handle::before {
         display: none !important;

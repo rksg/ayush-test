@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Slider }                     from 'antd'
 import _                              from 'lodash'
@@ -92,6 +92,16 @@ function Card (props: CardProps) {
     rowHeight,
     calWidth
   )
+
+  const sliderMax = card.chartType === 'pie' ? 3 : 2
+
+  const sliderMarks = useMemo(() => {
+    const result: { [key: number]: string } = {}
+    for (let i = 0; i <= sliderMax; i++) {
+      result[i] = `${i + 1}x`
+    }
+    return result
+  }, [sliderMax])
 
   const changeCardsLayout = (nextSizeIndex: number) => {
     let groupsTmp = _.cloneDeep(props.groups)
@@ -218,8 +228,8 @@ function Card (props: CardProps) {
               >
                 <Slider
                   min={0}
-                  max={3}
-                  marks={{ 0: '1x', 1: '2x', 2: '3x', 3: '4x' }}
+                  max={sliderMax}
+                  marks={sliderMarks}
                   value={card.currentSizeIndex}
                   tooltipVisible={false}
                   onChange={changeCardsLayout}
