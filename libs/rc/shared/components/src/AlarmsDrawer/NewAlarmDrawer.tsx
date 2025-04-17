@@ -17,7 +17,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
   const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
-    setVisible(true)
+    setVisible(e.detail.data.visible ?? true)
     let filters = e.detail.data.name && e.detail.data.name !== 'all' ?
       { severity: [e.detail.data.name] } : {}
     if (e.detail.data.product && e.detail.data.product !== 'all') {

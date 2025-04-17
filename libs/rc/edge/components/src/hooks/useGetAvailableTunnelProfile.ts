@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 
+import { Features }                      from '@acx-ui/feature-toggle'
 import {
+  useGetEdgeClusterListQuery,
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
   useGetTunnelProfileViewDataListQuery
@@ -10,39 +12,46 @@ import { getIntl }                               from '@acx-ui/utils'
 
 import { getTunnelTypeDisplayName } from '../utils'
 
+import { useIsEdgeFeatureReady } from './useIsEdgeFeatureReady'
+
 interface GetAvailableTunnelProfileProps {
   serviceIds?: (string|undefined)[]
 }
 
 export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfileProps) => {
   const { serviceIds } = props || {}
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
+  // Fetch SD-LAN data
   const { allSdLans, isSdLansLoading } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: ['id', 'tunnelProfileId', 'tunneledWlans'],
       pageSize: 10000
-    } }, {
+    }
+  }, {
     selectFromResult: ({ data, isLoading }) => ({
       allSdLans: data?.data?.filter(sdLan => !serviceIds?.includes(sdLan.id)),
       isSdLansLoading: isLoading
     })
   })
 
+  // Fetch PIN data
   const { allPins, isPinsLoading } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id', 'tunnelProfileId', 'tunneledWlans'],
       pageSize: 10000
-    } },{
+    }
+  }, {
+    skip: !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => ({
       allPins: data?.data?.filter(pin => !serviceIds?.includes(pin.id)),
       isPinsLoading: isLoading
     })
   })
 
-  const {
-    allTunnelProfiles,
-    isTunnelProfilesLoading
-  } = useGetTunnelProfileViewDataListQuery({
+
+  // Fetch Tunnel Profile data
+  const { allTunnelProfiles, isTunnelProfilesLoading } = useGetTunnelProfileViewDataListQuery({
     payload: {
       fields: [
         'id', 'name', 'tunnelType', 'destinationEdgeClusterId', 'destinationEdgeClusterName',
@@ -53,24 +62,89 @@ export const useGetAvailableTunnelProfile = (props?: GetAvailableTunnelProfilePr
       sortOrder: 'ASC',
       pageSize: 10000
     }
-  },{
+  }, {
     selectFromResult: ({ data, isLoading }) => ({
       allTunnelProfiles: data?.data,
       isTunnelProfilesLoading: isLoading
     })
   })
 
-  const availableTunnelProfiles = useMemo(() => {
-    return allTunnelProfiles
-      ?.filter((tunnelProfile) =>
-        !!tunnelProfile.destinationEdgeClusterId ||
-        tunnelProfile.tunnelType === TunnelTypeEnum.L2GRE)
-      .filter((tunnelProfile) => {
-        return !allSdLans?.some((sdLan) => sdLan.tunnelProfileId === tunnelProfile.id ||
-        sdLan.tunneledWlans?.some((wlan) => wlan.forwardingTunnelProfileId === tunnelProfile.id)) &&
-          !allPins?.some((pin) => pin.vxlanTunnelProfileId === tunnelProfile.id)
-      }) ?? []
+  // Get used tunnel profiles and their associated clusters
+  const { usedTunnelProfiles, usedClusterIds } = useMemo(() => {
+    const usedTunnelProfileIds = new Set<string>()
+    const usedClusterIds = new Set<string>()
+
+    // Collect used profile IDs from SD-LANs
+    allSdLans?.forEach(sdLan => {
+      if (sdLan.tunnelProfileId) usedTunnelProfileIds.add(sdLan.tunnelProfileId)
+      sdLan.tunneledWlans?.forEach(wlan => {
+        if (wlan.forwardingTunnelProfileId) {
+          usedTunnelProfileIds.add(wlan.forwardingTunnelProfileId)
+        }
+      })
+    })
+
+    // Collect used profile IDs from PINs
+    allPins?.forEach(pin => {
+      if (pin.vxlanTunnelProfileId) {
+        usedTunnelProfileIds.add(pin.vxlanTunnelProfileId)
+      }
+    })
+
+    // Get cluster IDs from used profiles
+    allTunnelProfiles?.forEach(profile => {
+      if (usedTunnelProfileIds.has(profile.id) && profile.destinationEdgeClusterId) {
+        usedClusterIds.add(profile.destinationEdgeClusterId)
+      }
+    })
+
+    return {
+      usedTunnelProfiles: Array.from(usedTunnelProfileIds),
+      usedClusterIds: Array.from(usedClusterIds)
+    }
   }, [allSdLans, allPins, allTunnelProfiles])
+
+  // Get venue-associated cluster IDs
+  const { edgeClusterList } = useGetEdgeClusterListQuery({
+    payload: {
+      fields: ['clusterId', 'venueId'],
+      pageSize: 10000
+    }
+  }, {
+    skip: !usedClusterIds.length,
+    selectFromResult: ({ data }) => ({
+      edgeClusterList: data?.data
+    })
+  })
+
+  const venueAssociatedClusterIds = useMemo(() => {
+    if (!edgeClusterList?.length || !usedClusterIds.length) return []
+
+    const usedVenueIds = new Set(
+      edgeClusterList
+        .filter(cluster => usedClusterIds.includes(cluster.clusterId ?? ''))
+        .map(cluster => cluster.venueId)
+    )
+
+    return edgeClusterList
+      .filter(cluster => usedVenueIds.has(cluster.venueId))
+      .map(cluster => cluster.clusterId)
+  }, [edgeClusterList, usedClusterIds])
+
+  // Filter available tunnel profiles
+  const availableTunnelProfiles = useMemo(() => {
+    const isL2GreOrHasCluster = (profile: TunnelProfileViewData) =>
+      profile.tunnelType === TunnelTypeEnum.L2GRE || !!profile.destinationEdgeClusterId
+
+    const isNotUsed = (profile: TunnelProfileViewData) =>
+      !usedTunnelProfiles.includes(profile.id) &&
+      !(profile.destinationEdgeClusterId &&
+        venueAssociatedClusterIds.includes(profile.destinationEdgeClusterId))
+
+    return allTunnelProfiles?.filter(profile =>
+      isL2GreOrHasCluster(profile) && isNotUsed(profile)
+    ) ?? []
+  }, [allTunnelProfiles, usedTunnelProfiles, venueAssociatedClusterIds])
 
   return {
     isDataLoading: isSdLansLoading || isPinsLoading || isTunnelProfilesLoading,
