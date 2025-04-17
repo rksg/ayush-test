@@ -330,7 +330,8 @@ export interface VenueExtended extends EnforceableFields {
   id?: string
   country: string
   countryCode?: string
-  version?: string
+  version?: string,
+  tags?: string[]
 }
 
 export interface VenueSettings {

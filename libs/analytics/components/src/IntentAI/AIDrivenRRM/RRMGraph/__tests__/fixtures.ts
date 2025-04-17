@@ -34,7 +34,12 @@ export const mockCrrmData = [
       [2, [36], [80], ['_FULL']]
     ]),
     links: gen.links([[1, 2]]),
-    interferingLinks: gen.interferings([[1, 2]])
+    interferingLinks: gen.interferings([[1, 2]]),
+    neighborAP: {
+      interfering: 1,
+      nonInterfering: 1,
+      rogue: 3
+    }
   },
   {
     nodes: gen.nodes([
@@ -42,6 +47,11 @@ export const mockCrrmData = [
       [2, [52], [40], ['_3DB']]
     ]),
     links: gen.links([[1, 2]]),
-    interferingLinks: gen.interferings([])
+    interferingLinks: gen.interferings([]),
+    neighborAP: {
+      interfering: 0,
+      nonInterfering: 2,
+      rogue: 3
+    }
   }
 ] as unknown as ProcessedCloudRRMGraph[]

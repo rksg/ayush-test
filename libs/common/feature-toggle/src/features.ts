@@ -192,6 +192,7 @@ export enum Features {
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VENUE_TAG_TOGGLE = 'acx-ui-venue-tag-toggle',
   VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE = 'acx-ui-viewmodel-apis-migrate-msp',
   VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
   WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
