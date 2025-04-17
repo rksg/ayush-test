@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { Drawer, DrawerTypes, showActionModal }                      from '@acx-ui/components'
@@ -58,9 +59,9 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
             <span className='count'>{
               $t({ defaultMessage: '{count} widgets' }, { count: item?.widgetIds?.length || 0 })
             }</span>
-            {/* { item?.updatedDate && <span className='date'>{
-                  moment(item.updatedDate).format('YYYY/MM/DD')
-                }</span> } */}
+            { item?.updatedDate && <span className='date'>{
+              moment(item.updatedDate).format('YYYY/MM/DD')
+            }</span> }
           </div>
         </div>
 

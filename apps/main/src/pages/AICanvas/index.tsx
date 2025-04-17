@@ -116,7 +116,7 @@ export default function AICanvasModal (props: {
     'Give me a table for the Top 10 clients based on traffic.',
     'Show me the trending of the network traffic for last week.',
     'How many clients were connected to my network yesterday?'
-  ] // Only support english default questions in phase 1
+  ] // Only support english default questions
 
 
 
@@ -255,14 +255,18 @@ export default function AICanvasModal (props: {
       })
   }
 
-  const checkChanges = (callback:()=>void, handleSave:()=>void) => {
-    if (canvasHasChanges) {
+  const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {
+    if (hasChanges) {
       showActionModal({
         type: 'confirm',
         width: 400,
-        title: $t({ defaultMessage: 'Unsaved Canvas Changes' }),
-        content: $t({ defaultMessage: 'Are you sure you want to cancel the chatbot?' +
-            ' Unsaved changes to the canvas will be lost.' }),
+        title: $t({ defaultMessage: 'Unsaved Changes' }),
+        content: <div>
+          {$t({ defaultMessage: 'Do you want to save your changes to Canvas:' })}
+          <span style={{ padding: ' 0 1px 0 3px', fontWeight: '700' }}>
+            {canvasRef?.current?.currentCanvas?.name}</span>?
+          <div>{$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}</div>
+        </div>,
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{
@@ -270,13 +274,13 @@ export default function AICanvasModal (props: {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Discard Changes' }),
+            text: $t({ defaultMessage: 'Discard' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
             handler: callback
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
+            text: $t({ defaultMessage: 'Save' }),
             type: 'primary',
             key: 'ok',
             closeAfterAction: true,
@@ -290,7 +294,7 @@ export default function AICanvasModal (props: {
   }
 
   const onClickClose = () => {
-    checkChanges(onClose, ()=> {
+    checkChanges(canvasHasChanges, onClose, ()=> {
       handleSaveCanvas()
       onClose()
     })
@@ -330,7 +334,7 @@ export default function AICanvasModal (props: {
   }
 
   const onClickCanvasMode = () => {
-    checkChanges(()=>{
+    checkChanges(canvasHasChanges, ()=>{
       setCanvasMode(!showCanvas)
       setCanvasHasChanges(false)
     }, ()=>{
@@ -472,6 +476,7 @@ export default function AICanvasModal (props: {
             showCanvas && <Canvas
               ref={canvasRef}
               onCanvasChange={handleCanvasChange}
+              checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
             />

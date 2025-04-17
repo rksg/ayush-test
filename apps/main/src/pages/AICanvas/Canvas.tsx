@@ -92,8 +92,9 @@ const DEFAULT_CANVAS = [
 ] as unknown as Section[]
 
 export interface CanvasRef {
-  save: () => Promise<void>;
+  save: () => Promise<void>
   removeShadowCard: () => void
+  currentCanvas: CanvasType
 }
 
 export const DashboardIcon = () => {
@@ -108,16 +109,19 @@ export const DashboardIcon = () => {
 }
 
 interface CanvasProps {
-  onCanvasChange?: (hasChanges: boolean) => void;
+  onCanvasChange?: (hasChanges: boolean) => void
+  checkChanges?: (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => void
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
 }
 
-const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, setGroups }, ref) => {
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({
+  onCanvasChange, groups, setGroups, checkChanges }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
+  const [currentCanvasChange, setCurrentCanvasChange] = useState(false)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [canvasMenu, setCanvasMenu] = useState<
@@ -191,19 +195,31 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    if(e.key === 'New_Canvas') {
-      onNewCanvas()
-    } else if (e.key === 'Manage_Canvases') {
-      setManageCanvasVisible(true)
-    } else {
-      const selected = canvasList?.find(i => i.id == e.key)
-      setupCanvas(selected as CanvasType)
+    if(checkChanges) {
+      if(e.key === 'New_Canvas') {
+        onNewCanvas()
+      } else if (e.key === 'Manage_Canvases') {
+        setManageCanvasVisible(true)
+      } else {
+        // console.log('CurrentCanvasChange - c: ', currentCanvasChange)
+        checkChanges(currentCanvasChange, () => {
+          const selected = canvasList?.find(i => i.id == e.key)
+          setupCanvas(selected as CanvasType)
+          setCanvasChange(false)
+        }, ()=>{
+          onSave()
+          setCanvasChange(false)
+        })
+      }
     }
   }
 
   const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
+      // console.log('hasChanges: ', hasChanges)
+      setCurrentCanvasChange(hasChanges)
+      // console.log('CurrentCanvasChange: ', currentCanvasChange)
     }
   }
 
@@ -271,7 +287,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
 
   useImperativeHandle(ref, () => ({
     save: onSave,
-    removeShadowCard: removeShadowCard
+    removeShadowCard: removeShadowCard,
+    currentCanvas: currentCanvas
   }))
 
   const emptyCanvas = () => {
