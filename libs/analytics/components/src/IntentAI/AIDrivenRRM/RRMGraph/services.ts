@@ -85,8 +85,15 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
           return graph
         })
 
+        const neighborAPs = [sortedData.current.neighborAP, sortedData.projected.neighborAP]
+        const graphData = trimPairedGraphs(kpiGraph)
+        const combinedGraphData = graphData.map((item, index) => ({
+          ...item,
+          neighborAP: neighborAPs[index]
+        }))
+
         return {
-          data: trimPairedGraphs(kpiGraph),
+          data: combinedGraphData,
           csv: getCrrmCsvData(kpiGraph, getIntl().$t)
         }
       }

@@ -23,9 +23,12 @@ export const LinkHealthMonitorToggleButton = (props: {
   const [ form ] = Form.useForm()
 
   const handleClose = () => {
+    setVisible(false)
+  }
+  const handleCancel = () => {
     // reset into original values
     onChange(enabled, linkHealthSettings)
-    setVisible(false)
+    handleClose()
   }
   const handleEdit = () => {
     setVisible(true)
@@ -97,10 +100,10 @@ export const LinkHealthMonitorToggleButton = (props: {
       visible={visible}
       title={$t({ defaultMessage: '{portName}: Link Health Monitoring' }, { portName })}
       destroyOnClose
-      onClose={handleClose}
+      onClose={handleCancel}
       footer={
         <Drawer.FormFooter
-          onCancel={handleClose}
+          onCancel={handleCancel}
           onSave={async () => {
             form.submit()
           }}
