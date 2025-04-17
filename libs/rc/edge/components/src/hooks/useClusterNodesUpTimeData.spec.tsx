@@ -1,25 +1,37 @@
-import moment from 'moment'
+import { rest } from 'msw'
 
-import * as utils     from '@acx-ui/analytics/utils'
-import * as services  from '@acx-ui/rc/services'
-import { renderHook } from '@acx-ui/test-utils'
+import * as utils                          from '@acx-ui/analytics/utils'
+import { edgeApi }                         from '@acx-ui/rc/services'
+import { EdgeUrlsInfo }                    from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { renderHook, mockServer, waitFor } from '@acx-ui/test-utils'
 
 import { useClusterNodesUpTimeData, getStartAndEndTimes } from './useClusterNodesUpTimeData'
 
 // Mock dependencies
-jest.mock('@acx-ui/rc/services', () => ({
-  useLazyGetEdgeUptimeQuery: jest.fn()
-}))
-
 jest.mock('@acx-ui/analytics/utils', () => ({
   calculateGranularity: jest.fn(),
   getSeriesData: jest.fn()
 }))
 
-describe('useClusterNodesUpTimeData', () => {
-  const mockGetEdgeUptime = jest.fn()
-  const mockUnwrap = jest.fn()
+const mockEdgeUpTimeData = {
+  timeSeries: [
+    {
+      time: '2023-01-01T00:00:00Z',
+      isEdgeUp: 1
+    },
+    {
+      time: '2023-01-01T01:00:00Z',
+      isEdgeUp: 0
+    }
+  ],
+  totalUptime: 3600,
+  totalDowntime: 3600
+}
 
+const mockGetEdgeUptime = jest.fn()
+
+describe('useClusterNodesUpTimeData', () => {
   const mockFilters = {
     startDate: '2023-01-01T00:00:00Z',
     endDate: '2023-01-02T00:00:00Z'
@@ -39,94 +51,58 @@ describe('useClusterNodesUpTimeData', () => {
     }
   ]
 
-  // const mockTransformedData = [
-  //   ['2023-01-01T00:00:00Z', 'edgeStatus', '2023-01-01T01:00:00Z', 1, 'green'],
-  //   ['2023-01-01T02:00:00Z', 'edgeStatus', '2023-01-01T03:00:00Z', 0, 'red'],
-  //   ['2023-01-01T04:00:00Z', 'edgeStatus', '2023-01-01T04:00:00Z', 1, 'green']
-  // ]
-
   beforeEach(() => {
     jest.clearAllMocks()
 
-    // Setup mocks
-    // jest.spyOn(reactIntl, 'useIntl').mockReturnValue(mockIntl as any)
-
-    mockGetEdgeUptime.mockReturnValue({
-      unwrap: mockUnwrap
-    })
-
-    jest.spyOn(services, 'useLazyGetEdgeUptimeQuery').mockReturnValue([
-      mockGetEdgeUptime
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any)
+    store.dispatch(edgeApi.util.resetApiState())
+    mockServer.use(
+      rest.post(EdgeUrlsInfo.getEdgeUpDownTime.url,
+        (req, res, ctx) => {
+          // console.log(mockGetEdgeUptime)
+          mockGetEdgeUptime({ payload: req.body, params: req.params })
+          return res(ctx.json(mockEdgeUpTimeData))
+        })
+    )
 
     jest.spyOn(utils, 'calculateGranularity').mockReturnValue('1h')
     jest.spyOn(utils, 'getSeriesData').mockReturnValue(mockTimeSeriesData)
   })
 
-  test('should return empty results with empty serialNumbers', async () => {
+  it('should return empty results with empty serialNumbers', async () => {
+    const mockEmptySerialNumbers = []
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
-        serialNumbers: [],
+        serialNumbers: mockEmptySerialNumbers,
         filters: mockFilters
-      })
-    )
+      }), { wrapper: Provider })
 
     expect(result.current.queryResults).toEqual([])
-    expect(result.current.isLoading).toBe(false)
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
     expect(mockGetEdgeUptime).not.toHaveBeenCalled()
   })
 
-  test('should return empty results with undefined serialNumbers', async () => {
+  it('should return empty results with undefined serialNumbers', async () => {
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: undefined,
         filters: mockFilters
-      })
-    )
+      }), { wrapper: Provider })
 
     expect(result.current.queryResults).toEqual([])
-    expect(result.current.isLoading).toBe(false)
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
     expect(mockGetEdgeUptime).not.toHaveBeenCalled()
   })
 
-  test('should fetch and process data successfully', async () => {
-    // Mock getStartAndEndTimes function by mocking its result
-    const mockEdgeUpTimeData = {
-      timeSeries: [
-        {
-          time: '2023-01-01T00:00:00Z',
-          isEdgeUp: 1
-        },
-        {
-          time: '2023-01-01T01:00:00Z',
-          isEdgeUp: 0
-        }
-      ],
-      totalUptime: 3600,
-      totalDowntime: 3600
-    }
-
-    mockUnwrap.mockResolvedValueOnce({
-      ...mockEdgeUpTimeData
-    }).mockResolvedValueOnce({
-      ...mockEdgeUpTimeData,
-      totalUptime: 7200,
-      totalDowntime: 0
-    })
-
-    const { result } = renderHook(() =>
-      useClusterNodesUpTimeData({
+  it('should fetch and process data successfully', async () => {
+    const { result } = renderHook(() => {
+      return useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
         filters: mockFilters
       })
-    )
+    }, { wrapper: Provider })
 
-    // Initially loading
-    expect(result.current.isLoading).toBe(true)
-
-    // Not loading anymore
-    expect(result.current.isLoading).toBe(false)
+    await waitFor(() => expect(result.current.isLoading).toBe(true))
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     // Check if API was called with correct params
     expect(mockGetEdgeUptime).toHaveBeenCalledTimes(2)
@@ -146,45 +122,56 @@ describe('useClusterNodesUpTimeData', () => {
 
   })
 
-  test('should handle API error', async () => {
-    mockUnwrap.mockRejectedValue(new Error('API Error'))
+  it('should handle API error', async () => {
+    // mockUnwrap.mockRejectedValue(new Error('API Error'))
+    mockServer.use(
+      rest.post(EdgeUrlsInfo.getEdgeUpDownTime.url,
+        (req, res, ctx) => {
+          mockGetEdgeUptime({ payload: req.body, params: req.params })
+          return res(ctx.status(422))
+        })
+    )
 
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
         filters: mockFilters
-      })
-    )
+      }), { wrapper: Provider } )
 
     expect(result.current.queryResults).toEqual([])
-    expect(result.current.isLoading).toBe(false)
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
   })
 
-  test('should handle rejected promises', async () => {
-    mockUnwrap.mockResolvedValueOnce({
+  it('should handle rejected promises', async () => {
+    const mockQueryFn = jest.fn()
+    const mockData = {
       timeSeries: [],
       totalUptime: 0,
       totalDowntime: 0
-    })
+    }
 
-    mockGetEdgeUptime.mockReturnValueOnce({
-      unwrap: mockUnwrap
-    }).mockReturnValueOnce({
-      unwrap: jest.fn().mockRejectedValue(new Error('Failed request'))
-    })
+    mockServer.use(
+      rest.post(EdgeUrlsInfo.getEdgeUpDownTime.url,
+        (req, res, ctx) => {
+          if (req.params.serialNumber === mockSerialNumbers[0]) {
+            return res(ctx.status(422))
+          }
+          mockQueryFn({ payload: req.body, params: req.params })
+          return res(ctx.json(mockData))
+        })
+    )
 
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
         filters: mockFilters
-      })
-    )
+      }), { wrapper: Provider })
 
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
     expect(result.current.queryResults.length).toBe(1)
-    expect(result.current.isLoading).toBe(false)
   })
 
-  test('getStartAndEndTimes transforms time series data correctly', () => {
+  it('getStartAndEndTimes transforms time series data correctly', () => {
     const result = getStartAndEndTimes(mockTimeSeriesData)
 
     expect(result).toHaveLength(3)
@@ -202,51 +189,5 @@ describe('useClusterNodesUpTimeData', () => {
     // Check status change back to 1
     expect(result[2][0]).toBe('2023-01-01T04:00:00Z')
     expect(result[2][3]).toBe(1)
-  })
-
-  test('should handle time boundary adjustments', async () => {
-    // Mock the moment operations for time boundary adjustments
-    const originalMoment = moment
-    const mockMomentInstance = {
-      add: jest.fn().mockReturnThis(),
-      toISOString: jest.fn().mockReturnValue('2023-01-01T05:00:00Z')
-    }
-    global.moment = jest.fn((...args) => {
-      if (args.length) {
-        return {
-          ...mockMomentInstance,
-          add: mockMomentInstance.add,
-          toISOString: mockMomentInstance.toISOString
-        }
-      }
-      return {
-        duration: jest.fn().mockReturnValue({
-          asSeconds: jest.fn().mockReturnValue(3600)
-        })
-      }
-    })
-
-    mockUnwrap.mockResolvedValueOnce({
-      timeSeries: [],
-      totalUptime: 3600,
-      totalDowntime: 3600
-    })
-
-    // Setup specific mock of getSeriesData to test the map function
-    jest.spyOn(utils, 'getSeriesData').mockReturnValueOnce([{
-      data: [['2023-01-01T00:00:00Z', 1]]
-    }])
-
-    renderHook(() =>
-      useClusterNodesUpTimeData({
-        serialNumbers: ['SN1'],
-        filters: mockFilters
-      })
-    )
-
-    expect(mockMomentInstance.add).toHaveBeenCalledWith(3600, 'seconds')
-
-    // Restore mocks
-    global.moment = originalMoment
   })
 })

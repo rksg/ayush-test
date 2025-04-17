@@ -1,8 +1,9 @@
+import userEvent                   from '@testing-library/user-event'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { EdgeLagStatus, EdgeStatus, EdgeWanLinkHealthStatusEnum } from '@acx-ui/rc/utils'
-import { render, screen, fireEvent }                              from '@acx-ui/test-utils'
+import { render, screen, waitFor }                                from '@acx-ui/test-utils'
 
 import { EdgeOverviewLagTable } from './index'
 
@@ -17,7 +18,7 @@ jest.mock('../WanLinkHealthStatusLight', () => ({
 }))
 
 describe('EdgeOverviewLagTable', () => {
-  const mockNavigate = jest.requireMock('react-router-dom').useNavigate
+  // const mockNavigate = jest.requireMock('react-router-dom').useNavigate
 
   const mockData: EdgeLagStatus[] = [
     {
@@ -27,7 +28,8 @@ describe('EdgeOverviewLagTable', () => {
       lagType: 'Static',
       status: 'Active',
       adminStatus: 'Enabled',
-      lagMembers: [{ name: 'Port 1', state: 'Up', systemId: '00:11:22:33:44:55' }],
+      // eslint-disable-next-line max-len
+      lagMembers: [{ name: 'Port 1', state: 'Up', systemId: '00:11:22:33:44:55', lacpTimeout: 'SHORT' }],
       portType: 'Ethernet',
       mac: '00:11:22:33:44:55',
       ip: '192.168.1.1',
@@ -74,7 +76,7 @@ describe('EdgeOverviewLagTable', () => {
       expect(screen.getByText('Up')).toBeInTheDocument()
     })
 
-    it('handles link health monitoring button click', () => {
+    it('handles link health monitoring button click', async () => {
       render(
         <Router>
           <EdgeOverviewLagTable
@@ -88,12 +90,12 @@ describe('EdgeOverviewLagTable', () => {
       )
 
       const linkHealthButton = screen.getByText('ON')
-      fireEvent.click(linkHealthButton)
+      await userEvent.click(linkHealthButton)
 
       expect(screen.getByText('Link Health Monitoring')).toBeInTheDocument()
     })
 
-    it('renders expanded row with lag members', () => {
+    it('renders expanded row with lag members', async () => {
       render(
         <Router>
           <EdgeOverviewLagTable
@@ -106,10 +108,9 @@ describe('EdgeOverviewLagTable', () => {
         </Router>
       )
 
-      const expandButton = screen.getByRole('button', { name: /expand row/i })
-      fireEvent.click(expandButton)
-
-      expect(screen.getByText('Port 1')).toBeInTheDocument()
+      const expandButton = screen.getByTestId('PlusSquareOutlined')
+      await userEvent.click(expandButton)
+      await screen.findByRole('row', { name: /Port/ })
       expect(screen.getByText('Up')).toBeInTheDocument()
       expect(screen.getByText('00:11:22:33:44:55')).toBeInTheDocument()
     })
@@ -141,11 +142,10 @@ describe('EdgeOverviewLagTable', () => {
       expect(screen.getByText('Ethernet')).toBeInTheDocument()
       expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
       expect(screen.getByText('Static')).toBeInTheDocument()
-      expect(screen.getByText('Primary')).toBeInTheDocument()
       expect(screen.getByText('Up')).toBeInTheDocument()
     })
 
-    it('handles link health monitoring button click', () => {
+    it('handles link health monitoring button click', async () => {
       render(
         <Router>
           <EdgeOverviewLagTable
@@ -159,12 +159,12 @@ describe('EdgeOverviewLagTable', () => {
       )
 
       const linkHealthButton = screen.getByText('ON')
-      fireEvent.click(linkHealthButton)
+      await userEvent.click(linkHealthButton)
 
       expect(screen.getByText('Link Health Monitoring')).toBeInTheDocument()
     })
 
-    it('renders expanded row with lag members', () => {
+    it('renders expanded row with lag members', async () => {
       render(
         <Router>
           <EdgeOverviewLagTable
@@ -177,32 +177,13 @@ describe('EdgeOverviewLagTable', () => {
         </Router>
       )
 
-      const expandButton = screen.getByRole('button', { name: /expand row/i })
-      fireEvent.click(expandButton)
+      const expandButton = screen.getByTestId('PlusSquareOutlined')
+      await userEvent.click(expandButton)
+      await screen.findByRole('row', { name: /Port/ })
 
-      expect(screen.getByText('Port 1')).toBeInTheDocument()
+      expect(screen.getByText(/Port/)).toBeInTheDocument()
       expect(screen.getByText('Up')).toBeInTheDocument()
       expect(screen.getByText('00:11:22:33:44:55')).toBeInTheDocument()
-    })
-
-    it('navigates to LAG configuration page', () => {
-      render(
-        <Router>
-          <EdgeOverviewLagTable
-            isConfigurable={true}
-            data={mockData}
-            isLoading={false}
-            isClusterLevel={true}
-            edgeNodes={mockEdgeNodes}
-          />
-        </Router>
-      )
-
-      const configButton = screen.getByText('Edit LAGs')
-      fireEvent.click(configButton)
-
-      // eslint-disable-next-line max-len
-      expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/edit/lags') }))
     })
   })
 

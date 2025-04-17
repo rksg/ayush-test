@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { GridCol, GridRow }                                               from '@acx-ui/components'
-import { EdgeClusterNodesUpTimeWidget, EdgeClusterTrafficByVolumeWidget } from '@acx-ui/edge/components'
+import { GridCol, GridRow }                                                       from '@acx-ui/components'
+import { EdgeClusterNodesUpTimeWidget, EdgeClusterWanPortsTrafficByVolumeWidget } from '@acx-ui/edge/components'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
@@ -17,7 +17,7 @@ export const MonitorTab = (props: {
         <EdgeClusterNodesUpTimeWidget edges={clusterInfo?.edgeList} />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <EdgeClusterTrafficByVolumeWidget
+        <EdgeClusterWanPortsTrafficByVolumeWidget
           edges={clusterInfo?.edgeList}
           wanPortIfNames={wanPortIfNames}
         />

@@ -9,7 +9,7 @@ import { EdgeAllPortTrafficData, EdgeStatus } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { useDateFilter }                      from '@acx-ui/utils'
 
-import { EdgeClusterTrafficByVolumeWidget, transformTimeSeriesChartData } from './index'
+import { EdgeClusterWanPortsTrafficByVolumeWidget, transformTimeSeriesChartData } from './index'
 
 // Mock dependencies
 jest.mock('@acx-ui/utils', () => {
@@ -50,7 +50,7 @@ jest.mock('@acx-ui/components', () => {
   }
 })
 
-describe('EdgeClusterTrafficByVolumeWidget', () => {
+describe('EdgeClusterWanPortsTrafficByVolumeWidget', () => {
   const mockGetEdgePortTraffic = jest.fn()
   const unwrapMock = jest.fn()
 
@@ -68,14 +68,14 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
     ])
   })
 
-  it('should render no data when no WAN ports are provided', () => {
+  it('should render no data when no WAN ports are provided', async () => {
     render(<Provider>
       <IntlProvider locale='en'>
-        <EdgeClusterTrafficByVolumeWidget edges={[]} wanPortIfNames={[]} />
+        <EdgeClusterWanPortsTrafficByVolumeWidget edges={[]} wanPortIfNames={[]} />
       </IntlProvider>
     </Provider>)
     await waitFor(() => {
-      expect(screen.getByText('No data to display')).toBeInTheDocument()
+      expect(screen.getByText('No WAN port exist')).toBeInTheDocument()
     })
   })
 
@@ -84,7 +84,7 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
     const wanPorts = [{ edgeId: 'SN123', ifName: 'eth0' }]
 
     render(<IntlProvider locale='en'>
-      <EdgeClusterTrafficByVolumeWidget edges={[]} wanPortIfNames={wanPorts} />
+      <EdgeClusterWanPortsTrafficByVolumeWidget edges={[]} wanPortIfNames={wanPorts} />
     </IntlProvider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
@@ -109,7 +109,7 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
     unwrapMock.mockResolvedValue(mockTrafficData)
 
     render(<IntlProvider locale='en'>
-      <EdgeClusterTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
+      <EdgeClusterWanPortsTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
     </IntlProvider>)
 
     await waitFor(() => {
@@ -131,15 +131,20 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
     const mockTrafficData: EdgeAllPortTrafficData = {
       timeSeries: {
         time: [],
-        ports: []
+        ports: [{
+          portName: wanPorts[0].ifName,
+          total: [],
+          rx: [],
+          tx: []
+        }]
       },
-      portCount: 0
+      portCount: 1
     }
 
     unwrapMock.mockResolvedValue(mockTrafficData)
 
     render(<IntlProvider locale='en'>
-      <EdgeClusterTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
+      <EdgeClusterWanPortsTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
     </IntlProvider>)
 
     // Wait for the</IntlProvider> data to load
@@ -147,7 +152,7 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
       expect(mockGetEdgePortTraffic).toHaveBeenCalled()
     })
 
-    expect(screen.getByText('No data to display')).toBeInTheDocument()
+    expect(await screen.findByText('No data to display')).toBeInTheDocument()
   })
 
   it('should filter ports correctly based on wanPortIfNames', async () => {
@@ -178,7 +183,7 @@ describe('EdgeClusterTrafficByVolumeWidget', () => {
     unwrapMock.mockResolvedValue(mockTrafficData)
 
     render(<IntlProvider locale='en'>
-      <EdgeClusterTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
+      <EdgeClusterWanPortsTrafficByVolumeWidget edges={edges} wanPortIfNames={wanPorts} />
     </IntlProvider>)
 
     await waitFor(() => {

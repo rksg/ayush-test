@@ -83,6 +83,33 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
     </GridRow>
     <GridRow>
       <GridCol col={{ span: 24 }}>
+
+        <GridCol col={{ span: 21 }} style={{ height: '200px' }}>
+          <AutoSizer>
+            {({ height, width }) =>
+              <MultiBarTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults?.map((resultData, nodeIndex) => {
+                  // eslint-disable-next-line max-len
+                  const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
+
+                  return {
+                    key: 'EdgeStatus' + nodeIndex,
+                    name: edgeData?.name ?? `Edge ${nodeIndex}`,
+                    color: cssStr('--acx-semantics-green-50'),
+                    // eslint-disable-next-line max-len
+                    data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
+                  }
+                })}
+                chartBoundary={[
+                  moment(filters?.startDate).valueOf(),
+                  moment(filters?.endDate).valueOf()
+                ]}
+                hasXaxisLabel
+              />
+            }
+          </AutoSizer>
+        </GridCol>
         {queryResults?.map((resultData, nodeIndex) => {
           // eslint-disable-next-line max-len
           const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
@@ -105,7 +132,7 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
                   })}
               </Typography.Title>
             </GridCol>
-            <GridCol col={{ span: 21 }} style={{ height: '30px' }}>
+            <GridCol col={{ span: 21 }} style={{ height: '30px', overflow: 'visible' }}>
               <AutoSizer>
                 {(resultData.totalUptime + resultData.totalDowntime) === 0
                   ? () => <NoData />
@@ -119,13 +146,20 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
                           color: cssStr('--acx-semantics-green-50'),
                           // eslint-disable-next-line max-len
                           data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
+                        },
+                        {
+                          key: 'EdgeStatus',
+                          name: 'Edge',
+                          color: cssStr('--acx-semantics-green-50'),
+                          // eslint-disable-next-line max-len
+                          data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
                         }
                       ]}
                       chartBoundary={[
                         moment(filters?.startDate).valueOf(),
                         moment(filters?.endDate).valueOf()
                       ]}
-                      hasXaxisLabel={true}
+                      hasXaxisLabel={nodeIndex === ((edges?.length ?? 0) - 1)}
                     />
                 }
               </AutoSizer>

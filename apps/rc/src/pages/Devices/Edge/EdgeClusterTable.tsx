@@ -54,6 +54,8 @@ export const EdgeClusterTable = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+  const isEdgeDualWanReady = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const {
     deleteNodeAndCluster,
     reboot,
@@ -98,21 +100,25 @@ export const EdgeClusterTable = () => {
       searchable: true,
       fixed: 'left',
       render: (_, row) => {
-        return <TenantLink to={`${getUrl({
+        console.log(getUrl({
           feature: row.isFirstLevel ? Device.EdgeCluster : Device.Edge,
           oper: CommonOperation.Detail,
-          params: { id: row.isFirstLevel ? row.clusterId : row.serialNumber } })}/overview`}>
-          {row.name}
-        </TenantLink>
-
-        // return row.isFirstLevel ?
-        //   row.name :
-        //   <TenantLink to={`${getUrl({
-        //     feature: Device.Edge,
-        //     oper: CommonOperation.Detail,
-        //     params: { id: row.serialNumber } })}/overview`}>
-        //     {row.name}
-        //   </TenantLink>
+          params: { id: row.isFirstLevel ? row.clusterId : row.serialNumber } }))
+        return isEdgeDualWanReady
+          ? <TenantLink to={`${getUrl({
+            feature: row.isFirstLevel ? Device.EdgeCluster : Device.Edge,
+            oper: CommonOperation.Detail,
+            params: { id: row.isFirstLevel ? row.clusterId : row.serialNumber } })}/overview`}>
+            {row.name}
+          </TenantLink>
+          : (row.isFirstLevel
+            ? row.name
+            : <TenantLink to={`${getUrl({
+              feature: Device.Edge,
+              oper: CommonOperation.Detail,
+              params: { id: row.serialNumber } })}/overview`}>
+              {row.name}
+            </TenantLink>)
       }
     },
     {

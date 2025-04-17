@@ -83,16 +83,20 @@ export const useClusterNodesUpTimeData = (props: {
 
   useEffect(() => {
     setIsLoading(true)
-    fetchData().then((results) => {
-      setQueryResults(results)
-    }).catch(() => {
-      setQueryResults([])
-    }).finally(() => {
-      setIsLoading(false)
-    })
+
+    fetchData()
+      .then((results) => {
+        setQueryResults(results)
+      })
+      .catch(() => {
+        setQueryResults([])
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [fetchData])
 
-  return useMemo(() => ({ queryResults, isLoading }), [queryResults])
+  return useMemo(() => ({ queryResults, isLoading }), [queryResults, isLoading])
 }
 
 export function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {

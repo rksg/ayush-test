@@ -30,3 +30,17 @@ export const Duration = styled.span`
 export const Wrapper = styled(GridRow)`
   padding: 10px 0 0 0;
 `
+
+export const ChartWrapper = styled.div`
+  .ant-tooltip {
+    z-index: 1050 !important;
+  }
+
+  & .antd-multi-bar-time-series-chart {
+    position: relative;
+    
+    &:hover {
+      z-index: 10;
+    }
+  }
+`

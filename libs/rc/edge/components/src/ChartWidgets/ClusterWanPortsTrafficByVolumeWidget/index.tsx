@@ -27,7 +27,7 @@ import { useDateFilter, getIntl  }                                   from '@acx-
 
 import type { EChartsOption, TooltipComponentOption } from 'echarts'
 
-export const EdgeClusterTrafficByVolumeWidget = (props: {
+export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
   edges: EdgeStatus[] | undefined,
   wanPortIfNames: { edgeId: string, ifName: string }[],
  }) => {
@@ -128,7 +128,7 @@ export const EdgeClusterTrafficByVolumeWidget = (props: {
 
   return <HistoricalCard title={$t({ defaultMessage: 'WAN Traffic by Volume' })}>
     { wanPortIfNames.length === 0
-      ? <NoData />
+      ? <NoData text={$t({ defaultMessage: 'No WAN port exist' })} />
       : <Loader states={[{ isLoading: wanPortIfNames.length !== 0 && data.length === 0 }]}>
         <AutoSizer>
           { isEmpty(data[0]?.timeSeries?.time)

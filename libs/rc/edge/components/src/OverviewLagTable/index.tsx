@@ -187,8 +187,10 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
             columns={columns}
             expandable={{
               ...NestedTableExpandableDefaultConfig,
-              expandedRowRender: (data) =>
-                expandedRowRender(data.lagMembers)
+              expandedRowRender: (data) => {
+                console.log(data)
+                return expandedRowRender(data.lagMembers)
+              }
             } as ExpandableConfig<LagsTableDataType>}
             dataSource={convertToLagsTableDataType(data, edgeNodes)}
           />
@@ -215,13 +217,16 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
 const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
 
   const { $t } = getIntl()
-
+  console.log(memberStatus)
   const columns: TableProps<LagMemberTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
       dataIndex: 'name',
-      render: (_data, row) => capitalize(row.name)
+      render: (_data, row) => {
+        console.log(row.name)
+        return capitalize(row.name)
+      }
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),
