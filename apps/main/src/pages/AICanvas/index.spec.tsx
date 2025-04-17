@@ -49,7 +49,7 @@ jest.mock('@acx-ui/rc/services', () => {
       jest.fn(() => ({
         unwrap: jest.fn().mockResolvedValue({
           page: 1,
-          totalCount: 4,
+          totalCount: 5,
           totalPages: 1,
           data: [
             {
@@ -84,10 +84,40 @@ jest.mock('@acx-ui/rc/services', () => {
               created: '2025-02-10T11:05:26.365+00:00'
             },
             {
+              id: '9ca71a804ef94a5bb737f810d5e3b42c',
+              role: 'AI',
+              text: 'There were 0 clients connected to your network yesterday.',
+              created: '2025-02-09T06:32:52.032+00:00',
+              widgets: [
+                {
+                  axisType: 'time',
+                  chartType: 'line',
+                  chartOption: [
+                    {
+                      key: 'time_Switch Count',
+                      name: 'Switch Count',
+                      data: [
+                        ['2025-04-10T00:00:00.000Z', 1],
+                        ['2025-04-10T01:00:00.000Z', 1],
+                        ['2025-04-10T02:00:00.000Z', 1]
+                      ]
+                    }
+                  ]
+                }
+              ],
+              userFeedback: 'THUMBS_UP'
+            },
+            {
+              id: 'c135850785b541ab9efbb8f4aedaf4f6',
+              role: 'USER',
+              text: 'How many clients were connected to my network yesterday?',
+              created: '2025-02-09T06:32:44.736+00:00'
+            },
+            {
               id: 'd259dc3cb138478c9c4bcc48f9270602',
               role: 'SYSTEM',
               text: 'Some older messages have been removed due to the 30-day retention policy',
-              created: '2025-03-06T02:10:46.264+00:00'
+              created: '2025-02-06T02:10:46.264+00:00'
             }
           ] })
       }))
@@ -212,7 +242,9 @@ describe('AICanvas', () => {
     fireEvent.click(newChatBtn)
     // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
-    expect(await screen.findByText('DraggableChart')).toBeVisible()
+    const draggableCharts = await screen.findAllByText('DraggableChart')
+    expect(draggableCharts.length).toBe(2)
+    expect(draggableCharts[0]).toBeVisible()
     const historyBtn = await screen.findByTestId('historyIcon')
     expect(historyBtn).toBeVisible()
     fireEvent.click(historyBtn)
@@ -290,11 +322,11 @@ describe('AICanvas', () => {
     expect(feedbackSection).not.toBeVisible()
 
     const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
-    expect(thumbsUpButtons).toHaveLength(1)
+    expect(thumbsUpButtons).toHaveLength(2)
     await userEvent.click(thumbsUpButtons[0])
     expect(mockedSendFeedback).toBeCalledTimes(0)
     const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
-    expect(thumbsDownButtons).toHaveLength(1)
+    expect(thumbsDownButtons).toHaveLength(2)
     await userEvent.click(thumbsDownButtons[0])
     expect(mockedSendFeedback).toHaveBeenCalledWith({
       params: expect.objectContaining({
@@ -303,5 +335,17 @@ describe('AICanvas', () => {
       }),
       payload: false
     })
+    const elements = screen.getAllByTestId('messageTail')
+    const fixedNarrowerElements = elements.filter(el => el.classList.contains('fixed-narrower'))
+    expect(fixedNarrowerElements.length).toBe(1)
+    const narrowComputedStyle = window.getComputedStyle(fixedNarrowerElements[0])
+    const narrowWidthInPixels = parseFloat(narrowComputedStyle.width)
+    expect(narrowWidthInPixels).toBe(200)
+    const fixedElements = elements.filter(el => el.classList.contains('ai-message-tail') &&
+      el.classList.contains('fixed') && !el.classList.contains('fixed-narrower'))
+    expect(fixedElements.length).toBe(1)
+    const computedStyle = window.getComputedStyle(fixedElements[0])
+    const widthInPixels = parseFloat(computedStyle.width)
+    expect(widthInPixels).toBe(300)
   })
 })

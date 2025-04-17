@@ -373,6 +373,9 @@ display: flex;
         &.fixed {
           width: 300px;
         }
+        &.fixed-narrower {
+          width: 200px !important;
+        }
         &.dynamic {
           align-self: flex-start;
         }
