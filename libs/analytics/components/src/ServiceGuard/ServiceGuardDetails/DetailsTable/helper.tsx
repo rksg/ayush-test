@@ -64,12 +64,12 @@ export function getToolTipText ({
 }) {
   const { $t } = getIntl()
 
-  const toolTipContent =
-    error
-      ? contents.stagesErrorMappings?.[error]
-        ? $t(contents.stagesErrorMappings?.[error]?.text)
-        : $t(contents.errorMappings?.[error]?.text)
-      : toolTipText
+  const toolTipContent = error
+    ? $t(
+      contents.stagesErrorMappings?.[error]?.text ||
+      contents.errorMappings?.[error]?.text ||
+      defineMessage({ defaultMessage: 'Unknown error occurred' })
+    ) : toolTipText
   const errorText = `${toolTipContent} \n \n`
   const noStationAPText = $t(
     defineMessage({
