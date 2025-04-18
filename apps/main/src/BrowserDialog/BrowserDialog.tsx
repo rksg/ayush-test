@@ -34,7 +34,7 @@ export const detectBrowserLang = () => {
 
 export const useBrowserDialog = () => {
   const { $t } = useIntl()
-  const { lang: userLang, setLang } = useLocaleContext()
+  const locale = useLocaleContext()
   const [updateUserProfile] = useUpdateUserProfileMutation()
 
   const { data: userProfile } = useUserProfileContext()
@@ -42,6 +42,7 @@ export const useBrowserDialog = () => {
   const showBrowserLangDialog = useCallback(() => {
     const browserLang = detectBrowserLang()
     const browserCacheLang = localStorage.getItem('browserLang')
+    const userLang = locale?.lang || DEFAULT_SYS_LANG
     if (userLang === browserLang || browserCacheLang === browserLang) {
       return
     }
@@ -79,7 +80,7 @@ export const useBrowserDialog = () => {
               params: { tenantId: userProfile?.tenantId }
             }).unwrap()
 
-            setLang(browserLang)
+            locale.setLang(browserLang)
           }
         }]
       },
@@ -88,7 +89,7 @@ export const useBrowserDialog = () => {
             + ' Would you like to change the system\'s language to {bLangDisplay}?' },
       { bLangDisplay })
     })
-  }, [$t, userLang, updateUserProfile, userProfile, setLang])
+  }, [$t, locale, updateUserProfile, userProfile])
 
   return { showBrowserLangDialog }
 }
