@@ -342,13 +342,13 @@ export function SwitchStackSetting (props: {
           {
             type: 'number',
             min: 1,
-            max: 8192
+            max: 8256
           }
         ]}
         validateFirst
         children={<InputNumber
           min={1}
-          max={8192}
+          max={8256}
           data-testid='port-security-max-entries-input'
           onBlur={onPortSecurityMaxEntriesChange}
           style={{ width: '100%' }}
