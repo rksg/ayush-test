@@ -139,7 +139,7 @@ export default function SelectServiceForm () {
         ]}
       />
       <StepsFormLegacy
-        onCancel={() => true && navigate(myServicesPath)}
+        onCancel={() => navigate(myServicesPath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
         <StepsFormLegacy.StepForm
