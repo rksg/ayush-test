@@ -6,10 +6,13 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, NoData, Tabs, Tooltip } from '@acx-ui/components'
+import { isMultiWanClusterPrerequisite } from '@acx-ui/edge/components'
+import { Features }                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }         from '@acx-ui/rc/components'
 import { EdgePort }                      from '@acx-ui/rc/utils'
 
-import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
@@ -20,10 +23,13 @@ const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
 }
 
 export const SubInterfaces = () => {
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const { serialNumber = '' } = useParams()
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
   const {
+    clusterInfo,
     portData,
     portStatus,
     lagStatus,
@@ -32,6 +38,9 @@ export const SubInterfaces = () => {
     isLagStatusFetching,
     isCluster
   } = useContext(EditEdgeDataContext)
+
+  // eslint-disable-next-line max-len
+  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
@@ -55,7 +64,10 @@ export const SubInterfaces = () => {
       {
         isCluster && <ClusterNavigateWarning />
       }
-      <Form disabled={isCluster}>
+      {
+        isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
+      }
+      <Form disabled={isCluster || isMutliWanClusterCondition}>
         {
           portData.length > 0 ?
             <Tabs
