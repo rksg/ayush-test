@@ -1,15 +1,15 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Table, TableProps }                                from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListByQueryQuery }      from '@acx-ui/rc/services'
+import { Table, TableProps }                                     from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListByQueryQuery }           from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
   checkObjectNotExists,
   defaultSort,
   OperatorType,
   sortProp, trailingNorLeadingSpaces,
-  AttributeOperationLabelMapping, RulesManagementUrlsInfo
+  AttributeOperationLabelMapping, RadiusAttributeGroupUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getOpsApi } from '@acx-ui/utils'
@@ -52,8 +52,8 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
   const { onEditClick, onAddClick, editMode = false } = props
 
   // eslint-disable-next-line max-len
-  const attributeTableRbacOpsIds = editMode ? [getOpsApi(RulesManagementUrlsInfo.updateAttributeGroup)]
-    : [getOpsApi(RulesManagementUrlsInfo.createAttributeGroup)]
+  const attributeTableRbacOpsIds = editMode ? [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]
+    : [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)]
 
   const handleAttributeAssignments = (attribute: AttributeAssignment[]) => {
     form.setFieldValue('attributeAssignments', attribute)
