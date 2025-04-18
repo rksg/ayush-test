@@ -475,6 +475,7 @@ export default function AICanvasModal (props: {
           {
             showCanvas && <Canvas
               ref={canvasRef}
+              canvasHasChanges={canvasHasChanges}
               onCanvasChange={handleCanvasChange}
               checkChanges={checkChanges}
               groups={groups}

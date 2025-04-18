@@ -109,6 +109,7 @@ export const DashboardIcon = () => {
 }
 
 interface CanvasProps {
+  canvasHasChanges?: boolean
   onCanvasChange?: (hasChanges: boolean) => void
   checkChanges?: (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => void
   groups: Group[]
@@ -116,16 +117,13 @@ interface CanvasProps {
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({
-  onCanvasChange, groups, setGroups, checkChanges }, ref) => {
+  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
-  const [currentCanvasChange, setCurrentCanvasChange] = useState(false)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
-  const [canvasMenu, setCanvasMenu] = useState<
-    ReactElement<MenuProps>>(null as unknown as ReactElement<MenuProps>)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
 
   const [getCanvas] = useLazyGetCanvasQuery()
@@ -159,34 +157,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   useEffect(() => {
     if(canvasList) {
-      setCurrentCanvas(canvasList[0])
-      setCanvasMenu(<Menu
-        onClick={handleMenuClick}
-        defaultSelectedKeys={[canvasId]}
-        items={[
-          ...canvasList.map(c => ({
-            icon: c.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
-            key: c.id,
-            label: c.name,
-            itemIcon: c.dashboardIds && <div
-              style={{ marginLeft: '10px', height: '20px' }}><DashboardIcon /></div>
-            // style: canvasId == c.id ? {
-            //     background: cssStr('--acx-accents-orange-20')
-            //   } : {}
-          })),
-          {
-            type: 'divider'
-          },
-          {
-            key: 'New_Canvas',
-            label: $t({ defaultMessage: 'New Canvas' }),
-            disabled: canvasList.length >= 10
-          },
-          {
-            key: 'Manage_Canvases',
-            label: $t({ defaultMessage: 'Manage My Canvases' })
-          }
-        ]}/>)
+      setupCanvas(canvasList[0])
     }
   }, [canvasList])
 
@@ -195,31 +166,30 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    if(checkChanges) {
+    const actions = () => {
       if(e.key === 'New_Canvas') {
         onNewCanvas()
+        setCanvasChange(false)
       } else if (e.key === 'Manage_Canvases') {
         setManageCanvasVisible(true)
+        setCanvasChange(false)
       } else {
-        // console.log('CurrentCanvasChange - c: ', currentCanvasChange)
-        checkChanges(currentCanvasChange, () => {
-          const selected = canvasList?.find(i => i.id == e.key)
-          setupCanvas(selected as CanvasType)
-          setCanvasChange(false)
-        }, ()=>{
-          onSave()
-          setCanvasChange(false)
-        })
+        const selected = canvasList?.find(i => i.id == e.key)
+        setupCanvas(selected as CanvasType)
       }
+    }
+    if(checkChanges) {
+      checkChanges(!!canvasHasChanges, () => {
+        actions()
+      }, ()=>{
+        onSave(actions)
+      })
     }
   }
 
   const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
-      // console.log('hasChanges: ', hasChanges)
-      setCurrentCanvasChange(hasChanges)
-      // console.log('CurrentCanvasChange: ', currentCanvasChange)
     }
   }
 
@@ -258,7 +228,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     }
   }
 
-  const onSave = async () => {
+  const onSave = async (callback?: ()=>void) => {
     const tmp = _.cloneDeep(sections)
     let widgetIds = [] as string[]
     let hasCard = false
@@ -278,6 +248,10 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
         payload: {
           content: hasCard ? JSON.stringify(tmp) : '',
           widgetIds
+        }
+      }).unwrap().then(() => {
+        if(callback) {
+          callback()
         }
       })
     }
@@ -358,13 +332,39 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       <div className='header'>
 
         {
-          canvasMenu && currentCanvas.name ? <div className='title'>
+          currentCanvas.name && canvasList ? <div className='title'>
             <span className='name'>
               {currentCanvas.name}
             </span>
-            <Dropdown overlay={canvasMenu} placement='bottom'>{() =>
-              <ArrowExpand size='sm' />
-            }</Dropdown>
+            <Dropdown overlay={<Menu
+              onClick={handleMenuClick}
+              defaultSelectedKeys={[canvasId]}
+              items={[
+                ...canvasList.map(c => ({
+                  icon: c.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
+                  key: c.id,
+                  label: c.name,
+                  itemIcon: c.dashboardIds && <div
+                    style={{ marginLeft: '10px', height: '20px' }}><DashboardIcon /></div>
+                })),
+                {
+                  type: 'divider'
+                },
+                {
+                  key: 'New_Canvas',
+                  label: $t({ defaultMessage: 'New Canvas' }),
+                  disabled: canvasList.length >= 10
+                },
+                {
+                  key: 'Manage_Canvases',
+                  label: $t({ defaultMessage: 'Manage My Canvases' })
+                }
+              ]}/>
+            }
+            placement='bottom'>{() =>
+                <ArrowExpand size='sm' />
+              }
+            </Dropdown>
             {currentCanvas.dashboardIds && <DashboardIcon/> }
           </div> : <div/>
         }
