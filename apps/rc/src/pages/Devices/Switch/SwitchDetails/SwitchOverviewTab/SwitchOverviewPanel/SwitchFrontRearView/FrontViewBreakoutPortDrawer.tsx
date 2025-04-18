@@ -6,6 +6,7 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import { Table, TableProps, Drawer }                                     from '@acx-ui/components'
+import { useIsSplitOn, Features }                                        from '@acx-ui/feature-toggle'
 import { getInactiveTooltip }                                            from '@acx-ui/rc/components'
 import {  SwitchPortStatus, defaultSort, sortProp, SwitchPortViewModel } from '@acx-ui/rc/utils'
 import { filterByAccess }                                                from '@acx-ui/user'
@@ -25,6 +26,7 @@ export interface BreakOutPortDrawerType {
 export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
   const { $t } = useIntl()
   const { drawerVisible, setDrawerVisible, breakoutPorts, portNumber } = props
+  const isSupportStackNeighborPort = useIsSplitOn(Features.SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE)
   const {
     setEditBreakoutPortDrawerVisible,
     selectedPorts,
@@ -117,7 +119,8 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
       dataIndex: 'neighborName',
       key: 'neighborName',
       render: (data, row) => {
-        return row.neighborName || row.neighborMacAddress || row.stackingNeighborPort || '--'
+        return row.neighborName || row.neighborMacAddress ||
+        (isSupportStackNeighborPort && row.stackingNeighborPort) || '--'
       }
     },
     {

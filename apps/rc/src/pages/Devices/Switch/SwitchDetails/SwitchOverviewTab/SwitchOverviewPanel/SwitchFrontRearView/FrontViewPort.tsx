@@ -30,6 +30,7 @@ export function FrontViewPort (props:{
 }) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
+  const isSupportStackNeighborPort = useIsSplitOn(Features.SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE)
 
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
@@ -145,7 +146,7 @@ export function FrontViewPort (props:{
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
           children={port.neighborName || port.neighborMacAddress ||
-            port.stackingNeighborPort || '--'}
+            (isSupportStackNeighborPort && port.stackingNeighborPort) || '--'}
         />
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' })}
