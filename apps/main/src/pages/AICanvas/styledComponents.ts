@@ -1,5 +1,5 @@
 import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled                                          from 'styled-components/macro'
+import styled, { css }                                 from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
@@ -410,7 +410,7 @@ export const Canvas = styled.div`
   }
 `
 
-export const Grid = styled.div`
+export const Grid = styled.div<{ $type?: string }>`
 height: calc(100vh - 150px);
 overflow: auto;
 /* width */
@@ -440,13 +440,13 @@ overflow: auto;
 .rglb_group-item .group-item-container {
   padding: 20px;
 }
-.rglb_group-item .group-item-container #card-container .card-shadow {
+.rglb_group-item .group-item-container .card-container .card-shadow {
   background: rgba(15, 15, 15, 0.3);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
 }
-.rglb_group-item .group-item-container #card-container .card {
+.rglb_group-item .group-item-container .card-container .card {
   position: absolute;
   transition: all 0.2s ease-out;
   .card-actions{
@@ -524,7 +524,7 @@ overflow: auto;
     justify-content: center;
   }
 }
-.rglb_group-item .group-item-container #card-container .card .card-footer {
+.rglb_group-item .group-item-container .card-container .card .card-footer {
   display: flex;
   justify-content: space-between;
   position: absolute;
@@ -536,7 +536,7 @@ overflow: auto;
 }
 .rglb_group-item
   .group-item-container
-  #card-container
+  .card-container
   .card
   .card-footer
   .card-delete {
@@ -574,6 +574,16 @@ overflow: auto;
 // .section {
 //   background-color: var(--acx-accents-blue-10);
 // }
+
+${props => props.$type === 'pageview' && css`
+  height: auto;
+  overflow: hidden;
+  .rglb_group-item .group-item-container {
+    padding: 0;
+    margin: 0 -20px;
+  }
+`}
+
 `
 
 export const Widget = styled(Card)`
@@ -601,6 +611,30 @@ export const Widget = styled(Card)`
   .chart {
     margin: 5px;
   }
+  .ant-card-head-title {
+    display: flex;
+    .ant-space {
+      display: flex;
+      max-width: 100%;
+      .ant-space-item:first-child {
+        flex: 1;
+        max-width: calc(100% - 10px);
+      }
+      .ant-space-item:last-child {
+        flex: 10px; 
+        max-width: auto;
+      }
+    }
+  }
+  .update-indicator {
+    display: inline-block;
+    position: relative;
+    top: -4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--acx-semantics-red-50);
+  }
 `
 
 export const Badge = styled(AntBadge)`
@@ -618,4 +652,81 @@ export const Badge = styled(AntBadge)`
       font-weight: var(--acx-body-font-weight-bold);
     }
   }
+`
+
+export const PreviewModal = styled(Modal)<{ $type?: string }>`
+  background: var(--acx-neutrals-10);
+  border-radius: 12px;
+  padding-bottom: 0;
+  overflow: hidden;
+  transition: all .4s linear;
+  height: 100%;
+  max-height: 80%;
+
+  .header {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: var(--acx-neutrals-10);
+    padding: 24px 30px 16px 36px;
+    align-items: center;
+    .title {
+      flex: 1;
+      margin: 4px 0;
+      font-size: var(--acx-subtitle-3-font-size);
+      font-weight: var(--acx-subtitle-3-font-weight);
+      line-height: var(--acx-subtitle-3-line-height);
+    }
+    .action {
+      display: flex;
+      gap: 24px;
+      button {
+        min-width: 24px !important;
+        width: 24px !important;
+        height: 24px !important;
+        svg {
+          width: 24px !important;
+          height: 24px !important;
+        }
+      }
+    }
+  }
+  .grid {
+    .group-item-container {
+      margin: 0 10px;
+    }
+  }
+
+  .ant-modal-content {
+    background: transparent;
+    box-shadow: none !important;
+    transition: all .4s linear;
+    padding-top: 68px;
+  }
+  .ant-modal-body {
+    padding: 0px 0 24px;
+    height: calc(80vh - 68px);
+    overflow: auto;    
+  }
+  .ant-modal-footer {
+    display: none;
+  }
+
+  &.fullmode {
+    max-width: 100vw;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    .ant-modal-content {
+      height: 100vh;
+      max-height: 100%;
+    }
+    .ant-modal-body {
+      height: calc(100vh - 68px);   
+    }
+  }
+
 `

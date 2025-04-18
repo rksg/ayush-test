@@ -12,8 +12,9 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }     from '@acx-ui/config'
-import { ArrowChevronRight } from '@acx-ui/icons'
+import { get as getEnv }          from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ArrowChevronRight }      from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -190,6 +191,7 @@ type LayoutContextType = {
   setPageHeaderY: (y: number) => void
   showMessageBanner?: boolean
   setShowMessageBanner: (isShow?: boolean) => void
+  menuCollapsed?: boolean
 }
 const LayoutContext = createContext({
   pageHeaderY: 0,
@@ -215,6 +217,7 @@ export function Layout ({
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
     () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
 
   const onSubOptimalDisplay = useCallback((state: boolean) => {
     setSubOptimalDisplay(state)
@@ -239,8 +242,10 @@ export function Layout ({
   }, [window.innerWidth])
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
+  const isR1DashboardPage = location.pathname?.includes('t/dashboard')
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
+    greyBg={isCanvasQ2Enabled && isR1DashboardPage}
     style={{
       '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
       '--acx-pageheader-height': pageHeaderY + 'px'
@@ -271,10 +276,12 @@ export function Layout ({
         pageHeaderY,
         setPageHeaderY,
         showMessageBanner,
-        setShowMessageBanner
+        setShowMessageBanner,
+        menuCollapsed: collapsed
       }}>
-        {(display || subOptimalDisplay) ? <Content>{content}</Content> :
-          <UI.ResponsiveContent>
+        {(display || subOptimalDisplay)
+          ? <Content greyBg={isCanvasQ2Enabled && isR1DashboardPage}>{content}</Content>
+          : <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}
       </LayoutContext.Provider>

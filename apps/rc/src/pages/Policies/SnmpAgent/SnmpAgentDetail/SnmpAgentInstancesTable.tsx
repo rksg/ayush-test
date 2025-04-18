@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useGetApUsageByApSnmpQuery }      from '@acx-ui/rc/services'
-import { ApSnmpApUsage, useTableQuery }    from '@acx-ui/rc/utils'
-import { TenantLink }                      from '@acx-ui/react-router-dom'
-import { noDataDisplay }                   from '@acx-ui/utils'
+import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useGetApUsageByApSnmpQuery }                          from '@acx-ui/rc/services'
+import { ApSnmpApUsage, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                          from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                       from '@acx-ui/utils'
 
 export default function SnmpAgentInstancesTable () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -30,7 +30,7 @@ export default function SnmpAgentInstancesTable () {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'apName',
       searchable: true,
-      sorter: true,
+      sorter: { compare: sortProp('apName', defaultSort) },
       render: function (_, row, __, highlightFn) {
         const { apName, apId } = row
         return (!apName? noDataDisplay :
@@ -45,7 +45,7 @@ export default function SnmpAgentInstancesTable () {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venueName',
       searchable: true,
-      sorter: true,
+      sorter: { compare: sortProp('venueName', defaultSort) },
       defaultSortOrder: 'descend',
       render: (_, row, __, highlightFn) => {
         const { venueName, venueId } = row
@@ -65,7 +65,7 @@ export default function SnmpAgentInstancesTable () {
         <Table
           columns={columns}
           pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
+          onChange={isUseRbacApi? undefined : tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
           rowKey='apId'
         />

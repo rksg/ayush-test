@@ -1,3 +1,5 @@
+import { NeighborAPNodes } from '../NeighborAPGraph'
+
 export enum BandEnum {
   _2_4_GHz = '2.4',
   _5_GHz = '5',
@@ -21,6 +23,7 @@ export interface CloudRRMGraph {
   nodes: CloudRRMNode[]
   links: CloudRRMLink[]
   interferingLinks: null | string[]
+  neighborAP: NeighborAPNodes
 }
 
 export enum CategoryState {
@@ -63,4 +66,5 @@ export interface ProcessedCloudRRMGraph {
   categories: Array<{ name: CategoryState }>
   interferingLinks?: number
   affectedAPs?: number
+  neighborAP?: NeighborAPNodes
 }

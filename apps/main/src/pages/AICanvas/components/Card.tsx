@@ -27,11 +27,13 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  draggable?: boolean
   // sectionRef?: React.MutableRefObject<null>
 }
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
+    canDrag: props.draggable,
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -50,7 +52,7 @@ const DraggableCard = (props: CardProps) => {
   }, [preview])
 
   return (
-    <div style={{ cursor: 'grab' }}>
+    <div style={{ cursor: props.draggable ? 'grab' : 'default' }}>
       <Card
         {...props}
         drag={drag}
@@ -80,6 +82,8 @@ function Card (props: CardProps) {
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
   const [visible, setVisible] = useState(false)
+
+  const readOnly = !props.draggable
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -200,7 +204,7 @@ function Card (props: CardProps) {
               transform: `translate(${x}px, ${y}px)`
             }}
           >
-            <div className='card-actions'>
+            { !readOnly && <div className='card-actions'>
               <div
                 data-testid='editCard'
                 className='icon'
@@ -219,8 +223,8 @@ function Card (props: CardProps) {
               >
                 <DeleteOutlined />
               </div>
-            </div>
-            <div className='card-resizer'>
+            </div>}
+            { !readOnly && <div className='card-resizer'>
               <div className='label'>
                 {$t({ defaultMessage: 'Resize' })}
               </div>
@@ -237,7 +241,7 @@ function Card (props: CardProps) {
                   onChange={changeCardsLayout}
                 />
               </div>
-            </div>
+            </div>}
             {
               card.chartType &&
               <WidgetChart
