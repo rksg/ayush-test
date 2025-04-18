@@ -1356,7 +1356,8 @@ export function EditPortDrawer ({
     }
   }
 
-  const onPortSecurityMaxEntriesChange = (value: number | null) => {
+  const onPortSecurityMaxEntriesChange = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    const value = Number(event.target.value)
     if (value && editPortData?.portSecurityMaxEntries &&
       value < editPortData.portSecurityMaxEntries) {
       showActionModal({
@@ -2537,7 +2538,7 @@ export function EditPortDrawer ({
                     max={64}
                     data-testid='port-security-max-entries-input'
                     style={{ width: '100%' }}
-                    onChange={onPortSecurityMaxEntriesChange}
+                    onBlur={onPortSecurityMaxEntriesChange}
                   />}
             />
           })}</div>
