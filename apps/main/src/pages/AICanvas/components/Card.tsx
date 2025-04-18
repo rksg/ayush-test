@@ -228,10 +228,7 @@ function Card (props: CardProps) {
               <div className='label'>
                 {$t({ defaultMessage: 'Resize' })}
               </div>
-              <div
-                data-testid='resizCard'
-                className='slider'
-              >
+              <div className='slider'>
                 <Slider
                   min={0}
                   max={sliderMax}
