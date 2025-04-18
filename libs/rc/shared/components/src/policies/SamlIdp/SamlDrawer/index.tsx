@@ -66,21 +66,10 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
           />
         )
       }
-      // Workaround add a footer let drawer will not be hide if there have 2nd drawer open
-      footer={
-        <Button
-          type='primary'
-          onClick={() => {
-            setVisible(false)
-          }}
-        >
-          {$t({ defaultMessage: 'Close' })}
-        </Button>
-      }
       onClose={handleClose}
       destroyOnClose={true}
       footer={
-        readMode && (
+        (readMode) ? (
           <>
             <Button
               type='primary'
@@ -98,6 +87,16 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
               {$t({ defaultMessage: 'OK' })}
             </Button>
           </>
+        ) : (
+          // Workaround for add a footer to avoid drawer be hide when click outside
+          <Button
+            type='primary'
+            onClick={() => {
+              setVisible(false)
+            }}
+          >
+            {$t({ defaultMessage: 'OK' })}
+          </Button>
         )
       }
     />
