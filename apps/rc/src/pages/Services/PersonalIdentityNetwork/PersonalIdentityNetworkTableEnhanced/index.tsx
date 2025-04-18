@@ -60,7 +60,8 @@ const getEdgePinPayload = {
     'tunneledWlans',
     'distributionSwitchInfos',
     'accessSwitchInfos',
-    'edgeAlarmSummary'
+    'edgeAlarmSummary',
+    'vxlanTunnelProfileId'
   ]
 }
 const clusterOptionsDefaultPayload = {
