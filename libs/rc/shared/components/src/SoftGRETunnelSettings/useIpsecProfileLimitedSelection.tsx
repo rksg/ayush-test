@@ -61,6 +61,7 @@ export const useIpsecProfileLimitedSelection = (
   const [boundSoftGreIpsecData, setBoundSoftGreIpsecData] = useState<SoftGreIpsecProfile[]>([])
   const [newSoftGreIpsecList, setNewSoftGreIpsecList] = useState<SoftGreIpsecProfile[]>([])
   const [boundSoftGre, setBoundSoftGre] = useState(false)
+  const [hasCleanOperations, setHasCleanOperations] = useState(false)
 
   const allowSoftGetGrePorfiles = !isTemplate
     && isEthernetSoftgreEnabled
@@ -88,7 +89,7 @@ export const useIpsecProfileLimitedSelection = (
       fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
       filters: {}
     } }, {
-    skip: !allowIpsecGetPorfiles,
+    skip: !allowIpsecGetPorfiles && !softGreData,
     selectFromResult: ({ data }) => {
       return { ipsecData: data?.data }
     }
@@ -193,18 +194,28 @@ export const useIpsecProfileLimitedSelection = (
         && ipsecData && ipsecData?.length > 0) ? ipsecData : [])
       const { softGreIds, boundSoftGreList } = getUsedSoftGreProfiles(softGreList)
 
+
+
       if (softGreList.length > 0) {
         setSoftGreOptionList(softGreList.map((softGre) => {
           return { label: softGre.name, value: softGre.id }
         }))
       }
 
-      // load data from backend, clean all user actions
-      if (newSoftGreIpsecList.length > 0) {
-        setNewSoftGreIpsecList([])
-      }
-
       const boundIpsecList = getUsedIpsecProfiles(ipsecProfileList)
+
+      if (hasCleanOperations) {
+        if (newSoftGreIpsecList.length > 0 && !!newSoftGreIpsecList[0].ipsecId) {
+          if (!!!boundIpsecList || boundIpsecList.length === 0 || (boundIpsecList?.[0].ipsecId
+            && newSoftGreIpsecList[0].ipsecId !== boundIpsecList[0].ipsecId)
+          ) {
+            return
+          }
+        }
+        // load data from backend, clean all user actions
+        setNewSoftGreIpsecList([])
+        setHasCleanOperations(false)
+      }
 
       if (boundIpsecList.length > 0) {
         setBoundSoftGreIpsecData(boundIpsecList)
@@ -233,6 +244,8 @@ export const useIpsecProfileLimitedSelection = (
           }))
         }
       }
+
+
     }
     if (ipsecData && softGreData) {
       setData()
@@ -293,8 +306,10 @@ export const useIpsecProfileLimitedSelection = (
         .filter(data => data.softGreId.length > 0 && !!!data.ipsecId)
       if (setIpSec.length > 0 && newSoftGreIpsecList.length > 1) {
         restrictIpsecOptionsToSpecificIpsec(setIpSec[0].ipsecId)
-        restrictSoftGreOptionsToSpecificSoftGre(
-          setIpSec.filter(data => data.softGreId.length > 0)[0].softGreId)
+        const chooseSoftGre = setIpSec.find(data => data.softGreId.length > 0)
+        if (chooseSoftGre) {
+          restrictSoftGreOptionsToSpecificSoftGre(chooseSoftGre.softGreId)
+        }
       } else if (setSoftGre.length > 0 && newSoftGreIpsecList.length > 1) {
         disableAllIpsecOptions()
         if (boundSoftGre) {
@@ -393,6 +408,25 @@ export const useIpsecProfileLimitedSelection = (
         newOption.disabled = true
       }
       setIpsecOptionList([...ipsecOptionList, newOption])
+      setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
+        return { ...p, ipsecId: newOption.value } as SoftGreIpsecProfile
+      }))
+    }
+  }
+
+
+  const addSoftGreOption = (newOption?: DefaultOptionType,
+    portId?: string, apModel?: string, serialNumber?: string) => {
+    if (newOption && portId) {
+      setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
+        if ((isVenueOperation && p.apModel === apModel && p.portId === portId)
+          || (!isVenueOperation && p.serialNumber === serialNumber && p.portId === portId)
+        ) {
+          return { ...p, softGreId: newOption.value } as SoftGreIpsecProfile
+        } else {
+          return p
+        }
+      }))
     }
   }
 
@@ -414,8 +448,15 @@ export const useIpsecProfileLimitedSelection = (
       case IpsecOptionChangeState.ReloadOptionList:
         reloadOptionList(next.newOption)
         break
+      case IpsecOptionChangeState.AddSoftGreOption:
+        addSoftGreOption(
+          next.newOption, next.portId, next.apModel, next.serialNumber)
+        break
       case IpsecOptionChangeState.ResetToDefault:
         resetToDefault(next?.voters)
+        break
+      case IpsecOptionChangeState.OnSave:
+        setHasCleanOperations(true)
         break
     }
     return next

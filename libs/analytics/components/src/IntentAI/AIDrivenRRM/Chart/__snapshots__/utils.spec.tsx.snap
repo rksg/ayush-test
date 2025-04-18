@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`customTooltipText renders correctly 1`] = `
+<DocumentFragment>
+  Channel 6: 
+  <b>
+    3 APs
+  </b>
+</DocumentFragment>
+`;
