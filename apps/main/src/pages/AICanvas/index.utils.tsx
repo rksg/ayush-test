@@ -9,6 +9,7 @@ const SIDE_PADDING = 72
 const WIDGET_GRID_GAP = 60
 const COLUMN_COUNT = 4
 export const DEFAULT_DASHBOARD_ID = 'default-dashboard-id'
+export const MAXIMUM_OWNED_CANVAS = 10
 export const MAXIMUM_DASHBOARD = 10
 
 export const getMenuWidth = (menuCollapsed?: boolean) => {
@@ -34,7 +35,7 @@ export const getCalculatedColumnWidth = (
 export const getCanvasData = (canvasList: Canvas[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ canvasData, ...rest ] = canvasList
-  const canvasContent = canvasData.content !== ''
+  const canvasContent = canvasData?.content !== ''
     ? canvasData.content : JSON.stringify(DEFAULT_CANVAS)
 
   if (canvasList?.length && canvasContent) {
@@ -52,7 +53,7 @@ export const getCanvasData = (canvasList: Canvas[]) => {
         cards: compactLayout(group.cards.map(card => {
           return {
             ...card,
-            updated: canvasData.diffWidgetIds.includes(card.widgetId ?? '')
+            updated: canvasData.diffWidgetIds?.includes(card.widgetId ?? '')
           }
         }))
       }))

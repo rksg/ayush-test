@@ -49,12 +49,14 @@ export const PreviewDashboardModal = (props: {
   useEffect(() => {
     const menuWidth = getMenuWidth(menuCollapsed)
     const modalWidth = getPreviewModalWidth(menuWidth, isFullmode)
+    setTimeout(()=>{
+      setLayout({
+        ...layout,
+        containerWidth: modalWidth,
+        calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
+      })
+    }, 180)
     setModalWidth(modalWidth)
-    setLayout({
-      ...layout,
-      containerWidth: modalWidth,
-      calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
-    })
   }, [menuCollapsed, isFullmode])
 
   useEffect(() => {

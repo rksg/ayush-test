@@ -85,6 +85,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       }
     }),
+    getTargetCanvas: build.query<Canvas, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getTargetCanvas, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Canvas', id: 'DATA' }]
+    }),
     getCanvases: build.query<{ data: CanvasInfo[] }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvases, params)
@@ -208,6 +217,8 @@ export const {
   useGetChatsMutation,
   useGetCanvasQuery,
   useLazyGetCanvasQuery,
+  useGetTargetCanvasQuery,
+  useLazyGetTargetCanvasQuery,
   useGetCanvasesQuery,
   useLazyGetCanvasesQuery,
   useUpdateCanvasMutation,

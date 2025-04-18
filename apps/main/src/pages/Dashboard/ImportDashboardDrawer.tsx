@@ -16,14 +16,17 @@ import {
 import {
   useCloenCanvasMutation,
   useDeleteCanvasMutation,
-  useLazyGetCanvasesQuery
+  useLazyGetCanvasesQuery,
+  useLazyGetTargetCanvasQuery
 } from '@acx-ui/rc/services'
-import { CanvasInfo } from '@acx-ui/rc/utils'
+import { Canvas, CanvasInfo, DashboardInfo } from '@acx-ui/rc/utils'
 
-import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
+import {
+  MAXIMUM_OWNED_CANVAS,
+  MAXIMUM_DASHBOARD
+} from '../AICanvas/index.utils'
 
-import { DashboardInfo } from './index.utils'
-import * as UI           from './styledComponents'
+import * as UI from './styledComponents'
 
 enum TabKey {
   Owned = 'owned',
@@ -57,7 +60,7 @@ const getCanvasPayload = (customPayload?: CustomPayload) => {
 export const ImportDashboardDrawer = (props: {
   visible: boolean
   dashboardList: DashboardInfo[]
-  handleOpenPreview: (id: string) => void
+  handleOpenPreview: (data: Canvas[]) => void
   handleOpenCanvas: (id?: string) => void
   onBackClick: () => void
   onImportClick: (keys: React.Key[]) => void
@@ -71,8 +74,12 @@ export const ImportDashboardDrawer = (props: {
   const [selectedItem, setSelectedItem] = useState({} as CanvasInfo)
   const [selectedCanvases, setSelectedCanvases] = useState<React.Key[]>([])
   const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
+  const importedOwnedCanvasCount = dashboardList.filter(item => !item.author).length - 1
+  const isReachedCanvasLimit
+    = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
+  const [ getTargetCanvas ] = useLazyGetTargetCanvasQuery()
   const [ cloenCanvas ] = useCloenCanvasMutation()
   const [ deleteCanvas ] = useDeleteCanvasMutation()
 
@@ -103,7 +110,7 @@ export const ImportDashboardDrawer = (props: {
       payload }, false // force refetch
     ).unwrap()
 
-    return canvasList.data
+    return canvasList?.data
       .reduce((acc, item) => {
         if (item.owned) {
           acc.owned.push(item)
@@ -122,8 +129,8 @@ export const ImportDashboardDrawer = (props: {
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     switch (e.key) {
-      case 'edit':
-        props.handleOpenCanvas()
+      case 'edit': //TODO
+        props.handleOpenCanvas(selectedItem.id)
         break
       case 'delete':
         showActionModal({
@@ -134,38 +141,35 @@ export const ImportDashboardDrawer = (props: {
             entityValue: selectedItem.name
           },
           onOk: async () => {
-            await deleteCanvas({
-              params: { canvasId: selectedItem.id }
-            }).then(async () => {
-              const { owned } = await getCanvasList()
-              setOwnedCanvasList(owned)
-              setSelectedCanvases([])
-            })
+            await deleteCanvas({ params: { canvasId: selectedItem.id } })
+            const { owned } = await getCanvasList()
+            setOwnedCanvasList(owned)
+            setSelectedCanvases([])
           }
         })
         break
       case 'clone':
-        //TODO
         await cloenCanvas({
           params: { canvasId: selectedItem.id },
-          payload: {
-            name: `${selectedItem.name} (${$t({ defaultMessage: 'Copy' })})`
-          }
-        }).then(async () => {
-          const { owned } = await getCanvasList()
-          setOwnedCanvasList(owned)
-          setSelectedCanvases([])
+          payload: {}
         })
+        const { owned } = await getCanvasList()
+        setOwnedCanvasList(owned)
+        setSelectedCanvases([])
         setActiveTab(TabKey.Owned)
         break
       default: // view
-        props.handleOpenPreview(selectedItem.id)
+        await getTargetCanvas({
+          params: { canvasId: selectedItem.id }
+        }).unwrap().then(async (res) => {
+          props.handleOpenPreview([res])
+        })
         break
     }
   }
 
   const getActionMenu = (data: CanvasInfo) => {
-    const isEditable = !data.visible || !data.author
+    const isEditable = data.owned
     return <Menu
       onClick={handleMenuClick}
       items={[{
@@ -178,10 +182,11 @@ export const ImportDashboardDrawer = (props: {
       }, {
         label: $t({ defaultMessage: 'Delete' }),
         key: 'delete'
-      }] : [{
+      }] : []),
+      ...(!isReachedCanvasLimit && !isEditable ? [{
         label: $t({ defaultMessage: 'Clone as Private Copy' }),
         key: 'clone'
-      }])
+      }] : [])
       ]}
     />
   }
@@ -262,6 +267,7 @@ export const ImportDashboardDrawer = (props: {
 
     if (visible) {
       fetchCanvasList()
+      setActiveTab(TabKey.Owned)
     }
 
   }, [visible])
@@ -300,7 +306,7 @@ export const ImportDashboardDrawer = (props: {
     footer={
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
         <Button
-          onClick={() => props.handleOpenCanvas()}
+          onClick={() => props.handleOpenCanvas()} //TODO
           type='primary'
         >
           {$t({ defaultMessage: 'Canvas Editor' })}

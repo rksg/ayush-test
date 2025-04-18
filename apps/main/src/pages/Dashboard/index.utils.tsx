@@ -1,17 +1,6 @@
-import { DEFAULT_DASHBOARD_ID } from '../AICanvas/index.utils'
+import { DashboardInfo } from '@acx-ui/rc/utils'
 
-export interface DashboardInfo {
-  id: string
-  name: string
-  author?: string
-  updatedDate?: string
-  widgetIds?: string[]
-  diffWidgetIds?: string[]
-  isLanding?: boolean
-  isDefault?: boolean
-  key: string
-  index: number
-}
+import { DEFAULT_DASHBOARD_ID } from '../AICanvas/index.utils'
 
 export const formatDashboardList = (list: DashboardInfo[]) => {
   return list.map((item, index) => {

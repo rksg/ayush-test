@@ -16,12 +16,13 @@ import {
   useReorderDashboardsMutation,
   useRemoveDashboardsMutation
 } from '@acx-ui/rc/services'
+import { DashboardInfo } from '@acx-ui/rc/utils'
 
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
 
-import { DashboardInfo, formatDashboardList } from './index.utils'
-import * as UI                                from './styledComponents'
+import { formatDashboardList } from './index.utils'
+import * as UI                 from './styledComponents'
 
 
 type ListItemProps = {
@@ -158,7 +159,7 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
-  handleOpenPreview: (id: string) => void
+  handleOpenPreview: (data: DashboardInfo[]) => void
   handleOpenCanvas: (id?: string) => void
 }) => {
   const { $t } = useIntl()
@@ -184,11 +185,8 @@ export const DashboardDrawer = (props: {
           ...dashboardList.slice(targetIndex + 1)
         ]
         const updatedIds = updated.map(item => item.id)
-        await reorderDashboards({
-          payload: updatedIds
-        }).then(() => {
-          setDashboardList(formatDashboardList(updated))
-        })
+        await reorderDashboards({ payload: updatedIds })
+        setDashboardList(formatDashboardList(updated))
         break
       case 'edit':
         props.handleOpenCanvas(id)
@@ -198,14 +196,12 @@ export const DashboardDrawer = (props: {
           ...dashboardList.slice(0, targetIndex),
           ...dashboardList.slice(targetIndex + 1)
         ]
-        await removeDashboards({
-          payload: [id]
-        }).then(() => {
-          setDashboardList(formatDashboardList(updated))
-        })
+        await removeDashboards({ payload: [id] })
+        setDashboardList(formatDashboardList(updated))
         break
       default: // view
-        props.handleOpenPreview(id)
+        const previewDashboard = dashboardList.filter(item => item.id === id)
+        props.handleOpenPreview(previewDashboard)
         break
     }
   }
@@ -328,7 +324,7 @@ export const DashboardDrawer = (props: {
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
         <Tooltip title={dashboardList?.length === MAXIMUM_DASHBOARD
           // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'Maximum of ${maximum} dashboards reached, import unavailable' }, { maximum: MAXIMUM_DASHBOARD })
+          ? $t({ defaultMessage: 'Maximum of {maximum} dashboards reached, import unavailable' }, { maximum: MAXIMUM_DASHBOARD })
           : ''
         }>
           <span>

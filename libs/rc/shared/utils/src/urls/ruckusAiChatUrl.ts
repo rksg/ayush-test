@@ -51,6 +51,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },
+  getTargetCanvas: {
+    method: 'get',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
   getCanvases: {
     method: 'post',
     url: '/ruckusAi/canvas/query',

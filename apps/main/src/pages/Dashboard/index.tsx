@@ -30,6 +30,7 @@ import {
   Dropdown,
   GridCol,
   GridRow,
+  Loader,
   PageHeader,
   RangePicker,
   Select,
@@ -56,6 +57,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   Canvas,
+  CanvasInfo,
   CommonUrlsInfo,
   DashboardInfo,
   EdgeUrlsInfo,
@@ -173,7 +175,8 @@ export default function Dashboard () {
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
-  const [dashboardId, setDashboardId] = useState(DEFAULT_DASHBOARD_ID)
+  const [dashboardId, setDashboardId] = useState('')
+  const [initDashboardId, setInitDashboardId] = useState(false)
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
   const [layout, setLayout] = useState({
     ...layoutConfig,
@@ -182,14 +185,23 @@ export default function Dashboard () {
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
   const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
-  const { data: dashboards } = getDashboardsQuery
+  const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
   //TODO
+  useEffect(() => {
+    if (!isCanvasQ2Enabled) {
+      setDashboardId(DEFAULT_DASHBOARD_ID)
+    }
+  }, [])
+
   useEffect(() => {
     if (isCanvasQ2Enabled && dashboards?.length) {
       const updatedDashboards = formatDashboardList(dashboards)
       const dashboardIds = updatedDashboards.map(item => item.id)
-      if (!dashboardIds.includes(dashboardId)) { //TODO: test
+      if (!initDashboardId) {
+        setInitDashboardId(true)
+        setDashboardId(dashboardIds[0])
+      } else if (!dashboardIds.includes(dashboardId)) {
         setDashboardId(dashboardIds[0])
       }
       setDashboardList(updatedDashboards)
@@ -206,7 +218,7 @@ export default function Dashboard () {
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isCanvasQ2Enabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
       const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
       if (selectedDashboard) {
         const { canvasId, sections, groups } = getCanvasData(
@@ -230,51 +242,55 @@ export default function Dashboard () {
         getDashboardsQuery={getDashboardsQuery}
       />
       {
-        dashboardId === DEFAULT_DASHBOARD_ID
-          ? <>
-            {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
-            <Divider dashed
-              style={{
-                borderColor: 'var(--acx-neutrals-30)',
-                margin: '20px 0px 5px 0px' }}/>
-            <ContentSwitcher
-              tabDetails={tabDetails}
-              size='large'
-              defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-              onChange={onTabChange}
-              extra={
-                <UI.Wrapper>
-                  <TenantLink to={'/reports'}>
-                    {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-                  </TenantLink>
-                </UI.Wrapper>
-              }
-            />
-            <Divider dashed
-              style={{
-                borderColor: 'var(--acx-neutrals-30)',
-                margin: '20px 0px' }}/>
-            <DashboardMapWidget />
-          </>
-          : <DndProvider backend={HTML5Backend}>
-            <div className='grid'>
-              <CanvasUI.Grid $type='pageview'>
-                <Layout
-                  readOnly={true}
-                  sections={sections}
-                  groups={groups}
-                  setGroups={setGroups}
-                  compactType={'horizontal'}
-                  layout={layout}
-                  setLayout={setLayout}
-                  canvasId={canvasId}
-                  shadowCard={shadowCard}
-                  setShadowCard={setShadowCard}
-                  containerId='dashboard-canvas-container'
-                />
-              </CanvasUI.Grid>
-            </div>
-          </DndProvider>
+        <Loader states={[{ isLoading: isCanvasQ2Enabled ? dashboardsLoading : false }]}>{
+
+          dashboardId === DEFAULT_DASHBOARD_ID
+            ? <>
+              {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
+              <Divider dashed
+                style={{
+                  borderColor: 'var(--acx-neutrals-30)',
+                  margin: '20px 0px 5px 0px' }}/>
+              <ContentSwitcher
+                tabDetails={tabDetails}
+                size='large'
+                defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+                onChange={onTabChange}
+                extra={
+                  <UI.Wrapper>
+                    <TenantLink to={'/reports'}>
+                      {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+                    </TenantLink>
+                  </UI.Wrapper>
+                }
+              />
+              <Divider dashed
+                style={{
+                  borderColor: 'var(--acx-neutrals-30)',
+                  margin: '20px 0px' }}/>
+              <DashboardMapWidget />
+            </>
+            : <DndProvider backend={HTML5Backend}>
+              <div className='grid'>
+                <CanvasUI.Grid $type='pageview'>
+                  <Layout
+                    readOnly={true}
+                    sections={sections}
+                    groups={groups}
+                    setGroups={setGroups}
+                    compactType={'horizontal'}
+                    layout={layout}
+                    setLayout={setLayout}
+                    canvasId={canvasId}
+                    shadowCard={shadowCard}
+                    setShadowCard={setShadowCard}
+                    containerId='dashboard-canvas-container'
+                  />
+                </CanvasUI.Grid>
+              </div>
+            </DndProvider>
+
+        }</Loader>
       }
     </DashboardFilterProvider>
   )
@@ -393,10 +409,10 @@ function DashboardPageHeader (props: {
     setDashboardId(value)
   }
 
-  const handleOpenPreview = async (id: string) => {
-    const selectedDashboard = dashboardList.filter(item => item.id === id)
-    if (selectedDashboard) {
-      setPreviewData(selectedDashboard as unknown as Canvas[])
+  const handleOpenPreview = async (data: Canvas[] | DashboardInfo[] | CanvasInfo[]) => { //TODO
+    // const selectedDashboard = dashboardList.filter(item => item.id === id)
+    if (data) {
+      setPreviewData(data as unknown as Canvas[])
       setPreviewModalVisible(true)
     }
   }
