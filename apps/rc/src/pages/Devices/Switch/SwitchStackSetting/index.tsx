@@ -141,7 +141,9 @@ export function SwitchStackSetting (props: {
     })
   }
 
-  const onPortSecurityMaxEntriesChange = (value: number | null) => {
+  const onPortSecurityMaxEntriesChange = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    const value = Number(event.target.value)
+
     if (value && switchData?.portSecurityMaxEntries &&
       value < switchData.portSecurityMaxEntries) {
       showActionModal({
@@ -348,7 +350,7 @@ export function SwitchStackSetting (props: {
           min={1}
           max={8192}
           data-testid='port-security-max-entries-input'
-          onChange={onPortSecurityMaxEntriesChange}
+          onBlur={onPortSecurityMaxEntriesChange}
           style={{ width: '100%' }}
         />}
       />
