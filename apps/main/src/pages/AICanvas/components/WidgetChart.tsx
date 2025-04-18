@@ -320,7 +320,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         return <NoDataIcon hideText={true} />
       } else {
         return <BarChart
-          style={{ width: width-30, height: height-5 }}
+          style={{ width: width-30, height: height-(data.type !== 'card' ? 5 : 40) }}
           grid={{
             right: '10px',
             top: chartData?.multiseries ? '15%': '0'
