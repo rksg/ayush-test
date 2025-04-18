@@ -43,8 +43,10 @@ describe('InputInlineEditor', () => {
 
   // eslint-disable-next-line max-len
   it('should greyout submit button when value is invalid after checking with props.rule', async () => {
+    const mockOnChange = jest.fn()
     render(<InputInlineEditor
       {...props}
+      onChange={mockOnChange}
       value={undefined}
       rules={[ networkWifiIpRegExp ]}
     />)
@@ -54,6 +56,6 @@ describe('InputInlineEditor', () => {
     const submitBtn = screen.getByTestId('Check').parentNode
     expect(submitBtn).toBeDisabled()
     await userEvent.click(submitBtn)
-    expect(props.onChange).toBeCalledTimes(0)
+    expect(mockOnChange).toBeCalledTimes(0)
   })
 })
