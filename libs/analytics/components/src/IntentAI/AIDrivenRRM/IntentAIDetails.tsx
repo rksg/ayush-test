@@ -22,6 +22,7 @@ import { getKPIData }           from '../useIntentDetailsQuery'
 
 import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
 import PowerDistributionChart    from './Chart/PowerDistributionChart'
+import { NeighborAPGraph }       from './NeighborAPGraph'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -111,6 +112,9 @@ export function IntentAIDetails () {
                 <Tabs stickyTop={false}>
                   <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
                     <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+                    <NeighborAPGraph />
                   </Tabs.TabPane>
                 </Tabs>
               </GridCol>
