@@ -60,9 +60,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
 
-  const conditionRbacOpsIds = editMode ? [getOpsApi(RulesManagementUrlsInfo.addConditions),
+  const conditionRbacOpsIds = editMode ? [[getOpsApi(RulesManagementUrlsInfo.addConditions),
     getOpsApi(RulesManagementUrlsInfo.deleteConditions),
-    getOpsApi(RulesManagementUrlsInfo.updateConditions)]
+    getOpsApi(RulesManagementUrlsInfo.updateConditions)]]
     : [getOpsApi(RulesManagementUrlsInfo.addConditions)]
 
   useEffect( () =>{
