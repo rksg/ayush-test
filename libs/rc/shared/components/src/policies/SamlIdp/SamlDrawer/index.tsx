@@ -58,7 +58,6 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       visible={visible}
       width={450}
       children={
-        visible &&
         (readMode ? <ReadModeIdpForm policy={policy!} /> :
           <AddSamlIdp
             isEmbedded={true}
@@ -66,6 +65,17 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
             updateInstance={callbackFn}
           />
         )
+      }
+      // Workaround add a footer let drawer will not be hide if there have 2nd drawer open
+      footer={
+        <Button
+          type='primary'
+          onClick={() => {
+            setVisible(false)
+          }}
+        >
+          {$t({ defaultMessage: 'Close' })}
+        </Button>
       }
       onClose={handleClose}
       destroyOnClose={true}
