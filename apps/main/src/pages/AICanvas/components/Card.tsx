@@ -4,6 +4,7 @@ import { Slider }                     from 'antd'
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
 import { getEmptyImage }              from 'react-dnd-html5-backend'
+import { useIntl }                    from 'react-intl'
 
 import { DeleteOutlined, EditOutlined } from '@acx-ui/icons-new'
 import { WidgetListData }               from '@acx-ui/rc/utils'
@@ -61,6 +62,7 @@ const DraggableCard = (props: CardProps) => {
 export default DraggableCard
 
 function Card (props: CardProps) {
+  const { $t } = useIntl()
   const {
     groupIndex,
     deleteCard,
@@ -220,7 +222,7 @@ function Card (props: CardProps) {
             </div>
             <div className='card-resizer'>
               <div className='label'>
-                Resize
+                {$t({ defaultMessage: 'Resize' })}
               </div>
               <div
                 data-testid='resizCard'
