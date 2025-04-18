@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Typography } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Form, Input, Space, Typography } from 'antd'
+import { useIntl }                        from 'react-intl'
 
 import { Loader }                     from '@acx-ui/components'
 import { useLazyGetPersonaByIdQuery } from '@acx-ui/rc/services'
@@ -29,15 +29,6 @@ export const IdentitySelector = ({
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
   const [getPersonaById, result] = useLazyGetPersonaByIdQuery()
   const { data, isLoading, isFetching, error } = result
-  const renderIdentityMessage = (): string => {
-    if (!selectedIdentityId) return noDataDisplay
-    if (selectedIdentity) return selectedIdentity.name
-    if (isLoading || isFetching || (data === undefined && error === undefined) ) {
-      return $t({ defaultMessage: 'Loading identity...' })
-    }
-    return $t({ defaultMessage: 'Identity not found' })
-  }
-  const placeholder = $t({ defaultMessage: 'Select Identity' })
 
   useEffect(() => {
     if (selectedIdentityId && identityGroupId) {
@@ -85,20 +76,35 @@ export const IdentitySelector = ({
     <Form.Item noStyle name={'identityId'} hidden children={<Input hidden />}/>
     <Form.Item
       name='identityName'
-      label={$t({ defaultMessage: 'Associated Identity' })}
+      label={$t({ defaultMessage: 'Identity' })}
       rules={[{
         required: !readonly,
         message: $t({ defaultMessage: 'Please select an identity' })
       }]}
     >
-      {readonly
-        ? <Loader states={[{ isLoading, isFetching }]} >
-          <Typography>{ renderIdentityMessage() }</Typography>
+      {!identityGroupId ? (
+        <Typography>{noDataDisplay}</Typography>
+      ) : readonly ? (
+        <Loader states={[{ isLoading, isFetching }]}>
+          <Typography>{!selectedIdentityId
+            ? noDataDisplay
+            : selectedIdentity
+              ? selectedIdentity.name
+              : isLoading || isFetching || (!data && !error)
+                ? $t({ defaultMessage: 'Loading identity...' })
+                : $t({ defaultMessage: 'Identity not found' })}
+          </Typography>
         </Loader>
-        : <Input
-          onClick={handleOpen}
-          placeholder={placeholder}
-        />}
+      ) : (
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          {selectedIdentity && <Typography>{selectedIdentity.name}</Typography>}
+          <Typography.Link onClick={handleOpen} data-testid='identity-selector'>
+            {selectedIdentityId
+              ? $t({ defaultMessage: 'Change' })
+              : $t({ defaultMessage: 'Add Identity' })}
+          </Typography.Link>
+        </Space>
+      )}
     </Form.Item>
     {
       drawerVisible && <SelectPersonaDrawer

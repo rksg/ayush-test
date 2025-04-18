@@ -127,7 +127,7 @@ describe('IdentitySelector', () => {
       </Provider>
     )
 
-    expect(screen.getByPlaceholderText('Select Identity')).toBeInTheDocument()
+    expect(screen.getByTestId('identity-selector')).toBeInTheDocument()
   })
 
   it('opens SelectPersonaDrawer when Select is clicked', () => {
@@ -146,7 +146,7 @@ describe('IdentitySelector', () => {
       </Provider>
     )
 
-    fireEvent.click(screen.getByPlaceholderText('Select Identity'))
+    fireEvent.click(screen.getByTestId('identity-selector'))
 
     expect(screen.getByTestId('select-persona-drawer')).toBeInTheDocument()
   })
@@ -167,7 +167,7 @@ describe('IdentitySelector', () => {
       </Provider>
     )
 
-    fireEvent.click(screen.getByPlaceholderText('Select Identity'))
+    fireEvent.click(screen.getByTestId('identity-selector'))
 
     expect(screen.getByTestId('select-persona-drawer')).toBeInTheDocument()
     // Simulate submitting the drawer
@@ -175,7 +175,7 @@ describe('IdentitySelector', () => {
     fireEvent.click(submitButton)
 
     // Assert the state and form updates.
-    expect(screen.getByPlaceholderText('Select Identity')).toHaveValue('Test User')
+    expect(screen.getByText('Test User')).toBeInTheDocument()
   })
 
   it('closes the SelectPersonaDrawer without changes when canceled', () => {
@@ -196,7 +196,7 @@ describe('IdentitySelector', () => {
     )
 
     // Open the SelectPersonaDrawer
-    fireEvent.click(screen.getByPlaceholderText('Select Identity'))
+    fireEvent.click(screen.getByTestId('identity-selector'))
     expect(screen.getByTestId('select-persona-drawer')).toBeInTheDocument()
 
     // Simulate clicking the cancel button in the drawer
@@ -209,6 +209,6 @@ describe('IdentitySelector', () => {
     ).not.toBeInTheDocument()
 
     // Ensure onChange is not called
-    expect(screen.getByPlaceholderText('Select Identity')).toHaveValue('')
+    expect(screen.getByText('Add Identity')).toBeInTheDocument()
   })
 })
