@@ -90,6 +90,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   }
 
   useEffect(() => {
+    if (!isIpSecOverNetworkEnabled) {
+      return
+    }
     //eslint-disable-next-line no-console
     console.log('portId:', portId,
       '\tsoftGreProfileId:', softGreProfileId,
@@ -129,8 +132,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
         form.setFieldValue(ipsecFieldName, false)
-        if (isDbData) {
-          setSoftGreProfileDisabled(true)
+        if (isDbData && !!!form.getFieldValue(['lan', index, 'softGreProfileId'])) {
           form.setFieldValue(['lan', index, 'softGreProfileId'], standardOp.softGreId)
           onFormChange()
         }

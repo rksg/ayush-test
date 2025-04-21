@@ -1504,6 +1504,60 @@ export const externalWifiProviders = {
       ],
       name: 'Test-Provider-0502',
       customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1850'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'US & LATAM',
+          authRadius: {
+            primary: {
+              ip: '34.205.245.152',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://socialsign.in/spot',
+          redirectUrl: 'https://socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'EMEA, UK & ISRAEL',
+          authRadius: {
+            primary: {
+              ip: '18.184.187.25',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://eu.socialsign.in/spot',
+          redirectUrl: 'https://eu.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'APAC & INDIA',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SocialSignin',
+      customExternalProvider: false
     }
   ]
 }

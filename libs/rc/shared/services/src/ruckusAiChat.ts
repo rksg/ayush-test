@@ -127,6 +127,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Widget', id: 'DATA' }]
+    }),
+    sendFeedback: build.mutation({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.sendFeedback, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -146,5 +155,6 @@ export const {
   useChatChartQuery,
   useGetWidgetQuery,
   useCreateWidgetMutation,
-  useUpdateWidgetMutation
+  useUpdateWidgetMutation,
+  useSendFeedbackMutation
 } = ruckusAiChatApi
