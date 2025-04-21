@@ -30,7 +30,7 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
-  allVenuesEnabled?: boolean
+  activityAllVenuesEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
@@ -68,7 +68,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
-  userProfile.allVenuesEnabled = profile.allVenuesEnabled
+  userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues

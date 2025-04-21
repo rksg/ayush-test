@@ -32,8 +32,9 @@ export async function onSocketActivityChanged <Payload> (
             const isAllVenue = id === 'all'
             const isIncludedInList = userProfile.venuesList?.includes(id)
 
-            // (RBAC phase 1 + ff || RBAC phase 2) support 'all' venues
-            const supportsAll = userProfile.allVenuesEnabled || userProfile.rbacOpsApiEnabled
+            // Support 'all' venues for (RBAC Phase 1 + ff || RBAC Phase 2)
+            // eslint-disable-next-line max-len
+            const supportsAll = userProfile.activityAllVenuesEnabled || userProfile.rbacOpsApiEnabled
             return supportsAll ? isIncludedInList || isAllVenue : isIncludedInList
           }
         )
