@@ -5,6 +5,7 @@ import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
 import { Badge, Divider, Form } from 'antd'
 import { find }                 from 'lodash'
 import { useIntl }              from 'react-intl'
+import styled                   from 'styled-components/macro'
 
 import {
   ColumnState,
@@ -26,6 +27,8 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
+  useApGroupsListQuery,
+  useGetApGroupsTemplateListQuery,
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesQuery,
@@ -58,7 +61,10 @@ import {
   CompatibilityResponse,
   Compatibility,
   CompatibilitySelectedApInfo,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  useConfigTemplateQueryFnSwitcher,
+  ApGroupViewModel,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
@@ -101,6 +107,21 @@ const DefaultSelectedApInfo = {
   model: '',
   firmwareVersion: ''
 } as CompatibilitySelectedApInfo
+
+export const GroupRowWrapper = styled.div`
+  .ant-pro-table {
+    .ant-table {
+      .parent-row-data {
+        .ant-table-cell-with-append {
+          .ant-table-row-expand-icon {
+            display: block;
+            left: -32px;
+          }
+        }
+      }
+    }
+  }
+`
 
 export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|NewAPExtendedGrouped>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
@@ -148,6 +169,16 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     //   'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
+
+  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+    useQueryFn: useApGroupsListQuery,
+    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
+    payload: {
+      searchString: '',
+      pageSize: 10000
+    }
+  })
+
   const tableQuery = props.tableQuery || apListTableQuery
 
   useEffect(() => {
@@ -265,19 +296,34 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }
           setTableData(result)
         } else {
-          setTableData(tableQuery.data?.data)
+          setTableData(
+            addNetworksInfoByApGroup(tableQuery.data.data, apGroupInfo)
+          )
         }
       }
+    }
+
+    const addNetworksInfoByApGroup = (data: NewAPExtendedGrouped[] | NewAPModelExtended[], apGroupInfo: TableResult<ApGroupViewModel> | undefined) => {
+      return data.map(ap => {
+        return {
+          ...ap,
+          networksInfo: apGroupInfo?.data.filter((group) => {
+            return group.id === ap.apGroupId && group.venueId === (ap as { children?: NewAPModel[] }).children?.[0]?.venueId
+          })?.[0]?.networks
+        }
+      })
     }
 
     if (tableQuery.data) {
       if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
         fetchApCompatibilitiesAndSetData()
       } else {
-        setTableData(tableQuery.data.data)
+        setTableData(
+          addNetworksInfoByApGroup(tableQuery.data.data, apGroupInfo)
+        )
       }
     }
-  }, [tableQuery.data, showFeatureCompatibilitiy])
+  }, [tableQuery.data, showFeatureCompatibilitiy, apGroupInfo])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
@@ -759,121 +805,123 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<NewAPModelExtended|NewAPExtendedGrouped>
-        {...props}
-        settingsId={settingsId}
-        columns={columns}
-        columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
-        dataSource={tableData}
-        // getAllPagesData={tableQuery.getAllPagesData}
-        rowKey='serialNumber'
-        pagination={tableQuery.pagination}
-        onChange={handleTableChange}
-        onFilterChange={handleFilterChange}
-        enableApiFilter={true}
-        rowActions={allowedRowActions}
-        actions={props.enableActions ? filterByAccess([{
-          label: $t({ defaultMessage: 'Add AP' }),
-          scopeKey: [WifiScopes.CREATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
-          onClick: () => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/wifi/add`
-            }, { state: { venueId: params.venueId } })
+      <GroupRowWrapper>
+        <Table<NewAPModelExtended|NewAPExtendedGrouped>
+          {...props}
+          settingsId={settingsId}
+          columns={columns}
+          columnState={enableApCompatibleCheck?{ onChange: handleColumnStateChange } : {}}
+          dataSource={tableData}
+          // getAllPagesData={tableQuery.getAllPagesData}
+          rowKey='serialNumber'
+          pagination={tableQuery.pagination}
+          onChange={handleTableChange}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
+          rowActions={allowedRowActions}
+          actions={props.enableActions ? filterByAccess([{
+            label: $t({ defaultMessage: 'Add AP' }),
+            scopeKey: [WifiScopes.CREATE],
+            rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
+            onClick: () => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/wifi/add`
+              }, { state: { venueId: params.venueId } })
+            }
+          }, {
+            label: $t({ defaultMessage: 'Add AP Group' }),
+            scopeKey: [WifiScopes.CREATE],
+            rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)],
+            onClick: () => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/apgroups/add`
+              }, { state: {
+                venueId: params.venueId,
+                history: location.pathname
+              } })
+            }
+          }, {
+            label: $t({ defaultMessage: 'Import APs' }),
+            scopeKey: [WifiScopes.CREATE],
+            rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
+            onClick: () => {
+              setImportVisible(true)
+            }
+          }]) : []}
+          searchableWidth={260}
+          filterableWidth={150}
+          iconButton={exportDevice ? {
+            icon: <DownloadOutlined />,
+            disabled,
+            onClick: exportCsv,
+            tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
+          } : undefined
           }
-        }, {
-          label: $t({ defaultMessage: 'Add AP Group' }),
-          scopeKey: [WifiScopes.CREATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)],
-          onClick: () => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/apgroups/add`
-            }, { state: {
-              venueId: params.venueId,
-              history: location.pathname
-            } })
-          }
-        }, {
-          label: $t({ defaultMessage: 'Import APs' }),
-          scopeKey: [WifiScopes.CREATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
-          onClick: () => {
-            setImportVisible(true)
-          }
-        }]) : []}
-        searchableWidth={260}
-        filterableWidth={150}
-        iconButton={exportDevice ? {
-          icon: <DownloadOutlined />,
-          disabled,
-          onClick: exportCsv,
-          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-        } : undefined
-        }
-      />
-      <ImportFileDrawer
-        type={ImportFileDrawerType.AP}
-        title={$t({ defaultMessage: 'Import APs from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={512}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importVisible}
-        isLoading={isImportResultLoading}
-        importError={importErrors}
-        importRequest={(formData, values) => {
-          setIsImportResultLoading(true)
-          importCsv({
-            params: { venueId: (values as ImportFileFormType).venueId },
-            payload: formData,
-            callback: async (res: CommonResult) => {
-              const result = await importQuery(
-                {
-                  params: { venueId: (values as ImportFileFormType).venueId },
-                  payload: { requestId: res.requestId },
-                  enableRbac: true
-                }, true)
-                .unwrap()
-              setImportResult(result)
-            },
-            enableRbac: true
-          }).unwrap().catch(() => {
-            setIsImportResultLoading(false)
-          })
-        }}
-        onClose={() => setImportVisible(false)}>
-        <div style={{ display: params.venueId ? 'none' : 'block' }}>
-          <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
-          <Form.Item
-            name={'venueId'}
-            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-            rules={[{ required: true }]}
-            initialValue={params.venueId}
-            children={<VenueSelector />}
-          />
-        </div>
-      </ImportFileDrawer>
-      {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
-        visible={compatibilitiesDrawerVisible}
-        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-        venueId={params.venueId}
-        networkId={params.networkId}
-        apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
-        apName={selectedApInfo?.name}
-        isMultiple
-        onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />}
-      {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
-        visible={compatibilitiesDrawerVisible}
-        isMultiple
-        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-        venueId={params.venueId}
-        networkId={params.networkId}
-        apInfo={selectedApInfo}
-        onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />}
+        />
+        <ImportFileDrawer
+          type={ImportFileDrawerType.AP}
+          title={$t({ defaultMessage: 'Import APs from file' })}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['csv']}
+          templateLink={importTemplateLink}
+          visible={importVisible}
+          isLoading={isImportResultLoading}
+          importError={importErrors}
+          importRequest={(formData, values) => {
+            setIsImportResultLoading(true)
+            importCsv({
+              params: { venueId: (values as ImportFileFormType).venueId },
+              payload: formData,
+              callback: async (res: CommonResult) => {
+                const result = await importQuery(
+                  {
+                    params: { venueId: (values as ImportFileFormType).venueId },
+                    payload: { requestId: res.requestId },
+                    enableRbac: true
+                  }, true)
+                  .unwrap()
+                setImportResult(result)
+              },
+              enableRbac: true
+            }).unwrap().catch(() => {
+              setIsImportResultLoading(false)
+            })
+          }}
+          onClose={() => setImportVisible(false)}>
+          <div style={{ display: params.venueId ? 'none' : 'block' }}>
+            <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
+            <Form.Item
+              name={'venueId'}
+              label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+              rules={[{ required: true }]}
+              initialValue={params.venueId}
+              children={<VenueSelector />}
+            />
+          </div>
+        </ImportFileDrawer>
+        {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
+          visible={compatibilitiesDrawerVisible}
+          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
+          venueId={params.venueId}
+          networkId={params.networkId}
+          apIds={selectedApInfo?.serialNumber ? [selectedApInfo.serialNumber] : []}
+          apName={selectedApInfo?.name}
+          isMultiple
+          onClose={() => setCompatibilitiesDrawerVisible(false)}
+        />}
+        {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+          visible={compatibilitiesDrawerVisible}
+          isMultiple
+          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
+          venueId={params.venueId}
+          networkId={params.networkId}
+          apInfo={selectedApInfo}
+          onClose={() => setCompatibilitiesDrawerVisible(false)}
+        />}
+      </GroupRowWrapper>
     </Loader>
   )
 })

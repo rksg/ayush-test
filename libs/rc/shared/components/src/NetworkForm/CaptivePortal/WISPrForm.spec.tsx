@@ -321,7 +321,87 @@ describe('CaptiveNetworkForm-WISPr', () => {
       expect(await screen.findByTitle('SkyWifiRadSecTest')).toBeInTheDocument()
       expect(await screen.findByTitle('Skyfii')).toBeInTheDocument()
       expect(await screen.findByTitle('Test-Provider-0502')).toBeInTheDocument()
+    })
 
+    it('should test external provider has correct settings by regions', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false, cloneMode: false, data: wisprDataWPA2, isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, { route: { params } })
+      expect(screen.getByLabelText('Captive Portal URL')).toHaveValue('')
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).not.toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toHaveValue('')
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toBeDisabled()
+      await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+      await userEvent.click((await screen.findAllByTitle('SocialSignin'))[0])
+      await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
+      await userEvent.click((await screen.findAllByTitle('US & LATAM'))[0])
+      expect(screen.getByLabelText('Captive Portal URL')).toHaveValue('https://socialsign.in/spot')
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toHaveValue('https://socialsign.in/spot/success')
+      // Change to another region
+      await userEvent.click((await screen.findAllByTitle('US & LATAM'))[0])
+      await userEvent.click((await screen.findAllByTitle('EMEA, UK & ISRAEL'))[0])
+      expect(screen.getByLabelText('Captive Portal URL')).toHaveValue('https://eu.socialsign.in/spot')
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toHaveValue('https://eu.socialsign.in/spot/success')
+    })
+
+    it('should test Redirect URL when changing provider', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false, cloneMode: false, data: wisprDataWPA2, isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>, { route: { params } })
+      await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+      await userEvent.click((await screen.findAllByTitle('SocialSignin'))[0])
+      await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
+      await userEvent.click((await screen.findAllByTitle('US & LATAM'))[0])
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toHaveValue('https://socialsign.in/spot/success')
+      // Overwrite redirect URL after changing to another provider
+      await userEvent.click((await screen.findAllByTitle('SocialSignin'))[0])
+      await userEvent.click((await screen.findAllByTitle('SkyWifiRadSec'))[0])
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toHaveValue('baibai.com.cn')
+      // Clear redirect URL after changing to another provider
+      await userEvent.click((await screen.findAllByTitle('SkyWifiRadSec'))[0])
+      await userEvent.click((await screen.findAllByTitle('Aislelabs'))[0])
+      await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
+      await userEvent.click((await screen.findAllByTitle('Middle East'))[0])
+      expect(screen.getByRole('checkbox', { name: 'Redirect users to' })).not.toBeChecked()
+      expect(screen.getByPlaceholderText('e.g. http://www.example.com')).toBeEmptyDOMElement()
     })
   })
 })
