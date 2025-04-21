@@ -206,7 +206,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
     if (duplicateACL) {
       return Promise.reject($t({
-        defaultMessage: 'MAC ACL name is duplicated.'
+        defaultMessage: 'Policy name is duplicated.'
       }))
     }
 
@@ -215,6 +215,14 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
   const handleFinish = async (data: MacAclRule) => {
     const formValues = data
+
+    if (!dataSource || dataSource.length === 0) {
+      form.setFields([{
+        name: 'rules',
+        errors: [$t({ defaultMessage: 'Please add at least one rule' })]
+      }])
+      return
+    }
 
     const macAclRules = dataSource?.map(row => {
       const { key, ...rowData } = row
@@ -260,9 +268,9 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
           >
             <Form.Item
               name='name'
-              label={$t({ defaultMessage: 'MAC ACL Name' })}
+              label={$t({ defaultMessage: 'Policy Name' })}
               rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter MAC ACL name' }) },
+                { required: true, message: $t({ defaultMessage: 'Please enter Policy name' }) },
                 { validator: validateMacAclName }
               ]}
               validateTrigger='onBlur'
@@ -270,20 +278,11 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
               <Input disabled={editMode} style={{ width: '400px' }} maxLength={255} />
             </Form.Item>
             <Form.Item
+              name='rules'
               label={<>
                 {$t({ defaultMessage: 'Rules' })}
                 <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>
               </>}
-              rules={[
-                {
-                  validator: () => {
-                    if (!dataSource || dataSource.length === 0) {
-                      return Promise.reject($t({ defaultMessage: 'Please add at least one rule' }))
-                    }
-                    return Promise.resolve()
-                  }
-                }
-              ]}
             >
               <Table
                 dataSource={dataSource}
