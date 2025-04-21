@@ -69,10 +69,6 @@ export function SwitchStackSetting (props: {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
-  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
-  const isSwitchFirmwareAbove10010gOr10020b =
-    isFirmwareVersionAbove10010g2Or10020b(switchDetail?.firmware)
-
   const { useWatch } = Form
   const [authEnable, authDefaultVlan, portSecurity] = [
     useWatch<string>('authEnable', form),
@@ -139,27 +135,6 @@ export function SwitchStackSetting (props: {
         }}
       />)
     })
-  }
-
-  const onPortSecurityMaxEntriesChange = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-    const value = Number(event.target.value)
-
-    if (value && switchData?.portSecurityMaxEntries &&
-      value < switchData.portSecurityMaxEntries) {
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
-        content: $t({
-          // eslint-disable-next-line max-len
-          defaultMessage: 'The limit you entered is lower than the limit set on some of the ports in this switch. If you proceed, the system will need to delete the current sticky MAC addresses on those ports. Are you sure you want to proceed?'
-        }),
-        okText: $t({ defaultMessage: 'Delete' }),
-        cancelText: $t({ defaultMessage: 'Cancel' }),
-        onCancel: () => {
-          form.setFieldsValue({ portSecurityMaxEntries: switchData.portSecurityMaxEntries })
-        }
-      })
-    }
   }
 
   return (
@@ -325,36 +300,6 @@ export function SwitchStackSetting (props: {
           disabled={readOnly}
         />}
       />
-      {
-        isSwitchMacAclEnabled && isSwitchFirmwareAbove10010gOr10020b && <Form.Item>
-          <JumboModeSpan>{$t({ defaultMessage: 'Port MAC Security' })}</JumboModeSpan>
-          <Form.Item noStyle name='portSecurity' valuePropName='checked'>
-            <Switch data-testid='port-security-switch' disabled={readOnly} />
-          </Form.Item>
-        </Form.Item>
-      }
-      { portSecurity &&
-      <Form.Item
-        name='portSecurityMaxEntries'
-        label={$t({ defaultMessage: 'Sticky MAC List Size Limit' })}
-        initialValue='1'
-        rules={[
-          {
-            type: 'number',
-            min: 1,
-            max: 8256
-          }
-        ]}
-        validateFirst
-        children={<InputNumber
-          min={1}
-          max={8256}
-          data-testid='port-security-max-entries-input'
-          onBlur={onPortSecurityMaxEntriesChange}
-          style={{ width: '100%' }}
-        />}
-      />
-      }
       { isIcx7650 &&
       <Form.Item>
         <JumboModeSpan>{$t({ defaultMessage: 'Stack with 40G ports on module 3:' })}</JumboModeSpan>
