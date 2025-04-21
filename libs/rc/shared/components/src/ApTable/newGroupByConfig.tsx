@@ -1,13 +1,28 @@
+import React from 'react'
+
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended, NewAPModelExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                from '@acx-ui/react-router-dom'
-import { getIntl }                                                                   from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, NewAPModel, NewAPModelExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
+import { getIntl }                                                                               from '@acx-ui/utils'
+
+import { SimpleListTooltip } from '../SimpleListTooltip'
 
 import { APStatus } from '.'
 
 const commonAttributes = ($t: IntlShape['$t']) => [
+  {
+    key: 'venue',
+    renderer: (record: NewAPModelExtended) => {
+      return <div>
+        {/* eslint-disable-next-line max-len */}
+        Venue: {record.children?.length! > 0 && <TenantLink to={`/venues/${(record.children as NewAPModel[])[0].venueId}/venue-details/overview`}>
+          {(record.children as NewAPModel[])[0].venueName}
+        </TenantLink>}
+      </div>
+    }
+  },
   {
     key: 'members',
     renderer: (record: NewAPModelExtended) => (
@@ -37,7 +52,9 @@ const commonAttributes = ($t: IntlShape['$t']) => [
     renderer: (record: NewAPModelExtended) => (
       <div>
         {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-        {record.networks ? record.networks.count : 0}
+        {record?.networksInfo ? <SimpleListTooltip
+          items={record?.networksInfo.names!}
+          displayText={record?.networksInfo.count!} /> : 0}
       </div>
     )
   }
