@@ -4,29 +4,33 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
 import {
   AaaUrls, AccessControlUrls, CommonUrlsInfo, ExpirationType,
-  MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
-  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo,PersonaUrls,
-  IpsecUrls
+  IpsecUrls,
+  MacRegListUrlsInfo,
+  PersonaUrls,
+  RulesManagementUrlsInfo, SoftGreUrls,
+  TunnelProfileUrls,
+  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                              from '@acx-ui/user'
 
 import {
-  venuesResponse,
-  venueListResponse,
+  mockAAAPolicyListResponse,
+  mockedMacRegistrationPools,
+  mockIdentityGroupQuery,
+  mockIpSecTable,
+  mockMacRegistrationPoolList,
+  mockSoftGreTable,
+  mockUpdatedMacRegistrationPoolList,
+  networkDeepResponse,
   networksResponse,
   successResponse,
-  networkDeepResponse,
-  mockMacRegistrationPoolList,
-  mockUpdatedMacRegistrationPoolList,
-  mockAAAPolicyListResponse,
-  mockSoftGreTable, mockedMacRegistrationPools,
-  mockIdentityGroupQuery,
-  mockIpSecTable
+  venueListResponse,
+  venuesResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -36,8 +40,8 @@ jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
   useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('../edgeUtils', () => ({
+  ...jest.requireActual('../edgeUtils'),
   useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({
     enableTunnel: false,
     enableVxLan: false,
@@ -60,6 +64,7 @@ jest.mock('../../ApCompatibility', () => ({
 jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
   IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
 }))
+
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -232,7 +237,9 @@ describe('NetworkForm', () => {
       rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiUrlsInfo.queryMacRegistrationPool.url,
-        (_, res, ctx) => res(ctx.json(mockedMacRegistrationPools)))
+        (_, res, ctx) => res(ctx.json(mockedMacRegistrationPools))),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
 

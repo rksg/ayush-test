@@ -1,20 +1,22 @@
 import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
 import styled, { css }                                 from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Card }            from '@acx-ui/components'
+import { ThumbsDown as UIThumbsDown,
+  ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -215,7 +217,7 @@ display: flex;
   }
   .content {
     background: transparent;
-    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
       - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
     width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
@@ -267,7 +269,7 @@ display: flex;
       /* Track */
       &::-webkit-scrollbar-track {
         border-radius: 6px;
-        background: transparent; 
+        background: transparent;
       }
 
       /* Handle */
@@ -275,7 +277,7 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
         - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
@@ -312,13 +314,14 @@ display: flex;
         .ant-divider-horizontal.ant-divider-with-text {
           border-top-color: var(--acx-neutrals-30);
         }
-        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::before,
         .ant-divider-horizontal.ant-divider-with-text::after {
           width: 29%;
         }
       }
       .chat-container {
         display: flex;
+        flex-direction: column;
       }
       .loading {
         display: flex;
@@ -344,6 +347,7 @@ display: flex;
         color: #000;
         margin-right: 5px;
         font-weight: 400;
+        align-self: flex-end;
       }
       .chat-bubble {
         background: linear-gradient(264deg, #0CC3EC -25.46%,
@@ -357,9 +361,36 @@ display: flex;
         margin-left: 10px;
         font-weight: 600;
       }
+      .chat-bubble {
+        align-self: flex-start;
+      }
+      .ai-message-tail {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        margin-right: 7px;
+        min-height: 25px;
+
+        &.fixed {
+          width: 300px;
+        }
+        &.fixed-narrower {
+          width: 200px !important;
+        }
+        &.dynamic {
+          align-self: flex-start;
+        }
+        .timestamp {
+          padding: 6px 0px 0px 0px;
+        }
+      }
+      .message-tail {
+        align-content: end;
+        .timestamp {
+          display: flex;
+        }
+      }
       .timestamp {
         color: var(--acx-neutrals-70);
-        display: flex;
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
@@ -367,6 +398,12 @@ display: flex;
           justify-content: end;
           margin-right: 7px;
         }
+      }
+      .message .user-feedback {
+        display: none;
+      }
+      .message:hover .user-feedback {
+        display: block;
       }
     }
   }
@@ -422,7 +459,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000 //transparent; 
+  background: #000 //transparent;
   padding-bottom: 10px;
 }
 
@@ -565,7 +602,7 @@ export const Widget = styled(Card)`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
@@ -588,7 +625,7 @@ export const Widget = styled(Card)`
         max-width: calc(100% - 10px);
       }
       .ant-space-item:last-child {
-        flex: 10px; 
+        flex: 10px;
         max-width: auto;
       }
     }
@@ -676,7 +713,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-body {
     padding: 0px 0 24px;
     height: calc(80vh - 68px);
-    overflow: auto;    
+    overflow: auto;
   }
   .ant-modal-footer {
     display: none;
@@ -692,8 +729,33 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
       max-height: 100%;
     }
     .ant-modal-body {
-      height: calc(100vh - 68px);   
+      height: calc(100vh - 68px);
     }
   }
 
 `
+
+const thumbStyles = `
+  margin: 0px 0px 0px 4px;
+  path {
+    stroke: var(--acx-neutrals-60);
+    fill: var(--acx-primary-white);
+  }
+  &:hover {
+    path {
+      cursor: pointer;
+      stroke: var(--acx-neutrals-60);
+      fill: var(--acx-neutrals-15);
+    }
+  }
+  &.clicked {
+    path {
+      cursor: default !important;
+      stroke: transparent !important;
+      fill: var(--acx-neutrals-70)  !important;
+    }
+  }
+`
+
+export const ThumbsUp = styled(UIThumbsUp)`${thumbStyles}`
+export const ThumbsDown = styled(UIThumbsDown)`${thumbStyles}`

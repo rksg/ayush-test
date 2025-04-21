@@ -17,6 +17,7 @@ export enum AccountVertical {
   GOVERNMENT = 'Government',
   HOSPITALITY = 'Hospitality',
   NONPROFIT = 'Non Profit',
+  MDU = 'MDU',
   UNKNOWN = 'Unknown'
 }
 

@@ -274,6 +274,8 @@ export interface NetworkTunnelSdLanAction {
   networkId: string,
   guestEnabled: boolean, // forward guest traffic
   enabled: boolean,      // is local breakout
+  forwardingTunnelProfileId: string,
+  forwardingTunnelType: string,
   venueSdLanInfo?: EdgeMvSdLanViewData
 }
 
