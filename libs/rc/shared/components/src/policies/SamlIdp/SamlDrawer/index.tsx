@@ -91,6 +91,7 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
           // Workaround for add a footer to avoid drawer be hide when click outside
           <Button
             type='primary'
+            style={{ display: 'none' }}
             onClick={() => {
               setVisible(false)
             }}
