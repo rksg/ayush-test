@@ -109,10 +109,12 @@ describe('Network Drawer', () => {
   it('should correctly render in edit mode', async () => {
     render(<MockedTargetComponent
       initData={{
-        tunneledNetworks: [
-          { networkId: 'network_1', networkName: 'MockedNetwork 1' },
-          { networkId: 'network_2', networkName: 'MockedNetwork 2' }
-        ]
+        activatedNetworks: {
+          [mockedVenueId]: [
+            { networkId: 'network_1', networkName: 'MockedNetwork 1' },
+            { networkId: 'network_2', networkName: 'MockedNetwork 2' }
+          ]
+        }
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 
@@ -135,16 +137,18 @@ describe('Network Drawer', () => {
     await click(within(rows[1]).getByRole('switch'))
 
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSubmitFn).toBeCalledWith( 'mocked_venue_id', [{ networkId: 'network_2', networkName: 'MockedNetwork 2' }])
+    expect(mockedSubmitFn).toBeCalledWith({ [mockedVenueId]: [{ networkId: 'network_2', networkName: 'MockedNetwork 2' }] })
   })
 
   it('should correctly deactivate by switch', async () => {
     render(<MockedTargetComponent
       initData={{
-        tunneledNetworks: [
-          { networkId: 'network_1', networkName: 'MockedNetwork 1' },
-          { networkId: 'network_2', networkName: 'MockedNetwork 2' }
-        ]
+        activatedNetworks: {
+          [mockedVenueId]: [
+            { networkId: 'network_1', networkName: 'MockedNetwork 1' },
+            { networkId: 'network_2', networkName: 'MockedNetwork 2' }
+          ]
+        }
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 
@@ -154,7 +158,7 @@ describe('Network Drawer', () => {
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSubmitFn).toBeCalledWith('mocked_venue_id', [{ networkId: 'network_2', networkName: 'MockedNetwork 2' }])
+    expect(mockedSubmitFn).toBeCalledWith({ [mockedVenueId]: [{ networkId: 'network_2', networkName: 'MockedNetwork 2' }] })
   })
 
   it('activatedNetworks will be default into {} when networks is not touched in create mode', async () => {
@@ -162,7 +166,7 @@ describe('Network Drawer', () => {
 
     await basicCheck()
     await click(await screen.findByRole('button', { name: 'OK' }))
-    expect(mockedSubmitFn).toBeCalledWith('mocked_venue_id', [])
+    expect(mockedSubmitFn).toBeCalledWith({})
   })
 })
 

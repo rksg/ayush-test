@@ -48,6 +48,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/citylist/query',
     newApi: true
   },
+  getVenueTagList: {
+    method: 'get',
+    url: '/venues/tags',
+    newApi: true
+  },
   GetApPosition: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',

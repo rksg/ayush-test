@@ -48,7 +48,7 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
             <UI.StyledFormItem
               label={$t({ defaultMessage: 'Supported ICX Models' })}
             >
-              {requirement.models.join(', ')}
+              {[...requirement.models].sort().join(', ')}
             </UI.StyledFormItem>}
 
             { apModelFamilies && requirement?.models && deviceType === CompatibilityDeviceEnum.AP &&

@@ -14,7 +14,9 @@ const transformResult = (data: Venue[]) => data.map(
   ({ id, name }) => ({ label: name, value: id })
 )
 
-export function VenueFilter () {
+export function VenueFilter (props: {
+  disabled?: boolean
+}) {
   const { $t } = useIntl()
   const { setNodeFilter, venueIds } = useDashboardFilter()
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
@@ -60,6 +62,7 @@ export function VenueFilter () {
           onApply={(selectedOptions) => setNodeFilter(selectedOptions as string[][])}
           placement='bottomLeft'
           allowClear
+          disabled={props.disabled}
         />
       </Loader>
     </UI.Container>
