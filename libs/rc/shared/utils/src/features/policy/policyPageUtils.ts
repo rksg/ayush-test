@@ -2,16 +2,18 @@ import { useMemo } from 'react'
 
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                  from '@acx-ui/types'
 import { hasRoles }                   from '@acx-ui/user'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { LocationExtended }                                    from '../../common/redirect.utils'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
-import { generatePageHeaderTitle }                             from '../../pages'
-import { PolicyType, PolicyOperation }                         from '../../types'
-import { generateDpskManagementBreadcrumb }                    from '../service/servicePageUtils'
+import { LocationExtended }                                               from '../../common/redirect.utils'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate }            from '../../configTemplate'
+import { generatePageHeaderTitle }                                        from '../../pages'
+import { PolicyType, PolicyOperation }                                    from '../../types'
+import { generateDpskManagementBreadcrumb }                               from '../service/servicePageUtils'
+import { generateUnifiedServiceListBreadCrumb, UnifiedServiceSourceType } from '../unifiedServices'
 
 import { policyTypeLabelMapping }                     from './contentsMap'
 import { getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
@@ -28,11 +30,20 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
 
 export function usePolicyListBreadcrumb (type: PolicyType) {
   const { isTemplate } = useConfigTemplate()
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+
   const breadcrumb = useMemo(() => {
-    return isTemplate
-      ? generateConfigTemplateBreadcrumb()
-      : generatePolicyListBreadcrumb(type)
-  }, [isTemplate])
+    if (isTemplate) return generateConfigTemplateBreadcrumb()
+
+    if (isNewServiceCatalogEnabled) {
+      return generateUnifiedServiceListBreadCrumb({
+        type, sourceType: UnifiedServiceSourceType.POLICY
+      })
+    }
+
+    return generatePolicyListBreadcrumb(type)
+
+  }, [isTemplate, isNewServiceCatalogEnabled])
 
   return breadcrumb
 }
