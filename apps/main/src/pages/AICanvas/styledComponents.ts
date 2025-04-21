@@ -1,20 +1,22 @@
 import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled                                          from 'styled-components/macro'
+import styled, { css }                                 from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Card }            from '@acx-ui/components'
+import { ThumbsDown as UIThumbsDown,
+  ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -215,7 +217,7 @@ display: flex;
   }
   .content {
     background: transparent;
-    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
       - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
     width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
@@ -267,7 +269,7 @@ display: flex;
       /* Track */
       &::-webkit-scrollbar-track {
         border-radius: 6px;
-        background: transparent; 
+        background: transparent;
       }
 
       /* Handle */
@@ -275,7 +277,7 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
         - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
@@ -312,13 +314,14 @@ display: flex;
         .ant-divider-horizontal.ant-divider-with-text {
           border-top-color: var(--acx-neutrals-30);
         }
-        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::before,
         .ant-divider-horizontal.ant-divider-with-text::after {
           width: 29%;
         }
       }
       .chat-container {
         display: flex;
+        flex-direction: column;
       }
       .loading {
         display: flex;
@@ -344,6 +347,7 @@ display: flex;
         color: #000;
         margin-right: 5px;
         font-weight: 400;
+        align-self: flex-end;
       }
       .chat-bubble {
         background: linear-gradient(264deg, #0CC3EC -25.46%,
@@ -357,9 +361,36 @@ display: flex;
         margin-left: 10px;
         font-weight: 600;
       }
+      .chat-bubble {
+        align-self: flex-start;
+      }
+      .ai-message-tail {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        margin-right: 7px;
+        min-height: 25px;
+
+        &.fixed {
+          width: 300px;
+        }
+        &.fixed-narrower {
+          width: 200px !important;
+        }
+        &.dynamic {
+          align-self: flex-start;
+        }
+        .timestamp {
+          padding: 6px 0px 0px 0px;
+        }
+      }
+      .message-tail {
+        align-content: end;
+        .timestamp {
+          display: flex;
+        }
+      }
       .timestamp {
         color: var(--acx-neutrals-70);
-        display: flex;
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
@@ -367,6 +398,12 @@ display: flex;
           justify-content: end;
           margin-right: 7px;
         }
+      }
+      .message .user-feedback {
+        display: none;
+      }
+      .message:hover .user-feedback {
+        display: block;
       }
     }
   }
@@ -410,7 +447,7 @@ export const Canvas = styled.div`
   }
 `
 
-export const Grid = styled.div`
+export const Grid = styled.div<{ $type?: string }>`
 height: calc(100vh - 150px);
 overflow: auto;
 /* width */
@@ -422,7 +459,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000 //transparent; 
+  background: #000 //transparent;
   padding-bottom: 10px;
 }
 
@@ -440,13 +477,13 @@ overflow: auto;
 .rglb_group-item .group-item-container {
   padding: 20px;
 }
-.rglb_group-item .group-item-container #card-container .card-shadow {
+.rglb_group-item .group-item-container .card-container .card-shadow {
   background: rgba(15, 15, 15, 0.3);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
 }
-.rglb_group-item .group-item-container #card-container .card {
+.rglb_group-item .group-item-container .card-container .card {
   position: absolute;
   transition: all 0.2s ease-out;
   .card-actions{
@@ -491,7 +528,7 @@ overflow: auto;
     border-bottom: 2px solid #888;
   }
 }
-.rglb_group-item .group-item-container #card-container .card .card-footer {
+.rglb_group-item .group-item-container .card-container .card .card-footer {
   display: flex;
   justify-content: space-between;
   position: absolute;
@@ -503,7 +540,7 @@ overflow: auto;
 }
 .rglb_group-item
   .group-item-container
-  #card-container
+  .card-container
   .card
   .card-footer
   .card-delete {
@@ -541,6 +578,16 @@ overflow: auto;
 // .section {
 //   background-color: var(--acx-accents-blue-10);
 // }
+
+${props => props.$type === 'pageview' && css`
+  height: auto;
+  overflow: hidden;
+  .rglb_group-item .group-item-container {
+    padding: 0;
+    margin: 0 -20px;
+  }
+`}
+
 `
 
 export const Widget = styled(Card)`
@@ -555,7 +602,7 @@ export const Widget = styled(Card)`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
@@ -567,6 +614,30 @@ export const Widget = styled(Card)`
   }
   .chart {
     margin: 5px;
+  }
+  .ant-card-head-title {
+    display: flex;
+    .ant-space {
+      display: flex;
+      max-width: 100%;
+      .ant-space-item:first-child {
+        flex: 1;
+        max-width: calc(100% - 10px);
+      }
+      .ant-space-item:last-child {
+        flex: 10px;
+        max-width: auto;
+      }
+    }
+  }
+  .update-indicator {
+    display: inline-block;
+    position: relative;
+    top: -4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--acx-semantics-red-50);
   }
 `
 
@@ -586,3 +657,105 @@ export const Badge = styled(AntBadge)`
     }
   }
 `
+
+export const PreviewModal = styled(Modal)<{ $type?: string }>`
+  background: var(--acx-neutrals-10);
+  border-radius: 12px;
+  padding-bottom: 0;
+  overflow: hidden;
+  transition: all .4s linear;
+  height: 100%;
+  max-height: 80%;
+
+  .header {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: var(--acx-neutrals-10);
+    padding: 24px 30px 16px 36px;
+    align-items: center;
+    .title {
+      flex: 1;
+      margin: 4px 0;
+      font-size: var(--acx-subtitle-3-font-size);
+      font-weight: var(--acx-subtitle-3-font-weight);
+      line-height: var(--acx-subtitle-3-line-height);
+    }
+    .action {
+      display: flex;
+      gap: 24px;
+      button {
+        min-width: 24px !important;
+        width: 24px !important;
+        height: 24px !important;
+        svg {
+          width: 24px !important;
+          height: 24px !important;
+        }
+      }
+    }
+  }
+  .grid {
+    .group-item-container {
+      margin: 0 10px;
+    }
+  }
+
+  .ant-modal-content {
+    background: transparent;
+    box-shadow: none !important;
+    transition: all .4s linear;
+    padding-top: 68px;
+  }
+  .ant-modal-body {
+    padding: 0px 0 24px;
+    height: calc(80vh - 68px);
+    overflow: auto;
+  }
+  .ant-modal-footer {
+    display: none;
+  }
+
+  &.fullmode {
+    max-width: 100vw;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    .ant-modal-content {
+      height: 100vh;
+      max-height: 100%;
+    }
+    .ant-modal-body {
+      height: calc(100vh - 68px);
+    }
+  }
+
+`
+
+const thumbStyles = `
+  margin: 0px 0px 0px 4px;
+  path {
+    stroke: var(--acx-neutrals-60);
+    fill: var(--acx-primary-white);
+  }
+  &:hover {
+    path {
+      cursor: pointer;
+      stroke: var(--acx-neutrals-60);
+      fill: var(--acx-neutrals-15);
+    }
+  }
+  &.clicked {
+    path {
+      cursor: default !important;
+      stroke: transparent !important;
+      fill: var(--acx-neutrals-70)  !important;
+    }
+  }
+`
+
+export const ThumbsUp = styled(UIThumbsUp)`${thumbStyles}`
+export const ThumbsDown = styled(UIThumbsDown)`${thumbStyles}`

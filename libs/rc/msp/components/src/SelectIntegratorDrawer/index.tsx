@@ -51,6 +51,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const [getAssignedEc] = useLazyGetAssignedMspEcToIntegratorQuery()
 
@@ -192,7 +193,8 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     pagination: {
       pageSize: 10000
     },
-    defaultPayload
+    defaultPayload,
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   useEffect(() => {

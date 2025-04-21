@@ -39,14 +39,20 @@ import {
   MigrationUrlsInfo,
   LicenseUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                              from '@acx-ui/types'
-import { hasRoles, useUserProfileContext,  hasAllowedOperations } from '@acx-ui/user'
-import { getOpsApi, useTenantId }                                 from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import {
+  hasRoles,
+  useUserProfileContext,
+  hasAllowedOperations,
+  isCoreTier
+} from '@acx-ui/user'
+import { getOpsApi, useTenantId } from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
+    accountTier } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -70,6 +76,7 @@ export function useMenuConfig () {
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
+  const isCore = isCoreTier(accountTier)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -78,7 +85,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    {
+    ...(!isCore ? [{
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -120,7 +127,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    },
+    }] : []),
     ...(!showGatewaysMenu ? [{
       uri: '/venues',
       label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
@@ -223,10 +230,10 @@ export function useMenuConfig () {
               uri: '/networks/wireless/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' })
             },
-            {
+            ...(!isCore ? [{
               uri: '/networks/wireless/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' })
-            },
+            }] : []),
             {
               uri: '/networks/wireless/reports/wireless',
               label: $t({ defaultMessage: 'Wireless Report' })
@@ -325,7 +332,12 @@ export function useMenuConfig () {
         }
       ]
     },
-    {
+    ...(isCore ? [{
+      uri: '/reports',
+      label: $t({ defaultMessage: 'Business Insights' }),
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid
+    }] : [{
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
       activeIcon: BulbSolid,
@@ -338,7 +350,7 @@ export function useMenuConfig () {
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
-    },
+    }]),
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,

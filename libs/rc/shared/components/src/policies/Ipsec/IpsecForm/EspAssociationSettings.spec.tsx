@@ -41,7 +41,8 @@ describe('EspAssociationSettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form initialValues={initialValues} form={formRef.current}>
-          <EspAssociationSettings initIpSecData={initialValues} /></Form></IntlProvider>)
+          <EspAssociationSettings loadEspSettings setLoadEspSettings={jest.fn()}/>
+        </Form></IntlProvider>)
   }
 
   it('displays Default form fields', () => {

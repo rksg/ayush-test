@@ -33,6 +33,7 @@ import {
   useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
 import { ShowTopologyFloorplanOn }                             from '@acx-ui/rc/utils'
 import { useNavigateToPath }                                   from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                          from '@acx-ui/user'
 import { generateVenueFilter, useDateFilter, LoadTimeContext } from '@acx-ui/utils'
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 
@@ -107,30 +108,37 @@ export function VenueOverviewTab () {
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
   const { venueId } = useParams()
   const [incidentCount, setIncidentCount] = useState(0)
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const onIncidentClick =
     useNavigateToPath(`/venues/${venueId}/venue-details/analytics/incidents/overview`)
 
   const filters = props.filters
   return (
     <GridRow>
-      <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
+      <GridCol col={{ span: isCore ? 12 : 7 }} style={{ height: '176px' }}>
         <VenueAlarmWidget />
       </GridCol>
-      <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <UI.Container
-          incidentCount={incidentCount}
-          onClick={incidentCount > 0 ? onIncidentClick : undefined}
-        >
-          <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
-        </UI.Container>
-      </GridCol>
-      <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
+      {!isCore &&
+        <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
+          <UI.Container
+            incidentCount={incidentCount}
+            onClick={incidentCount > 0 ? onIncidentClick : undefined}
+          >
+            <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
+          </UI.Container>
+        </GridCol>
+      }
+      <GridCol col={{ span: isCore ? 12 : 10 }} style={{ height: '176px' }}>
         <VenueDevicesWidget />
       </GridCol>
 
-      <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
-        <VenueHealth filters={filters}/>
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
+          <VenueHealth filters={filters}/>
+        </GridCol>
+      }
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
         <TopologyFloorPlanWidget
@@ -141,21 +149,27 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
 }
 
 function ApWidgets (props: { filters: AnalyticsFilter }) {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const filters = props.filters
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TrafficByVolume filters={filters} />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <NetworkHistory filters={filters} />
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <NetworkHistory filters={filters} />
+        </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopApplicationsByTraffic filters={filters} />
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <TopApplicationsByTraffic filters={filters} />
+        </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSSIDsByTraffic filters={filters} />
       </GridCol>

@@ -3,7 +3,8 @@ import {
   setDeepUserSettings,
   getProductKey,
   goToNotFound,
-  goToNoPermission
+  goToNoPermission,
+  isCoreTier
 } from './utils'
 
 
@@ -88,6 +89,21 @@ describe('user settings utility', () => {
       expect(result.type.name).toBe('TenantNavigate')
       expect(result.props.replace).toBeTruthy()
       expect(result.props.to).toBe('/no-permissions')
+    })
+  })
+
+  describe('isCoreTier', () => {
+    it('should return true if tier is CORE', () => {
+      expect(isCoreTier('Silver')).toBe(true)
+    })
+
+    it('should return false if tier is not CORE', () => {
+      expect(isCoreTier('PLATINUM')).toBe(false)
+      expect(isCoreTier('GOLD')).toBe(false)
+    })
+
+    it('should return false if tier is undefined', () => {
+      expect(isCoreTier(undefined)).toBe(false)
     })
   })
 })

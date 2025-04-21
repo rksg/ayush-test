@@ -35,7 +35,7 @@ describe('DhcpDetailDrawer', () => {
     const drawer = await screen.findByRole('dialog')
     expect(await within(drawer).findByText('DHCP Details : TestDhcp-1')).toBeVisible()
     expect(await within(drawer).findByText('DHCP Relay')).toBeVisible()
-    expect(within(drawer).getByText('ON')).toBeVisible()
+    expect(within(drawer).getByText('On')).toBeVisible()
     expect(within(drawer).getByText('Domain Name')).toBeVisible()
     expect(within(drawer).getByText('test.com.cc')).toBeVisible()
     expect(within(drawer).getByText('Primary DNS Server')).toBeVisible()
