@@ -80,11 +80,6 @@ export function PropertyUnitDetails () {
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
   const [guestCopyButtonTooltip, setGuestCopyTooltip] = useState(copyButtonTooltipDefaultText)
 
-  const hasLinkedIdentityUpdatePermission = (hasPermission({
-    rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)] })
-  || hasPermission({
-    rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)] }))
-
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
       const groupId = propertyConfigsQuery.data.personaGroupId
@@ -436,7 +431,7 @@ export function PropertyUnitDetails () {
         onFilterChange={handleFilterChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasLinkedIdentityUpdatePermission && { type: 'checkbox' }}
+        rowSelection={filterByAccess(rowActions).length > 0 && { type: 'checkbox' }}
       />
     </Loader>
     {venueId && configurePropertyUnitDrawerVisible &&
