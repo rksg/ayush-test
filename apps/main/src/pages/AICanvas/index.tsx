@@ -167,6 +167,7 @@ export default function AICanvasModal (props: {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
+  const [skipScrollTo, setSkipScrollTo] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -187,6 +188,10 @@ export default function AICanvasModal (props: {
   useEffect(()=>{
     if(page === 1 || aiBotLoading) {
       setTimeout(()=>{
+        if (skipScrollTo) {
+          setSkipScrollTo(false)
+          return
+        }
         // @ts-ignore
         if(scrollRef?.current?.scrollTo){
           // @ts-ignore
@@ -395,6 +400,7 @@ export default function AICanvasModal (props: {
       ...message,
       userFeedback: userFeedback
     }
+    setSkipScrollTo(true)
     setChats(prevChats =>
       prevChats.map(chat =>
         chat.id === message.id ? updatedMessage : chat
