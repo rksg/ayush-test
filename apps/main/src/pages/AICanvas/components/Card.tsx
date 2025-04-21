@@ -28,6 +28,11 @@ interface CardProps {
   draggable?: boolean
   // sectionRef?: React.MutableRefObject<null>
 }
+
+export interface WidgetProperty {
+  name: string
+}
+
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
@@ -111,6 +116,23 @@ function Card (props: CardProps) {
         // eslint-disable-next-line max-len
         let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col, null)
         groupsTmp[groupIndex].cards = compactedLayout
+        return true
+      }
+      return false
+    })
+    props.updateGroupList(groupsTmp)
+  }
+
+  const changeWidgetProperty = (widget: WidgetProperty) => {
+    let groupsTmp = _.cloneDeep(props.groups)
+    let cardTmp = _.cloneDeep(card)
+    cardTmp = {
+      ...cardTmp,
+      name: widget.name
+    }
+    groupsTmp[groupIndex].cards.some((item, index) => {
+      if(item.id === cardTmp.id) {
+        groupsTmp[groupIndex].cards[index] = cardTmp
         return true
       }
       return false
@@ -250,6 +272,7 @@ function Card (props: CardProps) {
                 data={card as unknown as WidgetListData}
                 visible={visible}
                 setVisible={setVisible}
+                changeWidgetProperty={changeWidgetProperty}
               />
             }
             {/* <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/> */}

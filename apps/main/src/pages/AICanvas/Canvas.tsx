@@ -4,18 +4,16 @@ import { Menu, MenuProps } from 'antd'
 import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 
-import { Button, Dropdown, Tooltip }                                                                  from '@acx-ui/components'
-import { ArrowExpand, LockOutlined, GlobeOutlined }                                                   from '@acx-ui/icons-new'
-import { useGetCanvasQuery, useLazyGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation } from '@acx-ui/rc/services'
-import { Canvas as CanvasType }                                                                       from '@acx-ui/rc/utils'
+import { Button, Dropdown, Tooltip }                                                                      from '@acx-ui/components'
+import { ArrowExpand, LockOutlined, GlobeOutlined }                                                       from '@acx-ui/icons-new'
+import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation, useLazyGetCanvasByIdQuery } from '@acx-ui/rc/services'
+import { Canvas as CanvasType }                                                                           from '@acx-ui/rc/utils'
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
-
-// import mockData from './mock'
 
 const compactType = 'horizontal'
 
@@ -35,6 +33,7 @@ export interface Size {
 }
 
 export interface CardInfo {
+  name: string
   id: string,
   gridx: number
   gridy: number
@@ -121,23 +120,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
+  const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
 
-  const [getCanvas] = useLazyGetCanvasQuery()
+  const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const { data: canvasList } = useGetCanvasQuery({})
-
-  useEffect(() => {
-    // const data = getFromLS()
-    // setSections(data)
-    // const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
-    // setGroups(group)
-    getDefaultCanvas()
-  }, [])
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -146,18 +138,37 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       s.groups = groups.filter(g => g.sectionId === s.id)
     })
     let hasDiff = !_.isEqual(tmp, sections)
+
+    const tmpDiff = [] as string[]
+    // The current requirement includes only one section and one group.
+    // Push IDs of newly added or updated widgets.
+    tmp[0].groups[0].cards.forEach(t => {
+      const origin = sections[0].groups[0].cards.find(i => i.widgetId === t.widgetId)
+      if(!origin) {
+        tmpDiff.push(t.widgetId as string)
+      } else if(!_.isEqual(t, origin)) {
+        tmpDiff.push(t.widgetId as string)
+      }
+    })
+
+    setDiffWidgetIds(tmpDiff)
     setCanvasChange(hasDiff)
   }, [groups, sections])
 
-  // const getFromLS = () => {
-  //   let ls = localStorage.getItem('acx-ui-canvas') ?
-  //     JSON.parse(localStorage.getItem('acx-ui-canvas') || '') : DEFAULT_CANVAS // mockData
-  //   return ls
-  // }
+  useEffect(() => {
+    if(canvasId) {
+      const fetchData = async () => {
+        await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+          setupCanvas(res)
+        })
+      }
+      fetchData()
+    }
+  }, [canvasId])
 
   useEffect(() => {
     if(canvasList) {
-      setupCanvas(canvasList[0])
+      setCanvasId(canvasList[0].id)
     }
   }, [canvasList])
 
@@ -175,7 +186,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
         setCanvasChange(false)
       } else {
         const selected = canvasList?.find(i => i.id == e.key)
-        setupCanvas(selected as CanvasType)
+        setCanvasId(selected?.id || canvasId)
       }
     }
     if(checkChanges) {
@@ -194,8 +205,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const setupCanvas = (response: CanvasType) => {
-    const canvasId = response.id
-    setCanvasId(canvasId)
     setCurrentCanvas(response)
     if(response.content) {
       let data = JSON.parse(response.content) as Section[]
@@ -211,19 +220,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       setGroups(groups)
       setCanvasChange(false)
     } else {
-      emptyCanvas()
-    }
-  }
-
-  const getDefaultCanvas = async () => {
-    const response = await getCanvas({}).unwrap()
-    if (response?.length && response[0].content) {
-      setupCanvas(response[0])
-    } else {
-      if (response?.length && response[0].id) {
-        setCanvasId(response[0].id)
-        setCurrentCanvas(response[0])
-      }
       emptyCanvas()
     }
   }
@@ -247,12 +243,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
         params: { canvasId },
         payload: {
           content: hasCard ? JSON.stringify(tmp) : '',
-          widgetIds
+          widgetIds,
+          diffWidgetIds
         }
       }).unwrap().then(() => {
         if(callback) {
           callback()
         }
+      })
+      await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+        setupCanvas(res)
       })
     }
     setCanvasChange(false)

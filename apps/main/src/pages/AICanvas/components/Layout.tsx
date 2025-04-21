@@ -166,6 +166,8 @@ export default function Layout (props: LayoutProps) {
             g.cards.forEach(c => {
               if(c.id == shadowCard.id) {
                 c.widgetId = response.data.id
+                c.name = response.data.name
+                // TODO: time range
                 c.canvasId = canvasId
               }
             })
