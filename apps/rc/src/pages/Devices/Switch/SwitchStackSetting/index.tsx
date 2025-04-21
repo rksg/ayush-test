@@ -70,10 +70,9 @@ export function SwitchStackSetting (props: {
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
 
   const { useWatch } = Form
-  const [authEnable, authDefaultVlan, portSecurity] = [
+  const [authEnable, authDefaultVlan] = [
     useWatch<string>('authEnable', form),
-    useWatch<string>('authDefaultVlan', form),
-    useWatch<boolean>('portSecurity', form)
+    useWatch<string>('authDefaultVlan', form)
   ]
 
   const [enableDhcp, setEnableDhcp] = useState(false)
