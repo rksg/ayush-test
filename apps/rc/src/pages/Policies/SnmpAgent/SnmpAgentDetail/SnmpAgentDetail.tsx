@@ -27,11 +27,7 @@ const rbacSnmpFields = [
   'id',
   'name',
   'communityNames',
-  'userNames',
-  'apSerialNumbers',
-  'apNames',
-  'venueIds',
-  'venueNames'
+  'userNames'
 ]
 
 export default function SnmpAgentDetail () {

@@ -45,6 +45,7 @@ export type IntentHighlight = {
   rrm?: HighlightItem
   probeflex?: HighlightItem
   ops?: HighlightItem
+  ecoflex?: HighlightItem
 }
 
 type IntentAPPayload = {
@@ -342,6 +343,10 @@ export const api = intentAIApi.injectEndpoints({
               active
             }
             ops {
+              new
+              active
+            }
+            ecoflex {
               new
               active
             }
