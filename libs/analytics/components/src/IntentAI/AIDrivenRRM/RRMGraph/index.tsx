@@ -127,7 +127,7 @@ const drawerZoomScale = scalePow()
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
 
-const GraphTitle = ({ details }: { details: IntentDetail }) => {
+export const GraphTitle = ({ details }: { details: IntentDetail }) => {
   const { $t } = useIntl()
   return <UI.GraphTitleWrapper>
     <div>

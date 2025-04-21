@@ -3,6 +3,8 @@ import ReactECharts                                  from 'echarts-for-react'
 import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
+import { formatter } from '@acx-ui/formatter'
+
 import { cssNumber, cssStr } from '../../theme/helper'
 import { graphStyles }       from '../CloudRRMGraph'
 
@@ -11,13 +13,18 @@ interface NodeSize {
   min: number
 }
 
+export type NeighborAPNodes = Record<'nonInterfering'|'interfering'|'rogue', number>
+
 interface NeighborAPGraphProps {
   title: string
   subtext?: string
   nodeSize: NodeSize
-  nodes: Record<'nonInterfering'|'interfering'|'rogue', number>
+  nodes: NeighborAPNodes
   width: number
   height: number
+  backgroundColor?: string
+  zoom?: number
+  repulsion?: number
 }
 
 const genericLabel = {
@@ -28,28 +35,52 @@ const genericLabel = {
   fontSize: cssNumber('--acx-body-2-font-size')
 }
 
-const nodeTypes: Record<string, { name: MessageDescriptor, color: string }> = {
-  root: {
-    name: defineMessage({ defaultMessage: 'AP' }),
-    color: cssStr('--acx-neutrals-50')
-  },
-  nonInterfering: {
-    name: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
-    color: cssStr('--acx-accents-blue-50')
-  },
-  interfering: {
-    name: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
-    color: cssStr('--acx-semantics-red-50')
-  },
-  rogue: {
-    name: defineMessage({ defaultMessage: 'Rogue AP' }),
-    color: cssStr('--acx-neutrals-80')
-  }
+type NodeType = {
+  name: MessageDescriptor
+  color: string
+  legendText?: MessageDescriptor | null
+  tooltip: MessageDescriptor | null
 }
+
+enum Node {
+  Root = 'root',
+  NonInterfering = 'nonInterfering',
+  Interfering = 'interfering',
+  Rogue = 'rogue'
+}
+
+export const nodeTypes = {
+  [Node.Root]: {
+    name: defineMessage({ defaultMessage: 'AP' }),
+    color: cssStr('--acx-neutrals-50'),
+    legendText: null,
+    tooltip: null
+  },
+  [Node.NonInterfering]: {
+    name: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
+    color: cssStr('--acx-accents-blue-50'),
+    legendText: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
+    tooltip: defineMessage(
+      { defaultMessage: 'APs on different channels that minimize interference.' })
+  },
+  [Node.Interfering]: {
+    name: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
+    color: cssStr('--acx-semantics-red-50'),
+    legendText: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
+    tooltip: defineMessage(
+      { defaultMessage: 'APs operating on the same channel, potentially causing interference.' })
+  },
+  [Node.Rogue]: {
+    name: defineMessage({ defaultMessage: 'Rogue AP' }),
+    color: cssStr('--acx-neutrals-80'),
+    legendText: defineMessage({ defaultMessage: 'Rogue AP' }),
+    tooltip: defineMessage({ defaultMessage: 'Unauthorized or unknown APs detected.' })
+  }
+} as Record<string, NodeType>
 
 export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
   const { $t } = useIntl()
-  const { nodeSize, nodes, width, height } = props
+  const { nodeSize, nodes, width, height, backgroundColor, zoom, repulsion } = props
   const max = Math.max(...Object.values(nodes))
   const scale = scalePow()
     .exponent(0.75)
@@ -70,23 +101,23 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
   }
 
   const graphNodes = _(nodes).pickBy(value => value !== 0).toPairs().map(([key, value]) => ({
-    name: $t(nodeTypes[key].name),
+    name: $t(nodeTypes[key as Node].name),
     symbolSize: scale(value),
-    itemStyle: { color: nodeTypes[key].color },
+    itemStyle: { color: nodeTypes[key as Node].color },
     label: {
       ...genericLabel,
-      formatter: $t({ defaultMessage: '{value, number, -}' }, { value })
+      formatter: formatter('countFormat')(value)
     }
   })).value()
 
   const links = Object.keys(nodes).map(key => ({
     source: $t(nodeTypes.root.name),
-    target: $t(nodeTypes[key].name),
+    target: $t(nodeTypes[key as Node].name),
     lineStyle: { color: cssStr('--acx-neutrals-50'), width: 2 }
   }))
 
   const option = {
-    backgroundColor: cssStr('--acx-neutrals-10'),
+    backgroundColor: backgroundColor ?? cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
       textStyle: graphStyles.textStyle,
@@ -100,6 +131,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       type: 'graph',
       layout: 'force',
       cursor: 'default',
+      zoom: zoom ?? 1,
       data: [rootNode, ...graphNodes],
       links,
       top: '20%',
@@ -110,7 +142,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       roam: false,
       force: {
         layoutAnimation: false,
-        repulsion: width * 4.5,
+        repulsion: width * (repulsion ?? 4.5),
         initLayout: 'circular'
       },
       emphasis: { focus: 'none' }

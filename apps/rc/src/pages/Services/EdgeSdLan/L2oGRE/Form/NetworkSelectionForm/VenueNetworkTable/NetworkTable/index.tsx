@@ -63,11 +63,11 @@ const getRowDisabledInfo = (
 export interface ActivatedNetworksTableProps {
   venueId: string
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[]
-  activated?: NetworkActivationType['venueId']
+  activated?: NetworkActivationType
   disabled?: boolean
   toggleButtonTooltip?: string
   onActivateChange?: ActivateNetworkSwitchButtonProps['onChange']
-  onTunnelProfileChange?: (networkId: string, tunnelProfileId: string) => void
+  onTunnelProfileChange?: (data: Network, tunnelProfileId: string) => void
   isUpdating?: boolean
   pinNetworkIds?: string[]
 }
@@ -114,6 +114,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const dcTunnelProfileId = form.getFieldValue('tunnelProfileId')
   const allActivatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanFormType['activatedNetworks'] ?? []
   const allActivatedTunnelProfileIds = Object.values(allActivatedNetworks).flatMap(item => item.map(item => item.tunnelProfileId ?? ''))
+  const currentNetworkList = activated?.[venueId]
 
   const tunnelProfileOptions = useMemo(() =>[
     {
@@ -122,7 +123,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     },
     ...transToOptions(
       availableTunnelProfiles.filter(item => item.id !== dcTunnelProfileId),
-      [...(activated?.map(item => item.tunnelProfileId ?? '') ?? []), ...(allActivatedTunnelProfileIds ?? [])]
+      [...(currentNetworkList?.map(item => item.tunnelProfileId ?? '') ?? []), ...(allActivatedTunnelProfileIds ?? [])]
     )
   ], [availableTunnelProfiles, activated])
 
@@ -164,7 +165,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
       return <ActivateNetworkSwitchButton
         row={row}
-        activated={activated?.map(item => item.networkId) ?? []}
+        activated={currentNetworkList?.map(item => item.networkId) ?? []}
         disabled={(isDisabled as boolean) || disabledInfo.disabled}
         tooltip={tooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
@@ -176,13 +177,13 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     dataIndex: 'action2',
     width: 120,
     render: (_: unknown, row: Network) => {
-      const isEnabledTunneling = activated?.some(item => item.networkId === row.id)
-      const currentTunnelProfileId = activated?.find(item => item.networkId === row.id)?.tunnelProfileId
+      const isEnabledTunneling = currentNetworkList?.some(item => item.networkId === row.id)
+      const currentTunnelProfileId = currentNetworkList?.find(item => item.networkId === row.id)?.tunnelProfileId
       const processedOptions = getFilteredTunnelProfileOptions(row, tunnelProfileOptions, availableTunnelProfiles)
       return isEnabledTunneling && <Select
         style={{ width: 200 }}
         value={currentTunnelProfileId ?? ''}
-        onChange={(value) => onTunnelProfileChange?.(row.id, value)}
+        onChange={(value) => onTunnelProfileChange?.(row, value)}
         options={processedOptions}
       />
     }
