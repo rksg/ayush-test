@@ -208,6 +208,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
   const footerButtonsMapping : Record<string, ReactNode> = {
     import: <Button
+      key={'import-button'}
       disabled={!formData}
       loading={isLoading}
       onClick={() => okHandler()}
@@ -215,7 +216,9 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
     >
       {$t({ defaultMessage: 'Import' })}
     </Button>,
-    cancel: <Button onClick={props?.onClose}>
+    cancel: <Button
+      key={'cancel-button'}
+      onClick={props?.onClose}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
   }
