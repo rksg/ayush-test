@@ -86,6 +86,10 @@ export const getEnabledDialogImproved = () => {
   return isLocalHost() || isIntEnv() || isDev()
 }
 
+export const getEnabledActivityErrorImproved = () => {
+  return isIntEnv()
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
