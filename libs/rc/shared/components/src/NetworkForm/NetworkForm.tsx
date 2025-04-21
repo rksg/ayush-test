@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
-import { useEffect, useRef, useState, createContext } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
-import { Form }                                                                     from 'antd'
-import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
-import _                                                                            from 'lodash'
-import { defineMessage, useIntl }                                                   from 'react-intl'
+import { Form }                                                                        from 'antd'
+import _, { cloneDeep, get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
+import { defineMessage, useIntl }                                                      from 'react-intl'
 
 import {
   Loader,
@@ -13,82 +12,85 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
-  useAddNetworkMutation,
-  useAddNetworkVenuesMutation,
-  useDeleteNetworkVenuesMutation,
-  useUpdateNetworkMutation,
-  useUpdateNetworkVenuesMutation,
-  useAddNetworkTemplateMutation,
-  useUpdateNetworkTemplateMutation,
-  useAddNetworkVenueTemplatesMutation,
-  useActivateWifiOperatorOnWifiNetworkMutation,
-  useActivateIdentityProviderOnWifiNetworkMutation,
   useActivateCertificateTemplateMutation,
-  useUpdateNetworkVenueTemplateMutation,
-  useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useActivateMacRegistrationPoolMutation,
+  useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
   useActivateDpskServiceTemplateMutation,
-  useGetDpskServiceQuery,
-  useGetDpskServiceTemplateQuery,
-  useGetCertificateTemplateNetworkBindingQuery,
-  useAddNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation,
+  useActivateMacRegistrationPoolMutation,
   useActivatePortalMutation,
   useActivatePortalTemplateMutation,
-  useGetEnhancedPortalProfileListQuery,
-  useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation,
-  useGetMacRegistrationPoolNetworkBindingQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useAddNetworkMutation,
+  useAddNetworkTemplateMutation,
+  useAddNetworkVenuesMutation,
+  useAddNetworkVenueTemplateMutation,
+  useAddNetworkVenueTemplatesMutation,
   useAddRbacNetworkVenueMutation,
-  useDeleteRbacNetworkVenueMutation,
-  useActivateDirectoryServerMutation,
   useBindingPersonaGroupWithNetworkMutation,
   useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
-  useActivateIdentityProviderProfileOnNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useDeleteNetworkVenuesMutation,
+  useDeleteNetworkVenuesTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useDeleteRbacNetworkVenueMutation,
+  useGetCertificateTemplateNetworkBindingQuery,
+  useGetDpskServiceQuery,
+  useGetDpskServiceTemplateQuery,
+  useGetEnhancedPortalProfileListQuery,
+  useGetEnhancedPortalTemplateListQuery,
+  useGetMacRegistrationPoolNetworkBindingQuery,
+  useUpdateNetworkMutation,
+  useUpdateNetworkTemplateMutation,
+  useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenuesMutation,
+  useUpdateNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
+  ConfigTemplateType,
   Demo,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
   Network,
   NetworkSaveData,
-  SocialIdentities,
+  NetworkTunnelIpsecAction,
+  NetworkTunnelSdLanAction,
+  NetworkTunnelSoftGreAction,
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
-  useConfigTemplateBreadcrumb,
+  SocialIdentities,
   useConfigTemplate,
+  useConfigTemplateBreadcrumb,
   useConfigTemplateMutationFnSwitcher,
-  WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
-  NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction,
   VlanPool,
-  NetworkTunnelIpsecAction,
-  ConfigTemplateType
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate, useEnforcedStatus } from '../configTemplates'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
 import { useGetNetwork }                                   from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SAMLForm }                from './CaptivePortal/SAMLForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }          from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }       from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }         from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
+import { SAMLForm }               from './CaptivePortal/SAMLForm'
+import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }              from './CaptivePortal/WISPrForm'
+import {
+  useUpdateEdgeSdLanActivations
+} from './edgeUtils'
 import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -106,21 +108,20 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                from './PortalInstance'
+import PortalInstance from './PortalInstance'
 import {
-  useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
-  useRadiusServer,
-  useVlanPool,
-  useClientIsolationActivations,
-  useWifiCalling,
-  useAccessControlActivation,
-  getDefaultMloOptions,
-  useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations,
   deriveWISPrFieldsFromServerData,
+  getDefaultMloOptions,
+  hasControlnetworkVenuePermission,
+  useAccessControlActivation,
+  useClientIsolationActivations,
+  useNetworkVxLanTunnelProfileInfo,
+  useRadiusServer,
   useUpdateIpsecActivations,
-  hasControlnetworkVenuePermission
+  useUpdateSoftGreActivations,
+  useVlanPool,
+  useWifiCalling
 } from './utils'
 import { Venues } from './Venues/Venues'
 

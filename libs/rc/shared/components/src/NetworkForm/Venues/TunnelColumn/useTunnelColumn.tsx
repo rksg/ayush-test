@@ -4,14 +4,14 @@ import { Form, Space } from 'antd'
 import { cloneDeep }   from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Table }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Table }                  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   NetworkSaveData,
   NetworkTunnelSdLanAction,
+  PersonalIdentityNetworksViewData,
   Venue,
-  useConfigTemplate,
-  PersonalIdentityNetworksViewData
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../../EdgeSdLan/useEdgeSdLanActions'
@@ -182,7 +182,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           <NetworkTunnelInfoLabel
             network={networkInfo}
             isVenueActivated={Boolean(row.activated?.isActivated)}
-            venueSdLan={venueSdLanInfo}
+            venueSdLan={cachedVenueSdLanInfo}
             venueSoftGre={cachedSoftGre?.[0]}
             venueIpSec={cachedIpSec?.[0]}
             venuePin={venuePinInfo}

@@ -76,9 +76,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { useUserProfileContext }      from '@acx-ui/user'
-import { AccountType, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                       from '@acx-ui/types'
+import { useUserProfileContext }                                           from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -241,6 +241,10 @@ export function ManageCustomer () {
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
   const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
+  const { acx_account_vertical } = getJwtTokenPayload()
+
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
@@ -987,12 +991,24 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
+      initialValue={isMDU ? MspEcTierEnum.Core
+        : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
-                return <Radio
+                // isMDU : show only Core
+                // isHospitality: show only Professional
+                // everything else: show both Professional and Essentials
+                return (
+                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (isHospitality && value === MspEcTierEnum.Professional) ||
+                  ((!isMDU && value !== MspEcTierEnum.Core) &&
+                  (!isMDU && !isHospitality &&
+                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                ) &&
+                <Radio
                   onChange={handleServiceTierChange}
                   key={value}
                   value={value}

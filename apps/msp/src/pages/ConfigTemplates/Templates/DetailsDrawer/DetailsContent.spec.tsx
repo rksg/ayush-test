@@ -10,11 +10,16 @@ import { mockServer, render, screen }                                           
 import { ConfigTemplateTabKey }  from '../..'
 import { mockedMSPCustomerList } from '../../__tests__/fixtures'
 
-import { DetailsContent } from './DetailsContent'
+import { DetailsContent, DetailsItemList } from './DetailsContent'
 
 
 jest.mock('../ShowDriftsDrawer', () => ({
   ShowDriftsDrawer: jest.fn(() => <div>Drift Drawer</div>)
+}))
+
+jest.mock('./ActivationViewer', () => ({
+  ProtectedActivationViewer: jest.fn(() => <div>Activation Viewer</div>),
+  ApGroupVenueViewer: jest.fn(() => <div>AP Group Venue</div>)
 }))
 
 describe('DetailsContent', () => {
@@ -85,5 +90,54 @@ describe('DetailsContent', () => {
 
     expect(screen.getByText('Enforcement')).toBeInTheDocument()
     expect(screen.getByText('Enforced')).toBeInTheDocument()
+  })
+
+  it('renders the AP Group Venue', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION)
+
+    render(<Provider>
+      <DetailsContent
+        template={{ ...mockTemplate, type: ConfigTemplateType.AP_GROUP }}
+        setAccessControlSubPolicyVisible={jest.fn()}
+      />
+    </Provider>, { route: { params, path } })
+
+    expect(screen.getByText('AP Group Venue')).toBeInTheDocument()
+  })
+
+  describe('DetailsItemList', () => {
+    const mockTitle = 'Test Title'
+
+    it('should render title correctly', () => {
+      render(<DetailsItemList title={mockTitle} items={[]} />)
+      expect(screen.getByText(mockTitle)).toBeInTheDocument()
+    })
+
+    it('should sort items alphabetically', () => {
+      const items = ['Zebra', 'Apple', 'Banana']
+      render(<DetailsItemList title={mockTitle} items={items} />)
+
+      const renderedItems = screen.getAllByText(/^[A-Za-z]+$/)
+      expect(renderedItems).toHaveLength(3)
+      expect(renderedItems[0]).toHaveTextContent('Apple')
+      expect(renderedItems[1]).toHaveTextContent('Banana')
+      expect(renderedItems[2]).toHaveTextContent('Zebra')
+    })
+
+    it('should show loading state when isLoading is true', () => {
+      render(<DetailsItemList title={mockTitle} items={[]} isLoading={true} />)
+      expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
+    })
+
+    it('should render all items with ellipsis', () => {
+      const items = ['Item 1', 'Item 2', 'Item 3']
+      render(<DetailsItemList title={mockTitle} items={items} />)
+
+      items.forEach(item => {
+        const element = screen.getByText(item)
+        expect(element).toHaveClass('ant-typography-ellipsis')
+      })
+    })
   })
 })
