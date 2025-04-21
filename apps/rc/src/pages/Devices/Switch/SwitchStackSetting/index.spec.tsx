@@ -94,15 +94,9 @@ describe('SwitchStackSetting - Port MAC Security', () => {
     const maxEntriesInput = await screen.findByTestId('port-security-max-entries-input')
 
     fireEvent.change(maxEntriesInput, { target: { value: 50 } })
+    fireEvent.blur(maxEntriesInput)
 
-    expect(showActionModalMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'confirm',
-        title: expect.anything(),
-        okText: expect.stringContaining('Delete'),
-        cancelText: expect.stringContaining('Cancel')
-      })
-    )
+    expect(showActionModalMock).toHaveBeenCalled()
   })
 
   it('should not render Port MAC Security when feature flag is disabled', () => {

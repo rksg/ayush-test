@@ -65,7 +65,7 @@ describe('SwitchLayer2ACLForm', () => {
     )
 
     expect(await screen.findByText('Add Layer 2 Settings')).toBeInTheDocument()
-    expect(await screen.findByLabelText('MAC ACL Name')).toBeInTheDocument()
+    expect(await screen.findByLabelText('Policy Name')).toBeInTheDocument()
     expect(await screen.findByText('Add Rule')).toBeInTheDocument()
   })
 
@@ -80,7 +80,7 @@ describe('SwitchLayer2ACLForm', () => {
     )
 
     await waitFor(async () => {
-      expect(await screen.findByLabelText('MAC ACL Name')).toHaveValue('Test ACL')
+      expect(await screen.findByLabelText('Policy Name')).toHaveValue('Test ACL')
     })
 
     // Check if rule is loaded in the table
@@ -97,7 +97,7 @@ describe('SwitchLayer2ACLForm', () => {
       }
     )
 
-    const nameInput = await screen.findByLabelText('MAC ACL Name')
+    const nameInput = await screen.findByLabelText('Policy Name')
 
     await userEvent.type(nameInput, 'New ACL')
 
