@@ -20,11 +20,15 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mock('@acx-ui/edge/components', () => ({
-  EdgeOverviewLagTable: ({ filterables }: {
+jest.mock('@acx-ui/edge/components', () => {
+  const { EdgePermissions } = jest.requireActual('@acx-ui/edge/components')
+  return {
+    EdgePermissions,
+    EdgeOverviewLagTable: ({ filterables }: {
     filterables?: { [key: string]: ColumnType['filterable'] }
   }) => <div data-testid='rc-EdgeOverviewLagTable'>{JSON.stringify(filterables)}</div>
-}))
+  }
+})
 jest.mock('@acx-ui/rc/components', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
@@ -51,7 +55,6 @@ describe('LagsTab', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // jest.spyOn(userPermissions, 'hasPermission').mockReturnValue(true)
   })
 
   // eslint-disable-next-line max-len
@@ -94,7 +97,7 @@ describe('LagsTab', () => {
     await userEvent.click(configButton)
 
     // eslint-disable-next-line max-len
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/edit/lags') }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/test-cluster-id/configure') }))
   })
 
   it('renders EdgeOverviewLagTable with filterables when isEdgeDualWanEnabled is true', () => {

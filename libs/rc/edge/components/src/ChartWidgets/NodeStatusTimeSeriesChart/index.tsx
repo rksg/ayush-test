@@ -14,7 +14,6 @@ import {
   LabelFormatterCallback,
   CallbackDataParams
 } from 'echarts/types/dist/shared'
-import { reverse } from 'lodash'
 
 import {
   cssStr,
@@ -79,26 +78,11 @@ export function NodeStatusTimeSeriesChart ({
 
   useImperativeHandle(chartRef, () => eChartsRef.current!)
 
-  const renderItemWithSpacing = (
-    params: CustomSeriesRenderItemParams,
-    api: CustomSeriesRenderItemAPI
-  ) => {
-    const yValue = api?.value?.(1)
-    const start = api?.coord?.([api?.value?.(0), yValue])
-    const end = api?.coord?.([api?.value?.(2), yValue])
-    const height = barHeight
-
-    return {
-      type: 'rect',
-      shape: {
-        x: start?.[0],
-        y: start?.[1] - height / 2,
-        width: end?.[0] - start?.[0],
-        height: height
-      },
-      style: api?.style?.()
-    }
-  }
+  // because chart will render from the first node is on the bottom of the chart
+  // and the last node is on the top of the chart
+  // so we need to reverse the nodes
+  // to make the first node is on the top of the chart
+  const reversedNodes = [...nodes].reverse()
 
   const option: EChartsOption = {
     animation: false,
@@ -193,14 +177,14 @@ export function NodeStatusTimeSeriesChart ({
           width: 1
         }
       },
-      boundaryGap: true
+      data: reversedNodes.map(node => node.nodeId)
     },
     toolbox: { show: false },
-    series: reverse(nodes).map((node) => {
+    series: reversedNodes.map((node) => {
       return {
         type: 'custom',
         name: node.nodeName,
-        renderItem: renderItemWithSpacing as unknown as CustomSeriesRenderItem,
+        renderItem: renderItem as unknown as CustomSeriesRenderItem,
         itemStyle: {
           color: function (params: { data: [TimeStamp, string, TimeStamp, number | null, string] }) {
             return params.data[4]
@@ -230,4 +214,25 @@ export function NodeStatusTimeSeriesChart ({
       />
     </UI.Wrapper>
   )
+}
+
+const renderItem = (
+  params: CustomSeriesRenderItemParams,
+  api: CustomSeriesRenderItemAPI
+) => {
+  const yValue = api?.value?.(1)
+  const start = api?.coord?.([api?.value?.(0), yValue])
+  const end = api?.coord?.([api?.value?.(2), yValue])
+  const height = barHeight
+
+  return {
+    type: 'rect',
+    shape: {
+      x: start?.[0],
+      y: start?.[1] - height / 2,
+      width: end?.[0] - start?.[0],
+      height: height
+    },
+    style: api?.style?.()
+  }
 }
