@@ -34,6 +34,10 @@ jest.mock('../../hooks/useClusterNodesUpTimeData', () => ({
     queryResults: []
   })
 }))
+jest.mock('../NodeStatusTimeSeriesChart', () => ({
+  NodeStatusTimeSeriesChart: () => <div data-testid='NodeStatusTimeSeriesChart' />
+}))
+
 
 const params = { clusterId: 'test-cluster-id' }
 const renderWithProviders = (ui) => {
@@ -200,8 +204,8 @@ describe('EdgeClusterNodesUpTimeWidget', () => {
       <EdgeClusterNodesUpTimeWidget edges={mockEdges} />
     )
 
-    // Should show NoData component
-    expect(screen.getByText('No data to display')).toBeInTheDocument()
+    // Should still show chart component
+    expect(screen.getByTestId('NodeStatusTimeSeriesChart')).toBeInTheDocument()
   })
 
   it('should render singular form of title when there is only one node', () => {

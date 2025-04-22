@@ -31,7 +31,6 @@ import { EdgeWanLinkHealthDetailsDrawer } from '../WanLinkHealthDetails'
 import { EdgeWanLinkHealthStatusLight }   from '../WanLinkHealthStatusLight'
 
 interface EdgeOverviewLagTableProps {
-  isConfigurable: boolean
   data: EdgeLagStatus[]
   isLoading?: boolean
   isClusterLevel?: boolean
@@ -107,7 +106,7 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
   ]
 
   const columns: TableProps<LagsTableDataType>['columns'] = [
-    ...(isEdgeDualWanEnabled && isClusterLevel
+    ...((isEdgeDualWanEnabled && isClusterLevel)
       ? [{
         title: $t({ defaultMessage: 'Node Name' }),
         key: 'serialNumber',
@@ -188,7 +187,6 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
             expandable={{
               ...NestedTableExpandableDefaultConfig,
               expandedRowRender: (data) => {
-                console.log(data)
                 return expandedRowRender(data.lagMembers)
               }
             } as ExpandableConfig<LagsTableDataType>}
@@ -217,16 +215,13 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
 const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
 
   const { $t } = getIntl()
-  console.log(memberStatus)
+
   const columns: TableProps<LagMemberTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
       dataIndex: 'name',
-      render: (_data, row) => {
-        console.log(row.name)
-        return capitalize(row.name)
-      }
+      render: (_data, row) => capitalize(row.name)
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),

@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Col, Space } from 'antd'
+import styled         from 'styled-components/macro'
 
 import { GridCol, GridRow, HistoricalCard } from '@acx-ui/components'
 
@@ -43,4 +44,19 @@ export const ChartWrapper = styled.div`
       z-index: 10;
     }
   }
+`
+
+export const NodeListWrapper = styled(Col)`
+  & {
+    min-width: 100px;
+    padding-right: 0 !important;
+  }
+`
+
+export const StyledSpace = styled(Space)`
+  height: 100%;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 20px;
+  text-align: right;
 `

@@ -63,7 +63,6 @@ export const LagsTab = (props: LagsTabProps) => {
         <Loader states={[{ isLoading }]}>
           <EdgeOverviewLagTable
             isClusterLevel
-            isConfigurable={isConfigurable}
             data={data}
             edgeNodes={clusterInfo!.edgeList!}
             filterables={isEdgeDualWanEnabled

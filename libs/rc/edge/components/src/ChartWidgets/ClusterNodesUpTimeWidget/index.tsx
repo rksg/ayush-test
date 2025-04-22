@@ -1,15 +1,12 @@
 import { useMemo } from 'react'
 
-import { Typography } from 'antd'
-import { find }       from 'lodash'
-import moment         from 'moment-timezone'
-import { useIntl }    from 'react-intl'
-import AutoSizer      from 'react-virtualized-auto-sizer'
+import { Typography, Col, Row } from 'antd'
+import { find }                 from 'lodash'
+import moment                   from 'moment-timezone'
+import { useIntl }              from 'react-intl'
+import AutoSizer                from 'react-virtualized-auto-sizer'
 
 import {
-  NoData,
-  MultiBarTimeSeriesChart,
-  GridCol, cssStr, GridRow,
   Card,
   Tooltip,
   Loader
@@ -23,6 +20,7 @@ import { TimeStamp }                                   from '@acx-ui/types'
 import { useDateFilter }                               from '@acx-ui/utils'
 
 import { useClusterNodesUpTimeData } from '../../hooks/useClusterNodesUpTimeData'
+import { NodeStatusTimeSeriesChart } from '../NodeStatusTimeSeriesChart'
 
 import * as UI from './styledComponents'
 
@@ -47,8 +45,20 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
     totalDowntime: queryResults?.reduce((sum, result) => sum + (result.totalDowntime || 0), 0) || 0
   }), [queryResults])
 
+  const usedData = queryResults?.map((resultData, nodeIndex) => {
+    // eslint-disable-next-line max-len
+    const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
+
+    return {
+      nodeId: resultData.serialNumber ,
+      nodeName: edgeData?.name ?? `Edge ${nodeIndex}`,
+      key: 'EdgeStatus' + nodeIndex,
+      // eslint-disable-next-line max-len
+      data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
+    }})
+
   return <Loader states={[{ isLoading }]}>
-    <GridRow>
+    <Row>
       <UI.EdgeStatusHeader col={{ span: 16 }}>
         <Card.Title>
           {
@@ -80,93 +90,55 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
           {formatter('durationFormat')(totalUpDowntime?.totalDowntime * 1000 || 0)}
         </UI.Duration>
       </UI.Status>
-    </GridRow>
-    <GridRow>
-      <GridCol col={{ span: 24 }}>
+    </Row>
+    <Row>
+      <Col span={24}>
+        <Row >
+          <UI.NodeListWrapper span={3}>
+            <UI.StyledSpace
+              size={1}
+              direction='vertical'
+            >
+              {queryResults?.map((resultData, nodeIndex) => {
+              // eslint-disable-next-line max-len
+                const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
 
-        <GridCol col={{ span: 21 }} style={{ height: '200px' }}>
-          <AutoSizer>
-            {({ height, width }) =>
-              <MultiBarTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults?.map((resultData, nodeIndex) => {
-                  // eslint-disable-next-line max-len
-                  const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
-
-                  return {
-                    key: 'EdgeStatus' + nodeIndex,
-                    name: edgeData?.name ?? `Edge ${nodeIndex}`,
-                    color: cssStr('--acx-semantics-green-50'),
-                    // eslint-disable-next-line max-len
-                    data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
-                  }
-                })}
-                chartBoundary={[
-                  moment(filters?.startDate).valueOf(),
-                  moment(filters?.endDate).valueOf()
-                ]}
-                hasXaxisLabel
-              />
-            }
-          </AutoSizer>
-        </GridCol>
-        {queryResults?.map((resultData, nodeIndex) => {
-          // eslint-disable-next-line max-len
-          const edgeData = find(edges, { serialNumber: resultData.serialNumber }) as EdgeStatus | undefined
-
-          return <GridRow key={nodeIndex} style={{ height: '30px', marginTop: 5 }}>
-            <GridCol col={{ span: 3 }} style={{ minWidth: '100px', justifyContent: 'center' }}>
-              <Typography.Title
-                level={5}
-                ellipsis={{ tooltip: edgeData?.name }}
-              >
-                {$t({ defaultMessage: 'Node {index}: {nodeDetailLink}' },
-                  {
-                    index: nodeIndex,
-                    nodeDetailLink: <TenantLink to={`${getUrl({
-                      feature: Device.Edge,
-                      oper: CommonOperation.Detail,
-                      params: { id: resultData.serialNumber } })}/overview`}>
-                      {edgeData?.name}
-                    </TenantLink>
-                  })}
-              </Typography.Title>
-            </GridCol>
-            <GridCol col={{ span: 21 }} style={{ height: '30px', overflow: 'visible' }}>
-              <AutoSizer>
-                {(resultData.totalUptime + resultData.totalDowntime) === 0
-                  ? () => <NoData />
-                  : ({ height, width }) =>
-                    <MultiBarTimeSeriesChart
-                      style={{ width, height }}
-                      data={[
-                        {
-                          key: 'EdgeStatus',
-                          name: 'Edge',
-                          color: cssStr('--acx-semantics-green-50'),
-                          // eslint-disable-next-line max-len
-                          data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
-                        },
-                        {
-                          key: 'EdgeStatus',
-                          name: 'Edge',
-                          color: cssStr('--acx-semantics-green-50'),
-                          // eslint-disable-next-line max-len
-                          data: resultData?.timeSeries as [TimeStamp, string, TimeStamp, number | null, string][]
-                        }
-                      ]}
-                      chartBoundary={[
-                        moment(filters?.startDate).valueOf(),
-                        moment(filters?.endDate).valueOf()
-                      ]}
-                      hasXaxisLabel={nodeIndex === ((edges?.length ?? 0) - 1)}
-                    />
-                }
-              </AutoSizer>
-            </GridCol>
-          </GridRow>
-        })}
-      </GridCol>
-    </GridRow>
+                return <Typography.Title
+                  key={resultData.serialNumber}
+                  level={5}
+                  ellipsis={{ tooltip: edgeData?.name }}
+                >
+                  {$t({ defaultMessage: 'Node {index}: {nodeDetailLink}' },
+                    {
+                      index: nodeIndex,
+                      nodeDetailLink: <TenantLink to={`${getUrl({
+                        feature: Device.Edge,
+                        oper: CommonOperation.Detail,
+                        params: { id: resultData.serialNumber } })}/overview`}>
+                        {edgeData?.name}
+                      </TenantLink>
+                    })}
+                </Typography.Title>
+              })}
+            </UI.StyledSpace>
+          </UI.NodeListWrapper>
+          <Col span={21}>
+            <AutoSizer>
+              {({ height, width }) =>
+                <NodeStatusTimeSeriesChart
+                  style={{ width, height }}
+                  nodes={usedData}
+                  chartBoundary={[
+                    moment(filters?.startDate).valueOf(),
+                    moment(filters?.endDate).valueOf()
+                  ]}
+                  hasXaxisLabel
+                />
+              }
+            </AutoSizer>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   </Loader>
 }

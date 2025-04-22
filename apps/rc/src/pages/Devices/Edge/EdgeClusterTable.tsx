@@ -100,10 +100,6 @@ export const EdgeClusterTable = () => {
       searchable: true,
       fixed: 'left',
       render: (_, row) => {
-        console.log(getUrl({
-          feature: row.isFirstLevel ? Device.EdgeCluster : Device.Edge,
-          oper: CommonOperation.Detail,
-          params: { id: row.isFirstLevel ? row.clusterId : row.serialNumber } }))
         return isEdgeDualWanReady
           ? <TenantLink to={`${getUrl({
             feature: row.isFirstLevel ? Device.EdgeCluster : Device.Edge,

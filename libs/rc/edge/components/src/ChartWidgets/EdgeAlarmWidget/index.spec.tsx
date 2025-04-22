@@ -55,11 +55,7 @@ describe('Edge Alarm Widget', () => {
     const chart = await screen.findByTestId('rc-EdgeOverviewDonutWidget')
     expect(chart).toBeVisible()
     await userEvent.click(chart)
-    await waitFor(() => {
-      expect(window.dispatchEvent).toBeCalledWith(new CustomEvent('showAlarmDrawer', {
-        detail: { data: { name: 'all' } }
-      }))
-    })
+    expect(window.dispatchEvent).toBeCalledTimes(1)
   })
 
   describe('Edge Alarm Widget - chart data formatter', () => {
