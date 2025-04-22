@@ -60,11 +60,6 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
 
-  const conditionRbacOpsIds = editMode ? [[getOpsApi(RulesManagementUrlsInfo.addConditions),
-    getOpsApi(RulesManagementUrlsInfo.deleteConditions),
-    getOpsApi(RulesManagementUrlsInfo.updateConditions)]]
-    : [getOpsApi(RulesManagementUrlsInfo.addConditions)]
-
   useEffect( () =>{
     if(attributeGroupId) {
       let radiusAttributeGroup = {} as RadiusAttributeGroup
@@ -146,7 +141,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const rowActions: TableProps<AccessCondition>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      rbacOpsIds: conditionRbacOpsIds,
+      // eslint-disable-next-line max-len
+      rbacOpsIds: editMode ? [getOpsApi(RulesManagementUrlsInfo.updateConditions)] : [getOpsApi(RulesManagementUrlsInfo.addConditions)],
       onClick: (selectedRows, clearSelection) => {
         setEditConditionMode(true)
         setAccessConditionsVisible(true)
@@ -156,7 +152,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      rbacOpsIds: conditionRbacOpsIds,
+      // eslint-disable-next-line max-len
+      rbacOpsIds: editMode ? [getOpsApi(RulesManagementUrlsInfo.deleteConditions)] : [getOpsApi(RulesManagementUrlsInfo.addConditions)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -254,7 +251,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                   // eslint-disable-next-line max-len
                   tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
                   label: $t({ defaultMessage: 'Add' }),
-                  rbacOpsIds: conditionRbacOpsIds,
+                  rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.addConditions)],
                   onClick: () => {
                     setEditConditionMode(false)
                     setEditCondition(undefined)
