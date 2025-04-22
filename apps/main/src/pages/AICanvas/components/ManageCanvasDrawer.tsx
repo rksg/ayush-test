@@ -98,6 +98,7 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
           visible={editCanvasVisible}
           handleCancel={()=> {setEditCanvasVisible(false)}}
           editCanvas={editCanvas}
+          canvasNameList={canvasList.map(i=>i.name)}
         />
       }
 

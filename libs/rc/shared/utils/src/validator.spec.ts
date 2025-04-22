@@ -35,7 +35,8 @@ import {
   multicastIpAddressRegExp,
   URLProtocolRegExp,
   radiusIpAddressRegExp,
-  checkTaggedVlan
+  checkTaggedVlan,
+  validateDuplicateName
 } from './validator'
 
 describe('validator', () => {
@@ -632,6 +633,13 @@ describe('validator', () => {
       await expect(checkTaggedVlan('1,10,100,1000,4095')).resolves.toBeUndefined()
       await expect(checkTaggedVlan('1')).resolves.toBeUndefined()
       await expect(checkTaggedVlan('1,2,3,4,5')).resolves.toBeUndefined()
+    })
+  })
+
+  describe('validateDuplicateName', () => {
+    it('Should validate duplicate name correctly', async () => {
+      await expect(validateDuplicateName('1', ['2'])).resolves.toEqual(undefined)
+      await expect(validateDuplicateName('1', ['1'])).rejects.toEqual('The name already exists')
     })
   })
 })

@@ -2,21 +2,22 @@ import { useEffect } from 'react'
 
 import { Col, Form, Input, Radio, Row, Space } from 'antd'
 
-import { GlobeOutlined, LockOutlined }      from '@acx-ui/icons-new'
-import { useUpdateCanvasMutation }          from '@acx-ui/rc/services'
-import { Canvas, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { getIntl }                          from '@acx-ui/utils'
+import { GlobeOutlined, LockOutlined }                             from '@acx-ui/icons-new'
+import { useUpdateCanvasMutation }                                 from '@acx-ui/rc/services'
+import { Canvas, trailingNorLeadingSpaces, validateDuplicateName } from '@acx-ui/rc/utils'
+import { getIntl }                                                 from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
 
 export function EditCanvasModal (props:{
-  visible: boolean,
+  visible: boolean
   handleCancel: () => void
   editCanvas: Canvas
+  canvasNameList: string[]
 }) {
   const { $t } = getIntl()
-  const { visible, handleCancel, editCanvas } = props
+  const { visible, handleCancel, editCanvas, canvasNameList } = props
   const [form] = Form.useForm()
   const [updateCanvas] = useUpdateCanvasMutation()
 
@@ -66,7 +67,8 @@ export function EditCanvasModal (props:{
             rules={[
               { required: true },
               { max: 64 },
-              { validator: (_, value) => trailingNorLeadingSpaces(value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => validateDuplicateName(value, canvasNameList) }
             ]}
             children={<Input />}
           />
