@@ -674,7 +674,7 @@ export function Venues (props: VenuesProps) {
     otherData: {
       network: NetworkTunnelActionModalProps['network'],
       venueSdLan?: EdgeMvSdLanViewData,
-      isL2greReady?: boolean
+      isL2oGreReady?: boolean
     }
   ) => {
     try {
@@ -696,10 +696,12 @@ export function Venues (props: VenuesProps) {
         const networkVenueId = otherData.network?.venueId ?? ''
         // eslint-disable-next-line max-len
         const originalVenueSdLan = sdLanScopedNetworkVenues.sdLansVenueMap[networkVenueId]?.[0]
-        args.otherData.isL2greReady = isEdgeL2oGreReady
+        args.otherData.isL2oGreReady = isEdgeL2oGreReady
         const shouldCloseModal = await handleSdLanTunnelAction(originalVenueSdLan, args)
         if (shouldCloseModal !== false)
           handleCloseTunnelModal()
+      } else {
+        handleCloseTunnelModal()
       }
     }catch (e) {
       console.error('Error on handleNetworkTunnelActionFinish', e)  // eslint-disable-line no-console

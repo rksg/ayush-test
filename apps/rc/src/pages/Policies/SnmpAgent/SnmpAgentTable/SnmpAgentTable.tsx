@@ -40,8 +40,7 @@ const rbacSnmpFields = [
   'userNames',
   'apSerialNumbers',
   'apNames',
-  'venueIds',
-  'venueNames'
+  'venueIds'
 ]
 
 export default function SnmpAgentTable () {
@@ -57,10 +56,8 @@ export default function SnmpAgentTable () {
     fields: (isUseRbacApi) ? rbacSnmpFields:
       [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
     searchTargetFields: (isUseRbacApi) ?
-      // communityNames = v2Agents.name
-      // userNames = v3Agents.name
-      ['name', 'communityNames', 'userNames', 'venueNames', 'apNames'] :
-      ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
+      ['name', 'communityNames', 'userNames', 'apNames'] :
+      ['name', 'v2Agents.name', 'v3Agents.name', 'aps.name'],
     sortField: 'name',
     sortOrder: 'ASC',
     page: 1,
@@ -69,7 +66,7 @@ export default function SnmpAgentTable () {
 
   const filterPayload = {
     searchString: '',
-    fields: (isUseRbacApi) ? rbacSnmpFields: [ 'id', 'name', 'venues' ]
+    fields: (isUseRbacApi) ? ['id', 'name', 'venueIds']: [ 'id', 'name', 'venues' ]
   }
 
 
