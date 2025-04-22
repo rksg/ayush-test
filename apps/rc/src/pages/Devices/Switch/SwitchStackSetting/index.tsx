@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch, InputNumber } from 'antd'
+import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch } from 'antd'
 import { DefaultOptionType }                                                                    from 'antd/lib/select'
 import { FormattedMessage, useIntl }                                                            from 'react-intl'
 
@@ -22,8 +22,7 @@ import {
   validateVlanExcludingReserved,
   Switch as SwitchType,
   SwitchViewModel,
-  SWITCH_DEFAULT_VLAN_NAME,
-  isFirmwareVersionAbove10010g2Or10020b
+  SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -49,7 +48,6 @@ const spanningTreePriorityItem = [
 ]
 
 export function SwitchStackSetting (props: {
-  switchData: SwitchType,
   switchDetail?: SwitchViewModel,
   apGroupOption: DefaultOptionType[],
   readOnly: boolean,
@@ -59,7 +57,7 @@ export function SwitchStackSetting (props: {
 }) {
   const { $t } = useIntl()
   const { apGroupOption, readOnly, isIcx7650, disableIpSetting,
-    deviceOnline, switchData, switchDetail }= props
+    deviceOnline, switchDetail }= props
   const form = Form.useFormInstance()
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')

@@ -1133,15 +1133,14 @@ export function StackForm () {
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     {readOnly &&
                       <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                    {switchData && switchDetail && <SwitchStackSetting
-                      switchData={switchData}
+                    <SwitchStackSetting
                       switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
-                    />}
+                    />
                   </div>
                 }
               </Col>
