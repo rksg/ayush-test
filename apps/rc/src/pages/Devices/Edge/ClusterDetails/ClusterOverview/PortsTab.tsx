@@ -4,15 +4,15 @@ import { Col }     from 'antd'
 import { uniqBy }  from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, GridRow, Loader }                                 from '@acx-ui/components'
-import { Features }                                                from '@acx-ui/feature-toggle'
-import { formatter }                                               from '@acx-ui/formatter'
-import { EdgePortsTable, useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
-import { EdgeLagStatus, EdgePortStatus, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                              from '@acx-ui/types'
-import { hasPermission }                                           from '@acx-ui/user'
-import { getOpsApi }                                               from '@acx-ui/utils'
+import { Button, GridRow, Loader }                   from '@acx-ui/components'
+import { EdgePermissions }                           from '@acx-ui/edge/components'
+import { Features }                                  from '@acx-ui/feature-toggle'
+import { formatter }                                 from '@acx-ui/formatter'
+import { EdgePortsTable, useIsEdgeFeatureReady }     from '@acx-ui/rc/components'
+import { EdgeLagStatus, EdgePortStatus, EdgeStatus } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }     from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                from '@acx-ui/types'
+import { hasPermission }                             from '@acx-ui/user'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
@@ -43,9 +43,7 @@ export const PortsTab = (props: PortsTabProps) => {
 
   const hasUpdatePermission = hasPermission({
     scopes: [EdgeScopes.UPDATE],
-    rbacOpsIds: [
-      getOpsApi(EdgeUrlsInfo.updatePortConfig)
-    ]
+    rbacOpsIds: EdgePermissions.editEdgeClusterConfigWizard
   })
 
   return <GridRow justify='end'>

@@ -51,7 +51,7 @@ interface LagMemberTableType extends EdgeLagMemberStatus {
 export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
   const {
     data, isLoading = false,
-    isClusterLevel,
+    isClusterLevel = false,
     filterables,
     edgeNodes
   } = props
@@ -64,15 +64,15 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
   const dualWanColumns: TableProps<LagsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Link Health Monitoring' }),
-      key: 'wanLinkHealth',
-      dataIndex: 'wanLinkHealth',
+      key: 'healthCheckEnabled',
+      dataIndex: 'healthCheckEnabled',
       sorter: false,
       render: (_, row) => {
         return <Button type='link'
           onClick={() => {
             setLinkHealthDetailIfName(`lag${row.lagId}`)
           }}>
-          {transformDisplayOnOff(row?.wanLinkHealth === 'ON')}
+          {transformDisplayOnOff(row?.healthCheckEnabled === 'ON')}
         </Button>
       }
     },
@@ -190,7 +190,7 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
                 return expandedRowRender(data.lagMembers)
               }
             } as ExpandableConfig<LagsTableDataType>}
-            dataSource={convertToLagsTableDataType(data, edgeNodes)}
+            dataSource={convertToLagsTableDataType(isClusterLevel, data, edgeNodes)}
           />
           { isEdgeDualWanEnabled && <EdgeWanLinkHealthDetailsDrawer
             visible={!!linkHealthDetailIfName}
@@ -274,15 +274,19 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
   return <Table columns={columns} dataSource={memberStatus} stickyHeaders={false} />
 }
 
-const convertToLagsTableDataType = (data: EdgeLagStatus[], edgeNodes: EdgeStatus[] = []):
+// eslint-disable-next-line max-len
+const convertToLagsTableDataType = (isClusterLevel: boolean, data: EdgeLagStatus[], edgeNodes: EdgeStatus[] | undefined):
 LagsTableDataType[] => {
-  return data.map(item => ({
-    ...item,
-    key: item.lagId.toString(),
-    lagMembers: item.lagMembers?.map(member => ({
-      ...member,
-      lacpTimeout: item.lacpTimeout
-    })),
-    edgeName: edgeNodes.find(edge => edge.serialNumber === item.serialNumber)?.name
-  }))
+  return data.map(lag => {
+    const nodeData = edgeNodes?.find(edge => edge.serialNumber === lag.serialNumber)
+
+    return {
+      ...lag,
+      key: `${isClusterLevel ? nodeData?.serialNumber : ''}${lag.lagId.toString()}`,
+      lagMembers: lag.lagMembers?.map(member => ({
+        ...member,
+        lacpTimeout: lag.lacpTimeout
+      })),
+      edgeName: nodeData?.name
+    }})
 }

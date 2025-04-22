@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow }                                 from '@acx-ui/components'
+import { Button, GridCol, GridRow, cssStr, Card }                   from '@acx-ui/components'
 import { EdgeAlarmWidget, EdgeClusterNodesWidget, EdgePortsWidget } from '@acx-ui/edge/components'
 import {
   EdgeClusterStatus,
@@ -35,41 +35,43 @@ export const EdgeClusterInfoWidget = (props: EdgeClusterInfoWidgetProps) => {
   }
 
   return (
-    <GridRow>
-      <GridCol col={{ span: 4 }}>
-        {currentCluster?.name}
-      </GridCol>
-      <GridCol col={{ span: 5 }}>
-        <EdgeAlarmWidget
-          isLoading={isEdgeClusterLoading}
-          serialNumber={currentCluster?.edgeList?.map((edge) => edge.serialNumber)}
-          onClick={onClickWidget}
-        />
-      </GridCol>
-      <GridCol col={{ span: 5 }}>
-        <EdgeClusterNodesWidget
-          isLoading={isPortListLoading}
-          clusterData={currentCluster}
-        />
-      </GridCol>
-      <GridCol col={{ span: 5 }}>
-        <EdgePortsWidget
-          isLoading={isPortListLoading}
-          edgePortsSetting={clusterPortsSetting}
-          onClick={onClickWidget}
-        />
-      </GridCol>
-      <GridCol col={{ span: 5 }} style={{ justifyContent: 'center' }}>
-        <Button key='moreDetailsBtn' type='link' onClick={moreDetailsHandler} >
-          {$t({ defaultMessage: 'More Details' })}
-        </Button>
-      </GridCol>
+    <Card type='solid-bg' >
+      <GridRow style={{ height: 152 }}>
+        <GridCol col={{ span: 4 }}>
+          {currentCluster?.name}
+        </GridCol>
+        <GridCol col={{ span: 5 }}>
+          <EdgeAlarmWidget
+            isLoading={isEdgeClusterLoading}
+            serialNumber={currentCluster?.edgeList?.map((edge) => edge.serialNumber)}
+            onClick={onClickWidget}
+          />
+        </GridCol>
+        <GridCol col={{ span: 5 }}>
+          <EdgeClusterNodesWidget
+            isLoading={isPortListLoading}
+            clusterData={currentCluster}
+          />
+        </GridCol>
+        <GridCol col={{ span: 5 }}>
+          <EdgePortsWidget
+            isLoading={isPortListLoading}
+            edgePortsSetting={clusterPortsSetting}
+            onClick={onClickWidget}
+          />
+        </GridCol>
+        <GridCol col={{ span: 5 }} style={{ justifyContent: 'center' }}>
+          <Button key='moreDetailsBtn' type='link' onClick={moreDetailsHandler} >
+            {$t({ defaultMessage: 'More Details' })}
+          </Button>
+        </GridCol>
 
-      <EdgeClusterDetailsDrawer
-        visible={visible}
-        setVisible={setVisible}
-        currentCluster={currentCluster}
-      />
-    </GridRow>
+        <EdgeClusterDetailsDrawer
+          visible={visible}
+          setVisible={setVisible}
+          currentCluster={currentCluster}
+        />
+      </GridRow>
+    </Card>
   )
 }

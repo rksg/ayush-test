@@ -29,7 +29,8 @@ jest.mock('../WanLinkHealthDetails', () => ({
 
 describe('EdgeOverviewLagTable', () => {
   const mockEdgeNodes: EdgeStatus[] = [
-    { serialNumber: '12345', name: 'Edge Node 1' }
+    { serialNumber: 'mock-edge-1', name: 'Edge Node 1' },
+    { serialNumber: 'mock-edge-2', name: 'Edge Node 2' }
   ]
 
   const mockData: EdgeLagStatus[] = [
@@ -107,7 +108,41 @@ describe('EdgeOverviewLagTable', () => {
       expect(within(row).getByText('Up')).toBeInTheDocument()
     })
 
-    it('renders non cluster level with empty edge nodes data', async () => {
+    it('renders the table with data from 2 nodes', async () => {
+      const mock2ndNodeData = cloneDeep(mockData)
+      mock2ndNodeData[0].serialNumber = mockEdgeNodes[1].serialNumber
+      const mockEdge2NodesLag = cloneDeep(mockData)
+      mockEdge2NodesLag.push(mock2ndNodeData[0])
+
+      render(
+        <Router>
+          <EdgeOverviewLagTable
+            data={mockEdge2NodesLag}
+            isLoading={false}
+            isClusterLevel={true}
+            edgeNodes={mockEdgeNodes}
+          />
+        </Router>
+      )
+
+      const rows = await screen.findAllByRole('row', { name: /LAG 1/ })
+      expect(rows.length).toBe(2)
+
+      await screen.findByText('Node Name')
+      const row1 = rows[0]
+      expect(within(row1).getByText('Edge Node 1')).toBeInTheDocument()
+      expect(within(row1).getByText('LAG 1')).toBeInTheDocument()
+      expect(within(row1).getByText('Description 1')).toBeInTheDocument()
+      expect(within(row1).getByText('Static')).toBeInTheDocument()
+
+      const row2 = rows[1]
+      expect(within(row2).getByText('Edge Node 2')).toBeInTheDocument()
+      expect(within(row2).getByText('LAG 1')).toBeInTheDocument()
+      expect(within(row2).getByText('Description 1')).toBeInTheDocument()
+      expect(within(row2).getByText('Static')).toBeInTheDocument()
+    })
+
+    it('renders cluster level with empty edge nodes data', async () => {
       render(
         <Router>
           <EdgeOverviewLagTable

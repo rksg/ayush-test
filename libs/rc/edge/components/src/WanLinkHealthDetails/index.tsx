@@ -1,5 +1,6 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }       from 'antd'
+import { capitalize } from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import { Drawer }                                             from '@acx-ui/components'
 import { EdgeWanLinkHealthCheckPolicy, transformDisplayText } from '@acx-ui/rc/utils'
@@ -79,7 +80,8 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
 
   return (
     <Drawer
-      title={$t({ defaultMessage: '{portName}: Link Health Monitoring' }, { portName })}
+      title={$t({ defaultMessage: '{portName}: Link Health Monitoring' },
+        { portName: capitalize(portName) })}
       visible={visible}
       onClose={onClose}
       children={content}

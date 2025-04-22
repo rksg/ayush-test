@@ -141,7 +141,7 @@ export interface EdgeStaticRouteConfig {
 }
 
 interface EdgeMultiWanStatus {
-  wanLinkHealth?: string
+  healthCheckEnabled?: string
   wanLinkStatus?: string
   wanLinkTargets?: { ip: string, status: string }[]
   wanPortRole?: string

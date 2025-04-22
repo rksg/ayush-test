@@ -20,7 +20,7 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
       <EdgeWanLinkHealthDetailsDrawer
         visible={true}
         setVisible={mockSetVisible}
-        portName='Port1'
+        portName='port1'
         healthCheckPolicy={mockHealthCheckPolicy}
       />
     )

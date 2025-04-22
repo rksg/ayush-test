@@ -29,19 +29,19 @@ export const getClusterNodesChartData =
 (nodes: EdgeStatus[] | undefined): DonutChartData[] => {
   const seriesMapping = [
     { key: EdgeStatusSeverityEnum.OPERATIONAL,
-      name: EdgeStatusSeverityEnum.OPERATIONAL,
+      name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OPERATIONAL, false),
       color: cssStr('--acx-semantics-green-50') },
     { key: EdgeStatusSeverityEnum.TRANSIENT_ISSUE,
       name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.TRANSIENT_ISSUE, false),
       color: cssStr('--acx-semantics-yellow-40') },
     { key: EdgeStatusSeverityEnum.IN_SETUP_PHASE,
-      name: EdgeStatusSeverityEnum.IN_SETUP_PHASE,
+      name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false),
       color: cssStr('--acx-neutrals-50') },
     { key: EdgeStatusSeverityEnum.OFFLINE,
-      name: EdgeStatusSeverityEnum.OFFLINE,
+      name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OFFLINE, false),
       color: cssStr('--acx-neutrals-50') },
     { key: EdgeStatusSeverityEnum.REQUIRES_ATTENTION,
-      name: EdgeStatusSeverityEnum.REQUIRES_ATTENTION,
+      name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.REQUIRES_ATTENTION, false),
       color: cssStr('--acx-semantics-red-50') }
   ] as Array<{ key: string, name: string, color: string }>
 

@@ -7,23 +7,6 @@ import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider
 
 import { PortsTab } from './PortsTab'
 
-// Mock the components used
-// jest.mock('@acx-ui/edge/components', () => ({
-//   EdgeOverviewPortsTable: ({ data, lagData, handleClickLagName }) => (
-//     <div data-testid='ports-table'>
-//       {data && data.map(port => <div key={port.portId}>{port.name}</div>)}
-//       {lagData && lagData.map(lag => (
-//         <div
-//           key={lag.lagId}
-//           onClick={() => handleClickLagName && handleClickLagName()}
-//         >
-//           {lag.name}
-//         </div>
-//       ))}
-//     </div>
-//   )
-// }))
-
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -32,13 +15,19 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(true),
-  EdgePortsTable: () => <div data-testid='ports-table'></div>
+  EdgePortsTable: (props: {
+    isConfigurable: boolean
+    portData: EdgePortStatus[]
+  }) => <div data-testid='EdgePortsTable'>
+    {JSON.stringify(props.portData)}
+  </div>
 }))
 
 // Define mocked router params and create a renderWithProvider helper
 const params = {
   clusterId: 'test-cluster-id'
 }
+const mockLagData = [{ lagId: 'lag1', name: 'LAG 1' }]
 
 const renderWithProviders = (ui, options = {}) => {
   const { clusterInfo = { edgeList: [] }, ...renderOptions } = options
@@ -54,9 +43,8 @@ const renderWithProviders = (ui, options = {}) => {
 }
 
 describe('PortsTab', () => {
-  it('renders PortsTab with correct data', () => {
+  it('renders PortsTab with correct data', async () => {
     const mockPortData = [{ portId: 'port1', name: 'Port 1' }]
-    const mockLagData = [{ lagId: 'lag1', name: 'LAG 1' }]
     const mockHandleClickLagName = jest.fn()
 
     renderWithProviders(
@@ -69,8 +57,9 @@ describe('PortsTab', () => {
       />
     )
 
-    expect(screen.getByText('Port 1')).toBeInTheDocument()
-    expect(screen.getByText('LAG 1')).toBeInTheDocument()
+    const portsTable = screen.getByTestId('EdgePortsTable')
+    expect(portsTable).toBeInTheDocument()
+    expect(portsTable.textContent).toBe(JSON.stringify(mockPortData))
   })
 
   it('displays loading state when isLoading is true', () => {
@@ -84,28 +73,10 @@ describe('PortsTab', () => {
       />
     )
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
 
-  it('calls handleClickLagName when a LAG name is clicked', async () => {
-    const mockLagData = [{ lagId: 'lag1', name: 'LAG 1' }]
-    const mockHandleClickLagName = jest.fn()
-
-    renderWithProviders(
-      <PortsTab
-        isConfigurable={true}
-        portData={[]}
-        lagData={mockLagData}
-        isLoading={false}
-        handleClickLagName={mockHandleClickLagName}
-      />
-    )
-
-    await userEvent.click(screen.getByText('LAG 1'))
-    expect(mockHandleClickLagName).toHaveBeenCalled()
-  })
-
-  it('navigates to LAG configuration page', async () => {
+  it('navigates to Ports configuration page', async () => {
     renderWithProviders(
       <PortsTab
         isConfigurable={true}
@@ -118,6 +89,6 @@ describe('PortsTab', () => {
     await userEvent.click(configButton)
 
     // eslint-disable-next-line max-len
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/edit/lags') }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: expect.stringContaining('/test-cluster-id/configure') }))
   })
 })

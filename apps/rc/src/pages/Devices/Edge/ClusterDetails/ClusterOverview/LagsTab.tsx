@@ -4,15 +4,14 @@ import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Button, GridRow, Loader }                 from '@acx-ui/components'
-import { EdgeOverviewLagTable }                    from '@acx-ui/edge/components'
-import { Features }                                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
-import { EdgeLagStatus, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
-import { EdgeScopes }                              from '@acx-ui/types'
-import { hasPermission }                           from '@acx-ui/user'
-import { getOpsApi }                               from '@acx-ui/utils'
+import { Button, GridRow, Loader }               from '@acx-ui/components'
+import { EdgeOverviewLagTable, EdgePermissions } from '@acx-ui/edge/components'
+import { Features }                              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                 from '@acx-ui/rc/components'
+import { EdgeLagStatus, EdgeStatus }             from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
@@ -25,27 +24,24 @@ interface LagsTabProps {
 export const LagsTab = (props: LagsTabProps) => {
   const { data, isLoading = false, isConfigurable } = props
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const { clusterId } = useParams()
   const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
+  const basePath = useTenantLink(`/devices/edge/cluster/${clusterId}`)
   const { clusterInfo } = useContext(EdgeClusterDetailsDataContext)
 
   const navigateToLagConfigPage = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/lags`
+      pathname: `${basePath.pathname}/configure`
     })
   }
 
   const hasUpdatePermission = hasPermission({
     scopes: [EdgeScopes.UPDATE],
-    rbacOpsIds: [
-      getOpsApi(EdgeUrlsInfo.addEdgeLag),
-      getOpsApi(EdgeUrlsInfo.updateEdgeLag),
-      getOpsApi(EdgeUrlsInfo.deleteEdgeLag)
-    ]
+    rbacOpsIds: EdgePermissions.editEdgeClusterConfigWizard
+
   })
 
   return (

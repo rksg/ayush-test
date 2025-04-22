@@ -28,6 +28,7 @@ interface EdgePortsTableProps {
   isClusterLevel?: boolean
   edgeNodes?: EdgeStatus[]
   filterables?: { [key: string]: ColumnType['filterable'] }
+  showDualWanColumns?: boolean
 }
 
 interface EdgePortsTableDataType extends EdgePortStatus {
@@ -48,9 +49,7 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
   // eslint-disable-next-line max-len
   const [linkHealthDetailIfName, setLinkHealthDetailIfName]= useState<string | undefined>(undefined)
 
-  // TODO: should display dualWanColumn only when dual wan is configured
-  // need to query lagConfig data
-  // const isDualWanConfigured = getEdgeWanInterfaceCount(portData, lagData) > 2
+  const showDualWanColumns = isEdgeDualWanEnabled && isDualWanConfigured(portData, lagData)
 
   const showPortInfo = (portId: string, data:string) => {
     if(lagData?.length > 0) {
@@ -65,15 +64,15 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
   const dualWanColumns: TableProps<EdgePortsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Link Health Monitoring' }),
-      key: 'wanLinkHealth',
-      dataIndex: 'wanLinkHealth',
+      key: 'healthCheckEnabled',
+      dataIndex: 'healthCheckEnabled',
       sorter: false,
       render: (_, row) => {
         return <Button type='link'
           onClick={() => {
             setLinkHealthDetailIfName(row.interfaceName)
           }}>
-          {transformDisplayOnOff(row.wanLinkHealth === 'ON')}
+          {transformDisplayOnOff(row.healthCheckEnabled === 'ON')}
         </Button>
       }
     },
@@ -146,14 +145,13 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
           children={row.lagName}
         />
       }
-    }] : []),
-    // {
-    //   title: $t({ defaultMessage: 'Description' }),
-    //   key: 'description',
-    //   dataIndex: 'name',
-    //   width: 200,
-    //   sorter: { compare: sortProp('name', defaultSort) }
-    // },
+    }] : [{
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'name',
+      width: 200,
+      sorter: { compare: sortProp('name', defaultSort) }
+    }]),
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
@@ -230,7 +228,7 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
         />
       }
     }] : []),
-    ...(isEdgeDualWanEnabled ? dualWanColumns : [])
+    ...((isEdgeDualWanEnabled && showDualWanColumns) ? dualWanColumns : [])
   ]
 
   return <>
@@ -270,4 +268,11 @@ const aggregatePortData = (portData: EdgePortStatus[],
       edgeName: find(edgeNodes, { serialNumber: portItem.serialNumber })?.name
     }
   })
+}
+
+const isDualWanConfigured = (portData: EdgePortStatus[], lagData: EdgeLagStatus[]) => {
+  const hasDualWanPort = portData.some(portItem => Boolean(portItem.wanPortRole))
+  const hasDualWanLag = lagData.some(lagItem => Boolean(lagItem.wanPortRole))
+
+  return hasDualWanPort || hasDualWanLag
 }

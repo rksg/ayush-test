@@ -17,22 +17,20 @@ import { useDateFilter }  from '@acx-ui/utils'
 
 import { EdgeClusterDetailsDataContext } from '../EdgeClusterDetailsDataProvider'
 
-import EdgeClusterDetailsTabs from './ClusterDetailsTabs'
-
 export const EdgeClusterDetailsPageHeader = () => {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
 
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { clusterId } = useParams()
-  const {
-    clusterInfo
-  } = useContext(EdgeClusterDetailsDataContext)
-
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+
+  const {
+    startDate, endDate,
+    setDateFilter,
+    range } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
+  const { clusterInfo } = useContext(EdgeClusterDetailsDataContext)
 
   return (
     <PageHeader
@@ -51,7 +49,7 @@ export const EdgeClusterDetailsPageHeader = () => {
         ...filterByAccess([
           <Button
             scopeKey={[EdgeScopes.UPDATE]}
-            rbacOpsIds={EdgePermissions.editEdgeNode}
+            rbacOpsIds={EdgePermissions.editEdgeCluster}
             type='primary'
             onClick={() =>
               navigate({
@@ -63,7 +61,8 @@ export const EdgeClusterDetailsPageHeader = () => {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
-      footer={<EdgeClusterDetailsTabs />}
+      // TODO: will be added back once we have cluster level service or other cluster perspective detail page
+      // footer={<EdgeClusterDetailsTabs />}
     />
   )
 }

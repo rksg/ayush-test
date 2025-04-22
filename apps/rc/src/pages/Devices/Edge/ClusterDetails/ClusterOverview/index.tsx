@@ -67,7 +67,7 @@ const edgePortStatusPayload = {
 
 export const EdgeClusterOverview = () => {
   const { $t } = useIntl()
-  const { activeSubTab } = useParams()
+  const { clusterId, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
   const {
     clusterInfo,
@@ -80,12 +80,10 @@ export const EdgeClusterOverview = () => {
     portStatusList,
     isPortListLoading
   } = useGetEdgePortsStatusListQuery({
-    // TODO: temporarily use the first edge serial number
-    // params: { clusterId },
-    params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
+    params: { clusterId },
     payload: edgePortStatusPayload
   }, {
-    skip: !clusterInfo?.edgeList?.[0].serialNumber,
+    skip: !clusterId,
     selectFromResult: ({ data, isLoading }) => ({
       portStatusList: data?.data ?? [],
       isPortListLoading: isLoading
@@ -95,12 +93,10 @@ export const EdgeClusterOverview = () => {
     lagStatusList = [],
     isLagListLoading
   } = useGetEdgeLagsStatusListQuery({
-    // TODO: temporarily use the first edge serial number
-    // params: { clusterId },
-    params: { serialNumber: clusterInfo?.edgeList?.[0].serialNumber },
+    params: { clusterId },
     payload: edgeLagStatusPayload
   }, {
-    skip: !clusterInfo?.edgeList?.[0].serialNumber,
+    skip: !clusterId,
     selectFromResult ({ data, isLoading }) {
       return {
         lagStatusList: data?.data,
@@ -133,7 +129,6 @@ export const EdgeClusterOverview = () => {
       .map(port => ({ edgeId: port.serialNumber!, ifName: port.interfaceName! }))
       .concat(lagStatusList
         .filter(lag => lag.portType === EdgePortTypeEnum.WAN)
-        // TODO: temporarily use the first edge serial number
         // eslint-disable-next-line max-len
         .map(lag => ({ edgeId: lag.serialNumber!, ifName: `lag${lag.lagId}` })))
   }, [portStatusList, lagStatusList])

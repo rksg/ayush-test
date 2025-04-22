@@ -7,8 +7,8 @@ import { MonitorTab } from './MonitorTab'
 
 // Mock the components used by MonitorTab
 jest.mock('@acx-ui/edge/components', () => ({
-  EdgeClusterNodesUpTimeWidget: () => <div data-testid='nodes-uptime-widget'>EdgeClusterNodesUpTimeWidget</div>,
-  EdgeClusterTrafficByVolumeWidget: () => <div data-testid='traffic-volume-widget'>EdgeClusterTrafficByVolumeWidget</div>
+  EdgeClusterNodesUpTimeWidget: () => <div data-testid='EdgeClusterNodesUpTimeWidget'>EdgeClusterNodesUpTimeWidget</div>,
+  EdgeClusterWanPortsTrafficByVolumeWidget: () => <div data-testid='EdgeClusterWanPortsTrafficByVolumeWidget'>EdgeClusterWanPortsTrafficByVolumeWidget</div>
 }))
 
 describe('MonitorTab', () => {
@@ -24,8 +24,8 @@ describe('MonitorTab', () => {
       </EdgeClusterDetailsDataContext.Provider>
     )
 
-    expect(screen.getByTestId('nodes-uptime-widget')).toBeInTheDocument()
-    expect(screen.getByTestId('traffic-volume-widget')).toBeInTheDocument()
+    expect(screen.getByTestId('EdgeClusterNodesUpTimeWidget')).toBeInTheDocument()
+    expect(screen.getByTestId('EdgeClusterWanPortsTrafficByVolumeWidget')).toBeInTheDocument()
   })
 
   it('renders components even if clusterInfo has no edgeList', () => {
@@ -38,7 +38,7 @@ describe('MonitorTab', () => {
       </EdgeClusterDetailsDataContext.Provider>
     )
 
-    expect(screen.getByTestId('nodes-uptime-widget')).toBeInTheDocument()
-    expect(screen.getByTestId('traffic-volume-widget')).toBeInTheDocument()
+    expect(screen.getByTestId('EdgeClusterNodesUpTimeWidget')).toBeInTheDocument()
+    expect(screen.getByTestId('EdgeClusterWanPortsTrafficByVolumeWidget')).toBeInTheDocument()
   })
 })
