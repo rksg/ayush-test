@@ -528,7 +528,8 @@ overflow: auto;
   padding: 20px;
 }
 .rglb_group-item .group-item-container .card-container .card-shadow {
-  background: rgba(15, 15, 15, 0.3);
+  background: rgba(84, 150, 234, 0.10);
+  border: 1px dashed var(--acx-accents-blue-50);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
