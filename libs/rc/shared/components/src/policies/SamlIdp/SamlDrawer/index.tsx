@@ -58,7 +58,6 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       visible={visible}
       width={450}
       children={
-        visible &&
         (readMode ? <ReadModeIdpForm policy={policy!} /> :
           <AddSamlIdp
             isEmbedded={true}
@@ -70,7 +69,7 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       onClose={handleClose}
       destroyOnClose={true}
       footer={
-        readMode && (
+        (readMode) ? (
           <>
             <Button
               type='primary'
@@ -88,6 +87,17 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
               {$t({ defaultMessage: 'OK' })}
             </Button>
           </>
+        ) : (
+          // Workaround for add a footer to avoid drawer be hide when click outside
+          <Button
+            type='primary'
+            style={{ display: 'none' }}
+            onClick={() => {
+              setVisible(false)
+            }}
+          >
+            {$t({ defaultMessage: 'OK' })}
+          </Button>
         )
       }
     />
