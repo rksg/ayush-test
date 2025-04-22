@@ -66,7 +66,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       { params: { tenantId }, payload: [
         abacFF,
         betaListFF,
-        rbacOpsApiFF
+        rbacOpsApiFF,
+        activityAllVenuesFF
       ] },
       { skip: !Boolean(profile) }
     )
