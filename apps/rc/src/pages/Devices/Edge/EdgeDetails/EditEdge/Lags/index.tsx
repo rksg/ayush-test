@@ -3,15 +3,20 @@ import { useContext } from 'react'
 import { Form }      from 'antd'
 import { useParams } from 'react-router-dom'
 
+
 import { Loader }                                                                    from '@acx-ui/components'
-import { EdgeLagTable }                                                              from '@acx-ui/rc/components'
+import { isMultiWanClusterPrerequisite }                                             from '@acx-ui/edge/components'
+import { Features }                                                                  from '@acx-ui/feature-toggle'
+import { EdgeLagTable, useIsEdgeFeatureReady }                                       from '@acx-ui/rc/components'
 import { useAddEdgeLagMutation, useDeleteEdgeLagMutation, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
 import { EdgeLag }                                                                   from '@acx-ui/rc/utils'
 
-import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
 
 const Lags = () => {
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const { serialNumber } = useParams()
   const {
     portData, lagData, lagStatus, isFetching,
@@ -20,6 +25,9 @@ const Lags = () => {
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
+
+  // eslint-disable-next-line max-len
+  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const handleAdd = async (serialNumber: string, data: EdgeLag) => {
     const requestPayload = {
@@ -63,7 +71,10 @@ const Lags = () => {
       {
         isCluster && <ClusterNavigateWarning />
       }
-      <Form disabled={isCluster}>
+      {
+        isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
+      }
+      <Form disabled={isCluster || isMutliWanClusterCondition}>
         <EdgeLagTable
           serialNumber={serialNumber}
           lagList={lagData}
