@@ -4,7 +4,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeLinkDownCriteriaEnum } from '@acx-ui/rc/utils'
 
-import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaString } from './dualWanUtils'
+import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaString, isMultiWanClusterPrerequisite } from './dualWanUtils'
 
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
@@ -67,5 +67,31 @@ describe('getWanLinkDownCriteriaString', () => {
     // eslint-disable-next-line max-len
     const result = getWanLinkDownCriteriaString('INVALID_ENUM_VALUE' as unknown as EdgeLinkDownCriteriaEnum)
     expect(result).toBe('')
+  })
+})
+
+describe('isMultiWanClusterPrerequisite', () => {
+  it('returns false for undefined clusterInfo', () => {
+    expect(isMultiWanClusterPrerequisite(undefined)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with no edgeList', () => {
+    const clusterInfo = {}
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with empty edgeList', () => {
+    const clusterInfo = { edgeList: [] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns true for clusterInfo with edgeList having one element', () => {
+    const clusterInfo = { edgeList: [{}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(true)
+  })
+
+  it('returns false for clusterInfo with edgeList having multiple elements', () => {
+    const clusterInfo = { edgeList: [{}, {}, {}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
   })
 })

@@ -1,11 +1,22 @@
 import {
   ClusterNetworkMultiWanSettings,
+  EdgeClusterStatus,
   EdgeLinkDownCriteriaEnum,
   EdgeMultiWanModeEnum,
   EdgeMultiWanProtocolEnum,
   EdgeWanLinkHealthCheckPolicy
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+export const multiWanLimitations = {
+  MIN_HEALTH_CHECK_INTERVAL: 1, // seconds
+  MAX_HEALTH_CHECK_INTERVAL: 10, // seconds
+  MIN_COUNT_DOWN: 2, // seconds
+  MAX_COUNT_DOWN: 10,  // seconds
+  MIN_COUNT_UP: 2,  // seconds
+  MAX_COUNT_UP: 10,  // seconds
+  MAX_TARGET_IP: 3
+}
 
 export const defaultDualWanLinkHealthCheckPolicy: EdgeWanLinkHealthCheckPolicy = {
   protocol: EdgeMultiWanProtocolEnum.PING,
@@ -58,4 +69,9 @@ export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum) => 
     default:
       return ''
   }
+}
+
+export const isMultiWanClusterPrerequisite = (clusterInfo: EdgeClusterStatus | undefined) => {
+  if (!clusterInfo) return false
+  return (clusterInfo.edgeList?.length ?? 0) === 1
 }
