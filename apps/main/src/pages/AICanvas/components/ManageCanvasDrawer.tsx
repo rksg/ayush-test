@@ -48,7 +48,7 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
 
   const content = <div>
     {
-      canvasList.map(item => <UI.CanvasListItem>
+      canvasList.map(item => <UI.CanvasListItem key={item.id}>
         <div className='info'>
           <div className='title'>
             <span className='name'>{ item.name }</span>
@@ -98,7 +98,7 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
           visible={editCanvasVisible}
           handleCancel={()=> {setEditCanvasVisible(false)}}
           editCanvas={editCanvas}
-          canvasNameList={canvasList.map(i=>i.name)}
+          canvasNameList={canvasList.map(i=>({ id: i.id, name: i.name }))}
         />
       }
 

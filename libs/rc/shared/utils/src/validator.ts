@@ -1025,9 +1025,9 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   }
 }
 
-export function validateDuplicateName (name: string, nameList: string[]) {
+export function validateDuplicateName (currentItem: { id:string, name:string }, nameList: { id:string, name:string }[]) {
   const { $t } = getIntl()
-  const index = nameList.filter(item => item === name)
+  const index = nameList.filter(item => item.name === currentItem.name && item.id !== currentItem.id)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.nameDuplicateInvalid))
   } else {

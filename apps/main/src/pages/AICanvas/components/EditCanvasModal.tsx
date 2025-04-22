@@ -9,12 +9,11 @@ import { getIntl }                                                 from '@acx-ui
 
 import * as UI from '../styledComponents'
 
-
 export function EditCanvasModal (props:{
   visible: boolean
   handleCancel: () => void
   editCanvas: Canvas
-  canvasNameList: string[]
+  canvasNameList: { id:string, name:string }[]
 }) {
   const { $t } = getIntl()
   const { visible, handleCancel, editCanvas, canvasNameList } = props
@@ -62,13 +61,18 @@ export function EditCanvasModal (props:{
           layout='vertical'
         >
           <Form.Item
-            label={$t({ defaultMessage: 'Canvas Name' })}
             name='name'
+            data-testid='canvas-name'
+            label={$t({ defaultMessage: 'Canvas Name' })}
             rules={[
               { required: true },
               { max: 64 },
               { validator: (_, value) => trailingNorLeadingSpaces(value) },
-              { validator: (_, value) => validateDuplicateName(value, canvasNameList) }
+              { validator: (_, value) => validateDuplicateName({
+                name: value,
+                id: editCanvas.id
+              }, canvasNameList)
+              }
             ]}
             children={<Input />}
           />

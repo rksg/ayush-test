@@ -638,8 +638,10 @@ describe('validator', () => {
 
   describe('validateDuplicateName', () => {
     it('Should validate duplicate name correctly', async () => {
-      await expect(validateDuplicateName('1', ['2'])).resolves.toEqual(undefined)
-      await expect(validateDuplicateName('1', ['1'])).rejects.toEqual('The name already exists')
+      await expect(validateDuplicateName({ name: '1', id: '1' }, [{ name: '2', id: '1' }]))
+        .resolves.toEqual(undefined)
+      await expect(validateDuplicateName({ name: '1', id: '1' }, [{ name: '1', id: '2' }]))
+        .rejects.toEqual('The name already exists')
     })
   })
 })
