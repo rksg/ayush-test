@@ -83,19 +83,22 @@ export const isDmzTunnelUtilized = (
         && !!networkId && !!networkVenueId
 }
 
-export const isSdLanGuestUtilizedOnDiffVenue = (
+export const isSdLanDmzUtilizedOnDiffVenue = (
   venueSdLanInfo: EdgeMvSdLanViewData,
   networkId: string,
-  networkVenueId: string
+  networkVenueId: string,
+  currentFwdTunnelType: TunnelTypeEnum|string|undefined
 ): boolean => {
-  if (venueSdLanInfo?.isGuestTunnelEnabled) {
-
+  if (venueSdLanInfo?.isGuestTunnelEnabled ||
+    currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE
+  ) {
     // should reference `tunneledWlans` since we need to consider both activate and deactivate scenario
-    const otherGuestTunnel = venueSdLanInfo?.tunneledWlans?.find(wlan =>
+    const otherDmzTunnel = venueSdLanInfo?.tunneledWlans?.find(wlan =>
       wlan.venueId !== networkVenueId && wlan.networkId === networkId)
 
-    return Boolean(otherGuestTunnel)
+    return Boolean(otherDmzTunnel)
   }
+
   return false
 }
 

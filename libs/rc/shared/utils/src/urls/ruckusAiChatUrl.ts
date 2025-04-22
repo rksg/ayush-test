@@ -75,5 +75,10 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/ruckusAi/canvas/:canvasId/widgets/:widgetId',
     newApi: true
+  },
+  sendFeedback: {
+    method: 'post',
+    url: '/ruckusAi/chats/:sessionId/:messageId',
+    newApi: true
   }
 }
