@@ -431,7 +431,7 @@ export function PropertyUnitDetails () {
         onFilterChange={handleFilterChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={filterByAccess(rowActions).length > 0 && { type: 'checkbox' }}
       />
     </Loader>
     {venueId && configurePropertyUnitDrawerVisible &&
