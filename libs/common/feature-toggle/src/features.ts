@@ -327,7 +327,8 @@ export enum Features {
   DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
   SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
   WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
-  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement'
+  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement',
+  IDENTITY_COMMON_ATTRIBUTES_TOGGLE = 'acx-ui-identity-common-attributes-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

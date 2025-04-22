@@ -26,10 +26,11 @@ import {
   useLazyGetSamlIdpProfileByIdQuery
 } from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { hasAllowedOperations }               from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
+import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                                                                  from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                                              from '@acx-ui/utils'
+
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
-import { TenantLink } from '@acx-ui/react-router-dom'
 
 
 const identityClientDefaultSorter = {
@@ -50,6 +51,7 @@ export function PersonaOverview (props:
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)
   const [authServiceExists, setAuthServiceExists] = useState(false)
 
@@ -120,32 +122,32 @@ export function PersonaOverview (props:
 
   const [allocatePersonaVni, { isLoading: isVniAllocating }] = useAllocatePersonaVniMutation()
 
-  const {externalIdentityData} = useSearchExternalIdentitiesQuery(
+  const { externalIdentityData } = useSearchExternalIdentitiesQuery(
     { payload: [personaData?.externalIdentityId] },
-    { 
-      skip: !personaData?.externalIdentityId,
-      selectFromResult: ({data}) => ({
-        externalIdentityData: !!data?.totalCount ? data?.data.at(0) : undefined 
+    {
+      skip: !isIdentityCommonAttributesEnabled || !personaData?.externalIdentityId,
+      selectFromResult: ({ data }) => ({
+        externalIdentityData: !!data?.totalCount ? data?.data.at(0) : undefined
       })
     }
   )
 
   const authServicePolicyMapping: Record<string, PolicyType> = {
-    ['SAML']: PolicyType.SAML_IDP
+    SAML: PolicyType.SAML_IDP
   }
 
   const [getSamlProfileById] = useLazyGetSamlIdpProfileByIdQuery()
   useEffect(()=> {
     if (!externalIdentityData) return
     if (externalIdentityData.identityProviderType === 'SAML') {
-      getSamlProfileById({params: {id: externalIdentityData.identityProviderId}})
-      .unwrap()
-      .then((res)=> {
-        if (res) {
-          setAuthServiceExists(true)
-        }
-      })
-      .catch(()=> {})
+      getSamlProfileById({ params: { id: externalIdentityData.identityProviderId } })
+        .unwrap()
+        .then((res)=> {
+          if (res) {
+            setAuthServiceExists(true)
+          }
+        })
+        .catch(()=> {})
     }
 
   }, [externalIdentityData])
@@ -172,35 +174,34 @@ export function PersonaOverview (props:
             unitId={personaData?.identityId ?? unitData?.id}
           />
       }] : [],
-      {
-        label: $t({ defaultMessage: 'Authentication Service' }), 
-          value: personaData?.externalIdentityId ? 
-          <>
-            <GridRow>
-              <GridCol col={{span: 24}}>
-                {authServiceExists ? <TenantLink 
+    ...isIdentityCommonAttributesEnabled ?
+      [{
+        label: $t({ defaultMessage: 'Authentication Service' }),
+        value: personaData?.externalIdentityId ?
+          <GridRow>
+            <GridCol col={{ span: 24 }}>
+              {authServiceExists ? <TenantLink
                 to={getPolicyDetailsLink({
                   type: authServicePolicyMapping[externalIdentityData?.identityProviderType!],
                   policyId: externalIdentityData?.identityProviderId!,
                   oper: PolicyOperation.DETAIL
                 })}>
-                  <Button type='default'>
-                    {$t({defaultMessage: externalIdentityData?.identityProviderType})}
-                  </Button>
-                  </TenantLink>
-                 : $t({defaultMessage: externalIdentityData?.identityProviderType})
-              } 
-              </GridCol>
-              <GridCol col={{span: 12}}>
-                <Button style={{ marginRight: 0 }} 
-                  type='default'
-                  onClick={()=>setAttributesDrawerVisible(true)}>
-                    {$t({defaultMessage: 'More Info'})}
+                <Button type='default'>
+                  {externalIdentityData?.identityProviderType}
                 </Button>
-              </GridCol>
-            </GridRow>
-          </> : undefined
-      }
+              </TenantLink>
+                : externalIdentityData?.identityProviderType
+              }
+            </GridCol>
+            <GridCol col={{ span: 12 }}>
+              <Button style={{ marginRight: 0 }}
+                type='default'
+                onClick={()=>setAttributesDrawerVisible(true)}>
+                {$t({ defaultMessage: 'More Info' })}
+              </Button>
+            </GridCol>
+          </GridRow> : undefined
+      }]: []
   ]
 
   const allocateVni = async () => {
@@ -326,12 +327,13 @@ export function PersonaOverview (props:
           </Card>
         </GridCol>
       </GridRow>
+      {externalIdentityData !==undefined &&
       <CommonAttributesDrawer
         persona={personaData!!}
         externalData={externalIdentityData!!}
         visible={attributesDrawerVisible}
         onClose={()=> setAttributesDrawerVisible(false)}
-      />
+      />}
     </>
   )
 }
