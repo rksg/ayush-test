@@ -56,7 +56,7 @@ describe('getToolTipText', () => {
         error: 'UNMAPPED_ERROR',
         toolTipText: null
       })
-    ).toContain('Unknown error occurred')
+    ).toContain('UNMAPPED_ERROR')
   })
 })
 
