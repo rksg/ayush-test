@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                                                    from 'antd/lib/select'
-import { FormattedMessage, useIntl }                                                            from 'react-intl'
+import { DefaultOptionType }                                                       from 'antd/lib/select'
+import { FormattedMessage, useIntl }                                               from 'react-intl'
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -20,7 +20,6 @@ import {
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
   validateVlanExcludingReserved,
-  Switch as SwitchType,
   SwitchViewModel,
   SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
