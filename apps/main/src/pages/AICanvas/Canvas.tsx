@@ -168,7 +168,17 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   useEffect(() => {
     if(canvasList) {
-      setCanvasId(canvasList[0].id)
+      const newCanvasId = canvasList[0].id
+      const fetchData = async () => {
+        await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+          setupCanvas(res)
+        })
+      }
+      if(newCanvasId == canvasId){
+        fetchData()
+      } else {
+        setCanvasId(newCanvasId)
+      }
     }
   }, [canvasList])
 
@@ -250,9 +260,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
         if(callback) {
           callback()
         }
-      })
-      await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
-        setupCanvas(res)
       })
     }
     setCanvasChange(false)
@@ -362,7 +369,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
               ]}/>
             }
             placement='bottom'>{() =>
-                <ArrowExpand size='sm' />
+                <ArrowExpand size='sm' data-testid='canvas-list' />
               }
             </Dropdown>
             {currentCanvas.dashboardIds && <DashboardIcon/> }

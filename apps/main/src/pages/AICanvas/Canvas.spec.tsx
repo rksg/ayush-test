@@ -22,6 +22,8 @@ jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
 const currentCanvas = {
   id: '65bcb4d334ec4a47b21ae5e062de279f',
   name: 'Dashboard Canvas',
+  visible: true,
+  dashboardIds: ['123'],
   content: `[{
     "id":"default_section",
     "type":"section",
@@ -69,7 +71,7 @@ jest.mock('./components/Layout', () => (props: LayoutProps) =>
 )
 
 jest.mock('./components/ManageCanvasDrawer', () => () =>
-  <div>ManageCanvasDrawer</div>
+  <div data-testid='ManageCanvasDrawer' />
 )
 
 const groupsData = [
@@ -137,6 +139,57 @@ describe('Canvas', () => {
     const saveButton = await screen.findByText('Save')
     await userEvent.click(saveButton)
     expect(mockedUpdate).toBeCalledTimes(1)
+  })
+
+  it('should render canvas list and new canvas correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const canvasListButton = await screen.findByTestId('canvas-list')
+    await userEvent.click(canvasListButton)
+    const newCanvasButton = await screen.findByText('New Canvas')
+    expect(newCanvasButton).toBeInTheDocument()
+    await userEvent.click(newCanvasButton)
+    expect(mockedCreate).toHaveBeenCalledTimes(1)
+  })
+
+  it('should render canvas list and show manage canvases drawer correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const canvasListButton = await screen.findByTestId('canvas-list')
+    await userEvent.click(canvasListButton)
+    const manageCanvasesButton = await screen.findByText('Manage My Canvases')
+    await userEvent.click(manageCanvasesButton)
+    expect(await screen.findByTestId('ManageCanvasDrawer')).toBeVisible()
   })
 
   it('should render empty canvas correctly', async () => {
