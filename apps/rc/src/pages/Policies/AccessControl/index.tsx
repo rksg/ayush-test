@@ -5,12 +5,12 @@ import { useIsSplitOn, Features }                     from '@acx-ui/feature-togg
 import { AccessControlTabs as WifiAccessControlTabs } from '@acx-ui/rc/components'
 import {
   filterByAccessForServicePolicyMutation,
-  getPolicyListRoutePath,
   PortProfileTabsEnum,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
@@ -86,14 +86,7 @@ export default function AccessControl () {
             { defaultMessage: 'Access Control' }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={getAddButton()}
         footer={isSwitchMacAclEnabled && <AccessControlTabs/>}
       />

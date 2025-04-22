@@ -18,6 +18,7 @@ import { buildUnifiedServices, getUnifiedServiceRoute }                     from
 
 export function useUnifiedServicesList (): Array<UnifiedService> {
   const { $t } = useIntl()
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
   // Service features
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -30,6 +31,7 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
 
   // Policy features
   const { accountTier } = getUserProfile()
@@ -172,7 +174,8 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
         category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isSwitchPortProfileEnabled
+        disabled: !isSwitchPortProfileEnabled,
+        route: '/policies/portProfile/wifi'
       },
       {
         type: PolicyType.ROGUE_AP_DETECTION,
@@ -264,7 +267,9 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !isEdgeMdnsReady
+        disabled: !isEdgeMdnsReady,
+        isBetaFeature: isEdgeMdnsBetaEnabled
+
       },
       {
         type: ServiceType.EDGE_OLT,
@@ -335,7 +340,8 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
       }
     ].filter(svc => !svc.disabled)
 
-    // eslint-disable-next-line max-len
-    return buildUnifiedServices(baseUnifiedServiceList).sort((a, b) => a.label.localeCompare(b.label))
+    return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+      .sort((a, b) => a.label.localeCompare(b.label))
+
   }, [])
 }

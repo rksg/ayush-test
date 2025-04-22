@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
@@ -8,12 +6,12 @@ import { RolesEnum }                  from '@acx-ui/types'
 import { hasRoles }                   from '@acx-ui/user'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { LocationExtended }                                               from '../../common/redirect.utils'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate }            from '../../configTemplate'
-import { generatePageHeaderTitle }                                        from '../../pages'
-import { PolicyType, PolicyOperation }                                    from '../../types'
-import { generateDpskManagementBreadcrumb }                               from '../service/servicePageUtils'
-import { generateUnifiedServiceListBreadCrumb, UnifiedServiceSourceType } from '../unifiedServices'
+import { LocationExtended }                                    from '../../common/redirect.utils'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
+import { generatePageHeaderTitle }                             from '../../pages'
+import { PolicyType, PolicyOperation }                         from '../../types'
+import { generateDpskManagementBreadcrumb }                    from '../service/servicePageUtils'
+import { generateUnifiedServicesBreadcrumb }                   from '../unifiedServices'
 
 import { policyTypeLabelMapping }                     from './contentsMap'
 import { getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
@@ -32,20 +30,15 @@ export function usePolicyListBreadcrumb (type: PolicyType) {
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
-  const breadcrumb = useMemo(() => {
-    if (isTemplate) return generateConfigTemplateBreadcrumb()
+  return isTemplate
+    ? generateConfigTemplateBreadcrumb()
+    : generatePolicyListBreadcrumb(type, isNewServiceCatalogEnabled)
+}
 
-    if (isNewServiceCatalogEnabled) {
-      return generateUnifiedServiceListBreadCrumb({
-        type, sourceType: UnifiedServiceSourceType.POLICY
-      })
-    }
+export function usePoliciesBreadcrumb () {
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
-    return generatePolicyListBreadcrumb(type)
-
-  }, [isTemplate, isNewServiceCatalogEnabled])
-
-  return breadcrumb
+  return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled)
 }
 
 export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation) {
@@ -67,7 +60,8 @@ export const adaptivePolicyListLabelMap: Record<AdaptivePolicyRelatedTypes, Mess
 export function useAdaptivePolicyBreadcrumb (type?: AdaptivePolicyRelatedTypes): { text: string, link?: string }[] {
   const { $t } = getIntl()
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  const result = isDPSKAdmin ? generateDpskManagementBreadcrumb() : generatePoliciesBreadcrumb()
+  const policiesBreadcrumb = usePoliciesBreadcrumb()
+  const result = isDPSKAdmin ? generateDpskManagementBreadcrumb() : policiesBreadcrumb
 
   if (type) {
     result.push({
@@ -79,7 +73,9 @@ export function useAdaptivePolicyBreadcrumb (type?: AdaptivePolicyRelatedTypes):
   return result
 }
 
-function generatePoliciesBreadcrumb () {
+function generatePoliciesBreadcrumb (isNewServiceCatalogEnabled = false) {
+  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb()
+
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
@@ -90,10 +86,11 @@ function generatePoliciesBreadcrumb () {
   ]
 }
 
-function generatePolicyListBreadcrumb (type: PolicyType) {
+// eslint-disable-next-line max-len
+export function generatePolicyListBreadcrumb (type: PolicyType, isNewServiceCatalogEnabled = false) {
   const { $t } = getIntl()
   return [
-    ...generatePoliciesBreadcrumb(),
+    ...generatePoliciesBreadcrumb(isNewServiceCatalogEnabled),
     {
       text: $t(policyTypeLabelMapping[type]),
       link: getPolicyRoutePath({ type, oper: PolicyOperation.LIST })

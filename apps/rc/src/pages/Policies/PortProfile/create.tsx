@@ -9,7 +9,8 @@ import {
   getPolicyListRoutePath,
   PolicyOperation,
   PolicyType,
-  PortProfileTabsEnum
+  PortProfileTabsEnum,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }       from '@acx-ui/user'
@@ -48,11 +49,7 @@ export default function CreatePortProfile () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute

@@ -29,7 +29,8 @@ import {
   SwitchPortProfiles,
   useTableQuery,
   validateDuplicateVlanId,
-  validateVlanExcludingReserved
+  validateVlanExcludingReserved,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -319,11 +320,7 @@ export default function SwitchPortProfileForm () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute

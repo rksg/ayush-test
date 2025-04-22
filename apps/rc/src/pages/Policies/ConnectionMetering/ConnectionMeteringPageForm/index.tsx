@@ -9,7 +9,8 @@ import {
   ConnectionMeteringFormMode
 } from '@acx-ui/rc/components'
 import {
-  getPolicyListRoutePath
+  PolicyType,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 
 export default function ConnectionMeteringPageForm (props: ConnectionMeteringFormProps) {
@@ -18,11 +19,7 @@ export default function ConnectionMeteringPageForm (props: ConnectionMeteringFor
   return (
     <>
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.CONNECTION_METERING)}
         title={mode === ConnectionMeteringFormMode.CREATE ?
           $t({ defaultMessage: 'Add Data Usage Metering' }):
           $t({ defaultMessage: 'Edit Data Usage Metering' })

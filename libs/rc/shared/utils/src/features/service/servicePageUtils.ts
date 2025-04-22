@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
@@ -12,7 +10,7 @@ import { LocationExtended }                                                     
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
 import { ServiceType, ServiceOperation }                                                  from '../../constants'
 import { generatePageHeaderTitle }                                                        from '../../pages'
-import { generateUnifiedServiceListBreadCrumb, UnifiedServiceSourceType }                 from '../unifiedServices'
+import { generateUnifiedServicesBreadcrumb }                                              from '../unifiedServices'
 
 import { serviceTypeLabelMapping }                      from './contentsMap'
 import { getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
@@ -33,20 +31,9 @@ export function useServiceListBreadcrumb (type: ServiceType): { text: string, li
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
-  const breadcrumb = useMemo(() => {
-    if (isTemplate) return generateConfigTemplateBreadcrumb()
-
-    if (isNewServiceCatalogEnabled) {
-      return generateUnifiedServiceListBreadCrumb({
-        type, sourceType: UnifiedServiceSourceType.SERVICE
-      })
-    }
-
-    return generateServiceListBreadcrumb(type)
-
-  }, [isTemplate, isNewServiceCatalogEnabled])
-
-  return breadcrumb
+  return isTemplate
+    ? generateConfigTemplateBreadcrumb()
+    : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled)
 }
 
 // eslint-disable-next-line max-len
@@ -70,7 +57,9 @@ export function generateDpskManagementBreadcrumb () {
   ]
 }
 
-function generateServicesBreadcrumb () {
+function generateServicesBreadcrumb (isNewServiceCatalogEnabled: boolean) {
+  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb()
+
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
@@ -81,14 +70,15 @@ function generateServicesBreadcrumb () {
   ]
 }
 
-function generateServiceListBreadcrumb (type: ServiceType) {
+// eslint-disable-next-line max-len
+export function generateServiceListBreadcrumb (type: ServiceType, isNewServiceCatalogEnabled = false) {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   if (type === ServiceType.DPSK && isDPSKAdmin) return generateDpskManagementBreadcrumb()
 
   const { $t } = getIntl()
   return [
-    ...generateServicesBreadcrumb(),
+    ...generateServicesBreadcrumb(isNewServiceCatalogEnabled),
     {
       text: $t(serviceTypeLabelMapping[type]),
       link: getServiceRoutePath({ type, oper: ServiceOperation.LIST })

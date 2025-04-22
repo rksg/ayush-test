@@ -16,13 +16,15 @@ import { UnifiedService, UnifiedServiceSourceType } from './constants'
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
 export function buildUnifiedServices (
-  list: Array<Omit<UnifiedService, 'route' | 'label' | 'description' | 'breadcrumb'>>
+  // list: Array<Omit<UnifiedService, 'route' | 'label' | 'description' | 'breadcrumb'>>,
+  // isNewServiceCatalogEnabled: boolean
+  list: Array<Omit<UnifiedService, 'route' | 'label' | 'description'>>
 ): Array<UnifiedService> {
   return list.map(item => ({
     label: getLabel(item),
     description: getDescription(item),
     route: getUnifiedServiceRoute(item, 'list'),
-    breadcrumb: generateUnifiedServiceListBreadCrumb(item),
+    // breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
     ...item
   }))
 }
@@ -53,7 +55,7 @@ function getDescription (svc: UnifiedServiceTypeSet): string {
   return messageDescriptor ? $t(messageDescriptor) : ''
 }
 
-function generateUnifiedServicesBreadcrumb () {
+export function generateUnifiedServicesBreadcrumb () {
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
@@ -64,15 +66,17 @@ function generateUnifiedServicesBreadcrumb () {
   ]
 }
 
-export function generateUnifiedServiceListBreadCrumb (svc: UnifiedServiceTypeSet) {
-  return [
-    ...generateUnifiedServicesBreadcrumb(),
-    {
-      text: getLabel(svc),
-      link: getUnifiedServiceRoute(svc, 'list')
-    }
-  ]
-}
+// function generateUnifiedServiceListBreadCrumb (
+//   svc: UnifiedServiceTypeSet,
+//   isNewServiceCatalogEnabled: boolean
+// ): { text: string, link?: string }[] {
+//   switch (svc.sourceType) {
+//     case UnifiedServiceSourceType.SERVICE:
+//       return generateServiceListBreadcrumb(svc.type as ServiceType, isNewServiceCatalogEnabled)
+//     case UnifiedServiceSourceType.POLICY:
+//       return generatePolicyListBreadcrumb(svc.type as PolicyType, isNewServiceCatalogEnabled)
+//   }
+// }
 
 export function getUnifiedServiceRoute (
   svc: UnifiedServiceTypeSet,

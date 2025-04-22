@@ -15,6 +15,12 @@ enum FeatureFlag {
 
 export const useIsSplitOn = (splitName: string, tenantId?: string) => {
   const { values } = useTreatmentsValues(splitName, tenantId)
+
+  if ([
+    'acx-ui-new-service-catalog',
+    'edge-poc-nokia-olt-mgmt-toggle'
+  ].includes(splitName)) return true
+
   return values[0] === FeatureFlag.ON
 }
 

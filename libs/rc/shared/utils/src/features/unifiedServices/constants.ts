@@ -1,9 +1,7 @@
-import { TotalCount } from './../../../../components/src/MapWidget/VenuesMap/styledComponents';
 import { RadioCardCategory } from '@acx-ui/components'
 
 import { ServiceType } from '../../constants'
 import { PolicyType }  from '../../types'
-import { RequestPayload, UseQuery, UseQueryOptions } from '@acx-ui/types';
 
 export type UnifiedServiceType = ServiceType | PolicyType
 
@@ -32,7 +30,7 @@ export interface UnifiedService {
   description?: string
   readonly?: boolean
   aliases?: string[] // For search usage
-  breadcrumb?: { text: string, link?: string }[]
+  // breadcrumb?: { text: string, link?: string }[] // For search usage
 }
 
 export interface ExtendedUnifiedService extends UnifiedService {

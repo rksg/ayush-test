@@ -1,9 +1,9 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { PageHeader, StepsForm }                       from '@acx-ui/components'
-import { getPolicyListRoutePath, NetworkTypeTabsEnum } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                              from '@acx-ui/components'
+import { getPolicyListRoutePath, NetworkTypeTabsEnum, usePoliciesBreadcrumb } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                         from '@acx-ui/react-router-dom'
 
 export default function CreateAccessControl () {
   const { $t } = useIntl()
@@ -31,11 +31,7 @@ export default function CreateAccessControl () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Access Control' }),
             link: wifiAccessControlRoute
