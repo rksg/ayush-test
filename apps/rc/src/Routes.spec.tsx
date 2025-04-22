@@ -1597,7 +1597,7 @@ describe('RcRoutes: Devices', () => {
       test('should navigate to ACCESS_CONTROL create selection page', async () => {
         render(<Provider><RcRoutes /></Provider>, {
           route: {
-            path: '/tenantId/t/policies/accessControl/create',
+            path: '/tenantId/t/policies/accessControls/create',
             wrapRoutes: false
           }
         })
@@ -1617,7 +1617,7 @@ describe('RcRoutes: Devices', () => {
       test('should navigate to ACCESS_CONTROL wifi create form', async () => {
         render(<Provider><RcRoutes /></Provider>, {
           route: {
-            path: '/tenantId/t/policies/accessControl/wifi/create',
+            path: '/tenantId/t/policies/accessControl/create',
             wrapRoutes: false
           }
         })

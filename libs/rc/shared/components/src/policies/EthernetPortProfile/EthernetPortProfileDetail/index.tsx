@@ -26,7 +26,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   useConfigTemplate,
   usePolicyListBreadcrumb,
-  useTemplateAwarePolicyAllowedOperation
+  useTemplateAwarePolicyAllowedOperation,
+  transformDisplayOnOff
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -42,6 +43,7 @@ export const EthernetPortProfileDetail = () => {
   const { isTemplate } = useConfigTemplate()
 
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const supportWiredClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
 
   const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
@@ -134,15 +136,27 @@ export const EthernetPortProfileDetail = () => {
     }, {
       title: $t({ defaultMessage: 'MAC Auth Bypass' }),
       content: () => {
-        return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
+        return transformDisplayOnOff(!!ethernetPortProfileData?.bypassMacAddressAuthentication)
       }
     }]),
+    ...(supportWiredClientVisibility ? [
+      {
+        title: $t({ defaultMessage: 'Client Visibility' }),
+        content: () => {
+          return transformDisplayOnOff(
+            ethernetPortProfileData?.authType === EthernetPortAuthType.OPEN ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.PORT_BASED ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED
+          )
+        }
+      }
+    ] : []),
     ...(supportDynamicVLAN && !isTemplate &&
       ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
       [{
         title: $t({ defaultMessage: 'Dynamic VLAN' }),
         content: () => {
-          return (ethernetPortProfileData?.dynamicVlanEnabled)? 'On' : 'Off'
+          return transformDisplayOnOff(!!ethernetPortProfileData?.dynamicVlanEnabled)
         }
       }] : [])
   ]

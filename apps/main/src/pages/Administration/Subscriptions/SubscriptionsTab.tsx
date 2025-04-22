@@ -28,7 +28,8 @@ export const SubscriptionTabs = (props: { tenantType: string }) => {
   const basePath = useTenantLink('/administration/subscriptions')
     enum SubscriptionTierType {
       Platinum = 'Professional',
-      Gold = 'Essentials'
+      Gold = 'Essentials',
+      Core = 'Core'
     }
     const isDelegationTierApi = isDelegationMode()
     const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
@@ -38,8 +39,13 @@ export const SubscriptionTabs = (props: { tenantType: string }) => {
 
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
-    const subscriptionVal = tier === AccountTier.GOLD ? SubscriptionTierType.Gold
-      : SubscriptionTierType.Platinum
+    const subscriptionVal = (
+      tier === AccountTier.GOLD
+        ? SubscriptionTierType.Gold
+        : tier === AccountTier.CORE
+          ? SubscriptionTierType.Core
+          : SubscriptionTierType.Platinum
+    )
 
     const tabs = {
       mySubscriptions: {

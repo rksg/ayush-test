@@ -4,6 +4,7 @@ import styled      from 'styled-components'
 import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
+  PersonalIdentityNetworkApiVersion,
   useApListQuery,
   useGetDpskQuery,
   useGetEdgeDhcpServiceQuery,
@@ -43,6 +44,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
 ) => {
   const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { pinId } = props
   const { $t } = useIntl()
@@ -69,7 +71,8 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     data: pinData,
     isLoading: isPinDataLoading
   } = useGetEdgePinByIdQuery({
-    params: { serviceId: pinId }
+    params: { serviceId: pinId },
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
   })
 
   const apListQuery = useApListQuery({

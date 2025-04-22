@@ -25,6 +25,21 @@ export const mockIntentContext = (config: {
   return context
 }
 
+export const mockVenueList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      networks: { names: ['n3', 'n4', 'n5'] },
+      name: 'My-Venue'
+    },
+    {
+      networks: { names: ['n5', 'n6'] },
+      name: 'test'
+    }
+  ]
+}
+
 export const notEnoughLicenses = {
   id: '19',
   code: 'c-bgscan24g-enable',
@@ -544,6 +559,10 @@ export const intentHighlights = {
     ops: {
       new: 6,
       active: 12
+    },
+    ecoflex: {
+      new: 7,
+      active: 14
     }
   }
 }

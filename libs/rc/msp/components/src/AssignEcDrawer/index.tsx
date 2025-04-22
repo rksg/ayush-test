@@ -50,6 +50,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const isSkip = tenantId === undefined
 
@@ -174,7 +175,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       pagination: {
         pageSize: 10000
       },
-      defaultPayload
+      defaultPayload,
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     let dataSource = queryResults.data?.data

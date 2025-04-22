@@ -21,10 +21,14 @@ export const useEdgeSdLanActions = () => {
     originData?: EdgeSdLanServiceProfile['activeNetwork']
   ) => {
     const rmNetworks = originData?.filter(origin =>
-      !currentData.some(current => current.networkId === origin.networkId)
+      !currentData.some(current =>
+        origin.venueId === current.venueId &&
+        current.networkId === origin.networkId
+      )
     )
     const addNetworks = currentData.filter(current =>
       !originData?.some(origin =>
+        origin.venueId === current.venueId &&
         origin.networkId === current.networkId &&
         origin.tunnelProfileId === current.tunnelProfileId
       )
@@ -33,6 +37,51 @@ export const useEdgeSdLanActions = () => {
     return {
       rmNetworks,
       addNetworks
+    }
+  }
+
+  const toggleNetworkChange = async (
+    serviceId: string,
+    venueId: string,
+    networkId: string,
+    currentTunnelProfileId: string | undefined,
+    originTunnelProfileId: string | undefined,
+    cb?: () => void
+  ) => {
+    const isChangeTunneling = currentTunnelProfileId !== originTunnelProfileId
+    if (!isChangeTunneling) {
+      return
+    }
+    if (originTunnelProfileId !== undefined && originTunnelProfileId !== null) {
+      deactivateNetwork({
+        customHeaders: {
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        },
+        params: {
+          serviceId,
+          venueId: venueId,
+          wifiNetworkId: networkId
+        },
+        callback: cb
+      }).unwrap()
+    }
+    if (currentTunnelProfileId !== undefined && currentTunnelProfileId !== null) {
+      activateNetwork({
+        customHeaders: {
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        },
+        params: {
+          serviceId,
+          venueId: venueId,
+          wifiNetworkId: networkId
+        },
+        payload: {
+          ...(currentTunnelProfileId ? {
+            forwardingTunnelProfileId: currentTunnelProfileId
+          } : {})
+        },
+        callback: cb
+      }).unwrap()
     }
   }
 
@@ -145,6 +194,7 @@ export const useEdgeSdLanActions = () => {
 
   return {
     createEdgeSdLan,
-    updateEdgeSdLan
+    updateEdgeSdLan,
+    toggleNetworkChange
   }
 }

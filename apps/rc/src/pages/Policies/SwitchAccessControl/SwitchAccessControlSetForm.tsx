@@ -142,7 +142,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
     if (duplicateACL) {
       return Promise.reject($t({
-        defaultMessage: 'MAC ACL name is duplicated.'
+        defaultMessage: 'Policy Name is duplicated.'
       }))
     }
 
@@ -183,14 +183,14 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
         >
           <Form.Item
             name='policyName'
-            label={$t({ defaultMessage: 'MAC ACL Name' })}
+            label={$t({ defaultMessage: 'Policy Name' })}
             rules={[
-              { required: true, message: 'Please enter MAC ACL name' },
+              { required: true, message: 'Please enter Policy name' },
               { validator: validateMacAclName }
             ]}
             validateTrigger='onBlur'
           >
-            <Input style={{ width: '400px' }} maxLength={255} />
+            <Input style={{ width: '400px' }} maxLength={255} disabled={editMode} />
           </Form.Item>
           <Form.Item
             name='description'

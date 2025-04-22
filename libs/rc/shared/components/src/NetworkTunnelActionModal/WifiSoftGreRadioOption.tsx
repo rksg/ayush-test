@@ -39,7 +39,6 @@ export interface WiFISoftGreRadioOptionProps {
   networkId?: string
   cachedSoftGre: SoftGreNetworkTunnel[] | undefined
   disabledInfo?: { // can't change for edge
-    noChangePermission: boolean,
     isDisabled: boolean,
     tooltip: string | undefined
   }
@@ -163,7 +162,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       <UI.RadioWrapper>
         <Tooltip title={disabledInfo?.tooltip}>
           <Radio value={NetworkTunnelTypeEnum.SoftGre}
-            disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
+            disabled={disabledInfo?.isDisabled}>
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={''}

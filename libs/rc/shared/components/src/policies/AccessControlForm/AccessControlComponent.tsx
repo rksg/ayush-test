@@ -4,7 +4,8 @@ import { Form, FormItemProps, Switch } from 'antd'
 import { useIntl }                     from 'react-intl'
 import styled                          from 'styled-components/macro'
 
-import { AccessControlProfile } from '@acx-ui/rc/utils'
+import { AccessControlProfile }       from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ApplicationDrawer } from './ApplicationDrawer'
 import { ClientRateLimit }   from './ClientRateLimit'
@@ -38,6 +39,8 @@ const AccessFormItem = (props: FormItemProps<AccessControlProfile>) => {
 
 const AccessControlComponent = () => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
   const [
     enableLayer2,
@@ -79,13 +82,14 @@ const AccessControlComponent = () => {
         </AccessComponentWrapper>
       </FieldLabel>
 
-      <FieldLabel>
+      {!isCore && (<FieldLabel>
         {$t({ defaultMessage: 'Applications' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableApplications'} />
           {enableApplications && <ApplicationDrawer />}
         </AccessComponentWrapper>
       </FieldLabel>
+      )}
 
       <FieldLabel>
         {$t({ defaultMessage: 'Client Rate Limit' })}

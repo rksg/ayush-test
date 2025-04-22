@@ -123,7 +123,10 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
 
       const isDuplicate = dataSource?.some(rule =>
         rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
+            (payload.sourceMask ? rule.sourceMask?.toLowerCase() === payload.sourceMask : true) &&
             rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
+            (payload.destinationMask ?
+              rule.destinationMask?.toLowerCase() === payload.destinationMask : true) &&
             (editMode ? rule.key !== payload.key : true)
       )
 
@@ -185,7 +188,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
             >
               <Form.Item
                 name='sourceAddress'
-                label={$t({ defaultMessage: 'Source Mac Address' })}
+                label={$t({ defaultMessage: 'Source MAC Address' })}
                 rules={[
                   { required: !isAnySrcAddress },
                   { validator: validateMacAndSetMask(

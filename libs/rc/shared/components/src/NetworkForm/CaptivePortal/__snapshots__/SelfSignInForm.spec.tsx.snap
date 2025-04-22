@@ -1335,7 +1335,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                               <button
                                 class="ant-btn ant-btn-link c11"
                                 data-testid="walled-garden-clear-button"
-                                style="margin-left: 90px; margin-right: 10px;"
+                                style="margin-left: 90px;"
                                 type="button"
                               >
                                 <span>
@@ -1442,7 +1442,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
         </div>
       </div>
       <div
-        class="c17 c18"
+        class="c17 c18 action-footer single-step"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

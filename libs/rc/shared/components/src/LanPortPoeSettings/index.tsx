@@ -7,7 +7,6 @@ import { Features, useIsSplitOn }                            from '@acx-ui/featu
 import { CapabilitiesApModel, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
 
 export function LanPortPoeSettings (props: {
-  context?: string,
   selectedModel: VenueLanPorts | WifiApSetting,
   selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
@@ -17,7 +16,6 @@ export function LanPortPoeSettings (props: {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const { $t } = useIntl()
   const {
-    context = 'venue',
     selectedModel,
     selectedModelCaps,
     onGUIChanged,
@@ -33,11 +31,9 @@ export function LanPortPoeSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
-  // waiting for backend support AP PoE Mode
-  const isPoeModeImplemented = (context === 'venue')
 
   return (<>
-    { (isPoeModeImplemented && selectedModelCaps?.canSupportPoeMode) &&
+    { (selectedModelCaps?.canSupportPoeMode) &&
     <Form.Item
       name='poeMode'
       label={<>

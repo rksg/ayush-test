@@ -59,6 +59,7 @@ export function Integrators () {
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -195,7 +196,8 @@ export function Integrators () {
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
     const [
       deleteMspEc,

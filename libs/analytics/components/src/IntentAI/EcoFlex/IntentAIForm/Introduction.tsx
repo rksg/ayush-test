@@ -17,19 +17,19 @@ import * as UI        from './styledComponents'
 
 const { Paragraph } = Typography
 
-const titleMsgWithApCount = defineMessage(
-  { defaultMessage: `{apCount} {apCount, plural,
-        one {AP}
-        other {APs}
-  } ({percentValue}%)` }
-)
+const titleMsgWithApCount = defineMessage({
+  defaultMessage: `{apCount} {apCount, plural,
+    one {AP}
+    other {APs}
+  } ({percentValue}%)`
+})
 
-const secondTitleMsgWithApCount = defineMessage(
-  { defaultMessage: `{apCount, plural,
-        one {is}
-        other {are}
-    } supporting and enabling EcoFlex` }
-)
+const secondTitleMsgWithApCount = defineMessage({
+  defaultMessage: `{apCount, plural,
+    one {is}
+    other {are}
+  } supporting and enabling Energy Saving`
+})
 
 export const RenderDonutChart: React.FC<{
   data: DonutChartData[],

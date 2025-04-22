@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, cssStr, Card }                   from '@acx-ui/components'
+import { Button, GridCol, GridRow, Card }                           from '@acx-ui/components'
 import { EdgeAlarmWidget, EdgeClusterNodesWidget, EdgePortsWidget } from '@acx-ui/edge/components'
 import {
   EdgeClusterStatus,
