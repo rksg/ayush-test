@@ -41,7 +41,7 @@ export const impactedApi = dataApi.injectEndpoints({
          switchCount: number }>) => {
          const incident = response.incident
          return {
-           impactedCount: incident.impactedSwitches.length,
+           impactedCount: _.uniqBy(incident.impactedSwitches, 'mac').length,
            totalCount: incident.switchCount
          }
        }
