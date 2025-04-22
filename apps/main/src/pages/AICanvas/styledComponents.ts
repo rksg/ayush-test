@@ -1,10 +1,10 @@
 import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
 import styled, { css }                                                  from 'styled-components/macro'
 
-import { Card }      from '@acx-ui/components'
-import { Dashboard } from '@acx-ui/icons-new'
+import { Card }            from '@acx-ui/components'
 import { ThumbsDown as UIThumbsDown,
   ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
+import { Dashboard } from '@acx-ui/icons-new'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
@@ -14,12 +14,12 @@ export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
     transition: all 0.1s ease-in-out; 
     transform: scale(1); 
   `
-  }
+}
   ${(props) => !props.showCanvas && `
     transition: all 0.1s ease-in-out; 
     transform: scale(1); 
   `
-  }
+}
   .ant-modal-content {
     border-radius: 24px;
     .ant-modal-header {
