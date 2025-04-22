@@ -228,6 +228,11 @@ describe('PageHeader', () => {
       ]}
     />, { route: { path: '/t/dashboard' } })
 
+    const title = await screen.findByRole('heading', { name: /title/i })
+    expect(title).toHaveStyle({
+      backgroundColor: 'var(--acx-neutrals-10)'
+    })
+
     expect(await screen.findAllByRole('button')).toHaveLength(2)
   })
 })
