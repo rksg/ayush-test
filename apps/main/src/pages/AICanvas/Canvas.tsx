@@ -11,6 +11,7 @@ import { Canvas as CanvasType }                                                 
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
+import { PreviewDashboardModal }                  from './PreviewDashboardModal'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
@@ -125,6 +126,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
+  const [previewModalVisible, setPreviewModalVisible] = useState(false)
 
   const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
@@ -407,7 +409,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
             </UI.Visibility>}
             placement='bottom'
           />
-          <Button className='black' onClick={()=>{}}>
+          <Button className='black' onClick={()=>{setPreviewModalVisible(true)}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
@@ -437,6 +439,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
           canvasList={canvasList as CanvasType[]}
         />
       }
+      <PreviewDashboardModal
+        data={[currentCanvas]}
+        visible={previewModalVisible}
+        setVisible={setPreviewModalVisible}
+      />
     </UI.Canvas>
   )
 })
