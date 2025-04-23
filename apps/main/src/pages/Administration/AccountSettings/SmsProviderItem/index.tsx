@@ -118,12 +118,14 @@ const SmsProviderItem = () => {
     reloadSmsNotification(2)
   }
 
-  const selectedProvider = (selectedType: SmsProviderType) => {
+  const selectedProvider = (selectedType: SmsProviderType, callback?: () => void) => {
     const payload: NotificationSmsUsage = {
       threshold: smsThreshold,
       provider: selectedType
     }
-    updateNotificationSms({ params , payload: payload }).then()
+    updateNotificationSms({ params , payload: payload, callback: () => {
+      if (callback) callback()
+    } } ).then()
     setSmsProviderConfigured(false)
     reloadSmsNotification(2)
   }
