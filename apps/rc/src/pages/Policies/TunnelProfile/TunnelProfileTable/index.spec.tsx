@@ -106,7 +106,7 @@ describe('TunnelProfileList', () => {
         route: { params, path: tablePath }
       })
     const row = await screen.findAllByRole('row', { name: /tunnelProfile/i })
-    expect(row.length).toBe(2)
+    expect(row.length).toBe(3)
   })
 
   it('should render breadcrumb correctly', async () => {

@@ -25,11 +25,18 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  draggable?: boolean
   // sectionRef?: React.MutableRefObject<null>
 }
+
+export interface WidgetProperty {
+  name: string
+}
+
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
+    canDrag: props.draggable,
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -48,7 +55,7 @@ const DraggableCard = (props: CardProps) => {
   }, [preview])
 
   return (
-    <div style={{ cursor: 'grab' }}>
+    <div style={{ cursor: props.draggable ? 'grab' : 'default' }}>
       <Card
         {...props}
         drag={drag}
@@ -77,6 +84,8 @@ function Card (props: CardProps) {
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
   const [visible, setVisible] = useState(false)
+
+  const readOnly = !props.draggable
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -107,6 +116,23 @@ function Card (props: CardProps) {
         // eslint-disable-next-line max-len
         let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col, null)
         groupsTmp[groupIndex].cards = compactedLayout
+        return true
+      }
+      return false
+    })
+    props.updateGroupList(groupsTmp)
+  }
+
+  const changeWidgetProperty = (widget: WidgetProperty) => {
+    let groupsTmp = _.cloneDeep(props.groups)
+    let cardTmp = _.cloneDeep(card)
+    cardTmp = {
+      ...cardTmp,
+      name: widget.name
+    }
+    groupsTmp[groupIndex].cards.some((item, index) => {
+      if(item.id === cardTmp.id) {
+        groupsTmp[groupIndex].cards[index] = cardTmp
         return true
       }
       return false
@@ -201,7 +227,7 @@ function Card (props: CardProps) {
               transform: `translate(${x}px, ${y}px)`
             }}
           >
-            <div className='card-actions'>
+            { !readOnly && <div className='card-actions'>
               <div
                 data-testid='increaseCard'
                 className={`icon ${
@@ -239,13 +265,14 @@ function Card (props: CardProps) {
               >
                 <DeleteOutlined />
               </div>
-            </div>
+            </div>}
             {
               card.chartType &&
               <WidgetChart
                 data={card as unknown as WidgetListData}
                 visible={visible}
                 setVisible={setVisible}
+                changeWidgetProperty={changeWidgetProperty}
               />
             }
             {/* <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/> */}

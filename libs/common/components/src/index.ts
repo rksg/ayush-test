@@ -50,6 +50,7 @@ export type { MultiLineTimeSeriesChartProps } from './components/MultiLineTimeSe
 export { MultiBarTimeSeriesChart } from './components/MultiBarTimeSeriesChart'
 export * from './components/Modal'
 export * from './components/NoData'
+export * from './components/NeighborAPGraph'
 export * from './components/PageHeader'
 export * from './components/PageNoPermissions'
 export * from './components/PageNotFound'

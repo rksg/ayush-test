@@ -8,16 +8,17 @@ import { useGetPortalLangMutation }                           from '@acx-ui/rc/s
 import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
-import PortalFormContext from '../PortalForm/PortalFormContext'
+import { captiveTypesDescription } from '../../NetworkForm/contentsMap'
+import PortalFormContext           from '../PortalForm/PortalFormContext'
 
-import { portalViewTypes, captiveTypesDescription } from './contentsMap'
-import PortalBackground                             from './PortalBackground'
-import PortalComponents                             from './PortalComponents'
-import PortalLanguageSettings                       from './PortalLanguageSettings'
-import PortalPreviewModal                           from './PortalPreviewModal'
-import PortalViewContent                            from './PortalViewContent'
-import PortalViewContentPreview                     from './PortalViewContentPreview'
-import * as UI                                      from './styledComponents'
+import { portalViewTypes }      from './contentsMap'
+import PortalBackground         from './PortalBackground'
+import PortalComponents         from './PortalComponents'
+import PortalLanguageSettings   from './PortalLanguageSettings'
+import PortalPreviewModal       from './PortalPreviewModal'
+import PortalViewContent        from './PortalViewContent'
+import PortalViewContentPreview from './PortalViewContentPreview'
+import * as UI                  from './styledComponents'
 
 export { PortalPreviewModal }
 export { getLanguage } from './commonUtils'
@@ -73,7 +74,8 @@ export function PortalDemo ({
       (view === PortalViewEnum.SelfSignIn||view === PortalViewEnum.SelfSignInRegister) ?
         GuestNetworkTypeEnum.SelfSignIn:
         view === PortalViewEnum.HostApproval?
-          GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
+          GuestNetworkTypeEnum.HostApproval : view === PortalViewEnum.SAML ?
+            GuestNetworkTypeEnum.SAML : GuestNetworkTypeEnum.ClickThrough
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   const params = useParams()
   const [getPortalLang] = useGetPortalLangMutation()

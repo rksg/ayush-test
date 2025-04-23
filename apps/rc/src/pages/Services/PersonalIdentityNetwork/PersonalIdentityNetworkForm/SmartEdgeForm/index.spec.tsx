@@ -79,6 +79,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   },
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+jest.mock('./CompatibilityCheck', () => ({
+  CompatibilityCheck: () => <div data-testid='CompatibilityCheck' />
+}))
 
 const mockedFinishFn = jest.fn()
 

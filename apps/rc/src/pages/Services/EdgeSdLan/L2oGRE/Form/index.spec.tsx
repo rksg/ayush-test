@@ -5,11 +5,13 @@ import { rest }        from 'msw'
 import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
 import { edgeSdLanApi }                 from '@acx-ui/rc/services'
 import {
+  EdgeGeneralFixtures,
   EdgePinFixtures,
   EdgePinUrls,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeTunnelProfileFixtures,
+  EdgeUrlsInfo,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
@@ -33,6 +35,7 @@ import { EdgeSdLanFormContainer, EdgeSdLanFormProps } from '.'
 
 const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockPinStatsList } = EdgePinFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const { click } = userEvent
 
@@ -51,7 +54,7 @@ jest.mock('@acx-ui/edge/components', () => ({
   useGetAvailableTunnelProfile: jest.fn()
 }))
 
-const MockedStep1 = () => <div data-testid='rc-SettingsForm'>
+const MockedStep1 = () => <div data-testid='rc-GeneralForm'>
   <Form.Item name='name' initialValue={'mockedServiceName'}>
     <Input />
   </Form.Item>
@@ -62,7 +65,7 @@ const MockedStep2 = () => <div data-testid='rc-ScopeForm'>
 </div>
 const MockedStep3 = () => <div data-testid='rc-SummaryForm'></div>
 const addSteps = [{
-  title: 'Settings',
+  title: 'General',
   content: MockedStep1
 }, {
   title: 'Scope',
@@ -82,7 +85,7 @@ const MockedTargetComponent = (props: EdgeSdLanFormProps) => {
 
 const mockedFinishFn = jest.fn()
 
-describe('multi-venue SD-LAN form', () => {
+describe('SD-LAN form', () => {
   beforeEach(() => {
     jest.mocked(useGetAvailableTunnelProfile).mockReturnValue({
       // eslint-disable-next-line max-len
@@ -99,7 +102,11 @@ describe('multi-venue SD-LAN form', () => {
       ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockPinStatsList }))
+        (_, res, ctx) => res(ctx.json(mockPinStatsList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeClusterList))
       )
     )
   })
@@ -154,7 +161,7 @@ describe('multi-venue SD-LAN form', () => {
       const actions = within(form.getByTestId('steps-form-actions'))
 
       // Step 1
-      expect(await body.findByTestId('rc-SettingsForm')).toBeVisible()
+      expect(await body.findByTestId('rc-GeneralForm')).toBeVisible()
 
       // Navigate to Step 2
       await click(actions.getByRole('button', { name: 'Next' }))
@@ -178,7 +185,7 @@ describe('multi-venue SD-LAN form', () => {
   describe('Edit', () => {
     const { result } = renderHook(() => Form.useForm())
 
-    const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
+    const MockedEditFormStep1 = () => <div data-testid='rc-GeneralForm'>
       <Form.Item name='name'>
         <Input />
       </Form.Item>
@@ -206,7 +213,7 @@ describe('multi-venue SD-LAN form', () => {
       const form = within(await screen.findByTestId('steps-form'))
       const body = within(form.getByTestId('steps-form-body'))
       const actions = within(form.getByTestId('steps-form-actions'))
-      expect(await body.findByTestId('rc-SettingsForm')).toBeVisible()
+      expect(await body.findByTestId('rc-GeneralForm')).toBeVisible()
       await click(actions.getByRole('button', { name: 'Apply' }))
 
       await waitFor(() => {

@@ -1,13 +1,14 @@
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { WifiRbacUrlsInfo, APGroupFixtures }     from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { WifiRbacUrlsInfo, APGroupFixtures, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }             from '@acx-ui/test-utils'
+
+import { venuelist } from './__tests__/fixtures'
 
 import { ApGroupEdit } from './index'
-
 const { mockAPGroupList } = APGroupFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -34,6 +35,9 @@ describe('AP Group Edit', () => {
         (_, res, ctx) => {
           return res(ctx.json(mockAPGroupList))
         }
+      ),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(venuelist))
       ))
   })
 

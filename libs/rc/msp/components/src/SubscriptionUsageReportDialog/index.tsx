@@ -5,7 +5,8 @@ import moment                                                        from 'momen
 import { useIntl }                                                   from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { Subtitle, Modal }  from '@acx-ui/components'
+import { Subtitle, Modal }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
@@ -29,6 +30,7 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
   const [selectedCustomerOption, setSelectedCustomerOption] = useState('')
   const [customerOptions, setCustomerOptions] = useState<SelectProps['options']>([])
   const [payload, setPayload] = useState('')
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
   const { data } = useGetGenerateLicenseUsageRptQuery({ params, payload, selectedFormat },
     { skip: payload === '' })
 
@@ -43,7 +45,8 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   useEffect(() => {
