@@ -431,11 +431,11 @@ export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: 
 
   } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > nodeCount) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway in each Edge.' }))
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
 
   } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways in each Edge.' }, {
+    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways on each Edge.' }, {
       maxWanPortCount: MAX_DUAL_WAN_PORT
     }))
 
