@@ -4,7 +4,7 @@ import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
 import { Loader, Table }                                         from '@acx-ui/components'
-import { useRbacClientTableColumns }                             from '@acx-ui/rc/components'
+import { defaultRbacClientPayload, useRbacClientTableColumns }   from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
   ClientInfo, defaultSort,
@@ -14,12 +14,7 @@ import {
 
 import { IdentityDetailsContext } from './index'
 
-const defaultClientPayload = {
-  searchString: '',
-  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
-  fields: ['macAddress','ipAddress','username', 'hostname','osType',
-    'venueInformation', 'apInformation',
-    'lastUpdatedTime', 'networkInformation'],
+const defaultClientPagination = {
   page: 1,
   pageSize: 10000
 }
@@ -108,7 +103,8 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
 
     getClientList({
       payload: {
-        ...defaultClientPayload,
+        ...defaultRbacClientPayload,
+        ...defaultClientPagination,
         filters: { macAddress: [...clientMacs] }  // should be lowered case
       }
     })
