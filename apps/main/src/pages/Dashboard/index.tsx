@@ -232,6 +232,7 @@ export default function Dashboard () {
                 borderColor: 'var(--acx-neutrals-30)',
                 margin: '20px 0px 5px 0px' }}/>
             <ContentSwitcher
+              tabId={'dashboard-devices'}
               tabDetails={tabDetails}
               size='large'
               defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
