@@ -1,4 +1,4 @@
 export * from './constants'
 export * from './contentsMap'
-export * from './useUnifiedServicesList'
+export * from './useAvailableUnifiedServicesList'
 export * from './utils'

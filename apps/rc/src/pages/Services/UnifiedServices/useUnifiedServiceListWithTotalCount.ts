@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
+import { isEqual }           from 'lodash'
 import { Params, useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicyListByQueryQuery, useEnhancedRoguePoliciesQuery,
   useGetAAAPolicyViewModelListQuery, useGetApSnmpViewModelQuery,
@@ -23,31 +24,40 @@ import {
   useGetEnhancedPortalProfileListQuery, useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
-import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useUnifiedServicesList } from '@acx-ui/rc/utils'
+import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
 
 const defaultPayload = { fields: ['id'] }
 
 export function useUnifiedServiceListWithTotalCount (): Array<ExtendedUnifiedService> {
-  const unifiedServiceList = useUnifiedServicesList()
+  const [ result, setResult ] = useState<Array<ExtendedUnifiedService>>([])
+  const availableUnifiedServiceList = useAvailableUnifiedServicesList()
 
-  const typeToUnifiedServiceMap = useMemo(() => {
-    return new Map(unifiedServiceList.map(item => [item.type, item]))
-  }, [unifiedServiceList])
+  const availableServiceTypeSet = useMemo(() => {
+    return new Set(availableUnifiedServiceList.map(item => item.type))
+  }, [availableUnifiedServiceList])
 
-  const typeToTotalCount = useUnifiedServiceTotalCountMap(typeToUnifiedServiceMap)
+  const typeToTotalCount = useUnifiedServiceTotalCountMap(availableServiceTypeSet)
 
-  return unifiedServiceList.map((service: UnifiedService) => ({
-    ...service,
-    totalCount: typeToTotalCount[service.type] ?? 0
-  }))
+  useEffect(() => {
+    const updatedList = availableUnifiedServiceList.map((service: UnifiedService) => ({
+      ...service,
+      totalCount: typeToTotalCount[service.type] ?? 0
+    })).filter(service => (service.totalCount ?? 0) > 0)
+
+    if (isEqual(updatedList, result)) return
+
+    setResult(updatedList)
+
+  }, [availableUnifiedServiceList, typeToTotalCount])
+
+  return result
 }
 
 function useUnifiedServiceTotalCountMap (
-  typeMap: Map<UnifiedServiceType, UnifiedService>
+  typeSet: Set<UnifiedServiceType>
 ): Partial<Record<UnifiedServiceType, number | undefined>> {
   const params = useParams()
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
-  // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -55,43 +65,43 @@ function useUnifiedServiceTotalCountMap (
   const defaultQueryArgs = { params, payload: defaultPayload, enableRbac }
 
   return {
-    [PolicyType.AAA]: useGetAAAPolicyViewModelListQuery(defaultQueryArgs, { skip: typeMap.get(PolicyType.AAA)?.disabled }).data?.totalCount,
-    [PolicyType.ACCESS_CONTROL]: useAclTotalCount(typeMap.get(PolicyType.ACCESS_CONTROL)?.disabled),
-    [PolicyType.CLIENT_ISOLATION]: useGetEnhancedClientIsolationListQuery(defaultQueryArgs, { skip: typeMap.get(PolicyType.CLIENT_ISOLATION)?.disabled }).data?.totalCount,
-    [PolicyType.WIFI_OPERATOR]: useGetWifiOperatorListQuery({ params, payload: defaultPayload }, { skip: typeMap.get(PolicyType.WIFI_OPERATOR)?.disabled }).data?.totalCount,
-    [PolicyType.SAML_IDP]: useSamlTotalCount(params, typeMap.get(PolicyType.SAML_IDP)?.disabled),
-    [PolicyType.IDENTITY_PROVIDER]: useGetIdentityProviderListQuery( { params, payload: { tenantId: params.tenantId } }, { skip: typeMap.get(PolicyType.IDENTITY_PROVIDER)?.disabled }).data?.totalCount,
-    [PolicyType.MAC_REGISTRATION_LIST]: useMacRegListsQuery({ params }, { skip: typeMap.get(PolicyType.MAC_REGISTRATION_LIST)?.disabled }).data?.totalCount,
-    [PolicyType.ROGUE_AP_DETECTION]: useEnhancedRoguePoliciesQuery(defaultQueryArgs, { skip: typeMap.get(PolicyType.ROGUE_AP_DETECTION)?.disabled }).data?.totalCount,
-    [PolicyType.SYSLOG]: useSyslogPolicyListQuery(defaultQueryArgs, { skip: typeMap.get(PolicyType.SYSLOG)?.disabled }).data?.totalCount,
-    [PolicyType.VLAN_POOL]: useGetVLANPoolPolicyViewModelListQuery(defaultQueryArgs, { skip: typeMap.get(PolicyType.VLAN_POOL)?.disabled }).data?.totalCount,
-    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac, isSNMPv3PassphraseOn }, { skip: typeMap.get(PolicyType.SNMP_AGENT)?.disabled }).data?.totalCount,
-    [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: typeMap.get(PolicyType.TUNNEL_PROFILE)?.disabled }).data?.totalCount,
-    [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: typeMap.get(PolicyType.CONNECTION_METERING)?.disabled }).data?.totalCount,
-    [PolicyType.ADAPTIVE_POLICY]: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: typeMap.get(PolicyType.ADAPTIVE_POLICY)?.disabled }).data?.totalCount,
-    [PolicyType.LBS_SERVER_PROFILE]: useGetLbsServerProfileListQuery({ params, payload: defaultPayload }, { skip: typeMap.get(PolicyType.LBS_SERVER_PROFILE)?.disabled }).data?.totalCount,
-    [PolicyType.WORKFLOW]: useSearchInProgressWorkflowListQuery({ params: { ...params, excludeContent: 'true' } }, { skip: typeMap.get(PolicyType.WORKFLOW)?.disabled }).data?.totalCount,
-    [PolicyType.CERTIFICATE_TEMPLATE]: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.CERTIFICATE_TEMPLATE)?.disabled }).data?.totalCount,
-    [PolicyType.ETHERNET_PORT_PROFILE]: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: typeMap.get(PolicyType.ETHERNET_PORT_PROFILE)?.disabled }).data?.totalCount,
-    [PolicyType.HQOS_BANDWIDTH]: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.HQOS_BANDWIDTH)?.disabled }).data?.totalCount,
-    [PolicyType.SOFTGRE]: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.SOFTGRE)?.disabled }).data?.totalCount,
-    [PolicyType.FLEX_AUTH]: useGetFlexAuthenticationProfilesQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.FLEX_AUTH)?.disabled }).data?.totalCount,
-    [PolicyType.DIRECTORY_SERVER]: useGetDirectoryServerViewDataListQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.DIRECTORY_SERVER)?.disabled }).data?.totalCount,
-    [PolicyType.PORT_PROFILE]: usePortProfileTotalCount(params, typeMap.get(PolicyType.PORT_PROFILE)?.disabled),
-    [PolicyType.IPSEC]: useGetIpsecViewDataListQuery({ params, payload: {} }, { skip: typeMap.get(PolicyType.IPSEC)?.disabled }).data?.totalCount,
-    [ServiceType.MDNS_PROXY]: useGetEnhancedMdnsProxyListQuery(defaultQueryArgs, { skip: typeMap.get(ServiceType.MDNS_PROXY)?.disabled }).data?.totalCount,
-    [ServiceType.EDGE_MDNS_PROXY]: useGetEdgeMdnsProxyViewDataListQuery({ params, payload: defaultPayload }, { skip: typeMap.get(ServiceType.EDGE_MDNS_PROXY)?.disabled }).data?.totalCount,
-    [ServiceType.DHCP]: useGetDHCPProfileListViewModelQuery(defaultQueryArgs, { skip: typeMap.get(ServiceType.DHCP)?.disabled }).data?.totalCount,
-    [ServiceType.EDGE_DHCP]: useGetDhcpStatsQuery({ params, payload: { ...defaultPayload } },{ skip: typeMap.get(ServiceType.EDGE_DHCP)?.disabled }).data?.totalCount,
-    [ServiceType.PIN]: useGetEdgePinViewDataListQuery({ params, payload: { ...defaultPayload } },{ skip: typeMap.get(ServiceType.PIN)?.disabled }).data?.totalCount,
-    [ServiceType.EDGE_SD_LAN]: useGetEdgeSdLanP2ViewDataListQuery({ params, payload: { fields: ['id', 'edgeClusterId'] } },{ skip: typeMap.get(ServiceType.EDGE_SD_LAN)?.disabled }).data?.totalCount,
-    [ServiceType.EDGE_TNM_SERVICE]: useGetEdgeTnmServiceListQuery({}, { skip: typeMap.get(ServiceType.EDGE_TNM_SERVICE)?.disabled }).data?.length,
-    [ServiceType.EDGE_FIREWALL]: useGetEdgeFirewallViewDataListQuery({ params, payload: { ...defaultPayload } },{ skip: typeMap.get(ServiceType.EDGE_FIREWALL)?.disabled }).data?.totalCount,
-    [ServiceType.DPSK]: useGetDpskListQuery({}, { skip: typeMap.get(ServiceType.DPSK)?.disabled }).data?.totalCount,
-    [ServiceType.WIFI_CALLING]: useGetEnhancedWifiCallingServiceListQuery(defaultQueryArgs, { skip: typeMap.get(ServiceType.WIFI_CALLING)?.disabled }).data?.totalCount,
-    [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: typeMap.get(ServiceType.PORTAL)?.disabled }).data?.totalCount,
-    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: typeMap.get(ServiceType.WEBAUTH_SWITCH)?.disabled }).data?.totalCount,
-    [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: typeMap.get(ServiceType.RESIDENT_PORTAL)?.disabled }).data?.totalCount
+    [PolicyType.AAA]: useGetAAAPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.AAA) }).data?.totalCount,
+    [PolicyType.ACCESS_CONTROL]: useAclTotalCount(!typeSet.has(PolicyType.ACCESS_CONTROL)),
+    [PolicyType.CLIENT_ISOLATION]: useGetEnhancedClientIsolationListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.CLIENT_ISOLATION) }).data?.totalCount,
+    [PolicyType.WIFI_OPERATOR]: useGetWifiOperatorListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.WIFI_OPERATOR) }).data?.totalCount,
+    [PolicyType.SAML_IDP]: useSamlTotalCount(params, !typeSet.has(PolicyType.SAML_IDP)),
+    [PolicyType.IDENTITY_PROVIDER]: useGetIdentityProviderListQuery( { params, payload: { tenantId: params.tenantId } }, { skip: !typeSet.has(PolicyType.IDENTITY_PROVIDER) }).data?.totalCount,
+    [PolicyType.MAC_REGISTRATION_LIST]: useMacRegListsQuery({ params }, { skip: !typeSet.has(PolicyType.MAC_REGISTRATION_LIST) }).data?.totalCount,
+    [PolicyType.ROGUE_AP_DETECTION]: useEnhancedRoguePoliciesQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.ROGUE_AP_DETECTION) }).data?.totalCount,
+    [PolicyType.SYSLOG]: useSyslogPolicyListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.SYSLOG) }).data?.totalCount,
+    [PolicyType.VLAN_POOL]: useGetVLANPoolPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.VLAN_POOL) }).data?.totalCount,
+    [PolicyType.SNMP_AGENT]: useGetApSnmpViewModelQuery({ params, payload: defaultPayload, enableRbac: enableWifiRbac, isSNMPv3PassphraseOn }, { skip: !typeSet.has(PolicyType.SNMP_AGENT) }).data?.totalCount,
+    [PolicyType.TUNNEL_PROFILE]: useGetTunnelProfileViewDataListQuery({ params, payload: { ...defaultPayload } }, { skip: !typeSet.has(PolicyType.TUNNEL_PROFILE) }).data?.totalCount,
+    [PolicyType.CONNECTION_METERING]: useGetConnectionMeteringListQuery({ params }, { skip: !typeSet.has(PolicyType.CONNECTION_METERING) }).data?.totalCount,
+    [PolicyType.ADAPTIVE_POLICY]: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: !typeSet.has(PolicyType.ADAPTIVE_POLICY) }).data?.totalCount,
+    [PolicyType.LBS_SERVER_PROFILE]: useGetLbsServerProfileListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.LBS_SERVER_PROFILE) }).data?.totalCount,
+    [PolicyType.WORKFLOW]: useSearchInProgressWorkflowListQuery({ params: { ...params, excludeContent: 'true' } }, { skip: !typeSet.has(PolicyType.WORKFLOW) }).data?.totalCount,
+    [PolicyType.CERTIFICATE_TEMPLATE]: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.CERTIFICATE_TEMPLATE) }).data?.totalCount,
+    [PolicyType.ETHERNET_PORT_PROFILE]: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !typeSet.has(PolicyType.ETHERNET_PORT_PROFILE) }).data?.totalCount,
+    [PolicyType.HQOS_BANDWIDTH]: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.HQOS_BANDWIDTH) }).data?.totalCount,
+    [PolicyType.SOFTGRE]: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.SOFTGRE) }).data?.totalCount,
+    [PolicyType.FLEX_AUTH]: useGetFlexAuthenticationProfilesQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.FLEX_AUTH) }).data?.totalCount,
+    [PolicyType.DIRECTORY_SERVER]: useGetDirectoryServerViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.DIRECTORY_SERVER) }).data?.totalCount,
+    [PolicyType.PORT_PROFILE]: usePortProfileTotalCount(params, !typeSet.has(PolicyType.PORT_PROFILE)),
+    [PolicyType.IPSEC]: useGetIpsecViewDataListQuery({ params, payload: {} }, { skip: !typeSet.has(PolicyType.IPSEC) }).data?.totalCount,
+    [ServiceType.MDNS_PROXY]: useGetEnhancedMdnsProxyListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.MDNS_PROXY) }).data?.totalCount,
+    [ServiceType.EDGE_MDNS_PROXY]: useGetEdgeMdnsProxyViewDataListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(ServiceType.EDGE_MDNS_PROXY) }).data?.totalCount,
+    [ServiceType.DHCP]: useGetDHCPProfileListViewModelQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.DHCP) }).data?.totalCount,
+    [ServiceType.EDGE_DHCP]: useGetDhcpStatsQuery({ params, payload: { ...defaultPayload } },{ skip: !typeSet.has(ServiceType.EDGE_DHCP) }).data?.totalCount,
+    [ServiceType.PIN]: useGetEdgePinViewDataListQuery({ params, payload: { ...defaultPayload } },{ skip: !typeSet.has(ServiceType.PIN) }).data?.totalCount,
+    [ServiceType.EDGE_SD_LAN]: useGetEdgeSdLanP2ViewDataListQuery({ params, payload: { fields: ['id', 'edgeClusterId'] } },{ skip: !typeSet.has(ServiceType.EDGE_SD_LAN) }).data?.totalCount,
+    [ServiceType.EDGE_TNM_SERVICE]: useGetEdgeTnmServiceListQuery({}, { skip: !typeSet.has(ServiceType.EDGE_TNM_SERVICE) }).data?.length,
+    [ServiceType.EDGE_FIREWALL]: useGetEdgeFirewallViewDataListQuery({ params, payload: { ...defaultPayload } },{ skip: !typeSet.has(ServiceType.EDGE_FIREWALL) }).data?.totalCount,
+    [ServiceType.DPSK]: useGetDpskListQuery({}, { skip: !typeSet.has(ServiceType.DPSK) }).data?.totalCount,
+    [ServiceType.WIFI_CALLING]: useGetEnhancedWifiCallingServiceListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.WIFI_CALLING) }).data?.totalCount,
+    [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.PORTAL) }).data?.totalCount,
+    [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }).data?.totalCount,
+    [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }).data?.totalCount
   }
 }
 

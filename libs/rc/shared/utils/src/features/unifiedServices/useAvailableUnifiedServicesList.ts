@@ -11,12 +11,12 @@ import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
-import { buildUnifiedServices, getUnifiedServiceRoute }                     from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }        from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable, getUnifiedServiceRoute } from './utils'
 
 
 
-export function useUnifiedServicesList (): Array<UnifiedService> {
+export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
   const { $t } = useIntl()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
   // Service features
@@ -72,7 +72,7 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
         // eslint-disable-next-line max-len
         products: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH] : [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-        aliases: [
+        searchKeywords: [
           $t(policyTypeLabelMapping[PolicyType.LAYER_2_POLICY]),
           $t(policyTypeLabelMapping[PolicyType.LAYER_3_POLICY]),
           $t(policyTypeLabelMapping[PolicyType.DEVICE_POLICY]),
@@ -338,7 +338,7 @@ export function useUnifiedServicesList (): Array<UnifiedService> {
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.NETWORK_SERVICES
       }
-    ].filter(svc => !svc.disabled)
+    ].filter(svc => isUnifiedServiceAvailable(svc))
 
     return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
       .sort((a, b) => a.label.localeCompare(b.label))

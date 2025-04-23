@@ -1,2 +1,2 @@
 export { MyServices } from './MyServices'
-export { ServiceCatalog } from './ServiceCatalog'
+export { ServicesCatalog } from './ServicesCatalog'

@@ -1,10 +1,11 @@
 import { RolesEnum } from '@acx-ui/types'
 import { getIntl }   from '@acx-ui/utils'
 
-import { ServiceOperation, ServiceType }                      from '../../constants'
-import { PolicyOperation, PolicyType, policyTypeDescMapping } from '../../types'
-import { getPolicyRoutePath, policyTypeLabelMapping }         from '../policy'
+import { ServiceOperation, ServiceType }                                            from '../../constants'
+import { PolicyOperation, PolicyType, policyTypeDescMapping }                       from '../../types'
+import { generatePolicyListBreadcrumb, getPolicyRoutePath, policyTypeLabelMapping } from '../policy'
 import {
+  generateServiceListBreadcrumb,
   getServiceListRoutePath,
   getServiceRoutePath, hasPolicyPermission, hasServicePermission, hasSomePoliciesPermission,
   hasSomeServicesPermission, isPolicyCardEnabled, isServiceCardEnabled, serviceTypeDescMapping,
@@ -16,15 +17,14 @@ import { UnifiedService, UnifiedServiceSourceType } from './constants'
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
 export function buildUnifiedServices (
-  // list: Array<Omit<UnifiedService, 'route' | 'label' | 'description' | 'breadcrumb'>>,
-  // isNewServiceCatalogEnabled: boolean
-  list: Array<Omit<UnifiedService, 'route' | 'label' | 'description'>>
+  list: Array<Omit<UnifiedService, 'route' | 'label' | 'description' | 'breadcrumb'>>,
+  isNewServiceCatalogEnabled: boolean
 ): Array<UnifiedService> {
   return list.map(item => ({
     label: getLabel(item),
     description: getDescription(item),
     route: getUnifiedServiceRoute(item, 'list'),
-    // breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
+    breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
     ...item
   }))
 }
@@ -66,17 +66,17 @@ export function generateUnifiedServicesBreadcrumb () {
   ]
 }
 
-// function generateUnifiedServiceListBreadCrumb (
-//   svc: UnifiedServiceTypeSet,
-//   isNewServiceCatalogEnabled: boolean
-// ): { text: string, link?: string }[] {
-//   switch (svc.sourceType) {
-//     case UnifiedServiceSourceType.SERVICE:
-//       return generateServiceListBreadcrumb(svc.type as ServiceType, isNewServiceCatalogEnabled)
-//     case UnifiedServiceSourceType.POLICY:
-//       return generatePolicyListBreadcrumb(svc.type as PolicyType, isNewServiceCatalogEnabled)
-//   }
-// }
+function generateUnifiedServiceListBreadCrumb (
+  svc: UnifiedServiceTypeSet,
+  isNewServiceCatalogEnabled: boolean
+): { text: string, link?: string }[] {
+  switch (svc.sourceType) {
+    case UnifiedServiceSourceType.SERVICE:
+      return generateServiceListBreadcrumb(svc.type as ServiceType, isNewServiceCatalogEnabled)
+    case UnifiedServiceSourceType.POLICY:
+      return generatePolicyListBreadcrumb(svc.type as PolicyType, isNewServiceCatalogEnabled)
+  }
+}
 
 export function getUnifiedServiceRoute (
   svc: UnifiedServiceTypeSet,
@@ -117,7 +117,8 @@ export function canCreateAnyUnifiedService (): boolean {
   || hasSomePoliciesPermission(PolicyOperation.CREATE)
 }
 
-export function canReadUnifiedService (svc: UnifiedService) {
+// eslint-disable-next-line max-len
+export function isUnifiedServiceAvailable (svc: UnifiedServiceTypeSet & { disabled?: boolean }): boolean {
   switch (svc.sourceType) {
     case UnifiedServiceSourceType.SERVICE:
       return isServiceCardEnabled({

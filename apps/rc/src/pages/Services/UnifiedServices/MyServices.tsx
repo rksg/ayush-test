@@ -1,20 +1,25 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                              from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader }                                       from '@acx-ui/components'
 import {
-  AddProfileButton, canCreateAnyUnifiedService, canReadUnifiedService, getServiceCatalogRoutePath
+  AddProfileButton, canCreateAnyUnifiedService, getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
+import { ServiceSortOrder, ServicesToolBar }   from './ServicesToolBar'
+import { useFilteredUnifiedServices }          from './useFilteredUnifiedServices'
 import { useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
 
 export function MyServices () {
   const { $t } = useIntl()
-  const unifiedServiceList = useUnifiedServiceListWithTotalCount()
+  const rawUnifiedServiceList = useUnifiedServiceListWithTotalCount()
+  const defaultSortOrder = ServiceSortOrder.ASC
 
-  const resolvedUnifiedServiceList = unifiedServiceList
-    .filter(service => (service.totalCount ?? 0) > 0 && canReadUnifiedService(service))
+  const {
+    setSearchTerm, setFilters, setSortOrder, unifiedServices
+  } = useFilteredUnifiedServices(rawUnifiedServiceList, defaultSortOrder)
 
   return <>
     <PageHeader
@@ -26,9 +31,15 @@ export function MyServices () {
         targetPath={getServiceCatalogRoutePath()}
       />}
     />
-    <GridRow>
-      {resolvedUnifiedServiceList.map(service => {
-        return (
+    <Space direction='vertical' size='large'>
+      <ServicesToolBar
+        setSearchTerm={setSearchTerm}
+        setFilters={setFilters}
+        defaultSortOrder={defaultSortOrder}
+        setSortOrder={setSortOrder}
+      />
+      <GridRow>
+        {unifiedServices.map(service => (
           <GridCol key={service.type} col={{ span: 6 }}>
             <UnifiedServiceCard
               key={service.type}
@@ -36,8 +47,8 @@ export function MyServices () {
               type={'default'}
             />
           </GridCol>
-        )
-      })}
-    </GridRow>
+        ))}
+      </GridRow>
+    </Space>
   </>
 }

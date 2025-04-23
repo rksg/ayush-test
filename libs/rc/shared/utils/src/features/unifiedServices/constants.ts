@@ -6,11 +6,11 @@ import { PolicyType }  from '../../types'
 export type UnifiedServiceType = ServiceType | PolicyType
 
 export enum UnifiedServiceCategory {
-  AUTHENTICATION_IDENTITY = 'Authentication & Identity Management',
-  SECURITY_ACCESS_CONTROL = 'Security & Access Control',
-  NETWORK_SERVICES = 'Network Configuration & Services',
-  MONITORING_TROUBLESHOOTING = 'Monitoring & Troubleshooting',
-  USER_EXPERIENCE_PORTALS = 'User Experience & Portals'
+  AUTHENTICATION_IDENTITY,
+  SECURITY_ACCESS_CONTROL,
+  NETWORK_SERVICES,
+  MONITORING_TROUBLESHOOTING,
+  USER_EXPERIENCE_PORTALS
 }
 
 export enum UnifiedServiceSourceType {
@@ -24,13 +24,13 @@ export interface UnifiedService {
   label: string
   products: RadioCardCategory[]
   route: string
-  category?: UnifiedServiceCategory
+  category: UnifiedServiceCategory
   disabled?: boolean
   isBetaFeature?: boolean
   description?: string
   readonly?: boolean
-  aliases?: string[] // For search usage
-  // breadcrumb?: { text: string, link?: string }[] // For search usage
+  searchKeywords?: string[] // For search usage
+  breadcrumb?: { text: string, link?: string }[] // For search usage
 }
 
 export interface ExtendedUnifiedService extends UnifiedService {
