@@ -98,6 +98,7 @@ export const WIFI_COUNTRY_CODE = [
   { code: 'SM',name: 'San Marino' },
   { code: 'SA',name: 'Saudi Arabia' },
   { code: 'RS',name: 'Serbia' },
+  { code: 'SC',name: 'Seychelles' },
   { code: 'SG',name: 'Singapore' },
   { code: 'SK',name: 'Slovakia' },
   { code: 'SI',name: 'Slovenia' },

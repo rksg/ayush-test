@@ -19,7 +19,11 @@ export const mockedTunnelProfileViewData = {
       natTraversalEnabled: true,
       tunnelType: TunnelTypeEnum.VXLAN_GPE,
       destinationEdgeClusterId: 'edge-cluster-1',
-      destinationEdgeClusterName: 'EdgeCluster1'
+      destinationEdgeClusterName: 'EdgeCluster1',
+      mtuRequestRetry: 1,
+      mtuRequestTimeout: 10,
+      keepAliveRetry: 1,
+      keepAliveInterval: 1000
     },
     {
       id: 'tunnelProfileId2',
@@ -36,7 +40,11 @@ export const mockedTunnelProfileViewData = {
       natTraversalEnabled: false,
       tunnelType: TunnelTypeEnum.VXLAN_GPE,
       destinationEdgeClusterId: 'edge-cluster-2',
-      destinationEdgeClusterName: 'EdgeCluster2'
+      destinationEdgeClusterName: 'EdgeCluster2',
+      mtuRequestRetry: 1,
+      mtuRequestTimeout: 10,
+      keepAliveRetry: 1,
+      keepAliveInterval: 1000
     },
     {
       id: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -50,9 +58,7 @@ export const mockedTunnelProfileViewData = {
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
       type: NetworkSegmentTypeEnum.VXLAN,
-      tunnelType: TunnelTypeEnum.L2GRE,
-      destinationEdgeClusterId: 'edge-cluster-3',
-      destinationEdgeClusterName: 'EdgeCluster3'
+      tunnelType: TunnelTypeEnum.L2GRE
     },
     {
       id: 'SLecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -67,8 +73,31 @@ export const mockedTunnelProfileViewData = {
       sdLanIds: ['sdlan1', 'sdlan2'],
       type: NetworkSegmentTypeEnum.VLAN_VXLAN,
       tunnelType: TunnelTypeEnum.L2GRE,
-      destinationEdgeClusterId: 'edge-cluster-4',
-      destinationEdgeClusterName: 'EdgeCluster4'
+      mtuRequestRetry: 1,
+      mtuRequestTimeout: 10,
+      keepAliveRetry: 1,
+      keepAliveInterval: 1000
+    },
+    {
+      id: 'tunnelProfileId7',
+      name: 'tunnelProfile7',
+      tags: ['tag1'],
+      mtuType: 'MANUAL',
+      mtuSize: 1450,
+      ageTimeMinutes: 20,
+      forceFragmentation: true,
+      personalIdentityNetworkIds: ['nsg1', 'nsg2'],
+      networkIds: ['network1', 'network2'],
+      sdLanIds: [],
+      type: NetworkSegmentTypeEnum.VXLAN,
+      natTraversalEnabled: true,
+      tunnelType: TunnelTypeEnum.VXLAN_GPE,
+      destinationEdgeClusterId: 'clusterId_3',
+      destinationEdgeClusterName: 'Edge Cluster 3',
+      mtuRequestRetry: 1,
+      mtuRequestTimeout: 10,
+      keepAliveRetry: 1,
+      keepAliveInterval: 1000
     }
   ]
 }

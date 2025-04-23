@@ -1,43 +1,52 @@
-
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   SamlIdpProfileUrls,
-  CertificateUrls,
-  SamlIdpProfileViewData }     from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+  CertificateUrls
+}     from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockSAMLIdpQuery }      from '../../../NetworkForm/__tests__/fixtures'
-import { serverCertificateList } from '../../CertificateTemplate/__test__/fixtures'
+import { certList, mockedSamlIdpProfileWithRelations, mockedSamlIdpProfileList, mockedSamlIdpProfileByURL, mockedSamlIdpProfile, mockSamlIdpProfileId } from '../__tests__/fixtures'
 
 import { SAMLDrawer } from './index'
 
-describe('SAML Drawer', () => {
-  const mockSAMLProfile = {
-    id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
-    name: 'SAML-A4',
-    signingCertificateEnabled: false,
-    encryptionCertificateEnabled: false,
-    encryptionCertificateId: '',
-    wifiNetworkIds: []
-  } as SamlIdpProfileViewData
 
+const mockGetSamlIdpApi = jest.fn()
+const mockGetSamlIdpProfileViewDataListApi = jest.fn()
+const mockedSetVisible = jest.fn()
+describe('SAML Drawer', () => {
   const params = {
     networkId: '5c342542bb824a8b981a9bb041a8a2da',
     tenantId: 'tenant-id',
     action: 'edit'
   }
   beforeEach(() => {
+
+    mockGetSamlIdpApi.mockClear()
+    mockGetSamlIdpProfileViewDataListApi.mockClear()
+    mockedSetVisible.mockClear()
     mockServer.use(
       rest.post(
         CertificateUrls.getServerCertificates.url,
-        (req, res, ctx) => res(ctx.json(serverCertificateList))
+        (req, res, ctx) => res(ctx.json(certList))
       ),
       rest.post(
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
-        (_, res, ctx) => {
-          return res(ctx.json(mockSAMLIdpQuery))
+        (req, res, ctx) => {
+          mockGetSamlIdpProfileViewDataListApi()
+          return res(ctx.json(mockedSamlIdpProfileList))
+        }
+      ),
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (req, res, ctx) => {
+          mockGetSamlIdpApi()
+          if (req.params.id === mockSamlIdpProfileId) {
+            return res(ctx.json(mockedSamlIdpProfile))
+          }
+          return res(ctx.json(mockedSamlIdpProfileByURL))
         }
       )
     )
@@ -68,12 +77,51 @@ describe('SAML Drawer', () => {
           visible={true}
           setVisible={() => {}}
           readMode={true}
-          policy={mockSAMLProfile}
+          policy={mockedSamlIdpProfileWithRelations}
         />
       </Provider>
       , { route: { params } }
     )
+
+    await waitFor(() => {
+      expect(mockGetSamlIdpProfileViewDataListApi).toHaveBeenCalled()
+    })
+
+    await waitFor(() => {
+      expect(mockGetSamlIdpApi).toHaveBeenCalled()
+    })
+
     expect(screen.getByTestId('display-metadata-button')).toBeInTheDocument()
-    expect(screen.getAllByText('OFF').length).toEqual(2)
+    expect(screen.getAllByText('On').length).toEqual(2)
+
+    expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download SAML Metadata' })).toBeInTheDocument()
+  })
+
+  it('SAML Drawer - should call visible false when click Close button', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <SAMLDrawer
+          visible={true}
+          setVisible={mockedSetVisible}
+          readMode={true}
+          policy={mockedSamlIdpProfileWithRelations}
+        />
+      </Provider>
+      , { route: { params } }
+    )
+
+    await waitFor(() => {
+      expect(mockGetSamlIdpProfileViewDataListApi).toHaveBeenCalled()
+    })
+
+    await waitFor(() => {
+      expect(mockGetSamlIdpApi).toHaveBeenCalled()
+    })
+
+    const cancelButton = screen.getByRole('button', { name: 'Close' })
+    user.click(cancelButton)
+    await waitFor(() => expect(mockedSetVisible).toBeCalledWith(false))
   })
 })

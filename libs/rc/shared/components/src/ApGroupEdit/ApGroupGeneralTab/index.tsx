@@ -1,12 +1,13 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select }       from 'antd'
-import { TransferItem }                        from 'antd/lib/transfer'
-import _                                       from 'lodash'
-import { useIntl }                             from 'react-intl'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Button, Col, Form, Input, Row, Select, Tag } from 'antd'
+import { TransferItem }                               from 'antd/lib/transfer'
+import _                                              from 'lodash'
+import { useIntl }                                    from 'react-intl'
+import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
   useGetApGroupQuery,
@@ -14,7 +15,7 @@ import {
   useGetVenuesTemplateListQuery,
   useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
   useLazyGetVenueTemplateDefaultApGroupQuery,
-  useLazyVenueDefaultApGroupQuery,
+  useLazyVenueDefaultApGroupQuery, useNewApListQuery,
   useUpdateApGroupMutation, useUpdateApGroupTemplateMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -22,18 +23,21 @@ import {
   AddApGroup,
   ApDeep,
   checkObjectNotExists,
-  hasGraveAccentAndDollarSign,
+  hasGraveAccentAndDollarSign, NewAPModel,
   TableResult,
   trailingNorLeadingSpaces, useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, useTableQuery,
   validateByteLength,
   Venue
 } from '@acx-ui/rc/utils'
 
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 import { ApGroupEditContext }           from '../context'
+
+import type { TransferProps } from 'antd'
+
 
 const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -50,6 +54,13 @@ const apGroupsListPayload = {
   pageSize: 10000
 }
 
+interface ApGroupOptionType {
+  name: string,
+  key: string,
+  tags?: string[]
+  apGroupName?: string
+}
+
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, apGroupId } = useParams()
@@ -62,6 +73,11 @@ export function ApGroupGeneralTab () {
     venueId
   } = useContext(ApGroupEditContext)
   const [apsOption, setApsOption] = useState([] as TransferItem[])
+  const [apInfos, setApInfos] = useState({} as Record<string, NewAPModel>)
+  const [tableDataOption, setTableDataOption] = useState([] as TransferItem[])
+  const [isHide, setIsHide] = useState(false)
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -110,6 +126,37 @@ export function ApGroupGeneralTab () {
     enableRbac: isRbacEnabled
   })
 
+  const newApTableListQuery = useTableQuery({
+    useQuery: useNewApListQuery,
+    defaultPayload: {
+      groupBy: 'apGroupId',
+      fields: [
+        'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
+        'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
+        'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
+        'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
+        'powerSavingStatus'
+      ]
+    },
+    pagination: { pageSize: 10000 }
+  })
+
+  useEffect(() => {
+    if (Object.keys(apInfos).length == 0) return
+    if (newApTableListQuery.data?.data && Object.keys(apInfos).length === 0) {
+      const apInfos = newApTableListQuery.data.data.reduce((acc, data) => {
+        if ((data as { children?: NewAPModel[] }).children?.length) {
+          (data as { children?: NewAPModel[] }).children?.forEach((ap) => {
+            acc[(ap as NewAPModel).serialNumber] = ap
+          })
+        }
+        return acc
+      }, {} as Record<string, NewAPModel>)
+      setApInfos(apInfos)
+    }
+
+  }, [newApTableListQuery])
+
   const locationState = location.state as { venueId?: string, history?: string }
 
   const venueIdFromNavigate = locationState?.venueId
@@ -148,11 +195,11 @@ export function ApGroupGeneralTab () {
       formRef?.current?.setFieldValue('venueId', venueIdFromNavigate)
       handleVenueChange(venueIdFromNavigate)
     }
-  }, [isEditMode, apGroupData, isApGroupDataLoading, venueId])
+  }, [isEditMode, apGroupData, isApGroupDataLoading, venueId, apInfos])
 
   const handleVenueChange = async (value: string,
-    extraMemberList?: { name: string; key: string; }[]) => {
-    const defaultApGroupOption: { name: string, key: string }[] = []
+    extraMemberList?: ApGroupOptionType[]) => {
+    const defaultApGroupOption: ApGroupOptionType[] = []
 
     if (value) {
       // get venue default ap group and its members options
@@ -170,12 +217,23 @@ export function ApGroupGeneralTab () {
         defaultApGroupOption.push(...(list?.flatMap(item =>
           (item.aps ?? ([] as ApDeep[])).map((ap) => ({
             name: ap.name,
-            key: ap.serialNumber
+            key: ap.serialNumber,
+            ...(isApGroupMoreParameterPhase1Enabled ? {
+              apGroupName: apInfos[ap.serialNumber]?.apGroupName || '',
+              tags: apInfos[ap.serialNumber]?.tags || []
+            } : {})
           })))))
       } else {
         (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
           .data?.map(x => x.aps?.map((item: ApDeep) => {
-            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber })
+            defaultApGroupOption.push({
+              name: item.name.toString(),
+              key: item.serialNumber,
+              ...(isApGroupMoreParameterPhase1Enabled ? {
+                apGroupName: apInfos[item.serialNumber]?.apGroupName || '',
+                tags: apInfos[item.serialNumber]?.tags || []
+              } : {})
+            })
           })
           )
       }
@@ -290,6 +348,63 @@ export function ApGroupGeneralTab () {
     })
   }
 
+  const leftColumns = [
+    {
+      dataIndex: 'name',
+      title: 'Name'
+    },
+    {
+      dataIndex: 'apGroupName',
+      title: 'Ap Group'
+    },
+    {
+      dataIndex: 'tags',
+      title: 'Tag',
+      render: (tags: string[]) => {
+        if (tags.filter(tag => tag !== '').length === 0) return <></>
+
+        return (
+          tags.map((tag: string) => (<Tag style={{ marginInlineEnd: 0 }} >
+            {tag.toUpperCase()}
+          </Tag>))
+        )
+      }
+    }
+  ]
+
+  const rightColumns = [
+    {
+      dataIndex: 'name',
+      title: 'Name'
+    }
+  ]
+
+  const renderFooter: TransferProps<TransferItem>['footer'] = (_, info) => {
+    if (info?.direction === 'left') {
+      return (
+        <Button
+          size='small'
+          style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto', fontSize: '13px' }}
+          type={'link'}
+          onClick={() => {
+            if (isHide) {
+              setTableDataOption(apsOption)
+            } else {
+              setTableDataOption(apsOption.filter(option => option.name.includes('AP')))
+            }
+            setIsHide(!isHide)
+          }}
+        >
+          {isHide
+            ? $t({ defaultMessage: 'Show assigned APs' })
+            : $t({ defaultMessage: 'Hide assigned APs' })
+          }
+        </Button>
+      )
+    }
+    return <></>
+  }
+
   return (
     <StepsFormLegacy
       formRef={formRef}
@@ -353,19 +468,43 @@ export function ApGroupGeneralTab () {
                 name='apSerialNumbers'
                 valuePropName='targetKeys'
               >
-                <Transfer
-                  listStyle={{ width: 250, height: 316 }}
-                  showSearch
-                  showSelectAll={false}
-                  filterOption={(inputValue, item) =>
-                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
-                  }
-                  dataSource={apsOption}
-                  render={item => item.name}
-                  operations={['Add', 'Remove']}
-                  titles={[$t({ defaultMessage: 'Available APs' }),
-                    $t({ defaultMessage: 'Selected APs' })]}
-                />
+                { isApGroupMoreParameterPhase1Enabled
+                  ? <Transfer
+                    listStyle={{ width: 400, height: 400 }}
+                    type={'table'}
+                    tableData={tableDataOption}
+                    leftColumns={leftColumns}
+                    rightColumns={rightColumns}
+                    showSearch
+                    showSelectAll={false}
+                    filterOption={(inputValue, item) =>
+                      Object.keys(item).some(key => {
+                        // eslint-disable-next-line max-len
+                        return (item[key] && item[key].toString().toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                      })
+                    }
+                    dataSource={apsOption}
+                    render={item => item.name}
+                    footer={renderFooter}
+                    operations={['Add', 'Remove']}
+                    titles={[$t({ defaultMessage: 'Available APs' }),
+                      $t({ defaultMessage: 'Selected APs' })]}
+                  />
+                  : <Transfer
+                    listStyle={{ width: 250, height: 316 }}
+                    showSearch
+                    showSelectAll={false}
+                    filterOption={(inputValue, item) =>
+                      // eslint-disable-next-line max-len
+                      (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                    }
+                    dataSource={apsOption}
+                    render={item => item.name}
+                    operations={['Add', 'Remove']}
+                    titles={[$t({ defaultMessage: 'Available APs' }),
+                      $t({ defaultMessage: 'Selected APs' })]}
+                  />
+                }
               </Form.Item>
             </Col>
           </Row>}

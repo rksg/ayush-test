@@ -5,8 +5,8 @@ import { cloneDeep }                                                            
 import { useIntl }                                                                 from 'react-intl'
 import { useLocation, useNavigate }                                                from 'react-router-dom'
 
-import { PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Alert, PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   LocationExtended,
   PolicyOperation,
@@ -60,9 +60,11 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const supplicantType = useWatch(['supplicantAuthenticationOptions', 'type'], formRef)
   const dynamicVlanEnabled = useWatch('dynamicVlanEnabled', formRef)
   const authEnabled = useWatch('authEnabled', formRef)
+  const clientVisibilityEnabled = useWatch('clientVisibilityEnabled', formRef)
 
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const wifiBreadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
   const switchBreadcrumb = [
@@ -191,6 +193,13 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     }
   }, [untagId])
 
+  useEffect(()=>{
+    if (authTypeRole === EthernetPortAuthType.PORT_BASED ||
+      authTypeRole === EthernetPortAuthType.MAC_BASED) {
+      formRef.setFieldValue('clientVisibilityEnabled', true)
+    }
+  }, [authTypeRole])
+
   return (
     <>
       {!isEmbedded &&
@@ -314,6 +323,33 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 <Switch disabled={isEditMode} />
               </Form.Item>
             </StepsForm.FieldLabel>
+            {isWiredClientVisibilityEnabled && authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
+              <>
+                <StepsForm.FieldLabel width={'280px'}>
+                  <Space>
+                    {$t({ defaultMessage: 'Client Visibility' })}
+                    <Tooltip.Question
+                      title={$t(EthernetPortProfileMessages.CLIENT_VISIBILITY)}
+                      placement='bottom'
+                      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                  </Space>
+                  <Form.Item
+                    name='clientVisibilityEnabled'
+                    valuePropName={'checked'}
+                  >
+                    <Switch disabled={
+                      authTypeRole === EthernetPortAuthType.PORT_BASED ||
+                      authTypeRole === EthernetPortAuthType.MAC_BASED} />
+                  </Form.Item>
+                </StepsForm.FieldLabel>
+                {clientVisibilityEnabled &&
+                  <Alert
+                    showIcon={true}
+                    style={{ verticalAlign: 'middle', width: '19vw' }}
+                    message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />
+                }
+              </>
+            }
             {authEnabled && <>
               <Row>
                 <Col span={12}>
@@ -479,11 +515,20 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     </>
   )
 }
-export const requestPreProcess = (data: EthernetPortProfileFormType) => {
-  const { authRadius, accountingRadius, authEnabled, authTypeRole, ...result } = cloneDeep(data)
+export const requestPreProcess = (
+  isWiredClientVisibilityEnabled: boolean, data: EthernetPortProfileFormType) => {
+  const {
+    authRadius,
+    accountingRadius,
+    authEnabled,
+    authTypeRole,
+    clientVisibilityEnabled,
+    ...result } = cloneDeep(data)
 
   result.authType = (authEnabled) ?
-    (authTypeRole ?? EthernetPortAuthType.DISABLED) : EthernetPortAuthType.DISABLED
+    (authTypeRole ?? EthernetPortAuthType.DISABLED) :
+    (isWiredClientVisibilityEnabled && clientVisibilityEnabled ?
+      EthernetPortAuthType.OPEN : EthernetPortAuthType.DISABLED)
 
   return result
 }

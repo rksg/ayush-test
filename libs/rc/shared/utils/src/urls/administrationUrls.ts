@@ -397,16 +397,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addWebhook: {
     method: 'post',
     url: '/webhooks',
+    opsApi: 'POST:/webhooks',
     newApi: true
   },
   updateWebhook: {
     method: 'put',
     url: '/webhooks/:webhookId',
+    opsApi: 'PUT:/webhooks/{id}',
     newApi: true
   },
   deleteWebhook: {
     method: 'delete',
     url: '/webhooks/:webhookId',
+    opsApi: 'DELETE:/webhooks/{id}',
     newApi: true
   },
   webhookSendSampleEvent: {

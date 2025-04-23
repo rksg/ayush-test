@@ -1356,7 +1356,8 @@ export function EditPortDrawer ({
     }
   }
 
-  const onPortSecurityMaxEntriesChange = (value: number | null) => {
+  const onPortSecurityMaxEntriesChange = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    const value = Number(event.target.value)
     if (value && editPortData?.portSecurityMaxEntries &&
       value < editPortData.portSecurityMaxEntries) {
       showActionModal({
@@ -2519,12 +2520,12 @@ export function EditPortDrawer ({
               {...getFormItemLayout(isMultipleEdit)}
               name='portSecurityMaxEntries'
               label={$t(FIELD_LABEL.portSecurityMaxEntries)}
-              initialValue='1'
+              initialValue={1}
               rules={[
                 {
                   type: 'number',
                   min: 1,
-                  max: 64
+                  max: 8256
                 }
               ]}
               validateFirst
@@ -2534,10 +2535,10 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <InputNumber
                     min={1}
-                    max={64}
+                    max={8256}
                     data-testid='port-security-max-entries-input'
                     style={{ width: '100%' }}
-                    onChange={onPortSecurityMaxEntriesChange}
+                    onBlur={onPortSecurityMaxEntriesChange}
                   />}
             />
           })}</div>

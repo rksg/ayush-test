@@ -72,7 +72,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
       return
     }
     const selectedProfile = ipsecProfileOptionList
-      .find((profile) => profile.value === ipsecProfileId && profile.disabled === false)
+      .find((profile) => profile.value === ipsecProfileId)
     setIpSecProfile(selectedProfile ? selectedProfile: defaultIpsecOption)
 
     form.setFieldValue(ipsecProfileIdFieldName, selectedProfile ? ipsecProfileId : '')
@@ -139,6 +139,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
           ipsecOptionDispatch && ipsecOptionDispatch({
             state: IpsecOptionChangeState.ReloadOptionList, newOption
           })
+          onGUIChanged && onGUIChanged('ipsecProfileId')
         }}
       />
     </>

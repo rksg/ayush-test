@@ -129,6 +129,8 @@ describe('Lan Port', () => {
     }
 
     it ('Should render correctly with AP model T750SE', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE)
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -163,7 +165,6 @@ describe('Lan Port', () => {
 
       expect(screen.queryByRole('button', { name: 'Reset to default' })).not.toBeInTheDocument()
 
-      /* Waiting for backend support AP PoE mode settings
       const poeCombobox = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
       await userEvent.click(poeCombobox)
 
@@ -176,7 +177,7 @@ describe('Lan Port', () => {
       await userEvent.click(await screen.findByTitle('802.3bt/Class 5'))
       const option802_3bt_5 = await screen.findByRole('option', { name: '802.3bt/Class 5' })
       expect(option802_3bt_5.getAttribute('aria-selected')).toBe('true')
-      */
+
       await userEvent.click(await screen.findByRole('switch', { name: 'Enable port' }))
 
 
@@ -316,7 +317,8 @@ describe('Lan Port', () => {
     it ('Should render ethernet profile correctly with AP model T750SE', async () => {
       // Given
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+        ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -360,6 +362,7 @@ describe('Lan Port', () => {
       expect(await screen.findAllByText('VLAN Untag ID')).toHaveLength(4)
       expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)
       expect(await screen.findAllByText('802.1X')).toHaveLength(4)
+      expect(await screen.findAllByText('Client Visibility')).toHaveLength(1)
 
       expect(screen.queryByRole('button', { name: 'Add Profile' })).not.toBeInTheDocument()
     })

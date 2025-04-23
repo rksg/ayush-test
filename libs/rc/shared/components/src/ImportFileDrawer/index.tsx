@@ -56,10 +56,12 @@ interface ImportFileDrawerProps extends DrawerProps {
   acceptType: string[]
   type: ImportFileDrawerType
   extraDescription?: string[],
-  validator?: (content: string) => Promise<void>
+  validator?: (content: string) => Promise<void>,
+  footerButtons?: string[]
 }
 
 export const CsvSize = {
+  '512KB': 1024*512,
   '1MB': 1024*1*1024,
   '2MB': 1024*2*1024,
   '5MB': 1024*5*1024,
@@ -79,7 +81,8 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
   const { maxSize, maxEntries, isLoading, templateLink,
     importError, importRequest, readAsText, acceptType,
-    extraDescription, formDataName = 'file', skipCsvTextConvert = false, validator } = props
+    extraDescription, formDataName = 'file', skipCsvTextConvert = false, validator,
+    footerButtons = ['import', 'cancel'] } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -144,7 +147,6 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
   }, [$t, importError])
 
-
   const beforeUpload = async (file: File) => {
     try {
       let errorMsg = ''
@@ -204,23 +206,34 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
     }
   }
 
+  const footerButtonsMapping : Record<string, ReactNode> = {
+    import: <Button
+      key={'import-button'}
+      disabled={!formData}
+      loading={isLoading}
+      onClick={() => okHandler()}
+      type='primary'
+    >
+      {$t({ defaultMessage: 'Import' })}
+    </Button>,
+    cancel: <Button
+      key={'cancel-button'}
+      onClick={props?.onClose}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  }
+
   return (<UI.ImportFileDrawer {...props}
     keyboard={false}
     closable={true}
     destroyOnClose={true}
     width={440}
     footer={<div>
-      <Button
-        disabled={!formData}
-        loading={isLoading}
-        onClick={() => okHandler()}
-        type='primary'
-      >
-        {$t({ defaultMessage: 'Import' })}
-      </Button>
-      <Button onClick={props?.onClose}>
-        {$t({ defaultMessage: 'Cancel' })}
-      </Button>
+      {
+        footerButtons.map((btn) => {
+          return footerButtonsMapping[btn]
+        })
+      }
     </div>} >
     <Upload.Dragger
       accept={acceptType?.map(type => `.${String(type)}`).join(', ')}

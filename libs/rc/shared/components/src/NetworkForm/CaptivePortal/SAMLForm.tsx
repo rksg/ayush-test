@@ -33,6 +33,7 @@ export const SAMLForm = () => {
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  const isSamlSsoEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ selectedIdpProfile, setSelectedIdpProfile ] = useState<SamlIdpProfileViewData>()
@@ -89,7 +90,7 @@ export const SAMLForm = () => {
               children={
                 <Select
                   data-testid={'saml-idp-profile-select'}
-                  style={{ width: '320px' }}
+                  style={{ width: '220px' }}
                   onChange={(value, option) => {
                     form.setFieldValue('samlIdpProfilesName',(option as DefaultOptionType).label)
                   }}
@@ -124,12 +125,15 @@ export const SAMLForm = () => {
             hidden
             children={<Input hidden />}
           />
-          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup />}
+          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='220px' />}
           <WlanSecurityFormItems />
           <RedirectUrlInput></RedirectUrlInput>
           <DhcpCheckbox />
           <BypassCaptiveNetworkAssistantCheckbox />
-          <WalledGardenTextArea enableDefaultWalledGarden={false} />
+          <WalledGardenTextArea
+            enableDefaultWalledGarden={false}
+            required={isSamlSsoEnabled}
+          />
         </GridCol>
         <GridCol col={{ span: 14 }}>
           <NetworkDiagram

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
-import {  Col, Form, Row, Button } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Col, Form, Row, Button } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import { Drawer }                              from '@acx-ui/components'
+import { Drawer }                                  from '@acx-ui/components'
 import {
   useGetServerCertificatesQuery,
-  useGetSamlIdpProfileWithRelationsByIdQuery
+  useGetSamlIdpProfileWithRelationsByIdQuery,
+  useDownloadSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
   SamlIdpProfileViewData,
@@ -14,13 +15,14 @@ import {
   transformDisplayOnOff,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  SamlIdpAttributeMappingNameType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { AddSamlIdp }           from '../AddSamlIdp'
 import { SamlIdpMetadataModal } from '../SamlIdpMetadataModal'
-
 
 
 interface SAMLDrawerProps {
@@ -45,6 +47,8 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
     setVisible(false)
   }
 
+  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
+
   return (
     <Drawer
       title={readMode
@@ -54,7 +58,6 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       visible={visible}
       width={450}
       children={
-        visible &&
         (readMode ? <ReadModeIdpForm policy={policy!} /> :
           <AddSamlIdp
             isEmbedded={true}
@@ -65,6 +68,38 @@ export function SAMLDrawer (props: SAMLDrawerProps) {
       }
       onClose={handleClose}
       destroyOnClose={true}
+      footer={
+        (readMode) ? (
+          <>
+            <Button
+              type='primary'
+              disabled={!policy?.id}
+              onClick={() => downloadSamlServiceProviderMetadata({ params: { id: policy?.id } })}
+            >
+              {$t({ defaultMessage: 'Download SAML Metadata' })}
+            </Button>
+            <Button
+              type='primary'
+              onClick={() => {
+                setVisible(false)
+              }}
+            >
+              {$t({ defaultMessage: 'OK' })}
+            </Button>
+          </>
+        ) : (
+          // Workaround for add a footer to avoid drawer be hide when click outside
+          <Button
+            type='primary'
+            style={{ display: 'none' }}
+            onClick={() => {
+              setVisible(false)
+            }}
+          >
+            {$t({ defaultMessage: 'OK' })}
+          </Button>
+        )
+      }
     />
   )
 }
@@ -74,16 +109,17 @@ interface SamlIdpDetailProps {
 }
 
 const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
-
   const { $t } = useIntl()
-
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
 
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
     params: {
       id: policy.id
     }
+  }, {
+    skip: !policy.id
   })
+
 
   const { certificateNameMap } = useGetServerCertificatesQuery({
     payload: {
@@ -125,46 +161,74 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                 transformDisplayOnOff(policy.signingCertificateEnabled)
               }
             />
-            <Form.Item
-              label={$t({ defaultMessage: 'Signing Certificate' })}
-              children={
-                (policy.signingCertificateId ?
-                  <TenantLink
-                    to={getPolicyRoutePath({
-                      type: PolicyType.SERVER_CERTIFICATES,
-                      oper: PolicyOperation.LIST
-                    })}>
-                    {
-                      certificateNameMap.find(cert => {
-                        return cert.key === policy.signingCertificateId
-                      })?.value || ''
-                    }
-                  </TenantLink> : ''
-                )
-              }
-            />
+            {policy.signingCertificateEnabled && (
+              <Form.Item
+                label={$t({ defaultMessage: 'Signing Certificate' })}
+                children={
+                  (policy.signingCertificateId ?
+                    <TenantLink
+                      to={getPolicyRoutePath({
+                        type: PolicyType.SERVER_CERTIFICATES,
+                        oper: PolicyOperation.LIST
+                      })}>
+                      {
+                        certificateNameMap.find(cert => {
+                          return cert.key === policy.signingCertificateId
+                        })?.value || ''
+                      }
+                    </TenantLink> : ''
+                  )
+                }
+              />
+            )}
             <Form.Item
               label={$t({ defaultMessage: 'SAML Response Encryption' })}
               children={
                 transformDisplayOnOff(policy.encryptionCertificateEnabled)
               }
             />
+            {policy.encryptionCertificateEnabled && (
+              <Form.Item
+                label={$t({ defaultMessage: 'Encryption Certificate' })}
+                children={
+                  (policy.encryptionCertificateId ?
+                    <TenantLink
+                      to={getPolicyRoutePath({
+                        type: PolicyType.SERVER_CERTIFICATES,
+                        oper: PolicyOperation.LIST
+                      })}>
+                      {
+                        certificateNameMap.find(cert => {
+                          return cert.key === policy.encryptionCertificateId
+                        })?.value || ''
+                      }
+                    </TenantLink> : ''
+                  )
+                }
+              />
+            )}
             <Form.Item
-              label={$t({ defaultMessage: 'Encryption Certificate' })}
+              label={$t({ defaultMessage: 'Identity Name' })}
               children={
-                (policy.encryptionCertificateId ?
-                  <TenantLink
-                    to={getPolicyRoutePath({
-                      type: PolicyType.SERVER_CERTIFICATES,
-                      oper: PolicyOperation.LIST
-                    })}>
-                    {
-                      certificateNameMap.find(cert => {
-                        return cert.key === policy.encryptionCertificateId
-                      })?.value || ''
-                    }
-                  </TenantLink> : ''
-                )
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+                )?.mappedByName || noDataDisplay
+              }
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Email' })}
+              children={
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+                )?.mappedByName || noDataDisplay
+              }
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Phone' })}
+              children={
+                samlIdpData?.attributeMappings?.find(
+                  mapping => mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+                )?.mappedByName || noDataDisplay
               }
             />
           </Col>

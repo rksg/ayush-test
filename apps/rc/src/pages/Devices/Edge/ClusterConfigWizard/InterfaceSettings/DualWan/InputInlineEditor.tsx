@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Input, Space } from 'antd'
 import { useIntl }      from 'react-intl'
@@ -13,15 +13,18 @@ interface InputInlineEditorProps {
   index: number
   onChange?: (data: string) => Promise<void>
   onDelete: (index: number) => void
+  rules?: ((val: string) => Promise<string|undefined|void>)[]
 }
 export const InputInlineEditor = (props: InputInlineEditorProps) => {
   const { $t } = useIntl()
-  const { value: propsValue, index, onChange, onDelete } = props
+  const { value: propsValue, index, onChange, onDelete, rules } = props
 
   const [isEditMode, setEditMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const [validateErrMsg, setValidateErrMsg] = useState<string|undefined>(undefined)
   const [editingValue, setEditingValue] = useState<string | undefined>(propsValue)
+
+  const isValidateError = !!validateErrMsg
 
   const handleEdit = () => {
     setEditingValue(propsValue)
@@ -57,13 +60,28 @@ export const InputInlineEditor = (props: InputInlineEditorProps) => {
     setEditMode(false)
   }
 
+  useEffect(() => {
+    if (!rules?.length) return
+
+    Promise.all(rules.map((rule) => rule(editingValue ?? '')))
+      .then(() => {
+      // reset error message
+        setValidateErrMsg(undefined)
+      })
+      .catch((err) => {
+        setValidateErrMsg(err)
+      })
+
+  }, [editingValue])
+
   return (
     <Space size={2}>
       { (isEditMode || !propsValue) ? (
         <>
           <StyledFormItem
-            validateStatus={isSubmitting ? 'validating' : undefined}
+            validateStatus={isSubmitting ? 'validating' : (validateErrMsg?'error':undefined)}
             hasFeedback={isSubmitting}
+            help={validateErrMsg}
           >
             <Input
               onChange={(event) => {
@@ -75,9 +93,10 @@ export const InputInlineEditor = (props: InputInlineEditorProps) => {
               placeholder={$t({ defaultMessage: 'Enter the destination IP address' })}
             />
           </StyledFormItem>
+
           <Button type='link'
             icon={<CheckIcon />}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isValidateError || !editingValue}
             onClick={handleApply}
           />
           <Button type='link'

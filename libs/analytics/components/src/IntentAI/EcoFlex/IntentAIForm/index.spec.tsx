@@ -160,7 +160,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
-    expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
+    expect(await screen.findByText('Hours not applied for Energy Saving')).toBeVisible()
     expect(
       await screen.findByText(
         /PowerSave will not be triggered during specific hours set in the Settings/
@@ -225,7 +225,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-    expect(screen.queryByText('Hours not applied for EcoFlex')).toBeNull()
+    expect(screen.queryByText('Hours not applied for Energy Saving')).toBeNull()
 
     expect(
       await screen.findByText(

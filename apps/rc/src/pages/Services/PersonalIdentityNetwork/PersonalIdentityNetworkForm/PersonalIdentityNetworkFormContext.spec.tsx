@@ -3,6 +3,9 @@ import { useContext } from 'react'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
+import { useGetAvailableTunnelProfile }                         from '@acx-ui/edge/components'
+import { Features }                                             from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                from '@acx-ui/rc/components'
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -23,6 +26,8 @@ import {
   PropertyUrlsInfo,
   SwitchUrlsInfo,
   TunnelProfileUrls,
+  TunnelProfileViewData,
+  TunnelTypeEnum,
   VenueFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
@@ -36,6 +41,15 @@ const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
+jest.mock('@acx-ui/edge/components', () => ({
+  useGetAvailableTunnelProfile: jest.fn().mockReturnValue({
+    availableTunnelProfiles: [],
+    isDataLoading: false
+  })
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -380,5 +394,72 @@ describe('PersonalIdentityNetworkFormContext', () => {
       expect(result.current.getClusterName('clusterId_4')).toBe(''))
     await waitFor(() =>
       expect(result.current.getClusterName('clusterId_5')).toBe(''))
+  })
+
+  describe('test L2GRE case', () => {
+    const mockAvailableTunnelProfiles = [
+      {
+        id: 'tunnelProfileVxLANGpeId1',
+        destinationEdgeClusterId: 'clusterId_1',
+        name: 'tunnelProfile_VxLAN_GPE_1',
+        tunnelType: TunnelTypeEnum.VXLAN_GPE
+      }
+    ] as TunnelProfileViewData[]
+
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+      jest.mocked(useGetAvailableTunnelProfile).mockImplementation(() => ({
+        availableTunnelProfiles: mockAvailableTunnelProfiles,
+        isDataLoading: false
+      }))
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+      jest.mocked(useGetAvailableTunnelProfile).mockReset()
+    })
+
+    it('should get tunnel profiles from available tunnel profile hook', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: createPinPath }
+      })
+
+      expect(result.current.tunnelProfileOptions?.length).toBe(1)
+      expect(result.current.tunnelProfileOptions?.[0].label).toBe('tunnelProfile_VxLAN_GPE_1')
+      expect(result.current.tunnelProfileOptions?.[0].value).toBe('tunnelProfileVxLANGpeId1')
+    })
+
+    it('should get cluster info by tunnel profile id', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: createPinPath }
+      })
+
+      // eslint-disable-next-line max-len
+      await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[0]))
+    })
+
+    it('should get cluster info by cluster id', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: createPinPath }
+      })
+
+      // eslint-disable-next-line max-len
+      await waitFor(() => expect(result.current.getClusterInfoByClusterId(mockEdgeClusterList.data[0].clusterId)).toStrictEqual(mockEdgeClusterList.data[0]))
+    })
   })
 })

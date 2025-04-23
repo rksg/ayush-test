@@ -494,8 +494,6 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       sorter: { compare: sortProp('authenticationStatus', defaultSort) },
       show: !!showAllColumns,
       render: (_, { authenticationStatus }) => {
-        if (!authenticationStatus) return noDataDisplay
-
         let statusText = noDataDisplay as string
         if (authenticationStatus === 1) {
           statusText = intl.$t({ defaultMessage: 'Authorized' })

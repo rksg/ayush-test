@@ -1,8 +1,8 @@
 import userEvent                      from '@testing-library/user-event'
 import { cloneDeep, groupBy, remove } from 'lodash'
 
-import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
-import {  screen }                                                          from '@acx-ui/test-utils'
+import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { screen }                                                                           from '@acx-ui/test-utils'
 
 import { showSdLanGuestFwdConflictModal } from '.'
 
@@ -51,7 +51,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
     const defaultArgs = {
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: true,
+      activatedDmz: true,
       onOk: mockOkFn
     }
 
@@ -113,6 +113,104 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
     })
   })
 
+  describe('activate for L2OGRE', () => {
+    const mockedSdLanNoGuestFwd = cloneDeep(mockedDmzSdLanNoGuestFwd)
+
+    // different venut same network
+    const anotherVenueNetwork = {
+      venueId: 'a307d7077410456f8f1a4fc41d861560',
+      venueName: 'Mocked-Venue-2',
+      networkId: 'network_4',
+      networkName: 'Mocked_network_4',
+      wlanId: '1'
+    }
+
+    const currentNetworkId = venue1network4.networkId
+    const currentNetworkVenueId = venue1network4.venueId
+    const defaultArgs = {
+      currentNetworkVenueId,
+      currentNetworkId,
+      activatedDmz: true,
+      onOk: mockOkFn,
+      isL2oGreReady: true
+    }
+
+    it('should have 1 impact', async () => {
+      const mockData = cloneDeep(mockedSdLanNoGuestFwd)
+      const tunnelingL2greNetwork = {
+        ...anotherVenueNetwork,
+        forwardingTunnelType: TunnelTypeEnum.L2GRE,
+        forwardingTunnelProfileId: 'mocked_l2gre_profile_id'
+      }
+      mockData.tunneledWlans?.push(tunnelingL2greNetwork)
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockData.tunneledWlans,
+        tunneledGuestWlans: mockData.tunneledGuestWlans
+      })
+
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 1 associated venue/)
+      await click(screen.getByRole('button', { name: 'Continue' }))
+      expect(mockOkFn).toBeCalledWith([anotherVenueNetwork.venueId])
+    })
+
+    it('should have multiple impacts', async () => {
+      const mockData = cloneDeep(mockedSdLanNoGuestFwd)
+      const tunnelingL2greNetwork = {
+        ...anotherVenueNetwork,
+        forwardingTunnelType: TunnelTypeEnum.L2GRE,
+        forwardingTunnelProfileId: 'mocked_l2gre_profile_id'
+      }
+      const tunnelingCorePortNetwork = {
+        ...anotherVenueNetwork,
+        venueId: 'a307d7077410456f8f1a4fc41d861564',
+        venueName: 'Mocked-Venue-4',
+        forwardingTunnelType: '',
+        forwardingTunnelProfileId: ''
+      }
+      const otherNetworks = [
+        tunnelingL2greNetwork,
+        tunnelingCorePortNetwork
+      ]
+      mockData.tunneledWlans!.push(...otherNetworks)
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockData.tunneledWlans,
+        tunneledGuestWlans: mockData.tunneledGuestWlans
+      })
+
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 2 associated venues/)
+      await click(screen.getByRole('button', { name: 'Continue' }))
+      expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
+    })
+
+    it('should not have impact when other venue network is already activated', async () => {
+      const mockData = cloneDeep(mockedSdLanNoGuestFwd)
+      const tunnelingDmzNetwork = {
+        ...anotherVenueNetwork,
+        forwardingTunnelType: TunnelTypeEnum.VXLAN_GPE,
+        forwardingTunnelProfileId: 'mocked_gpe_profile_id'
+      }
+      mockData.tunneledWlans?.push(tunnelingDmzNetwork)
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockData.tunneledWlans,
+        tunneledGuestWlans: mockData.tunneledGuestWlans
+      })
+
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockOkFn).toBeCalledTimes(1)
+      expect(mockOkFn).toBeCalledWith([])
+    })
+  })
+
   describe('deactivate', () => {
     const mockedSdLanMultiGuestFwd = cloneDeep(mockedDmzSdLanGuestFwded)
     const otherNetworks = [{
@@ -132,7 +230,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
     const defaultArgs = {
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: false,
+      activatedDmz: false,
       onOk: mockOkFn
     }
     it('should have 1 impact', async () => {
@@ -193,7 +291,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
     showSdLanGuestFwdConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: true,
+      activatedDmz: true,
       tunneledWlans: mockedDmzSdLanNoGuestFwd.tunneledWlans,
       tunneledGuestWlans: mockedDmzSdLanNoGuestFwd.tunneledGuestWlans,
       onOk: mockOkFn
@@ -228,7 +326,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
     const defaultArgs = {
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: true,
+      activatedDmz: true,
       onOk: mockOkFn
     }
 
@@ -346,7 +444,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
     const defaultArgs = {
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: false,
+      activatedDmz: false,
       onOk: mockOkFn
     }
 
@@ -412,7 +510,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
     showSdLanGuestFwdConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
-      activatedGuest: false,
+      activatedDmz: false,
       tunneledWlans: activatedNetworks,
       tunneledGuestWlans: activatedGuestNetworks,
       onOk: mockOkFn

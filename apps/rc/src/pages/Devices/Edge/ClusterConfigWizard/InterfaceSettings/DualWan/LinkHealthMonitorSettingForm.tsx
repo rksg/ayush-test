@@ -3,8 +3,13 @@ import { useMemo } from 'react'
 import { Form, FormInstance, Radio, Select, Space } from 'antd'
 import { useIntl }                                  from 'react-intl'
 
-import { Button }                                             from '@acx-ui/components'
-import { getWanLinkDownCriteriaString, getWanProtocolString } from '@acx-ui/edge/components'
+import { Button }       from '@acx-ui/components'
+import {
+  defaultDualWanLinkHealthCheckPolicy,
+  getWanLinkDownCriteriaString,
+  getWanProtocolString,
+  multiWanLimitations
+} from '@acx-ui/edge/components'
 import {
   EdgeLinkDownCriteriaEnum,
   EdgeMultiWanProtocolEnum,
@@ -15,13 +20,15 @@ import {
 import { InputInlineEditor }                    from './InputInlineEditor'
 import { StyledFormItem, StyledHiddenFormItem } from './styledComponents'
 
-const MIN_HEALTH_CHECK_INTERVAL = 1 // seconds
-const MAX_HEALTH_CHECK_INTERVAL = 10 // seconds
-const MIN_COUNT_DOWN = 2 // seconds
-const MAX_COUNT_DOWN = 10  // seconds
-const MIN_COUNT_UP = 2  // seconds
-const MAX_COUNT_UP = 10  // seconds
-const MAX_TARGET_IP = 3
+const {
+  MIN_HEALTH_CHECK_INTERVAL,
+  MAX_HEALTH_CHECK_INTERVAL,
+  MIN_COUNT_DOWN,
+  MAX_COUNT_DOWN,
+  MIN_COUNT_UP,
+  MAX_COUNT_UP,
+  MAX_TARGET_IP
+} = multiWanLimitations
 
 interface LinkHealthMonitorSettingFormProps {
   form: FormInstance
@@ -34,13 +41,29 @@ export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingForm
   const { form, onFinish, editData } = props
 
   const initialValues = useMemo(() => {
+    const {
+      protocol: defaultProtocol,
+      targetIpAddresses: defaultTargetIpAddresses,
+      linkDownCriteria: defaultLinkDownCriteria,
+      intervalSeconds: defaultIntervalSeconds,
+      maxCountToDown: defaultMaxCountToDown,
+      maxCountToUp: defaultMaxCountToUp
+    } = defaultDualWanLinkHealthCheckPolicy
+
     return {
-      ...editData,
-      protocol: editData?.protocol ?? EdgeMultiWanProtocolEnum.PING,
-      linkDownCriteria: editData?.linkDownCriteria ?? EdgeLinkDownCriteriaEnum.ALL_TARGETS_DOWN,
-      intervalSeconds: editData?.intervalSeconds ?? 3,
-      maxCountToDown: editData?.maxCountToDown ?? 3,
-      maxCountToUp: editData?.maxCountToUp ?? 3
+      protocol: (!editData?.protocol || editData?.protocol === EdgeMultiWanProtocolEnum.NONE)
+        ? defaultProtocol
+        : editData?.protocol,
+      targetIpAddresses: editData?.targetIpAddresses?.length
+        ? editData?.targetIpAddresses
+        : defaultTargetIpAddresses,
+      // eslint-disable-next-line max-len
+      linkDownCriteria: (!editData?.linkDownCriteria || editData?.linkDownCriteria === EdgeLinkDownCriteriaEnum.INVALID)
+        ? defaultLinkDownCriteria
+        : editData?.linkDownCriteria,
+      intervalSeconds: editData?.intervalSeconds ?? defaultIntervalSeconds,
+      maxCountToDown: editData?.maxCountToDown ?? defaultMaxCountToDown,
+      maxCountToUp: editData?.maxCountToUp ?? defaultMaxCountToUp
     }
   }, [editData])
 
@@ -79,29 +102,41 @@ export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingForm
       />
     </Form.Item>
 
-    <Form.List name='targetIpAddresses'>
-      {(fields, { add, remove }) => {
-        return <>
-          {fields?.map((field, index) =>
-            <StyledFormItem
-              {...field}
-              rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
-              ]}
+    <Form.Item
+      label={$t({ defaultMessage: 'Target IP Addresses (Up to {max})' }, { max: MAX_TARGET_IP })}
+      required
+    >
+      <Form.List name='targetIpAddresses'>
+        {(fields, { add, remove }) => {
+          return <>
+            {fields?.map((field, index) =>
+              <StyledFormItem
+                {...field}
+                rules={[
+                  { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
+                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                ]}
+              >
+                <InputInlineEditor
+                  index={index}
+                  onDelete={remove}
+                  // on change validation since we will only setFormValue when user click InputInlineEditor submit
+                  rules={[ networkWifiIpRegExp ]}
+                />
+              </StyledFormItem>
+            )}
+
+            <Button
+              type='link'
+              onClick={() => add()}
+              disabled={fields.length >= MAX_TARGET_IP}
             >
-              <InputInlineEditor
-                index={index}
-                onDelete={remove}
-              />
-            </StyledFormItem>
-          )}
-          <Button type='link' onClick={() => add()}>
-            {$t({ defaultMessage: 'Add Target' })}
-          </Button>
-        </>
-      }}
-    </Form.List>
+              {$t({ defaultMessage: 'Add Target' })}
+            </Button>
+          </>
+        }}
+      </Form.List>
+    </Form.Item>
 
     <StyledHiddenFormItem
       name='validateTargetIpAddresses'

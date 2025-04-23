@@ -4,7 +4,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeLinkDownCriteriaEnum } from '@acx-ui/rc/utils'
 
-import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaString } from './dualWanUtils'
+import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaString, isMultiWanClusterPrerequisite } from './dualWanUtils'
 
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
@@ -50,12 +50,12 @@ describe('getWanProtocolString', () => {
 describe('getWanLinkDownCriteriaString', () => {
   it('returns correct string for ALL_TARGETS_DOWN', () => {
     const result = getWanLinkDownCriteriaString(EdgeLinkDownCriteriaEnum.ALL_TARGETS_DOWN)
-    expect(result).toBe('All destinations were unreachable')
+    expect(result).toBe('All targets were unreachable')
   })
 
   it('returns correct string for ANY_TARGET_DOWN', () => {
     const result = getWanLinkDownCriteriaString(EdgeLinkDownCriteriaEnum.ANY_TARGET_DOWN)
-    expect(result).toBe('One or more of the destinations were unreachable')
+    expect(result).toBe('One or more of the targets were unreachable')
   })
 
   it('returns empty string for INVALID', () => {
@@ -67,5 +67,31 @@ describe('getWanLinkDownCriteriaString', () => {
     // eslint-disable-next-line max-len
     const result = getWanLinkDownCriteriaString('INVALID_ENUM_VALUE' as unknown as EdgeLinkDownCriteriaEnum)
     expect(result).toBe('')
+  })
+})
+
+describe('isMultiWanClusterPrerequisite', () => {
+  it('returns false for undefined clusterInfo', () => {
+    expect(isMultiWanClusterPrerequisite(undefined)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with no edgeList', () => {
+    const clusterInfo = {}
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with empty edgeList', () => {
+    const clusterInfo = { edgeList: [] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns true for clusterInfo with edgeList having one element', () => {
+    const clusterInfo = { edgeList: [{}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(true)
+  })
+
+  it('returns false for clusterInfo with edgeList having multiple elements', () => {
+    const clusterInfo = { edgeList: [{}, {}, {}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
   })
 })

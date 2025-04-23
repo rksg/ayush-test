@@ -1,8 +1,10 @@
 import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 
-import { Divider, Menu } from 'antd'
-import moment            from 'moment-timezone'
-import { useIntl }       from 'react-intl'
+import { Divider, Menu, Space } from 'antd'
+import moment                   from 'moment-timezone'
+import { DndProvider }          from 'react-dnd'
+import { HTML5Backend }         from 'react-dnd-html5-backend'
+import { useIntl }              from 'react-intl'
 
 import {
   ClientExperience,
@@ -29,10 +31,17 @@ import {
   GridCol,
   GridRow,
   PageHeader,
-  RangePicker
+  RangePicker,
+  Select,
+  useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { VenueFilter }            from '@acx-ui/main/components'
+import {
+  GlobeOutlined,
+  LockOutlined,
+  SettingsOutlined
+} from '@acx-ui/icons-new'
+import { VenueFilter }      from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -42,6 +51,7 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
+  Canvas,
   CommonUrlsInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
@@ -61,7 +71,8 @@ import {
   hasPermission,
   hasRoles,
   getUserProfile,
-  hasAllowedOperations
+  hasAllowedOperations,
+  isCoreTier
 } from '@acx-ui/user'
 import {
   AnalyticsFilter,
@@ -74,7 +85,18 @@ import {
   useDashboardFilter
 } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { Section, Group }                                                from '../AICanvas/Canvas'
+import { CardInfo, layoutConfig }                                        from '../AICanvas/Canvas'
+import Layout                                                            from '../AICanvas/components/Layout'
+import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/index.utils'
+import { PreviewDashboardModal }                                         from '../AICanvas/PreviewDashboardModal'
+import * as CanvasUI                                                     from '../AICanvas/styledComponents'
+
+import { DashboardDrawer }               from './DashboardDrawer'
+import { ImportDashboardDrawer }         from './ImportDashboardDrawer'
+import { DashboardInfo }                 from './index.utils'
+import { mockDashboardList, mockCanvas } from './mockData'
+import * as UI                           from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -107,7 +129,10 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -139,37 +164,122 @@ export default function Dashboard () {
     localStorage.setItem('dashboard-tab', value)
   }
 
+  const { menuCollapsed } = useLayoutContext()
+  const [canvasId, setCanvasId] = useState('')
+  const [groups, setGroups] = useState([] as Group[])
+  const [sections, setSections] = useState([] as Section[])
+  const [dashboardId, setDashboardId] = useState(DEFAULT_DASHBOARD_ID)
+  const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
+  const [layout, setLayout] = useState({
+    ...layoutConfig,
+    calWidth: getCalculatedColumnWidth(menuCollapsed)
+  })
+  const [shadowCard, setShadowCard] = useState({} as CardInfo)
+
+  //TODO
+  useEffect(() => {
+    if (isCanvasQ2Enabled) {
+      setDashboardList(getDashboardList())
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isCanvasQ2Enabled) {
+      setLayout({
+        ...layout,
+        calWidth: getCalculatedColumnWidth(menuCollapsed)
+      })
+    }
+  }, [menuCollapsed])
+
+  useEffect(() => {
+    if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
+      //TODO
+      const { canvasId, sections, groups } = getCanvasData(mockCanvas)
+      if (canvasId && sections) {
+        setCanvasId(canvasId)
+        setSections(sections)
+        setGroups(groups)
+      }
+    }
+  }, [dashboardId])
+
+  const getDashboardList = () => {
+    return mockDashboardList.map((item, index) => {
+      return {
+        ...item,
+        key: item.id,
+        index,
+        isLanding: index === 0,
+        isDefault: item.id === DEFAULT_DASHBOARD_ID
+      }
+    })
+  }
+
   return (
     <DashboardFilterProvider>
-      <DashboardPageHeader />
-      <CommonDashboardWidgets />
-      <Divider dashed
-        style={{
-          borderColor: 'var(--acx-neutrals-30)',
-          margin: '20px 0px 5px 0px' }}/>
-      <ContentSwitcher
-        tabDetails={tabDetails}
-        size='large'
-        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-        onChange={onTabChange}
-        extra={
-          <UI.Wrapper>
-            <TenantLink to={'/reports'}>
-              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-            </TenantLink>
-          </UI.Wrapper>
-        }
+      <DashboardPageHeader
+        dashboardId={dashboardId}
+        setDashboardId={setDashboardId}
+        dashboardList={dashboardList}
       />
-      <Divider dashed
-        style={{
-          borderColor: 'var(--acx-neutrals-30)',
-          margin: '20px 0px' }}/>
-      <DashboardMapWidget />
+      {
+        dashboardId === DEFAULT_DASHBOARD_ID
+          ? <>
+            {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
+            <Divider dashed
+              style={{
+                borderColor: 'var(--acx-neutrals-30)',
+                margin: '20px 0px 5px 0px' }}/>
+            <ContentSwitcher
+              tabDetails={tabDetails}
+              size='large'
+              defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+              onChange={onTabChange}
+              extra={
+                <UI.Wrapper>
+                  <TenantLink to={'/reports'}>
+                    {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+                  </TenantLink>
+                </UI.Wrapper>
+              }
+            />
+            <Divider dashed
+              style={{
+                borderColor: 'var(--acx-neutrals-30)',
+                margin: '20px 0px' }}/>
+            <DashboardMapWidget />
+          </>
+          : <DndProvider backend={HTML5Backend}>
+            <div className='grid'>
+              <CanvasUI.Grid $type='pageview'>
+                <Layout
+                  readOnly={true}
+                  sections={sections}
+                  groups={groups}
+                  setGroups={setGroups}
+                  compactType={'horizontal'}
+                  layout={layout}
+                  setLayout={setLayout}
+                  canvasId={canvasId}
+                  shadowCard={shadowCard}
+                  setShadowCard={setShadowCard}
+                  containerId='dashboard-canvas-container'
+                />
+              </CanvasUI.Grid>
+            </div>
+          </DndProvider>
+      }
     </DashboardFilterProvider>
   )
 }
 
-function DashboardPageHeader () {
+function DashboardPageHeader (props: {
+  dashboardId: string,
+  setDashboardId: (id: string) => void
+  dashboardList: DashboardInfo[]
+}) {
+  const { dashboardId, setDashboardId, dashboardList } = props
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { onPageFilterChange } = useContext(LoadTimeContext)
 
@@ -177,7 +287,13 @@ function DashboardPageHeader () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+
+  const [previewData, setPreviewData] = useState([] as Canvas[])
+  const [previewModalVisible, setPreviewModalVisible] = useState(false)
+  const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
+  const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -264,9 +380,61 @@ function DashboardPageHeader () {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  return (
+  const handleDashboardChange = (value: string) => {
+    setDashboardId(value)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handlePreview = async (id: string) => {
+    //TODO: get data by id
+    setPreviewData(mockCanvas)
+    setPreviewModalVisible(true)
+  }
+
+  const DashboardSelector = () => {
+    return <>
+      <UI.DashboardSelectDropdown />
+      <UI.DashboardSelector
+        defaultActiveFirstOption
+        defaultValue={dashboardId}
+        dropdownMatchSelectWidth={false}
+        dropdownClassName='dashboard-select-dropdown'
+        optionLabelProp='label'
+        onChange={handleDashboardChange}
+      >{
+          dashboardList.map(item => {
+            const isDefault = item.id === DEFAULT_DASHBOARD_ID
+            const hasUpdated = item.diffWidgetIds && item.diffWidgetIds.length > 0
+            const icon = item.author ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+            return <Select.Option
+              key={item.id}
+              value={item.id}
+              label={item.name}
+              className={isDefault ? 'default' : (hasUpdated ? 'hasUpdated' : '')}
+            >
+              { !isDefault && icon }{ item.name }
+            </Select.Option>
+          })
+        }</UI.DashboardSelector>
+    </>
+  }
+
+  return (<>
     <PageHeader
       title={''}
+      titleExtra={isCanvasQ2Enabled &&
+      <Space size={7} style={{ alignItems: 'center', lineHeight: 1 }}>
+        <DashboardSelector />
+        <Button
+          data-testid='setting-button'
+          ghost={true}
+          icon={<SettingsOutlined size='sm' />}
+          style={{ minWidth: '16px', width: '16px' }}
+          onClick={()=> {
+            setDashboardDrawerVisible(true)
+          }}
+        />
+      </Space>}
       extra={[
         ...filterByAccess([
           <Dropdown overlay={addMenu}
@@ -285,8 +453,11 @@ function DashboardPageHeader () {
               <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
             }</Dropdown>
         ]),
-        <VenueFilter key={getShowWithoutRbacCheckKey('hierarchy-filter')}/>,
-        <RangePicker
+        <VenueFilter
+          disabled={dashboardId !== DEFAULT_DASHBOARD_ID}
+          key={getShowWithoutRbacCheckKey('hierarchy-filter')}
+        />,
+        dashboardId === DEFAULT_DASHBOARD_ID && <RangePicker
           key={getShowWithoutRbacCheckKey('range-picker')}
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilterState as CallableFunction}
@@ -297,11 +468,51 @@ function DashboardPageHeader () {
         />
       ]}
     />
+
+    { isCanvasQ2Enabled && <>
+      <DashboardDrawer
+        data={dashboardList}
+        visible={dashboardDrawerVisible}
+        handlePreview={handlePreview}
+        onClose={() => {
+          setDashboardDrawerVisible(false)
+        }}
+        onNextClick={() => {
+          setImportDashboardDrawerVisible(true)
+        }}
+      />
+
+      <ImportDashboardDrawer
+        visible={importDashboardDrawerVisible}
+        dashboardList={dashboardList}
+        handlePreview={handlePreview}
+        onBackClick={() => {
+          setDashboardDrawerVisible(true)
+          setImportDashboardDrawerVisible(false)
+        }}
+        onApplyClick={(keys) => {
+          //TODO
+          console.log(keys) // eslint-disable-line no-console
+        }}
+        onClose={() => setImportDashboardDrawerVisible(false)}
+      />
+
+      <PreviewDashboardModal
+        data={previewData}
+        visible={previewModalVisible}
+        setVisible={setPreviewModalVisible}
+      />
+    </>}
+
+  </>
   )
 }
 
 function ApWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -313,9 +524,10 @@ function ApWidgets () {
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopWiFiNetworks filters={dashboardFilters}/>
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+      {!isCore && <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopAppsByTraffic filters={dashboardFilters}/>
-      </GridCol>
+      </GridCol>}
+
     </GridRow>
   )
 }
@@ -371,6 +583,41 @@ function EdgeWidgets () {
     </GridRow>
   )
 }
+
+function CoreDashboardWidgets () {
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  return (
+    <GridRow>
+      <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
+        <GridRow>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <AlarmWidgetV2 />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <VenuesDashboardWidgetV2 />
+          </GridCol>
+        </GridRow>
+        <GridRow style={{ marginTop: '10px' }}>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <DevicesDashboardWidgetV2 />
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
+            <ClientsWidgetV2 />
+          </GridCol>
+        </GridRow>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
+        <DidYouKnow filters={dashboardFilters}/>
+      </GridCol>
+    </GridRow>
+  )
+}
+
 
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
