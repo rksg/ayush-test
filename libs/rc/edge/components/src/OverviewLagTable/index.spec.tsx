@@ -48,7 +48,7 @@ describe('EdgeOverviewLagTable', () => {
       mac: '00:11:22:33:44:55',
       ip: '192.168.1.1',
       ipMode: 'Static',
-      wanLinkHealth: 'ON',
+      healthCheckEnabled: 'ON',
       wanLinkStatus: EdgeWanLinkHealthStatusEnum.UP,
       wanLinkTargets: [{ targetIp: '8.8.8.8', status: EdgeWanLinkHealthStatusEnum.UP }],
       wanPortRole: 'Primary',
@@ -103,7 +103,7 @@ describe('EdgeOverviewLagTable', () => {
       expect(screen.queryByRole('columnheader', { name: 'Link Health Status' })).toBeValid()
       expect(screen.queryByRole('columnheader', { name: 'WAN Role' })).toBeValid()
       expect(screen.queryByRole('columnheader', { name: 'WAN Status' })).toBeValid()
-      expect(within(row).getByText('ON')).toBeInTheDocument()
+      expect(within(row).getByText('On')).toBeInTheDocument()
       expect(within(row).getByText('Primary')).toBeInTheDocument()
       expect(within(row).getByText('Up')).toBeInTheDocument()
     })
@@ -174,7 +174,7 @@ describe('EdgeOverviewLagTable', () => {
       const targetRow = await screen.findByRole('row', { name: /LAG 1/ })
       expect(targetRow).toBeInTheDocument()
 
-      const linkHealthButton = await within(targetRow).findByRole('button', { name: 'ON' })
+      const linkHealthButton = await within(targetRow).findByRole('button', { name: 'On' })
       await userEvent.click(linkHealthButton)
 
       const linkHealthDetails = await screen.findByTestId('EdgeWanLinkHealthDetailsDrawer')

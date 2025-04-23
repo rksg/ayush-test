@@ -81,21 +81,24 @@ describe('getClusterNodesChartData', () => {
     expect(result.length).toBe(5)
 
     // Check all statuses are properly counted
-    const operationalItem = result.find(item => item.name === EdgeStatusSeverityEnum.OPERATIONAL)
+    // eslint-disable-next-line max-len
+    const operationalItem = result.find(item => item.name === `Formatted ${EdgeStatusSeverityEnum.OPERATIONAL}`)
     expect(operationalItem?.value).toBe(2)
 
     // eslint-disable-next-line max-len
-    const requiresAttentionItem = result.find(item => item.name === EdgeStatusSeverityEnum.REQUIRES_ATTENTION)
+    const requiresAttentionItem = result.find(item => item.name === `Formatted ${EdgeStatusSeverityEnum.REQUIRES_ATTENTION}`)
     expect(requiresAttentionItem?.value).toBe(1)
 
     // eslint-disable-next-line max-len
     const transientIssueItem = result.find(item => item.name === `Formatted ${EdgeStatusSeverityEnum.TRANSIENT_ISSUE}`)
     expect(transientIssueItem?.value).toBe(1)
 
-    const offlineItem = result.find(item => item.name === EdgeStatusSeverityEnum.OFFLINE)
+    // eslint-disable-next-line max-len
+    const offlineItem = result.find(item => item.name === `Formatted ${EdgeStatusSeverityEnum.OFFLINE}`)
     expect(offlineItem?.value).toBe(1)
 
-    const setupPhaseItem = result.find(item => item.name === EdgeStatusSeverityEnum.IN_SETUP_PHASE)
+    // eslint-disable-next-line max-len
+    const setupPhaseItem = result.find(item => item.name === `Formatted ${EdgeStatusSeverityEnum.IN_SETUP_PHASE}`)
     expect(setupPhaseItem?.value).toBe(1)
   })
 
@@ -118,7 +121,7 @@ describe('getClusterNodesChartData', () => {
     const result = getClusterNodesChartData(nodes)
 
     expect(result.length).toBe(1)
-    expect(result[0].name).toBe(EdgeStatusSeverityEnum.OPERATIONAL)
+    expect(result[0].name).toBe(`Formatted ${EdgeStatusSeverityEnum.OPERATIONAL}`)
     expect(result[0].value).toBe(2)
   })
 })
