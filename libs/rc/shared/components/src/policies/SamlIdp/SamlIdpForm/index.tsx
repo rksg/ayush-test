@@ -262,6 +262,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 importRequest={handleImportRequest}
                 formDataName={'unitImports'}
                 onClose={() => setUploadXmlDrawerVisible(false)}
+                footerButtons={['cancel', 'import']}
               />
             </Col>
           </Row>
