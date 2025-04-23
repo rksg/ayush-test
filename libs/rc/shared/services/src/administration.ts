@@ -896,7 +896,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if(msg.steps?.find((step) =>
             (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
-            (requestArgs.callback as Function)()
+            if (typeof requestArgs.callback === 'function') {
+              requestArgs.callback()
+            }
           }
         })
       }
