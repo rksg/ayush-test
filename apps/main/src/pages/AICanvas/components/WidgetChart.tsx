@@ -332,7 +332,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         BYTES: formatter('bytesFormat')
       }
       return <Table
-        style={{ width: width-30, height: height-5 }}
+        style={{ width: width-30, height: '100%' }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
           .map(i => ({
             ...i,
