@@ -19,10 +19,13 @@ const mockProps = {
   canvasId: 'canvas-id',
   widget: mockWidget,
   visible: true,
-  setVisible: jest.fn()
+  setVisible: jest.fn(),
+  changeWidgetProperty: jest.fn()
 } as unknown as CustomizeWidgetDrawerProps
 
-const mockedUpdate = jest.fn()
+const mockedUpdate = jest.fn(() => ({
+  unwrap: jest.fn().mockResolvedValue({})
+}))
 
 jest.mock('@acx-ui/rc/services', () => ({
   useUpdateWidgetMutation: () => [mockedUpdate]

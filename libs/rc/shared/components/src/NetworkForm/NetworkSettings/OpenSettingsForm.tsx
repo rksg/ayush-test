@@ -33,6 +33,7 @@ import * as UI                     from '../styledComponents'
 
 import { CloudpathServerForm }      from './CloudpathServerForm'
 import MacRegistrationListComponent from './MacRegistrationListComponent'
+import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
 
 const { useWatch } = Form
 
@@ -114,6 +115,8 @@ function SettingsForm () {
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isOpenNetworkIntegrateIdentityGroupEnable = useIsSplitOn(Features.WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE)
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const onMacAuthChange = (checked: boolean) => {
@@ -307,6 +310,10 @@ function SettingsForm () {
           </>}
 
         </>}
+        {(isOpenNetworkIntegrateIdentityGroupEnable &&
+          !isMacRegistrationList &&
+          !isTemplate ) &&
+          <IdentityGroup comboWidth='200px' />}
       </div>
     </>
   )
