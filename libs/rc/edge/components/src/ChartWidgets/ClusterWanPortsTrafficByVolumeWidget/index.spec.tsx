@@ -194,7 +194,7 @@ describe('EdgeClusterWanPortsTrafficByVolumeWidget', () => {
 
 describe('transformTimeSeriesChartData', () => {
   it('should transform time series data correctly', () => {
-    const mockData: EdgeAllPortTrafficData = {
+    const mockData: EdgeAllPortTrafficData = [{
       timeSeries: {
         time: [1672531200000, 1672534800000],
         ports: [{
@@ -205,7 +205,7 @@ describe('transformTimeSeriesChartData', () => {
         }]
       },
       portCount: 1
-    }
+    }]
 
     const result = transformTimeSeriesChartData(mockData)
 
@@ -219,7 +219,7 @@ describe('transformTimeSeriesChartData', () => {
   })
 
   it('should handle multiple ports by summing their values', () => {
-    const mockData: EdgeAllPortTrafficData = {
+    const mockData: EdgeAllPortTrafficData = [{
       timeSeries: {
         time: [1672531200000, 1672534800000],
         ports: [
@@ -238,7 +238,7 @@ describe('transformTimeSeriesChartData', () => {
         ]
       },
       portCount: 2
-    }
+    }]
 
     const result = transformTimeSeriesChartData(mockData)
 

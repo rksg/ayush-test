@@ -29,6 +29,7 @@ const edgeLagStatusPayload = {
   fields: [
     'lagId',
     'serialNumber',
+    'edgeClusterId',
     'name',
     'description',
     'lagType',
@@ -39,7 +40,8 @@ const edgeLagStatusPayload = {
     'mac',
     'ip',
     'ipMode',
-    'lacpTimeout'
+    'lacpTimeout',
+    'linkHealthMonitoring'
   ],
   sortField: 'lagId',
   sortOrder: 'ASC'
@@ -51,6 +53,7 @@ const edgePortStatusPayload = {
     'name',
     'type',
     'serialNumber',
+    'edgeClusterId',
     'ip',
     'status',
     'adminStatus',
@@ -59,7 +62,8 @@ const edgePortStatusPayload = {
     'duplex',
     'sortIdx',
     'interfaceName',
-    'ipMode'
+    'ipMode',
+    'linkHealthMonitoring'
   ],
   sortField: 'sortIdx',
   sortOrder: 'ASC'
@@ -82,7 +86,7 @@ export const EdgeClusterOverview = () => {
   } = useGetEdgeGeneralPortsStatusListQuery({
     payload: {
       ...edgePortStatusPayload,
-      filter: { clusterId: [clusterId] }
+      filters: { edgeClusterId: [clusterId] }
     }
   }, {
     skip: !clusterId,
@@ -97,7 +101,7 @@ export const EdgeClusterOverview = () => {
   } = useGetEdgeGeneralLagsStatusListQuery({
     payload: {
       ...edgeLagStatusPayload,
-      filter: { clusterId: [clusterId] }
+      filters: { edgeClusterId: [clusterId] }
     }
   }, {
     skip: !clusterId,

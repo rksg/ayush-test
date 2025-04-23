@@ -18,12 +18,12 @@ import {
   defaultRichTextFormatValues,
   Badge
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
-import { useLazyGetEdgePortTrafficQuery }                            from '@acx-ui/rc/services'
-import { EdgeAllPortTrafficData, EdgeStatus, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
-import type { TimeStamp }                                            from '@acx-ui/types'
-import { useDateFilter, getIntl  }                                   from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { useLazyGetEdgePortTrafficQuery }                                         from '@acx-ui/rc/services'
+import { EdgeAllPortTrafficData, EdgeStatus, EdgeTimeSeriesPayload, defaultSort } from '@acx-ui/rc/utils'
+import type { TimeStamp }                                                         from '@acx-ui/types'
+import { useDateFilter, getIntl  }                                                from '@acx-ui/utils'
 
 import type { EChartsOption, TooltipComponentOption } from 'echarts'
 
@@ -100,9 +100,7 @@ export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
               {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
             </time>
             <ul>
-              {!isEmpty(data[0].timeSeries.time) &&
-              graphParameters.map((graphData) => {
-
+              {graphParameters.map((graphData) => {
                 return <li key={graphData.seriesName}>
                   <Badge
                     className='acx-chart-tooltip'
@@ -136,7 +134,7 @@ export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
             : ({ height, width }) =>
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
-                data={transformTimeSeriesChartData(data[0])}
+                data={transformTimeSeriesChartData(data)}
                 dataFormatter={formatter('bytesFormat')}
                 echartOptions={defaultOption}
               />
@@ -148,7 +146,7 @@ export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
 }
 
 export const transformTimeSeriesChartData =
-(data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
+(data: EdgeAllPortTrafficData[]): TimeSeriesChartData[] => {
   const { $t } = getIntl()
 
   const seriesMapping = [
@@ -157,15 +155,35 @@ export const transformTimeSeriesChartData =
     { key: 'tx', name: $t({ defaultMessage: 'Outbound' }) }
   ] as Array<{ key: string; name: string }>
 
+  // Collect all unique timestamps across all nodes
+  const allTimestampsSet = new Set<TimeStamp>()
+  data.forEach((dataPerNode) => {
+    dataPerNode.timeSeries.time.forEach((time) => allTimestampsSet.add(time))
+  })
+  // eslint-disable-next-line max-len
+  const allTimestamps = Array.from(allTimestampsSet).sort(defaultSort)
+
   return seriesMapping.map(({ key, name }) => {
+    // For each timestamp, sum up the value for the key across all ports and all nodes
+    const dataPoints = allTimestamps.map((timestamp) => {
+      let sum = 0
+      data.forEach((dataPerNode) => {
+        const timeIdx = dataPerNode.timeSeries.time.indexOf(timestamp)
+        if (timeIdx !== -1) {
+          dataPerNode.timeSeries.ports.forEach((port) => {
+            const arr = get(port, key)
+            if (Array.isArray(arr) && arr[timeIdx] != null) {
+              sum += arr[timeIdx]
+            }
+          })
+        }
+      })
+      return [timestamp, sum] as [TimeStamp, number]
+    })
     return {
       key,
       name,
-      data: data.timeSeries.time.map((time, index) => {
-        // eslint-disable-next-line max-len
-        const sum = data.timeSeries.ports.reduce((sum, port) => sum + (get(port, key)[index] || 0), 0)
-        return [time, sum]
-      }) as [TimeStamp, number | null][]
+      data: dataPoints
     }
   })
 }
