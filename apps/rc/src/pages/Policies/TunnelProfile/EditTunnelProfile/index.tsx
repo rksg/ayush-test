@@ -5,15 +5,16 @@ import { Loader }                                         from '@acx-ui/componen
 import { Features }                                       from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useTunnelProfileActions } from '@acx-ui/rc/components'
 import {
+  useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery,
   useGetEdgeSdLanViewDataListQuery,
   useGetTunnelProfileByIdQuery
 } from '@acx-ui/rc/services'
 import {
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
   getTunnelProfileFormDefaultValues,
-  TunnelProfileFormType
+  TunnelProfileFormType,
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -49,12 +50,13 @@ const EditTunnelProfile = () => {
     }
   )
 
-  const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeSdLanP2ViewDataListQuery(
+  const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
       fields: [
         'isGuestTunnelEnabled',
         'tunnelProfileId',
-        'guestTunnelProfileId'
+        'guestTunnelProfileId',
+        'tunneledWlans'
       ]
     } },
     {
@@ -63,9 +65,13 @@ const EditTunnelProfile = () => {
         isSdLanHaUsed: data?.data.some(sdlan => {
           return sdlan.tunnelProfileId === policyId
                || (sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId)
+               || sdlan.tunneledWlans?.some(wlan => wlan.forwardingTunnelProfileId === policyId)
         }),
         isDMZUsed: data?.data?.some(sdlan =>
-          sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId),
+          (sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId)
+          // eslint-disable-next-line max-len
+          || (sdlan.tunneledWlans?.some(wlan => wlan.forwardingTunnelProfileId === policyId && wlan.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE ))
+        ),
         isSdLanHaFetching: isFetching
       })
     }
