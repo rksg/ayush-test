@@ -214,12 +214,19 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               ? undefined : form.getFieldValue('sendUrl')
           }
 
-      setSelected(providerType as SmsProviderType, () => {
-        updateSmsProvider({
+      if (isEnabledWhatsApp) {
+        setSelected(providerType as SmsProviderType, () => {
+          updateSmsProvider({
+            params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
+            payload: providerData
+          }).unwrap()
+        })
+      } else {
+        await updateSmsProvider({
           params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
-          payload: providerData
-        }).unwrap()
-      })
+          payload: providerData }).unwrap()
+        setSelected(providerType as SmsProviderType)
+      }
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
