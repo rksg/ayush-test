@@ -188,18 +188,26 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     await createCanvas({})
   }
 
+  const fetchCanvas = async () => {
+    await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+      setupCanvas(res)
+    })
+  }
+
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     const actions = () => {
       if(e.key === 'New_Canvas') {
         onNewCanvas()
-        setCanvasChange(false)
       } else if (e.key === 'Manage_Canvases') {
         setManageCanvasVisible(true)
-        setCanvasChange(false)
       } else {
         const selected = canvasList?.find(i => i.id == e.key)
         setCanvasId(selected?.id || canvasId)
+        if(canvasId == selected?.id){
+          fetchCanvas()
+        }
       }
+      setCanvasChange(false)
     }
     if(checkChanges) {
       checkChanges(!!canvasHasChanges, () => {

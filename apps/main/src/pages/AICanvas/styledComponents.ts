@@ -414,6 +414,7 @@ display: flex;
 
 export const DashboardIcon = styled(Dashboard)`
   background-color: var(--acx-neutrals-20);
+  color: var(--acx-neutrals-70);
   padding: 2px;
   height: 20px;
   width: 20px;
@@ -713,10 +714,9 @@ export const CanvasListItem = styled(AntList.Item)`
   display: flex;
   height: 68px;
   border-radius: 8px;
-  border: 1px solid var(--acx-neutrals-20) !important;
   background: var(--acx-neutrals-10);
-  margin-bottom: 6px;
-  padding: 12px 15px !important;
+  margin-bottom: 8px;
+  padding: 15px 20px 15px 24px !important;
 
   .info {
     white-space: nowrap;
@@ -734,6 +734,7 @@ export const CanvasListItem = styled(AntList.Item)`
     svg {
       margin-left: 8px;
       flex-shrink: 0;
+      color: var(--acx-neutrals-70);
     }
     .name {
       text-overflow: ellipsis;
