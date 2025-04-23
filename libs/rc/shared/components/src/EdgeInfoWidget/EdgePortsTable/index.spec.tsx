@@ -109,7 +109,7 @@ describe('Edge Ports Table', () => {
       expect(screen.getByText('WAN Status')).toBeInTheDocument()
 
       // Check if data is rendered correctly
-      expect(screen.getByText('ON')).toBeInTheDocument()
+      expect(screen.getByText('On')).toBeInTheDocument()
       expect(screen.getAllByText('Up')).toHaveLength(2)
       expect(screen.getByText('Primary')).toBeInTheDocument()
       expect(screen.getByText('Active')).toBeInTheDocument()
@@ -145,7 +145,7 @@ describe('Edge Ports Table', () => {
       </Provider>, { route: { params } })
 
       // Click the Link Health Monitoring button
-      const button = screen.getByRole('button', { name: 'ON' })
+      const button = screen.getByRole('button', { name: 'On' })
       await userEvent.click(button)
 
       // Wait for the drawer to open
