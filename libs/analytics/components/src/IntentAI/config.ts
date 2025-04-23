@@ -290,6 +290,7 @@ export const failureCodes = {
   'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
   'sufficient-aps-crrm': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
   'sufficient-aps-pf': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'sz-offboarded': defineMessage({ defaultMessage: 'SmartZone has been offboarded.' }),
   'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
   'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' })
 }
