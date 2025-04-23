@@ -9,8 +9,8 @@ import {
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
 import { ServiceSortOrder, ServicesToolBar }   from './ServicesToolBar'
-import { useFilteredUnifiedServices }          from './useFilteredUnifiedServices'
 import { useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
+import { useUnifiedServiceSearchFilter }       from './useUnifiedServiceSearchFilter'
 
 export function MyServices () {
   const { $t } = useIntl()
@@ -18,8 +18,8 @@ export function MyServices () {
   const defaultSortOrder = ServiceSortOrder.ASC
 
   const {
-    setSearchTerm, setFilters, setSortOrder, unifiedServices
-  } = useFilteredUnifiedServices(rawUnifiedServiceList, defaultSortOrder)
+    setSearchTerm, setFilters, setSortOrder, filteredServices
+  } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
 
   return <>
     <PageHeader
@@ -39,7 +39,7 @@ export function MyServices () {
         setSortOrder={setSortOrder}
       />
       <GridRow>
-        {unifiedServices.map(service => (
+        {filteredServices.map(service => (
           <GridCol key={service.type} col={{ span: 6 }}>
             <UnifiedServiceCard
               key={service.type}

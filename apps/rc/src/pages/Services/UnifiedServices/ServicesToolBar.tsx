@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Select, Space } from 'antd'
 import { debounce }      from 'lodash'
 import { useIntl }       from 'react-intl'
@@ -28,7 +30,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
 
   const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
-  }, 300)
+  }, 500)
 
 
   const handleProductFilterChange = (value: RadioCardCategory[]) => {
@@ -43,6 +45,11 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
     setSortOrder(value)
   }
 
+  useEffect(() => {
+    // cleanup debounced function when component is unmounted
+    return () => handleSearchChange.cancel()
+  }, [handleSearchChange])
+
   return (
     <Space size={12}>
       <Table.SearchInput
@@ -50,13 +57,12 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         placeholder={$t({ defaultMessage: 'Search for network controls...' })}
         style={{ width: 300 }}
         maxLength={64}
-        // value={searchTerm}
         allowClear
       />
       <Select<RadioCardCategory[]>
         mode='multiple'
         key='product'
-        onChange={(value) => handleProductFilterChange(value)}
+        onChange={handleProductFilterChange}
         placeholder={$t({ defaultMessage: 'Product' })}
         allowClear
         showArrow
@@ -72,7 +78,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       <Select<UnifiedServiceCategory[]>
         mode='multiple'
         key='category'
-        onChange={(value) => handleCategoryFilterChange(value)}
+        onChange={handleCategoryFilterChange}
         placeholder={$t({ defaultMessage: 'Category' })}
         allowClear
         showArrow
@@ -105,7 +111,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       <Select<ServiceSortOrder>
         key='sort'
         defaultValue={defaultSortOrder}
-        onChange={(value) => handleSortOrderChange(value)}
+        onChange={handleSortOrderChange}
         showArrow
         style={{ width: 140 }}
         showSearch={false}

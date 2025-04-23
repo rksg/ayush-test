@@ -1,33 +1,25 @@
-import { useEffect, useState } from 'react'
-
-import { isEqual } from 'lodash'
+import { useMemo, useState } from 'react'
 
 import { RadioCardCategory } from '@acx-ui/components'
 import { UnifiedService }    from '@acx-ui/rc/utils'
 
 import { ServiceFiltersConfig, ServiceSortOrder } from './ServicesToolBar'
 
-export function useFilteredUnifiedServices (
+export function useUnifiedServiceSearchFilter (
   rawUnifiedServiceList: Array<UnifiedService>, defaultSortOrder: ServiceSortOrder
 ) {
   const [ searchTerm, setSearchTerm ] = useState<string>()
   const [ filters, setFilters ] = useState<ServiceFiltersConfig>({})
   const [ sortOrder, setSortOrder ] = useState<ServiceSortOrder>(defaultSortOrder)
-  const [ unifiedServices, setUnifiedServices ] = useState<Array<UnifiedService>>([])
 
-  useEffect(() => {
-    const result = filterUnifiedServices(rawUnifiedServiceList, { searchTerm, filters }, sortOrder)
-
-    if (isEqual(result, unifiedServices)) return
-
-    setUnifiedServices(result)
+  const filteredServices = useMemo(() => {
+    return getFilteredAndSortedServices(rawUnifiedServiceList, { searchTerm, filters }, sortOrder)
   }, [rawUnifiedServiceList, searchTerm, filters, sortOrder])
 
-
-  return { setSearchTerm, setFilters, setSortOrder, unifiedServices }
+  return { setSearchTerm, setFilters, setSortOrder, filteredServices }
 }
 
-function filterUnifiedServices (
+function getFilteredAndSortedServices (
   list: Array<UnifiedService>,
   filterOptions: { searchTerm?: string; filters?: ServiceFiltersConfig },
   sortOrder: ServiceSortOrder
@@ -37,7 +29,7 @@ function filterUnifiedServices (
   const filteredList = list.filter(svc => {
     const { products = [], categories = [] } = filters
 
-    return isSearchHit(svc, searchTerm)
+    return matchSearchTerm(svc, searchTerm)
       // eslint-disable-next-line max-len
       && (products.length === 0 || products.some((p: RadioCardCategory) => svc.products.includes(p)))
       && (categories.length === 0 || categories.includes(svc.category))
@@ -49,7 +41,7 @@ function filterUnifiedServices (
   })
 }
 
-const isSearchHit = (svc: UnifiedService, searchTerm?: string) => {
+const matchSearchTerm = (svc: UnifiedService, searchTerm?: string) => {
   if (!searchTerm) return true
 
   const searchStr = searchTerm.toLowerCase()

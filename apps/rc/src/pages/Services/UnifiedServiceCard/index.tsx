@@ -49,6 +49,8 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
       description={unifiedService.description ?? ''}
       categories={unifiedService.products}
       onClick={() => {
+        if (unifiedService.readonly) return
+
         if (isAddButtonAllowed()) {
           navigate(linkToCreate, { state: { from: location } })
         } else if (cardType === 'default') {
