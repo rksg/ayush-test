@@ -199,11 +199,11 @@ export default function Layout (props: LayoutProps) {
   }
 
   const deleteCard = (id: string, groupIndex:number) => {
-    let cards = groups[groupIndex].cards.filter((item) => item.id !== id)
+    const groupsTmp = _.cloneDeep(groups)
+    let cards = groupsTmp[groupIndex].cards.filter((item) => item.id !== id)
     let compactedLayout = compactLayoutHorizontal(cards, 4, null)
-    groups[groupIndex].cards = compactedLayout
-    const tmp = [...groups]
-    setGroups(tmp)
+    groupsTmp[groupIndex].cards = compactedLayout
+    setGroups(groupsTmp)
   }
 
   return (
