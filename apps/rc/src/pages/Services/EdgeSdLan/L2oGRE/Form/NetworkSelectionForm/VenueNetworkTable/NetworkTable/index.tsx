@@ -1,37 +1,41 @@
 /* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
+import { Col, Form, Row }     from 'antd'
 import { DefaultOptionType }  from 'antd/es/cascader'
 import { find, isNil, merge } from 'lodash'
 import { AlignType }          from 'rc-table/lib/interface'
 import { useIntl }            from 'react-intl'
 
-import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
-import { transToOptions }                                                     from '@acx-ui/edge/components'
-import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
-import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
+import { Loader, Select, Table, TableColumn, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { transToOptions }                                                              from '@acx-ui/edge/components'
+import { AddNetworkModal }                                                             from '@acx-ui/rc/components'
+import { useVenueNetworkActivationsViewModelListQuery }                                from '@acx-ui/rc/services'
 import {
   defaultSort,
   EdgeMvSdLanFormModel,
+  IncompatibilityFeatures,
   isOweTransitionNetwork,
   Network,
   NetworkType,
   NetworkTypeEnum,
   sortProp,
-  useTableQuery,
-  WifiRbacUrlsInfo,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useTableQuery,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { WifiScopes }         from '@acx-ui/types'
-import { filterByAccess }     from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+import { WifiScopes }                          from '@acx-ui/types'
+import { filterByAccess }                      from '@acx-ui/user'
+import { compareVersions, getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { EdgeSdLanFormType }     from '../../..'
 import { useEdgeSdLanContext }   from '../../../EdgeSdLanContextProvider'
+import { WarningCircleRed }      from '../../styledComponents'
 import { NetworkActivationType } from '../../VenueNetworkTable/NetworksDrawer'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
+
 
 // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
 const getRowDisabledInfo = (
@@ -88,7 +92,11 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const { $t } = useIntl()
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { availableTunnelProfiles = [] } = useEdgeSdLanContext()
+  const {
+    availableTunnelProfiles = [],
+    associatedEdgeClusters = [],
+    requiredFwMap = {}
+  } = useEdgeSdLanContext()
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
@@ -116,16 +124,32 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const allActivatedTunnelProfileIds = Object.values(allActivatedNetworks).flatMap(item => item.map(item => item.tunnelProfileId ?? ''))
   const currentNetworkList = activated?.[venueId]
 
-  const tunnelProfileOptions = useMemo(() =>[
-    {
-      label: $t({ defaultMessage: 'Core Port' }),
-      value: ''
-    },
-    ...transToOptions(
-      availableTunnelProfiles.filter(item => item.id !== dcTunnelProfileId),
-      [...(currentNetworkList?.map(item => item.tunnelProfileId ?? '') ?? []), ...(allActivatedTunnelProfileIds ?? [])]
+  const tunnelProfileOptions = useMemo(() => {
+    const selectedCluster = associatedEdgeClusters.find(
+      cluster => cluster.clusterId === dcTunnelProfileId
     )
-  ], [availableTunnelProfiles, activated])
+
+    const isSupportL2Gre = selectedCluster?.edgeList?.every(
+      edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.L2OGRE]) > -1
+    )
+
+    const filteredTunnelOptions = availableTunnelProfiles.filter(profile =>
+      (isSupportL2Gre || profile.tunnelType !== TunnelTypeEnum.L2GRE) &&
+      profile.id !== dcTunnelProfileId)
+
+    const usedTunnelProfileIds = [
+      ...(currentNetworkList?.map(item => item.tunnelProfileId ?? '') ?? []),
+      ...(allActivatedTunnelProfileIds ?? [])
+    ]
+
+    return [
+      {
+        label: $t({ defaultMessage: 'Core Port' }),
+        value: ''
+      },
+      ...transToOptions(filteredTunnelOptions, usedTunnelProfileIds)
+    ]
+  }, [availableTunnelProfiles, activated])
 
   const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
@@ -175,17 +199,43 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     title: $t({ defaultMessage: 'Forward Destination' }),
     key: 'action2',
     dataIndex: 'action2',
-    width: 120,
-    render: (_: unknown, row: Network) => {
+    width: 150,
+    render: (_: unknown, row: Network, index: number) => {
       const isEnabledTunneling = currentNetworkList?.some(item => item.networkId === row.id)
       const currentTunnelProfileId = currentNetworkList?.find(item => item.networkId === row.id)?.tunnelProfileId
       const processedOptions = getFilteredTunnelProfileOptions(row, tunnelProfileOptions, availableTunnelProfiles)
-      return isEnabledTunneling && <Select
-        style={{ width: 200 }}
-        value={currentTunnelProfileId ?? ''}
-        onChange={(value) => onTunnelProfileChange?.(row, value)}
-        options={processedOptions}
-      />
+      return isEnabledTunneling && <Row align='middle' gutter={10}>
+        <Col span={22}>
+          <Select
+            style={{ width: '100%' }}
+            value={currentTunnelProfileId ?? ''}
+            onChange={(value) => onTunnelProfileChange?.(row, value)}
+            options={processedOptions}
+          />
+        </Col>
+        <Col span={2}>
+          <Form.Item
+            noStyle
+            name={['validation', index]}
+            rules={[{ required: true }]}
+            children={<input hidden />}
+          />
+          <Form.Item
+            dependencies={['validation', index]}
+            noStyle
+          >
+            {({ getFieldError }) => {
+              const errors = getFieldError(['validation', index])
+              return errors.length ?
+                <Tooltip
+                  title={errors[0]}
+                  placement='bottom'
+                  overlayInnerStyle={{ width: 415 }}><WarningCircleRed />
+                </Tooltip> : undefined
+            }}
+          </Form.Item>
+        </Col>
+      </Row>
     }
   }
   ]), [

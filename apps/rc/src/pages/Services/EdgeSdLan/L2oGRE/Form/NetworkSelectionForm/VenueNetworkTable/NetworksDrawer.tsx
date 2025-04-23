@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Space, Typography }                               from 'antd'
+import { Form, Space, Typography }                         from 'antd'
 import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
@@ -63,6 +63,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     pinNetworkIds
   } = props
 
+  const [form] = Form.useForm()
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
 
   const handleActivateChange = (
@@ -126,13 +127,17 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    onSubmit(updateContent)
+    form.validateFields().then(() => {
+      onSubmit(updateContent)
+    }).catch(() => {
+      // do nothing
+    })
   }
 
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select Networks' }, { venueName })}
-      width={1000}
+      width={1100}
       visible={visible}
       onClose={onClose}
       footer={
@@ -159,14 +164,15 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             />
           </Typography.Paragraph>
         </div>
-
-        <ActivatedNetworksTable
-          venueId={venueId}
-          activated={updateContent}
-          onActivateChange={handleActivateChange}
-          onTunnelProfileChange={handelTunnelProfileChange}
-          pinNetworkIds={pinNetworkIds}
-        />
+        <Form form={form}>
+          <ActivatedNetworksTable
+            venueId={venueId}
+            activated={updateContent}
+            onActivateChange={handleActivateChange}
+            onTunnelProfileChange={handelTunnelProfileChange}
+            pinNetworkIds={pinNetworkIds}
+          />
+        </Form>
       </Space>
     </Drawer>
   )
