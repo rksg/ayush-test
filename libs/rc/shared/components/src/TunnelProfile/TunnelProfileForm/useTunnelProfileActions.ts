@@ -160,7 +160,7 @@ export const useTunnelProfileActions = () => {
           }).catch(reject)
         })
       } else {
-        handleTunnelProfileEdgeClusterAssociation(data, id)
+        handleTunnelProfileEdgeClusterAssociation(id, data, initData)
       }
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -213,8 +213,9 @@ export const useTunnelProfileActions = () => {
   }
 
   const handleTunnelProfileEdgeClusterAssociation = async (
+    id: string,
     data: TunnelProfileFormType,
-    id: string
+    initData: TunnelProfileFormType
   ): Promise<void> => {
     const venueId = data.venueId
     const clusterId = data.edgeClusterId
@@ -231,6 +232,9 @@ export const useTunnelProfileActions = () => {
         // eslint-disable-next-line no-console
         console.log(error)
       }
+      return
+    }
+    if(data.edgeClusterId === initData.edgeClusterId) {
       return
     }
     try {
@@ -290,7 +294,7 @@ export const useTunnelProfileActions = () => {
 
     const initDataCopy = cloneDeep(initData)
     delete initDataCopy.disabledFields
-
+    delete initDataCopy.edgeClusterId
     const hasChanges = !isEqual(preUpdateData, initDataCopy)
     return { hasChanges }
   }

@@ -8,12 +8,14 @@ import {
   useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
   useGetEdgeSdLanViewDataListQuery,
-  useGetTunnelProfileByIdQuery
+  useGetTunnelProfileByIdQuery,
+  useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
   getTunnelProfileFormDefaultValues,
   TunnelProfileFormType,
+  TunnelProfileViewData,
   TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -32,6 +34,18 @@ const EditTunnelProfile = () => {
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
   )
+
+
+  const { tunnelProfileViewData, isLoading } = useGetTunnelProfileViewDataListQuery(
+    { payload: { filters: { id: [policyId] } } },
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        tunnelProfileViewData: data?.data?.[0] || {} as TunnelProfileViewData,
+        isLoading
+      })
+    }
+  )
+
   const { updateTunnelProfileOperation } = useTunnelProfileActions()
 
   const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
@@ -119,6 +133,10 @@ const EditTunnelProfile = () => {
 
   if (pinId || isDMZUsed)
     formInitValues.disabledFields.push('natTraversalEnabled')
+
+  if (!isLoading) {
+    formInitValues.edgeClusterId = tunnelProfileViewData.destinationEdgeClusterId
+  }
 
   return (
     <Loader states={[{
