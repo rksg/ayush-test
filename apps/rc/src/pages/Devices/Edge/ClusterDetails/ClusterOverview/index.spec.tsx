@@ -24,13 +24,9 @@ jest.mock('./LagsTab', () => ({
 }))
 
 jest.mock('@acx-ui/rc/services', () => ({
-  useGetEdgeLagsStatusListQuery: jest.fn(),
-  useGetEdgePortsStatusListQuery: jest.fn()
+  useGetEdgeGeneralLagsStatusListQuery: jest.fn(),
+  useGetEdgeGeneralPortsStatusListQuery: jest.fn()
 }))
-
-// jest.mock('react-router-dom', () => ({
-//   useParams: jest.fn(() => ({ activeSubTab: null }))
-// }))
 
 const params = {
   clusterId: 'test-cluster-id'
@@ -38,11 +34,11 @@ const params = {
 
 describe('EdgeClusterOverview', () => {
   beforeEach(() => {
-    jest.spyOn(services, 'useGetEdgeLagsStatusListQuery').mockReturnValue({
+    jest.spyOn(services, 'useGetEdgeGeneralLagsStatusListQuery').mockReturnValue({
       lagStatusList: [],
       isLagListLoading: false
     })
-    jest.spyOn(services, 'useGetEdgePortsStatusListQuery').mockReturnValue({
+    jest.spyOn(services, 'useGetEdgeGeneralPortsStatusListQuery').mockReturnValue({
       portStatusList: [],
       isPortListLoading: false
     })

@@ -4,10 +4,10 @@ import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }           from '@acx-ui/components'
+import { GridRow, Tabs }                  from '@acx-ui/components'
 import {
-  useGetEdgeLagsStatusListQuery,
-  useGetEdgePortsStatusListQuery
+  useGetEdgeGeneralLagsStatusListQuery,
+  useGetEdgeGeneralPortsStatusListQuery
 } from '@acx-ui/rc/services'
 import { ClusterStatusEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
@@ -47,19 +47,19 @@ const edgeLagStatusPayload = {
 
 const edgePortStatusPayload = {
   fields: [
-    'port_id',
+    'portId',
     'name',
     'type',
-    'serial_number',
+    'serialNumber',
     'ip',
     'status',
-    'admin_status',
-    'speed_kbps',
+    'adminStatus',
+    'speedKbps',
     'mac',
     'duplex',
-    'sort_idx',
-    'interface_name',
-    'ip_mode'
+    'sortIdx',
+    'interfaceName',
+    'ipMode'
   ],
   sortField: 'sortIdx',
   sortOrder: 'ASC'
@@ -79,9 +79,11 @@ export const EdgeClusterOverview = () => {
   const {
     portStatusList,
     isPortListLoading
-  } = useGetEdgePortsStatusListQuery({
-    params: { clusterId },
-    payload: edgePortStatusPayload
+  } = useGetEdgeGeneralPortsStatusListQuery({
+    payload: {
+      ...edgePortStatusPayload,
+      filter: { clusterId: [clusterId] }
+    }
   }, {
     skip: !clusterId,
     selectFromResult: ({ data, isLoading }) => ({
@@ -92,9 +94,11 @@ export const EdgeClusterOverview = () => {
   const {
     lagStatusList = [],
     isLagListLoading
-  } = useGetEdgeLagsStatusListQuery({
-    params: { clusterId },
-    payload: edgeLagStatusPayload
+  } = useGetEdgeGeneralLagsStatusListQuery({
+    payload: {
+      ...edgeLagStatusPayload,
+      filter: { clusterId: [clusterId] }
+    }
   }, {
     skip: !clusterId,
     selectFromResult ({ data, isLoading }) {

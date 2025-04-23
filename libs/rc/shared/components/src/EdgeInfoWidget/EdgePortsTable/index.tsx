@@ -257,6 +257,7 @@ export const EdgePortsTable = (props: EdgePortsTableProps) => {
 
 const aggregatePortData = (portData: EdgePortStatus[],
   lagData: EdgeLagStatus[], edgeNodes?: EdgeStatus[]): EdgePortsTableDataType[] => {
+
   return portData.map(portItem => {
     const targetLagData = lagData.find(
       lagItem => lagItem.lagMembers?.some(
