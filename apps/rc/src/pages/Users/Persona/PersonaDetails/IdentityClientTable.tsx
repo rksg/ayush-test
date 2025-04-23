@@ -25,7 +25,9 @@ const onboardingTypesMapping: { [key: string]: string } = {
   'mac-auth': 'Mac Auth',
   'AAANetwork': 'AAA Network',
   'PSKNetwork': 'PSK Network',
-  'eap': 'EAP/TLS'
+  'eap': 'EAP/TLS',
+  'Hotspot20Network': 'Hotspot 2.0 Network',
+  'GuestNetwork': 'Guest Network'
 }
 
 const getOnboardingTerm = (type?: string): string => {
