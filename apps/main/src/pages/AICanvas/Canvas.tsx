@@ -4,10 +4,11 @@ import { Menu, MenuProps } from 'antd'
 import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 
-import { Button, Dropdown, Tooltip }                                                                      from '@acx-ui/components'
-import { ArrowExpand, LockOutlined, GlobeOutlined }                                                       from '@acx-ui/icons-new'
-import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation, useLazyGetCanvasByIdQuery } from '@acx-ui/rc/services'
-import { Canvas as CanvasType }                                                                           from '@acx-ui/rc/utils'
+import { Button, Dropdown, Tooltip }                  from '@acx-ui/components'
+import { ArrowExpand, LockOutlined, GlobeOutlined }   from '@acx-ui/icons-new'
+import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation,
+  useLazyGetCanvasByIdQuery, usePatchCanvasMutation } from '@acx-ui/rc/services'
+import { Canvas as CanvasType } from '@acx-ui/rc/utils'
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
@@ -127,10 +128,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
+  const [visibilityType, setVisibilityType] = useState('')
 
   const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
+  const [patchCanvas] = usePatchCanvasMutation()
   const { data: canvasList } = useGetCanvasQuery({})
 
   useEffect(() => {
@@ -218,6 +221,30 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     }
   }
 
+  const patchCurrentCanvas = async (payload: { [key:string]: string|boolean }) => {
+    await patchCanvas({
+      params: { canvasId },
+      payload
+    })
+  }
+
+  const handleVisibilityMenuClick: MenuProps['onClick'] = (e) => {
+    if(visibilityType !== e.key) {
+      setVisibilityType(e.key)
+      if(checkChanges) {
+        const payload:{ [key:string]: boolean } = {
+          visible: e.key == 'public'
+        }
+        checkChanges(!!canvasHasChanges, () => {
+          patchCurrentCanvas(payload)
+        }, ()=>{
+          onSave(()=>{patchCurrentCanvas(payload)})
+        })
+      }
+    }
+  }
+
+
   const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
@@ -226,6 +253,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const setupCanvas = (response: CanvasType) => {
     setCurrentCanvas(response)
+    setVisibilityType(response.visible ? 'public' : 'private')
     if(response.content) {
       let data = JSON.parse(response.content) as Section[]
       data = data.map(section => ({
@@ -324,26 +352,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     }
   }
 
-  const visibilityMenu = (
-    <Menu
-      onClick={()=>{}}
-      selectable
-      defaultSelectedKeys={['private']}
-      items={[
-        {
-          key: 'private',
-          icon: visibilityMap['private'].icon,
-          label: visibilityMap['private'].label
-        },
-        {
-          key: 'public',
-          icon: visibilityMap['public'].icon,
-          label: visibilityMap['public'].label
-        }
-      ]
-      }/>
-  )
-
   return (
     <UI.Canvas>
       <div className='header'>
@@ -386,37 +394,61 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
           </div> : <div/>
         }
         <div className='actions'>
-          <Dropdown overlay={visibilityMenu}>{(selectedKeys) =>
-            <div className='visibility-type'>
-              {selectedKeys && <div className='label'>
-                {visibilityMap[selectedKeys].icon}
-                {visibilityMap[selectedKeys].label}
-              </div>}
-              <ArrowExpand size='sm' />
-            </div>
-          }</Dropdown>
-          <Tooltip.Question
-            iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
-            overlayStyle={{ maxWidth: '270px' }}
-            title={<UI.Visibility>
-              <div className='type'>
-                <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
-                <div>
-                  {$t({ defaultMessage: `Hide this canvas from the public. 
-                     The canvas will be visible to the owner only.` })}
-                </div>
-              </div>
-              <div className='type'>
-                <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
-                <div>
-                  {$t({
-                    defaultMessage: 'Publish this canvas for all administrators in this tenant.'
-                  })}
-                </div>
-              </div>
-            </UI.Visibility>}
-            placement='bottom'
-          />
+          {
+            visibilityType && <>
+              <Dropdown
+                placement='bottomRight'
+                overlay={
+                  <Menu
+                    onClick={handleVisibilityMenuClick}
+                    selectable
+                    selectedKeys={[visibilityType]}
+                    items={[
+                      {
+                        key: 'private',
+                        icon: visibilityMap['private'].icon,
+                        label: visibilityMap['private'].label
+                      },
+                      {
+                        key: 'public',
+                        icon: visibilityMap['public'].icon,
+                        label: visibilityMap['public'].label
+                      }
+                    ]}/>
+                }>{() =>
+                  <div className='visibility-type'>
+                    <div className='label'>
+                      {visibilityMap[visibilityType].icon}
+                      {visibilityMap[visibilityType].label}
+                    </div>
+                    <ArrowExpand size='sm' />
+                  </div>
+                }
+              </Dropdown>
+              <Tooltip.Question
+                iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
+                overlayStyle={{ maxWidth: '270px' }}
+                placement='bottom'
+                title={<UI.Visibility>
+                  <div className='type'>
+                    <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
+                    <div>
+                      {$t({ defaultMessage: `Hide this canvas from the public. 
+                          The canvas will be visible to the owner only.` })}
+                    </div>
+                  </div>
+                  <div className='type'>
+                    <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
+                    <div>
+                      {$t({
+                        defaultMessage: 'Publish this canvas for all administrators in this tenant.'
+                      })}
+                    </div>
+                  </div>
+                </UI.Visibility>}
+              />
+            </>
+          }
           <Button className='black' onClick={()=>{setPreviewModalVisible(true)}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
