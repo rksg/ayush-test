@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { Form, Space }             from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, findIndex } from 'lodash'
-import { useIntl }                 from 'react-intl'
+import { Form, Space } from 'antd'
+import TextArea        from 'antd/lib/input/TextArea'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -19,8 +19,7 @@ import {
   EdgeSerialNumber,
   convertEdgePortsConfigToApiPayload,
   getEdgePortTypeOptions,
-  isInterfaceInVRRPSetting,
-  validateEdgeGateway
+  isInterfaceInVRRPSetting
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -65,7 +64,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
@@ -325,19 +323,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           formFieldsProps={{
+            // we should not apply Edge gateway validator on LAG Drawer
+            // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {
               options: portTypeOptions,
-              disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
-              rules: [{ validator: () => {
-                const dryRunPorts = cloneDeep(portList ?? [])
-                allValues.lagMembers.forEach(member => {
-                  const idx = findIndex(dryRunPorts, { id: member.portId })
-                  if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
-                })
-
-                // eslint-disable-next-line max-len
-                return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
-              } }]
+              disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig)
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
