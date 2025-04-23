@@ -95,12 +95,14 @@ const EditTunnelProfile = () => {
     }
   })
 
-  const handelOnFinish = (data: TunnelProfileFormType) =>
-    updateTunnelProfileOperation(policyId || '', data)
-
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
   const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+
+  const handelOnFinish = (data: TunnelProfileFormType) =>
+    updateTunnelProfileOperation(policyId || '', data, formInitValues)
+
+
   formInitValues.disabledFields = []
   if (pinId || isSdLanUsed){
     formInitValues.disabledFields.push('type')
