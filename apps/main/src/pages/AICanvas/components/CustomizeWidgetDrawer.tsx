@@ -5,16 +5,19 @@ import { Drawer }                  from '@acx-ui/components'
 import { useUpdateWidgetMutation } from '@acx-ui/rc/services'
 import { WidgetListData }          from '@acx-ui/rc/utils'
 
+import { WidgetProperty } from './Card'
+
 export interface CustomizeWidgetDrawerProps {
   canvasId: string,
   widget: WidgetListData,
   visible: boolean
   setVisible: (v: boolean) => void
+  changeWidgetProperty: (data: WidgetProperty)=> void
 }
 
 export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, widget, canvasId } = props
+  const { visible, setVisible, widget, canvasId, changeWidgetProperty } = props
   const [form] = Form.useForm()
   const [updateWidget] = useUpdateWidgetMutation()
 
@@ -29,6 +32,11 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
       payload: {
         name: formValues.name
       }
+    }).unwrap().then(()=> {
+      changeWidgetProperty({
+        // TODO: time range
+        name: formValues.name
+      })
     })
     onClose()
   }
@@ -39,6 +47,8 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
+      mask={true}
+      maskClosable={true}
       width={400}
       children={
         <Form layout='vertical'
