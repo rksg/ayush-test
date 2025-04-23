@@ -399,6 +399,10 @@ export const validationMessages = {
     defaultMessage: 'The ACL name already exists',
     description: 'Validation - The ACL name already exists'
   }),
+  nameDuplicateInvalid: defineMessage({
+    defaultMessage: 'The name already exists',
+    description: 'Validation - The name already exists'
+  }),
   aclRuleSequenceInvalid: defineMessage({
     defaultMessage: 'The Sequence already exists',
     description: 'Validation - The Sequence already exists'
