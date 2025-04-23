@@ -1,102 +1,82 @@
-import { useEffect, useRef, useState } from 'react'
+import {useEffect, useRef, useState} from 'react'
 
-import {
-  Col,
-  Form,
-  Input,
-  Radio,
-  RadioChangeEvent,
-  Row,
-  Select,
-  Switch as AntSwitch,
-  Space
-} from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import {Col, Form, Input, Radio, RadioChangeEvent, Row, Select, Space, Switch as AntSwitch} from 'antd'
+import {DefaultOptionType} from 'antd/lib/select'
+import _ from 'lodash'
+import {useIntl} from 'react-intl'
 import {
   SortableContainer,
+  SortableContainerProps,
   SortableElement,
-  SortableHandle,
   SortableElementProps,
-  SortableContainerProps
+  SortableHandle
 } from 'react-sortable-hoc'
 
 import {
+  Alert,
   Button,
-  PageHeader,
   Loader,
+  PageHeader,
+  showToast,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  TableProps,
   Table,
+  TableProps,
   Tabs,
-  Tooltip,
-  Alert,
-  showToast
+  Tooltip
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
-import { Drag }                           from '@acx-ui/icons'
-import { DeleteOutlined }                 from '@acx-ui/icons-new'
-import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
+import {Features, useIsSplitOn} from '@acx-ui/feature-toggle'
+import {Drag} from '@acx-ui/icons'
+import {DeleteOutlined} from '@acx-ui/icons-new'
+import {useSwitchFirmwareUtils} from '@acx-ui/rc/components'
 import {
   switchApi,
-  useGetSwitchQuery,
   useConvertToStackMutation,
-  useSaveSwitchMutation,
-  useUpdateSwitchMutation,
-  useSwitchDetailHeaderQuery,
-  useLazyGetVlansByVenueQuery,
-  useLazyGetSwitchListQuery,
   useGetSwitchAuthenticationQuery,
-  useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
+  useGetSwitchQuery,
+  useGetSwitchVenueVersionListQuery,
   useGetSwitchVenueVersionListV1001Query,
-  useUpdateSwitchAuthenticationMutation
+  useLazyGetSwitchListQuery,
+  useLazyGetVlansByVenueQuery,
+  useSaveSwitchMutation,
+  useSwitchDetailHeaderQuery,
+  useUpdateSwitchAuthenticationMutation,
+  useUpdateSwitchMutation
 } from '@acx-ui/rc/services'
 import {
-  Switch,
-  getSwitchModel,
-  SwitchTable,
-  SwitchStatusEnum,
-  isOperationalSwitch,
-  SwitchViewModel,
-  redirectPreviousPage,
-  LocationExtended,
-  VenueMessages,
-  SwitchRow,
-  SwitchMessages,
-  isSameModelFamily,
-  isFirmwareVersionAbove10010f,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
-  getStackUnitsMinLimitation,
   convertInputToUppercase,
+  createSwitchSerialPattern,
   FirmwareSwitchVenueVersionsV1002,
+  getStackUnitsMinLimitation,
   getStackUnitsMinLimitationV1002,
   getSwitchFwGroupVersionV1002,
+  getSwitchModel,
+  isFirmwareVersionAbove10010f,
+  isOperationalSwitch,
+  isSameModelFamily,
+  LocationExtended,
+  redirectPreviousPage,
+  Switch,
   SwitchFirmwareModelGroup,
-  createSwitchSerialPattern
+  SwitchMessages,
+  SwitchRow,
+  SwitchStatusEnum,
+  SwitchTable,
+  SwitchViewModel,
+  VenueMessages
 } from '@acx-ui/rc/utils'
-import {
-  useLocation,
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
-import { store }   from '@acx-ui/store'
-import { getIntl } from '@acx-ui/utils'
+import {useLocation, useNavigate, useParams, useTenantLink} from '@acx-ui/react-router-dom'
+import {store} from '@acx-ui/store'
+import {getIntl} from '@acx-ui/utils'
 
-import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
-import { SwitchStackSetting }                                          from '../SwitchStackSetting'
-import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
+import {getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog} from '../SwitchForm/blockListRelatedTsb.util'
+import {SwitchStackSetting} from '../SwitchStackSetting'
+import {SWITCH_UPGRADE_NOTIFICATION_TYPE, SwitchUpgradeNotification} from '../SwitchUpgradeNotification'
 
-import {
-  TableContainer,
-  RequiredDotSpan,
-  StepFormTitle,
-  TypographyText
-} from './styledComponents'
+import {RequiredDotSpan, StepFormTitle, TableContainer, TypographyText} from './styledComponents'
 
 const defaultPayload = {
   firmwareType: '',
@@ -1133,14 +1113,14 @@ export function StackForm () {
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     {readOnly &&
                       <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                    <SwitchStackSetting
+                    {switchDetail && <SwitchStackSetting
                       switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
-                    />
+                    />}
                   </div>
                 }
               </Col>
