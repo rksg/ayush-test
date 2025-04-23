@@ -55,7 +55,7 @@ export function SwitchNote (props: NoteProps) {
                 <li key={index}>
                   <div>
                     <span style={{ fontWeight: '600' }}>
-                      {$t({ defaultMessage: '<venueSingular></venueSingular>:' })} </span>
+                      {$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })} </span>
                     {switchList[0]?.venueName}
                   </div>
                   <div>
