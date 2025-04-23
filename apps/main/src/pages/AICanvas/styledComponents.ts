@@ -431,21 +431,42 @@ export const Canvas = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 25px;
+    .edit-canvas-name {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-gap: 10px;
+      align-items: center;
+      width: 300px;
+      .ant-form-item {
+        margin-bottom: 0;
+      }
+      .action {
+        display: flex;
+      }
+      .button {
+        cursor: pointer;
+        margin-right: 8px;
+        &.confirm {
+          color: #23AB36;
+        }
+        &.cancel {
+          color: #ED1C24;
+        }
+      }
+    }
     .title{
       display: flex;
       align-items: center;
-      padding: 10px 0;
+      padding-top: 7px;
       font-family: var(--acx-accent-brand-font);
       font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
-      span {
-        padding-right: 10px;
-      }
       svg {
         margin-right: 10px;
       }
       .name {
-        // cursor: pointer;
+        cursor: pointer;
+        padding-right: 10px;
       }
     }
     .visibility-type {
