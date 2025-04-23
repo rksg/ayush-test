@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import { isEmpty }                          from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get }            from '@acx-ui/config'
@@ -209,7 +210,7 @@ export function hasPermission (props?: {
  */
 export function hasScope (userScopes: ScopeKeys) {
   const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
-  if(abacEnabled && isCustomRole) {
+  if(abacEnabled && isCustomRole && !isEmpty(userScopes)) {
     return userScopes?.some(scope => {
       if(Array.isArray(scope)) {
         return scope.every(i => scopes.includes(i))
