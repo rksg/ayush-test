@@ -14,10 +14,8 @@ import { EdgeInfoWidget } from '.'
 const { edgePortsSetting } = EdgePortConfigFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 
-jest.mock('./EdgeAlarmWidget', () => ({
-  EdgeAlarmWidget: () => <div data-testid='rc-EdgeAlarmWidget' />
-}))
 jest.mock('@acx-ui/edge/components', () => ({
+  EdgeAlarmWidget: () => <div data-testid='rc-EdgeAlarmWidget' />,
   EdgePortsWidget: () => <div data-testid='rc-EdgePortsWidget' />,
   EdgeSysResourceBox: () => <div data-testid='rc-EdgeSysResourceBox' />
 }))

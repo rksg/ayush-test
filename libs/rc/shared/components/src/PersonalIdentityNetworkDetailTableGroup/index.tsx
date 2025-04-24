@@ -16,12 +16,12 @@ import { ApsTable, defaultApPayload }                   from './ApsTable'
 import { AssignedSegmentsTable }                        from './AssignedSegmentsTable'
 import { DistSwitchesTable }                            from './DistSwitchesTable'
 
-interface PersonalIdentitNetworkDetailTableGroupProps {
+interface PersonalIdentityNetworkDetailTableGroupProps {
   pinId: string
 }
 
 export const PersonalIdentityNetworkDetailTableGroup = (
-  props: PersonalIdentitNetworkDetailTableGroupProps
+  props: PersonalIdentityNetworkDetailTableGroupProps
 ) => {
 
   const { pinId } = props
