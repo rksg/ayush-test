@@ -7,14 +7,17 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm } from '@acx-ui/components'
+import { Loader, NoData, StepsForm }     from '@acx-ui/components'
+import { isMultiWanClusterPrerequisite } from '@acx-ui/edge/components'
+import { Features }                      from '@acx-ui/feature-toggle'
 import {
   EdgePortConfigFormType,
   EdgePortsGeneralBase,
   EdgeEditContext,
   getFieldFullPath,
   transformApiDataToFormListData,
-  useGetEdgeSdLanByEdgeOrClusterId
+  useGetEdgeSdLanByEdgeOrClusterId,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
 import {
@@ -27,12 +30,14 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission }                         from '@acx-ui/user'
 import { getOpsApi }                             from '@acx-ui/utils'
 
-import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
 
 const Ports = () => {
   const { serialNumber } = useParams()
   const { $t } = useIntl()
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm<EdgePortConfigFormType>()
@@ -42,7 +47,11 @@ const Ports = () => {
     clusterInfo, portData, portStatus,
     lagData, isFetching, isCluster, clusterConfig
   } = useContext(EditEdgeDataContext)
+
   const [updatePortConfig] = useUpdatePortConfigMutation()
+
+  // eslint-disable-next-line max-len
+  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const {
     edgeSdLanData,
@@ -51,7 +60,7 @@ const Ports = () => {
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
 
   const handleFormChange = async (changedValues: Object) => {
-    // due to form.List, must use the trailling 0
+    // due to form.List, must use the trailing 0
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]
@@ -165,6 +174,9 @@ const Ports = () => {
       isCluster && <ClusterNavigateWarning />
     }
     {
+      isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
+    }
+    {
       portData.length > 0 ?
         <StepsForm
           form={form}
@@ -174,7 +186,7 @@ const Ports = () => {
           onValuesChange={handleFormChange}
           buttonLabel={{
             submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply Ports General' }) : '' }}
-          disabled={isCluster}
+          disabled={isCluster || isMutliWanClusterCondition}
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
             <EdgePortsGeneralBase
