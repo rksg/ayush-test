@@ -28,7 +28,7 @@ import {
 import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }                                                                  from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                                              from '@acx-ui/utils'
+import { getOpsApi, ignoreErrorModal, noDataDisplay }                                            from '@acx-ui/utils'
 
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
 
@@ -123,7 +123,13 @@ export function PersonaOverview (props:
   const [allocatePersonaVni, { isLoading: isVniAllocating }] = useAllocatePersonaVniMutation()
 
   const { externalIdentityData } = useSearchExternalIdentitiesQuery(
-    { payload: [personaData?.externalIdentityId] },
+    {
+      payload: {
+        ids: [personaData?.externalIdentityId],
+        sortField: 'id',
+        sortOrder: 'ASC'
+      }
+    },
     {
       skip: !isIdentityCommonAttributesEnabled || !personaData?.externalIdentityId,
       selectFromResult: ({ data }) => ({
@@ -140,7 +146,10 @@ export function PersonaOverview (props:
   useEffect(()=> {
     if (!externalIdentityData) return
     if (externalIdentityData.identityProviderType === 'SAML') {
-      getSamlProfileById({ params: { id: externalIdentityData.identityProviderId } })
+      getSamlProfileById({
+        params: { id: externalIdentityData.identityProviderId },
+        customHeaders: { ...ignoreErrorModal }
+      })
         .unwrap()
         .then((res)=> {
           if (res) {
@@ -179,7 +188,7 @@ export function PersonaOverview (props:
         label: $t({ defaultMessage: 'Authentication Service' }),
         value: personaData?.externalIdentityId ?
           <GridRow>
-            <GridCol col={{ span: 24 }}>
+            <GridCol col={{ span: 16 }}>
               {authServiceExists ? <TenantLink
                 to={getPolicyDetailsLink({
                   type: authServicePolicyMapping[externalIdentityData?.identityProviderType!],
@@ -193,11 +202,17 @@ export function PersonaOverview (props:
                 : externalIdentityData?.identityProviderType
               }
             </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <Button style={{ marginRight: 0 }}
-                type='default'
-                onClick={()=>setAttributesDrawerVisible(true)}>
-                {$t({ defaultMessage: 'More Info' })}
+            <GridCol col={{ span: 8 }}>
+              <Button style={{
+                marginRight: 0 ,
+                border: 0,
+                color: 'var(--acx-accents-blue-60)',
+                cursor: 'pointer',
+                fontSize: 'var(--acx-body-4-font-size)'
+              }}
+              type='default'
+              onClick={()=>setAttributesDrawerVisible(true)}>
+                {$t({ defaultMessage: 'Show External Attributes' })}
               </Button>
             </GridCol>
           </GridRow> : undefined
@@ -329,7 +344,6 @@ export function PersonaOverview (props:
       </GridRow>
       {externalIdentityData !==undefined &&
       <CommonAttributesDrawer
-        persona={personaData!!}
         externalData={externalIdentityData!!}
         visible={attributesDrawerVisible}
         onClose={()=> setAttributesDrawerVisible(false)}

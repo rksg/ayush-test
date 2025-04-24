@@ -10,7 +10,6 @@ describe('CommonAttributesDrawer', () => {
     render(
       <Provider>
         <CommonAttributesDrawer
-          persona={mockPersona}
           externalData={mockExternalIdentity}
           visible
           onClose={()=>{}}

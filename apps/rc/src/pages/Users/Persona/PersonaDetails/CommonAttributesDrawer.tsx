@@ -1,29 +1,28 @@
 import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Descriptions, Drawer }      from '@acx-ui/components'
-import { ExternalIdentity, Persona } from '@acx-ui/rc/utils'
+import { Descriptions, Drawer } from '@acx-ui/components'
+import { ExternalIdentity }     from '@acx-ui/rc/utils'
 
 export function CommonAttributesDrawer (props:{
-    persona:Persona,
     externalData: ExternalIdentity,
     visible: boolean,
     onClose: ()=>void })
 {
-  const { persona, externalData, visible, onClose } = props
+  const { externalData, visible, onClose } = props
   const { $t } = useIntl()
   const noDataDisplay = '--'
   return <Drawer
     visible={visible}
     destroyOnClose
     onClose={onClose}
-    title={$t({ defaultMessage: 'Identity Attributes' })}
+    title={$t({ defaultMessage: 'External Attributes' })}
     children={<>
       <Descriptions>
         <Descriptions.Item
           key={'userName'}
           label={$t({ defaultMessage: 'Username' })}
-          children={persona.name}
+          children={externalData.userId}
         />
         <Descriptions.Item
           key={'firstName'}
