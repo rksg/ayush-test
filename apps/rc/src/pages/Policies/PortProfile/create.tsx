@@ -7,6 +7,7 @@ import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   getPolicyAllowedOperation,
   getPolicyListRoutePath,
+  getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
   PortProfileTabsEnum,
@@ -19,8 +20,9 @@ export default function CreatePortProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const createEthernetPortProfilePath =
-    useTenantLink(`${getPolicyListRoutePath(true)}/ethernetPortProfile/create`)
+  const createEthernetPortProfilePath = useTenantLink(
+    getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })
+  )
   const createSwitchPortProfilePath =
     useTenantLink(`${getPolicyListRoutePath(true)}/portProfile/switch/profiles/add`)
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/wifi'

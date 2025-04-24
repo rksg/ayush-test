@@ -662,6 +662,10 @@ function ServiceRoutes () {
       {isNewServiceCatalogEnabled
         ? <>
           <Route path={getServiceListRoutePath()} element={<MyServicesNew />} />
+          <Route
+            path={getSelectServiceRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
           <Route path={getServiceCatalogRoutePath()} element={<ServicesCatalogNew />} />
         </>
         : <>
@@ -921,15 +925,26 @@ function PolicyRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
-      {!isNewServiceCatalogEnabled && <>
-        <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-        <Route path={getSelectPolicyRoutePath()}
-          element={getUserProfile().rbacOpsApiEnabled
-            ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
-            : <SelectPolicyForm />
-          }
-        />
-      </>}
+      {isNewServiceCatalogEnabled
+        ? <>
+          <Route path={getPolicyListRoutePath()}
+            element={<TenantNavigate replace to={getServiceListRoutePath()} />}
+          />
+          <Route
+            path={getSelectPolicyRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
+        </>
+        : <>
+          <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
+          <Route path={getSelectPolicyRoutePath()}
+            element={getUserProfile().rbacOpsApiEnabled
+              ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+              : <SelectPolicyForm />
+            }
+          />
+        </>
+      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
         element={
@@ -1594,7 +1609,7 @@ function PolicyRoutes () {
       }
       {isSwitchPortProfileEnabled && <>
         <Route
-          path='policies/portProfile/create'
+          path={getPolicyRoutePath({ type: PolicyType.PORT_PROFILE, oper: PolicyOperation.CREATE })}
           element={
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <CreatePortProfile />
