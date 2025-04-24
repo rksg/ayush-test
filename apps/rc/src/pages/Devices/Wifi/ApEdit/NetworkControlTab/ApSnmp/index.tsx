@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Select, Switch, Row, Button, Col, Space } from 'antd'
+import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import {
@@ -107,7 +108,11 @@ export function ApSnmp (props: ApEditItemProps) {
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
 
-        setIsApSnmpEnable(apSnmp.enableApSnmp)
+        if (apSnmp.useVenueSettings) {
+          setIsApSnmpEnable(venueApSnmpSetting.enableApSnmp)
+        } else {
+          setIsApSnmpEnable(apSnmp.enableApSnmp)
+        }
         setIsUseVenueSettings(apSnmp.useVenueSettings)
         isUseVenueSettingsRef.current = apSnmp.useVenueSettings
         setFormInitializing(false)
@@ -161,6 +166,7 @@ export function ApSnmp (props: ApEditItemProps) {
 
   const sendApSnmpSetting = async () => {
     const useVenueSettings = isUseVenueSettingsRef.current
+    const retrievedData = getApSnmpSettings.data
     const payload = {
       ...formRef.current?.getFieldsValue(),
       useVenueSettings: useVenueSettings
@@ -183,21 +189,56 @@ export function ApSnmp (props: ApEditItemProps) {
         hasError: false
       })
 
-      if (useVenueSettings === true) {
-        // eslint-disable-next-line max-len
-        await resetApSnmpSettings({ params: {
-          serialNumber,
-          venueId
-        },
-        enableRbac: isUseRbacApi }).unwrap()
+      if (useVenueSettings) {
+        if(apSnmpSettings.enableApSnmp) {
+          await updateApSnmpSettings({
+            params: {
+              serialNumber,
+              venueId,
+              profileId: apSnmpSettings.apSnmpAgentProfileId
+            },
+            enableRbac: isUseRbacApi,
+            payload: {
+              enableApSnmp: false
+            }
+          }).unwrap()
+        }
+        await resetApSnmpSettings({
+          params: { serialNumber, venueId },
+          payload: { useVenueSettings: true },
+          enableRbac: isUseRbacApi
+        }).unwrap()
       } else {
-        await updateApSnmpSettings({ params: {
-          serialNumber,
-          venueId,
-          profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
-        },
-        enableRbac: isUseRbacApi,
-        payload }).unwrap()
+        if(apSnmpSettings.useVenueSettings) {
+          await resetApSnmpSettings({
+            params: { serialNumber, venueId },
+            payload: { useVenueSettings: false },
+            enableRbac: isUseRbacApi
+          }).unwrap()
+        }
+        if (!retrievedData?.useVenueSettings && !_.isEmpty(retrievedData?.apSnmpAgentProfileId)) {
+          await updateApSnmpSettings({
+            params: {
+              serialNumber,
+              venueId,
+              profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
+            },
+            enableRbac: isUseRbacApi,
+            payload: {
+              ...payload, enableApSnmp: false
+            }
+          }).unwrap()
+        } else {
+          await updateApSnmpSettings({
+            params: {
+              serialNumber,
+              venueId,
+              profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
+            },
+            enableRbac: isUseRbacApi,
+            payload
+          }).unwrap()
+        }
       }
 
     } catch (error) {

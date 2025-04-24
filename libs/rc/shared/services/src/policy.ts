@@ -2803,7 +2803,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           return { data: result }
         }
       },
-      providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+      providesTags: [{ type: 'SnmpAgent', id: 'AP' }, { type: 'SnmpAgent', id: 'LIST' }]
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
