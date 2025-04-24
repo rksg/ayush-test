@@ -13,6 +13,10 @@ import { NonSelectableItem }   from './styledComponents'
 
 import { NetworkFilter, onApply, getNetworkFilterData, modifyRawValue } from './index'
 
+function renderNetworkFilter (props: Parameters<typeof NetworkFilter>[0]) {
+  return render(<NetworkFilter {...props} />, { wrapper: Provider })
+}
+
 const mockIncidents = [
   {
     severity: 0.5,
@@ -161,7 +165,11 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQueryAp={false} shouldQuerySwitch/></Provider>)
+    renderNetworkFilter({
+      shouldQueryAp: false,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false
+    })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render network filter', async () => {
@@ -171,9 +179,11 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider>
-      <NetworkFilter shouldQueryAp shouldQuerySwitch/>
-    </Provider>)
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false
+    })
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('span[class="ant-select-arrow"]')).not.toBeNull()
@@ -187,7 +197,11 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
+    renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false
+    })
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
@@ -208,12 +222,13 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter
-      shouldQueryAp
-      shouldQuerySwitch
-      showRadioBand={true}
-      filterFor='reports'
-    /></Provider>)
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false,
+      showRadioBand: true,
+      filterFor: 'reports'
+    })
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
@@ -271,12 +286,13 @@ describe('Network Filter', () => {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     mockUseReportsFilter.raw = [['switchGroup']] as never[]
-    const { asFragment } = render(<Provider><NetworkFilter
-      shouldQueryAp
-      shouldQuerySwitch={false}
-      showRadioBand={true}
-      filterFor='reports'
-    /></Provider>)
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: false,
+      shouldQueryEdge: false,
+      showRadioBand: true,
+      filterFor: 'reports'
+    })
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()
@@ -292,11 +308,12 @@ describe('Network Filter', () => {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     mockUseReportsFilter.raw = [['zone']] as never[]
-    const { asFragment } = render(<Provider><NetworkFilter
-      shouldQueryAp={false}
-      shouldQuerySwitch
-      filterFor='reports'
-    /></Provider>)
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: false,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false,
+      filterFor: 'reports'
+    })
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()
@@ -309,12 +326,13 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter
-      shouldQueryAp
-      shouldQuerySwitch
-      filterFor='reports'
-      showRadioBand={true}
-    /></Provider>)
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false,
+      filterFor: 'reports',
+      showRadioBand: true
+    })
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
     const band6GHz = screen.getByLabelText('6 GHz')
@@ -337,7 +355,11 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
+    renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false
+    })
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
     const results = await screen.findAllByRole('menuitemcheckbox')
@@ -369,9 +391,12 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider>
-      <NetworkFilter shouldQueryAp filterFor='reports' shouldQuerySwitch/>
-    </Provider>)
+    renderNetworkFilter({
+      shouldQueryAp: true,
+      filterFor: 'reports',
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false
+    })
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
     const results = await screen.findAllByRole('menuitemcheckbox')
@@ -401,11 +426,12 @@ describe('Network Filter with incident severity', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(
-      <Provider>
-        <NetworkFilter shouldQueryAp shouldQuerySwitch withIncidents/>
-      </Provider>
-    )
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false,
+      withIncidents: true
+    })
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
@@ -419,11 +445,12 @@ describe('Network Filter with incident severity', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(
-      <Provider>
-        <NetworkFilter shouldQueryAp shouldQuerySwitch withIncidents/>
-      </Provider>
-    )
+    const { asFragment } = renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: true,
+      shouldQueryEdge: false,
+      withIncidents: true
+    })
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
@@ -475,6 +502,48 @@ describe('getNetworkFilterData', () => {
     const [apItem, switchItem] = firstItem.children!
     expect(apItem).toBeUndefined()
     expect(switchItem).toBeUndefined()
+  })
+  it('should return data for edges', () => {
+    const data: Child[] = [
+      {
+        id: 'venue1',
+        type: 'zone',
+        name: 'Venue 1',
+        edges: [
+          { id: 'edge1', name: 'Edge 1' },
+          { id: 'edge2', name: 'Edge 2' }
+        ]
+      }
+    ]
+
+    expect(getNetworkFilterData(data, {}, true)).toEqual([{
+      label: 'Venue 1',
+      extraLabel: expect.anything(),
+      value: JSON.stringify([
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'venue1' }
+      ]),
+      children: [{
+        label: 'RUCKUS Edges',
+        ignoreSelection: true,
+        value: 'edgesvenue1',
+        children: [{
+          label: 'Edge 1',
+          value: JSON.stringify([
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'venue1' },
+            { type: 'edge', name: 'edge1' }
+          ])
+        }, {
+          label: 'Edge 2',
+          value: JSON.stringify([
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'venue1' },
+            { type: 'edge', name: 'edge2' }
+          ])
+        }]
+      }]
+    }])
   })
 })
 

@@ -34,6 +34,7 @@ export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
   shouldQuerySwitch: boolean,
   shouldQueryAp: boolean,
+  shouldQueryEdge: boolean,
   shouldShowOnlyVenues?: boolean,
   withIncidents?: boolean,
   showRadioBand?: boolean,
@@ -105,11 +106,11 @@ export const getNetworkFilterData = (
 ): CascaderOption[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: CascaderOption } = {}
-  for (const { id, name, aps, switches } of data) {
-    const venuePath = [
-      ...defaultNetworkPath,
-      { type: aps?.length ? 'zone' : 'switchGroup', name: replaceVenueNameWithId ? id : name }
-    ]
+  for (const { id, name, aps, switches, edges } of data) {
+    const venuePath = [...defaultNetworkPath, {
+      type: (aps?.length || edges?.length) ? 'zone' : 'switchGroup',
+      name: replaceVenueNameWithId ? id : name
+    }]
     if (!venues[name]) {
       const severityData = getSeverityCircles(
         getApsAndSwitches(data, name),
@@ -176,6 +177,19 @@ export const getNetworkFilterData = (
         })
       })
     }
+    if (edges?.length) {
+      venue.children!.push({
+        label: $t({ defaultMessage: 'RUCKUS Edges' }),
+        ignoreSelection: true,
+        value: `edges${id}`,
+        children: edges.map((edge) => {
+          return {
+            label: edge.name,
+            value: JSON.stringify([...venuePath, { type: 'edge', name: edge.id }])
+          }
+        })
+      })
+    }
   }
   return Object.values(venues).sort((a: CascaderOption, b: CascaderOption) =>
     (a.label as string).localeCompare(b.label as string)
@@ -228,6 +242,7 @@ export { ConnectedNetworkFilter as NetworkFilter }
 function ConnectedNetworkFilter ({
   shouldQuerySwitch,
   shouldQueryAp,
+  shouldQueryEdge,
   shouldShowOnlyVenues,
   withIncidents,
   showRadioBand,
@@ -262,7 +277,8 @@ function ConnectedNetworkFilter ({
     range: filters.range,
     ...overrideFilters,
     shouldQuerySwitch,
-    shouldQueryAp
+    shouldQueryAp,
+    shouldQueryEdge
   }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getNetworkFilterData(data, incidents, true, shouldShowOnlyVenues) : [],
@@ -273,19 +289,13 @@ function ConnectedNetworkFilter ({
   const isReports = filterFor === 'reports'
   let rawVal:string[] = isReports ? reportsRaw : raw
 
-  if(isReports){
-    // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
-    if(!shouldQueryAp){
-      selectedBands=[]
-      rawVal=rawVal.filter(value=>{
-        return !value[0].includes('zone')
-      })
-    }
-    if(!shouldQuerySwitch){
-      rawVal=rawVal.filter(value=>{
-        return !value[0].includes('switchGroup')
-      })
-    }
+  if (isReports) {
+    // conditions below will avoid empty tags in the filter while switching between AP and Switch reports
+    selectedBands = shouldQueryAp ? selectedBands : []
+    rawVal = rawVal.filter(value => (
+      ((shouldQueryAp || shouldQueryEdge) && value[0].includes('zone')) ||
+      (shouldQuerySwitch && value[0].includes('switchGroup'))
+    ))
   } else {
     const dataText = queryResults.data
       .filter(Boolean)
