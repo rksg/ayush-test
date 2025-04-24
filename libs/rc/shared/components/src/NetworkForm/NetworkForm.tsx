@@ -685,7 +685,9 @@ export function NetworkForm (props:{
         ...saveState.wlan,
         ...data.wlan
       },
-      portalServiceProfileId: data.portalServiceProfileId
+      portalServiceProfileId: data.portalServiceProfileId,
+      samlIdpProfilesId: data.samlIdpProfilesId,
+      samlIdpProfilesName: data.samlIdpProfilesName
     }
     if(!tmpGuestPageState.portalServiceProfileId){
       delete tmpGuestPageState.portalServiceProfileId
@@ -700,6 +702,7 @@ export function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
+
     updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }

@@ -17,7 +17,7 @@ interface ClientIsolationAllowListDetailsDrawerProps {
 const ClientIsolationAllowListDetailsDrawer = (props: ClientIsolationAllowListDetailsDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { visible, setVisible, clientIsolationPropfileId } = props
+  const { visible, setVisible, clientIsolationPropfileId: clientIsolationProfileId } = props
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const onClose = () => {
@@ -27,11 +27,11 @@ const ClientIsolationAllowListDetailsDrawer = (props: ClientIsolationAllowListDe
   const { data: clientIsolationData } = useGetClientIsolationQuery({
     params: {
       tenantId: params.tenantId,
-      policyId: clientIsolationPropfileId
+      policyId: clientIsolationProfileId
     },
     enableRbac: enableServicePolicyRbac
   }, {
-    skip: !clientIsolationPropfileId
+    skip: !clientIsolationProfileId
   })
 
   const columns: TableProps<ClientIsolationClient>['columns'] = [
