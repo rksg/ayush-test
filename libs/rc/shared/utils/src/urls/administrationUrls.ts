@@ -427,5 +427,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/tenants/privacySettings',
     newApi: true
+  },
+  deleteTenant: {
+    method: 'delete',
+    url: '/api/nuketenant/tenants/:tenantId',
+    newApi: true
   }
 }

@@ -29,5 +29,8 @@ export const MessageMapping = {
   configure_a_server_certificate: defineMessage({ defaultMessage: 'Use a server certificate to enable encrypted SAML responses.  If a SAML response{br}from IDP is already encrypted, the selected server certificate will be used.' }),
   enable_r1_early_access_description: defineMessage({ defaultMessage: 'This option enables current and future early access features for this account across all <venuePlural></venuePlural>, networks, and users. When {br} disabled, any configuration related to early access features will remain available until deleted. You may opt to remove features.' }),
   enable_r1_early_access_disable_description: defineMessage({ defaultMessage: 'Please note that if you decide to disable early access features, your current configurations will be retained. However, you won\'t be able to modify them until you re-enable early access features.' }),
-  enable_r1_early_access_terms_condition_drawer_footer_msg: defineMessage({ defaultMessage: 'By clicking “Enable Early Access”, you agree to the RUCKUS One Early Access {tc}.' })
+  enable_r1_early_access_terms_condition_drawer_footer_msg: defineMessage({ defaultMessage: 'By clicking “Enable Early Access”, you agree to the RUCKUS One Early Access {tc}.' }),
+  delete_account_description_1: defineMessage({ defaultMessage: 'Deleting your account from RUCKUS One will:' }),
+  delete_account_description_2: defineMessage({ defaultMessage: '- Permanently remove your tenant and all associated accounts.{br} - Erase all personal information from our system.' }),
+  delete_account_modal_msg: defineMessage({ defaultMessage: '{space}This action is irreversible and cannot be undone.' })
 }
