@@ -9,7 +9,7 @@ import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/r
 import {
   ClientInfo, defaultSort,
   IdentityClient, sortProp,
-  useTableQuery
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 
 import { IdentityDetailsContext } from './index'
@@ -49,7 +49,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     getClientList,
     { isLoading: isEsClientLoading, isFetching: isEsClientFetching }
   ] = useLazyGetClientsQuery()
-  const tableQuery = useTableQuery<IdentityClient>({
+  const tableQuery = usePollingTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
     pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
@@ -76,6 +76,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   }, [tableQuery.data])
 
   useEffect(() => {
+    if (tableQuery.isFetching) return
     if (clientMacs.size === 0) return
 
     const aggregateClientInfo = (
@@ -113,11 +114,11 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       .then(result => {
         if (!result.data?.data) return
         setDatasource(aggregateClientInfo(
-          datasource as unknown as IdentityClient[],
+          tableQuery.data?.data ?? [],
           result.data.data
         ))
       })
-  }, [clientMacs])
+  }, [clientMacs, tableQuery.isFetching])
 
   const useClientTableColumns = () => {
     return useRbacClientTableColumns(useIntl(), false).map(c => {
