@@ -217,7 +217,9 @@ describe('Canvas', () => {
       </Provider>
     )
     expect(await screen.findByText('Layout cards')).toBeVisible()
-    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const canvasName = await screen.findByText('Dashboard Canvas')
+    expect(canvasName).toBeVisible()
+    await userEvent.click(canvasName)
     const typeMenu = await screen.findByTestId('visibility-type')
     await userEvent.click(typeMenu)
     await userEvent.click(await screen.findByText('Private'))
@@ -229,40 +231,6 @@ describe('Canvas', () => {
         visible: false
       }
     })
-  })
-
-  it('should change canvas name correctly', async () => {
-    const { result } = renderHook(() => {
-      const [groups, setGroups] = useState(groupsData)
-      return { groups, setGroups }
-    })
-    render(
-      <Provider>
-        <Canvas
-          groups={result.current.groups}
-          setGroups={result.current.setGroups}
-          checkChanges={
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
-        />
-      </Provider>
-    )
-    expect(await screen.findByText('Layout cards')).toBeVisible()
-    const canvasName = await screen.findByText('Dashboard Canvas')
-    expect(canvasName).toBeVisible()
-    await userEvent.click(canvasName)
-    // const nameInput = await screen.findByTestId('canvas-name')
-    // await userEvent.type(nameInput, 'My Canvas')
-    // const confirmButton = screen.getByTestId('confirm')
-    // await userEvent.click(confirmButton)
-    // expect(mockedPatch).toHaveBeenCalledWith({
-    //   params: {
-    //     canvasId: '001'
-    //   },
-    //   payload: {
-    //     name: 'My Canvas'
-    //   }
-    // })
   })
 
   it('should render canvas list and new canvas correctly', async () => {
