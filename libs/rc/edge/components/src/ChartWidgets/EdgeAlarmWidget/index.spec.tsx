@@ -5,18 +5,13 @@ import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider  }                           from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { AlarmsDrawer }             from '../../AlarmsDrawer'
 import { alarmList, alarmListMeta } from '../__tests__/fixtures'
 
 import { EdgeAlarmWidget, getAlarmChartData } from '.'
 
-jest.mock('@acx-ui/edge/components', () => ({
+jest.mock('../EdgeOverviewDonutWidget', () => ({
   EdgeOverviewDonutWidget: (props: { onClick: () => void }) =>
     <div data-testid='rc-EdgeOverviewDonutWidget' onClick={props.onClick} />
-}))
-jest.mock('../../AlarmsDrawer', () => ({
-  ...jest.requireActual('../../AlarmsDrawer'),
-  AlarmsDrawer: () => <div data-testid='rc-AlarmsDrawer' />
 }))
 
 const mockedAPIFn = jest.fn()
@@ -41,13 +36,14 @@ describe('Edge Alarm Widget', () => {
   })
 
   it('should be able to open alarm drawer', async () => {
+    jest.spyOn(window, 'dispatchEvent').mockImplementation(jest.fn())
+
     render(
       <Provider>
         <EdgeAlarmWidget
           isLoading={false}
           serialNumber='mocked-edge'
         />
-        <AlarmsDrawer visible={false} setVisible={jest.fn()}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
@@ -59,12 +55,10 @@ describe('Edge Alarm Widget', () => {
     const chart = await screen.findByTestId('rc-EdgeOverviewDonutWidget')
     expect(chart).toBeVisible()
     await userEvent.click(chart)
-    await waitFor(async () => {
-      expect(await screen.findByTestId('rc-AlarmsDrawer')).toBeVisible()
-    })
+    expect(window.dispatchEvent).toBeCalledTimes(1)
   })
 
-  describe('Edge Alarm Widget - chart data formmater', () => {
+  describe('Edge Alarm Widget - chart data formatter', () => {
     it('should return correct formatted data', async () => {
       expect(getAlarmChartData(alarmList.data)).toEqual([{
         color: '#ED1C24',
