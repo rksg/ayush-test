@@ -31,3 +31,26 @@ export const ClusterNavigateWarning = () => {
     <Alert message={warningMsg} type='info' showIcon />
   )
 }
+
+export const MultiWanClusterNavigateWarning = () => {
+  const { $t } = useIntl()
+  const { clusterInfo } = useContext(EditEdgeDataContext)
+
+  const warningMsg = <>
+    {$t(
+      { defaultMessage: `Please go to “{redirectLink}” to modify the configurations
+    for all nodes in this cluster ({clusterName})` },
+      {
+        redirectLink: <TenantLink
+          to={`/devices/edge/cluster/${clusterInfo?.clusterId}/configure`}
+          children={$t({ defaultMessage: 'Cluster & RUCKUS Edge configuration wizard' })}
+        />,
+        clusterName: clusterInfo?.name
+      }
+    )}
+  </>
+
+  return (
+    <Alert message={warningMsg} type='info' showIcon />
+  )
+}
