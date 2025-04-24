@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
+import { useAnySplitsOn }                                        from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }                           from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent, waitFor  } from '@acx-ui/test-utils'
 import { DateRange }                                             from '@acx-ui/utils'
@@ -156,6 +157,7 @@ describe('Network Filter', () => {
     mockUseReportsFilter.raw = []
     store.dispatch(api.util.resetApiState())
     store.dispatch(incidentApi.util.resetApiState())
+    jest.mocked(useAnySplitsOn).mockReturnValue(false) // default for Features.EDGE_NETWORK_FILTER_TOGGLE
     jest.clearAllMocks()
   })
   it('should render loader', () => {
@@ -317,6 +319,39 @@ describe('Network Filter', () => {
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should handle Features.EDGE_NETWORK_FILTER_TOGGLE', async () => {
+    jest.mocked(useAnySplitsOn).mockReturnValue(null)
+    const props = {
+      shouldQueryAp: false,
+      shouldQuerySwitch: false,
+      shouldQueryEdge: true,
+      withIncidents: false
+    }
+
+    const { rerender } = renderNetworkFilter(props)
+
+    expect(screen.queryAllByRole('menuitemcheckbox')).toHaveLength(0)
+
+    jest.mocked(useAnySplitsOn).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: [{
+        id: 'venue1',
+        type: 'zone',
+        name: 'Venue With Edge',
+        edges: [
+          { id: 'edge1', name: 'Test Edge 1' }
+        ]
+      }] } }
+    })
+
+    rerender(<NetworkFilter {...props} />)
+
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+
+    expect(await screen.findAllByRole('menuitemcheckbox')).toHaveLength(1)
   })
 
   it('should select network node and bands with onApplyFn', async () => {

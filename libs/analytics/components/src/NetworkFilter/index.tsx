@@ -11,6 +11,7 @@ import {
   Incident } from '@acx-ui/analytics/utils'
 import { Cascader, Loader, RadioBand }           from '@acx-ui/components'
 import type { CascaderOption }                   from '@acx-ui/components'
+import { Features, useAnySplitsOn }              from '@acx-ui/feature-toggle'
 import { useReportsFilter }                      from '@acx-ui/reports/utils'
 import { NetworkPath, getIntl, AnalyticsFilter } from '@acx-ui/utils'
 
@@ -256,6 +257,7 @@ function ConnectedNetworkFilter ({
 } : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
+  const edgeFilterToggle = useAnySplitsOn(Features.EDGE_NETWORK_FILTER_TOGGLE)
   const [ open, setOpen ] = useState(false)
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
@@ -278,8 +280,9 @@ function ConnectedNetworkFilter ({
     ...overrideFilters,
     shouldQuerySwitch,
     shouldQueryAp,
-    shouldQueryEdge
+    shouldQueryEdge: Boolean(shouldQueryEdge && edgeFilterToggle)
   }, {
+    skip: edgeFilterToggle === null,
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getNetworkFilterData(data, incidents, true, shouldShowOnlyVenues) : [],
       ...rest
