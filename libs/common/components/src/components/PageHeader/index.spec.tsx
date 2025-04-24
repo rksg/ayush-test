@@ -11,7 +11,9 @@ describe('PageHeader', () => {
   afterEach(() => jest.restoreAllMocks())
 
   it('should render basic page header', () => {
-    const { asFragment } = render(<PageHeader title='Basic' />)
+    const { asFragment } = render(
+      <BrowserRouter><PageHeader title='Basic' /></BrowserRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
 

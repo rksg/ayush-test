@@ -9,16 +9,17 @@ import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }                            from 'uuid'
 
-import { BarChartData }                                                                                        from '@acx-ui/analytics/utils'
-import { BarChart, cssNumber, cssStr, DonutChart, Loader, showToast, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                           from '@acx-ui/formatter'
-import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
-import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                       from '@acx-ui/utils'
+import { BarChartData }                                                                                                    from '@acx-ui/analytics/utils'
+import { BarChart, cssNumber, cssStr, DonutChart, Loader, NoDataIcon, showToast, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                       from '@acx-ui/formatter'
+import { useGetWidgetQuery }                                                                                               from '@acx-ui/rc/services'
+import { WidgetListData }                                                                                                  from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                                   from '@acx-ui/utils'
 
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
 
+import { WidgetProperty }    from './Card'
 import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
 import { ItemTypes }         from './GroupItem'
 
@@ -29,6 +30,7 @@ interface WidgetListProps {
   setVisible?: (v: boolean) => void
   groups?: Group[]
   removeShadowCard?: ()=>void
+  changeWidgetProperty?: (data: WidgetProperty)=> void
 }
 
 interface WidgetCategory {
@@ -194,7 +196,8 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
   )
 }
 
-export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
+export const WidgetChart: React.FC<WidgetListProps> = (
+  { data, visible, setVisible, changeWidgetProperty }) => {
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const queryResults = useGetWidgetQuery({
     customHeaders: { timezone },
@@ -304,28 +307,32 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         xAxisType={chartData?.axisType}
       />
     } else if(type === 'bar') {
-      return <BarChart
-        style={{ width: width-30, height: height-5 }}
-        grid={{
-          right: '10px',
-          top: chartData?.multiseries ? '15%': '0'
-        }}
-        disableLegend={data.type !== 'card'}
-        data={(chartData?.chartOption || []) as BarChartData}
-        barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
-          ? 8 : undefined}
-        labelFormatter={labelFormatter}
-        labelRichStyle={richStyle()}
-        yAxisType={chartData?.axisType}
-        tooltipFormatter={tooltipFormatter}
-      />
+      if(!chartData?.chartOption?.source) {
+        return <NoDataIcon hideText={true} />
+      } else {
+        return <BarChart
+          style={{ width: width-30, height: height-5 }}
+          grid={{
+            right: '10px',
+            top: chartData?.multiseries ? '15%': '0'
+          }}
+          disableLegend={data.type !== 'card'}
+          data={(chartData?.chartOption || []) as BarChartData}
+          barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
+            ? 8 : undefined}
+          labelFormatter={labelFormatter}
+          labelRichStyle={richStyle()}
+          yAxisType={chartData?.axisType}
+          tooltipFormatter={tooltipFormatter}
+        />
+      }
     } else if(type === 'table') {
       const formatterType = {
         MILLISECONDS: formatter('longDurationFormat'),
         BYTES: formatter('bytesFormat')
       }
       return <Table
-        style={{ width: width-30, height: height-5 }}
+        style={{ width: width-30, height: '100%' }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
           .map(i => ({
             ...i,
@@ -380,11 +387,15 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
   //   }
   // }
   const chartData = data.type === 'card' ? queryResults.data : data
+  const widgetTitle = chartData?.name && chartData?.updated //TODO
+    ? { title: chartData?.name, icon: <span className='update-indicator' /> }
+    : chartData?.name
+
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? chartData?.name : ''}
+        title={data.type === 'card' ? widgetTitle : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
@@ -393,11 +404,12 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         </AutoSizer>
       </UI.Widget>
       {
-        (visible && setVisible) && <CustomizeWidgetDrawer
+        (visible && setVisible && changeWidgetProperty) && <CustomizeWidgetDrawer
           visible={visible as boolean}
           setVisible={setVisible}
           widget={chartData as WidgetListData}
           canvasId={data.canvasId as string}
+          changeWidgetProperty={changeWidgetProperty}
         />
       }
     </Loader>

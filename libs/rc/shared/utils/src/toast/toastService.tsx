@@ -8,7 +8,7 @@ import styled              from 'styled-components/macro'
 import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { hasRoles }                                          from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { getEnabledActivityErrorImproved, getIntl }          from '@acx-ui/utils'
 
 import { rcToastTemplates } from './toastTemplate'
 
@@ -94,7 +94,8 @@ const showDetails = (tx: Transaction, intl: IntlShape) => {
     customContent: {
       action: 'SHOW_ERRORS',
       errorDetails: JSON.parse((tx?.error) as string)
-    }
+    },
+    isUsingLegacyErrorModal: !getEnabledActivityErrorImproved()
   })
 }
 

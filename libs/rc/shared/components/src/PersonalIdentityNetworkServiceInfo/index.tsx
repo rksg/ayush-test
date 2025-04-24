@@ -34,13 +34,13 @@ import { useIsEdgeFeatureReady }  from '../useEdgeActions'
 
 import * as UI from './styledComponents'
 
-interface PersonalIdentitNetworkServiceInfoProps {
+interface PersonalIdentityNetworkServiceInfoProps {
   pinId: string
   className?: string
 }
 
 export const PersonalIdentityNetworkServiceInfo = styled((
-  props: PersonalIdentitNetworkServiceInfoProps
+  props: PersonalIdentityNetworkServiceInfoProps
 ) => {
   const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)

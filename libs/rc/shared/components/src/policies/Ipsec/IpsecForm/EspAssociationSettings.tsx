@@ -30,7 +30,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
   const { $t } = useIntl()
   let proposalType = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
   const [espProposalType, setEspProposalType] = useState(proposalType
-    ? proposalType : initIpSecData?.espSecurityAssociation?.espProposalType)
+    ? proposalType : IpSecProposalTypeEnum.DEFAULT)
 
   const initialAlgValue = {
     encAlg: IpSecEncryptionAlgorithmEnum.AES128,
@@ -61,13 +61,13 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
 
   useEffect (() => {
     let espProposalSelection = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
-    setEspProposalType(espProposalSelection)
+    setEspProposalType(espProposalSelection ? espProposalSelection : IpSecProposalTypeEnum.DEFAULT)
 
     if (loadEspSettings && initIpSecData) {
       if (initIpSecData?.espSecurityAssociation?.espProposalType) {
         setEspProposalType(initIpSecData.espSecurityAssociation.espProposalType)
       } else {
-        setEspProposalType(form.getFieldValue(['espSecurityAssociation', 'espProposalType']))
+        setEspProposalType(IpSecProposalTypeEnum.DEFAULT)
       }
     }
     setLoadEspSettings(false)
