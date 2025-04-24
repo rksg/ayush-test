@@ -3,9 +3,9 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
-import { Button, GridCol, GridRow }            from '@acx-ui/components'
-import { EdgePortsWidget, EdgeSysResourceBox } from '@acx-ui/edge/components'
-import { useGetDnsServersQuery }               from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow }                             from '@acx-ui/components'
+import { EdgeAlarmWidget, EdgePortsWidget, EdgeSysResourceBox } from '@acx-ui/edge/components'
+import { useGetDnsServersQuery }                                from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
   EdgePortStatus,
@@ -14,9 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { EdgeAlarmWidget } from './EdgeAlarmWidget'
-import EdgeDetailsDrawer   from './EdgeDetailsDrawer'
-import { Styles }          from './styledComponents'
+import EdgeDetailsDrawer from './EdgeDetailsDrawer'
+import { Styles }        from './styledComponents'
 
 interface EdgeInfoWidgetProps {
   className?: string

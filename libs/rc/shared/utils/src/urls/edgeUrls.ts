@@ -124,6 +124,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/edges/{id}/ports'
   },
+  getEdgeGeneralPortStatusList: {
+    method: 'post',
+    url: '/edges/ports/query',
+    newApi: true,
+    opsApi: 'POST:/edges/ports/query'
+  },
   getEdgeSubInterfacesStatusList: {
     method: 'post',
     url: '/edges/subInterfaces/query',
@@ -232,6 +238,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/:serialNumber/linkAggregationGroups/query',
     newApi: true,
     opsApi: 'POST:/edges/{id}/linkAggregationGroups/query'
+  },
+  getEdgeGeneralLagStatusList: {
+    method: 'post',
+    url: '/edges/linkAggregationGroups/query',
+    newApi: true,
+    opsApi: 'POST:/edges/linkAggregationGroups/query'
   },
   getEdgeLagList: {
     method: 'get',
