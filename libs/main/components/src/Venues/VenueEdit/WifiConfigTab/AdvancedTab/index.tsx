@@ -128,7 +128,7 @@ export function AdvancedTab () {
         'apAutoRebootOnGwTimeout'
       )
     ] : []),
-    ...(isApIpModeFFEnabled? [
+    ...((isApIpModeFFEnabled && !isTemplate) ? [
       createAnchorSectionItem(
         $t({ defaultMessage: 'AP IP Mode' }),
         'ap-ip-mode',
