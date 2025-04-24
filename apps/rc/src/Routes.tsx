@@ -88,6 +88,7 @@ import EdgeDetails                                  from './pages/Devices/Edge/E
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
+import IotController                                from './pages/Devices/IotController'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -386,6 +387,8 @@ function DeviceRoutes () {
             <StackForm />
           </AuthRoute>
         } />
+
+      <Route path='devices/iotController' element={<IotController />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
