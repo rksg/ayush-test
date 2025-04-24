@@ -46,6 +46,8 @@ import { getIntl } from '@acx-ui/utils'
 import { ApGroupItem } from './ApGroupItem'
 import { RadioSelect } from './RadioSelect'
 import * as UI         from './styledComponents'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const isDisableAllAPs = (apGroups?: NetworkApGroup[]) => {
   if (!apGroups) {
@@ -97,7 +99,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn && isSupport6gOWETransition
   const { isTemplate } = useConfigTemplate()
+
+  const [owe6gDrawerVisible, setOwe6gDrawerVisible] = useState(false)
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan } = network || {}
@@ -277,6 +283,22 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       labelCol={{ span: 5 }}>
                       <RadioSelect isSupport6G={isSupport6G}/>
                     </Form.Item>
+                    {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
+                      title={''}
+                      showDetailButton
+                      placement='right'
+                      onClick={() => setOwe6gDrawerVisible(true)}
+                      icon={<QuestionMarkCircleOutlined
+                        style={{ height: '16px', width: '16px' }}
+                      />}
+                    />}
+                    {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
+                      visible={owe6gDrawerVisible}
+                      type={ApCompatibilityType.NETWORK}
+                      networkId={network?.id}
+                      featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                      onClose={() => setOwe6gDrawerVisible(false)}
+                    />}
                   </UI.FormItemRounded>}
                 </Form.Item>
 
