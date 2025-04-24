@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Form, Space, Typography }                         from 'antd'
+import { Space, Typography }                               from 'antd'
 import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Drawer }                                          from '@acx-ui/components'
-import { showSdLanCaptivePortalConflictModal }             from '@acx-ui/edge/components'
-import { EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Drawer, useStepFormContext }                                            from '@acx-ui/components'
+import { showSdLanCaptivePortalConflictModal }                                   from '@acx-ui/edge/components'
+import { EdgeMvSdLanFormModel, EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -63,7 +63,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     pinNetworkIds
   } = props
 
-  const [form] = Form.useForm()
+  const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
 
   const handleActivateChange = (
@@ -164,15 +164,13 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             />
           </Typography.Paragraph>
         </div>
-        <Form form={form}>
-          <ActivatedNetworksTable
-            venueId={venueId}
-            activated={updateContent}
-            onActivateChange={handleActivateChange}
-            onTunnelProfileChange={handelTunnelProfileChange}
-            pinNetworkIds={pinNetworkIds}
-          />
-        </Form>
+        <ActivatedNetworksTable
+          venueId={venueId}
+          activated={updateContent}
+          onActivateChange={handleActivateChange}
+          onTunnelProfileChange={handelTunnelProfileChange}
+          pinNetworkIds={pinNetworkIds}
+        />
       </Space>
     </Drawer>
   )

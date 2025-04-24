@@ -1,17 +1,19 @@
 /* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
-import { Col, Form, Row }     from 'antd'
+import { Input }              from 'antd'
 import { DefaultOptionType }  from 'antd/es/cascader'
+import { NamePath }           from 'antd/lib/form/interface'
 import { find, isNil, merge } from 'lodash'
 import { AlignType }          from 'rc-table/lib/interface'
 import { useIntl }            from 'react-intl'
 
-import { Loader, Select, Table, TableColumn, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { transToOptions }                                                              from '@acx-ui/edge/components'
-import { AddNetworkModal }                                                             from '@acx-ui/rc/components'
-import { useVenueNetworkActivationsViewModelListQuery }                                from '@acx-ui/rc/services'
+import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
+import { transToOptions }                                                     from '@acx-ui/edge/components'
+import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
+import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
 import {
+  ClusterHighAvailabilityModeEnum,
   defaultSort,
   EdgeMvSdLanFormModel,
   IncompatibilityFeatures,
@@ -22,6 +24,7 @@ import {
   sortProp,
   TunnelProfileViewData,
   TunnelTypeEnum,
+  useHelpPageLink,
   useTableQuery,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -29,10 +32,11 @@ import { WifiScopes }                          from '@acx-ui/types'
 import { filterByAccess }                      from '@acx-ui/user'
 import { compareVersions, getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }     from '../../..'
-import { useEdgeSdLanContext }   from '../../../EdgeSdLanContextProvider'
-import { WarningCircleRed }      from '../../styledComponents'
-import { NetworkActivationType } from '../../VenueNetworkTable/NetworksDrawer'
+import { EdgeSdLanFormType }      from '../../..'
+import { useEdgeSdLanContext }    from '../../../EdgeSdLanContextProvider'
+import { messageMappings }        from '../../../messageMappings'
+import { ValidationMessageField } from '../../styledComponents'
+import { NetworkActivationType }  from '../../VenueNetworkTable/NetworksDrawer'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
 
@@ -97,6 +101,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     associatedEdgeClusters = [],
     requiredFwMap = {}
   } = useEdgeSdLanContext()
+  const helpUrl = useHelpPageLink()
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
@@ -131,7 +136,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
 
     const isSupportL2Gre = selectedCluster?.edgeList?.every(
       edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.L2OGRE]) > -1
-    )
+    ) && selectedCluster.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
     const filteredTunnelOptions = availableTunnelProfiles.filter(profile =>
       (isSupportL2Gre || profile.tunnelType !== TunnelTypeEnum.L2GRE) &&
@@ -154,6 +159,32 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
     .filter(i => !isNil(i)) ?? []) as string[]
+
+  const checkCorePortConfigured = (tunnelProfileId?: string) => {
+    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+
+    if(!tunnelProfileId || targetTunnelProfile?.tunnelType === TunnelTypeEnum.L2GRE) {
+      return Promise.resolve()
+    }
+
+    const associatedEdgeCluster = associatedEdgeClusters?.find((cluster) =>
+      cluster.clusterId === targetTunnelProfile?.destinationEdgeClusterId)
+    if (associatedEdgeCluster?.hasCorePort) {
+      return Promise.resolve()
+    } else {
+      return Promise.reject($t(messageMappings.setting_cluster_helper, {
+        infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+          {$t({ defaultMessage: 'See more information' })}
+        </a>
+      }))
+    }
+  }
+
+  const handleTunnelProfileChange = (row: Network, value: string, namePath: NamePath) => {
+    form.validateFields([namePath])
+    onTunnelProfileChange?.(row, value)
+  }
 
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
@@ -204,38 +235,19 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       const isEnabledTunneling = currentNetworkList?.some(item => item.networkId === row.id)
       const currentTunnelProfileId = currentNetworkList?.find(item => item.networkId === row.id)?.tunnelProfileId
       const processedOptions = getFilteredTunnelProfileOptions(row, tunnelProfileOptions, availableTunnelProfiles)
-      return isEnabledTunneling && <Row align='middle' gutter={10}>
-        <Col span={22}>
-          <Select
-            style={{ width: '100%' }}
-            value={currentTunnelProfileId ?? ''}
-            onChange={(value) => onTunnelProfileChange?.(row, value)}
-            options={processedOptions}
-          />
-        </Col>
-        <Col span={2}>
-          <Form.Item
-            noStyle
-            name={['validation', index]}
-            rules={[{ required: true }]}
-            children={<input hidden />}
-          />
-          <Form.Item
-            dependencies={['validation', index]}
-            noStyle
-          >
-            {({ getFieldError }) => {
-              const errors = getFieldError(['validation', index])
-              return errors.length ?
-                <Tooltip
-                  title={errors[0]}
-                  placement='bottom'
-                  overlayInnerStyle={{ width: 415 }}><WarningCircleRed />
-                </Tooltip> : undefined
-            }}
-          </Form.Item>
-        </Col>
-      </Row>
+      return isEnabledTunneling && <>
+        <Select
+          style={{ width: '100%' }}
+          value={currentTunnelProfileId ?? ''}
+          onChange={(value) => handleTunnelProfileChange(row, value, ['validation', index])}
+          options={processedOptions}
+        />
+        <ValidationMessageField
+          name={['validation', index]}
+          rules={[{ validator: () => checkCorePortConfigured(currentTunnelProfileId) }]}
+          children={<Input hidden />}
+        />
+      </>
     }
   }
   ]), [
