@@ -7,9 +7,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                         from '@acx-ui/feature-toggle'
-import { defaultSort, DHCPConfigTypeEnum, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { useIsSplitOn, Features }                                                            from '@acx-ui/feature-toggle'
+import { defaultSort, DHCP_RESERVED_IPS, DHCPConfigTypeEnum, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                    from '@acx-ui/user'
 
 export function PoolTable (props:{
   readonly?: boolean
@@ -111,7 +111,7 @@ export function PoolTable (props:{
       sorter: { compare: sortProp('numberOfHosts', defaultSort) },
       render: (_, row) => {
         if (showWarning && configureType === DHCPConfigTypeEnum.MULTIPLE && !!row.numberOfHosts) {
-          return row.numberOfHosts - 10
+          return row.numberOfHosts - DHCP_RESERVED_IPS
         } else  {
           return row.numberOfHosts
         }

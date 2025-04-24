@@ -17,6 +17,7 @@ import {
   countIpSize,
   IpInSubnetPool,
   IpUtilsService,
+  DHCP_RESERVED_IPS,
   DHCPConfigTypeEnum
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -254,7 +255,7 @@ export default function DHCPPoolTable ({
             } },
             { validator: (_, value) => {
               if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
-                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= DHCP_RESERVED_IPS){
                   if (showWarning) {
                     // eslint-disable-next-line max-len
                     return Promise.reject($t({ defaultMessage: 'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' }))

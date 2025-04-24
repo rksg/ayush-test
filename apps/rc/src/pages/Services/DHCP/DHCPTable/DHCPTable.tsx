@@ -14,6 +14,7 @@ import {
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
   DHCPPool,
+  DHCP_RESERVED_IPS,
   DHCPConfigTypeEnum,
   IpUtilsService,
   filterByAccessForServicePolicyMutation,
@@ -226,7 +227,7 @@ function useColumns () {
         let dhcpPools
         if (showWarning && row.dhcpMode === DHCPConfigTypeEnum.MULTIPLE) {
           // eslint-disable-next-line max-len
-          dhcpPools = row.dhcpPools.map((item) => ({ ...item, numberOfHosts: IpUtilsService.countIpRangeSize(item.startAddress, item.endAddress) - 10 }))
+          dhcpPools = row.dhcpPools.map((item) => ({ ...item, numberOfHosts: IpUtilsService.countIpRangeSize(item.startAddress, item.endAddress) - DHCP_RESERVED_IPS }))
         } else {
           // eslint-disable-next-line max-len
           dhcpPools = row.dhcpPools.map((item) => ({ ...item, numberOfHosts: IpUtilsService.countIpRangeSize(item.startAddress, item.endAddress) }))
