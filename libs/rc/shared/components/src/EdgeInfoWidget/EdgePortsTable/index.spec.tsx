@@ -1,13 +1,27 @@
+import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures, EdgeLagStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, screen }                                         from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { EdgeLagFixtures, EdgeLagStatus, EdgePortConfigFixtures, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                    from '@acx-ui/store'
+import { render, screen }                                                              from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { EdgePortsTable } from '.'
 
-const { edgePortsSetting } = EdgePortConfigFixtures
+const { edgePortsSetting, mockedEdgePortWithDualWan } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
+const mockEdgeNodes = mockEdgeList.data
+const portWithLagMember = cloneDeep(edgePortsSetting)
+portWithLagMember[0].portId = mockEdgeLagStatusList.data[0].lagMembers[0].portId
+
+jest.mock('../../useEdgeActions', () => ({
+  useIsEdgeFeatureReady: jest.fn()
+}))
+
+const params = { tenantId: 'tenant-id' }
 describe('Edge Ports Table', () => {
   it('should correctly render', async () => {
     render(<EdgePortsTable
@@ -30,10 +44,9 @@ describe('Edge Ports Table', () => {
 
   it('should show lag name', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const portData = cloneDeep(edgePortsSetting)
-    portData[0].portId = mockEdgeLagStatusList.data[0].lagMembers[0].portId
+
     render(<EdgePortsTable
-      portData={portData}
+      portData={portWithLagMember}
       lagData={mockEdgeLagStatusList.data as EdgeLagStatus[]}
     />)
 
@@ -48,5 +61,128 @@ describe('Edge Ports Table', () => {
     expect(screen.getByRole('row',{
       name: 'Port2 description2 Down Disabled LAN AA:BB:CC:DD:EE:F1 1.1.1.2 Static IP 29.9 Gbps'
     })).toBeValid()
+  })
+
+  it('calls handleClickLagName when a LAG name is clicked', async () => {
+    const mockHandleClickLagName = jest.fn()
+
+    render(
+      <EdgePortsTable
+        portData={portWithLagMember}
+        lagData={mockEdgeLagStatusList.data as EdgeLagStatus[]}
+        handleClickLagName={mockHandleClickLagName}
+      />
+    )
+
+    await userEvent.click(screen.getByText('LAG 1'))
+    expect(mockHandleClickLagName).toHaveBeenCalled()
+  })
+
+  describe('EdgePortsTable - Dual WAN Columns', () => {
+    const dualWanWithLagMember = cloneDeep(mockedEdgePortWithDualWan)
+    dualWanWithLagMember[0].portId = mockEdgeLagStatusList.data[0].lagMembers[0].portId
+
+    const clusterPortsWithSerialNumber = cloneDeep(dualWanWithLagMember)
+    clusterPortsWithSerialNumber[0].serialNumber = mockEdgeNodes[0].serialNumber
+    clusterPortsWithSerialNumber[1].serialNumber = mockEdgeNodes[0].serialNumber
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) =>
+        ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    })
+
+    it('should render dual WAN columns when isEdgeDualWanEnabled is true', () => {
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      // Check if dual WAN columns are rendered
+      expect(screen.getByText('Link Health Monitoring')).toBeInTheDocument()
+      expect(screen.getByText('Link Health Status')).toBeInTheDocument()
+      expect(screen.getByText('WAN Role')).toBeInTheDocument()
+      expect(screen.getByText('WAN Status')).toBeInTheDocument()
+
+      // Check if data is rendered correctly
+      expect(screen.getByText('On')).toBeInTheDocument()
+      expect(screen.getAllByText('Up')).toHaveLength(2)
+      expect(screen.getByText('Primary')).toBeInTheDocument()
+      expect(screen.getByText('Active')).toBeInTheDocument()
+    })
+
+    it('should not render dual WAN columns when isEdgeDualWanEnabled is false', () => {
+      (useIsEdgeFeatureReady as jest.Mock).mockReturnValue(false)
+
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      // Check if dual WAN columns are not rendered
+      expect(screen.queryByText('Link Health Monitoring')).not.toBeInTheDocument()
+      expect(screen.queryByText('Link Health Status')).not.toBeInTheDocument()
+      expect(screen.queryByText('WAN Role')).not.toBeInTheDocument()
+      expect(screen.queryByText('WAN Status')).not.toBeInTheDocument()
+    })
+
+    it('should handle Link Health Monitoring button click', async () => {
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      // Click the Link Health Monitoring button
+      const button = screen.getByRole('button', { name: 'On' })
+      await userEvent.click(button)
+
+      // Wait for the drawer to open
+      expect(await screen.findByText('Port1: Link Health Monitoring')).toBeInTheDocument()
+    })
+
+    it('should display correct WAN Link Status data', () => {
+
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      // Check WAN Link Status data
+      expect(screen.getAllByText('Up')).toHaveLength(2)
+      expect(screen.getByText('Down')).toBeInTheDocument()
+    })
+
+    it('should not display node name column when it is not cluster level', () => {
+
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={false}
+        />
+      </Provider>, { route: { params } })
+
+      // Check WAN Link Status data
+      expect(screen.getAllByText('Up')).toHaveLength(2)
+      expect(screen.getByText('Down')).toBeInTheDocument()
+      expect(screen.queryByRole('columnheader', { name: 'Node Name' })).not.toBeInTheDocument()
+    })
   })
 })
