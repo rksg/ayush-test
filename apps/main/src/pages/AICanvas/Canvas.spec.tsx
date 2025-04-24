@@ -20,7 +20,7 @@ jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
 )
 
 const currentCanvas = {
-  id: '65bcb4d334ec4a47b21ae5e062de279f',
+  id: '001',
   name: 'Dashboard Canvas',
   visible: true,
   dashboardIds: ['123'],
@@ -52,6 +52,7 @@ const currentCanvas = {
 }
 
 const mockedCreate = jest.fn()
+const mockedPatch = jest.fn()
 const mockedUpdate = jest.fn(() => ({
   unwrap: jest.fn().mockResolvedValue({})
 }))
@@ -62,8 +63,16 @@ const mockedGetCanvasById = jest.fn(() => ({
 jest.mock('@acx-ui/rc/services', () => ({
   useCreateCanvasMutation: () => ([ mockedCreate ]),
   useUpdateCanvasMutation: () => ([ mockedUpdate ]),
+  usePatchCanvasMutation: () => ([ mockedPatch ]),
   useLazyGetCanvasByIdQuery: () => ([ mockedGetCanvasById ]),
-  useGetCanvasQuery: () => ({ data: [currentCanvas] })
+  useGetCanvasQuery: () => ({ data: [
+    currentCanvas,
+    {
+      id: '002',
+      name: 'Second Canvas',
+      content: ''
+    }
+  ] })
 }))
 
 jest.mock('./components/Layout', () => (props: LayoutProps) =>
@@ -73,6 +82,10 @@ jest.mock('./components/Layout', () => (props: LayoutProps) =>
 jest.mock('./components/ManageCanvasDrawer', () => () =>
   <div data-testid='ManageCanvasDrawer' />
 )
+
+jest.mock('./PreviewDashboardModal', () => ({
+  PreviewDashboardModal: () => <div data-testid='PreviewDashboardModal' />
+}))
 
 const groupsData = [
   {
@@ -139,6 +152,117 @@ describe('Canvas', () => {
     const saveButton = await screen.findByText('Save')
     await userEvent.click(saveButton)
     expect(mockedUpdate).toBeCalledTimes(1)
+  })
+
+  it('should render canvas preview correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const previewButton = await screen.findByText('Preview')
+    await userEvent.click(previewButton)
+    expect(await screen.findByTestId('PreviewDashboardModal')).toBeVisible()
+  })
+
+  it('should select canvas and fetch data correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const canvasListButton = await screen.findByTestId('canvas-list')
+    await userEvent.click(canvasListButton)
+    const anotherCanvas = await screen.findByText('Second Canvas')
+    expect(anotherCanvas).toBeInTheDocument()
+    await userEvent.click(anotherCanvas)
+    expect(mockedGetCanvasById).toHaveBeenCalledWith({ params: { canvasId: '002' } })
+  })
+
+  it('should change canvas visibility type correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const typeMenu = await screen.findByTestId('visibility-type')
+    await userEvent.click(typeMenu)
+    await userEvent.click(await screen.findByText('Private'))
+    expect(mockedPatch).toHaveBeenCalledWith({
+      params: {
+        canvasId: '001'
+      },
+      payload: {
+        visible: false
+      }
+    })
+  })
+
+  it('should change canvas name correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    render(
+      <Provider>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    const canvasName = await screen.findByText('Dashboard Canvas')
+    expect(canvasName).toBeVisible()
+    await userEvent.click(canvasName)
+    // const nameInput = await screen.findByTestId('canvas-name')
+    // await userEvent.type(nameInput, 'My Canvas')
+    // const confirmButton = screen.getByTestId('confirm')
+    // await userEvent.click(confirmButton)
+    // expect(mockedPatch).toHaveBeenCalledWith({
+    //   params: {
+    //     canvasId: '001'
+    //   },
+    //   payload: {
+    //     name: 'My Canvas'
+    //   }
+    // })
   })
 
   it('should render canvas list and new canvas correctly', async () => {

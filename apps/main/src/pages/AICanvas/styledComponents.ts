@@ -432,13 +432,15 @@ export const Canvas = styled.div`
     justify-content: space-between;
     padding: 8px 25px;
     .edit-canvas-name {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      grid-gap: 10px;
+      display: flex;
       align-items: center;
-      width: 300px;
       .ant-form-item {
         margin-bottom: 0;
+        margin-right: 10px;
+        width: 220px;
+        .ant-form-item-explain {
+          display: none;
+        }
       }
       .action {
         display: flex;
@@ -446,12 +448,17 @@ export const Canvas = styled.div`
       .button {
         cursor: pointer;
         margin-right: 8px;
+        margin-top: 4px;
         &.confirm {
           color: #23AB36;
         }
         &.cancel {
           color: #ED1C24;
         }
+      }
+      .error{
+        color: var(--acx-semantics-red-60);
+        font-size: 12px;
       }
     }
     .title{

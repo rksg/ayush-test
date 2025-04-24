@@ -130,6 +130,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [isEditName, setIsEditName] = useState(false)
   const [visibilityType, setVisibilityType] = useState('')
+  const [nameFieldError, setNameFieldError] = useState('')
 
   const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
@@ -359,6 +360,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const onEditCanvasName = () => {
     form.setFieldValue('name', currentCanvas.name)
+    setNameFieldError('')
     setIsEditName(true)
   }
 
@@ -384,6 +386,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     <div className='edit-input'>
       <Form.Item
         name='name'
+        data-testid='canvas-name'
         rules={[
           { required: true },
           { max: 64 },
@@ -411,12 +414,19 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
         <Close size='sm'/>
       </div>
     </div>
+    <div className='error'>
+      {nameFieldError}
+    </div>
   </div>
+
+  const onFieldsChange = () => {
+    setNameFieldError(form.getFieldError('name')[0])
+  }
 
   return (
     <UI.Canvas>
       <div className='header'>
-        <Form form={form} onFinish={onSubmit}>
+        <Form form={form} onFinish={onSubmit} onFieldsChange={onFieldsChange}>
           {
             currentCanvas.name && canvasList ? <>
               {
@@ -484,7 +494,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                       }
                     ]}/>
                 }>{() =>
-                  <div className='visibility-type'>
+                  <div className='visibility-type' data-testid='visibility-type'>
                     <div className='label'>
                       {visibilityMap[visibilityType].icon}
                       {visibilityMap[visibilityType].label}
