@@ -2825,18 +2825,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const payload = JSON.stringify({ useVenueSettings: true })
         const req = createHttpRequest(urlsInfo.resetApSnmpSettings, params, apiCustomHeader)
         return {
           ...req,
           // eslint-disable-next-line max-len
-          ...(enableRbac ? { body: payload } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
