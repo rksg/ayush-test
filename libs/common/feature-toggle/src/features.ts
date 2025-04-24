@@ -33,6 +33,7 @@ export enum Features {
   CONFIG_TEMPLATE_ENFORCED_VENUE = 'acx-ui-config-template-enforcement-venue',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
+  CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
@@ -327,7 +328,10 @@ export enum Features {
   DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
   SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
   WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
-  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement'
+  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement',
+  WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE = 'wifi-ap-group-more-parameter-phase1-toggle',
+  SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE = 'acx-ui-support-stack-neighbor-port-toggle',
+  WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE = 'wifi-open-network-integrate-identity-group-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

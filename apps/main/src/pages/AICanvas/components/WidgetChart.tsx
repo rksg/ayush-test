@@ -19,6 +19,7 @@ import { noDataDisplay }                                                        
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
 
+import { WidgetProperty }    from './Card'
 import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
 import { ItemTypes }         from './GroupItem'
 
@@ -29,6 +30,7 @@ interface WidgetListProps {
   setVisible?: (v: boolean) => void
   groups?: Group[]
   removeShadowCard?: ()=>void
+  changeWidgetProperty?: (data: WidgetProperty)=> void
 }
 
 interface WidgetCategory {
@@ -206,7 +208,8 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
   )
 }
 
-export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
+export const WidgetChart: React.FC<WidgetListProps> = (
+  { data, visible, setVisible, changeWidgetProperty }) => {
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const queryResults = useGetWidgetQuery({
     customHeaders: { timezone },
@@ -341,7 +344,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         BYTES: formatter('bytesFormat')
       }
       return <Table
-        style={{ width: width-30, height: height-5 }}
+        style={{ width: width-30, height: '100%' }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
           .map(i => ({
             ...i,
@@ -413,11 +416,12 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         </AutoSizer>
       </UI.Widget>
       {
-        (visible && setVisible) && <CustomizeWidgetDrawer
+        (visible && setVisible && changeWidgetProperty) && <CustomizeWidgetDrawer
           visible={visible as boolean}
           setVisible={setVisible}
           widget={chartData as WidgetListData}
           canvasId={data.canvasId as string}
+          changeWidgetProperty={changeWidgetProperty}
         />
       }
     </Loader>

@@ -59,7 +59,7 @@ describe('SwitchAccessControlSetForm', () => {
       }
     )
 
-    const nameInput = screen.getByLabelText('MAC ACL Name')
+    const nameInput = screen.getByLabelText('Policy Name')
     const descriptionInput = screen.getByLabelText('Description')
 
     await userEvent.type(nameInput, 'New Policy')
@@ -82,7 +82,7 @@ describe('SwitchAccessControlSetForm', () => {
       }
     )
 
-    const nameInput = screen.getByLabelText('MAC ACL Name')
+    const nameInput = screen.getByLabelText('Policy Name')
     const descriptionInput = screen.getByLabelText('Description')
 
     await userEvent.type(nameInput, 'New Policy')
@@ -118,7 +118,7 @@ describe('SwitchAccessControlSetForm', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByLabelText('MAC ACL Name')).toHaveValue('Test Policy')
+      expect(screen.getByLabelText('Policy Name')).toHaveValue('Test Policy')
     })
     await waitFor(() => {
       expect(screen.getByLabelText('Description')).toHaveValue('Test Description')
@@ -147,7 +147,7 @@ describe('SwitchAccessControlSetForm', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('validates MAC ACL name for duplicates', async () => {
+  it('validates Policy Name for duplicates', async () => {
     mockServer.use(
       rest.post('/switchAccessControlProfiles/query', (req, res, ctx) => {
         return res(ctx.json({
@@ -168,12 +168,12 @@ describe('SwitchAccessControlSetForm', () => {
       }
     )
 
-    const nameInput = screen.getByLabelText('MAC ACL Name')
+    const nameInput = screen.getByLabelText('Policy Name')
     await userEvent.type(nameInput, 'Duplicate Name')
     fireEvent.blur(nameInput)
 
     await waitFor(() => {
-      expect(screen.getByText('MAC ACL name is duplicated.')).toBeInTheDocument()
+      expect(screen.getByText('Policy Name is duplicated.')).toBeInTheDocument()
     })
   })
 })

@@ -72,7 +72,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
       return
     }
     const selectedProfile = ipsecProfileOptionList
-      .find((profile) => profile.value === ipsecProfileId && profile.disabled === false)
+      .find((profile) => profile.value === ipsecProfileId)
     setIpSecProfile(selectedProfile ? selectedProfile: defaultIpsecOption)
 
     form.setFieldValue(ipsecProfileIdFieldName, selectedProfile ? ipsecProfileId : '')

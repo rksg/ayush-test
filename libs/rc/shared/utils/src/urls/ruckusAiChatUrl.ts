@@ -41,13 +41,23 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas',
     newApi: true
   },
-  saveCanvas: {
+  getCanvasById: {
+    method: 'get',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
+  createCanvas: {
     method: 'post',
     url: '/ruckusAi/canvas',
     newApi: true
   },
   updateCanvas: {
     method: 'put',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
+  deleteCanvas: {
+    method: 'delete',
     url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },

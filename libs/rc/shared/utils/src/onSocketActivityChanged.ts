@@ -19,8 +19,30 @@ export async function onSocketActivityChanged <Payload> (
     const userProfile = getUserProfile()
     const jsonData = JSON.parse(data)
     if(userProfile.abacEnabled){
-      const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
-        (id: string) => userProfile.venuesList?.includes(id))
+
+      const getPermittedVenues = () => {
+
+        const isVenuesScope = jsonData?.scopeType === 'venues'
+
+        //RBAC phase 2 support non-venues scope
+        if(userProfile.rbacOpsApiEnabled && !isVenuesScope) return true
+
+        return isVenuesScope && jsonData?.scopeIds?.some(
+          (id: string) => {
+            const isAllVenue = id === 'all'
+            const isIncludedInList = userProfile.venuesList?.includes(id)
+
+            // Support 'all' venues for (RBAC Phase 1 + ff || RBAC Phase 2)
+            // eslint-disable-next-line max-len
+            const supportsAll = userProfile.activityAllVenuesEnabled || userProfile.rbacOpsApiEnabled
+            return supportsAll ? isIncludedInList || isAllVenue : isIncludedInList
+          }
+        )
+
+      }
+
+      const hasPermittedVenue = getPermittedVenues()
+
       if(userProfile.hasAllVenues || hasPermittedVenue){
         handler(jsonData)
       }

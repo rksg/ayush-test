@@ -211,7 +211,7 @@ const tallStyle = css<StyledTable>`
       }
       &-footer {
         background: transparent;
-        padding: 8px 0; 
+        padding: 8px 0;
       }
     }
 
@@ -288,9 +288,9 @@ const tallStyle = css<StyledTable>`
           path {
             stroke: var(--acx-accents-blue-50);
           }
-        }      
+        }
       }
-  
+
       .ant-pro-table {
         margin: -8px !important;
         .ant-table {
@@ -638,6 +638,7 @@ export const GroupRow = styled.div`
   margin-right: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `
 export const GroupCell = styled.div`
   display: flex;
