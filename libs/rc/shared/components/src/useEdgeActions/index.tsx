@@ -1,8 +1,8 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal }   from '@acx-ui/components'
-import { Features }          from '@acx-ui/feature-toggle'
+import { showActionModal }  from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
