@@ -105,9 +105,10 @@ describe('switch.firmware.utils', () => {
     expect(invalidVersionFor81X('10010f_cd2')).toBe(true)
     expect(invalidVersionFor81X('10020a_cd1_rc22')).toBe(true)
     expect(invalidVersionFor81X('10020b_cd2')).toBe(true)
+    expect(invalidVersionFor81X('10010g_b123')).toBe(true)
+    expect(invalidVersionFor81X('10010g_rc641')).toBe(true)
 
-    expect(invalidVersionFor81X('10010g_b123')).toBe(false)
-    expect(invalidVersionFor81X('10010g_cd1_rc11')).toBe(false)
+    expect(invalidVersionFor81X('10010g_cd1_rc13')).toBe(false)
     expect(invalidVersionFor81X('10020c_cd2_rc11')).toBe(false)
   })
 
