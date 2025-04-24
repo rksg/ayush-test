@@ -187,7 +187,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
             >
               <Form.Item
                 name='sourceAddress'
-                label={$t({ defaultMessage: 'Source Mac Address' })}
+                label={$t({ defaultMessage: 'Source MAC Address' })}
                 rules={[
                   { required: !isAnySrcAddress },
                   { validator: validateMacAndSetMask(
