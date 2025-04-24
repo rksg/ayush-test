@@ -70,7 +70,8 @@ export const SwitchPortViewModelQueryFields = [
   'errorDisableStatus',
   'stickyMacAclAllowList',
   'stickyMacAclAllowCount',
-  'switchMacAcl'
+  'switchMacAcl',
+  'stackingNeighborPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -165,8 +166,6 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
-  portSecurity?: boolean
-  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''
@@ -553,6 +552,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowList?: string[]
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
+  stackingNeighborPort?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {

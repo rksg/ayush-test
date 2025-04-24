@@ -1,17 +1,19 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, ReactElement, useEffect, useImperativeHandle, useState } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { Menu, MenuProps } from 'antd'
+import _                   from 'lodash'
+import { useIntl }         from 'react-intl'
 
-import { Button }                                         from '@acx-ui/components'
-import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
+import { Button, Dropdown, Tooltip }                                                                      from '@acx-ui/components'
+import { ArrowExpand, LockOutlined, GlobeOutlined }                                                       from '@acx-ui/icons-new'
+import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation, useLazyGetCanvasByIdQuery } from '@acx-ui/rc/services'
+import { Canvas as CanvasType }                                                                           from '@acx-ui/rc/utils'
 
 import Layout                                     from './components/Layout'
+import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
-
-// import mockData from './mock'
 
 const compactType = 'horizontal'
 
@@ -31,6 +33,7 @@ export interface Size {
 }
 
 export interface CardInfo {
+  name: string
   id: string,
   gridx: number
   gridy: number
@@ -88,32 +91,45 @@ const DEFAULT_CANVAS = [
 ] as unknown as Section[]
 
 export interface CanvasRef {
-  save: () => Promise<void>;
+  save: () => Promise<void>
   removeShadowCard: () => void
+  currentCanvas: CanvasType
+}
+
+export const DashboardIcon = () => {
+  const { $t } = useIntl()
+  return <Tooltip
+    overlayStyle={{ maxWidth: '270px' }}
+    title={$t({ defaultMessage: 'This canvas is being used as the dashboard.' })}
+    placement='bottom'
+  >
+    <UI.DashboardIcon size='sm' />
+  </Tooltip>
 }
 
 interface CanvasProps {
-  onCanvasChange?: (hasChanges: boolean) => void;
+  canvasHasChanges?: boolean
+  onCanvasChange?: (hasChanges: boolean) => void
+  checkChanges?: (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => void
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
 }
 
-const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, setGroups }, ref) => {
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({
+  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
+  const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
+  const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
-  const [getCanvas] = useLazyGetCanvasQuery()
-  const [updateCanvas] = useUpdateCanvasMutation()
+  const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
 
-  useEffect(() => {
-    // const data = getFromLS()
-    // setSections(data)
-    // const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
-    // setGroups(group)
-    getDefaultCanvas()
-  }, [])
+  const [getCanvasById] = useLazyGetCanvasByIdQuery()
+  const [createCanvas] = useCreateCanvasMutation()
+  const [updateCanvas] = useUpdateCanvasMutation()
+  const { data: canvasList } = useGetCanvasQuery({})
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -122,14 +138,83 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
       s.groups = groups.filter(g => g.sectionId === s.id)
     })
     let hasDiff = !_.isEqual(tmp, sections)
+
+    const tmpDiff = [] as string[]
+    // The current requirement includes only one section and one group.
+    // Push IDs of newly added or updated widgets.
+    tmp[0].groups[0].cards.forEach(t => {
+      const origin = sections[0].groups[0].cards.find(i => i.widgetId === t.widgetId)
+      if(!origin) {
+        tmpDiff.push(t.widgetId as string)
+      } else if(!_.isEqual(t, origin)) {
+        tmpDiff.push(t.widgetId as string)
+      }
+    })
+
+    setDiffWidgetIds(tmpDiff)
     setCanvasChange(hasDiff)
   }, [groups, sections])
 
-  // const getFromLS = () => {
-  //   let ls = localStorage.getItem('acx-ui-canvas') ?
-  //     JSON.parse(localStorage.getItem('acx-ui-canvas') || '') : DEFAULT_CANVAS // mockData
-  //   return ls
-  // }
+  useEffect(() => {
+    if(canvasId) {
+      const fetchData = async () => {
+        await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+          setupCanvas(res)
+        })
+      }
+      fetchData()
+    }
+  }, [canvasId])
+
+  useEffect(() => {
+    if(canvasList) {
+      const newCanvasId = canvasList[0].id
+      const fetchData = async () => {
+        await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+          setupCanvas(res)
+        })
+      }
+      if(newCanvasId == canvasId){
+        fetchData()
+      } else {
+        setCanvasId(newCanvasId)
+      }
+    }
+  }, [canvasList])
+
+  const onNewCanvas = async () => {
+    await createCanvas({})
+  }
+
+  const fetchCanvas = async () => {
+    await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
+      setupCanvas(res)
+    })
+  }
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    const actions = () => {
+      if(e.key === 'New_Canvas') {
+        onNewCanvas()
+      } else if (e.key === 'Manage_Canvases') {
+        setManageCanvasVisible(true)
+      } else {
+        const selected = canvasList?.find(i => i.id == e.key)
+        setCanvasId(selected?.id || canvasId)
+        if(canvasId == selected?.id){
+          fetchCanvas()
+        }
+      }
+      setCanvasChange(false)
+    }
+    if(checkChanges) {
+      checkChanges(!!canvasHasChanges, () => {
+        actions()
+      }, ()=>{
+        onSave(actions)
+      })
+    }
+  }
 
   const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
@@ -137,11 +222,10 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     }
   }
 
-  const getDefaultCanvas = async () => {
-    const response = await getCanvas({}).unwrap()
-    if (response?.length && response[0].content) {
-      const canvasId = response[0].id
-      let data = JSON.parse(response[0].content) as Section[]
+  const setupCanvas = (response: CanvasType) => {
+    setCurrentCanvas(response)
+    if(response.content) {
+      let data = JSON.parse(response.content) as Section[]
       data = data.map(section => ({
         ...section,
         groups: section.groups.map(group => ({
@@ -150,20 +234,15 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
         }))
       }))
       const groups = data.flatMap(section => section.groups)
-
-      setCanvasId(canvasId)
       setSections(data)
       setGroups(groups)
       setCanvasChange(false)
     } else {
-      if (response?.length && response[0].id) {
-        setCanvasId(response[0].id)
-      }
       emptyCanvas()
     }
   }
 
-  const onSave = async () => {
+  const onSave = async (callback?: ()=>void) => {
     const tmp = _.cloneDeep(sections)
     let widgetIds = [] as string[]
     let hasCard = false
@@ -182,7 +261,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
         params: { canvasId },
         payload: {
           content: hasCard ? JSON.stringify(tmp) : '',
-          widgetIds
+          widgetIds,
+          diffWidgetIds
+        }
+      }).unwrap().then(() => {
+        if(callback) {
+          callback()
         }
       })
     }
@@ -192,7 +276,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
 
   useImperativeHandle(ref, () => ({
     save: onSave,
-    removeShadowCard: removeShadowCard
+    removeShadowCard: removeShadowCard,
+    currentCanvas: currentCanvas
   }))
 
   const emptyCanvas = () => {
@@ -226,22 +311,113 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
     setShadowCard({} as CardInfo)
   }
 
+  const visibilityMap: { [key:string]: { icon: ReactElement, label: string } } = {
+    private: {
+      icon: <LockOutlined size='sm' />,
+      label: $t({ defaultMessage: 'Private' })
+    },
+    public: {
+      icon: <GlobeOutlined size='sm' />,
+      label: $t({ defaultMessage: 'Public' })
+    }
+  }
+
+  const visibilityMenu = (
+    <Menu
+      onClick={()=>{}}
+      selectable
+      defaultSelectedKeys={['private']}
+      items={[
+        {
+          key: 'private',
+          icon: visibilityMap['private'].icon,
+          label: visibilityMap['private'].label
+        },
+        {
+          key: 'public',
+          icon: visibilityMap['public'].icon,
+          label: visibilityMap['public'].label
+        }
+      ]
+      }/>
+  )
+
   return (
     <UI.Canvas>
       <div className='header'>
-        <div className='title'>
-          <span>{$t({ defaultMessage: 'Dashboard Canvas' })}</span>
-        </div>
+
+        {
+          currentCanvas.name && canvasList ? <div className='title'>
+            <span className='name'>
+              {currentCanvas.name}
+            </span>
+            <Dropdown overlay={<Menu
+              onClick={handleMenuClick}
+              defaultSelectedKeys={[canvasId]}
+              items={[
+                ...canvasList.map(c => ({
+                  icon: c.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
+                  key: c.id,
+                  label: c.name,
+                  itemIcon: c.dashboardIds && <div
+                    style={{ marginLeft: '10px', height: '20px' }}><DashboardIcon /></div>
+                })),
+                {
+                  type: 'divider'
+                },
+                {
+                  key: 'New_Canvas',
+                  label: $t({ defaultMessage: 'New Canvas' }),
+                  disabled: canvasList.length >= 10
+                },
+                {
+                  key: 'Manage_Canvases',
+                  label: $t({ defaultMessage: 'Manage My Canvases' })
+                }
+              ]}/>
+            }
+            placement='bottom'>{() =>
+                <ArrowExpand size='sm' data-testid='canvas-list' />
+              }
+            </Dropdown>
+            {currentCanvas.dashboardIds && <DashboardIcon/> }
+          </div> : <div/>
+        }
         <div className='actions'>
-          {/* <Button onClick={()=>{onClose()}}>
-            {$t({ defaultMessage: 'Publish' })}
-          </Button> */}
-          {/* <Button className='black' onClick={()=>{onClose()}}>
+          <Dropdown overlay={visibilityMenu}>{(selectedKeys) =>
+            <div className='visibility-type'>
+              {selectedKeys && <div className='label'>
+                {visibilityMap[selectedKeys].icon}
+                {visibilityMap[selectedKeys].label}
+              </div>}
+              <ArrowExpand size='sm' />
+            </div>
+          }</Dropdown>
+          <Tooltip.Question
+            iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
+            overlayStyle={{ maxWidth: '270px' }}
+            title={<UI.Visibility>
+              <div className='type'>
+                <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
+                <div>
+                  {$t({ defaultMessage: `Hide this canvas from the public. 
+                     The canvas will be visible to the owner only.` })}
+                </div>
+              </div>
+              <div className='type'>
+                <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
+                <div>
+                  {$t({
+                    defaultMessage: 'Publish this canvas for all administrators in this tenant.'
+                  })}
+                </div>
+              </div>
+            </UI.Visibility>}
+            placement='bottom'
+          />
+          <Button className='black' onClick={()=>{}}>
             {$t({ defaultMessage: 'Preview' })}
-          </Button> */}
-          {/* <Button className='black' onClick={() => {emptyCanvas()}}>
-            {$t({ defaultMessage: 'Clear' })}
-          </Button> */}
+          </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
             {$t({ defaultMessage: 'Save' })}
           </Button>
@@ -262,6 +438,13 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
           />
         </UI.Grid>
       </div>
+      {
+        manageCanvasVisible && <ManageCanvasDrawer
+          visible={manageCanvasVisible}
+          onClose={()=>{setManageCanvasVisible(false)}}
+          canvasList={canvasList as CanvasType[]}
+        />
+      }
     </UI.Canvas>
   )
 })

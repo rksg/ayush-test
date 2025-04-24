@@ -167,6 +167,7 @@ export default function AICanvasModal (props: {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
+  const [skipScrollTo, setSkipScrollTo] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -177,7 +178,7 @@ export default function AICanvasModal (props: {
     'Give me a table for the Top 10 clients based on traffic.',
     'Show me the trending of the network traffic for last week.',
     'How many clients were connected to my network yesterday?'
-  ] // Only support english default questions in phase 1
+  ] // Only support english default questions
 
 
 
@@ -187,6 +188,10 @@ export default function AICanvasModal (props: {
   useEffect(()=>{
     if(page === 1 || aiBotLoading) {
       setTimeout(()=>{
+        if (skipScrollTo) {
+          setSkipScrollTo(false)
+          return
+        }
         // @ts-ignore
         if(scrollRef?.current?.scrollTo){
           // @ts-ignore
@@ -316,14 +321,18 @@ export default function AICanvasModal (props: {
       })
   }
 
-  const checkChanges = (callback:()=>void, handleSave:()=>void) => {
-    if (canvasHasChanges) {
+  const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {
+    if (hasChanges) {
       showActionModal({
         type: 'confirm',
         width: 400,
-        title: $t({ defaultMessage: 'Unsaved Canvas Changes' }),
-        content: $t({ defaultMessage: 'Are you sure you want to cancel the chatbot?' +
-            ' Unsaved changes to the canvas will be lost.' }),
+        title: $t({ defaultMessage: 'Unsaved Changes' }),
+        content: <div>
+          {$t({ defaultMessage: 'Do you want to save your changes to Canvas:' })}
+          <span style={{ padding: ' 0 1px 0 3px', fontWeight: '700' }}>
+            {canvasRef?.current?.currentCanvas?.name}</span>?
+          <div>{$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}</div>
+        </div>,
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{
@@ -331,13 +340,13 @@ export default function AICanvasModal (props: {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Discard Changes' }),
+            text: $t({ defaultMessage: 'Discard' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
             handler: callback
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
+            text: $t({ defaultMessage: 'Save' }),
             type: 'primary',
             key: 'ok',
             closeAfterAction: true,
@@ -351,7 +360,7 @@ export default function AICanvasModal (props: {
   }
 
   const onClickClose = () => {
-    checkChanges(onClose, ()=> {
+    checkChanges(canvasHasChanges, onClose, ()=> {
       handleSaveCanvas()
       onClose()
     })
@@ -395,6 +404,7 @@ export default function AICanvasModal (props: {
       ...message,
       userFeedback: userFeedback
     }
+    setSkipScrollTo(true)
     setChats(prevChats =>
       prevChats.map(chat =>
         chat.id === message.id ? updatedMessage : chat
@@ -403,7 +413,7 @@ export default function AICanvasModal (props: {
   }
 
   const onClickCanvasMode = () => {
-    checkChanges(()=>{
+    checkChanges(canvasHasChanges, ()=>{
       setCanvasMode(!showCanvas)
       setCanvasHasChanges(false)
     }, ()=>{
@@ -422,7 +432,7 @@ export default function AICanvasModal (props: {
       visible={isModalOpen}
       onCancel={onClose}
       width={showCanvas ? 'calc(100vw - 80px)' : '1000px'}
-      style={showCanvas ? { top: 40, height: 'calc(100vh - 40px)' } : { top: 70 }}
+      style={{ top: 40, height: 'calc(100vh - 40px)' }}
       footer={null}
       closable={false}
       maskClosable={false}
@@ -462,17 +472,17 @@ export default function AICanvasModal (props: {
                           onClick={onNewChat}
                         />
                       </Tooltip>
-                      {
-                        showCanvas ? <CanvasCollapse
-                          data-testid='canvasCollapseIcon'
-                          onClick={onClickCanvasMode}
-                        />
-                          : <CanvasExpand
-                            data-testid='canvasExpandIcon'
-                            onClick={onClickCanvasMode}
-                          />
-                      }
                     </> : null
+                  }
+                  {
+                    showCanvas ? <CanvasCollapse
+                      data-testid='canvasCollapseIcon'
+                      onClick={onClickCanvasMode}
+                    />
+                      : <CanvasExpand
+                        data-testid='canvasExpandIcon'
+                        onClick={onClickCanvasMode}
+                      />
                   }
                 </div>
                 <div className='title'>
@@ -545,7 +555,9 @@ export default function AICanvasModal (props: {
           {
             showCanvas && <Canvas
               ref={canvasRef}
+              canvasHasChanges={canvasHasChanges}
               onCanvasChange={handleCanvasChange}
+              checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
             />

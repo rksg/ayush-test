@@ -29,6 +29,7 @@ export interface UserProfileContextProps {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
+  activityAllVenuesEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
@@ -52,23 +53,27 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false,
     isCustomRole = false,
-    rbacOpsApiEnabled = false
+    rbacOpsApiEnabled = false,
+    activityAllVenuesEnabled = false
 
   const abacFF = 'abac-policies-toggle'
   const betaListFF = 'acx-ui-selective-early-access-toggle'
   const rbacOpsApiFF = 'acx-ui-rbac-allow-operations-api-toggle'
+  const activityAllVenuesFF = 'acx-ui-activity-all-venues-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
       { params: { tenantId }, payload: [
         abacFF,
         betaListFF,
-        rbacOpsApiFF
+        rbacOpsApiFF,
+        activityAllVenuesFF
       ] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
   rbacOpsApiEnabled = featureFlagStates?.[rbacOpsApiFF] ?? false
+  activityAllVenuesEnabled = featureFlagStates?.[activityAllVenuesFF] ?? false
   const selectedBetaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
@@ -131,6 +136,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       rbacOpsApiEnabled,
+      activityAllVenuesEnabled,
       isCustomRole,
       scopes: profile?.scopes,
       hasAllVenues,
@@ -152,6 +158,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       rbacOpsApiEnabled,
+      activityAllVenuesEnabled,
       isCustomRole,
       hasAllVenues,
       venuesList,
