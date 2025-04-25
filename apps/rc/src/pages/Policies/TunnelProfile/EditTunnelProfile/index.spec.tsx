@@ -34,6 +34,20 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 }))
 const editViewPath = '/:tenantId/t/policies/tunnelProfile/:policyId/edit'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useTunnelProfileActions: () => ({
+    updateTunnelProfileOperation: jest.fn((_id, _data, _initValues) => {
+      mockedUsedNavigate({
+        pathname: editViewPath,
+        hash: '',
+        search: ''
+      })
+      return Promise.resolve()
+    })
+  })
+}))
+
 describe('EditTunnelProfile', () => {
   let params: { tenantId: string, policyId: string }
   beforeEach(() => {
@@ -51,6 +65,10 @@ describe('EditTunnelProfile', () => {
       ),
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
+        (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       ),
       rest.post(

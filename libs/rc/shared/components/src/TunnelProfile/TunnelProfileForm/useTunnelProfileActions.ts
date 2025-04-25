@@ -145,6 +145,7 @@ export const useTunnelProfileActions = () => {
           await handleUpdateTunnelProfile({
             id,
             data,
+            initData,
             callback: (result) => {
               // callback is after all RBAC related APIs sent
               if (
@@ -171,10 +172,11 @@ export const useTunnelProfileActions = () => {
   const handleUpdateTunnelProfile = async (req: {
     id: string
     data: TunnelProfileFormType,
+    initData: TunnelProfileFormType,
     callback?: (res: (CommonResult
       | CommonErrorsResult<CatchErrorDetails> | void)) => void
   }) => {
-    const { id, data, callback } = req
+    const { id, data, initData, callback } = req
     const pathParams = { id }
     const venueId = data.venueId
     const clusterId = data.edgeClusterId
@@ -201,6 +203,10 @@ export const useTunnelProfileActions = () => {
           return
         }
 
+        if(data.edgeClusterId === initData.edgeClusterId) {
+          callback?.()
+          return
+        }
         try {
           // eslint-disable-next-line max-len
           const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)

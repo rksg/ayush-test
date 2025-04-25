@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -36,12 +38,12 @@ const EditTunnelProfile = () => {
   )
 
 
-  const { tunnelProfileViewData, isLoading } = useGetTunnelProfileViewDataListQuery(
+  const { tunnelProfileViewData, isTunnelViewLoading } = useGetTunnelProfileViewDataListQuery(
     { payload: { filters: { id: [policyId] } } },
     {
       selectFromResult: ({ data, isLoading }) => ({
         tunnelProfileViewData: data?.data?.[0] || {} as TunnelProfileViewData,
-        isLoading
+        isTunnelViewLoading: isLoading
       })
     }
   )
@@ -111,36 +113,40 @@ const EditTunnelProfile = () => {
 
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
-  const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+
+  const formInitValues = useMemo(() => {
+    const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+    initValues.disabledFields = []
+    if (pinId || isSdLanUsed){
+      initValues.disabledFields.push('type')
+      if (isEdgeL2greReady) {
+        initValues.disabledFields.push('tunnelType')
+        initValues.disabledFields.push('destinationIpAddress')
+        initValues.disabledFields.push('edgeClusterId')
+      }
+    }
+
+
+    if (isDMZUsed)
+      initValues.disabledFields.push('mtuType')
+
+    if (pinId || isDMZUsed)
+      initValues.disabledFields.push('natTraversalEnabled')
+
+    if (!isTunnelViewLoading) {
+      initValues.edgeClusterId = tunnelProfileViewData.destinationEdgeClusterId
+    }
+
+    return initValues
+  }, [tunnelProfileData, isTunnelViewLoading, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
 
   const handelOnFinish = (data: TunnelProfileFormType) =>
     updateTunnelProfileOperation(policyId || '', data, formInitValues)
 
-
-  formInitValues.disabledFields = []
-  if (pinId || isSdLanUsed){
-    formInitValues.disabledFields.push('type')
-    if (isEdgeL2greReady) {
-      formInitValues.disabledFields.push('tunnelType')
-      formInitValues.disabledFields.push('destinationIpAddress')
-      formInitValues.disabledFields.push('edgeClusterId')
-    }
-  }
-
-
-  if (isDMZUsed)
-    formInitValues.disabledFields.push('mtuType')
-
-  if (pinId || isDMZUsed)
-    formInitValues.disabledFields.push('natTraversalEnabled')
-
-  if (!isLoading) {
-    formInitValues.edgeClusterId = tunnelProfileViewData.destinationEdgeClusterId
-  }
-
   return (
     <Loader states={[{
       isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
+      || isTunnelViewLoading
     }]}>
       <TunnelProfileForm
         form={form}
