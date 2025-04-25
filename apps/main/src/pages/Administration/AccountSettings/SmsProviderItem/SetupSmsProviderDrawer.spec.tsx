@@ -444,7 +444,7 @@ describe('Set SMS Provider Drawer', () => {
           visible={true}
           isEditMode={false}
           setVisible={mockedCloseDrawer}
-          setSelected={jest.fn()}
+          setSelected={jest.fn((type, cb) => cb && cb())}
         />
       </Provider>, {
         route: { params }
@@ -486,7 +486,7 @@ describe('Set SMS Provider Drawer', () => {
           visible={true}
           isEditMode={false}
           setVisible={mockedCloseDrawer}
-          setSelected={jest.fn()}
+          setSelected={jest.fn((type, cb) => cb && cb())}
         />
       </Provider>, {
         route: { params }

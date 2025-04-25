@@ -841,7 +841,7 @@ describe('validateEdgeClusterLevelGateway', () => {
     const isDualWanEnabled = false
 
     await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
-      'At least one port must be enabled and configured to WAN or core port to form a cluster.'
+      'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.'
     )
   })
 
@@ -869,7 +869,7 @@ describe('validateEdgeClusterLevelGateway', () => {
     const isDualWanEnabled = false
 
     await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
-      'Please configure exactly one gateway.'
+      'Please configure exactly one gateway on each Edge.'
     )
   })
 
@@ -885,7 +885,7 @@ describe('validateEdgeClusterLevelGateway', () => {
     const isDualWanEnabled = true
 
     await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
-      'Please configure exactly one gateway.'
+      'Please configure exactly one gateway on each Edge.'
     )
   })
 
@@ -899,7 +899,7 @@ describe('validateEdgeClusterLevelGateway', () => {
     const isDualWanEnabled = true
 
     await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
-      `Please configure no more than ${MAX_DUAL_WAN_PORT} gateways.`
+      `Please configure no more than ${MAX_DUAL_WAN_PORT} gateways on each Edge.`
     )
   })
 

@@ -52,7 +52,7 @@ export const invalidVersionFor81X = (version: string): boolean => {
     return false
   }
   if (_.isString(version) && version.startsWith('10010')) {
-    return !isVerGEVer(version, '10010g', false)
+    return !isVerGEVer(version, '10010g_cd1', true)
   } else if (_.isString(version) && version.startsWith('10020')) {
     return !isVerGEVer(version, '10020c', false)
   } else {
