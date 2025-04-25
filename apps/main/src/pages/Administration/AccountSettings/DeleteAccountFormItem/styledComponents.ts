@@ -4,6 +4,7 @@ export const LabelWrapper = styled.div`
     .ant-form-item-no-colon {
         font-size: var(--acx-body-3-font-size)!important;
         color: var(--acx-primary-black);
+        font-weight: var(--acx-headline-3-font-weight);
     }
     .ant-form-item {
         margin-bottom: 5px;

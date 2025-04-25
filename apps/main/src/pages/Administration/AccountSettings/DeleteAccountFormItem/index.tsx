@@ -1,32 +1,51 @@
+import { useEffect, useState } from 'react'
+
 import { Col, Form, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { Button, showActionModal } from '@acx-ui/components'
-import { SpaceWrapper }            from '@acx-ui/rc/components'
-import { useDeleteTenantMutation } from '@acx-ui/rc/services'
-import { userLogout, useTenantId } from '@acx-ui/utils'
+import { Button, showActionModal }                           from '@acx-ui/components'
+import { CloseSymbol }                                       from '@acx-ui/icons'
+import { SpaceWrapper }                                      from '@acx-ui/rc/components'
+import { useDeleteTenantMutation, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { userLogout, useTenantId }                           from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
 import * as UI from './styledComponents'
+import './index.css'
 
 const DeleteAccountFormItem = () => {
   const { $t } = useIntl()
   const params = { tenantId: useTenantId() }
+  const [customerName, setCustomerName] = useState('')
+
+  const { data: tenantDetail } = useGetTenantDetailsQuery({ params })
 
   const [deleteTenant]
   = useDeleteTenantMutation()
+
+  useEffect(()=>{
+    if (tenantDetail?.name) {
+      setCustomerName(() => tenantDetail?.name)
+    }
+  }, [tenantDetail])
 
   const showDeleteActionModal = () => {
     const title = $t({ defaultMessage: 'Delete Account' })
     showActionModal({
       type: 'confirm',
       title: title,
+      width: '500px',
+      closeIcon: <CloseSymbol />,
+      closable: true,
+      className: 'delete-account-modal',
       customContent: {
         action: 'DELETE',
-        entityName: $t({ defaultMessage: 'account' }),
-        entityValue: $t({ defaultMessage: 'Account Name' }),
-        extraContent: $t(MessageMapping.delete_account_modal_msg, { space: <span> </span> }),
+        entityName: $t({ defaultMessage: 'account "{name}"' },
+          { name: customerName }),
+        entityValue: customerName,
+        extraContent: $t(MessageMapping.delete_account_modal_msg,
+          { space: <span> </span>, br: <br/> }),
         confirmationText: $t({ defaultMessage: 'Delete' })
       },
       okText: $t({ defaultMessage: 'Delete Customer' }),

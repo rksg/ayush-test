@@ -32,5 +32,5 @@ export const MessageMapping = {
   enable_r1_early_access_terms_condition_drawer_footer_msg: defineMessage({ defaultMessage: 'By clicking “Enable Early Access”, you agree to the RUCKUS One Early Access {tc}.' }),
   delete_account_description_1: defineMessage({ defaultMessage: 'Deleting your account from RUCKUS One will:' }),
   delete_account_description_2: defineMessage({ defaultMessage: '- Permanently remove your tenant and all associated accounts.{br} - Erase all personal information from our system.' }),
-  delete_account_modal_msg: defineMessage({ defaultMessage: '{space}This action is irreversible and cannot be undone.' })
+  delete_account_modal_msg: defineMessage({ defaultMessage: '{space}This action is irreversible and cannot be undone. {br}{br}{br}' })
 }
