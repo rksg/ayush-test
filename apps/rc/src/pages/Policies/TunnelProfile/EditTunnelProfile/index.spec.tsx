@@ -37,7 +37,7 @@ const editViewPath = '/:tenantId/t/policies/tunnelProfile/:policyId/edit'
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useTunnelProfileActions: () => ({
-    updateTunnelProfileOperation: jest.fn((_id, _data, _initValues) => {
+    updateTunnelProfileOperation: jest.fn(() => {
       mockedUsedNavigate({
         pathname: editViewPath,
         hash: '',
