@@ -1,11 +1,14 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }   from '@acx-ui/components'
+import { RadioCardCategory } from '@acx-ui/components'
 import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  getServiceCatalogRoutePath
+  getServiceCatalogRoutePath,
+  ExtendedUnifiedService,
+  UnifiedServiceSourceType,
+  UnifiedServiceCategory
 } from '@acx-ui/rc/utils'
 import { To, useTenantLink } from '@acx-ui/react-router-dom'
 import {
@@ -17,7 +20,7 @@ import {
 import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
-import { ServiceCard } from '.'
+import { UnifiedServiceCard } from '.'
 
 
 const mockedUseNavigate = jest.fn()
@@ -34,9 +37,20 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
-describe('ServiceCard', () => {
+describe('UnifiedServiceCard', () => {
   const params = { tenantId: '15320bc221d94d2cb537fa0189fee742' }
   const path = '/t/:tenantId'
+  const mockedUnifiedService: ExtendedUnifiedService = {
+    type: ServiceType.MDNS_PROXY,
+    sourceType: UnifiedServiceSourceType.SERVICE,
+    label: 'mDNS Proxy',
+    products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+    route: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST }),
+    category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+    disabled: false,
+    description: 'Mocked mDNS Proxy description',
+    totalCount: 5
+  }
 
   it('should render LIST service card', async () => {
     const { result: listPath } = renderHook(() => {
@@ -47,16 +61,13 @@ describe('ServiceCard', () => {
     })
 
     render(
-      <ServiceCard
-        serviceType={ServiceType.MDNS_PROXY}
-        categories={[RadioCardCategory.WIFI]}
-        type={'default'}
-      />, {
+      <UnifiedServiceCard unifiedService={mockedUnifiedService} type={'default'} />, {
         route: { params, path }
       }
     )
 
-    await userEvent.click(await screen.findByText('mDNS Proxy'))
+    const target = await screen.findByText('mDNS Proxy (5)')
+    await userEvent.click(target)
 
     expect(mockedUseNavigate).toHaveBeenCalledWith(listPath.current)
   })
@@ -70,11 +81,7 @@ describe('ServiceCard', () => {
     })
 
     render(
-      <ServiceCard
-        serviceType={ServiceType.MDNS_PROXY}
-        categories={[RadioCardCategory.WIFI]}
-        type={'button'}
-      />, {
+      <UnifiedServiceCard unifiedService={mockedUnifiedService} type={'button'} />, {
         route: { params, path }
       }
     )
@@ -88,29 +95,11 @@ describe('ServiceCard', () => {
     })
   })
 
-  it('should render service card with the count number', async () => {
-    render(
-      <ServiceCard
-        serviceType={ServiceType.MDNS_PROXY}
-        categories={[RadioCardCategory.WIFI]}
-        type={'default'}
-        count={5}
-      />, {
-        route: { params, path }
-      }
-    )
-
-    expect(await screen.findByText('mDNS Proxy (5)')).toBeVisible()
-  })
-
   it('should render service card with the BetaIndicator', async () => {
     render(
-      <ServiceCard
-        serviceType={ServiceType.MDNS_PROXY}
-        categories={[RadioCardCategory.WIFI]}
+      <UnifiedServiceCard
+        unifiedService={{ ...mockedUnifiedService, isBetaFeature: true }}
         type={'default'}
-        count={5}
-        isBetaFeature={true}
       />, {
         route: { params, path }
       }
@@ -126,11 +115,7 @@ describe('ServiceCard', () => {
     })
 
     render(
-      <ServiceCard
-        serviceType={ServiceType.MDNS_PROXY}
-        categories={[RadioCardCategory.WIFI]}
-        type={'button'}
-      />, {
+      <UnifiedServiceCard unifiedService={mockedUnifiedService} type={'button'} />, {
         route: { params, path }
       }
     )
@@ -149,11 +134,9 @@ describe('ServiceCard', () => {
         scopes: [WifiScopes.READ, WifiScopes.UPDATE]
       })
       render(
-        <ServiceCard
-          serviceType={ServiceType.MDNS_PROXY}
-          categories={[RadioCardCategory.WIFI]}
-          type={'button'}
-        />
+        <UnifiedServiceCard unifiedService={mockedUnifiedService} type={'button'} />, {
+          route: { params, path }
+        }
       )
       await waitFor(() => {
         expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()
@@ -167,9 +150,18 @@ describe('ServiceCard', () => {
       })
 
       render(
-        <ServiceCard
-          serviceType={ServiceType.DPSK}
-          categories={[RadioCardCategory.WIFI]}
+        <UnifiedServiceCard
+          unifiedService={{
+            type: ServiceType.DPSK,
+            sourceType: UnifiedServiceSourceType.SERVICE,
+            label: 'DPSK',
+            products: [RadioCardCategory.WIFI],
+            route: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+            category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+            disabled: false,
+            description: 'Mocked DPSK description',
+            totalCount: 5
+          }}
           type={'button'}
         />, {
           route: { params, path }

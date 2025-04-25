@@ -6,7 +6,7 @@ import { PolicyOperation, PolicyType, policyTypeDescMapping }                   
 import { generatePolicyListBreadcrumb, getPolicyRoutePath, policyTypeLabelMapping } from '../policy'
 import {
   generateServiceListBreadcrumb,
-  getServiceListRoutePath,
+  getServiceCatalogRoutePath,
   getServiceRoutePath, hasPolicyPermission, hasServicePermission, hasSomePoliciesPermission,
   hasSomeServicesPermission, isPolicyCardEnabled, isServiceCardEnabled, serviceTypeDescMapping,
   serviceTypeLabelMapping
@@ -63,8 +63,8 @@ export function generateUnifiedServicesBreadcrumb () {
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
     {
-      text: $t({ defaultMessage: 'My Services' }),
-      link: getServiceListRoutePath(true)
+      text: $t({ defaultMessage: 'Services Catalog' }),
+      link: getServiceCatalogRoutePath(true)
     }
   ]
 }
