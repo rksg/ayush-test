@@ -110,6 +110,9 @@ describe('ClientOverviewTab root', () => {
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(CommonUrlsInfo.getVenues.url,
         (_, res, ctx) => res(ctx.json(VenueList))
       ),
@@ -263,6 +266,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       ),
       rest.post(ClientUrlsInfo.getClientList.url,
         (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
