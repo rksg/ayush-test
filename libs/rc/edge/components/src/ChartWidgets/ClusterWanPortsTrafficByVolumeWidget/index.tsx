@@ -35,22 +35,24 @@ export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { edges, wanPortIfNames } = props
 
-  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
+  const {
+    startDate, endDate
+  } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
 
   const [data, setData] = useState<EdgeAllPortTrafficData[]>([])
   const [ getEdgePortTraffic ]= useLazyGetEdgePortTrafficQuery()
 
   useEffect(() => {
-    if (!edges?.length || isEmpty(wanPortIfNames)) return
+    if (!edges?.length || isEmpty(wanPortIfNames) || !startDate || !endDate) return
 
     const fetchData = async () => {
       const requests = edges.map((edge) => {
         return getEdgePortTraffic({
           params: { serialNumber: edge.serialNumber },
           payload: {
-            start: filters?.startDate,
-            end: filters?.endDate,
-            granularity: calculateGranularity(filters?.startDate, filters?.endDate)
+            start: startDate,
+            end: endDate,
+            granularity: calculateGranularity(startDate, endDate)
           } as EdgeTimeSeriesPayload
         }).unwrap()
       })
@@ -82,7 +84,7 @@ export const EdgeClusterWanPortsTrafficByVolumeWidget = (props: {
     }
 
     fetchData()
-  }, [edges, wanPortIfNames])
+  }, [edges, wanPortIfNames, startDate, endDate])
 
   const defaultOption: EChartsOption = {
     tooltip: {

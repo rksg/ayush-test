@@ -114,7 +114,8 @@ describe('EdgeClusterNodesUpTimeWidget', () => {
     // Verify hook was called with correct parameters
     expect(useClusterNodesUpTimeData).toHaveBeenCalledWith({
       serialNumbers: ['SN001', 'SN002'],
-      filters: mockFilters
+      startDate: '2023-01-01',
+      endDate: '2023-01-31'
     })
   })
 

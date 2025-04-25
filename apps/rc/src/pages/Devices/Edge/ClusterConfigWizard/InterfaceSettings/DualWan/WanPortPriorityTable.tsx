@@ -12,11 +12,12 @@ import {
   SortableContainerProps
 } from 'react-sortable-hoc'
 
+import { getDisplayWanRole }                           from '@acx-ui/edge/components'
 import { EdgeWanLinkHealthCheckPolicy, EdgeWanMember } from '@acx-ui/rc/utils'
 
-import { LinkHealthMonitorToggleButton }           from './LinkHealthMonitorToggleButton'
-import { DragIcon, DragIconWrapper }               from './styledComponents'
-import { getDisplayPortString, getDisplayWanRole } from './utils'
+import { LinkHealthMonitorToggleButton } from './LinkHealthMonitorToggleButton'
+import { DragIcon, DragIconWrapper }     from './styledComponents'
+import { getDisplayPortString }          from './utils'
 
 // @ts-ignore
 const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
