@@ -168,7 +168,7 @@ const ClientIsolationSettingsFields = (props: ClientIsolationSettingFieldsProps)
           <ClientIsolationAllowListDetailsDrawer
             visible={detailVisible}
             setVisible={setDetailVisible}
-            clientIsolationPropfileId={clientIsolationProfileId}
+            clientIsolationProfileId={clientIsolationProfileId}
           />
           <Drawer
             title={$t({ defaultMessage: 'Add Client Isolation' })}
