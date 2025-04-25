@@ -1,12 +1,14 @@
 import { RolesEnum } from '@acx-ui/types'
 import { getIntl }   from '@acx-ui/utils'
 
+import { LocationExtended }                                                         from '../../common'
 import { ServiceOperation, ServiceType }                                            from '../../constants'
 import { PolicyOperation, PolicyType, policyTypeDescMapping }                       from '../../types'
 import { generatePolicyListBreadcrumb, getPolicyRoutePath, policyTypeLabelMapping } from '../policy'
 import {
   generateServiceListBreadcrumb,
   getServiceCatalogRoutePath,
+  getServiceListRoutePath,
   getServiceRoutePath, hasPolicyPermission, hasServicePermission, hasSomePoliciesPermission,
   hasSomeServicesPermission, isPolicyCardEnabled, isServiceCardEnabled, serviceTypeDescMapping,
   serviceTypeLabelMapping
@@ -58,14 +60,22 @@ function getDescription (svc: UnifiedServiceTypeSet): string {
 // This function is not intended to be called directly in most cases.
 // It serves as a shared utility for hooks related to Services and Policies,
 // such as usePolicyListBreadcrumb and useServiceListBreadcrumb.
-export function generateUnifiedServicesBreadcrumb () {
+export function generateUnifiedServicesBreadcrumb (from?: LocationExtended['state']['from']) {
+  const servicesCatalogPath = getServiceCatalogRoutePath(true)
+  const isFromCatalog = !!from?.pathname.includes(servicesCatalogPath)
+
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
-    {
-      text: $t({ defaultMessage: 'Services Catalog' }),
-      link: getServiceCatalogRoutePath(true)
-    }
+    isFromCatalog
+      ? {
+        text: $t({ defaultMessage: 'Services Catalog' }),
+        link: servicesCatalogPath
+      }
+      : {
+        text: $t({ defaultMessage: 'My Services' }),
+        link: getServiceListRoutePath(true)
+      }
   ]
 }
 

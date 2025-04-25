@@ -36,10 +36,11 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
 export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link?: string }[] {
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const from = (useLocation() as LocationExtended)?.state?.from
 
   return isTemplate
     ? generateConfigTemplateBreadcrumb()
-    : generatePolicyListBreadcrumb(type, isNewServiceCatalogEnabled)
+    : generatePolicyListBreadcrumb(type, isNewServiceCatalogEnabled, from)
 }
 
 /**
@@ -49,8 +50,9 @@ export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link
  */
 export function usePoliciesBreadcrumb (): { text: string, link?: string }[] {
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const from = (useLocation() as LocationExtended)?.state?.from
 
-  return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled)
+  return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled, from)
 }
 
 export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation) {
@@ -85,8 +87,11 @@ export function useAdaptivePolicyBreadcrumb (type?: AdaptivePolicyRelatedTypes):
   return result
 }
 
-function generatePoliciesBreadcrumb (isNewServiceCatalogEnabled = false) {
-  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb()
+function generatePoliciesBreadcrumb (
+  isNewServiceCatalogEnabled = false,
+  from?: LocationExtended['state']['from']
+) {
+  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb(from)
 
   const { $t } = getIntl()
   return [
@@ -98,11 +103,15 @@ function generatePoliciesBreadcrumb (isNewServiceCatalogEnabled = false) {
   ]
 }
 
-// eslint-disable-next-line max-len
-export function generatePolicyListBreadcrumb (type: PolicyType, isNewServiceCatalogEnabled = false) {
+
+export function generatePolicyListBreadcrumb (
+  type: PolicyType,
+  isNewServiceCatalogEnabled = false,
+  from?: LocationExtended['state']['from']
+) {
   const { $t } = getIntl()
   return [
-    ...generatePoliciesBreadcrumb(isNewServiceCatalogEnabled),
+    ...generatePoliciesBreadcrumb(isNewServiceCatalogEnabled, from),
     {
       text: $t(policyTypeLabelMapping[type]),
       link: getPolicyRoutePath({ type, oper: PolicyOperation.LIST })
