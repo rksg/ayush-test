@@ -260,7 +260,7 @@ export interface VenueApModelBandModeSettings {
 	bandMode: BandModeEnum
 }
 
-export type VeuneApAntennaTypeSettings = {
+export type VenueApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum
 }
