@@ -166,8 +166,6 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
-  portSecurity?: boolean
-  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''

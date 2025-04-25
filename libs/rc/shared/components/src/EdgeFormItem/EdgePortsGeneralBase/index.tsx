@@ -42,6 +42,7 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
   fieldHeadPath?: string[]
   isCluster?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  isClusterWizard?: boolean
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -54,7 +55,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     fieldHeadPath = [],
     isCluster,
     formFieldsProps,
-    vipConfig = []
+    vipConfig = [],
+    isClusterWizard
   } = props
   const { $t } = useIntl()
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
@@ -126,6 +128,9 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
       name='validate'
       rules={[
         { validator: () => {
+          // cluster level check is in ClusterConfigWizard
+          if (isClusterWizard) return Promise.resolve()
+
           const allPortsValues = (fieldHeadPath.length
             ? _.get(form.getFieldsValue(true), fieldHeadPath)
             : form.getFieldsValue(true)) as { [portId:string ]: EdgePort[] }
