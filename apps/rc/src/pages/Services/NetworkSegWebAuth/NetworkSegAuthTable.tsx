@@ -31,7 +31,7 @@ const getNetworkSegAuthPayload = {
   sortOrder: 'ASC'
 }
 
-export default function NetworkSegAuthTable () {
+export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -159,7 +159,7 @@ export default function NetworkSegAuthTable () {
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (<>
-    <PageHeader
+    { props.hideHeader !== true && <PageHeader
       title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
       breadcrumb={[
@@ -177,7 +177,7 @@ export default function NetworkSegAuthTable () {
         >
           <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>
-      ])} />
+      ])} />}
     <Loader states={[tableQuery]}>
       <Table
         columns={columns}

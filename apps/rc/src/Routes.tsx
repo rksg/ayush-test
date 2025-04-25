@@ -72,7 +72,8 @@ import {
   ServiceOperation,
   ServiceType,
   IdentityProviderTabType,
-  PersonaUrls
+  PersonaUrls,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -200,6 +201,8 @@ import PersonalIdentityNetworkTable          from './pages/Services/PersonalIden
 import PersonalIdentityNetworkTableEnhanced  from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                   from './pages/Services/Portal/PortalDetail'
 import PortalTable                           from './pages/Services/Portal/PortalTable'
+import PortalProfile                         from './pages/Services/PortalProfile'
+import CreatePortalProfile                   from './pages/Services/PortalProfile/create'
 import ResidentPortalDetail                  from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                     from './pages/Services/SelectServiceForm'
@@ -832,6 +835,22 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })}
         element={<PortalTable/>}
+      />
+      <Route
+        path='services/portalProfile/create'
+        element={
+          <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
+            <CreatePortalProfile />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path='services/portalProfile/:activeTab/'
+        element={<PortalProfile />}
+      />
+      <Route
+        path='services/portalProfile/:activeTab/:activeSubTab'
+        element={<PortalProfile />}
       />
       <Route
         path={getServiceRoutePath({

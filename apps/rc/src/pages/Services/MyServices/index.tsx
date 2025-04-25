@@ -139,22 +139,29 @@ export default function MyServices () {
       }).data?.totalCount
     },
     {
-      type: ServiceType.PORTAL,
-      categories: [RadioCardCategory.WIFI],
+      type: ServiceType.PORTAL_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
       totalCount: useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
       }).data?.totalCount
     },
-    {
-      type: ServiceType.WEBAUTH_SWITCH,
-      categories: [RadioCardCategory.SWITCH],
-      totalCount: useWebAuthTemplateListQuery({
-        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
-      }, {
-        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
-      }).data?.totalCount,
-      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
-    },
+    // {
+    //   type: ServiceType.PORTAL,
+    //   categories: [RadioCardCategory.WIFI],
+    //   totalCount: useGetEnhancedPortalProfileListQuery({
+    //     params, payload: { filters: {} }, enableRbac: isEnabledRbacService
+    //   }).data?.totalCount
+    // },
+    // {
+    //   type: ServiceType.WEBAUTH_SWITCH,
+    //   categories: [RadioCardCategory.SWITCH],
+    //   totalCount: useWebAuthTemplateListQuery({
+    //     params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+    //   }, {
+    //     skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
+    //   }).data?.totalCount,
+    //   disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+    // },
     {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],

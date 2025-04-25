@@ -131,11 +131,15 @@ export default function ServiceCatalog () {
     {
       title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+        // { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+        // {
+        //   type: ServiceType.WEBAUTH_SWITCH,
+        //   categories: [RadioCardCategory.SWITCH],
+        //   disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+        // },
         {
-          type: ServiceType.WEBAUTH_SWITCH,
-          categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+          type: ServiceType.PORTAL_PROFILE,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
         },
         {
           type: ServiceType.RESIDENT_PORTAL,
