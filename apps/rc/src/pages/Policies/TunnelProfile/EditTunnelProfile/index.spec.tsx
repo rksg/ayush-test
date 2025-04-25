@@ -274,77 +274,77 @@ describe('EditTunnelProfile', () => {
     })
   })
 
-  // describe('when NAT-T Support P1 is ready', () => {
-  //   const mockedReqSdLan = jest.fn()
-  //   beforeEach(() => {
-  //     jest.mocked(useIsTierAllowed).mockImplementation((flag: string) => {
-  //       if (flag === TierFeatures.EDGE_NAT_T ) return true
-  //       return false
-  //     })
-  //     jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-  //       if (flag === Features.EDGES_TOGGLE ||
-  //         flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
-  //         flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
-  //         flag === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE) return true
-  //       return false
-  //     })
+  describe('when NAT-T Support P1 is ready', () => {
+    const mockedReqSdLan = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockImplementation((flag: string) => {
+        if (flag === TierFeatures.EDGE_NAT_T ) return true
+        return false
+      })
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_TOGGLE ||
+          flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
+          flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
+          flag === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE) return true
+        return false
+      })
 
-  //     mockServer.use(
-  //       rest.post(
-  //         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-  //         (_, res, ctx) => {
-  //           mockedReqSdLan()
-  //           return res(ctx.json({ data: mockedSdLanDataListP2 }))
-  //         }
-  //       )
-  //     )
-  //   })
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json({ data: mockedSdLanDataListP2 }))
+          }
+        )
+      )
+    })
 
-  //   it('should display "NAT-T Support" field and unlock it when used by SD-LAN', async () => {
-  //     render(
-  //       <Provider>
-  //         <EditTunnelProfile />
-  //       </Provider>
-  //       , { route: { path: editViewPath, params: {
-  //         ...params,
-  //         policyId: mockedSdLanDataListP2[0].tunnelProfileId
-  //       } } }
-  //     )
+    it('should display "NAT-T Support" field and unlock it when used by SD-LAN', async () => {
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params: {
+          ...params,
+          policyId: mockedSdLanDataListP2[0].tunnelProfileId
+        } } }
+      )
 
-  //     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  //     expect(mockedReqSdLan).toBeCalled()
-  //     const vlanVxlanRadio = await screen.findByRole('radio', { name: 'VLAN to VNI map' })
-  //     expect(vlanVxlanRadio).toBeChecked()
-  //     expect(vlanVxlanRadio).toBeDisabled()
-  //     expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
-  //     const switchBtns = screen.getAllByRole('switch')
-  //     const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
-  //     expect(natTraversalSwitch).toBeEnabled()
-  //   })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      const vlanVxlanRadio = await screen.findByRole('radio', { name: 'VLAN to VNI map' })
+      expect(vlanVxlanRadio).toBeChecked()
+      expect(vlanVxlanRadio).toBeDisabled()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeEnabled()
+    })
 
-  //   it('should display "NAT-T Support" field and lock it when used by DMZ', async () => {
-  //     render(
-  //       <Provider>
-  //         <EditTunnelProfile />
-  //       </Provider>
-  //       , { route: { path: editViewPath, params: {
-  //         ...params,
-  //         policyId: mockedSdLanDataListP2[0].guestTunnelProfileId
-  //       } } }
-  //     )
+    it('should display "NAT-T Support" field and lock it when used by DMZ', async () => {
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params: {
+          ...params,
+          policyId: mockedSdLanDataListP2[0].guestTunnelProfileId
+        } } }
+      )
 
-  //     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  //     expect(mockedReqSdLan).toBeCalled()
-  //     const vlanVxlanRadio = await screen.findByRole('radio', { name: 'VLAN to VNI map' })
-  //     expect(vlanVxlanRadio).toBeChecked()
-  //     expect(vlanVxlanRadio).toBeDisabled()
-  //     expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
-  //     const switchBtns = screen.getAllByRole('switch')
-  //     const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
-  //     expect(natTraversalSwitch).toBeDisabled()
-  //   })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      const vlanVxlanRadio = await screen.findByRole('radio', { name: 'VLAN to VNI map' })
+      expect(vlanVxlanRadio).toBeChecked()
+      expect(vlanVxlanRadio).toBeDisabled()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeDisabled()
+    })
 
-  // })
+  })
 
   describe('when L2GRE is ready', () => {
     const mockPinList = {
