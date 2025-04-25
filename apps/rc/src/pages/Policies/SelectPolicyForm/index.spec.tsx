@@ -11,7 +11,8 @@ import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyOperation,
-  getPolicyListRoutePath
+  getPolicyListRoutePath,
+  LbsServerProfileUrls
 } from '@acx-ui/rc/utils'
 import { Path, useTenantLink }                    from '@acx-ui/react-router-dom'
 import { Provider, store }                        from '@acx-ui/store'
@@ -45,6 +46,9 @@ describe('SelectPolicyForm', () => {
     mockServer.use(
       rest.post(ApSnmpUrls.getApSnmpFromViewModel.url, (req, res, ctx) => {
         return res(ctx.json(snmpAgentList))
+      }),
+      rest.post(LbsServerProfileUrls.getLbsServerProfileList.url, (_, res, ctx) => {
+        return res(ctx.json({ totalCount: 0, page: 1, data: [] }))
       })
     )
   })
