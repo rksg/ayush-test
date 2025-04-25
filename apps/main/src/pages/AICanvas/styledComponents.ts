@@ -11,13 +11,13 @@ import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.1s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.1s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -580,7 +580,9 @@ overflow: auto;
     border-bottom: 2px solid #888;
   }
   .card-resizer{
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: inherit;
     position: absolute;
     bottom: 0;
@@ -590,20 +592,28 @@ overflow: auto;
     border-radius: 0 0 4px 4px;
     opacity: 0.7;
     pointer-events: none;
+    padding: 0 24px;
     .slider{
       cursor: pointer;
-      margin: 0 18px;
-      width: 201px;
+      width: inherit;
+      margin: 0 24px;
       .ant-slider-with-marks {
         pointer-events: auto;
-        margin-bottom: 26px;
+        margin: 16px 0 20px 0;
       }
       .ant-slider-mark-text {
-        color: var(--acx-primary-white);
-        margin: 4px 0;
+        display: none;
       }
       .ant-slider-handle::before {
         display: none !important;
+      }
+      .ant-slider-dot {
+        display: block;
+      }
+      .ant-slider-dot-active {
+        display: block;
+        background-color: var(--acx-accents-blue-50);
+        border-color: var(--acx-accents-blue-50);
       }
     }
   }
@@ -762,7 +772,7 @@ export const CanvasListItem = styled(AntList.Item)`
     line-height: var(--acx-subtitle-4-line-height);
     font-weight: var(--acx-subtitle-4-font-weight);
     color: var(--acx-neutrals-100);
-    margin-bottom: 4px;    
+    margin-bottom: 4px;
     align-items: center;
     svg {
       margin-left: 8px;
@@ -826,7 +836,7 @@ export const EditCanvasModal = styled(Modal)`
       }
       .desp {
         padding: 8px 0px;
-        color: var(--acx-neutrals-60);     
+        color: var(--acx-neutrals-60);
       }
     }
   }

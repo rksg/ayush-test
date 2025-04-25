@@ -247,8 +247,8 @@ function Card (props: CardProps) {
               </div>
             </div>}
             { !readOnly && <div className='card-resizer'>
-              <div className='label'>
-                {$t({ defaultMessage: 'Resize' })}
+              <div className='slider-mark'>
+                {$t({ defaultMessage: 'Small' })}
               </div>
               <div className='slider'>
                 <Slider
@@ -259,6 +259,9 @@ function Card (props: CardProps) {
                   tooltipVisible={false}
                   onChange={changeCardsLayout}
                 />
+              </div>
+              <div className='slider-mark'>
+                {$t({ defaultMessage: 'Large' })}
               </div>
             </div>}
             {
