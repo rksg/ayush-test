@@ -156,6 +156,10 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
 
+  if (payload.portType === EdgePortTypeEnum.UNCONFIGURED) {
+    payload.ipMode = EdgeIpModeEnum.DHCP
+  }
+
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
   }
