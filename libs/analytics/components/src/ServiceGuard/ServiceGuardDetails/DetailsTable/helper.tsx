@@ -64,14 +64,15 @@ export function getToolTipText ({
 }) {
   const { $t } = getIntl()
 
-  const toolTipContent = error
-    ? (
-      (contents.stagesErrorMappings?.[error]?.text &&
-          $t(contents.stagesErrorMappings[error].text)) ||
-        (contents.errorMappings?.[error]?.text &&
-          $t(contents.errorMappings[error].text)) ||
-        error
-    ) : toolTipText
+  let toolTipContent = toolTipText
+  if (error) {
+    const errorContent = [
+      contents.stagesErrorMappings?.[error]?.text,
+      contents.errorMappings?.[error]?.text
+    ].filter(Boolean).at(0)
+
+    toolTipContent = errorContent ? $t(errorContent) : error
+  }
   const errorText = `${toolTipContent} \n \n`
   const noStationAPText = $t(
     defineMessage({
