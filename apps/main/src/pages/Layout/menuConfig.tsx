@@ -78,6 +78,7 @@ export function useMenuConfig () {
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -348,7 +349,7 @@ export function useMenuConfig () {
         }
       ]
     }]),
-    ...(isCore ? [{
+    ...(isCore && !isSupportUser ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: SpeedIndicatorOutlined,

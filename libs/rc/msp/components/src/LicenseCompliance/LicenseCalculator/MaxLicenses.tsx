@@ -91,8 +91,8 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
                 : $t({ defaultMessage: 'Paid Licenses' })}</Radio>
             <Radio value={'extendedTrialLicenses'}>{
               solutionTokenFFToggled
-                ? $t({ defaultMessage: 'Device Networking Trial Licenses' })
-                : $t({ defaultMessage: 'Trial Licenses' }) }</Radio>
+                ? $t({ defaultMessage: 'Device Networking Extended Trial Licenses' })
+                : $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
           </Space>
         </Radio.Group>}/>}
       <Form.Item

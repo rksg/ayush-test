@@ -1,22 +1,23 @@
-import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled, { css }                                 from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
+import styled, { css }                                                  from 'styled-components/macro'
 
 import { Card }            from '@acx-ui/components'
 import { ThumbsDown as UIThumbsDown,
   ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
+import { Dashboard } from '@acx-ui/icons-new'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out;
-    transform: scale(1);
+    transition: all 0.1s ease-in-out; 
+    transform: scale(1); 
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out;
-    transform: scale(1);
+    transition: all 0.1s ease-in-out; 
+    transform: scale(1); 
   `
 }
   .ant-modal-content {
@@ -144,7 +145,7 @@ export const History = styled.div`
 
 const CanvasChatWidth = '400px'
 const ChatOnlyWidth = '1000px'
-const ChatOnlyHeightDiff = '100px'
+const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
 const ModalInputHeight = '130px'
@@ -411,6 +412,15 @@ display: flex;
 
 `
 
+export const DashboardIcon = styled(Dashboard)`
+  background-color: var(--acx-neutrals-20);
+  color: var(--acx-neutrals-70);
+  padding: 2px;
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+`
+
 export const Canvas = styled.div`
   width: calc(100vw - 450px);
   .header {
@@ -421,14 +431,71 @@ export const Canvas = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 25px;
+    .edit-canvas-name {
+      display: flex;
+      align-items: center;
+      .ant-form-item {
+        margin-bottom: 0;
+        margin-right: 10px;
+        width: 220px;
+        .ant-form-item-explain {
+          display: none;
+        }
+      }
+      .action {
+        display: flex;
+      }
+      .button {
+        cursor: pointer;
+        margin-right: 8px;
+        margin-top: 4px;
+        &.confirm {
+          color: #23AB36;
+        }
+        &.cancel {
+          color: #ED1C24;
+        }
+      }
+      .error{
+        color: var(--acx-semantics-red-60);
+        font-size: 12px;
+      }
+    }
     .title{
-      cursor: default;
-      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      padding-top: 7px;
       font-family: var(--acx-accent-brand-font);
       font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
+      svg {
+        margin-right: 10px;
+      }
+      .name {
+        cursor: pointer;
+        padding-right: 10px;
+      }
+    }
+    .visibility-type {
+      display: flex;
+      padding: 6px 8px 6px 10px;
+      border: 1px solid var(--acx-neutrals-30);
+      border-radius: 20px;
+      min-width: 106px;
+      justify-content: space-between;
+      .label {
+        font-size: var(--acx-headline-4-font-size);
+        padding-right: 5px;
+        display:flex;
+        align-items: center;
+        svg{
+          margin-right: 4px;
+        }
+      }
     }
     .actions{
+      display: flex;
+      align-items: center;
       button {
         margin-left: 15px;
         &.black{
@@ -445,6 +512,18 @@ export const Canvas = styled.div`
     border-bottom-right-radius: 24px;
     height: calc(100vh - 130px);
   }
+`
+
+export const Visibility = styled.div`
+.type {
+  .title{
+    font-weight: 700;
+    font-size: 12px;
+  }
+  &:last-of-type {
+    margin-top: 20px;
+  }
+}
 `
 
 export const Grid = styled.div<{ $type?: string }>`
@@ -478,7 +557,8 @@ overflow: auto;
   padding: 20px;
 }
 .rglb_group-item .group-item-container .card-container .card-shadow {
-  background: rgba(15, 15, 15, 0.3);
+  background: rgba(84, 150, 234, 0.10);
+  border: 1px dashed var(--acx-accents-blue-50);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
@@ -658,6 +738,94 @@ export const Badge = styled(AntBadge)`
   }
 `
 
+export const CanvasListItem = styled(AntList.Item)`
+  display: flex;
+  height: 68px;
+  border-radius: 8px;
+  background: var(--acx-neutrals-10);
+  margin-bottom: 8px;
+  padding: 15px 20px 15px 24px !important;
+
+  .info {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .title {
+    display: inline-flex;
+    max-width: 100%;
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
+    font-weight: var(--acx-subtitle-4-font-weight);
+    color: var(--acx-neutrals-100);
+    margin-bottom: 4px;    
+    align-items: center;
+    svg {
+      margin-left: 8px;
+      flex-shrink: 0;
+      color: var(--acx-neutrals-70);
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+  .desp {
+    display: flex
+  }
+  .count, .date {
+    display: inline-flex;
+    vertical-align: middle;
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    margin-right: 10px;
+    color: var(--acx-neutrals-70);
+  }
+  .count {
+    display: inline-block;
+    margin-right: 0;
+    &:after {
+      display: inline-block;
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--acx-neutrals-70);
+      margin: 0 6px;
+      vertical-align: middle;
+    }
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    color: var(--acx-accents-blue-50);
+    .button {
+      margin-left: 16px;
+      cursor: pointer;
+    }
+  }
+`
+
+export const EditCanvasModal = styled(Modal)`
+  .ant-modal-content {
+    .ant-modal-body {
+      padding-top: 4px;
+    }
+    .ant-radio-wrapper {
+      .label {
+        display: flex;
+        align-item: center;
+        svg {
+          margin-left: 5px;
+        }
+      }
+      .desp {
+        padding: 8px 0px;
+        color: var(--acx-neutrals-60);     
+      }
+    }
+  }
+`
 export const PreviewModal = styled(Modal)<{ $type?: string }>`
   background: var(--acx-neutrals-10);
   border-radius: 12px;

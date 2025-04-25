@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import { isEmpty }                          from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get }            from '@acx-ui/config'
@@ -30,6 +31,7 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
+  activityAllVenuesEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
@@ -67,6 +69,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
+  userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
@@ -207,7 +210,7 @@ export function hasPermission (props?: {
  */
 export function hasScope (userScopes: ScopeKeys) {
   const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
-  if(abacEnabled && isCustomRole) {
+  if(abacEnabled && isCustomRole && !isEmpty(userScopes)) {
     return userScopes?.some(scope => {
       if(Array.isArray(scope)) {
         return scope.every(i => scopes.includes(i))
