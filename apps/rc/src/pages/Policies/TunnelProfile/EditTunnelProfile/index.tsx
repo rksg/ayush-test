@@ -113,6 +113,7 @@ const EditTunnelProfile = () => {
 
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
+  // eslint-disable-next-line max-len
   const loaderLoading = isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching || isTunnelViewFetching
   const formInitValues = useMemo(() => {
     const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
@@ -125,7 +126,6 @@ const EditTunnelProfile = () => {
         initValues.disabledFields.push('edgeClusterId')
       }
     }
-
 
     if (isDMZUsed)
       initValues.disabledFields.push('mtuType')
@@ -141,11 +141,11 @@ const EditTunnelProfile = () => {
   }, [tunnelProfileData, tunnelProfileViewData, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
 
   useEffect(() => {
-    if (loaderLoading) {
+    if (!loaderLoading) {
       form.resetFields()
       form.setFieldsValue(formInitValues)
     }
-  }, [formInitValues])
+  }, [loaderLoading, formInitValues])
 
   const handelOnFinish = (data: TunnelProfileFormType) =>
     updateTunnelProfileOperation(policyId || '', data, formInitValues)
