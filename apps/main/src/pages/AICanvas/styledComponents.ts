@@ -580,7 +580,7 @@ overflow: auto;
     border-bottom: 2px solid #888;
   }
   .card-resizer{
-    display: inline-flex;
+    display: none;
     align-items: center;
     justify-content: center;
     width: inherit;

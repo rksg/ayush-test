@@ -28,6 +28,7 @@ interface CardProps {
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
   draggable?: boolean
+  sliderWrapperRef?: React.MutableRefObject<null>
   // sectionRef?: React.MutableRefObject<null>
 }
 
@@ -36,9 +37,31 @@ export interface WidgetProperty {
 }
 
 const DraggableCard = (props: CardProps) => {
+  const sliderWrapperRef = useRef(null)
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
-    canDrag: props.draggable,
+    canDrag: (monitor) => {
+      if(!props.draggable) {
+        return false
+      }
+      const sliderElement = sliderWrapperRef.current
+      if (!sliderElement) return true
+
+      // @ts-ignore
+      const rect = sliderElement.getBoundingClientRect()
+      const isOverSlider =
+        monitor.getClientOffset() &&
+        // @ts-ignore
+        monitor.getClientOffset().x >= rect.left &&
+        // @ts-ignore
+        monitor.getClientOffset().x <= rect.right &&
+        // @ts-ignore
+        monitor.getClientOffset().y >= rect.top &&
+        // @ts-ignore
+        monitor.getClientOffset().y <= rect.bottom
+
+      return !isOverSlider
+    },
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -61,6 +84,7 @@ const DraggableCard = (props: CardProps) => {
       <Card
         {...props}
         drag={drag}
+        sliderWrapperRef={sliderWrapperRef}
       />
     </div>
   )
@@ -74,7 +98,8 @@ function Card (props: CardProps) {
     groupIndex,
     deleteCard,
     drag,
-    card
+    card,
+    sliderWrapperRef
     // ,sectionRef
   } = props
   const {
@@ -202,7 +227,6 @@ function Card (props: CardProps) {
   //     sectionRef.current.addEventListener('mouseup', onMouseUp, { once: true })
   //   }
   // }
-
   return (
     <div ref={widgetRef}>
       {
@@ -246,7 +270,7 @@ function Card (props: CardProps) {
                 <DeleteOutlined />
               </div>
             </div>}
-            { !readOnly && <div className='card-resizer'>
+            { !readOnly && <div className='card-resizer' ref={sliderWrapperRef}>
               <div className='slider-mark'>
                 {$t({ defaultMessage: 'Small' })}
               </div>
