@@ -35,7 +35,8 @@ import {
   GuestClients,
   VenueList,
   dpskPassphraseClient,
-  nonRbacClientRadioType
+  nonRbacClientRadioType,
+  clientMeta
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -99,6 +100,9 @@ describe('ClientOverviewTab root', () => {
         }),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json(clientMeta))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
