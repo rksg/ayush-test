@@ -48,6 +48,7 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
       title={formatServiceName()}
       description={unifiedService.description ?? ''}
       categories={unifiedService.products}
+      categoryDisplayMode='icon'
       onClick={() => {
         if (unifiedService.readonly) return
 
