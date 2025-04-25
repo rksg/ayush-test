@@ -26,11 +26,20 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
   })
 }
 
+/**
+ * Get the breadcrumb for the specific service list page.
+ *
+ * @param type The type of service.
+ *
+ * @returns The breadcrumb for the service list page.
+ */
 // eslint-disable-next-line max-len
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
+  // If the user is in the template context, use the config template breadcrumb.
+  // Otherwise, use the service list breadcrumb.
   return isTemplate
     ? generateConfigTemplateBreadcrumb()
     : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled)

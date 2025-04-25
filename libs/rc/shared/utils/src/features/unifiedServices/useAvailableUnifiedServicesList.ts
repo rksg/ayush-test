@@ -15,7 +15,11 @@ import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }     
 import { buildUnifiedServices, isUnifiedServiceAvailable, getUnifiedServiceRoute } from './utils'
 
 
-
+/*
+  Note: when adding a Service or Policy definition here, ensure you also define
+  the corresponding useQuery function in the useUnifiedServiceTotalCountMap to
+  fetch the totalCount for accurate data retrieval.
+*/
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
   const { $t } = useIntl()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)

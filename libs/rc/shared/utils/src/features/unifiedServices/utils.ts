@@ -55,6 +55,9 @@ function getDescription (svc: UnifiedServiceTypeSet): string {
   return messageDescriptor ? $t(messageDescriptor) : ''
 }
 
+// This function is not intended to be called directly in most cases.
+// It serves as a shared utility for hooks related to Services and Policies,
+// such as usePolicyListBreadcrumb and useServiceListBreadcrumb.
 export function generateUnifiedServicesBreadcrumb () {
   const { $t } = getIntl()
   return [

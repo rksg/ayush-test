@@ -26,7 +26,14 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
   })
 }
 
-export function usePolicyListBreadcrumb (type: PolicyType) {
+/**
+ * Get the breadcrumb for the specific policy list page.
+ *
+ * @param type The type of policy.
+ *
+ * @returns The breadcrumb for the policy list page.
+ */
+export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link?: string }[] {
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
@@ -35,7 +42,12 @@ export function usePolicyListBreadcrumb (type: PolicyType) {
     : generatePolicyListBreadcrumb(type, isNewServiceCatalogEnabled)
 }
 
-export function usePoliciesBreadcrumb () {
+/**
+ * Get the breadcrumb for the policies page.
+ *
+ * @returns The breadcrumb for the policies page.
+ */
+export function usePoliciesBreadcrumb (): { text: string, link?: string }[] {
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
   return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled)
