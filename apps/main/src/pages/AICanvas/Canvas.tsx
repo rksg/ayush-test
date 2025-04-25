@@ -557,11 +557,13 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
           canvasList={canvasList as CanvasType[]}
         />
       }
-      <PreviewDashboardModal
-        data={[currentCanvas]}
-        visible={previewModalVisible}
-        setVisible={setPreviewModalVisible}
-      />
+      {
+        previewModalVisible && <PreviewDashboardModal
+          data={[currentCanvas]}
+          visible={previewModalVisible}
+          setVisible={setPreviewModalVisible}
+        />
+      }
     </UI.Canvas>
   )
 })
