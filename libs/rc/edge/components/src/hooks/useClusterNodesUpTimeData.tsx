@@ -13,10 +13,11 @@ type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>
 
 export const useClusterNodesUpTimeData = (props: {
   serialNumbers: string[] | undefined,
-  filters: { startDate:string, endDate:string }
+  startDate: string,
+  endDate: string
 }) => {
   const { $t } = useIntl()
-  const { serialNumbers, filters } = props
+  const { serialNumbers, startDate, endDate } = props
   const [getEdgeUptime] = useLazyGetEdgeUptimeQuery()
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -33,14 +34,14 @@ export const useClusterNodesUpTimeData = (props: {
 
   const fetchData = useCallback(async () => {
     try {
-      if (!serialNumbers?.length || !filters) return []
+      if (!serialNumbers?.length || !startDate || !endDate) return []
 
       const requests = serialNumbers!.map((serialNumber) => getEdgeUptime({
         params: { serialNumber },
         payload: {
-          start: filters?.startDate,
-          end: filters?.endDate,
-          granularity: calculateGranularity(filters?.startDate!, filters?.endDate!)
+          start: startDate,
+          end: endDate,
+          granularity: calculateGranularity(startDate, endDate)
         } as EdgeTimeSeriesPayload
       }).unwrap())
 
@@ -63,7 +64,7 @@ export const useClusterNodesUpTimeData = (props: {
               inclusiveDataPoint[2] = moment(dataPoint?.[2])
                 .add(
                   moment
-                    .duration(calculateGranularity(filters.startDate, filters.endDate))
+                    .duration(calculateGranularity(startDate, endDate))
                     .asSeconds(),
                   'seconds'
                 )
@@ -79,7 +80,7 @@ export const useClusterNodesUpTimeData = (props: {
     } catch (error) {
       return []
     }
-  }, [serialNumbers, filters])
+  }, [serialNumbers, startDate, endDate])
 
   useEffect(() => {
     setIsLoading(true)
