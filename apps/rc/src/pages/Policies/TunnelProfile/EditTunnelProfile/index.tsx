@@ -113,7 +113,7 @@ const EditTunnelProfile = () => {
 
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
-
+  const loaderLoading = isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching || isTunnelViewFetching
   const formInitValues = useMemo(() => {
     const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
     initValues.disabledFields = []
@@ -141,8 +141,10 @@ const EditTunnelProfile = () => {
   }, [tunnelProfileData, tunnelProfileViewData, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
 
   useEffect(() => {
-    form.resetFields()
-    form.setFieldsValue(formInitValues)
+    if (loaderLoading) {
+      form.resetFields()
+      form.setFieldsValue(formInitValues)
+    }
   }, [formInitValues])
 
   const handelOnFinish = (data: TunnelProfileFormType) =>
@@ -150,8 +152,7 @@ const EditTunnelProfile = () => {
 
   return (
     <Loader states={[{
-      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
-      || isTunnelViewFetching
+      isLoading: loaderLoading
     }]}>
       <TunnelProfileForm
         form={form}
