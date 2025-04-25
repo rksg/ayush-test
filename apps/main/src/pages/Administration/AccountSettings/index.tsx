@@ -68,7 +68,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && (canMSPDelegation || ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
     || (isLoginSSoTechpartnerEnabled && isTechPartner)))
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
   const authenticationData =
