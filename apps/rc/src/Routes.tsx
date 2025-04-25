@@ -206,7 +206,7 @@ import SelectServiceForm                     from './pages/Services/SelectServic
 import ServiceCatalog                        from './pages/Services/ServiceCatalog'
 import {
   MyServices as MyServicesNew,
-  ServicesCatalog as ServicesCatalogNew
+  ServiceCatalog as ServiceCatalogNew
 } from './pages/Services/UnifiedServices'
 import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
 import Timeline                             from './pages/Timeline'
@@ -684,7 +684,7 @@ function ServiceRoutes () {
             path={getSelectServiceRoutePath()}
             element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
           />
-          <Route path={getServiceCatalogRoutePath()} element={<ServicesCatalogNew />} />
+          <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalogNew />} />
         </>
         : <>
           <Route path={getServiceListRoutePath()} element={<MyServices />} />

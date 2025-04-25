@@ -61,16 +61,16 @@ function getDescription (svc: UnifiedServiceTypeSet): string {
 // It serves as a shared utility for hooks related to Services and Policies,
 // such as usePolicyListBreadcrumb and useServiceListBreadcrumb.
 export function generateUnifiedServicesBreadcrumb (from?: LocationExtended['state']['from']) {
-  const servicesCatalogPath = getServiceCatalogRoutePath(true)
-  const isFromCatalog = !!from?.pathname.includes(servicesCatalogPath)
+  const serviceCatalogPath = getServiceCatalogRoutePath(true)
+  const isFromCatalog = !!from?.pathname.includes(serviceCatalogPath)
 
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
     isFromCatalog
       ? {
-        text: $t({ defaultMessage: 'Services Catalog' }),
-        link: servicesCatalogPath
+        text: $t({ defaultMessage: 'Service Catalog' }),
+        link: serviceCatalogPath
       }
       : {
         text: $t({ defaultMessage: 'My Services' }),

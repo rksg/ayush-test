@@ -22,7 +22,7 @@ const edgeServicesHelpIconMap: Partial<Record<UnifiedServiceType, Incompatibilit
   [PolicyType.HQOS_BANDWIDTH]: IncompatibilityFeatures.HQOS
 }
 
-export function ServicesCatalog () {
+export function ServiceCatalog () {
   const { $t } = useIntl()
   const rawUnifiedServiceList = useAvailableUnifiedServicesList()
   const defaultSortOrder = ServiceSortOrder.ASC
@@ -50,7 +50,7 @@ export function ServicesCatalog () {
 
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Services Catalog' })}
+      title={$t({ defaultMessage: 'Service Catalog' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
     />
     <Space direction='vertical' size='large'>
