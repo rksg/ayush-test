@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -38,12 +38,12 @@ const EditTunnelProfile = () => {
   )
 
 
-  const { tunnelProfileViewData, isTunnelViewLoading } = useGetTunnelProfileViewDataListQuery(
+  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileViewDataListQuery(
     { payload: { filters: { id: [policyId] } } },
     {
-      selectFromResult: ({ data, isLoading }) => ({
+      selectFromResult: ({ data, isFetching }) => ({
         tunnelProfileViewData: data?.data?.[0] || {} as TunnelProfileViewData,
-        isTunnelViewLoading: isLoading
+        isTunnelViewFetching: isFetching
       })
     }
   )
@@ -133,12 +133,17 @@ const EditTunnelProfile = () => {
     if (pinId || isDMZUsed)
       initValues.disabledFields.push('natTraversalEnabled')
 
-    if (!isTunnelViewLoading) {
+    if (!isTunnelViewFetching) {
       initValues.edgeClusterId = tunnelProfileViewData.destinationEdgeClusterId
     }
 
     return initValues
-  }, [tunnelProfileData, isTunnelViewLoading, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
+  }, [tunnelProfileData, tunnelProfileViewData, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
+
+  useEffect(() => {
+    form.resetFields()
+    form.setFieldsValue(formInitValues)
+  }, [formInitValues])
 
   const handelOnFinish = (data: TunnelProfileFormType) =>
     updateTunnelProfileOperation(policyId || '', data, formInitValues)
@@ -146,7 +151,7 @@ const EditTunnelProfile = () => {
   return (
     <Loader states={[{
       isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
-      || isTunnelViewLoading
+      || isTunnelViewFetching
     }]}>
       <TunnelProfileForm
         form={form}
@@ -154,7 +159,6 @@ const EditTunnelProfile = () => {
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
-        initialValues={formInitValues}
         editMode={true}
       />
     </Loader>

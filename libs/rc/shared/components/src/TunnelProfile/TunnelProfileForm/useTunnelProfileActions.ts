@@ -141,28 +141,11 @@ export const useTunnelProfileActions = () => {
       const compareResult = compareConfigChanges(data, initData)
 
       if (compareResult.hasChanges) {
-        await new Promise(async (resolve, reject) => {
-          await handleUpdateTunnelProfile({
-            id,
-            data,
-            initData,
-            callback: (result) => {
-              // callback is after all RBAC related APIs sent
-              if (
-                isNil(result) ||
-              (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0)
-              {
-                reject(result)
-              } else {
-                resolve(true)
-              }
-            }
-          // need to catch basic service profile failed
-          }).catch(reject)
-        })
-      } else {
-        handleTunnelProfileEdgeClusterAssociation(id, data, initData)
+        await handleUpdateTunnelProfile({ id,data })
       }
+
+      handleTunnelProfileEdgeClusterAssociation(id, data, initData)
+
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -171,50 +154,14 @@ export const useTunnelProfileActions = () => {
 
   const handleUpdateTunnelProfile = async (req: {
     id: string
-    data: TunnelProfileFormType,
-    initData: TunnelProfileFormType,
-    callback?: (res: (CommonResult
-      | CommonErrorsResult<CatchErrorDetails> | void)) => void
+    data: TunnelProfileFormType
   }) => {
-    const { id, data, initData, callback } = req
+    const { id, data } = req
     const pathParams = { id }
-    const venueId = data.venueId
-    const clusterId = data.edgeClusterId
     const payload = requestPreProcess(data)
     return await updateTunnelProfile({
       params: pathParams,
-      payload,
-      callback: async () => {
-        const tunnelProfileId = id
-
-        if(!isEdgeL2greReady) {
-          callback?.()
-          return
-        }
-
-        if(clusterId && venueId && data?.tunnelType === TunnelTypeEnum.L2GRE) {
-          try {
-            // eslint-disable-next-line max-len
-            const reqResult = await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-            callback?.(reqResult)
-          } catch(error) {
-            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-          }
-          return
-        }
-
-        if(data.edgeClusterId === initData.edgeClusterId) {
-          callback?.()
-          return
-        }
-        try {
-          // eslint-disable-next-line max-len
-          const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-          callback?.(reqResult)
-        } catch(error) {
-          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-        }
-      }
+      payload
     }).unwrap()
   }
 
