@@ -72,7 +72,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || (isLoginSSoTechpartnerEnabled && isTechPartner)))
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
-  const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled
+  const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
+   canMSPDelegation
 
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
