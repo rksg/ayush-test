@@ -56,6 +56,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },
+  patchCanvas: {
+    method: 'PATCH',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
   deleteCanvas: {
     method: 'delete',
     url: '/ruckusAi/canvas/:canvasId',
