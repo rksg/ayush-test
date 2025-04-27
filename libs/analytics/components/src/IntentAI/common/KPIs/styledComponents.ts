@@ -34,4 +34,22 @@ export const Statistic = styled<ComponentType<StatisticProps>>(AntStatistic)`
   .ant-statistic-content-suffix {
     display: flex;
   }
+  .ant-statistic-content-suffix-unit {
+    font-size: var(--acx-body-3-font-size);
+    line-height: var(--acx-body-3-line-height);
+    font-weight: var(--acx-body-font-weight);
+  }
+
+  .ant-statistic-content-suffix-conj {
+    font-size: var(--acx-body-3-font-size);
+    line-height: var(--acx-body-3-line-height);
+    font-weight: var(--acx-headline-2-font-weight-bold);
+    
+  }
+
+  .ant-statistic-content-suffix-previous {
+    font-size: var(--acx-body-2-font-size);
+    line-height: var(--acx-body-3-line-height);
+    font-weight: var(--acx-subtitle-3-font-weight);
+  }
 `

@@ -835,7 +835,7 @@ h5.c7.ant-typography {
                 <h4
                   class="ant-typography c7 c8 c9"
                 >
-                  Network Intent plays a crucial role in wireless network design
+                  Wireless network design involves balancing different priorities:
                 </h4>
                 <div
                   class="ant-typography"
@@ -1837,73 +1837,6 @@ h5.c5.ant-typography {
                 <div
                   class="c13"
                 >
-                  <h4
-                    class="ant-typography c5 c6 c7"
-                  >
-                    Industry average power price per kWh
-                  </h4>
-                  <div
-                    class="ant-typography"
-                  >
-                    <div
-                      style="display: flex;"
-                    >
-                      <div
-                        class="ant-form-item ant-form-item-has-success"
-                        style="width: 60px;"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <input
-                                  class="ant-input ant-input-status-success"
-                                  id="averagePowerPrice_currency"
-                                  type="text"
-                                  value="SGD"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                        style="margin-left: 5px;"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <input
-                                  class="ant-input"
-                                  id="averagePowerPrice_value"
-                                  type="text"
-                                  value="0.131"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <h4
                     class="ant-typography c5 c6 c7"
                   >

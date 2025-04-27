@@ -15,10 +15,9 @@ import * as SideNotes from './SideNotes'
 const name = ['preferences', 'enable'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
 
-export function Priority () {
+export const usePriorityItems = () => {
   const { $t } = useIntl()
-  const { intent: { sliceValue } } = useIntentContext()
-  const priority = [
+  return [
     {
       key: 'yes',
       value: true,
@@ -43,6 +42,12 @@ export function Priority () {
       ]
     }
   ]
+}
+
+export function Priority () {
+  const { $t } = useIntl()
+  const { intent: { sliceValue } } = useIntentContext()
+  const priority = usePriorityItems()
 
   const label = $t({
     defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}'
