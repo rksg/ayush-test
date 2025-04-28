@@ -141,9 +141,13 @@ export default function MyServices () {
     {
       type: ServiceType.PORTAL_PROFILE,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
-      totalCount: useGetEnhancedPortalProfileListQuery({
+      totalCount: (useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }).data?.totalCount ?? 0) + (useWebAuthTemplateListQuery({
+        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+      }, {
+        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
+      }).data?.totalCount ?? 0)
     },
     // {
     //   type: ServiceType.PORTAL,
