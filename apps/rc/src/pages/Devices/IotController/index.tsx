@@ -1,14 +1,12 @@
-import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                                           from '@acx-ui/components'
-import { useRwgActions }                                                                                                                       from '@acx-ui/rc/components'
-import { useGetVenuesQuery, useGetIotControllerListQuery }                                                                                     from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, defaultSort, getRwgStatus, IotControllerStatus, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                                                  from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess, useUserProfileContext }                                                                                    from '@acx-ui/user'
-import { getOpsApi }                                                                                                                           from '@acx-ui/utils'
-
+import { Button, Loader, PageHeader, Table, TableProps }             from '@acx-ui/components'
+import { useIotControllerActions }                                   from '@acx-ui/rc/components'
+import { useGetIotControllerListQuery }                              from '@acx-ui/rc/services'
+import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }                     from '@acx-ui/user'
+// import { getOpsApi }                                              from '@acx-ui/utils'
 
 
 function useColumns (
@@ -28,20 +26,19 @@ function useColumns (
       render: function (_, row, __, highlightFn) {
         return (
           <TenantLink
-            to={`/ruckus-wan-gateway/${row.serialNumber}/gateway-details/overview`}>
+            to={`/iots/${row.serialNumber}/details/overview`}>
             {highlightFn(row.name)}</TenantLink>
         )
       }
     },{
       title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
-      dataIndex: 'fqdn',
-      key: 'fqdn',
-      sorter: false
+      dataIndex: 'inboundAddress',
+      key: 'inboundAddress'
     },
     {
       title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
-      dataIndex: 'publicFqdn',
-      key: 'publicFqdn'
+      dataIndex: 'publicAddress',
+      key: 'publicAddress'
     },
     {
       title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
@@ -56,12 +53,20 @@ function useColumns (
 export default function IotController () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const iotControllerActions = useIotControllerActions()
   const { isCustomRole } = useUserProfileContext()
 
+  const payload = {
+    filters: {}
+  }
   const settingsId = 'iot-controller-table'
   const tableQuery = useTableQuery({
     useQuery: useGetIotControllerListQuery,
-    pagination: { settingsId }
+    defaultPayload: payload,
+    pagination: { settingsId },
+    search: {
+      searchTargetFields: ['name']
+    }
   })
 
   const columns = useColumns(true)
@@ -71,23 +76,14 @@ export default function IotController () {
     // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      navigate(`devices/iotController/${selectedRows[0].serialNumber}/edit`, { replace: false })
-    }
-  },
-  {
-    visible: (selectedRows) => selectedRows.length === 1,
-    label: $t({ defaultMessage: 'Configure' }),
-    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
-    onClick: (selectedRows) => {
-      window.open('https://' + (selectedRows[0]?.publicFqdn)?.toString() + '/admin',
-        '_blank')
+      navigate(`${selectedRows[0].serialNumber}/edit`, { replace: false })
     }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
+    // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
     onClick: (rows, clearSelection) => {
-      // TODO
+      iotControllerActions.deleteIotController(rows, undefined, clearSelection)
     }
   }]
 
@@ -97,7 +93,7 @@ export default function IotController () {
     tableQuery.setPayload({
       ...tableQuery.payload
     })
-    // tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
+    tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
   const count = tableQuery?.data?.totalCount || 0
@@ -107,8 +103,9 @@ export default function IotController () {
       <PageHeader
         title={$t({ defaultMessage: 'IoT Controllers ({count})' }, { count })}
         extra={!isCustomRole && filterByAccess([
-          <TenantLink to='/devices/iotController/add'
-            rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
+          <TenantLink to='/iots/add'
+            // rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}
+          >
             <Button type='primary'>{ $t({ defaultMessage: 'Add IoT Controller' }) }</Button>
           </TenantLink>
         ])}
@@ -122,7 +119,7 @@ export default function IotController () {
           dataSource={tableQuery?.data?.data}
           pagination={{ total: tableQuery?.data?.totalCount }}
           onFilterChange={tableQuery.handleFilterChange}
-          rowKey='rowId'
+          rowKey='iotContollerId'
           rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
           onChange={handleTableChange}
         />

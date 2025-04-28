@@ -1,4 +1,6 @@
 import {
+  onSocketActivityChanged,
+  onActivityMessageReceived,
   CommonResult,
   TableResult,
   IotControllerSetting,
@@ -23,7 +25,19 @@ export const iotApi = baseIotApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'IotController', id: 'LIST' }]
+      providesTags: [{ type: 'IotController', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddIotController',
+            'DeleteIotController',
+            'UpdateIotController'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(iotApi.util.invalidateTags([{ type: 'IotController', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     addIotController: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

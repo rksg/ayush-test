@@ -205,6 +205,7 @@ export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsPr
 export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
+export { useIotControllerActions } from './useIotControllerActions'
 export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
 export {
   useRegisterMessageTemplates,

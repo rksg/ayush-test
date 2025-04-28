@@ -21,8 +21,8 @@ export const IotUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteIotController: {
     method: 'delete',
-    url: '/iotController/:serialNumber',
+    url: '/iots/:iotId',
     newApi: true,
-    opsApi: 'DELETE:/iotController/{serialNumber}'
+    opsApi: 'DELETE:/iotController/{iotId}'
   }
 }
