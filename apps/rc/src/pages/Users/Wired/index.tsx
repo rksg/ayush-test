@@ -66,7 +66,7 @@ const useTabs = () : WiredTabsInfo => {
     defaultPayload: {
       searchString: '',
       filters: {},
-      fields: [ 'macAddress']
+      fields: [ 'clientMac']
     }
   })
 

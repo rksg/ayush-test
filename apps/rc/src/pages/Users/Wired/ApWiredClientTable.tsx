@@ -3,21 +3,31 @@ import { useParams } from 'react-router-dom'
 
 import { ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
 import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
-import { getDeviceTypeIcon, TableQuery, usePollingTableQuery, WiredClientInfo } from '@acx-ui/rc/utils'
-import { TenantLink }                                                           from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                       from '@acx-ui/types'
-import { noDataDisplay }                                                        from '@acx-ui/utils'
+import {
+  defaultSort,
+  getDeviceTypeIcon,
+  getOsTypeIcon,
+  sortProp,
+  TableQuery,
+  usePollingTableQuery,
+  WiredClientInfo
+} from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','ipAddress','hostname','apMac'],
+  searchTargetFields: ['clientMac','ipAddress','hostname','apMac'],
   filters: {},
   fields: [
-    'hostname', 'deviceType', 'macAddress', 'ipAddress',
-    'venueName', 'venueId', 'apName', 'apId', 'apMac',
-    'portNumber', 'vlanId', 'authStatus'
+    'hostname', 'username', 'clientMac', 'ipAddress',
+    'deviceTypeStr', 'osType', 'modelName',
+    'venueName', 'venueId', 'apName', 'apIp', 'apMac',
+    'connectSince', 'apEthId', 'ethProfileId',
+    'portNumber', 'vlan', 'status', 'connectSince'
   ]
 }
 
@@ -101,27 +111,27 @@ export const ApWiredClientTable = (props: {
         return host ?? noDataDisplay
       }
     }, {
-      key: 'deviceType',
+      key: 'osType',
       width: 60,
-      title: $t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'deviceType',
+      title: intl.$t({ defaultMessage: 'OS' }),
+      dataIndex: 'osType',
       align: 'center',
-      sorter: true,
-      render: (_, { deviceType }) => {
+      sorter: { compare: sortProp('osType', defaultSort) },
+      render: (_, { osType }) => {
         return <UI.IconContainer>
-          <Tooltip title={deviceType}>
-            { getDeviceTypeIcon(deviceType) }
+          <Tooltip title={osType}>
+            { getOsTypeIcon(osType) }
           </Tooltip>
         </UI.IconContainer>
       }
     }, {
-      key: 'macAddress',
+      key: 'clientMac',
       title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'macAddress',
+      dataIndex: 'clientMac',
       sorter: true,
       searchable: searchable,
-      render: (_, { macAddress }, __, highlightFn) => {
-        const mac = searchable ? highlightFn(macAddress) : macAddress
+      render: (_, { clientMac }, __, highlightFn) => {
+        const mac = searchable ? highlightFn(clientMac) : clientMac
         return mac ?? noDataDisplay
       }
     }, {
@@ -161,15 +171,15 @@ export const ApWiredClientTable = (props: {
       dataIndex: 'apName',
       //sorter: true,
       //searchable: searchable,
-      filterKey: 'apId',
+      filterKey: 'serialNumber',
       filterMultiple: false,
       filterSearchable: true,
-      filterable: params.apId ? false : GetApFilterOptions(params.venueId),
+      filterable: params.serialNumber ? false : GetApFilterOptions(params.venueId),
       render: (_: React.ReactNode, row: WiredClientInfo) => {
-        const { apId, apName } = row
+        const { serialNumber, apName } = row
         const displayApName = apName ?? noDataDisplay
-        const link = `/devices/wifi/${apId}/details/overview`
-        return (apId && apName) ?
+        const link = `/devices/wifi/${serialNumber}/details/overview`
+        return (serialNumber && apName) ?
           <TenantLink to={link}>{displayApName}</TenantLink> :
           <span>{displayApName}</span>
       }
@@ -189,24 +199,49 @@ export const ApWiredClientTable = (props: {
       }
     }]),
     {
-      key: 'portNumber',
+      key: 'apEthId',
       title: intl.$t({ defaultMessage: 'LAN Port' }),
-      dataIndex: 'portNumber',
+      dataIndex: 'apEthId',
       sorter: true,
-      render: (_, { portNumber }) => {
-        return portNumber ? `LAN ${portNumber}` : noDataDisplay
+      render: (_, { apEthId }) => {
+        return apEthId ? `LAN ${apEthId}` : noDataDisplay
       }
     }, {
-      key: 'vlanId',
+      key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
-      dataIndex: 'vlanId',
+      dataIndex: 'vlan',
       sorter: true,
       align: 'center'
     }, {
-      key: 'authStatus',
+      key: 'status',
       title: intl.$t({ defaultMessage: 'Auth Status' }),
-      dataIndex: 'authStatus',
-      sorter: true
+      dataIndex: 'status',
+      sorter: true,
+      render: (_, { status }) => {
+        let statusText = noDataDisplay as string
+        if (status === 1) {
+          statusText = intl.$t({ defaultMessage: 'Authorized' })
+        } else if (status === 0) {
+          statusText = intl.$t({ defaultMessage: 'Unauthorized' })
+        } else if (status === -1) {
+          statusText = intl.$t({ defaultMessage: 'N/A' })
+        }
+        return statusText
+      }
+    }, {
+      key: 'deviceTypeStr',
+      width: 60,
+      title: $t({ defaultMessage: 'Device Type' }),
+      dataIndex: 'deviceTypeStr',
+      align: 'center',
+      sorter: true,
+      render: (_, { deviceTypeStr }) => {
+        return <UI.IconContainer>
+          <Tooltip title={deviceTypeStr}>
+            { getDeviceTypeIcon(deviceTypeStr) }
+          </Tooltip>
+        </UI.IconContainer>
+      }
     }]
 
     return columns

@@ -676,7 +676,13 @@ export const aggregatedApWiredClientListData = (wiredClientList: TableResult<Wir
   wiredClientList?.data.forEach(client => {
     const tmp = {
       ...client,
-      macAddress: client.macAddress.toLowerCase()
+      clientMac: client.clientMac?.toLowerCase() ?? ''
+    }
+
+    if (tmp.connectSince && !tmp.connectedTimeParsed) {
+      tmp.connectedTimeString =
+        formatter('longDurationFormat')(convertToRelativeTime(client.connectSince))
+      tmp.connectedTimeParsed = true
     }
 
     data.push(tmp)
