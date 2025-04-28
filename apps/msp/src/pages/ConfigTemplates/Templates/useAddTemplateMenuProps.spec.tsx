@@ -1,6 +1,7 @@
-import { ItemType }           from '@acx-ui/components'
-import { ConfigTemplateType } from '@acx-ui/rc/utils'
-import { renderHook }         from '@acx-ui/test-utils'
+import { ItemType }               from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ConfigTemplateType }     from '@acx-ui/rc/utils'
+import { renderHook }             from '@acx-ui/test-utils'
 
 import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem } from './useAddTemplateMenuProps'
 
@@ -51,6 +52,21 @@ describe('useAddTemplateMenuProps', () => {
       mockedUseConfigTemplateVisibilityMap.mockReturnValue(mockedMap)
       const { result } = renderHook(() => useAddTemplateMenuProps())
       expect(result.current).toBeNull()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return the correct menu items for the main overlay when the new service catatlog FF is enabled', () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NEW_SERVICE_CATALOG)
+
+      const { result } = renderHook(() => useAddTemplateMenuProps())
+      expect(result.current?.items?.filter(item => item)).toHaveLength(3)
+
+      const newServiceMenuItem = result.current?.items?.[2] as { children: ItemType[] }
+      expect(newServiceMenuItem).toBeDefined()
+      expect(newServiceMenuItem).toHaveProperty('children')
+      expect(Array.isArray(newServiceMenuItem?.children)).toBe(true)
+      expect(newServiceMenuItem?.children).toHaveLength(5)
+
     })
   })
 
