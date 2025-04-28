@@ -2,21 +2,64 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useGetVenuesQuery }                                 from '@acx-ui/rc/services'
-import { ProfileLanVenueActivations, defaultSort, sortProp } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { useGetVenuesQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
+import { ProfileLanVenueActivations, defaultSort, sortProp, useConfigTemplate } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                from '@acx-ui/react-router-dom'
 
 interface VenueTableProps {
   venueActivations: ProfileLanVenueActivations[]
 }
 
+const useGetVenueNameMap = (venueGrouping: Record<string, string[]> ) => {
+  const { tenantId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+
+  const payload = {
+    fields: ['name', 'id'],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 2048,
+    filters: { id: Object.keys(venueGrouping) }
+  }
+
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: tenantId },
+    enableRbac: isWifiRbacEnabled,
+    payload
+  }, {
+    skip: !Object.keys(venueGrouping).length || isTemplate,
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data.reduce((venues, venue) => {
+        venues[venue.id] = venue.name
+        return venues
+      }, {} as Record<string, string>)
+    })
+  } )
+
+  const { tempVenueNameMap } = useGetVenuesTemplateListQuery({
+    params: { tenantId: tenantId },
+    enableRbac: isWifiRbacEnabled,
+    payload
+  }, {
+    skip: !Object.keys(venueGrouping).length || !isTemplate,
+    selectFromResult: ({ data }) => ({
+      tempVenueNameMap: data?.data.reduce((venues, venue) => {
+        venues[venue.id] = venue.name
+        return venues
+      }, {} as Record<string, string>)
+    })
+  } )
+
+  return isTemplate? tempVenueNameMap : venueNameMap
+}
+
 export const VenueTable = (props: VenueTableProps) => {
   const { $t } = useIntl()
   const { venueActivations } = props
-  const { tenantId } = useParams()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const venueGrouping = useMemo(()=>{
     if(venueActivations.length > 0) {
@@ -37,26 +80,8 @@ export const VenueTable = (props: VenueTableProps) => {
 
     return {}
   }, [venueActivations])
-  const { venueNameMap } = useGetVenuesQuery({
-    params: { tenantId: tenantId },
-    enableRbac: isWifiRbacEnabled,
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 2048,
-      filters: { id: Object.keys(venueGrouping) }
-    }
-  }, {
-    skip: !Object.keys(venueGrouping).length,
-    selectFromResult: ({ data }) => ({
-      venueNameMap: data?.data.reduce((venues, venue) => {
-        venues[venue.id] = venue.name
-        return venues
-      }, {} as Record<string, string>)
-    })
-  } )
+
+  const venueNameMap = useGetVenueNameMap(venueGrouping)
 
   const tableResult = useMemo(() => {
     if (venueNameMap && venueGrouping) {

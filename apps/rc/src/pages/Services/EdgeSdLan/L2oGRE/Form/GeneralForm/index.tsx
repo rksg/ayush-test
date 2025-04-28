@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Col, Form, Input, Row, Select, Tooltip, Typography, Space } from 'antd'
+import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }           from '@acx-ui/components'
@@ -136,10 +136,7 @@ export const GeneralForm = () => {
       </Col>
       <UI.VerticalSplitLine span={1} />
       <Col span={10}>
-        <UI.StyledDiagram
-          isGuestTunnelEnabled={false}
-          vertical={true}
-        />
+        <UI.StyledSdLanTopology />
       </Col>
     </UI.Wrapper>
   )
