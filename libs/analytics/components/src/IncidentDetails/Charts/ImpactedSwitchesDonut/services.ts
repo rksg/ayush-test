@@ -53,10 +53,11 @@ export const impactedApi = dataApi.injectEndpoints({
        transformResponse: (response: Response<{ impactedSwitches: ImpactedSwitch[],
          switchCount: number }>) => {
          const incident = response.incident
+         const uniqueSwitches = _.uniqBy(incident.impactedSwitches, 'mac')
          return {
-           impactedModelCount: _.countBy(incident.impactedSwitches,
+           impactedModelCount: _.countBy(uniqueSwitches,
              (item)=>item.model.split('-')[0]),
-           impactedFirmwareCount: _.countBy(incident.impactedSwitches, 'firmware')
+           impactedFirmwareCount: _.countBy(uniqueSwitches, 'firmware')
          }
        }
      })
