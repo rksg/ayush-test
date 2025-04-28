@@ -171,12 +171,12 @@ describe('useTunnelProfileActions', () => {
     })
 
     const { updateTunnelProfileOperation, isTunnelProfileUpdating } = result.current
-
     const payload = _.cloneDeep(mockData)
+    payload.mtuSize = 1500
     payload.venueId= 'mock_venue_id'
     payload.edgeClusterId= 'mock_cluster_id'
     await act(async () => {
-      await updateTunnelProfileOperation('mock_tunnel_id', payload)
+      await updateTunnelProfileOperation('mock_tunnel_id', payload, mockData)
     })
 
     await waitFor(() => {
@@ -199,11 +199,11 @@ describe('useTunnelProfileActions', () => {
     mockData.tunnelType = TunnelTypeEnum.L2GRE
     mockData.mtuType = MtuTypeEnum.MANUAL
     mockData.natTraversalEnabled = false
-    const payload = _.cloneDeep(mockData)
-    payload.venueId = 'mock_venue_id'
-    payload.edgeClusterId = 'mock_cluster_id'
+    const initData = _.cloneDeep(mockData)
+    initData.venueId = 'mock_venue_id'
+    initData.edgeClusterId = 'mock_cluster_id'
     await act(async () => {
-      await updateTunnelProfileOperation('mock_tunnel_id', payload)
+      await updateTunnelProfileOperation('mock_tunnel_id', mockData, initData )
     })
 
     await waitFor(() => {

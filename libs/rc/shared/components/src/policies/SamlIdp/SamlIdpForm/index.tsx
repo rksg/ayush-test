@@ -29,10 +29,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
-import CertificateDrawer                                   from '../../CertificateUtil/CertificateDrawer'
+import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
+import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
 
-import { Description } from './styledComponents'
+import { Description, ImportXMLFileDrawer } from './styledComponents'
 
 interface SamlIdpFormProps {
     title: string
@@ -252,17 +252,17 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   rows={10}
                   data-testid='metadata-textarea' />
               </Form.Item>
-              <ImportFileDrawer
+              <ImportXMLFileDrawer
                 title={$t({ defaultMessage: 'Import via XML' })}
                 visible={uploadXmlDrawerVisible}
                 readAsText={true}
                 type={ImportFileDrawerType.DPSK}
                 acceptType={['xml']}
                 maxSize={CsvSize['512KB']}
-                maxEntries={512}
                 importRequest={handleImportRequest}
                 formDataName={'unitImports'}
                 onClose={() => setUploadXmlDrawerVisible(false)}
+                footerButtons={['cancel', 'import']}
               />
             </Col>
           </Row>
@@ -478,14 +478,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
         visible={encryptCertFormVisible}
         setVisible={setEncryptCertFormVisible}
         handleSave={handleEncryptCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.KEY_ENCIPHERMENT]}
       />
       <CertificateDrawer
         visible={signingCertFormVisible}
         setVisible={setSigningCertFormVisible}
         handleSave={handleSigningCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.DIGITAL_SIGNATURE]}
       />
     </>

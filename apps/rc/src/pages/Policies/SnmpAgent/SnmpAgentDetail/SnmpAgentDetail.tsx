@@ -27,11 +27,7 @@ const rbacSnmpFields = [
   'id',
   'name',
   'communityNames',
-  'userNames',
-  'apSerialNumbers',
-  'apNames',
-  'venueIds',
-  'venueNames'
+  'userNames'
 ]
 
 export default function SnmpAgentDetail () {
@@ -60,6 +56,7 @@ export default function SnmpAgentDetail () {
         id: [params.policyId]
       }
     },
+    enableRbac: isUseRbacApi,
     customHeaders:
     ( isUseRbacApi ?
       GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):

@@ -13,7 +13,7 @@ import modifyVars from '../../theme/modify-vars'
 
 import bgImageUrl from './background.svg'
 
-export const Wrapper = styled.div<{ showScreen: boolean }>`
+export const Wrapper = styled.div<{ showScreen: boolean, greyBg?: boolean }>`
   --acx-header-caret-width: 8px;
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
@@ -75,7 +75,9 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             }`)}
           }
           &:after {
-            background-color: var(--acx-primary-white);
+            ${({ greyBg }) => (greyBg
+    ? 'background-color: var(--acx-neutrals-10);'
+    : 'background-color: var(--acx-primary-white);')}
             border-top-left-radius: 20px;
             ${({ showScreen }) => (!showScreen &&
             `@media screen and (max-width: 1279px) {
@@ -326,7 +328,9 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
 
     .ant-layout-content {
       margin: 0;
-      background-color: var(--acx-primary-white);
+      ${({ greyBg }) => (greyBg
+    ? 'background-color: var(--acx-neutrals-10);'
+    : 'background-color: var(--acx-primary-white);')}
       ${({ showScreen }) => (!showScreen &&
       `@media screen and (max-width: 1279px) {
         background-image: url('${bgImageUrl}');
@@ -367,7 +371,7 @@ export const MenuIcon = styled.span`
   }
 `
 
-export const Content = styled.div`
+export const Content = styled.div<{ greyBg?: boolean }>`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
   ${get('IS_MLISA_SA') ? 'padding-block-end: 60px;' : ''}
   min-width: calc(
@@ -386,7 +390,9 @@ export const Content = styled.div`
     top: var(--acx-header-height);
     height: var(--acx-content-vertical-space);
     width: 100%;
-    background-color: var(--acx-primary-white);
+    ${({ greyBg }) => (greyBg
+    ? 'background-color: var(--acx-neutrals-10);'
+    : 'background-color: var(--acx-primary-white);')}
     z-index: 6;
   }
 
@@ -394,7 +400,10 @@ export const Content = styled.div`
     position: sticky;
     top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
     z-index: 6;
-    box-shadow: var(--acx-primary-white) 0px 5px 0 15px;
+    ${({ greyBg }) => (greyBg
+    ? 'box-shadow: var(--acx-neutrals-10) 0px 5px 0 15px;'
+    : 'box-shadow: var(--acx-primary-white) 0px 5px 0 15px;')}
+    
   }
 `
 

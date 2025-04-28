@@ -1,6 +1,6 @@
 import { find } from 'lodash'
 
-import { showActionModal }                                               from '@acx-ui/components'
+import { defaultRichTextFormatValues, showActionModal }                  from '@acx-ui/components'
 import { EdgeMvSdLanFormNetwork, EdgeSdLanTunneledWlan, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                       from '@acx-ui/utils'
 
@@ -92,16 +92,17 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     title: $t({ defaultMessage: 'Configuration Conflict Detected' }),
     content: $t({ defaultMessage:
         // eslint-disable-next-line max-len
-        `The "Forward the guest traffic to DMZ" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
-        Changing this setting for Network {networkName} 
+        `The "{isL2oGreReady, select, true {Forwarding Destination} other {Forward the guest traffic to DMZ}}" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
+        Changing this setting for Network <b>{networkName}</b>
         will also affect <b>{impactVenueCount}</b> associated {impactVenueCount, plural,
         one {<venueSingular></venueSingular>}
         other {<venuePlural></venuePlural>}}. 
         Do you want to continue?` },
     {
-      networkName: <b>{currentNetworkName || networkName}</b>,
-      impactVenueCount: impactVenueCount,
-      b: chunks => <b>{chunks}</b>
+      ...defaultRichTextFormatValues,
+      isL2oGreReady,
+      networkName: currentNetworkName || networkName,
+      impactVenueCount: impactVenueCount
     }),
     okText: $t({ defaultMessage: 'Continue' }),
     onOk: async () => {

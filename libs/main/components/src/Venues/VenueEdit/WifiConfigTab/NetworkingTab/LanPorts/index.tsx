@@ -485,7 +485,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
             ipsecProfileId: originIpsecId
           }
         }).unwrap()
-      } else {
+      } else if (isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged) {
         await updateDeactivateSoftGreProfile({
           params: {
             venueId: venueId,
@@ -551,9 +551,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     const isLanPortEnabled = lanPort.enabled
     const isSoftGreEnabled = lanPort.softGreEnabled
     const isIpsecEnabled = lanPort.ipsecEnabled
+    const isSoftGreProfileChanged = originLanPort?.softGreProfileId !== lanPort.softGreProfileId
     const isIpSecProfileChanged = originLanPort?.ipsecProfileId !== lanPort.ipsecProfileId
 
-    if(isLanPortEnabled && isIpsecEnabled && isIpSecProfileChanged) {
+    if (isLanPortEnabled && isIpsecEnabled && isIpSecProfileChanged) {
       await updateActivateIpSecProfile({
         params: {
           venueId: venueId,
@@ -563,8 +564,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           ipsecProfileId: lanPort.ipsecProfileId
         }
       }).unwrap()
-    }
-    if(isLanPortEnabled && isSoftGreEnabled && !isIpsecEnabled) {
+    } else if (isLanPortEnabled && isSoftGreEnabled && isSoftGreProfileChanged) {
       await updateActivateSoftGreProfile({
         params: {
           venueId: venueId,
@@ -785,6 +785,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
         enableRbac: resolvedRbacEnabled
       }).unwrap()
     }
+
+    isIpSecOverNetworkEnabled && ipsecOptionDispatch && ipsecOptionDispatch({
+      state: IpsecOptionChangeState.OnSave
+    })
 
     setResetModels([])
   }

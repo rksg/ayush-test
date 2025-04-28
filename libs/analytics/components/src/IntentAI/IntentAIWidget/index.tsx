@@ -4,7 +4,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { Loader, Card, ColorPill, NoDataIconOnly, Tooltip } from '@acx-ui/components'
 import { intlFormats }                                      from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex }               from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EcoFlexAI, EquiFlex }    from '@acx-ui/icons'
 import { TenantLink, useSearchParams }                      from '@acx-ui/react-router-dom'
 import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
@@ -100,6 +100,14 @@ function useHighlightList (data: IntentHighlight | undefined) {
       title: $t({ defaultMessage: 'AI Operations' }),
       icon: <AIOperation />,
       type: AiFeatures.AIOps
+    })
+  }
+  if (data?.ecoflex) {
+    highlightList.push({
+      ...data.ecoflex,
+      title: $t({ defaultMessage: 'Energy Saving' }),
+      icon: <EcoFlexAI />,
+      type: AiFeatures.EcoFlex
     })
   }
   return highlightList

@@ -20,6 +20,9 @@ import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
+import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
+import PowerDistributionChart    from './Chart/PowerDistributionChart'
+import { NeighborAPGraph }       from './NeighborAPGraph'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -110,10 +113,26 @@ export function IntentAIDetails () {
                   <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
                     <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
                   </Tabs.TabPane>
+                  <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+                    <NeighborAPGraph />
+                  </Tabs.TabPane>
                 </Tabs>
               </GridCol>
             </GridRow>
           </DetailsSection>
+
+          <GridRow>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection>
+                <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
+              </DetailsSection>
+            </GridCol>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection>
+                <DetailsSection.Details children={<PowerDistributionChart {...intent} />} />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
