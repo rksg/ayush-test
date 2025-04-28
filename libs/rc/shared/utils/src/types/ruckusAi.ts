@@ -97,19 +97,18 @@ export interface Canvas {
   dashboardIds?: string[]
   widgetIds?: string[]
   diffWidgetIds?: string[]
+  author?: string
 }
 
 export interface DashboardInfo extends Canvas {
   index: number
   canvasId: string
-  author?: string
   isLanding?: boolean
   isDefault?: boolean
 }
 
 export interface CanvasInfo extends Canvas {
   owned: boolean
-  author?: string
   widgetCount: number
   usedAsOwnDashboard: boolean
 }

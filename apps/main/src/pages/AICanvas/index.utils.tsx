@@ -43,9 +43,11 @@ export const getCanvasData = (canvasList: Canvas[]) => {
       groups: section.groups.map(group => ({
         ...group,
         cards: compactLayout(group.cards.map(card => {
+          const hasUpdated = canvasData.author
+            && canvasData.diffWidgetIds?.includes(card.widgetId ?? '')
           return {
             ...card,
-            updated: canvasData.diffWidgetIds?.includes(card.widgetId ?? '')
+            updated: hasUpdated
           }
         }))
       }))

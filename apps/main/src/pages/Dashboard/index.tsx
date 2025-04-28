@@ -434,7 +434,7 @@ function DashboardPageHeader (props: {
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
-            const hasUpdated = item.diffWidgetIds && item.diffWidgetIds.length > 0
+            const hasUpdated = item.author && item.diffWidgetIds && item.diffWidgetIds.length > 0
             const icon = item.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
             return <Select.Option
               key={item.id}
