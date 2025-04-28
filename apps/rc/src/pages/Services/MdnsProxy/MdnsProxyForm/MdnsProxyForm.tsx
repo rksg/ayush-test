@@ -16,7 +16,7 @@ import {
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  getServiceListRoutePath
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -88,14 +88,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
           ? $t({ defaultMessage: 'Configure mDNS Proxy Service' })
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'mDNS Proxy' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.MDNS_PROXY)}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>

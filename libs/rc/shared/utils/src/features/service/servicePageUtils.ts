@@ -37,12 +37,20 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const from = (useLocation() as LocationExtended)?.state?.from
 
   // If the user is in the template context, use the config template breadcrumb.
   // Otherwise, use the service list breadcrumb.
   return isTemplate
     ? generateConfigTemplateBreadcrumb()
-    : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled)
+    : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled, from)
+}
+
+export function useServicesBreadcrumb (): { text: string, link?: string }[] {
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const from = (useLocation() as LocationExtended)?.state?.from
+
+  return generateServicesBreadcrumb(isNewServiceCatalogEnabled, from)
 }
 
 // eslint-disable-next-line max-len
@@ -66,8 +74,11 @@ export function generateDpskManagementBreadcrumb () {
   ]
 }
 
-function generateServicesBreadcrumb (isNewServiceCatalogEnabled: boolean) {
-  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb()
+function generateServicesBreadcrumb (
+  isNewServiceCatalogEnabled: boolean,
+  from?: LocationExtended['state']['from']
+) {
+  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb(from)
 
   const { $t } = getIntl()
   return [
@@ -79,15 +90,18 @@ function generateServicesBreadcrumb (isNewServiceCatalogEnabled: boolean) {
   ]
 }
 
-// eslint-disable-next-line max-len
-export function generateServiceListBreadcrumb (type: ServiceType, isNewServiceCatalogEnabled = false) {
+export function generateServiceListBreadcrumb (
+  type: ServiceType,
+  isNewServiceCatalogEnabled = false,
+  from?: LocationExtended['state']['from']
+) {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   if (type === ServiceType.DPSK && isDPSKAdmin) return generateDpskManagementBreadcrumb()
 
   const { $t } = getIntl()
   return [
-    ...generateServicesBreadcrumb(isNewServiceCatalogEnabled),
+    ...generateServicesBreadcrumb(isNewServiceCatalogEnabled, from),
     {
       text: $t(serviceTypeLabelMapping[type]),
       link: getServiceRoutePath({ type, oper: ServiceOperation.LIST })

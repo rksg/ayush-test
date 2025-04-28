@@ -10,7 +10,7 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceListRoutePath,
+  useServicesBreadcrumb,
   useTableQuery,
   WebAuthTemplateTableData,
   isDefaultWebAuth,
@@ -162,10 +162,7 @@ export default function NetworkSegAuthTable () {
     <PageHeader
       title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-      ]}
+      breadcrumb={useServicesBreadcrumb()}
       extra={filterByAccessForServicePolicyMutation([
         <TenantLink state={{ from: location }}
           to={getServiceRoutePath({

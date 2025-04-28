@@ -27,14 +27,13 @@ import {
 import {
   CommonResult,
   LocationExtended,
-  ServiceOperation,
   ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
   getServiceListRoutePath,
-  getServiceRoutePath,
   getWebAuthLabelValidator,
-  redirectPreviousPage
+  redirectPreviousPage,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -49,9 +48,6 @@ export default function NetworkSegAuthForm (
   const navigate = useNavigate()
   const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
-  const path = getServiceRoutePath(
-    { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
-
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
@@ -120,18 +116,15 @@ export default function NetworkSegAuthForm (
       </UI.TextAreaWithReset>)
   }
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WEBAUTH_SWITCH)
+
   return (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
           $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
           $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }), link: path }
-        ]}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}

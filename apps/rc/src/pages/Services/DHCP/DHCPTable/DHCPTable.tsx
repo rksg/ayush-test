@@ -9,7 +9,6 @@ import {
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceListRoutePath,
   getServiceRoutePath,
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
@@ -17,7 +16,8 @@ import {
   IpUtilsService,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -105,10 +105,7 @@ export default function DHCPTable () {
         title={
           $t({ defaultMessage: 'DHCP ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             rbacOpsIds={getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)}
