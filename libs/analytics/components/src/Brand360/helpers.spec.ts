@@ -67,7 +67,7 @@ const mockVenuesData = {
   ]
 }
 const mockLookupAndMappingData = {
-  1: { name: 'Property1', integrators: ['2'], content: [mockMappingData.data[0]] },
+  1: { name: 'Property1', integrators: ['2'], content: [mockMappingData.data[0]], type: 'MSP_REC' },
   2: { name: 'IntegratorName', content: [mockMappingData.data[1]] }
 }
 
