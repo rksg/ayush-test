@@ -1,14 +1,14 @@
 import { Col, Row } from 'antd'
 import styled       from 'styled-components/macro'
 
-import { SdLanTopologyDiagram } from '@acx-ui/rc/components'
+import { SdLanTopologyVertical } from '@acx-ui/edge/components'
 
 export const Wrapper = styled(Row)`
   margin-top: 30px;
 `
 
-export const StyledDiagram = styled(SdLanTopologyDiagram)`
-  margin-top: 40px;
+export const StyledSdLanTopology = styled(SdLanTopologyVertical)`
+  padding-right: 50px
 `
 
 export const FieldText = styled.div`
