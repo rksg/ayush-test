@@ -136,5 +136,6 @@ export interface IpSecOptionsData {
   options: DefaultOptionType[],
   id?: string,
   isLockedOptions: boolean,
-  activationProfiles: string[]
+  activationProfiles: string[],
+  isLockedIpsec: boolean
 }

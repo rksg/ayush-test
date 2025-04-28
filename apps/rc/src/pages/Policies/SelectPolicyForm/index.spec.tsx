@@ -47,8 +47,8 @@ describe('SelectPolicyForm', () => {
       rest.post(ApSnmpUrls.getApSnmpFromViewModel.url, (req, res, ctx) => {
         return res(ctx.json(snmpAgentList))
       }),
-      rest.post(LbsServerProfileUrls.getLbsServerProfileList.url, (req, res, ctx) => {
-        return res(ctx.json({}))
+      rest.post(LbsServerProfileUrls.getLbsServerProfileList.url, (_, res, ctx) => {
+        return res(ctx.json({ totalCount: 0, page: 1, data: [] }))
       })
     )
   })
