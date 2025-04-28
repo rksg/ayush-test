@@ -52,6 +52,7 @@ export function EditCanvasModal (props:{
     onOk={onOk}
     onCancel={handleCancel}
     width='500px'
+    maskClosable={false}
   >
     <Row gutter={24}>
       <Col span={22}>

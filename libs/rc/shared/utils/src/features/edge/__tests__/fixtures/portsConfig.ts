@@ -1,7 +1,7 @@
 import _, { cloneDeep } from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum }                 from '../../../../models/EdgeEnum'
-import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus } from '../../../../types/edge'
+import { EdgeIpModeEnum, EdgePortTypeEnum }                                           from '../../../../models/EdgeEnum'
+import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus, EdgeMultiWanConfigStatus } from '../../../../types/edge'
 
 import { mockEdgeClusterList } from './general'
 
@@ -394,10 +394,27 @@ export const mockClusterInterfaceOptionData = {
   ]
 }
 
+export const mockedDualWanLinkHealthConfigStatus = {
+  tenantId: '0a38bee60d11436fa86e89bec56d31fd',
+  serialNumber: '9681F063FD151C11F0A524000C29B087E4',
+  edgeClusterId: 'bce32f26-9807-4888-bfd1-13a56d857a3c',
+  multiWanPolicyId: '0472cb3e-fddd-4b87-bf63-b5879cbb82ca',
+  portName: 'port1',
+  priority: 2,
+  linkHealthMonitorEnabled: true,
+  monitorProtocol: 'PING',
+  monitorTargets: [
+    '8.8.8.8',
+    '7.7.8.8'
+  ],
+  monitorLinkDownCriteria: 'ALL_TARGETS_DOWN',
+  monitorIntervalSec: 8,
+  monitorMaxCountToDown: 8,
+  monitorMaxCountToUp: 8
+} as EdgeMultiWanConfigStatus
 
 export const mockedEdgePortWithDualWan = cloneDeep(edgePortsSetting)
-mockedEdgePortWithDualWan[0].healthCheckEnabled = 'ON'
+mockedEdgePortWithDualWan[0].linkHealthMonitoring = mockedDualWanLinkHealthConfigStatus
 mockedEdgePortWithDualWan[0].wanLinkStatus = 'UP'
 mockedEdgePortWithDualWan[0].wanLinkTargets = [{ ip: '8.8.8.8', status: 'UP' }]
-mockedEdgePortWithDualWan[0].wanPortRole = 'Primary'
 mockedEdgePortWithDualWan[0].wanPortStatus = 'Active'

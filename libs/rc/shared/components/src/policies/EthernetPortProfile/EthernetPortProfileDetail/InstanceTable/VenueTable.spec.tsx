@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { ethernetPortProfileApi }                                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType, VenueActivation, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
+import { ethernetPortProfileApi }                                                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyRoutePath, ProfileLanVenueActivations } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                             from '@acx-ui/store'
+import { mockServer, render, screen }                                                                  from '@acx-ui/test-utils'
 
 import { mockVenueActivations, mockVenueName, mockedVenueApsList, mockedVenuesResult } from '../../__tests__/fixtures'
 
@@ -55,7 +55,7 @@ describe('EthernetPortProfile Venue Instance Table', () => {
     render(
       <Provider>
         <VenueTable
-          venueActivations={[] as VenueActivation[]}
+          venueActivations={[] as ProfileLanVenueActivations[]}
         />
       </Provider>, {
         route: { params, path: detailPath }
