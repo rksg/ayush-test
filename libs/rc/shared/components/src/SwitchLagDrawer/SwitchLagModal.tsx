@@ -7,7 +7,9 @@ import {
   Radio,
   Row,
   Select,
-  Space } from 'antd'
+  Space,
+  Switch,
+  Typography } from 'antd'
 import { useWatch }          from 'antd/lib/form/Form'
 import { DefaultOptionType } from 'antd/lib/select'
 import { TransferItem }      from 'antd/lib/transfer'
@@ -16,7 +18,10 @@ import { useIntl }           from 'react-intl'
 
 import {
   Button,
+  Card,
   Drawer,
+  GridCol,
+  GridRow,
   Modal,
   showActionModal,
   StepsFormLegacy,
@@ -47,8 +52,8 @@ import {
   VenueMessages,
   VlanModalType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
@@ -72,6 +77,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
 
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
@@ -128,6 +134,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [forceUpPort, setForceUpPort] = useState<string>('')
+  const [selectedPorts, setSelectedPorts] = useState([] as string[])
   // const [isStackMode, setIsStackMode] = useState(false) //TODO
   // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
 
@@ -452,6 +460,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setSelectModalVisible(true)
   }
 
+  const onActionClick = () => {
+    setForceUpPort('')
+    form.setFieldValue('forceUp', false)
+  }
+
+  const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    setSelectedPorts(targetSelectedKeys)
+  }
+
   const lagForm = <Form
     form={form}
     layout='vertical'
@@ -541,8 +558,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         />} */}
       </Col>
     </Row>
-    <Row>
-      <Col>
+    <Row gutter={20}>
+      <Col span={10}>
         <Form.Item
           name='ports'
           data-testid='targetKeysFormItem'
@@ -559,11 +576,59 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             showSearch
             showSelectAll={false}
             dataSource={[...finalAvailablePorts]}
-            render={item => item.name}
+            render={item => (
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <span>{item.name}</span>
+                {item.name === forceUpPort &&
+                  <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force Up</span>}
+              </div>
+            )}
             operations={['Add', 'Remove']}
+            onSelectChange={onSelectChange}
           />
         </Form.Item>
       </Col>
+      { isSwitchLagForceUpEnabled &&
+        <Col span={10} flex='300px' offset={5} style={{ padding: '16px', marginTop: '6px' }}>
+          <Card
+            title={$t({ defaultMessage: 'Force-Up Interface' })}
+            action={{
+              actionName: 'Reset',
+              onActionClick: onActionClick
+            }}
+          >
+            <GridRow style={{ flexFlow: '2' }}>
+              <GridCol col={{ span: 24 }}>
+                {forceUpPort !== '' ? forceUpPort : noDataDisplay}
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol col={{ span: 24 }}>
+                <Space size={8} style={{ display: 'flex', margin: '20px 0 30px' }}>
+                  {
+                    selectedPorts.length === 1 &&
+                    <><Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
+                      {$t({ defaultMessage: 'Port ' })} {selectedPorts[0]}
+                    </Typography.Text><Form.Item
+                      noStyle
+                      name='forceUp'
+                      valuePropName='checked'
+                      children={<Switch
+                        disabled={forceUpPort !== '' && forceUpPort !== selectedPorts[0]}
+                        style={{ display: 'flex' }}
+                        onChange={(value) => value ?
+                          setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />} /></>
+                  }
+                  {
+                    selectedPorts.length > 1 &&
+              $t({ defaultMessage: 'You can select only one port and set it to force-up' })
+                  }
+                </Space>
+              </GridCol>
+            </GridRow>
+          </Card>
+        </Col>
+      }
     </Row>
 
     <Form.Item
@@ -624,7 +689,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onClose={onClose}
-            width={644}
+            width={isSwitchLagForceUpEnabled ? 900 : 644}
             footer={footerForDrawer}
             children={lagForm}
           />
@@ -632,7 +697,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onCancel={onClose}
-            width={644}
+            width={isSwitchLagForceUpEnabled ? 900 : 644}
             footer={footer}
             destroyOnClose={true}
             children={lagForm}
