@@ -4,9 +4,12 @@ import { Form, Row, Select, Typography } from 'antd'
 import { DefaultOptionType }             from 'antd/es/cascader'
 import { useIntl }                       from 'react-intl'
 
-import { transToOptions, useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
+import { transToOptions, useGetAvailableTunnelProfile }                                from '@acx-ui/edge/components'
+import { InformationSolid }                                                            from '@acx-ui/icons'
+import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
+  IncompatibilityFeatures,
   NetworkTypeEnum,
   PolicyOperation,
   PolicyType,
@@ -19,9 +22,11 @@ import {
   getServiceRoutePath,
   useHelpPageLink
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import { compareVersions } from '@acx-ui/utils'
 
-
+import { messageMappings } from './messageMappings'
+import * as UI             from './styledComponents'
 
 interface EdgeSdLanContentProps {
   venueSdLan: EdgeMvSdLanViewData | undefined
@@ -66,15 +71,59 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     ? <TenantLink to={linkToTunnelProfileDetail}>{venueSdLan?.tunnelProfileName}</TenantLink>
     : ''
 
+  const { requiredFw, isFeatureSetsLoading } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.L2OGRE]
+      }
+    } }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === IncompatibilityFeatures.L2OGRE)?.requiredFw,
+        isFeatureSetsLoading: isLoading
+      }
+    }
+  })
 
-  // eslint-disable-next-line max-len
+  const { nodesData, isFwVerLoading } = useGetEdgeListQuery({
+    payload: {
+      fields: [
+        'serialNumber',
+        'firmwareVersion'
+      ],
+      filters: { clusterId: [venueSdLan?.edgeClusterId] }
+    } }, {
+    selectFromResult: ({ data, isLoading }) => ({
+      nodesData: data?.data ?? [],
+      isFwVerLoading: isLoading
+    })
+  })
+
   const activatedForwardingTunnelProfileIds = venueSdLan?.tunneledWlans
     ?.map(item => item.forwardingTunnelProfileId)
     ?.filter((id): id is string => typeof id === 'string') || []
 
-  const { isDataLoading,
+  const { isDataLoading: isTunnelProfilesLoading,
     // eslint-disable-next-line max-len
     availableTunnelProfiles } = useGetAvailableTunnelProfile({ serviceIds: venueSdLan?.id ? [venueSdLan.id] : [undefined] })
+
+  const { associatedEdgeClusters, isEdgeClustersLoading } = useGetEdgeClusterListQuery({
+    payload: {
+      fields: ['clusterId', 'hasCorePort'],
+      filters: {
+        clusterId: availableTunnelProfiles?.map(profile =>
+          profile.destinationEdgeClusterId).filter(Boolean)
+      },
+      pageSize: 10000
+    }
+  }, {
+    skip: !availableTunnelProfiles?.length,
+    selectFromResult: ({ data, isLoading }) => ({
+      associatedEdgeClusters: data?.data,
+      isEdgeClustersLoading: isLoading
+    })
+  })
 
   const tunnelProfileOptions = useMemo(() => [
     {
@@ -85,19 +134,27 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
       (availableTunnelProfiles || []).filter(item => item.id !== venueSdLan?.tunnelProfileId),
       activatedForwardingTunnelProfileIds
     )
-  ], [availableTunnelProfiles, isDataLoading])
+  ], [availableTunnelProfiles, isTunnelProfilesLoading])
 
   const getFilteredTunnelProfileOptions = (
     tunnelProfileOptions: DefaultOptionType[],
     availableTunnelProfiles: TunnelProfileViewData[]
   ) => {
     const isCaptivePortal = networkType === NetworkTypeEnum.CAPTIVEPORTAL
+    const edgesData = [...nodesData]?.sort((n1, n2) =>
+      compareVersions(n1.firmwareVersion, n2.firmwareVersion))
+    const minNodeVersion = edgesData?.[0]?.firmwareVersion
+    const isLower = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
     return tunnelProfileOptions
       .map(item => {
         const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
 
         // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
         if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+          return null
+        }
+
+        if(isLower && profile?.tunnelType === TunnelTypeEnum.L2GRE) {
           return null
         }
 
@@ -118,6 +175,30 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
   const onChangeTunnel = (value:string) => {
     form.setFieldValue(['sdLan', 'forwardingTunnelType'],
       availableTunnelProfiles?.find(item => item.id === value)?.tunnelType ?? '')
+  }
+
+  const checkCorePortConfigured = (tunnelProfileId: string) => {
+    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+    // eslint-disable-next-line max-len
+    if(TunnelTypeEnum.VXLAN_GPE !== targetTunnelProfile?.tunnelType) {
+      return Promise.resolve()
+    }
+    const associatedEdgeCluster = associatedEdgeClusters?.find((cluster) =>
+      cluster.clusterId === targetTunnelProfile?.destinationEdgeClusterId)
+
+    if (associatedEdgeCluster?.hasCorePort) {
+      return Promise.resolve()
+    } else {
+      return Promise.reject(<UI.ClusterSelectorHelper>
+        <InformationSolid />
+        {$t(messageMappings.setting_cluster_helper, {
+          infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+            {$t({ defaultMessage: 'See more information' })}
+          </a>
+        })}
+      </UI.ClusterSelectorHelper>)
+    }
   }
 
   return <Row><Form.Item noStyle >
@@ -145,11 +226,16 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
                 name={['sdLan', 'forwardingTunnelProfileId']}
                 label={$t({ defaultMessage: 'Forwarding Destination' })}
                 initialValue={''}
+                rules={[
+                  { validator: (_, value) => checkCorePortConfigured(value) }
+                ]}
                 children={<Select
                   style={{ width: '220px' }}
                   // eslint-disable-next-line max-len
                   options={getFilteredTunnelProfileOptions(tunnelProfileOptions, availableTunnelProfiles)}
                   onChange={onChangeTunnel}
+                  disabled={isTunnelProfilesLoading && isEdgeClustersLoading
+                    && isFwVerLoading && isFeatureSetsLoading}
                 />}
               />
             </Row>
