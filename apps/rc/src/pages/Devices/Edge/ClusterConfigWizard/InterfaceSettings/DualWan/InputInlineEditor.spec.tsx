@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { networkWifiIpRegExp } from '@acx-ui/rc/utils'
+import { render, screen }      from '@acx-ui/test-utils'
 
 import { InputInlineEditor } from './InputInlineEditor'
 
@@ -38,5 +39,23 @@ describe('InputInlineEditor', () => {
     render(<InputInlineEditor {...props} value={undefined} />)
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(props.onDelete).toHaveBeenCalledWith(props.index)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should greyout submit button when value is invalid after checking with props.rule', async () => {
+    const mockOnChange = jest.fn()
+    render(<InputInlineEditor
+      {...props}
+      onChange={mockOnChange}
+      value={undefined}
+      rules={[ networkWifiIpRegExp ]}
+    />)
+
+    await userEvent.type(screen.getByRole('textbox'), '12.12.12.abc')
+    // eslint-disable-next-line testing-library/no-node-access
+    const submitBtn = screen.getByTestId('Check').parentNode
+    expect(submitBtn).toBeDisabled()
+    await userEvent.click(submitBtn)
+    expect(mockOnChange).toBeCalledTimes(0)
   })
 })

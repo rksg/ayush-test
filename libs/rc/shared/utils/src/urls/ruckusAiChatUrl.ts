@@ -41,18 +41,18 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas',
     newApi: true
   },
-  saveCanvas: {
+  getCanvasById: {
+    method: 'get',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
+  },
+  createCanvas: {
     method: 'post',
     url: '/ruckusAi/canvas',
     newApi: true
   },
   updateCanvas: {
     method: 'put',
-    url: '/ruckusAi/canvas/:canvasId',
-    newApi: true
-  },
-  getTargetCanvas: {
-    method: 'get',
     url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },
@@ -64,6 +64,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
   cloenCanvas: {
     method: 'post',
     url: '/ruckusAi/canvas/:canvasId/clone',
+    newApi: true
+  },
+  patchCanvas: {
+    method: 'PATCH',
+    url: '/ruckusAi/canvas/:canvasId',
     newApi: true
   },
   deleteCanvas: {
@@ -103,7 +108,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
   },
   removeDashboards: {
     method: 'delete',
-    url: '/ruckusAi/dashboards',
+    url: '/ruckusAi/dashboards'
+  },
+  sendFeedback: {
+    method: 'post',
+    url: '/ruckusAi/chats/:sessionId/:messageId',
     newApi: true
   }
 }

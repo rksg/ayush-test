@@ -66,9 +66,9 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && canMSPDelegation && ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
-    || (isLoginSSoTechpartnerEnabled && isTechPartner))
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
+    && (canMSPDelegation || ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
+    || (isLoginSSoTechpartnerEnabled && isTechPartner)))
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
   const authenticationData =

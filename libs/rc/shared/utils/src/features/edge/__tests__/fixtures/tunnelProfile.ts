@@ -158,3 +158,13 @@ export const mockedDefaultTunnelProfileData = {
   ageTimeMinutes: 20,
   forceFragmentation: false
 }
+
+export const mockedTunnelTypeL2greData = {
+  id: 'mock_tunnel_l2gre_1',
+  type: NetworkSegmentTypeEnum.VLAN_VXLAN,
+  name: 'L2GRE',
+  tunnelType: TunnelTypeEnum.L2GRE,
+  destinationIpAddress: '10.10.10.10',
+  mtuSize: 600,
+  forceFragmentation: false
+}

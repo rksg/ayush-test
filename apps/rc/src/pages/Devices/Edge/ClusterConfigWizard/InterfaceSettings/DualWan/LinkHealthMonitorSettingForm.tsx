@@ -3,8 +3,13 @@ import { useMemo } from 'react'
 import { Form, FormInstance, Radio, Select, Space } from 'antd'
 import { useIntl }                                  from 'react-intl'
 
-import { Button }                                                                                  from '@acx-ui/components'
-import { defaultDualWanLinkHealthCheckPolicy, getWanLinkDownCriteriaString, getWanProtocolString } from '@acx-ui/edge/components'
+import { Button }       from '@acx-ui/components'
+import {
+  defaultDualWanLinkHealthCheckPolicy,
+  getWanLinkDownCriteriaString,
+  getWanProtocolString,
+  multiWanLimitations
+} from '@acx-ui/edge/components'
 import {
   EdgeLinkDownCriteriaEnum,
   EdgeMultiWanProtocolEnum,
@@ -15,13 +20,15 @@ import {
 import { InputInlineEditor }                    from './InputInlineEditor'
 import { StyledFormItem, StyledHiddenFormItem } from './styledComponents'
 
-const MIN_HEALTH_CHECK_INTERVAL = 1 // seconds
-const MAX_HEALTH_CHECK_INTERVAL = 10 // seconds
-const MIN_COUNT_DOWN = 2 // seconds
-const MAX_COUNT_DOWN = 10  // seconds
-const MIN_COUNT_UP = 2  // seconds
-const MAX_COUNT_UP = 10  // seconds
-const MAX_TARGET_IP = 3
+const {
+  MIN_HEALTH_CHECK_INTERVAL,
+  MAX_HEALTH_CHECK_INTERVAL,
+  MIN_COUNT_DOWN,
+  MAX_COUNT_DOWN,
+  MIN_COUNT_UP,
+  MAX_COUNT_UP,
+  MAX_TARGET_IP
+} = multiWanLimitations
 
 interface LinkHealthMonitorSettingFormProps {
   form: FormInstance
@@ -113,10 +120,17 @@ export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingForm
                 <InputInlineEditor
                   index={index}
                   onDelete={remove}
+                  // on change validation since we will only setFormValue when user click InputInlineEditor submit
+                  rules={[ networkWifiIpRegExp ]}
                 />
               </StyledFormItem>
             )}
-            <Button type='link' onClick={() => add()}>
+
+            <Button
+              type='link'
+              onClick={() => add()}
+              disabled={fields.length >= MAX_TARGET_IP}
+            >
               {$t({ defaultMessage: 'Add Target' })}
             </Button>
           </>

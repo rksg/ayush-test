@@ -473,7 +473,7 @@ export function SwitchPortTable (props: {
           ...(
             switchSupportErrorRecovery ? [{
               label: $t({ defaultMessage: 'Error Disable Recovery' }),
-              rbacOpsId: [getOpsApi(SwitchUrlsInfo.updatePortDisableRecovery)],
+              rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updatePortDisableRecovery)],
               onClick: () => { setRecoveryDrawerVisible(true) }
             }] : []),
           {

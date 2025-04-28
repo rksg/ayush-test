@@ -1,7 +1,7 @@
 import { Canvas } from '@acx-ui/rc/utils'
 
-import { DEFAULT_CANVAS, Section } from './Canvas'
-import { compactLayout }           from './utils/compact'
+import { Group, Section, DEFAULT_CANVAS } from './Canvas'
+import { compactLayout }                  from './utils/compact'
 
 const MENU_COLLAPSED_WIDTH = 60
 const MENU_EXPANDED_WIDTH = 216
@@ -35,17 +35,17 @@ export const getCalculatedColumnWidth = (
 export const getCanvasData = (canvasList: Canvas[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ canvasData, ...rest ] = canvasList
-  const canvasContent = canvasData?.content !== ''
-    ? canvasData.content : JSON.stringify(DEFAULT_CANVAS)
+  // const canvasContent = canvasData?.content !== ''
+  //   ? canvasData.content : JSON.stringify(DEFAULT_CANVAS)
 
-  if (canvasList?.length && canvasContent) {
+  if (canvasList?.length && canvasData.content) {
     // const diffWidgetIds = [
     //   '73b6b992b2dc4521ab84c27b1cb96b40',
     //   'feda21d9d4bd4c398fed43fcda6a3c1d'
     // ]
 
     const canvasId = canvasData.id
-    let data = JSON.parse(canvasContent) as Section[]
+    let data = JSON.parse(canvasData.content) as Section[]
     data = data.map(section => ({
       ...section,
       groups: section.groups.map(group => ({
@@ -61,6 +61,14 @@ export const getCanvasData = (canvasList: Canvas[]) => {
     const groups = data.flatMap(section => section.groups)
     return {
       canvasId, sections: data, groups
+    }
+  } else {
+    if (canvasList?.length && canvasData.id) {
+      return {
+        canvasId: canvasData.id,
+        sections: DEFAULT_CANVAS,
+        groups: DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], [])
+      }
     }
   }
   return {}

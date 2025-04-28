@@ -24,7 +24,8 @@ const mockedIdentityClientList = {
       groupId: testPersonaGroupId,
       identityId: testPersonaId,
       clientMac: '11:11:11:11:11:11',
-      networkId: 'network-id-1'
+      networkId: 'network-id-1',
+      onboardType: 'dpsk'
     },
     {
       id: 'device-without-mapping',
@@ -129,6 +130,7 @@ describe('IdentityClientTable', () => {
 
     await screen.findByText('11:11:11:11:11:11')
     expect(await screen.findByText('Persona_Host_name')).toBeInTheDocument()
+    expect(await screen.findByText('DPSK')).toBeInTheDocument()
     expect(setCountFn).toHaveBeenCalledTimes(1)
   })
 })
