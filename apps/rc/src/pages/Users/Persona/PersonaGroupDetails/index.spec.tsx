@@ -89,6 +89,10 @@ describe('Persona Group Details', () => {
         replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
       ),
+      rest.post(
+        replacePagination(PersonaUrls.searchIdentityClients.url),
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
+      ),
       rest.get(
         replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
