@@ -130,7 +130,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const currentNetworkList = activated?.[venueId]
 
   const tunnelProfileOptions = useMemo(() => {
-    const selectedCluster = associatedEdgeClusters.find(
+    const selectedCluster = associatedEdgeClusters?.find(
       cluster => cluster.clusterId === dcTunnelProfileId
     )
 
@@ -138,7 +138,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.L2OGRE]) > -1
     ) && selectedCluster.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    const filteredTunnelOptions = availableTunnelProfiles.filter(profile =>
+    const filteredTunnelOptions = availableTunnelProfiles?.filter(profile =>
       (isSupportL2Gre || profile.tunnelType !== TunnelTypeEnum.L2GRE) &&
       profile.id !== dcTunnelProfileId)
 
@@ -161,7 +161,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     .filter(i => !isNil(i)) ?? []) as string[]
 
   const checkCorePortConfigured = (tunnelProfileId?: string) => {
-    const targetTunnelProfile = availableTunnelProfiles.find((tunnelProfile) =>
+    const targetTunnelProfile = availableTunnelProfiles?.find((tunnelProfile) =>
       tunnelProfile.id === tunnelProfileId)
 
     if(!tunnelProfileId || targetTunnelProfile?.tunnelType === TunnelTypeEnum.L2GRE) {
@@ -307,7 +307,7 @@ export const getFilteredTunnelProfileOptions = (
 
   return tunnelProfileOptions
     .map(item => {
-      const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
+      const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
 
       // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
       if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
