@@ -150,14 +150,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
-  clusterServiceData
-    // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
-    .some(item => {
-      form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
-      return true
-    })
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [

@@ -3,9 +3,10 @@ import React, { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { cssStr, DonutChartData }                                  from '@acx-ui/components'
-import { EdgeOverviewDonutWidget }                                 from '@acx-ui/edge/components'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, EventSeverityEnum, useTableQuery } from '@acx-ui/rc/utils'
+
+import { EdgeOverviewDonutWidget } from '../EdgeOverviewDonutWidget'
 
 const alarmListPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -59,7 +60,7 @@ export const getAlarmChartData = (alarms: Alarm[] | undefined): DonutChartData[]
 
 interface EdgeAlarmWidgetProps {
   isLoading: boolean
-  serialNumber: string | undefined
+  serialNumber: string | string[] | undefined
   onClick?: (type: string) => void
 }
 
@@ -75,7 +76,7 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
     defaultPayload: {
       ...alarmListPayload,
       filters: {
-        serialNumber: [serialNumber]
+        serialNumber: Array.isArray(serialNumber) ? serialNumber : [serialNumber]
       }
     },
     option: { skip: !serialNumber }
@@ -86,14 +87,15 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
       setPayload({
         ...alarmListPayload,
         filters: {
-          serialNumber: [serialNumber]
+          serialNumber: Array.isArray(serialNumber) ? serialNumber : [serialNumber]
         }
       })
   }, [serialNumber])
 
   const handleDonutClick = () => {
     const event = new CustomEvent('showAlarmDrawer',
-      { detail: { data: { name: 'all', serialNumber } } })
+      // eslint-disable-next-line max-len
+      { detail: { data: { name: 'all', serialNumber: Array.isArray(serialNumber) ? undefined : serialNumber } } })
     window.dispatchEvent(event)
   }
 

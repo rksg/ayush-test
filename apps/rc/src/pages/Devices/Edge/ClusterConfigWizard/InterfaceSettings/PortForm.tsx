@@ -11,6 +11,7 @@ import { validateEdgeClusterLevelGateway, EdgePort, EdgeLag }               from
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import { StyledHiddenFormItem }                                           from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
@@ -74,6 +75,21 @@ const PortSettingView = (props: PortSettingViewProps) => {
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
     }]}>
+      <StyledHiddenFormItem
+        name='clusterGatewayValidate'
+        rules={[
+          { validator: () => {
+            // eslint-disable-next-line max-len
+            const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+            const allLagsValues = nodesLagData.map(lag => lag.lags)
+            const allPortsData = _.flatten(allPortsValues) as EdgePort[]
+            const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
+            // eslint-disable-next-line max-len
+            return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
+          } }
+        ]}
+        children={<input hidden/>}
+      />
       <NodesTabs
         nodeList={clusterInfo?.edgeList}
         content={
@@ -83,32 +99,16 @@ const PortSettingView = (props: PortSettingViewProps) => {
 
             // only display when portConfig has data
             return portsConfigs
-              ? <>
-                <Form.Item
-                  name='clusterGatewayValidate'
-                  rules={[
-                    { validator: () => {
-                      // eslint-disable-next-line max-len
-                      const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
-                      const allLagsValues = nodesLagData.map(lag => lag.lags)
-                      const allPortsData = _.flatten(allPortsValues) as EdgePort[]
-                      const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
-                      // eslint-disable-next-line max-len
-                      return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
-                    } }
-                  ]}
-                  children={<input hidden/>}
-                />
-                <EdgePortsGeneralBase
-                  lagData={lagData}
-                  statusData={portsStatus?.[serialNumber]}
-                  isEdgeSdLanRun={!!edgeSdLanData}
-                  activeTab={activeTab}
-                  onTabChange={handleTabChange}
-                  fieldHeadPath={['portSettings', serialNumber]}
-                  vipConfig={vipConfigArr}
-                />
-              </>
+              ? <EdgePortsGeneralBase
+                lagData={lagData}
+                statusData={portsStatus?.[serialNumber]}
+                isEdgeSdLanRun={!!edgeSdLanData}
+                activeTab={activeTab}
+                onTabChange={handleTabChange}
+                fieldHeadPath={['portSettings', serialNumber]}
+                vipConfig={vipConfigArr}
+                isClusterWizard
+              />
               : <div />
           }
         }
