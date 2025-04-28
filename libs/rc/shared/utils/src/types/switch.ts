@@ -1091,6 +1091,11 @@ export enum PortProfileTabsEnum {
   SWITCH = 'switch',
 }
 
+export enum PortalProfileTabsEnum {
+  GUEST = 'guest',
+  PIN = 'pin',
+}
+
 export enum NetworkTypeTabsEnum {
   WIFI = 'wifi',
   SWITCH = 'switch',

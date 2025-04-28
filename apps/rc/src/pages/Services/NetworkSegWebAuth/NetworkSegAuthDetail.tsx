@@ -118,13 +118,10 @@ export default function NetworkSegAuthDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
-            link: getServiceRoutePath({
-              type: ServiceType.WEBAUTH_SWITCH,
-              oper: ServiceOperation.LIST
-            })
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'PIN Portal for Switch' }), link: getServiceRoutePath(
+            { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
           }
         ]}
         extra={filterByAccessForServicePolicyMutation([

@@ -123,7 +123,7 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
+            entityName: $t({ defaultMessage: 'PIN Portal for Switch' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -160,7 +160,7 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
 
   return (<>
     { props.hideHeader !== true && <PageHeader
-      title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
+      title={$t({ defaultMessage: 'PIN Portal for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },

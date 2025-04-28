@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs } from '@acx-ui/components'
@@ -13,7 +11,7 @@ import {
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
   getServiceAllowedOperation,
-  NetworkTypeTabsEnum
+  PortalProfileTabsEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
@@ -21,27 +19,13 @@ import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 import NetworkSegAuthTable from '../NetworkSegWebAuth/NetworkSegAuthTable'
 import PortalTable         from '../Portal/PortalTable'
 
-const ProfileTabs = () => {
+const ProfileTabs = ({ activeKey, isPinSwitchReady }:
+  { activeKey?: string, isPinSwitchReady?: boolean }) => {
   const { $t } = useIntl()
-  const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/services/portalProfile')
-  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isPinSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
 
-
-  useEffect(() => {
-    if (params?.activeTab === 'list') {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/wifi`
-      }, { replace: true })
-    }
-  }, [basePath, navigate, params?.activeTab])
-
-  const activeTab = (!isEdgePinReady || !isPinSwitchEnabled) ? 'wifi' : params.activeTab
   const onTabChange = (tab: string) => {
-    if (tab === 'switch') tab = `${tab}/profiles`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -49,32 +33,37 @@ const ProfileTabs = () => {
   }
 
   return (
-    <Tabs onChange={onTabChange} activeKey={activeTab}>
+    <Tabs onChange={onTabChange} activeKey={activeKey}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Guest Portal' })}
-        key='wifi'
+        key={PortalProfileTabsEnum.GUEST}
       />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'PIN Portal for Switch' })}
-        key='switch'
-        disabled={!isEdgePinReady || !isPinSwitchEnabled} />
+        key={PortalProfileTabsEnum.PIN}
+        disabled={!isPinSwitchReady} />
     </Tabs>
   )
 }
 
 const tabs = {
-  wifi: () => <PortalTable hideHeader={true} />,
-  switch: () => <NetworkSegAuthTable hideHeader={true} />
+  [PortalProfileTabsEnum.GUEST]: () => <PortalTable hideHeader={true} />,
+  [PortalProfileTabsEnum.PIN]: () => <NetworkSegAuthTable hideHeader={true} />
 }
 
 export default function PortalProfile () {
   const { $t } = useIntl()
-  const { activeTab } = useParams()
+  const params = useParams()
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isPinSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPinSwitchReady = isEdgePinReady && isPinSwitchEnabled
+
+  // eslint-disable-next-line max-len
+  const activeTab = (params?.activeTab === 'list' || !isPinSwitchReady) ? PortalProfileTabsEnum.GUEST : params.activeTab
   const Tab = tabs[activeTab as keyof typeof tabs]
 
-
   const getAddButton = () => {
-    return activeTab === NetworkTypeTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
+    return activeTab === PortalProfileTabsEnum.GUEST ? filterByAccessForServicePolicyMutation([
       <TenantLink
         scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.CREATE)}
         rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
@@ -86,8 +75,7 @@ export default function PortalProfile () {
       <TenantLink
         scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         rbacOpsIds={getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
-        // eslint-disable-next-line max-len
-        to={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE })}
+        to={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,oper: ServiceOperation.CREATE })}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add PIN Portal for Switch' })}</Button>
       </TenantLink>
@@ -97,11 +85,7 @@ export default function PortalProfile () {
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Portal' }
-          )
-        }
+        title={$t({ defaultMessage: 'Portal' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
@@ -111,7 +95,7 @@ export default function PortalProfile () {
         ]}
 
         extra={getAddButton()}
-        footer={<ProfileTabs/>}
+        footer={<ProfileTabs activeKey={activeTab} isPinSwitchReady={isPinSwitchReady} />}
       />
       { Tab && <Tab /> }
     </>

@@ -783,7 +783,28 @@ function ServiceRoutes () {
       />
 
       {(isEdgePinReady) && pinRoutes}
-
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
+        element={
+          <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
+            <CreatePortalProfile />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path='services/portalProfile/:activeTab'
+        element={<PortalProfile />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.LIST })}
+        element={<TenantNavigate replace to='/services/portalProfile/pin' />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL,
+          oper: ServiceOperation.LIST })}
+        element={<TenantNavigate replace to='/services/portalProfile/guest' />}
+      />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
@@ -835,22 +856,6 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })}
         element={<PortalTable/>}
-      />
-      <Route
-        path='services/portalProfile/create'
-        element={
-          <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
-            <CreatePortalProfile />
-          </AuthRoute>
-        }
-      />
-      <Route
-        path='services/portalProfile/:activeTab/'
-        element={<PortalProfile />}
-      />
-      <Route
-        path='services/portalProfile/:activeTab/:activeSubTab'
-        element={<PortalProfile />}
       />
       <Route
         path={getServiceRoutePath({

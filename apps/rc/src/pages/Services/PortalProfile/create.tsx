@@ -9,7 +9,7 @@ import {
   getServiceListRoutePath,
   ServiceOperation,
   ServiceType,
-  NetworkTypeTabsEnum,
+  PortalProfileTabsEnum,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -32,10 +32,9 @@ export default function CreatePortalProfile () {
 
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('portalProfileType')
-    navigate(type === NetworkTypeTabsEnum.WIFI ?
+    navigate(type === PortalProfileTabsEnum.GUEST ?
       createGuestPortalPath : createWebAuthSwitchPortalPath)
   }
-
 
   const guestPortalOids =
     getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)
@@ -50,20 +49,12 @@ export default function CreatePortalProfile () {
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Add Portal' }
-          )
-        }
+        title={$t({ defaultMessage: 'Add Portal' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Portal' }),
-            link: getServiceListRoutePath(true) + '/portalProfile/wifi'
           }
         ]}
       />
@@ -76,15 +67,16 @@ export default function CreatePortalProfile () {
           <Form.Item name='portalProfileType'
             label={$t({ defaultMessage: 'Portal Service Type' })}
             initialValue={hasCreateGuestPortalPermission ?
-              NetworkTypeTabsEnum.WIFI : NetworkTypeTabsEnum.SWITCH}>
+              PortalProfileTabsEnum.GUEST : PortalProfileTabsEnum.PIN}>
             <Radio.Group>
               <Space direction='vertical'>
-                <Radio value={NetworkTypeTabsEnum.WIFI} disabled={!hasCreateGuestPortalPermission}>
+                <Radio value={PortalProfileTabsEnum.GUEST}
+                  disabled={!hasCreateGuestPortalPermission}>
                   {$t({ defaultMessage: 'Guest Portal' })}
                 </Radio>
-                <Radio value={NetworkTypeTabsEnum.SWITCH}
+                <Radio value={PortalProfileTabsEnum.PIN}
                   // eslint-disable-next-line max-len
-                  disabled={!isEdgePinReady || !isPinSwitchEnabled || !hasWebAuthSwitchPortalPermission}>
+                  disabled={!isEdgePinReady || ! isPinSwitchEnabled || !hasWebAuthSwitchPortalPermission}>
                   {$t({ defaultMessage: 'PIN (Personal Identity Network) Portal for Switch' })}
                 </Radio>
               </Space>
