@@ -904,6 +904,7 @@ export const useUpdateSoftGreActivations = () => {
 export const useUpdateIpsecActivations = () => {
   const [ activateIpsec ] = useActivateIpsecMutation()
   const [ deactivateIpsec ] = useDeactivateIpsecMutation()
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
   const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
@@ -916,6 +917,8 @@ export const useUpdateIpsecActivations = () => {
         return deactivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
         return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      } else if (action.softGreProfileId && action.enableIpsec === false) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.softGreProfileId } })
       }
       return Promise.resolve()
     })
