@@ -30,13 +30,16 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
   const { $t } = useIntl()
   const { edges } = props
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
+  const {
+    startDate, endDate
+  } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
 
   const serialNumbers = useMemo(() => edges?.map(edge => edge.serialNumber) || [], [edges])
 
   const { isLoading, queryResults } = useClusterNodesUpTimeData({
     serialNumbers,
-    filters
+    startDate,
+    endDate
   })
 
   const totalUpDowntime = useMemo(() => ({
@@ -129,8 +132,8 @@ export const EdgeClusterNodesUpTimeWidget = (props: {
                   style={{ width, height }}
                   nodes={usedData}
                   chartBoundary={[
-                    moment(filters?.startDate).valueOf(),
-                    moment(filters?.endDate).valueOf()
+                    moment(startDate).valueOf(),
+                    moment(endDate).valueOf()
                   ]}
                   hasXaxisLabel
                 />

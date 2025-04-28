@@ -73,7 +73,7 @@ describe('useClusterNodesUpTimeData', () => {
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: mockEmptySerialNumbers,
-        filters: mockFilters
+        ...mockFilters
       }), { wrapper: Provider })
 
     expect(result.current.queryResults).toEqual([])
@@ -85,7 +85,7 @@ describe('useClusterNodesUpTimeData', () => {
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: undefined,
-        filters: mockFilters
+        ...mockFilters
       }), { wrapper: Provider })
 
     expect(result.current.queryResults).toEqual([])
@@ -97,7 +97,7 @@ describe('useClusterNodesUpTimeData', () => {
     const { result } = renderHook(() => {
       return useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
-        filters: mockFilters
+        ...mockFilters
       })
     }, { wrapper: Provider })
 
@@ -135,7 +135,7 @@ describe('useClusterNodesUpTimeData', () => {
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
-        filters: mockFilters
+        ...mockFilters
       }), { wrapper: Provider } )
 
     expect(result.current.queryResults).toEqual([])
@@ -164,7 +164,7 @@ describe('useClusterNodesUpTimeData', () => {
     const { result } = renderHook(() =>
       useClusterNodesUpTimeData({
         serialNumbers: mockSerialNumbers,
-        filters: mockFilters
+        ...mockFilters
       }), { wrapper: Provider })
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
