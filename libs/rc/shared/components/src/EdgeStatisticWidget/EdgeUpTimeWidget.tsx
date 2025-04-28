@@ -82,7 +82,6 @@ export function EdgeUpTimeWidget () {
     totalDowntime: data!.totalDowntime
   }
 
-
   return (
     <Loader states={[{ isLoading }]}>
       <UI.Wrapper>

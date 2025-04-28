@@ -44,7 +44,7 @@ export const getDualWanModeString = (type: EdgeMultiWanModeEnum) => {
   }
 }
 
-export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum) => {
+export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum | undefined) => {
   const { $t } = getIntl()
 
   switch (type) {
@@ -57,7 +57,7 @@ export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum) => {
 }
 
 // eslint-disable-next-line max-len
-export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum) => {
+export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum | undefined) => {
   const { $t } = getIntl()
 
   switch (type) {
@@ -69,6 +69,12 @@ export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum) => 
     default:
       return ''
   }
+}
+
+export const getDisplayWanRole = (priority: number) => {
+  const { $t } = getIntl()
+  if (priority === 0) return ''
+  return priority === 1 ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Backup' })
 }
 
 export const isMultiWanClusterPrerequisite = (clusterInfo: EdgeClusterStatus | undefined) => {

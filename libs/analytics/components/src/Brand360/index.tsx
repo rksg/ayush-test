@@ -118,19 +118,18 @@ export function Brand360 () {
       isMDUEnabled
     )
     : []
-  const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
   /*
       skip timeseries query if
       - ssid regex still loading
       - rc api for properties still loading
-      - no tenantids implies no data in table
+      - no data in table
   */
-  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
+  const skipTSQuery = ssidSkip || propertiesLoading || !tableResults.length
   const {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(
-    { ...chartPayload, tenantIds },
+    chartPayload,
     { skip: skipTSQuery }
   )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
@@ -139,7 +138,6 @@ export function Brand360 () {
     ...prevResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
-    tenantIds,
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
@@ -149,7 +147,6 @@ export function Brand360 () {
     ...currResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
-    tenantIds,
     granularity: 'all'
   },
   { skip: skipTSQuery }

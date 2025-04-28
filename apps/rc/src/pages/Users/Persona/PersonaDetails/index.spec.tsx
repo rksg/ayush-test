@@ -38,16 +38,20 @@ jest.mock('./PersonaOverview', () => ({
   PersonaOverview: () => <div data-testid='PersonaOverview'></div>
 }))
 jest.mock('./CertificateTab', () => ({
-  CertificateTab: () => <div data-testid='CerttificateTab'></div>
+  __esModule: true,
+  default: () => <div data-testid='CerttificateTab'></div>
 }))
 jest.mock('./DpskPassphraseTab', () => ({
-  DpskPassphraseTab: () => <div data-testid='DpskPassphraseTab'></div>
+  __esModule: true,
+  default: () => <div data-testid='DpskPassphraseTab'></div>
 }))
 jest.mock('./MacAddressTab', () => ({
-  MacAddressTab: () => <div data-testid='MacAddressTab'></div>
+  __esModule: true,
+  default: () => <div data-testid='MacAddressTab'></div>
 }))
 jest.mock('./IdentityClientTable', () => ({
-  IdentityClientTable: () => <div data-testid='IdentityClientTable'></div>
+  __esModule: true,
+  default: () => <div data-testid='IdentityClientTable'></div>
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -124,7 +128,7 @@ describe('Identity Details', () => {
         DpskUrls.getEnhancedPassphraseList.url,
         (_, res, ctx) => {
           getDpskFn()
-          return res(ctx.json({ data: [], totalCount: 10 }))
+          return res(ctx.json({ data: [], totalCount: 1 }))
         }
       ),
       rest.get(
@@ -135,7 +139,7 @@ describe('Identity Details', () => {
         PersonaUrls.searchIdentityClients.url.split('?')[0],
         (_, res, ctx) => {
           getIdentityClientFn()
-          return res(ctx.json({ data: [], totalCount: 10 }))
+          return res(ctx.json({ data: [], totalElements: 101 }))
         }
       ),
       rest.post(
@@ -169,13 +173,17 @@ describe('Identity Details', () => {
         <PersonaDetails />
       </Provider>, {
         route: {
-          params,
+          params: {
+            ...params,
+            activeTab: 'overview'
+          },
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId/overview'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId/:activeTab'
         }
       }
     )
     await waitFor(() => expect(getPersonaByIdFn).toHaveBeenCalled())
+    await waitFor(() => expect(getIdentityClientFn).toHaveBeenCalled())
     await waitFor(() => expect(getPersonaGroupByIdFn).toHaveBeenCalled())
     await waitFor(() => expect(getDpskFn).toHaveBeenCalled())
     await waitFor(() => expect(getIdentityCertFn).toHaveBeenCalled())
@@ -184,9 +192,17 @@ describe('Identity Details', () => {
 
     expect(screen.getByTestId('PersonaOverview')).toBeInTheDocument()
 
-    expect(screen.getByRole('tab', { name: /Devices/i })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /Certificates\(10\)/i })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /Mac Addresses\(1\)/i })).toBeInTheDocument()
+    fireEvent.click(await screen.findByRole('tab', { name: /Devices\(100\)/i }))
+    expect(screen.getByTestId('IdentityClientTable')).toBeInTheDocument()
+
+    fireEvent.click(await screen.findByRole('tab', { name: /DPSK Passphrases\(1\)/i }))
+    expect(screen.getByTestId('DpskPassphraseTab')).toBeInTheDocument()
+
+    fireEvent.click(await screen.findByRole('tab', { name: /Certificates\(10\)/i }))
+    expect(screen.getByTestId('CerttificateTab')).toBeInTheDocument()
+
+    fireEvent.click(await screen.findByRole('tab', { name: /Mac Addresses\(1\)/i }))
+    expect(screen.getByTestId('MacAddressTab')).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {

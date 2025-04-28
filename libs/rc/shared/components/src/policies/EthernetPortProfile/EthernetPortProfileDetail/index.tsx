@@ -11,7 +11,7 @@ import {
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
-  useGetEthernetPortProfileTemplateQuery,
+  useGetEthernetPortProfileTemplateWithRelationsByIdQuery,
   useGetEthernetPortProfileWithRelationsByIdQuery
 } from '@acx-ui/rc/services'
 import {
@@ -48,7 +48,7 @@ export const EthernetPortProfileDetail = () => {
 
   const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
-    useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateWithRelationsByIdQuery,
     enableRbac: true,
     extraParams: { id: policyId },
     payload: {
