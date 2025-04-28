@@ -24,7 +24,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles
+  hasRoles,
+  isCoreTier
 }             from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
@@ -42,6 +43,9 @@ function VenueEditTabs () {
   const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
   const { editContextData, setEditContextData } = venueEditTabContext
   const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -123,7 +127,7 @@ function VenueEditTabs () {
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
         />
       }
-      {enablePropertyManagement &&
+      { (enablePropertyManagement && !isCore) &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
           key='property'
