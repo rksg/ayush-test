@@ -16,6 +16,7 @@ import {
 import {
   useCloenCanvasMutation,
   useDeleteCanvasMutation,
+  useGetCanvasesQuery,
   useLazyGetCanvasesQuery,
   useLazyGetCanvasByIdQuery
 } from '@acx-ui/rc/services'
@@ -38,6 +39,11 @@ type CustomPayload = {
   filters?: {
     isOwned: boolean[]
   }
+}
+
+type CanvasList = {
+  owned: CanvasInfo[]
+  shared: CanvasInfo[]
 }
 
 const getCanvasPayload = (customPayload?: CustomPayload) => {
@@ -73,6 +79,8 @@ export const ImportDashboardDrawer = (props: {
   const [sharedCanvasList, setSharedCanvasList] = useState([] as CanvasInfo[])
   const [selectedItem, setSelectedItem] = useState({} as CanvasInfo)
   const [selectedCanvases, setSelectedCanvases] = useState<React.Key[]>([])
+  const [searchText, setSearchText] = useState('')
+
   const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
   const importedOwnedCanvasCount = dashboardList.filter(item => !item.author).length - 1
   const isReachedCanvasLimit
@@ -82,6 +90,11 @@ export const ImportDashboardDrawer = (props: {
   const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
   const [ cloenCanvas ] = useCloenCanvasMutation()
   const [ deleteCanvas ] = useDeleteCanvasMutation()
+
+  const getCanvasesQuery = useGetCanvasesQuery({
+    payload: getCanvasPayload()
+  })
+  const { data: canvasList } = getCanvasesQuery
 
   const canvasTabs = [{
     key: TabKey.Owned,
@@ -94,31 +107,46 @@ export const ImportDashboardDrawer = (props: {
   }]
 
   const debouncedSearch = useRef(_.debounce(async (searchText: string) => {
-    const { shared } = await getCanvasList({
-      searchString: searchText,
-      filters: {
-        isOwned: [false]
-      }
-    })
+    const shared = await getSharedCanvasList(searchText)
     setSharedCanvasList(shared)
     setSelectedCanvases([])
   }, 500)).current
 
-  const getCanvasList = async (customPayload?: CustomPayload) => {
+  const getCanvasList = async (refetch = false, customPayload?: CustomPayload) => {
+    let list = canvasList
     const payload = getCanvasPayload(customPayload)
-    const canvasList = await getCanvases({
-      payload }, false // force refetch
-    ).unwrap()
 
-    return canvasList?.data
-      .reduce((acc, item) => {
+    if (refetch) {
+      list = await getCanvases({
+        payload }, false // force refetch
+      ).unwrap()
+    }
+
+    return list
+      ? list.data.reduce((acc, item) => {
         if (item.owned) {
           acc.owned.push(item)
         } else {
           acc.shared.push(item)
         }
         return acc
-      }, { shared: [] as CanvasInfo[], owned: [] as CanvasInfo[] })
+      }, { shared: [], owned: [] } as CanvasList)
+      : { shared: [], owned: [] } as CanvasList
+  }
+
+  const getOwnedCanvasList = async () => {
+    const { owned } = await getCanvasList()
+    return owned
+  }
+
+  const getSharedCanvasList = async (searchText: string) => {
+    const { shared } = await getCanvasList(true, {
+      searchString: searchText,
+      filters: {
+        isOwned: [false]
+      }
+    })
+    return shared
   }
 
   const handleCheck = (checked: boolean, id: React.Key) => {
@@ -129,7 +157,7 @@ export const ImportDashboardDrawer = (props: {
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     switch (e.key) {
-      case 'edit': //TODO
+      case 'edit':
         props.handleOpenCanvas(selectedItem.id)
         break
       case 'delete':
@@ -170,24 +198,28 @@ export const ImportDashboardDrawer = (props: {
 
   const getActionMenu = (data: CanvasInfo) => {
     const isEditable = data.owned
+    const menuItems = [{
+      label: $t({ defaultMessage: 'View' }),
+      key: 'view',
+      visible: true
+    }, {
+      label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
+      key: 'edit',
+      visible: isEditable
+    }, {
+      label: $t({ defaultMessage: 'Delete' }),
+      key: 'delete',
+      visible: isEditable
+    }, {
+      label: $t({ defaultMessage: 'Clone as Private Copy' }),
+      key: 'clone',
+      visible: !isReachedCanvasLimit && !isEditable
+    }].filter(item => item.visible)
+      .map(({ visible, ...rest }) => rest)
+
     return <Menu
       onClick={handleMenuClick}
-      items={[{
-        label: $t({ defaultMessage: 'View' }),
-        key: 'view'
-      },
-      ...(isEditable ? [{
-        label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
-        key: 'edit'
-      }, {
-        label: $t({ defaultMessage: 'Delete' }),
-        key: 'delete'
-      }] : []),
-      ...(!isReachedCanvasLimit && !isEditable ? [{
-        label: $t({ defaultMessage: 'Clone as Private Copy' }),
-        key: 'clone'
-      }] : [])
-      ]}
+      items={menuItems}
     />
   }
 
@@ -258,19 +290,22 @@ export const ImportDashboardDrawer = (props: {
   }
 
   useEffect(() => {
+    if (visible) {
+      getCanvasesQuery.refetch()
+      setSelectedCanvases([])
+    }
+  }, [visible])
+
+  useEffect(() => {
     const fetchCanvasList = async () => {
-      const { owned, shared } = await getCanvasList()
+      const owned = await getOwnedCanvasList()
+      const shared = await getSharedCanvasList(searchText)
       setOwnedCanvasList(owned)
       setSharedCanvasList(shared)
       setSelectedCanvases([])
     }
-
-    if (visible) {
-      fetchCanvasList()
-      setActiveTab(TabKey.Owned)
-    }
-
-  }, [visible])
+    fetchCanvasList()
+  }, [canvasList])
 
   return <Drawer
     title={$t({ defaultMessage: 'Select Canvases for your Dashboards' })}
@@ -294,8 +329,10 @@ export const ImportDashboardDrawer = (props: {
               allowClear
               placeholder={$t({ defaultMessage: 'Search by canvas name or owner name..' })}
               prefix={<SearchOutlined />}
+              defaultValue={searchText}
               onChange={async (event: ChangeEvent) => {
                 const searchText = (event.target as HTMLInputElement).value
+                setSearchText(searchText)
                 debouncedSearch(searchText)
               }}
             />}
@@ -306,7 +343,7 @@ export const ImportDashboardDrawer = (props: {
     footer={
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
         <Button
-          onClick={() => props.handleOpenCanvas()} //TODO
+          onClick={() => props.handleOpenCanvas()}
           type='primary'
         >
           {$t({ defaultMessage: 'Canvas Editor' })}

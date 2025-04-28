@@ -145,8 +145,9 @@ const Messages = memo((props:{
 export default function AICanvasModal (props: {
   isModalOpen: boolean,
   setIsModalOpen: (p: boolean) => void
+  editCanvasId?: string
 }) {
-  const { isModalOpen, setIsModalOpen } = props
+  const { isModalOpen, setIsModalOpen, editCanvasId } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
@@ -560,6 +561,7 @@ export default function AICanvasModal (props: {
               checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
+              editCanvasId={editCanvasId}
             />
           }
         </UI.Wrapper>

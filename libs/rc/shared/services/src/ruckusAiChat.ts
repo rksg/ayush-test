@@ -114,7 +114,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Canvas', id: 'List' }]
+      providesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     cloenCanvas: build.mutation<{ data: CanvasInfo[] }, RequestPayload>({
       query: ({ params, payload }) => {
@@ -124,7 +124,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Canvas', id: 'List' }]
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     deleteCanvas: build.mutation<{ data: CanvasInfo[] }, RequestPayload>({
       query: ({ params }) => {
@@ -133,7 +133,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Canvas', id: 'List' }]
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload, customHeaders }) => {
@@ -188,7 +188,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dashboard', id: 'List' }]
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     }),
     getDashboards: build.query<DashboardInfo[], RequestPayload>({
       query: ({ params, customHeaders }) => {
@@ -197,7 +197,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Dashboard', id: 'List' }]
+      providesTags: [{ type: 'Dashboard', id: 'LIST' }, { type: 'Canvas', id: 'LIST' }]
     }),
     updateDashboards: build.mutation<DashboardInfo[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -207,7 +207,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dashboard', id: 'List' }]
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     }),
     reorderDashboards: build.mutation<DashboardInfo[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -217,7 +217,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dashboard', id: 'List' }]
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     }),
     removeDashboards: build.mutation<DashboardInfo[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -227,7 +227,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dashboard', id: 'List' }]
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     })
   })
 })

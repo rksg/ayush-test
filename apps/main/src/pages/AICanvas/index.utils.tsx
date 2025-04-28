@@ -35,15 +35,7 @@ export const getCalculatedColumnWidth = (
 export const getCanvasData = (canvasList: Canvas[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ canvasData, ...rest ] = canvasList
-  // const canvasContent = canvasData?.content !== ''
-  //   ? canvasData.content : JSON.stringify(DEFAULT_CANVAS)
-
   if (canvasList?.length && canvasData.content) {
-    // const diffWidgetIds = [
-    //   '73b6b992b2dc4521ab84c27b1cb96b40',
-    //   'feda21d9d4bd4c398fed43fcda6a3c1d'
-    // ]
-
     const canvasId = canvasData.id
     let data = JSON.parse(canvasData.content) as Section[]
     data = data.map(section => ({

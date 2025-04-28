@@ -97,43 +97,20 @@ export interface Canvas {
   dashboardIds?: string[]
   widgetIds?: string[]
   diffWidgetIds?: string[]
-
-  //TODO
-  // key?: string
-  // index?: number
-  // author?: string
-  // owned?: boolean
-  // updatedDate?: string
-  // widgetIds?: string[]
-  // widgetCount?: number
-  // isLanding?: boolean
-  // isDefault?: boolean
-  // visible?: boolean //public
-  // usedAsOwnDashboard?: boolean
 }
 
-export interface DashboardInfo { //TODO
-  id: string
-  name: string
+export interface DashboardInfo extends Canvas {
+  index: number
+  canvasId: string
   author?: string
-  updatedDate?: string
-  widgetIds?: string[]
-  diffWidgetIds?: string[]
   isLanding?: boolean
   isDefault?: boolean
-  key: string
-  index: number
 }
 
-export interface CanvasInfo {
-  key: string
-  id: string
-  name: string
-  updatedDate: string
-  widgetCount: number
-  visible: boolean //public
-  author?: string
+export interface CanvasInfo extends Canvas {
   owned: boolean
+  author?: string
+  widgetCount: number
   usedAsOwnDashboard: boolean
 }
 

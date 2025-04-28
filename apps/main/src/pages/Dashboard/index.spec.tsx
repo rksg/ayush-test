@@ -7,7 +7,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                                         from '@acx-ui/rc/components'
-import { ruckusAiChatApi }                                        from '@acx-ui/rc/services'
+import { ruckusAiChatApi, useGetCanvasesQuery }                   from '@acx-ui/rc/services'
 import { RuckusAiChatUrlInfo }                                    from '@acx-ui/rc/utils'
 import { BrowserRouter }                                          from '@acx-ui/react-router-dom'
 import { Provider, store }                                        from '@acx-ui/store'
@@ -18,9 +18,9 @@ import { canvasData, canvasList, dashboardList } from './__tests__/fixture'
 
 import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 
-const mockGetCanvasesUnwrap = jest.fn()
-const mockGetCanvases = jest.fn(() => ({ unwrap: mockGetCanvasesUnwrap }))
-const mockGetCanvasesState = { isLoading: false, isSuccess: true }
+const mockLazyGetCanvasesUnwrap = jest.fn()
+const mockLazyGetCanvases = jest.fn(() => ({ unwrap: mockLazyGetCanvasesUnwrap }))
+const mockLazyGetCanvasesState = { isLoading: false, isSuccess: true }
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -58,7 +58,8 @@ jest.mock('@acx-ui/main/components', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useLazyGetCanvasesQuery: () => [mockGetCanvases, mockGetCanvasesState]
+  useGetCanvasesQuery: jest.fn(),
+  useLazyGetCanvasesQuery: () => [mockLazyGetCanvases, mockLazyGetCanvasesState]
 }))
 
 jest.mock('../AICanvas', () => () => {
@@ -170,7 +171,11 @@ describe('Dashboard', () => {
   describe('Dashboard canvas', () => { //TODO
     const mockCloneCanvas = jest.fn()
     const mockDeleteCanvas = jest.fn()
-    mockGetCanvasesUnwrap.mockResolvedValue(canvasList)
+    jest.mocked(useGetCanvasesQuery).mockImplementation(() => ({
+      data: canvasList,
+      refetch: jest.fn()
+    }))
+    mockLazyGetCanvasesUnwrap.mockResolvedValue(canvasList)
 
     beforeEach(async () => {
       store.dispatch(ruckusAiChatApi.util.resetApiState())
@@ -419,7 +424,7 @@ describe('Dashboard', () => {
     })
 
     it('should edit canvas correctly', async () => {
-      mockGetCanvasesUnwrap
+      mockLazyGetCanvasesUnwrap
         .mockResolvedValueOnce(canvasList)
         .mockResolvedValue({
           data: canvasList.data.filter((item, index) => index !== 1)
@@ -451,7 +456,7 @@ describe('Dashboard', () => {
     })
 
     it('should clone canvas correctly', async () => {
-      mockGetCanvasesUnwrap
+      mockLazyGetCanvasesUnwrap
         .mockResolvedValueOnce(canvasList)
         .mockResolvedValue({
           data: canvasList.data.filter((item, index) => index !== 1)
@@ -488,7 +493,7 @@ describe('Dashboard', () => {
     })
 
     it('should delate canvas correctly', async () => {
-      mockGetCanvasesUnwrap
+      mockLazyGetCanvasesUnwrap
         .mockResolvedValueOnce(canvasList)
         .mockResolvedValue({
           data: canvasList.data.filter((item, index) => index !== 1)

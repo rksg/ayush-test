@@ -187,7 +187,6 @@ export default function Dashboard () {
   const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
-  //TODO
   useEffect(() => {
     if (!isCanvasQ2Enabled) {
       setDashboardId(DEFAULT_DASHBOARD_ID)
@@ -231,7 +230,7 @@ export default function Dashboard () {
         }
       }
     }
-  }, [dashboardId])
+  }, [dashboardId, dashboardList])
 
   return (
     <DashboardFilterProvider>
@@ -314,6 +313,7 @@ function DashboardPageHeader (props: {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
+  const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
@@ -409,17 +409,15 @@ function DashboardPageHeader (props: {
     setDashboardId(value)
   }
 
-  const handleOpenPreview = async (data: Canvas[] | DashboardInfo[] | CanvasInfo[]) => { //TODO
-    // const selectedDashboard = dashboardList.filter(item => item.id === id)
+  const handleOpenPreview = async (data: Canvas[] | DashboardInfo[] | CanvasInfo[]) => {
     if (data) {
       setPreviewData(data as unknown as Canvas[])
       setPreviewModalVisible(true)
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleOpenCanvas = async (id?: string) => {
-    //TODO: get data by id
+    setEditCanvasId(id ?? undefined)
     setCanvasModalVisible(true)
   }
 
@@ -437,7 +435,7 @@ function DashboardPageHeader (props: {
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
             const hasUpdated = item.diffWidgetIds && item.diffWidgetIds.length > 0
-            const icon = item.author ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+            const icon = item.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
             return <Select.Option
               key={item.id}
               value={item.id}
@@ -544,6 +542,7 @@ function DashboardPageHeader (props: {
       { canvasModalVisible && <AICanvasModal
         isModalOpen={canvasModalVisible}
         setIsModalOpen={setCanvasModalVisible}
+        editCanvasId={editCanvasId}
       />}
 
     </>}

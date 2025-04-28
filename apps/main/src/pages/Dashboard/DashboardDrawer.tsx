@@ -74,30 +74,31 @@ const getActionMenu = (
   handleMenuClick: MenuProps['onClick'],
   $t: IntlShape['$t']
 ) => {
-  const isEditable = !data.author
-  const isLanding = data.isLanding
-  const isDefault = data.isDefault
-  const getKey = (type: string) => `${type}_${data.id}`
+  const { id, canvasId, author, isLanding, isDefault } = data
+  const isEditable = !author
+  const getKey = (type: string) => `${type}_${id}_${canvasId}`
+  const menuItems = [{
+    label: $t({ defaultMessage: 'Set as Landing Page' }),
+    key: getKey('landing'),
+    visible: !isLanding
+  }, { //TODO: can view default dashboard
+    label: $t({ defaultMessage: 'View' }),
+    key: getKey('view'),
+    visible: !isDefault
+  }, {
+    label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
+    key: getKey('edit'),
+    visible: !isDefault && isEditable
+  }, {
+    label: $t({ defaultMessage: 'Remove from Dashboard' }),
+    key: getKey('remove'),
+    visible: !isDefault
+  }].filter(item => item.visible)
+    .map(({ visible, ...rest }) => rest)
+
   return <Menu
     onClick={handleMenuClick}
-    items={[
-      ...(!isLanding ? [{
-        label: $t({ defaultMessage: 'Set as Landing Page' }),
-        key: getKey('landing')
-      }] : []),
-      ...(!isDefault ? [{ //TODO: can view default dashboard
-        label: $t({ defaultMessage: 'View' }),
-        key: getKey('view')
-      }] : []),
-      ...(!isDefault && isEditable ? [{
-        label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
-        key: getKey('edit')
-      }] : []),
-      ...(!isDefault ? [{
-        label: $t({ defaultMessage: 'Remove from Dashboard' }),
-        key: getKey('remove')
-      }] : [])
-    ]}
+    items={menuItems}
   />
 }
 
@@ -174,10 +175,10 @@ export const DashboardDrawer = (props: {
   }, [props.data])
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
-    const [action, id] = e.key.split('_')
+    const [action, id, canvasId] = e.key.split('_')
     let updated = dashboardList
     const targetIndex = dashboardList.findIndex(item => item.id === id)
-    switch (action) { // TODO: should call api
+    switch (action) {
       case 'landing':
         updated = [
           dashboardList[targetIndex],
@@ -189,7 +190,7 @@ export const DashboardDrawer = (props: {
         setDashboardList(formatDashboardList(updated))
         break
       case 'edit':
-        props.handleOpenCanvas(id)
+        props.handleOpenCanvas(canvasId)
         break
       case 'remove':
         updated = [
