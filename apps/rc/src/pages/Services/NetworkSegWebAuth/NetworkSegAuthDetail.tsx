@@ -125,9 +125,6 @@ export default function NetworkSegAuthDetail () {
           }
         ]}
         extra={filterByAccessForServicePolicyMutation([
-          <Button disabled>
-            {$t({ defaultMessage: 'Preview' })}
-          </Button>,
           <TenantLink state={{ from: location }}
             to={getServiceDetailsLink({
               type: ServiceType.WEBAUTH_SWITCH,

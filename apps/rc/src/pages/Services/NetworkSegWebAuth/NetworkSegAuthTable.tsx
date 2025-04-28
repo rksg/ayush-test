@@ -82,18 +82,6 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
       render: (_, { venueCount }) => {
         return venueCount || 0
       }
-    }, {
-      title: $t({ defaultMessage: 'Update Available' }),
-      key: 'updateAvailable',
-      dataIndex: 'updateAvailable'
-    }, {
-      title: $t({ defaultMessage: 'Service Version' }),
-      key: 'version',
-      dataIndex: 'version'
-    // }, {  // TODO: Waiting for TAG feature support
-    //   title: $t({ defaultMessage: 'Tags' }),
-    //   key: 'tag',
-    //   dataIndex: 'tag'
     }
   ]
 
@@ -135,24 +123,6 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
           }
         })
       }
-    }, {
-      scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
-      rbacOpsIds: getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Update Now' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t({ defaultMessage: 'Service Update' }),
-          content: $t({ defaultMessage:
-            'Are you sure you want to update these services to the latest version immediately?' }),
-          okText: $t({ defaultMessage: 'Update' }),
-          onOk: () => {
-            // TODO
-            clearSelection()
-          }
-        })
-      }
     }
   ]
 
@@ -175,7 +145,7 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
           rbacOpsIds={
             getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
+          <Button type='primary'>{$t({ defaultMessage: 'Add PIN Portal for Switch' })}</Button>
         </TenantLink>
       ])} />}
     <Loader states={[tableQuery]}>
