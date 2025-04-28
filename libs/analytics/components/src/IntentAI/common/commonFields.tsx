@@ -52,7 +52,7 @@ export const useCommonFields = (intent: IntentDetail) => {
         children: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.scheduledAt))
       }]
       : [],
-    ...(metadata.preferencesUpdatedAt
+    ...(metadata.changedByName && metadata.preferencesUpdatedAt
       ? [{
         label: $t({ defaultMessage: 'Last Updated By' }),
         children: `${
