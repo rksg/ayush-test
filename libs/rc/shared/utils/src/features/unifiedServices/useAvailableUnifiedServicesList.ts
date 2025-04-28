@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
 import { RadioCardCategory }                                                        from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -15,14 +15,17 @@ import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }     
 import { buildUnifiedServices, isUnifiedServiceAvailable, getUnifiedServiceRoute } from './utils'
 
 
+type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
+  'type' | 'sourceType' | 'products' | 'category' | 'disabled' |
+  'isBetaFeature' | 'readonly' | 'searchKeywords'
+> & { route?: string }
+
 /*
   Note: when adding a Service or Policy definition here, ensure you also define
   the corresponding useQuery function in the useUnifiedServiceTotalCountMap to
   fetch the totalCount for accurate data retrieval.
 */
-export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const { $t } = useIntl()
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedService> {
   // Service features
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -62,7 +65,7 @@ export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
-  return useMemo<Array<UnifiedService>>(() => {
+  return useMemo<Array<BaseAvailableUnifiedService>>(() => {
     const baseUnifiedServiceList = [
       {
         type: PolicyType.AAA,
@@ -77,10 +80,10 @@ export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
         products: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH] : [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
         searchKeywords: [
-          $t(policyTypeLabelMapping[PolicyType.LAYER_2_POLICY]),
-          $t(policyTypeLabelMapping[PolicyType.LAYER_3_POLICY]),
-          $t(policyTypeLabelMapping[PolicyType.DEVICE_POLICY]),
-          $t(policyTypeLabelMapping[PolicyType.APPLICATION_POLICY])
+          policyTypeLabelMapping[PolicyType.LAYER_2_POLICY],
+          policyTypeLabelMapping[PolicyType.LAYER_3_POLICY],
+          policyTypeLabelMapping[PolicyType.DEVICE_POLICY],
+          policyTypeLabelMapping[PolicyType.APPLICATION_POLICY]
         ],
         route: isSwitchMacAclEnabled
           ? '/policies/accessControl/wifi'
@@ -344,8 +347,14 @@ export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
       }
     ].filter(svc => isUnifiedServiceAvailable(svc))
 
-    return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
-      .sort((a, b) => a.label.localeCompare(b.label))
-
+    return baseUnifiedServiceList
   }, [])
+}
+
+export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
+  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
+
+  return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+    .sort((a, b) => a.label.localeCompare(b.label))
 }

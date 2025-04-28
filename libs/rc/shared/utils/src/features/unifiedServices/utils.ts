@@ -1,3 +1,5 @@
+import { MessageDescriptor } from 'react-intl'
+
 import { RolesEnum } from '@acx-ui/types'
 import { getIntl }   from '@acx-ui/utils'
 
@@ -18,43 +20,47 @@ import { UnifiedService, UnifiedServiceSourceType } from './constants'
 
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
+type BuildUnifiedServicesIncomingType =
+  Omit<UnifiedService<MessageDescriptor>, 'label' | 'route' | 'description'>
+
 export function buildUnifiedServices (
-  list: Array<Omit<UnifiedService, 'route' | 'label' | 'description' | 'breadcrumb'>>,
+  list: Array<BuildUnifiedServicesIncomingType>,
   isNewServiceCatalogEnabled: boolean
 ): Array<UnifiedService> {
+
   return list.map(item => ({
-    label: getLabel(item),
-    description: getDescription(item),
+    label: translateDescriptor(getLabelDescriptor(item)),
     route: getUnifiedServiceRoute(item, 'list'),
+    description: translateDescriptor(getDescriptionDescriptor(item)),
     breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
-    ...item
+    ...item,
+    searchKeywords: item.searchKeywords?.map(keyword => translateDescriptor(keyword))
   }))
 }
 
-function getLabel (svc: UnifiedServiceTypeSet): string {
-  const { $t } = getIntl()
-  let messageDescriptor
-
+function getMessageDescriptor (
+  svc: UnifiedServiceTypeSet,
+  serviceMapping: Record<string, MessageDescriptor>,
+  policyMapping: Record<string, MessageDescriptor>
+): MessageDescriptor | null {
   if (svc.sourceType === UnifiedServiceSourceType.SERVICE) {
-    messageDescriptor = serviceTypeLabelMapping[svc.type as ServiceType]
+    return serviceMapping[svc.type as ServiceType] ?? null
   } else {
-    messageDescriptor = policyTypeLabelMapping[svc.type as PolicyType]
+    return policyMapping[svc.type as PolicyType] ?? null
   }
-
-  return messageDescriptor ? $t(messageDescriptor) : ''
 }
 
-function getDescription (svc: UnifiedServiceTypeSet): string {
+function getLabelDescriptor (svc: UnifiedServiceTypeSet): MessageDescriptor | null {
+  return getMessageDescriptor(svc, serviceTypeLabelMapping, policyTypeLabelMapping)
+}
+
+function getDescriptionDescriptor (svc: UnifiedServiceTypeSet): MessageDescriptor | null {
+  return getMessageDescriptor(svc, serviceTypeDescMapping, policyTypeDescMapping)
+}
+
+function translateDescriptor (descriptor: MessageDescriptor | null): string {
   const { $t } = getIntl()
-  let messageDescriptor
-
-  if (svc.sourceType === UnifiedServiceSourceType.SERVICE) {
-    messageDescriptor = serviceTypeDescMapping[svc.type as ServiceType]
-  } else {
-    messageDescriptor = policyTypeDescMapping[svc.type as PolicyType]
-  }
-
-  return messageDescriptor ? $t(messageDescriptor) : ''
+  return descriptor ? $t(descriptor) : ''
 }
 
 // This function is not intended to be called directly in most cases.

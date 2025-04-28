@@ -18,18 +18,18 @@ export enum UnifiedServiceSourceType {
   POLICY
 }
 
-export interface UnifiedService {
+export interface UnifiedService<ContentType = string> {
   type: UnifiedServiceType
   sourceType: UnifiedServiceSourceType
-  label: string
+  label: ContentType
   products: RadioCardCategory[]
   route: string
   category: UnifiedServiceCategory
   disabled?: boolean
   isBetaFeature?: boolean
-  description?: string
+  description?: ContentType
   readonly?: boolean
-  searchKeywords?: string[] // For search usage
+  searchKeywords?: ContentType[]
   breadcrumb?: { text: string, link?: string }[] // For search usage
 }
 
