@@ -81,6 +81,11 @@ jest.mock('./pages/Services/SelectServiceForm', () => () => {
   return <div data-testid='SelectServiceForm' />
 })
 
+jest.mock('./pages/Services/UnifiedServices', () => ({
+  MyServices: () => <div data-testid='MyServicesNew' />,
+  ServiceCatalog: () => <div data-testid='ServiceCatalogNew' />
+}))
+
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => {
   return <div data-testid='MdnsProxyForm' />
 })
@@ -636,34 +641,66 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Services', () => {
-    test('should navigate to service list', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceListRoutePath(),
-          wrapRoutes: false
-        }
+    describe('My Services and Service Catalog', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
       })
-      expect(screen.getByTestId('MyServices')).toBeVisible()
+
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServices')).toBeVisible()
+      })
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
+      })
+
+      test('should navigate to select service page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getSelectServiceRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+      })
     })
 
-    test('should navigate to service catalog', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceCatalogRoutePath(),
-          wrapRoutes: false
-        }
+    describe('New - My Services and Service Catalog', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NEW_SERVICE_CATALOG)
       })
-      expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
-    })
 
-    test('should navigate to select service page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getSelectServiceRoutePath(),
-          wrapRoutes: false
-        }
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServicesNew')).toBeVisible()
       })
-      expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalogNew')).toBeVisible()
+      })
     })
 
     test('should navigate to create MdnsProxy page', async () => {
@@ -958,6 +995,8 @@ describe('RcRoutes: Devices', () => {
 
   describe('RcRoutes: Policies', () => {
     test('should navigate to My Policies', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
+
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getPolicyListRoutePath(),
