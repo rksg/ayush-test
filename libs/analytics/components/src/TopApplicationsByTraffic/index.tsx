@@ -53,9 +53,12 @@ export function TopApplicationsByTraffic ({
     else if (privacySettings) {
       const privacyVisibilitySetting = privacySettings
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
-      if(privacyVisibilitySetting?.isEnabled){
-        setIsAppVisibilityEnabled(true)
-      }
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      // if enforceDefault is false, use isEnabled value
+      setIsAppVisibilityEnabled(
+        Boolean(privacyVisibilitySetting?.enforceDefault ||
+        privacyVisibilitySetting?.isEnabled)
+      )
     }
   }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 

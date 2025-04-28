@@ -45,7 +45,13 @@ const useAppVisibility = (tenantId: string) => {
     if (privacySettings) {
       const privacyVisibilitySetting = privacySettings
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
-      setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
+
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      // if enforceDefault is false, use isEnabled value
+      setIsAppVisibilityEnabled(
+        Boolean(privacyVisibilitySetting?.enforceDefault ||
+        privacyVisibilitySetting?.isEnabled)
+      )
     }
   }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
@@ -126,7 +132,7 @@ function TopApplicationsWidget ({ filters, type }: {
                   legendFormatter={() => ''}
                 />
               )
-              : <NoData text={!isAppVisibilityEnabled ? noPermissionText : undefined} />
+              : <NoData text={isAppVisibilityEnabled ? undefined : noPermissionText} />
           )}
         </AutoSizer>
       </HistoricalCard>

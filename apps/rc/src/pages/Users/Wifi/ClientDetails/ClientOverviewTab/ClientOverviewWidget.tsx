@@ -40,7 +40,10 @@ const useAppVisibility = (tenantId: string) => {
     if (privacySettings) {
       const privacyVisibilitySetting = privacySettings
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
-      setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      setIsAppVisibilityEnabled(
+        privacyVisibilitySetting?.enforceDefault ||
+        Boolean(privacyVisibilitySetting?.isEnabled))
     }
   }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
