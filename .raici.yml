@@ -1,0 +1,11 @@
+jobs:
+  ci:
+    steps:
+      - build_type: container
+        name: acx-ui
+        directory: .
+        build:
+          dockerfile: ./Dockerfile.ra
+      - build_type: cloud
+        target: gar
+        name: acx-ui
