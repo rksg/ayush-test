@@ -193,7 +193,7 @@ describe('Dashboard', () => {
         //   (req, res, ctx) => res(ctx.json(canvasList))
         // ),
         rest.get(
-          RuckusAiChatUrlInfo.getTargetCanvas.url,
+          RuckusAiChatUrlInfo.getCanvasById.url,
           (req, res, ctx) => res(ctx.json(canvasData))
         ),
         rest.post(

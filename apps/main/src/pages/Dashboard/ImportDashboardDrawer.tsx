@@ -17,7 +17,7 @@ import {
   useCloenCanvasMutation,
   useDeleteCanvasMutation,
   useLazyGetCanvasesQuery,
-  useLazyGetTargetCanvasQuery
+  useLazyGetCanvasByIdQuery
 } from '@acx-ui/rc/services'
 import { Canvas, CanvasInfo, DashboardInfo } from '@acx-ui/rc/utils'
 
@@ -79,7 +79,7 @@ export const ImportDashboardDrawer = (props: {
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
-  const [ getTargetCanvas ] = useLazyGetTargetCanvasQuery()
+  const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
   const [ cloenCanvas ] = useCloenCanvasMutation()
   const [ deleteCanvas ] = useDeleteCanvasMutation()
 
@@ -159,7 +159,7 @@ export const ImportDashboardDrawer = (props: {
         setActiveTab(TabKey.Owned)
         break
       default: // view
-        await getTargetCanvas({
+        await getCanvasById({
           params: { canvasId: selectedItem.id }
         }).unwrap().then(async (res) => {
           props.handleOpenPreview([res])
