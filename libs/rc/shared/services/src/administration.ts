@@ -891,7 +891,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if(msg.steps?.find((step) =>
+            (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
+            if (typeof requestArgs.callback === 'function') {
+              requestArgs.callback()
+            }
+          }
+        })
+      }
     }),
     getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
       query: ({ params }) => {

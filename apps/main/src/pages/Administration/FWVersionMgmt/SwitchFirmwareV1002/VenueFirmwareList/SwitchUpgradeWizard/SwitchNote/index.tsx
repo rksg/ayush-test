@@ -35,7 +35,7 @@ export function SwitchNote (props: NoteProps) {
     [NotesEnum.NOTE8100_1]:
     $t({
       // eslint-disable-next-line max-len
-      defaultMessage: 'The following switches will not be upgraded because the ICX8100-X models only support FI version 10.0.10g and later or 10.0.20c and later. You can still upgrade them by selecting the switches individually.'
+      defaultMessage: 'The following switches will not be upgraded because the ICX8100-X models only support FI version 10.0.10g_cd1 and later or 10.0.20c and later. You can still upgrade them by selecting the switches individually.'
     }),
     [NotesEnum.NOTE8200_1]:
       $t({
@@ -55,7 +55,7 @@ export function SwitchNote (props: NoteProps) {
                 <li key={index}>
                   <div>
                     <span style={{ fontWeight: '600' }}>
-                      {$t({ defaultMessage: '<venueSingular></venueSingular>:' })} </span>
+                      {$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })} </span>
                     {switchList[0]?.venueName}
                   </div>
                   <div>

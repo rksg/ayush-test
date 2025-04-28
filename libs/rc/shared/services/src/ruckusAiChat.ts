@@ -63,6 +63,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      providesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
+    getCanvasById: build.query<Canvas, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvasById, params)
+        return {
+          ...req
+        }
       }
     }),
     updateCanvas: build.mutation<Canvas, RequestPayload>({
@@ -72,16 +81,37 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
-    saveCanvas: build.mutation<Canvas, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAiChatUrlInfo.saveCanvas)
+    patchCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.patchCanvas, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
+    deleteCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.deleteCanvas, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
+    createCanvas: build.mutation<Canvas, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.createCanvas)
+        return {
+          ...req,
+          body: {}
+        }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload, customHeaders }) => {
@@ -109,7 +139,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       providesTags: [{ type: 'Widget', id: 'DATA' }]
     }),
-    createWidget: build.mutation<{ id: string }, RequestPayload>({
+    createWidget: build.mutation<{ id: string, name: string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
         return {
@@ -147,8 +177,11 @@ export const {
   useGetChatsMutation,
   useGetCanvasQuery,
   useLazyGetCanvasQuery,
+  useLazyGetCanvasByIdQuery,
   useUpdateCanvasMutation,
-  useSaveCanvasMutation,
+  usePatchCanvasMutation,
+  useDeleteCanvasMutation,
+  useCreateCanvasMutation,
   useChatAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
