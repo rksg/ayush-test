@@ -36,6 +36,7 @@ interface ServiceCardItem {
 export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -131,16 +132,19 @@ export default function ServiceCatalog () {
     {
       title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
-        // { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
-        // {
-        //   type: ServiceType.WEBAUTH_SWITCH,
-        //   categories: [RadioCardCategory.SWITCH],
-        //   disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
-        // },
-        {
-          type: ServiceType.PORTAL_PROFILE,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
-        },
+        ...(isPortalProfileEnabled ? [
+          {
+            type: ServiceType.PORTAL_PROFILE,
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
+          }
+        ] : [
+          { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+          {
+            type: ServiceType.WEBAUTH_SWITCH,
+            categories: [RadioCardCategory.SWITCH],
+            disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+          }
+        ]),
         {
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],

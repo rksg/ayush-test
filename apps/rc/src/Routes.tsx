@@ -667,6 +667,7 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
 
   return rootRoutes(
@@ -783,28 +784,31 @@ function ServiceRoutes () {
       />
 
       {(isEdgePinReady) && pinRoutes}
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
-        element={
-          <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
-            <CreatePortalProfile />
-          </AuthRoute>
-        }
-      />
-      <Route
-        path='services/portalProfile/:activeTab'
-        element={<PortalProfile />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
-          oper: ServiceOperation.LIST })}
-        element={<TenantNavigate replace to='/services/portalProfile/pin' />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.PORTAL,
-          oper: ServiceOperation.LIST })}
-        element={<TenantNavigate replace to='/services/portalProfile/guest' />}
-      />
+
+      {isPortalProfileEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
+          element={
+            <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
+              <CreatePortalProfile />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='services/portalProfile/:activeTab'
+          element={<PortalProfile />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/pin' />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/guest' />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}

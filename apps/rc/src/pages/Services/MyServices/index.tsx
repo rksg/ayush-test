@@ -39,6 +39,7 @@ export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -149,23 +150,23 @@ export default function MyServices () {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount ?? 0)
     },
-    // {
-    //   type: ServiceType.PORTAL,
-    //   categories: [RadioCardCategory.WIFI],
-    //   totalCount: useGetEnhancedPortalProfileListQuery({
-    //     params, payload: { filters: {} }, enableRbac: isEnabledRbacService
-    //   }).data?.totalCount
-    // },
-    // {
-    //   type: ServiceType.WEBAUTH_SWITCH,
-    //   categories: [RadioCardCategory.SWITCH],
-    //   totalCount: useWebAuthTemplateListQuery({
-    //     params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
-    //   }, {
-    //     skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
-    //   }).data?.totalCount,
-    //   disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
-    // },
+    {
+      type: ServiceType.PORTAL,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetEnhancedPortalProfileListQuery({
+        params, payload: { filters: {} }, enableRbac: isEnabledRbacService
+      }).data?.totalCount
+    },
+    {
+      type: ServiceType.WEBAUTH_SWITCH,
+      categories: [RadioCardCategory.SWITCH],
+      totalCount: useWebAuthTemplateListQuery({
+        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+      }, {
+        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
+      }).data?.totalCount,
+      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+    },
     {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],
@@ -188,7 +189,12 @@ export default function MyServices () {
         />}
       />
       <GridRow>
-        {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
+        {services.filter(svc => isPortalProfileEnabled ?
+          svc.type !== ServiceType.PORTAL && svc.type !== ServiceType.WEBAUTH_SWITCH :
+          svc.type !== ServiceType.PORTAL_PROFILE
+        ).filter(
+          svc => isServiceCardEnabled(svc, ServiceOperation.LIST)
+        ).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
