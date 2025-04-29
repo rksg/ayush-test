@@ -4,9 +4,9 @@ import { Form, Row, Select, Typography } from 'antd'
 import { DefaultOptionType }             from 'antd/es/cascader'
 import { useIntl }                       from 'react-intl'
 
-import { transToOptions, useGetAvailableTunnelProfile }                                from '@acx-ui/edge/components'
-import { InformationSolid }                                                            from '@acx-ui/icons'
-import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import { transToOptions, useGetAvailableTunnelProfile }           from '@acx-ui/edge/components'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
   IncompatibilityFeatures,
@@ -86,20 +86,6 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     }
   })
 
-  const { nodesData, isFwVerLoading } = useGetEdgeListQuery({
-    payload: {
-      fields: [
-        'serialNumber',
-        'firmwareVersion'
-      ],
-      filters: { clusterId: [venueSdLan?.edgeClusterId] }
-    } }, {
-    selectFromResult: ({ data, isLoading }) => ({
-      nodesData: data?.data ?? [],
-      isFwVerLoading: isLoading
-    })
-  })
-
   const activatedForwardingTunnelProfileIds = venueSdLan?.tunneledWlans
     ?.map(item => item.forwardingTunnelProfileId)
     ?.filter((id): id is string => typeof id === 'string') || []
@@ -110,7 +96,7 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
 
   const { associatedEdgeClusters, isEdgeClustersLoading } = useGetEdgeClusterListQuery({
     payload: {
-      fields: ['clusterId', 'hasCorePort'],
+      fields: ['clusterId', 'hasCorePort', 'edgeList'],
       filters: {
         clusterId: availableTunnelProfiles?.map(profile =>
           profile.destinationEdgeClusterId).filter(Boolean)
@@ -136,15 +122,24 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
     )
   ], [availableTunnelProfiles, isTunnelProfilesLoading])
 
+  const isLowerSdlanEdgeFw = (): boolean => {
+    const nodesData = associatedEdgeClusters
+      ?.filter(item => item.clusterId === venueSdLan?.edgeClusterId)
+      ?.flatMap(item => item.edgeList)
+    const edgesData = nodesData
+      ? [...nodesData].sort((n1, n2) =>
+        compareVersions(n1?.firmwareVersion, n2?.firmwareVersion))
+      : []
+    const minNodeVersion = edgesData?.[0]?.firmwareVersion
+    return !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
+  }
+
   const getFilteredTunnelProfileOptions = (
     tunnelProfileOptions: DefaultOptionType[],
     availableTunnelProfiles: TunnelProfileViewData[]
   ) => {
     const isCaptivePortal = networkType === NetworkTypeEnum.CAPTIVEPORTAL
-    const edgesData = [...nodesData]?.sort((n1, n2) =>
-      compareVersions(n1.firmwareVersion, n2.firmwareVersion))
-    const minNodeVersion = edgesData?.[0]?.firmwareVersion
-    const isLower = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
+    const isLower = isLowerSdlanEdgeFw()
     return tunnelProfileOptions
       .map(item => {
         const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
@@ -235,7 +230,7 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
                   options={getFilteredTunnelProfileOptions(tunnelProfileOptions, availableTunnelProfiles)}
                   onChange={onChangeTunnel}
                   disabled={isTunnelProfilesLoading && isEdgeClustersLoading
-                    && isFwVerLoading && isFeatureSetsLoading}
+                    && isFeatureSetsLoading}
                 />}
               />
             </Row>

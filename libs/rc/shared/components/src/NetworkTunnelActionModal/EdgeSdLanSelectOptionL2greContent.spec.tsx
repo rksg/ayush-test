@@ -31,17 +31,14 @@ jest.mock('@acx-ui/rc/services', () => ({
     requiredFw: '2.4.0',
     isFeatureSetsLoading: false
   })),
-  useGetEdgeListQuery: jest.fn(() => ({
-    nodesData: [{
-      serialNumber: 'edgeId1',
-      firmwareVersion: '2.4.0'
-    }],
-    isFwVerLoading: false
-  })),
   useGetEdgeClusterListQuery: jest.fn(() => ({
     associatedEdgeClusters: [{
       clusterId: 'edgeClusterId1',
-      hasCorePort: true
+      hasCorePort: true,
+      edgeList: [{
+        serialNumber: 'edgeId1',
+        firmwareVersion: '2.4.0'
+      }]
     },{
       clusterId: 'edgeClusterId2',
       hasCorePort: false
@@ -140,13 +137,20 @@ describe('EdgeSdLanSelectOptionL2greContent', () => {
   })
 
   it('should filter out L2GRE options when firmware version is lower than required', async () => {
-    const originalMock =jest.requireMock('@acx-ui/rc/services').useGetEdgeListQuery
-    jest.requireMock('@acx-ui/rc/services').useGetEdgeListQuery = jest.fn(() => ({
-      nodesData: [{
-        serialNumber: 'edgeId1',
-        firmwareVersion: '2.3.0'
+    const originalMock =jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery
+    jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery = jest.fn(() => ({
+      associatedEdgeClusters: [{
+        clusterId: 'edgeClusterId1',
+        hasCorePort: true,
+        edgeList: [{
+          serialNumber: 'edgeId1',
+          firmwareVersion: '2.3.0'
+        }]
+      },{
+        clusterId: 'edgeClusterId2',
+        hasCorePort: false
       }],
-      isFwVerLoading: false
+      isEdgeClustersLoading: false
     }))
 
     renderComponent({
@@ -161,7 +165,7 @@ describe('EdgeSdLanSelectOptionL2greContent', () => {
     expect(screen.getByText('Tunnel 1')).toBeInTheDocument()
     expect(screen.getByText('Tunnel 2')).toBeInTheDocument()
     expect(screen.queryByText('Tunnel 3')).not.toBeInTheDocument()
-    jest.requireMock('@acx-ui/rc/services').useGetEdgeListQuery = originalMock
+    jest.requireMock('@acx-ui/rc/services').useGetEdgeClusterListQuery = originalMock
   })
 
   it('should display error message when selecting tunnel option without Core Port', async () => {
