@@ -129,6 +129,7 @@ import EditEdgeHqosBandwidth                        from './pages/Policies/HqosB
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProvider                             from './pages/Policies/IdentityProvider'
+import IdentityProviderCreate                       from './pages/Policies/IdentityProvider/IdentityProviderCreate'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
@@ -1710,10 +1711,15 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.SAML_IDP ,
-            oper: PolicyOperation.CREATE
-          })}
+          path={getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <IdentityProviderCreate/>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path={'policies/samlIdp/add'}
           element={
             <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.CREATE}>
               <AddSamlIdp/>
