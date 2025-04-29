@@ -124,11 +124,7 @@ const IdentityProviderCreate = () => {
               <Space direction='vertical'>
                 <Radio
                   value={PolicyType.SAML_IDP}
-                  disabled={
-                    !isCaptivePortalSsoSamlEnabled ||
-                    !hasCreateSamlIdpPermission ||
-                    (currentSamlIdpNumber >= SAML_MAX_COUNT)
-                  }
+                  disabled={!isSamlIdpOptionSelectable}
                 >
                   {$t({ defaultMessage: 'SAML IdP' })}
                 </Radio>
