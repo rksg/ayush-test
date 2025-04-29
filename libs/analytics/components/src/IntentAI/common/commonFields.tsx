@@ -55,11 +55,10 @@ export const useCommonFields = (intent: IntentDetail) => {
     ...(metadata.changedByName && metadata.preferencesUpdatedAt
       ? [{
         label: $t({ defaultMessage: 'Last Updated By' }),
-        children: `${
-          metadata.changedByName
-        } on ${formatter(DateFormatEnum.DateTimeFormat)(
-          moment(metadata.preferencesUpdatedAt)
-        )}`
+        children: $t({ defaultMessage: '{name} on {at}' }, {
+          name: metadata.changedByName,
+          at: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.preferencesUpdatedAt))
+        })
       }]
       : [])
   ]
