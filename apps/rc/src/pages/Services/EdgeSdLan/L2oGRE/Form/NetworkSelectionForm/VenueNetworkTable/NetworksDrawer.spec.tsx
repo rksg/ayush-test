@@ -25,6 +25,11 @@ jest.mock('@acx-ui/utils', () => ({
   getTenantId: jest.fn().mockReturnValue('ecc2d7cf9d2342fdb31ae0e24958fcac')
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => ''
+}))
+
 const mockedSetFieldValue = jest.fn()
 const mockedGetNetworkViewmodelList = jest.fn()
 const mockedCloseFn = jest.fn()

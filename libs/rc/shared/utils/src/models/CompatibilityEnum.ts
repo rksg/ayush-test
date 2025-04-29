@@ -28,6 +28,7 @@ export enum IncompatibilityFeatures {
   PIN_AS = 'PIN_AS',
   EDGE_MDNS_PROXY = 'MDNS_PROXY', // edge mDNS
   ARP_TERMINATION = 'ARP_TERMINATION',
+  L2OGRE = 'L2oGRE'
   DUAL_WAN = 'Dual WAN'
 }
 
