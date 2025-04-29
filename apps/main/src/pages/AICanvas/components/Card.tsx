@@ -1,11 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Slider }                     from 'antd'
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
 import { getEmptyImage }              from 'react-dnd-html5-backend'
+import { useIntl }                    from 'react-intl'
 
-import { DeleteOutlined, EditOutlined, Plus, Minus } from '@acx-ui/icons-new'
-import { WidgetListData }                            from '@acx-ui/rc/utils'
+import { DeleteOutlined, EditOutlined } from '@acx-ui/icons-new'
+import { WidgetListData }               from '@acx-ui/rc/utils'
 
 import { CardInfo, Group, LayoutConfig } from '../Canvas'
 import utils                             from '../utils'
@@ -26,6 +28,7 @@ interface CardProps {
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
   draggable?: boolean
+  sliderWrapperRef?: React.MutableRefObject<null>
   // sectionRef?: React.MutableRefObject<null>
 }
 
@@ -34,9 +37,31 @@ export interface WidgetProperty {
 }
 
 const DraggableCard = (props: CardProps) => {
+  const sliderWrapperRef = useRef(null)
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
-    canDrag: props.draggable,
+    canDrag: (monitor) => {
+      if(!props.draggable) {
+        return false
+      }
+      const sliderElement = sliderWrapperRef.current
+      if (!sliderElement) return true
+
+      // @ts-ignore
+      const rect = sliderElement.getBoundingClientRect()
+      const isOverSlider =
+        monitor.getClientOffset() &&
+        // @ts-ignore
+        monitor.getClientOffset().x >= rect.left &&
+        // @ts-ignore
+        monitor.getClientOffset().x <= rect.right &&
+        // @ts-ignore
+        monitor.getClientOffset().y >= rect.top &&
+        // @ts-ignore
+        monitor.getClientOffset().y <= rect.bottom
+
+      return !isOverSlider
+    },
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -59,6 +84,7 @@ const DraggableCard = (props: CardProps) => {
       <Card
         {...props}
         drag={drag}
+        sliderWrapperRef={sliderWrapperRef}
       />
     </div>
   )
@@ -67,11 +93,13 @@ const DraggableCard = (props: CardProps) => {
 export default DraggableCard
 
 function Card (props: CardProps) {
+  const { $t } = useIntl()
   const {
     groupIndex,
     deleteCard,
     drag,
-    card
+    card,
+    sliderWrapperRef
     // ,sectionRef
   } = props
   const {
@@ -100,6 +128,16 @@ function Card (props: CardProps) {
     rowHeight,
     calWidth
   )
+
+  const sliderMax = card.chartType === 'pie' ? 3 : 2
+
+  const sliderMarks = useMemo(() => {
+    const result: { [key: number]: string } = {}
+    for (let i = 0; i <= sliderMax; i++) {
+      result[i] = `${i + 1}x`
+    }
+    return result
+  }, [sliderMax])
 
   const changeCardsLayout = (nextSizeIndex: number) => {
     let groupsTmp = _.cloneDeep(props.groups)
@@ -138,20 +176,6 @@ function Card (props: CardProps) {
       return false
     })
     props.updateGroupList(groupsTmp)
-  }
-
-  const increaseCard = () => {
-    const nextSizeIndex = card.currentSizeIndex + 1
-    if(nextSizeIndex < card.sizes.length) {
-      changeCardsLayout(nextSizeIndex)
-    }
-  }
-
-  const decreaseCard = () => {
-    const nextSizeIndex = card.currentSizeIndex - 1
-    if(nextSizeIndex >= 0) {
-      changeCardsLayout(nextSizeIndex)
-    }
   }
 
   const widgetRef = useRef(null)
@@ -203,7 +227,6 @@ function Card (props: CardProps) {
   //     sectionRef.current.addEventListener('mouseup', onMouseUp, { once: true })
   //   }
   // }
-
   return (
     <div ref={widgetRef}>
       {
@@ -229,25 +252,6 @@ function Card (props: CardProps) {
           >
             { !readOnly && <div className='card-actions'>
               <div
-                data-testid='increaseCard'
-                className={`icon ${
-                  card.currentSizeIndex+1 >= card.sizes?.length ? 'disabled' : ''}`}
-                onClick={() => {
-                  increaseCard()
-                }}
-              >
-                <Plus />
-              </div>
-              <div
-                data-testid='decreaseCard'
-                className={`icon ${card.currentSizeIndex <= 0 ? 'disabled' : ''}`}
-                onClick={() => {
-                  decreaseCard()
-                }}
-              >
-                <Minus />
-              </div>
-              <div
                 data-testid='editCard'
                 className='icon'
                 onClick={() => {
@@ -264,6 +268,24 @@ function Card (props: CardProps) {
                 }}
               >
                 <DeleteOutlined />
+              </div>
+            </div>}
+            { !readOnly && <div className='card-resizer' ref={sliderWrapperRef}>
+              <div className='slider-mark'>
+                {$t({ defaultMessage: 'Small' })}
+              </div>
+              <div className='slider'>
+                <Slider
+                  min={0}
+                  max={sliderMax}
+                  marks={sliderMarks}
+                  value={card.currentSizeIndex}
+                  tooltipVisible={false}
+                  onChange={changeCardsLayout}
+                />
+              </div>
+              <div className='slider-mark'>
+                {$t({ defaultMessage: 'Large' })}
               </div>
             </div>}
             {
