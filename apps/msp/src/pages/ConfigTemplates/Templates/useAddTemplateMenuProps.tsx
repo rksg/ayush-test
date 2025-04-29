@@ -2,7 +2,7 @@ import { MenuProps } from 'antd'
 import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateLink,
