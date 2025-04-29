@@ -133,6 +133,9 @@ export const DashboardItem = styled.div`
     overflow: hidden;
   }
   .title {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
     font-size: var(--acx-subtitle-4-font-size);
     line-height: var(--acx-subtitle-4-line-height);
     font-weight: var(--acx-subtitle-4-font-weight);
@@ -140,6 +143,15 @@ export const DashboardItem = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    svg {
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
   .desp {
     display: flex;

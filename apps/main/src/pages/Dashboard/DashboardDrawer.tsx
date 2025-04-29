@@ -10,6 +10,8 @@ import { Button, Drawer }            from '@acx-ui/components'
 import { MoveSolid, PentagramSolid } from '@acx-ui/icons'
 import {
   AccountCircleSolid,
+  GlobeOutlined,
+  LockOutlined,
   MoreVertical
 }                    from '@acx-ui/icons-new'
 import {
@@ -123,7 +125,12 @@ const getItemInfo = (props: {
         : <MoveSolid />
     }</div>
     <div className='info'>
-      <div className='title' title={dashboardName}>{ dashboardName }</div>
+      <div className='title'>
+        <span className='name' title={dashboardName}>{ dashboardName }</span>
+        { !item?.isDefault &&
+          (item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />)
+        }
+      </div>
       { item.widgetIds && <div className='desp'>
         { item.widgetIds && <span className='count'>{
           $t({ defaultMessage: '{count} widgets' }, { count: item.widgetIds?.length })
