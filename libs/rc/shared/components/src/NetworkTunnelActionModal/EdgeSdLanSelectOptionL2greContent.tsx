@@ -127,7 +127,7 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
       ?.find(item => item.clusterId === venueSdLan?.edgeClusterId)
     return targetCluster?.edgeList?.some(
       edge => compareVersions(edge?.firmwareVersion, requiredFw) < 0
-    ) ?? false
+    ) ?? true
   }
 
   const getFilteredTunnelProfileOptions = (
