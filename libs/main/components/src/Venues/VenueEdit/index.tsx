@@ -21,7 +21,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles }               from '@acx-ui/user'
+  hasRoles
+}               from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
