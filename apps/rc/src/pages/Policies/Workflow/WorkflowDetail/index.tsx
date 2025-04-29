@@ -15,7 +15,7 @@ import { TenantLink, useTenantLink }                                            
 import { hasPermission }                                                                                                                                                                                                           from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                                                                                                                                                                                                from '@acx-ui/utils'
 
-import PublishReadinessProgress from '../PublishinReadinessProgress'
+import PublishReadinessProgress from '../PublishReadinessProgress'
 
 
 

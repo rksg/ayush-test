@@ -40,7 +40,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import PublishReadinessProgress from '../PublishinReadinessProgress'
+import PublishReadinessProgress from '../PublishReadinessProgress'
 
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
