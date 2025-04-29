@@ -254,6 +254,9 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleMessageMethodChange = (e: RadioChangeEvent) => {
     setMessageMethod(e.target.value)
+    if (e.target.value === 0) {
+      form.setFieldValue('enableWhatsapp', false)
+    }
   }
 
   const formContent = <Form layout='vertical' form={form} >
@@ -385,7 +388,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
          />}
     </>}
     {/* eslint-disable-next-line max-len */}
-    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
+    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod === 1 && <>
       <Form.Item
         name='enableWhatsapp'
         valuePropName='checked'
