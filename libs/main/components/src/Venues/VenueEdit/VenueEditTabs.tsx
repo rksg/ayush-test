@@ -38,13 +38,11 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
   const { editContextData, setEditContextData } = venueEditTabContext
   const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
+  const enablePropertyManagement = usePropertyManagementEnabled()
 
 
   const onTabChange = (tab: string) => {
@@ -127,7 +125,7 @@ function VenueEditTabs () {
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
         />
       }
-      { (enablePropertyManagement && !isCore) &&
+      { enablePropertyManagement &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
           key='property'
@@ -142,6 +140,8 @@ export function usePropertyManagementEnabled () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const hasPropertyManagementPermission =
     rbacOpsApiEnabled
       ? hasAllowedOperations([
@@ -150,5 +150,5 @@ export function usePropertyManagementEnabled () {
       ])
       : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission
+  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission && !isCore
 }

@@ -21,8 +21,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles,
-  isCoreTier }               from '@acx-ui/user'
+  hasRoles
+}               from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
@@ -116,9 +116,7 @@ export function VenueEdit () {
 
   const { rbacOpsApiEnabled } = getUserProfile()
   const { venueId, activeTab } = useParams()
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
-  const enablePropertyManagement = usePropertyManagementEnabled() && !isCore
+  const enablePropertyManagement = usePropertyManagementEnabled()
 
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [previousPath, setPreviousPath] = useState('')
