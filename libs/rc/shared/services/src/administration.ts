@@ -909,7 +909,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -959,7 +960,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
