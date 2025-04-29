@@ -76,6 +76,12 @@ describe('ApEditTabs', () => {
       rest.post(
         MdnsProxyUrls.queryMdnsProxy.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0, page: 1, data: []
+        }))
       )
     )
   })
