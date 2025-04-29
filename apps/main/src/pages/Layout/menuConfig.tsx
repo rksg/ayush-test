@@ -78,6 +78,7 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
+  const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -337,7 +338,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(isCore ? [{
+    ...(isCore && !isSupportUser ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: SpeedIndicatorOutlined,

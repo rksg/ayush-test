@@ -84,8 +84,9 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import AddEdgeCluster                               from './pages/Devices/Edge/AddEdgeCluster'
 import EdgeClusterConfigWizard                      from './pages/Devices/Edge/ClusterConfigWizard'
+import EdgeClusterDetails                           from './pages/Devices/Edge/ClusterDetails'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import IotController                                from './pages/Devices/IotController'
@@ -336,18 +337,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
-      <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
-          <EditEdgeCluster />
-        </AuthRoute>} />
-      <Route path='devices/edge/cluster/:clusterId/configure'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-          <EdgeClusterConfigWizard />
-        </AuthRoute>} />
-      <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-          <EdgeClusterConfigWizard />
-        </AuthRoute>} />
+
+      {useEdgeClusterRoutes()}
 
       <Route path='devices/switch'
         element={
@@ -479,6 +470,33 @@ const useEdgeOltRoutes = () => {
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
     <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
   </> : null
+}
+
+const useEdgeClusterRoutes = () => {
+  const isEdgeDualWanReady = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
+  return <>
+    <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
+      element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
+        <EditEdgeCluster />
+      </AuthRoute>} />
+
+    {isEdgeDualWanReady ? <>
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab'
+        element={<EdgeClusterDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab/:activeSubTab'
+        element={<EdgeClusterDetails />} />
+    </> : null}
+
+    <Route path='devices/edge/cluster/:clusterId/configure'
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EdgeClusterConfigWizard />
+      </AuthRoute>} />
+    <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EdgeClusterConfigWizard />
+      </AuthRoute>} />
+  </>
 }
 
 const edgeDhcpRoutes = () => {

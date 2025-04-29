@@ -10,7 +10,6 @@ import {
   useDownloadSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
-  SamlIdpProfileViewData,
   ServerCertificate,
   transformDisplayOnOff,
   getPolicyRoutePath,
@@ -21,103 +20,33 @@ import {
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { AddSamlIdp }           from '../AddSamlIdp'
 import { SamlIdpMetadataModal } from '../SamlIdpMetadataModal'
 
-
-interface SAMLDrawerProps {
+interface SAMLDetailDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  readMode?: boolean
-  policy? :SamlIdpProfileViewData
-  callbackFn?: (createId: string) => void
+  samlIdpProfileId?: string
 }
 
-export function SAMLDrawer (props: SAMLDrawerProps) {
+export function SAMLDetailDrawer (props: SAMLDetailDrawerProps) {
   const {
     visible,
     setVisible,
-    readMode = false,
-    policy,
-    callbackFn
+    samlIdpProfileId
   } = props
   const { $t } = useIntl()
+  const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
 
   const handleClose = () => {
     setVisible(false)
   }
 
-  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
-
-  return (
-    <Drawer
-      title={readMode
-        ? $t({ defaultMessage: 'SAML Identity Provider Details: {name}' }, { name: policy?.name })
-        : $t({ defaultMessage: 'Add SAML Identity Provider' })
-      }
-      visible={visible}
-      width={450}
-      children={
-        (readMode ? <ReadModeIdpForm policy={policy!} /> :
-          <AddSamlIdp
-            isEmbedded={true}
-            onClose={handleClose}
-            updateInstance={callbackFn}
-          />
-        )
-      }
-      onClose={handleClose}
-      destroyOnClose={true}
-      footer={
-        (readMode) ? (
-          <>
-            <Button
-              type='primary'
-              disabled={!policy?.id}
-              onClick={() => downloadSamlServiceProviderMetadata({ params: { id: policy?.id } })}
-            >
-              {$t({ defaultMessage: 'Download SAML Metadata' })}
-            </Button>
-            <Button
-              type='primary'
-              onClick={() => {
-                setVisible(false)
-              }}
-            >
-              {$t({ defaultMessage: 'OK' })}
-            </Button>
-          </>
-        ) : (
-          // Workaround for add a footer to avoid drawer be hide when click outside
-          <Button
-            type='primary'
-            style={{ display: 'none' }}
-            onClick={() => {
-              setVisible(false)
-            }}
-          >
-            {$t({ defaultMessage: 'OK' })}
-          </Button>
-        )
-      }
-    />
-  )
-}
-
-interface SamlIdpDetailProps {
-  policy: SamlIdpProfileViewData
-}
-
-const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
-  const { $t } = useIntl()
-  const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
-
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
     params: {
-      id: policy.id
+      id: samlIdpProfileId
     }
   }, {
-    skip: !policy.id
+    skip: !samlIdpProfileId
   })
 
 
@@ -137,7 +66,10 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
     })
   })
 
-  return (
+
+  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
+
+  const detailContent = (
     <>
       <Form layout='vertical'>
         <Row gutter={20}>
@@ -158,14 +90,14 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'SAML Request Signature' })}
               children={
-                transformDisplayOnOff(policy.signingCertificateEnabled)
+                transformDisplayOnOff(samlIdpData?.signingCertificateEnabled ?? false)
               }
             />
-            {policy.signingCertificateEnabled && (
+            {samlIdpData?.signingCertificateEnabled && (
               <Form.Item
                 label={$t({ defaultMessage: 'Signing Certificate' })}
                 children={
-                  (policy.signingCertificateId ?
+                  (samlIdpData?.signingCertificateId ?
                     <TenantLink
                       to={getPolicyRoutePath({
                         type: PolicyType.SERVER_CERTIFICATES,
@@ -173,7 +105,7 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                       })}>
                       {
                         certificateNameMap.find(cert => {
-                          return cert.key === policy.signingCertificateId
+                          return cert.key === samlIdpData.signingCertificateId
                         })?.value || ''
                       }
                     </TenantLink> : ''
@@ -184,14 +116,14 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'SAML Response Encryption' })}
               children={
-                transformDisplayOnOff(policy.encryptionCertificateEnabled)
+                transformDisplayOnOff(samlIdpData?.encryptionCertificateEnabled ?? false)
               }
             />
-            {policy.encryptionCertificateEnabled && (
+            {samlIdpData?.encryptionCertificateEnabled && (
               <Form.Item
                 label={$t({ defaultMessage: 'Encryption Certificate' })}
                 children={
-                  (policy.encryptionCertificateId ?
+                  (samlIdpData?.encryptionCertificateId ?
                     <TenantLink
                       to={getPolicyRoutePath({
                         type: PolicyType.SERVER_CERTIFICATES,
@@ -199,7 +131,7 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                       })}>
                       {
                         certificateNameMap.find(cert => {
-                          return cert.key === policy.encryptionCertificateId
+                          return cert.key === samlIdpData?.encryptionCertificateId
                         })?.value || ''
                       }
                     </TenantLink> : ''
@@ -242,5 +174,44 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
         />
       )}
     </>
+  )
+
+  return (
+    <Drawer
+      title={
+        $t(
+          { defaultMessage: 'SAML Identity Provider Details: {name}' },
+          { name: samlIdpData?.name }
+        )
+      }
+      visible={visible}
+      width={450}
+      children={detailContent}
+      onClose={handleClose}
+      destroyOnClose={true}
+      footer={
+        (
+          <>
+            <Button
+              type='primary'
+              disabled={!samlIdpProfileId}
+              onClick={
+                () => downloadSamlServiceProviderMetadata({ params: { id: samlIdpProfileId } })
+              }
+            >
+              {$t({ defaultMessage: 'Download SAML Metadata' })}
+            </Button>
+            <Button
+              type='primary'
+              onClick={() => {
+                setVisible(false)
+              }}
+            >
+              {$t({ defaultMessage: 'OK' })}
+            </Button>
+          </>
+        )
+      }
+    />
   )
 }
