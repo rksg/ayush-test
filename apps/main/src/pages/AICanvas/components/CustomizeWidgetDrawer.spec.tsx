@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
@@ -103,5 +104,34 @@ describe('CustomizeWidgetDrawer', () => {
       </Provider>
     )
     expect(screen.queryByText('Customize Widget')).not.toBeInTheDocument()
+  })
+
+  it('render time range if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <CustomizeWidgetDrawer {...mockProps} />
+      </Provider>
+    )
+    expect(screen.getByText('Time Range')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByText('Change'))
+
+    await userEvent.click(screen.getByText('Select...'))
+
+    expect(screen.getByText('Last 8 Hours')).toBeInTheDocument()
+    expect(screen.getByText('Last 24 Hours')).toBeInTheDocument()
+    expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
+    expect(screen.getByText('Last 30 Days')).toBeInTheDocument()
+  })
+
+  it('no render time range if the feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <CustomizeWidgetDrawer {...mockProps} />
+      </Provider>
+    )
+    expect(screen.queryByText('Time Range')).not.toBeInTheDocument()
   })
 })
