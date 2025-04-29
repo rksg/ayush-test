@@ -86,6 +86,8 @@ export interface WidgetListData {
   widgetId?: string
   name?: string
   updated?: boolean //TODO
+  timeRange?: string
+  defaultTimeRange?: string
 }
 
 export interface Canvas {
