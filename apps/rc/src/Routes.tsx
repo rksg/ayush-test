@@ -72,8 +72,7 @@ import {
   ServiceOperation,
   ServiceType,
   IdentityProviderTabType,
-  PersonaUrls,
-  getScopeKeyByService
+  PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -788,11 +787,7 @@ function ServiceRoutes () {
       {isPortalProfileEnabled && <>
         <Route
           path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
-          element={
-            <AuthRoute scopes={getScopeKeyByService(ServiceType.PORTAL_PROFILE, ServiceOperation.CREATE)}>
-              <CreatePortalProfile />
-            </AuthRoute>
-          }
+          element={<CreatePortalProfile />}
         />
         <Route
           path='services/portalProfile/:activeTab'

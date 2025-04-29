@@ -93,6 +93,20 @@ export const serviceAllowedOperationMap = {
     [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
     [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   },
+  [ServiceType.PORTAL_PROFILE]: { // include PORTAL & WEBAUTH_SWITCH
+    [PolicyOperation.CREATE]: [
+      'POST:/portalServiceProfiles',
+      getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [PolicyOperation.EDIT]: [
+      'PUT:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [PolicyOperation.DELETE]: [
+      'DELETE:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [PolicyOperation.LIST]: [
+      'POST:/portalServiceProfiles/query',
+      getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+  },
   [ServiceType.RESIDENT_PORTAL]: {
     [ServiceOperation.CREATE]: [getOpsApi(PropertyUrlsInfo.addResidentPortal)],
     [ServiceOperation.EDIT]: [getOpsApi(PropertyUrlsInfo.patchResidentPortal)],

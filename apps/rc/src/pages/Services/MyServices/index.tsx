@@ -148,14 +148,16 @@ export default function MyServices () {
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
-      }).data?.totalCount ?? 0)
+      }).data?.totalCount ?? 0),
+      disabled: !isPortalProfileEnabled
     },
     {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }).data?.totalCount,
+      disabled: isPortalProfileEnabled
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
@@ -165,7 +167,7 @@ export default function MyServices () {
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount,
-      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+      disabled: isPortalProfileEnabled || (!isEdgePinReady || !networkSegmentationSwitchEnabled)
     },
     {
       type: ServiceType.RESIDENT_PORTAL,
@@ -189,12 +191,7 @@ export default function MyServices () {
         />}
       />
       <GridRow>
-        {services.filter(svc => isPortalProfileEnabled ?
-          svc.type !== ServiceType.PORTAL && svc.type !== ServiceType.WEBAUTH_SWITCH :
-          svc.type !== ServiceType.PORTAL_PROFILE
-        ).filter(
-          svc => isServiceCardEnabled(svc, ServiceOperation.LIST)
-        ).map(service => {
+        {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
