@@ -123,15 +123,11 @@ export const EdgeSdLanSelectOptionL2greContent = (props: EdgeSdLanContentProps) 
   ], [availableTunnelProfiles, isTunnelProfilesLoading])
 
   const isLowerSdlanEdgeFw = (): boolean => {
-    const nodesData = associatedEdgeClusters
-      ?.filter(item => item.clusterId === venueSdLan?.edgeClusterId)
-      ?.flatMap(item => item.edgeList)
-    const edgesData = nodesData
-      ? [...nodesData].sort((n1, n2) =>
-        compareVersions(n1?.firmwareVersion, n2?.firmwareVersion))
-      : []
-    const minNodeVersion = edgesData?.[0]?.firmwareVersion
-    return !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) < 0
+    const targetCluster = associatedEdgeClusters
+      ?.find(item => item.clusterId === venueSdLan?.edgeClusterId)
+    return targetCluster?.edgeList?.some(
+      edge => compareVersions(edge?.firmwareVersion, requiredFw) < 0
+    ) ?? false
   }
 
   const getFilteredTunnelProfileOptions = (
