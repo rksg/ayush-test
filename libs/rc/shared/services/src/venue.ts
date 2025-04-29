@@ -114,7 +114,8 @@ import {
   VenueLanPortSettings,
   UnitLinkedPersona,
   IpsecUrls,
-  IpsecViewData
+  IpsecViewData,
+  VenueApIpMode
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -1796,6 +1797,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApIpMode: build.query<VenueApIpMode, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApIpMode: build.mutation<VenueApIpMode, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getVenueApSmartMonitor: build.query<VenueApSmartMonitor, RequestPayload>({
       query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2569,6 +2591,9 @@ export const {
   useGetVenueBssColoringQuery,
   useLazyGetVenueBssColoringQuery,
   useUpdateVenueBssColoringMutation,
+  useGetVenueApIpModeQuery,
+  useLazyGetVenueApIpModeQuery,
+  useUpdateVenueApIpModeMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,
