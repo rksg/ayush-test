@@ -6,6 +6,21 @@ import { defineMessage } from 'react-intl'
 
 import { VenueExtended, VenueRadioCustomization } from '@acx-ui/rc/utils'
 
+export enum RadioType {
+  Normal24GHz = 'Normal24GHz',
+  Normal5GHz= 'Normal5GHz',
+  Normal6GHz= 'Normal6GHz',
+  Lower5GHz = 'Lower5GHz',
+  Upper5GHz= 'Upper5GHz'
+}
+
+export interface StateOfIsUseVenueSettings {
+  isUseVenueSettings24G?: boolean
+  isUseVenueSettings5G?: boolean
+  isUseVenueSettings6G?: boolean
+  isUseVenueSettingsLower5G?: boolean
+  isUseVenueSettingsUpper5G?: boolean
+}
 
 export interface SelectItemOption {
 	value: string,
@@ -141,6 +156,14 @@ export const VenueRadioTypeDataKeyMap = {
   [ApRadioTypeEnum.RadioUpper5G]: ['radioParamsDual5G', 'radioParamsUpper5G']
 }
 
+export const ApGroupRadioTypeDataKeyMap = {
+  [RadioType.Normal24GHz]: ['radioParams24G'],
+  [RadioType.Normal5GHz]: ['radioParams50G'],
+  [RadioType.Normal6GHz]: ['radioParams6G'],
+  [RadioType.Lower5GHz]: ['radioParamsDual5G', 'radioParamsLower5G'],
+  [RadioType.Upper5GHz]: ['radioParamsDual5G', 'radioParamsUpper5G']
+}
+
 export const ApRadioTypeDataKeyMap = {
   [ApRadioTypeEnum.Radio24G]: ['apRadioParams24G'],
   [ApRadioTypeEnum.Radio5G]: ['apRadioParams50G'],
@@ -200,3 +223,58 @@ export const SupportRadioChannelsContext = createContext({} as {
   supportRadioChannels: SupportRadioChannels,
   supportRadioDfsChannels?: SupportRadioDfsChannels
 })
+
+export const defaultIsUseVenueSettings = true
+
+// eslint-disable-next-line max-len
+export const isCurrentTabUseVenueSettings = (state: StateOfIsUseVenueSettings, radioType: RadioType): boolean => {
+  switch (radioType) {
+    case RadioType.Normal24GHz:
+      return state.isUseVenueSettings24G ?? defaultIsUseVenueSettings
+    case RadioType.Normal5GHz:
+      return state.isUseVenueSettings5G ?? defaultIsUseVenueSettings
+    case RadioType.Normal6GHz:
+      return state.isUseVenueSettings6G ?? defaultIsUseVenueSettings
+    case RadioType.Lower5GHz:
+      return state.isUseVenueSettingsLower5G ?? defaultIsUseVenueSettings
+    case RadioType.Upper5GHz:
+      return state.isUseVenueSettingsUpper5G ?? defaultIsUseVenueSettings
+    default:
+      return defaultIsUseVenueSettings
+  }
+}
+
+// eslint-disable-next-line max-len
+export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioType): StateOfIsUseVenueSettings => {
+  switch (radioType) {
+    case RadioType.Normal24GHz:
+      return { ...state, isUseVenueSettings24G: !state.isUseVenueSettings24G }
+    case RadioType.Normal5GHz:
+      return { ...state, isUseVenueSettings5G: !state.isUseVenueSettings5G }
+    case RadioType.Normal6GHz:
+      return { ...state, isUseVenueSettings6G: !state.isUseVenueSettings6G }
+    case RadioType.Lower5GHz:
+      return { ...state, isUseVenueSettingsLower5G: !state.isUseVenueSettingsLower5G }
+    case RadioType.Upper5GHz:
+      return { ...state, isUseVenueSettingsUpper5G: !state.isUseVenueSettingsUpper5G }
+    default:
+      return { ...state }
+  }
+}
+
+export const getRadioTypeDisplayName = (radioType: RadioType) => {
+  switch (radioType) {
+    case RadioType.Normal24GHz:
+      return '2.4 GHz'
+    case RadioType.Normal5GHz:
+      return '5 GHz'
+    case RadioType.Normal6GHz:
+      return '6 GHz'
+    case RadioType.Lower5GHz:
+      return 'Lower 5 GHz'
+    case RadioType.Upper5GHz:
+      return 'Upper 5 GHz'
+    default:
+      return ''
+  }
+}

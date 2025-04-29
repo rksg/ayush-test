@@ -1175,6 +1175,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
       query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        console.log('getVenueApModelBandModeSettings', params)
         return createHttpRequest(WifiRbacUrlsInfo.getVenueApModelBandModeSettings, params, apiCustomHeader)
       },
       providesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
@@ -1431,6 +1432,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueTripleBandRadioSettings: build.query<TriBandSettings, RequestPayload>({
       query: ({ params }) => {
+        console.warn('getVenueTripleBandRadio: ', params)
         const req = createHttpRequest(WifiUrlsInfo.getVenueTripleBandRadioSettings, params)
         return{
           ...req
@@ -1453,6 +1455,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        console.log('getVenueApCapabilities', params)
 
         const req = createHttpRequest(urlsInfo.getVenueApCapabilities, params, apiCustomHeader)
         return {

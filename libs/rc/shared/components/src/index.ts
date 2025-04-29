@@ -85,7 +85,12 @@ export {
 export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
-export { SingleRadioSettings, RadioSettingsForm, LowPowerBannerAndModal } from './RadioSettings'
+export {
+  SingleRadioSettings,
+  RadioSettingsForm,
+  LowPowerBannerAndModal,
+  RadioLegends
+} from './RadioSettings'
 export {
   ClientAdmissionControlForm,
   ClientAdmissionControlLevelEnum,

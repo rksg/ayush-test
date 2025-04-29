@@ -27,7 +27,12 @@ import {
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   findIsolatedGroupByChannel,
-  ApRadioTypeDataKeyMap
+  ApRadioTypeDataKeyMap,
+  isCurrentTabUseVenueSettings,
+  toggleState,
+  getRadioTypeDisplayName,
+  RadioType,
+  StateOfIsUseVenueSettings
 } from '@acx-ui/rc/components'
 import {
   useGetApRadioCustomizationQuery,
@@ -55,59 +60,6 @@ import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 import { ApBandManagement }      from './ApBandManagement'
 import { ApSingleRadioSettings } from './ApSingleRadioSettings'
 
-
-export enum RadioType {
-  Normal24GHz = 'Normal24GHz',
-  Normal5GHz= 'Normal5GHz',
-  Normal6GHz= 'Normal6GHz',
-  Lower5GHz = 'Lower5GHz',
-  Upper5GHz= 'Upper5GHz'
-}
-
-export interface StateOfIsUseVenueSettings {
-  isUseVenueSettings24G?: boolean
-  isUseVenueSettings5G?: boolean
-  isUseVenueSettings6G?: boolean
-  isUseVenueSettingsLower5G?: boolean
-  isUseVenueSettingsUpper5G?: boolean
-}
-
-const defaultIsUseVenueSettings = true
-
-export const getRadioTypeDisplayName = (radioType: RadioType) => {
-  switch (radioType) {
-    case RadioType.Normal24GHz:
-      return '2.4 GHz'
-    case RadioType.Normal5GHz:
-      return '5 GHz'
-    case RadioType.Normal6GHz:
-      return '6 GHz'
-    case RadioType.Lower5GHz:
-      return 'Lower 5 GHz'
-    case RadioType.Upper5GHz:
-      return 'Upper 5 GHz'
-    default:
-      return ''
-  }
-}
-
-export const isCurrentTabUseVenueSettings = (state: StateOfIsUseVenueSettings, radioType: RadioType): boolean => {
-  switch (radioType) {
-    case RadioType.Normal24GHz:
-      return state.isUseVenueSettings24G ?? defaultIsUseVenueSettings
-    case RadioType.Normal5GHz:
-      return state.isUseVenueSettings5G ?? defaultIsUseVenueSettings
-    case RadioType.Normal6GHz:
-      return state.isUseVenueSettings6G ?? defaultIsUseVenueSettings
-    case RadioType.Lower5GHz:
-      return state.isUseVenueSettingsLower5G ?? defaultIsUseVenueSettings
-    case RadioType.Upper5GHz:
-      return state.isUseVenueSettingsUpper5G ?? defaultIsUseVenueSettings
-    default:
-      return defaultIsUseVenueSettings
-  }
-}
-
 export const isUseVenueSettings = (settings: ApRadioCustomization, radioType: RadioType): boolean => {
   const state = {
     isUseVenueSettings24G: settings.apRadioParams24G.useVenueSettings,
@@ -133,23 +85,6 @@ export const extractStateOfIsUseVenueSettings = (apRadioCustomization: ApRadioCu
 export const summarizedStateOfIsUseVenueSettings = (state: StateOfIsUseVenueSettings): StateOfIsUseVenueSettings => {
   return { ...state }
 
-}
-
-export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioType): StateOfIsUseVenueSettings => {
-  switch (radioType) {
-    case RadioType.Normal24GHz:
-      return { ...state, isUseVenueSettings24G: !state.isUseVenueSettings24G }
-    case RadioType.Normal5GHz:
-      return { ...state, isUseVenueSettings5G: !state.isUseVenueSettings5G }
-    case RadioType.Normal6GHz:
-      return { ...state, isUseVenueSettings6G: !state.isUseVenueSettings6G }
-    case RadioType.Lower5GHz:
-      return { ...state, isUseVenueSettingsLower5G: !state.isUseVenueSettingsLower5G }
-    case RadioType.Upper5GHz:
-      return { ...state, isUseVenueSettingsUpper5G: !state.isUseVenueSettingsUpper5G }
-    default:
-      return { ...state }
-  }
 }
 
 export const createCacheSettings = (

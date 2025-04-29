@@ -6,11 +6,18 @@ import { getIntl }                            from '@acx-ui/utils'
 
 import { ApGroupEditPageHeader }                              from './ApGroupEditPageHeader'
 import { ApGroupGeneralTab }                                  from './ApGroupGeneralTab'
+import { ApGroupRadioTab }                                    from './ApGroupRadioTab'
 import { ApGroupVlanRadioTab }                                from './ApGroupVlanRadioTab'
 import { ApGroupEditContextProvider, ApGroupEditContextType } from './context'
 
+
+export type ApGroupRadioConfigItemProps = {
+  isAllowEdit?: boolean
+}
+
 const tabs = {
   general: ApGroupGeneralTab,
+  radio: ApGroupRadioTab,
   vlanRadio: ApGroupVlanRadioTab
 }
 

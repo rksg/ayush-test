@@ -1,9 +1,19 @@
 import { createContext, useState } from 'react'
 
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import { useApGroupsListQuery, useGetApGroupsTemplateListQuery }                              from '@acx-ui/rc/services'
-import { ApGroupViewModel, TableResult, useConfigTemplate, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { useParams }                                                                          from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import {
+  useApGroupsListQuery,
+  useGetApGroupsTemplateListQuery,
+  useGetVenueApCapabilitiesQuery
+} from '@acx-ui/rc/services'
+import {
+  ApGroupRadioCustomization,
+  ApGroupViewModel, Capabilities,
+  TableResult,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 export type ApGroupEditContextType = {
   tabTitle: string
@@ -14,15 +24,30 @@ export type ApGroupEditContextType = {
   discardChanges?: (data?: unknown) => void | Promise<void>
 }
 
+export interface ApGroupRadioContext {
+  radioData?: ApGroupRadioCustomization,
+  updateWifiRadio?: ((data: ApGroupRadioCustomization) => void)
+  discardWifiRadioChanges?: (data?: unknown) => void | Promise<void>
+
+  isLoadBalancingDataChanged?: boolean,
+  updateLoadBalancing?: ((callback?: () => void) => void)
+
+  isClientAdmissionControlDataChanged?: boolean,
+  updateClientAdmissionControl?: ((callback?: () => void) => void)
+}
+
 export const ApGroupEditContext = createContext({} as {
   isApGroupTableFlag: boolean
   isRbacEnabled: boolean,
   isEditMode: boolean
   editContextData: ApGroupEditContextType
   setEditContextData:(data: ApGroupEditContextType) => void
+  editRadioContextData: ApGroupRadioContext,
+  setEditRadioContextData: (data: ApGroupRadioContext) => void
   previousPath: string
   setPreviousPath: (data: string) => void,
-  venueId?: string
+  venueId?: string,
+  venueApCaps: Capabilities | undefined,
 })
 
 export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
@@ -36,6 +61,8 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
   const isEditMode = action === 'edit'
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as ApGroupEditContextType)
+  const [editRadioContextData, setEditRadioContextData] = useState({} as ApGroupRadioContext)
+
   const apGroupInfo = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
     useQueryFn: useApGroupsListQuery,
     useTemplateQueryFn: useGetApGroupsTemplateListQuery,
@@ -49,6 +76,12 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
     enableRbac: resolvedRbacEnabled
   })
 
+  const venueId = apGroupInfo?.data?.data?.[0]?.venueId
+
+  const { data: venueApCaps } = useGetVenueApCapabilitiesQuery({
+    params: { venueId }
+  }, { skip: !venueId })
+
   return (
     <ApGroupEditContext.Provider value={{
       isEditMode,
@@ -56,7 +89,9 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
       isRbacEnabled: resolvedRbacEnabled,
       previousPath, setPreviousPath,
       editContextData, setEditContextData,
-      venueId: apGroupInfo?.data?.data?.[0]?.venueId
+      editRadioContextData, setEditRadioContextData,
+      venueId: apGroupInfo?.data?.data?.[0]?.venueId,
+      venueApCaps
     }} >
       {props.children}
     </ApGroupEditContext.Provider>

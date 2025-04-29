@@ -19,7 +19,7 @@ import { showUnsavedModal } from '.'
 
 import type { History, Transition } from 'history'
 
-const ApGroupEditTabKeys = ['general', 'vlanRadio']
+const ApGroupEditTabKeys = ['general', 'radio', 'vlanRadio']
 
 export function ApGroupEditTabs () {
   const { $t } = useIntl()
@@ -39,6 +39,7 @@ export function ApGroupEditTabs () {
   const tabTitleMap = (tabkey: string) => {
     const tabTitle = {
       general: $t({ defaultMessage: 'General' }),
+      radio: $t({ defaultMessage: 'Radio' }),
       vlanRadio: $t({ defaultMessage: 'VLAN & Radio' })
     }
 
@@ -86,7 +87,6 @@ export function ApGroupEditTabs () {
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
-
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
