@@ -53,6 +53,16 @@ jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
 }))
 jest.mocked(useIsSplitOn).mockReturnValue(true) // mock AAA policy
 
+let mockedCertTemplateModalCallback: (id: string) => void
+jest.mock('../../policies', () => ({
+  ...jest.requireActual('../../policies'),
+  CertificateTemplateForm: ({ modalCallBack }: { modalCallBack: (id: string) => void }) => {
+    mockedCertTemplateModalCallback = modalCallBack
+    return <div data-testid='mock-certificate-template-form' />
+  }
+}))
+
+
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -195,24 +205,38 @@ describe('NetworkForm', () => {
   it('should render correctly when certificateTemplate enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CERTIFICATE_TEMPLATE)
 
-    const queryPolicySetFn = jest.fn()
-    const searchPersonaGroupListFn = jest.fn()
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
 
-    mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
-        (req, res, ctx) => {
-          queryPolicySetFn()
-          return res(ctx.json(policySetList))
-        }
-      ),rest.post(
-        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
-        (req, res, ctx) => {
-          searchPersonaGroupListFn()
-          return res(ctx.json(mockPersonaGroupTableResult))
-        }
-      )
-    )
+    await screen.findByText('Use External AAA Service')
+    const useCertRadio = await screen.findByLabelText('Use Certificate Auth')
+    await userEvent.click(useCertRadio)
+    expect(await screen.findByText('Certificate Template')).toBeVisible()
+    await userEvent.click(await screen.findByText('Add'))
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
+
+    // Mock modal callback
+    await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
+    mockedCertTemplateModalCallback('new-cert-template-id')
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+
+    // Verify autofill id into the form
+    expect(await screen.findByText('new-cert-template-id')).toBeVisible()
+  })
+
+  it('should render correctly when multiple certificate template enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CERTIFICATE_TEMPLATE
+      || ff === Features.MULTIPLE_CERTIFICATE_TEMPLATE)
 
     render(<Provider>
       <MLOContext.Provider value={{
@@ -233,11 +257,16 @@ describe('NetworkForm', () => {
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
 
-    await waitFor(() => expect(queryPolicySetFn).toHaveBeenCalled())
-    await waitFor(() => expect(searchPersonaGroupListFn).toHaveBeenCalled())
-
+    // Mock modal callback
     await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
+    mockedCertTemplateModalCallback('new-cert-template-id-1')
+    mockedCertTemplateModalCallback('new-cert-template-id-2')
+
     await waitFor(() => expect(dialog).not.toBeVisible())
+
+    // Verify autofill ids into the form
+    expect(await screen.findByText('new-cert-template-id-1')).toBeVisible()
+    expect(await screen.findByText('new-cert-template-id-2')).toBeVisible()
   })
 
   it('should render correctly when certificateTemplate disabled', async () => {

@@ -15,6 +15,7 @@ import {
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useActivateCertificateTemplateMutation,
+  useActivateCertificateTemplatesMutation,
   useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
   useActivateDpskServiceTemplateMutation,
@@ -225,6 +226,7 @@ export function NetworkForm (props:{
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
   const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isMultipleCertificateTemplateEnabled = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
@@ -274,7 +276,7 @@ export function NetworkForm (props:{
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
 
-  const activateCertificateTemplate = useCertificateTemplateActivation()
+  const { activateCertificateTemplate, activateCertificateTemplates } = useCertificateTemplateActivation()
   const activateDpskPool = useDpskServiceActivation()
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
@@ -351,12 +353,9 @@ export function NetworkForm (props:{
 
   const { data, isLoading } = useGetNetwork({ isRuckusAiMode, gptEditId })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
-  const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
+  const { data: certTemplateServices } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
-    {
-      skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
-      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
-    })
+    { skip: !(editMode || cloneMode) || !data?.useCertificateTemplate })
 
   const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -433,12 +432,14 @@ export function NetworkForm (props:{
 
     updateSaveData({
       ...resolvedData,
-      certificateTemplateId,
+      ...(certTemplateServices && (isMultipleCertificateTemplateEnabled
+        ? { certificateTemplateIds: certTemplateServices?.data?.map(cert => cert.id) }
+        : { certificateTemplateId: certTemplateServices?.data?.[0]?.id })),
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
       ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id }),
       ...((cloneMode && !hasActivateNetworkVenuePermission) && { venues: [] })
     })
-  }, [data, certificateTemplateId, dpskService, portalService])
+  }, [data, certTemplateServices, dpskService, portalService])
   //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
@@ -921,6 +922,7 @@ export function NetworkForm (props:{
         'isOweMaster',
         'owePairNetworkId',
         'certificateTemplateId',
+        'certificateTemplateIds',
         'hotspot20Settings.wifiOperator',
         'hotspot20Settings.originalOperator',
         'hotspot20Settings.identityProviders',
@@ -973,7 +975,11 @@ export function NetworkForm (props:{
       beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      beforeVenueActivationRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
+      beforeVenueActivationRequest.push(
+        isMultipleCertificateTemplateEnabled
+          ? activateCertificateTemplates(saveState.certificateTemplateIds, networkId)
+          : activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      )
       if (enableServiceRbac) {
         beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
         beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
@@ -1085,6 +1091,7 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
+            'certificateTemplateIds',
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
@@ -1102,6 +1109,7 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
+            'certificateTemplateIds',
             'userConnection',
             ...(enableServiceRbac) ? ['dpskServiceProfileId', 'macRegistrationPoolId'] : [],
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
@@ -1165,7 +1173,11 @@ export function NetworkForm (props:{
       const beforeVenueActivationRequest = []
       const afterVenueActivationRequest = []
 
-      beforeVenueActivationRequest.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
+      beforeVenueActivationRequest.push(
+        isMultipleCertificateTemplateEnabled
+          ? activateCertificateTemplates(formData.certificateTemplateIds, payload.id)
+          : activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      )
       if (isUseWifiRbacApi) {
         beforeVenueActivationRequest.push(activatePortal(payload.id, formData.portalServiceProfileId))
       }
@@ -1486,16 +1498,24 @@ function useUpdateInstance () {
 }
 
 function useCertificateTemplateActivation () {
-  const [activate] = useActivateCertificateTemplateMutation()
+  const [ activateTemplate ] = useActivateCertificateTemplateMutation()
+  const [ activateTemplates ] = useActivateCertificateTemplatesMutation()
   const activateCertificateTemplate =
     async (certificateTemplateId?: string, networkId?: string) => {
       if (certificateTemplateId && networkId) {
-        return await activate({ params: { networkId, certificateTemplateId } }).unwrap()
+        return await activateTemplate({ params: { networkId, certificateTemplateId } }).unwrap()
       }
       return null
     }
 
-  return activateCertificateTemplate
+  const activateCertificateTemplates = async (certificateTemplateIds?: string[], networkId?: string) => {
+    if (certificateTemplateIds && certificateTemplateIds.length !== 0 && networkId) {
+      return await activateTemplates({ params: { networkId }, payload: { ids: certificateTemplateIds } }).unwrap()
+    }
+    return null
+  }
+
+  return { activateCertificateTemplate, activateCertificateTemplates }
 }
 
 function useMacRegistrationPoolActivation () {
