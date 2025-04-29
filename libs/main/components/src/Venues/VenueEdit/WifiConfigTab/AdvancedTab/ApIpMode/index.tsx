@@ -43,7 +43,6 @@ export function ApIpMode (props: VenueWifiConfigItemProps) {
 
   useEffect(() => {
     if (data) {
-      console.log(data) // eslint-disable-line no-console
       setApIpMode(data?.mode ?? 'IPV4')
 
       setReadyToScroll?.(r => [...(new Set(r.concat('AP-IP-Mode')))])
