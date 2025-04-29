@@ -106,7 +106,7 @@ export const clientTypeTooltip = defineMessage({
 
     <p>For the Virtual Wireless Client option, there will be actual RF transmissions over the air.
     For every target AP to be tested, a corresponding "station AP" will be selected.
-    The station AP is a neigbouring AP with the best signal strength, and during the test,
+    The station AP is a neighbouring AP with the best signal strength, and during the test,
     this station AP will behave as a station (i.e. a WiFi client) and wirelessly connect to the
     target AP, just like a regular WiFi client, for the test. The benefit of this option is that
     the Service Validation test will comprehensively cover both the wireless and wired portion of
@@ -262,6 +262,18 @@ export const errorMappings : Record<string, errorMapValue> = {
   SG_APCONFIG_UNSUPPORT: {
     id: 7,
     text: defineMessage({ defaultMessage: 'AP configuration not supported (refer to release notes)' })
+  },
+  SG_AP_UNSUPPORT_GWAP_L3AUTH_DHCPNAT_VRUE: {
+    id: 8,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT Gateway AP does not support L3 authentication' })
+  },
+  SG_AP_UNSUPPORT_GWAP_SPEEDTEST_DHCPNAT_VRUE: {
+    id: 9,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT Gateway AP does not support speed test' })
+  },
+  SG_AP_UNSUPPORT_GWAP_STATION_DHCPNAT_OTA: {
+    id: 10,
+    text: defineMessage({ defaultMessage: 'DHCP-NAT HN or Multiple Gateway AP cannot be used as a station AP' })
   }
 }
 

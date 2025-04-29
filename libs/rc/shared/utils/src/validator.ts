@@ -1025,6 +1025,16 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   }
 }
 
+export function validateDuplicateName (currentItem: { id:string, name:string }, nameList: { id:string, name:string }[]) {
+  const { $t } = getIntl()
+  const index = nameList.filter(item => item.name === currentItem.name && item.id !== currentItem.id)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.nameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
 export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.value === aclName)

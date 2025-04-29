@@ -428,7 +428,7 @@ export function LanPorts (props: ApEditItemProps) {
         }).unwrap()
       } else if (
         originSoftGreId &&
-        (!lanPort.enabled || !lanPort.softGreEnabled || lanPort.ipsecEnabled || useVenueSettings)
+        (!lanPort.enabled || !lanPort.softGreEnabled || useVenueSettings)
       ) {
         await deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }

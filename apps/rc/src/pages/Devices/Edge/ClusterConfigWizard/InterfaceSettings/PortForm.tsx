@@ -4,11 +4,14 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Loader, useStepFormContext }                from '@acx-ui/components'
-import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { Loader, useStepFormContext }                                       from '@acx-ui/components'
+import { Features }                                                         from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { validateEdgeClusterLevelGateway, EdgePort, EdgeLag }               from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import { StyledHiddenFormItem }                                           from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
@@ -45,6 +48,8 @@ interface PortSettingViewProps {
 
 const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
   const {
     clusterInfo,
@@ -70,6 +75,21 @@ const PortSettingView = (props: PortSettingViewProps) => {
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
     }]}>
+      <StyledHiddenFormItem
+        name='clusterGatewayValidate'
+        rules={[
+          { validator: () => {
+            // eslint-disable-next-line max-len
+            const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+            const allLagsValues = nodesLagData.map(lag => lag.lags)
+            const allPortsData = _.flatten(allPortsValues) as EdgePort[]
+            const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
+            // eslint-disable-next-line max-len
+            return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
+          } }
+        ]}
+        children={<input hidden/>}
+      />
       <NodesTabs
         nodeList={clusterInfo?.edgeList}
         content={
@@ -87,6 +107,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 onTabChange={handleTabChange}
                 fieldHeadPath={['portSettings', serialNumber]}
                 vipConfig={vipConfigArr}
+                isClusterWizard
               />
               : <div />
           }

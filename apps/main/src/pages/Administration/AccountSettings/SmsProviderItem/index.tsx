@@ -118,12 +118,14 @@ const SmsProviderItem = () => {
     reloadSmsNotification(2)
   }
 
-  const selectedProvider = (selectedType: SmsProviderType) => {
+  const selectedProvider = (selectedType: SmsProviderType, callback?: () => void) => {
     const payload: NotificationSmsUsage = {
       threshold: smsThreshold,
       provider: selectedType
     }
-    updateNotificationSms({ params , payload: payload }).then()
+    updateNotificationSms({ params , payload: payload, callback: () => {
+      if (callback) callback()
+    } } ).then()
     setSmsProviderConfigured(false)
     reloadSmsNotification(2)
   }
@@ -287,13 +289,13 @@ const SmsProviderItem = () => {
           <div>
             <Form.Item
               colon={false}
-              label={$t({ defaultMessage: 'Provider' })} />
+              label={$t({ defaultMessage: 'Provider' })}/>
             <h3>{'Twilio'}</h3>
           </div>
           <div>
             <Form.Item
               colon={false}
-              label={$t({ defaultMessage: 'Account SID' })} />
+              label={$t({ defaultMessage: 'Account SID' })}/>
             <h3>{smsProvider.data?.accountSid}</h3>
           </div>
           <div>
@@ -312,9 +314,15 @@ const SmsProviderItem = () => {
               colon={false}
               label={isTwilioFromNumber(smsProvider.data?.fromNumber ?? '')
                 ? $t({ defaultMessage: 'Phone Number' })
-                : $t({ defaultMessage: 'Message Service' })} />
+                : $t({ defaultMessage: 'Message Service' })}/>
             <h3>{smsProvider.data?.fromNumber}</h3>
           </div>
+          {smsProvider.data?.enableWhatsapp && <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'WhatsApp Authentication Template SID' })}/>
+            <h3>{smsProvider.data?.authTemplateSid}</h3>
+          </div>}
         </UI.ProviderWrapper>
       </Card>
     </Col>
@@ -322,7 +330,7 @@ const SmsProviderItem = () => {
 
   const ProviderEsendex = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
-      <Card type='solid-bg' >
+      <Card type='solid-bg'>
         <UI.ProviderWrapper direction='vertical' size={5}>
           <div>
             <Form.Item

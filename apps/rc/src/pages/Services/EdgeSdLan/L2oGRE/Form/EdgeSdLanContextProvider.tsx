@@ -1,11 +1,11 @@
 import { createContext, ReactNode, useContext } from 'react'
 
-import { Loader }                                                                                          from '@acx-ui/components'
-import { useGetAvailableTunnelProfile }                                                                    from '@acx-ui/edge/components'
-import { Features }                                                                                        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
-import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgeClusterListQuery }  from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeMvSdLanViewData, PersonalIdentityNetworksViewData, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                     from '@acx-ui/components'
+import { useGetAvailableTunnelProfile }                                                                                               from '@acx-ui/edge/components'
+import { Features }                                                                                                                   from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                      from '@acx-ui/rc/components'
+import { useGetEdgePinViewDataListQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeMvSdLanViewData, IncompatibilityFeatures, PersonalIdentityNetworksViewData, TunnelProfileViewData }   from '@acx-ui/rc/utils'
 
 export interface EdgeSdLanContextType {
   allSdLans: Pick<EdgeMvSdLanViewData, 'id' | 'venueId' | 'edgeClusterId' | 'guestEdgeClusterId'
@@ -14,6 +14,7 @@ export interface EdgeSdLanContextType {
    | 'tunneledWlans'>[]
   availableTunnelProfiles: TunnelProfileViewData[]
   associatedEdgeClusters?: EdgeClusterStatus[]
+  requiredFwMap?: { [key: string]: string|undefined }
 }
 
 export const EdgeSdLanContext = createContext({} as EdgeSdLanContextType)
@@ -55,7 +56,7 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
 
   const { associatedEdgeClusters, isAssociatedEdgeClustersLoading } = useGetEdgeClusterListQuery({
     payload: {
-      fields: ['clusterId', 'hasCorePort'],
+      fields: ['clusterId', 'hasCorePort', 'highAvailabilityMode'],
       filters: {
         clusterId: availableTunnelProfiles?.map(profile =>
           profile.destinationEdgeClusterId).filter(Boolean)
@@ -70,6 +71,22 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
     })
   })
 
+  const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.L2OGRE]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFwMap: {
+          [IncompatibilityFeatures.L2OGRE]: data?.featureSets
+            ?.find(item => item.featureName === IncompatibilityFeatures.L2OGRE)?.requiredFw
+        }
+      }
+    }
+  })
+
   const loadingStates = [{
     isLoading: isDataLoading || isSdLansLoading || isPinsLoading || isAssociatedEdgeClustersLoading
   }]
@@ -78,7 +95,8 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
     allSdLans,
     allPins,
     availableTunnelProfiles,
-    associatedEdgeClusters
+    associatedEdgeClusters,
+    requiredFwMap
   }}>
     <Loader states={loadingStates}>
       {props.children}

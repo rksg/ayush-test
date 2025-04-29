@@ -140,7 +140,28 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
-export interface EdgePortStatus {
+interface EdgeMultiWanStats {
+  wanPortStatus?: string
+  wanLinkStatus?: string    // overall link health status
+  wanLinkTargets?: { ip: string, status: string }[] // per link target health status
+}
+
+export interface EdgeMultiWanConfigStatus {
+  serialNumber:string
+  edgeClusterId: string
+  multiWanPolicyId: string
+  portName:string
+  priority: number
+  linkHealthMonitorEnabled: boolean
+  monitorProtocol: EdgeMultiWanProtocolEnum
+  monitorTargets: string[]
+  monitorLinkDownCriteria: EdgeLinkDownCriteriaEnum
+  monitorIntervalSec: number
+  monitorMaxCountToDown: number
+  monitorMaxCountToUp:number
+}
+
+export interface EdgePortStatus extends EdgeMultiWanStats {
   type: EdgePortTypeEnum
   portId: string
   name: string
@@ -157,6 +178,7 @@ export interface EdgePortStatus {
   interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
+  linkHealthMonitoring?: EdgeMultiWanConfigStatus
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -344,7 +366,7 @@ export interface EdgeLagMemberStatus {
   peerKey?: string
 }
 
-export interface EdgeLagStatus {
+export interface EdgeLagStatus extends EdgeMultiWanStats {
   lagId: number
   tenantId: string
   serialNumber: string
@@ -362,6 +384,7 @@ export interface EdgeLagStatus {
   ip?: string
   subnet?: string
   isCorePort: string
+  linkHealthMonitoring?: EdgeMultiWanConfigStatus
 }
 
 export interface EdgeLag {

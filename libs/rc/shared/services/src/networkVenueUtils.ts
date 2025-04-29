@@ -421,7 +421,7 @@ export const fetchEnhanceRbacApGroupNetworkVenueList = async (arg: any, fetchWit
 
     const networkDeepListRes = networkDeepListList.response
     if (networkDeepListRes.length > 0) {
-      // get networkVeneus
+      // get networkVenues
       const networkVenuesUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenuesTemplateRbac : WifiRbacUrlsInfo.getNetworkVenues
       const networkVenuesQuery = await fetchWithBQ({
         ...createHttpRequest(networkVenuesUrlInfo, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
@@ -681,7 +681,7 @@ export const fetchEnhanceRbacAllApGroupNetworkVenueList = async (arg: any, fetch
 
     const networkDeepListRes = networkDeepListList.response
     if (networkDeepListRes.length > 0) {
-      // get networkVeneus
+      // get networkVenues
       const networkVenuesUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenuesTemplateRbac : WifiRbacUrlsInfo.getNetworkVenues
       const networkVenuesQuery = await fetchWithBQ({
         ...createHttpRequest(networkVenuesUrlInfo, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),

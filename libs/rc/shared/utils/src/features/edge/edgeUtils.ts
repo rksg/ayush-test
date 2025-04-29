@@ -34,7 +34,7 @@ import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
 const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
-const MAX_DUAL_WAN_PORT = 2
+export const MAX_DUAL_WAN_PORT = 2
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -155,6 +155,10 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 // eslint-disable-next-line max-len
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
+
+  if (payload.portType === EdgePortTypeEnum.UNCONFIGURED) {
+    payload.ipMode = EdgeIpModeEnum.DHCP
+  }
 
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
@@ -366,26 +370,33 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
   }
 }
 
-// eslint-disable-next-line max-len
-export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], isDualWanEnabled: boolean) => {
-  const { $t } = getIntl()
+const hasCorePhysicalPort = (portsData: EdgePort[]) => {
+  return portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
+}
 
-  // eslint-disable-next-line max-len
-  const hasCorePhysicalPort = portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
-  const hasCoreLag = lagData.some(lag =>
+const hasCoreLag = (lagData: EdgeLag[]) => {
+  return lagData.some(lag =>
     (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
     && (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+}
 
-  const hasCorePort = hasCorePhysicalPort || hasCoreLag
-
-  const portWithGateway = portsData.filter(port =>
+const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {
+  return portsData.filter(port =>
     port.enabled
     && (port.portType === EdgePortTypeEnum.WAN
       || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
   ).length
+}
+// eslint-disable-next-line max-len
+export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], isDualWanEnabled: boolean) => {
+  const { $t } = getIntl()
 
+  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
+  const hasCoreLagPort = hasCoreLag(lagData)
+  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
+
+  const portWithGateway = getPhysicalPortGatewayCount(portsData)
   const lagWithGateway = getLagGatewayCount(lagData)
-
   const totalGateway = portWithGateway + lagWithGateway
 
   if (totalGateway === 0) {
@@ -398,6 +409,40 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], i
     return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways.' }, {
       maxWanPortCount: MAX_DUAL_WAN_PORT
     }))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+// portsData: all ports in a cluster
+// lagData: all lags in a cluster
+// eslint-disable-next-line max-len
+export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: EdgeLag[], edgeNodes: EdgeStatus[], isDualWanEnabled: boolean) => {
+  const { $t } = getIntl()
+  const nodeCount = edgeNodes.length
+
+  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
+  const hasCoreLagPort = hasCoreLag(lagData)
+  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
+
+  const portWithGateway = getPhysicalPortGatewayCount(portsData)
+  const lagWithGateway = getLagGatewayCount(lagData)
+  const totalGateway = portWithGateway + lagWithGateway
+
+  if (totalGateway < nodeCount) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.' }))
+
+  } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > nodeCount) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
+
+  } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways on each Edge.' }, {
+      maxWanPortCount: MAX_DUAL_WAN_PORT
+    }))
+
   } else {
     return Promise.resolve()
   }
