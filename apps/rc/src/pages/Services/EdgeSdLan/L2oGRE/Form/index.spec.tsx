@@ -5,6 +5,7 @@ import { rest }        from 'msw'
 import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
 import { edgeSdLanApi }                 from '@acx-ui/rc/services'
 import {
+  EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
   EdgePinFixtures,
   EdgePinUrls,
@@ -36,6 +37,7 @@ import { EdgeSdLanFormContainer, EdgeSdLanFormProps } from '.'
 const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockPinStatsList } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const { click } = userEvent
 
@@ -107,7 +109,10 @@ describe('SD-LAN form', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (_, res, ctx) => res(ctx.json(mockEdgeClusterList))
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
     )
   })
 
