@@ -13,13 +13,13 @@ import {
   useLazyGetVenueAntennaTypeQuery,
   useUpdateApAntennaTypeSettingsMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
-type paramsType = {
-  tenantId: string
+export type paramsType = {
+  tenantId?: string
   venueId: string
   serialNumber: string
 }
@@ -37,12 +37,12 @@ export function AntennaSection () {
 
   const { apData: apDetails, venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
 
   const form = Form.useFormInstance()
 
   const isUseVenueSettingsRef = useRef<boolean>(true)
-  const venueAntennaTypeRef = useRef<VeuneApAntennaTypeSettings>()
+  const venueAntennaTypeRef = useRef<VenueApAntennaTypeSettings>()
   const customAntennaTypeRef = useRef<ApAntennaTypeSettings>()
   const paramsRef = useRef<paramsType>()
 
@@ -62,7 +62,6 @@ export function AntennaSection () {
     if (apDetails && venueId) {
       const { model } = apDetails
       paramsRef.current = {
-        tenantId: tenantId!,
         venueId: venueId,
         serialNumber: serialNumber!
       }
@@ -81,7 +80,7 @@ export function AntennaSection () {
 
         if (venueAntType) {
           // eslint-disable-next-line max-len
-          const findSettings = find(venueAntType, (antTypeSettings: VeuneApAntennaTypeSettings) => antTypeSettings.model === model)
+          const findSettings = find(venueAntType, (antTypeSettings: VenueApAntennaTypeSettings) => antTypeSettings.model === model)
           if (findSettings) {
             venueAntennaTypeRef.current = findSettings
           }
@@ -113,7 +112,7 @@ export function AntennaSection () {
     handleFormChanged()
   }
 
-  const handleAntennaTypesChanged = (value: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => {
+  const handleAntennaTypesChanged = (value: VenueApAntennaTypeSettings | ApAntennaTypeEnum) => {
     const antType = value as ApAntennaTypeEnum
     customAntennaTypeRef.current = {
       useVenueSettings: isUseVenueSettingsRef.current,
