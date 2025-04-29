@@ -135,6 +135,7 @@ export enum Features {
   NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
   NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
+  NUKETENANT_SOFT_TENANT_DELETE_TOGGLE = 'nuketenant-soft-tenant-delete-toggle',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   NUVO_SMS_MESSAGING_SERVICE_TOGGLE = 'nuvo-messaging-service-toggle',

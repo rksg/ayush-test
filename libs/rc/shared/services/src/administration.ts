@@ -1053,6 +1053,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return response.privacyFeatures
       },
       invalidatesTags: [{ type: 'Privacy', id: 'DETAIL' }]
+    }),
+    deleteTenant: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteTenant, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1149,5 +1158,6 @@ export const {
   useDeleteWebhookMutation,
   useWebhookSendSampleEventMutation,
   useGetPrivacySettingsQuery,
-  useUpdatePrivacySettingsMutation
+  useUpdatePrivacySettingsMutation,
+  useDeleteTenantMutation
 } = administrationApi
