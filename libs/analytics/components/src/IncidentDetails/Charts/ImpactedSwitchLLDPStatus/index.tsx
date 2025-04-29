@@ -80,19 +80,23 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     dataIndex: 'action',
     title: $t({ defaultMessage: 'Action' }),
     width: 50,
-    render: (_, { portNumbers, portCount }) => {
+    render: (_, record: ImpactedSwitchPortRow ) => {
       return (
         <Tooltip
           title={$t({ defaultMessage: 'Copy Port number{plural} to clipboard.' }
-            ,{ plural: portCount > 1 ? 's' : '' })}
+            ,{ plural: record.portCount > 1 ? 's' : '' })}
           placement='top'>
           <CopyOutlined
             onClick={() => {
-              navigator.clipboard.writeText(portNumbers)
+              navigator.clipboard.writeText(
+                typeof record.portNumbers === 'string'
+                  ? formatPortRanges(record.portNumbers.split(', '))
+                  : ''
+              )
               showToast({
                 type: 'success',
                 content: $t({ defaultMessage: 'Port number{plural} copied to clipboard.' },
-                  { plural: portCount > 1 ? 's' : '' }
+                  { plural: record.portCount > 1 ? 's' : '' }
                 )
               })
             }}
