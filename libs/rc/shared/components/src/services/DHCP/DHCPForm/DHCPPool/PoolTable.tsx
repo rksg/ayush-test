@@ -7,11 +7,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { defaultSort, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess }                             from '@acx-ui/user'
+import { useIsSplitOn, Features }                                                            from '@acx-ui/feature-toggle'
+import { defaultSort, DHCP_RESERVED_IPS, DHCPConfigTypeEnum, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                    from '@acx-ui/user'
 
 export function PoolTable (props:{
   readonly?: boolean
+  configureType?: DHCPConfigTypeEnum | undefined
   data: DHCPPool[]
   onAdd?: () => void
   onEdit?: (data?: DHCPPool) => void
@@ -19,7 +21,8 @@ export function PoolTable (props:{
   isDefaultService?: Boolean
 }) {
   const { $t } = useIntl()
-  const { data, readonly } = props
+  const { data, configureType, readonly } = props
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -105,7 +108,14 @@ export function PoolTable (props:{
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
       dataIndex: 'numberOfHosts',
-      sorter: { compare: sortProp('numberOfHosts', defaultSort) }
+      sorter: { compare: sortProp('numberOfHosts', defaultSort) },
+      render: (_, row) => {
+        if (showWarning && configureType === DHCPConfigTypeEnum.MULTIPLE && !!row.numberOfHosts) {
+          return row.numberOfHosts - DHCP_RESERVED_IPS
+        } else  {
+          return row.numberOfHosts
+        }
+      }
     }
   ]
   let actions = [{
