@@ -17,7 +17,7 @@ export function CommonAttributesDrawer (props:{
     destroyOnClose
     onClose={onClose}
     title={$t({ defaultMessage: 'External Attributes' })}
-    width={'450'}
+    width={450}
     children={<>
       <Descriptions>
         <Descriptions.Item
