@@ -2,11 +2,19 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { useGetVenuesQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
-import { ProfileLanVenueActivations, defaultSort, sortProp, useConfigTemplate } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { useGetVenuesQuery, useGetVenuesTemplateListQuery } from '@acx-ui/rc/services'
+import {
+  ProfileLanVenueActivations,
+  defaultSort,
+  sortProp,
+  useConfigTemplate,
+  ConfigTemplateType
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../../configTemplates'
 
 interface VenueTableProps {
   venueActivations: ProfileLanVenueActivations[]
@@ -59,6 +67,7 @@ const useGetVenueNameMap = (venueGrouping: Record<string, string[]> ) => {
 
 export const VenueTable = (props: VenueTableProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { venueActivations } = props
 
   const venueGrouping = useMemo(()=>{
@@ -102,9 +111,9 @@ export const VenueTable = (props: VenueTableProps) => {
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) },
       render: (_, row) => {
-        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-          {row.name}
-        </TenantLink>
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id, row.name)
+          : <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },
     {
