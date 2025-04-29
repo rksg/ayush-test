@@ -19,7 +19,6 @@ export const NetworkSelectionForm = () => {
       <Col span={24}>
         <Form.Item
           name='activatedNetworks'
-          dependencies={['activatedGuestNetworks']}
           rules={[
             {
               validator: (_, value) => {
