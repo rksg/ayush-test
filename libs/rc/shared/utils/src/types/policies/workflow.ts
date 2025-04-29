@@ -10,7 +10,9 @@ export interface Workflow {
   allowedIps?: string[]
   disallowedIps?: string[]
   startStepId?: string
-  links?: { rel: string, href: string }[]
+  links?: { rel: string, href: string }[],
+  publishReadiness?: number,
+  statusReasons?: StatusReason[]
 }
 
 export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED' | 'VALIDATE'
@@ -120,4 +122,16 @@ export interface WorkflowActionDefinition {
   description?: string,
   terminationType?: 'NONE' | 'OPTIONAL' | 'REQUIRED',
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
+}
+
+enum StatusCodes {
+  IncorrectOnboarding = 'incorrect.onboarding.count',
+  MissingRequiredCount = 'missing.required.count',
+  DisconnctedSteps = 'disconnected.steps',
+  InvalidStepsOrDependencies = 'invalid.steps.or.dependencies'
+}
+
+export interface StatusReason {
+  statusCode: StatusCodes,
+  statusReason: string
 }

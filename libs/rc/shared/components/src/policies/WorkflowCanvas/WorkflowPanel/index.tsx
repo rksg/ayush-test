@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from 'react'
 
+import { Col, Divider, Row, Typography } from 'antd'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 import {
   ReactFlowProvider,
   useEdgesState,
@@ -8,19 +11,24 @@ import {
 } from 'reactflow'
 
 
-import { Loader }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { Loader, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   useGetWorkflowActionDefinitionListQuery,
+  useGetWorkflowByIdQuery,
   useGetWorkflowStepsByIdQuery,
-  useLazyGetWorkflowActionRequiredDefinitionsQuery
+  useLazyGetWorkflowActionRequiredDefinitionsQuery,
+  useLazySearchWorkflowsVersionListQuery
 } from '@acx-ui/rc/services'
-import { ActionType, toReactFlowData, WorkflowPanelMode } from '@acx-ui/rc/utils'
+import { ActionType, StatusReason, toReactFlowData, Workflow, WorkflowPanelMode } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                          from '@acx-ui/utils'
 
 import ActionLibraryDrawer  from '../ActionLibraryDrawer'
 import ActionsLibraryDrawer from '../ActionLibraryDrawer/ActionsLibraryDrawer'
 import StepDrawer           from '../StepDrawer/StepDrawer'
 
+import { PublishedTooltipContent }                     from './PublishedTooltipContent'
 import * as UI                                         from './styledComponents'
 import WorkflowCanvas                                  from './WorkflowCanvas'
 import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextProvider'
@@ -171,7 +179,40 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 }
 
 export function WorkflowPanel (props: WorkflowPanelProps) {
+  const { $t } = useIntl()
+  const { policyId } = useParams()
+  const workflowValidationEnhancementFFToggle =
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+  const workflowQuery = useGetWorkflowByIdQuery({ params: { id: policyId } })
+  const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const { type = PanelType.Default, ...rest } = props
+  const [published, setPublished] = useState<Workflow>()
+  const [publishReadiness, setPublishReadiness] = useState<number>(0)
+  const [statusReason, setStatusReason] = useState<StatusReason[]>([])
+
+  useEffect(() => {
+    if (workflowQuery.isLoading || !workflowQuery.data) return
+    fetchVersionHistory(workflowQuery.data.id!!)
+    setPublishReadiness(workflowQuery.data?.publishReadiness || 0)
+    setStatusReason(workflowQuery.data?.statusReasons || [])
+  }, [workflowQuery.data, workflowQuery.isLoading])
+
+
+  const fetchVersionHistory = async (id: string) => {
+    try {
+      const result = await searchVersionedWorkflows(
+        { params: { excludeContent: 'false' }, payload: [id] }
+      ).unwrap()
+      if (result) {
+        result.forEach(v => {
+          if (v.publishedDetails?.status === 'PUBLISHED') {
+            setPublished(v)
+          }
+        })
+      }
+    } catch (e) {}
+  }
+
   const content = <ReactFlowProvider>
     <WorkflowContextProvider workflowId={props.workflowId}>
       <WorkflowPanelWrapper
@@ -181,6 +222,71 @@ export function WorkflowPanel (props: WorkflowPanelProps) {
   </ReactFlowProvider>
 
   return type === PanelType.NoCard
-    ? content
+    ? <>{ workflowValidationEnhancementFFToggle && <div style={{
+      width: '100%',
+      padding: '7px 20px',
+      background: 'var(--acx-neutrals-20)'
+    }}>
+      <Row gutter={16} style={{ alignItems: 'center' }}>
+        <Col span={2}>
+          <Typography.Title
+            level={4}
+            style={{
+              margin: '0px'
+            }}
+            type='secondary'> { $t({ defaultMessage: 'Sandbox' }) }
+            <Divider
+              style={{
+                borderLeft: '1px solid var(--acx-neutrals-40) !important'
+              }}
+              type='vertical' />
+          </Typography.Title>
+        </Col>
+        <Col span={16}>
+          { $t({ defaultMessage: 'Last modified {modifiedDate}' },{
+            modifiedDate: published?.publishedDetails?.publishedDate
+              ? formatter(
+                DateFormatEnum.DateTimeFormatWith12HourSystem)(
+                published?.publishedDetails?.publishedDate)
+              : noDataDisplay
+          }) }
+        </Col>
+        <Col span={6}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'right',
+            alignItems: 'center'
+          }}>
+            <UI.PublishReadinessProgress progress={publishReadiness}>
+              <div className='progress-bar'
+                style={{
+                  width: publishReadiness + '%'
+                }}>
+                <span className='status-label'>
+                  { $t({ defaultMessage: 'Publish Readiness' }) }
+                </span>
+              </div>
+            </UI.PublishReadinessProgress>
+            <div style={{
+              display: 'inline-flex',
+              width: '20px',
+              height: '20px',
+              margin: '0px 8px'
+            }}> {
+                !!statusReason.length
+            && <Tooltip.Info
+              placement='bottomLeft'
+              showArrow={false}
+              overlayStyle={{
+                width: '395px'
+              }}
+              isFilled
+              title={<PublishedTooltipContent reasons={
+            statusReason as StatusReason[]
+              } />}/>} </div>
+          </div>
+        </Col>
+      </Row>
+    </div> }{content}</>
     : <UI.WorkflowCard>{content}</UI.WorkflowCard>
 }
