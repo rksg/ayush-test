@@ -277,19 +277,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     <Form.Item name='allApGroupsRadioTypes'
                       label={<>
                         {intl.$t({ defaultMessage: 'Radio Band' })}
-                        {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
-                          title={''}
-                          showDetailButton
-                          placement='bottom'
-                          onClick={() => setOwe6gDrawerVisible(true)}
-                        />}
-                        {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
-                          visible={owe6gDrawerVisible}
-                          type={ApCompatibilityType.ALONE}
-                          networkId={network?.id}
-                          featureName={InCompatibilityFeatures.OWE_TRANSITION_6G}
-                          onClose={() => setOwe6gDrawerVisible(false)}
-                        />}
+                        {isR370Unsupported6gFeatures && <>
+                          <ApCompatibilityToolTip
+                            title={''}
+                            showDetailButton
+                            placement='bottom'
+                            onClick={() => setOwe6gDrawerVisible(true)}
+                          />
+                          <ApCompatibilityDrawer
+                            visible={owe6gDrawerVisible}
+                            type={ApCompatibilityType.ALONE}
+                            networkId={network?.id}
+                            featureName={InCompatibilityFeatures.OWE_TRANSITION_6G}
+                            onClose={() => setOwe6gDrawerVisible(false)}
+                          />
+                        </>}
                       </>}
                       rules={[{ required: true },
                         {
