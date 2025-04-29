@@ -125,6 +125,12 @@ describe('Aps', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json({ ...mockVenueOptions }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0, page: 1, data: []
+        }))
       )
     )
   })

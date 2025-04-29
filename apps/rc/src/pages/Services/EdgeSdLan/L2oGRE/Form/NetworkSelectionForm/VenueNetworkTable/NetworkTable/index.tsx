@@ -130,8 +130,11 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const currentNetworkList = activated?.[venueId]
 
   const tunnelProfileOptions = useMemo(() => {
+    const dcTunnelProfileBoundClusterId = availableTunnelProfiles?.find(profile =>
+      profile.id === dcTunnelProfileId)?.destinationEdgeClusterId
+
     const selectedCluster = associatedEdgeClusters?.find(
-      cluster => cluster.clusterId === dcTunnelProfileId
+      cluster => cluster.clusterId === dcTunnelProfileBoundClusterId
     )
 
     const isSupportL2Gre = selectedCluster?.edgeList?.every(
