@@ -68,6 +68,7 @@ export function useMenuConfig () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -297,7 +298,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI || isIotEnabled) ? [{
       label: $t({ defaultMessage: 'Gateway' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
@@ -310,6 +311,10 @@ export function useMenuConfig () {
         ...(showRwgUI ? [{
           uri: '/ruckus-wan-gateway',
           label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
+        }] : []),
+        ...(isIotEnabled ? [{
+          uri: '/devices/iotController',
+          label: $t({ defaultMessage: 'IoT Controller' })
         }] : [])
       ]
     }] : []
