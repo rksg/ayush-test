@@ -175,7 +175,7 @@ describe('Edge Ports Table', () => {
 
     it('should display text - off when link health check is off', async () => {
       const mockData = cloneDeep(clusterPortsWithSerialNumber)
-      mockData[0].linkHealthMonitoring = {
+      mockData[0].multiWan = {
         linkHealthMonitorEnabled: false
       }
 
