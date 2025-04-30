@@ -56,7 +56,7 @@ export function EdgeSdLanContextProvider (props: { children: ReactNode, serviceI
 
   const { associatedEdgeClusters, isAssociatedEdgeClustersLoading } = useGetEdgeClusterListQuery({
     payload: {
-      fields: ['clusterId', 'hasCorePort', 'highAvailabilityMode'],
+      fields: ['clusterId', 'hasCorePort', 'highAvailabilityMode', 'edgeList'],
       filters: {
         clusterId: availableTunnelProfiles?.map(profile =>
           profile.destinationEdgeClusterId).filter(Boolean)

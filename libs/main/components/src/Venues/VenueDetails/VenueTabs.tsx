@@ -16,11 +16,13 @@ import { hasRaiPermission, hasRoles, isCoreTier, useUserProfileContext } from '@
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isCustomRole, accountTier } = useUserProfileContext()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const templateBasePath = useConfigTemplateTenantLink(`venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
-  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCore = isCoreTier(accountTier)
+  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {
@@ -33,8 +35,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const propertyConfig = useGetPropertyConfigsQuery({ params }, {
     skip: !enableProperty || isTemplate
   })
-  const { isCustomRole, accountTier } = useUserProfileContext()
-  const isCore = isCoreTier(accountTier)
+
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
