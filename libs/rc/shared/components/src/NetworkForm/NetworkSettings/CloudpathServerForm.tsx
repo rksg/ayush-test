@@ -44,11 +44,11 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
     !supportRadsec && form.setFieldsValue({ ...data })
-  },[data])
+  },[supportRadsec, data])
 
   useEffect(()=>{
     supportRadsec && form.setFieldsValue({ ...data })
-  },[data?.id])
+  },[supportRadsec, data?.id])
 
   useEffect(() => {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {

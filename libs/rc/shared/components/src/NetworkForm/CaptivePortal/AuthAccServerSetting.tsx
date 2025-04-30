@@ -66,7 +66,7 @@ export function AuthAccServerSetting () {
         onChange(true, 'enableAuthProxy')
       }
     }
-  },[authRadius])
+  },[supportRadsec, authRadius])
   useEffect(()=>{
     if(accountingRadius){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
@@ -75,7 +75,7 @@ export function AuthAccServerSetting () {
         onChange(true, 'enableAccountingProxy')
       }
     }
-  },[accountingRadius])
+  },[supportRadsec, accountingRadius])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>

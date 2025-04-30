@@ -65,7 +65,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
     if(supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [data?.id])
+  }, [supportRadsec, data?.id])
 
   // only create mode
   useEffect(()=>{

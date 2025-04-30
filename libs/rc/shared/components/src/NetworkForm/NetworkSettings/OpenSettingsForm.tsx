@@ -8,7 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip }                               from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   MacAuthMacFormatEnum,
@@ -50,13 +50,13 @@ export function OpenSettingsForm () {
     if(!supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [data])
+  }, [supportRadsec, data])
 
   useEffect(()=>{
     if(supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [data?.id])
+  }, [supportRadsec, data?.id])
 
   const setFieldsValue = () => {
     data && form.setFieldsValue({

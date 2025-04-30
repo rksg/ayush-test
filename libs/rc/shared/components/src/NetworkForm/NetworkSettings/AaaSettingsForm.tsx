@@ -340,13 +340,13 @@ function AaaService () {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAuthProxy', true)
     }
-  }, [selectedAuthRadius])
+  }, [supportRadsec, selectedAuthRadius])
 
   useEffect(() => {
     if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAccountingProxy', true)
     }
-  }, [selectedAcctRadius])
+  }, [supportRadsec, selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'

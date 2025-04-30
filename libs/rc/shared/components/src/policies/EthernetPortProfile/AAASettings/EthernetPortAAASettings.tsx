@@ -28,13 +28,13 @@ export function EthernetPortAAASettings () {
     if (supportRadsec && authRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAuthProxy', true)
     }
-  }, [authRadius])
+  }, [supportRadsec, authRadius])
 
   useEffect(() => {
     if (supportRadsec && acctRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAccountingProxy', true)
     }
-  }, [acctRadius])
+  }, [supportRadsec, acctRadius])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
