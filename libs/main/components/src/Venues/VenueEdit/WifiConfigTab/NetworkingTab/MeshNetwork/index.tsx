@@ -78,7 +78,8 @@ const Mesh6GhzInfoIcon = (props: MeshCompatibilityProps) => {
         onClick={() => setMesh5g6gOnlyDrawerVisible(true)}
         icon={<Tooltip.Info iconStyle={{
           position: 'absolute',
-          bottom: '0px'
+          marginLeft: '2px',
+          bottom: '1px'
         }}
         isFilled />}
       />
@@ -93,7 +94,8 @@ const Mesh6GhzInfoIcon = (props: MeshCompatibilityProps) => {
     :
     <Tooltip.Info iconStyle={{
       position: 'absolute',
-      bottom: '0px'
+      marginLeft: '2px',
+      bottom: '1px'
     }}
     isFilled
     title={
@@ -118,7 +120,8 @@ const Mesh5GhzInfoIcon = (props: MeshCompatibilityProps) => {
         onClick={() => setMesh5g6gOnlyDrawerVisible(true)}
         icon={<Tooltip.Info iconStyle={{
           position: 'absolute',
-          bottom: '0px'
+          marginLeft: '2px',
+          bottom: '1px'
         }}
         isFilled />}
       />
@@ -133,7 +136,8 @@ const Mesh5GhzInfoIcon = (props: MeshCompatibilityProps) => {
     :
     <Tooltip.Info iconStyle={{
       position: 'absolute',
-      bottom: '0px'
+      marginLeft: '2px',
+      bottom: '1px'
     }}
     isFilled
     title={
@@ -525,7 +529,9 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
         }
         />
         { !isSsidEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handleSsidEdit}>
+          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handleSsidEdit}
+            style={{ marginTop: '4px'}}
+          >
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -559,7 +565,8 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
           />}
         />
         { !isPassphraseEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handlePassphraseEdit}>
+          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handlePassphraseEdit}
+            style={{ marginTop: '4px' }}>
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -596,7 +603,7 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
                 <Radio value='5-6-GHz' data-testid='radio56'>
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
-                <Radio value='5-GHz' data-testid='radio5'>
+                <Radio value='5-GHz' data-testid='radio5' style={{ width: '100%' }}>
                   {$t({ defaultMessage: '5 GHz' })}
                   <Mesh5GhzInfoIcon
                     compatibilityEnabled={isR370ToggleEnable}

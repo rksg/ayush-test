@@ -39,7 +39,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   VLANPoolViewModelType,
-  validateRadioBandForDsaeNetwork
+  validateRadioBandForDsaeNetwork,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -48,6 +49,7 @@ import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InC
 import { ApGroupItem } from './ApGroupItem'
 import { RadioSelect } from './RadioSelect'
 import * as UI         from './styledComponents'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const isDisableAllAPs = (apGroups?: NetworkApGroup[]) => {
   if (!apGroups) {
@@ -277,12 +279,16 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     <Form.Item name='allApGroupsRadioTypes'
                       label={<>
                         {intl.$t({ defaultMessage: 'Radio Band' })}
-                        {isR370Unsupported6gFeatures && <>
+                        {isR370Unsupported6gFeatures &&
+                         network?.wlanSecurity === WlanSecurityEnum.OWETransition && <>
                           <ApCompatibilityToolTip
                             title={''}
                             showDetailButton
                             placement='bottom'
                             onClick={() => setOwe6gDrawerVisible(true)}
+                            icon={<QuestionMarkCircleOutlined
+                              style={{ height: '16px', width: '16px', marginBottom: 0 }}
+                            />}
                           />
                           <ApCompatibilityDrawer
                             visible={owe6gDrawerVisible}
