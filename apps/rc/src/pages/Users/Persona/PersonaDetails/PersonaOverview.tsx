@@ -51,7 +51,7 @@ export function PersonaOverview (props:
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
-  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE) || true
+  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)
   const [authServiceExists, setAuthServiceExists] = useState(false)
 
@@ -195,9 +195,7 @@ export function PersonaOverview (props:
                   policyId: externalIdentityData?.identityProviderId!,
                   oper: PolicyOperation.DETAIL
                 })}>
-                <Button type='default'>
                   {externalIdentityData?.identityProviderType}
-                </Button>
               </TenantLink>
                 : externalIdentityData?.identityProviderType
               }
