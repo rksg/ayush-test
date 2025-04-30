@@ -7,7 +7,7 @@ jobs:
         build:
           dockerfile: ./Dockerfile.ra
           arg:
-            - CIRCLE_SHA1: ${CI_COMMIT_SHA}
+            - CI_COMMIT_SHA: ${CI_COMMIT_SHA}
       - build_type: cloud
         target: gar
         name: acx-ui
