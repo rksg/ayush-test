@@ -27,9 +27,9 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
-    render: (_, { mac, name },__,highlightFn) =>
+    render: (_, { mac, name, serial },__,highlightFn) =>
       <TenantLink
-        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
           ? 'reports': 'overview'}`
         }>
         {highlightFn(name)}
