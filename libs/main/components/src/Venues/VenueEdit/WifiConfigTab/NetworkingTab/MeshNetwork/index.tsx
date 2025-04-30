@@ -480,7 +480,7 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
       {$t({ defaultMessage: 'Mesh Network' })}
       {(hasMeshAPs && meshEnabled)?
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
-          <div>{$t({ defaultMessage: 'ON' })}</div>
+          <div>{$t({ defaultMessage: 'On' })}</div>
           <div>{
             $t({ defaultMessage: 'Since there are active mesh links in this <venueSingular></venueSingular>, in order prevent networking issues, you cannot turn mesh networking off' })}
           </div>
