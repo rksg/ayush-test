@@ -41,6 +41,7 @@ export function CloudpathForm () {
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
