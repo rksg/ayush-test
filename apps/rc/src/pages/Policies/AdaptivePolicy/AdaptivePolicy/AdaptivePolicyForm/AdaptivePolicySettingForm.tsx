@@ -20,7 +20,8 @@ import {
   CriteriaOption, defaultSort,
   RadiusAttributeGroup, RulesManagementUrlsInfo, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { getOpsApi } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getOpsApi }      from '@acx-ui/utils'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -244,8 +245,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowKey='id'
                 columns={useColumns()}
                 dataSource={evaluationRules}
-                rowActions={rowActions}
-                rowSelection={{ type: 'radio' }}
+                rowActions={filterByAccess(rowActions)}
+                rowSelection={filterByAccess(rowActions).length > 0 && { type: 'radio' }}
                 actions={[{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
