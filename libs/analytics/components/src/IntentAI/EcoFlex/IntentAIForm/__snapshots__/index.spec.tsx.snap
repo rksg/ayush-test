@@ -1678,7 +1678,7 @@ h5.c5.ant-typography {
               <h4
                 class="ant-typography c5 c6 c7"
               >
-                What is your primary network intent for Venue: My-Venue
+                What is your primary network intent for Venue “My-Venue” ?
               </h4>
               <div
                 class="ant-form-item"
