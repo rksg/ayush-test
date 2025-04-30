@@ -142,7 +142,7 @@ describe('Network Drawer', () => {
     await click(within(rows[1]).getByRole('switch'))
 
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSubmitFn).toBeCalledWith({ [mockedVenueId]: [{ networkId: 'network_2', networkName: 'MockedNetwork 2' }] })
+    expect(mockedSubmitFn).toBeCalledWith({ [mockedVenueId]: [{ networkId: 'network_2', networkName: 'MockedNetwork 2', tunnelProfileId: '' }] })
   })
 
   it('should correctly deactivate by switch', async () => {

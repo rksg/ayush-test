@@ -24,7 +24,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles
+  hasRoles,
+  isCoreTier
 }             from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
@@ -37,11 +38,12 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
   const { editContextData, setEditContextData } = venueEditTabContext
   const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const enablePropertyManagement = usePropertyManagementEnabled()
+
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -123,7 +125,7 @@ function VenueEditTabs () {
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
         />
       }
-      {enablePropertyManagement &&
+      { enablePropertyManagement &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
           key='property'
@@ -138,6 +140,8 @@ export function usePropertyManagementEnabled () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const hasPropertyManagementPermission =
     rbacOpsApiEnabled
       ? hasAllowedOperations([
@@ -146,5 +150,5 @@ export function usePropertyManagementEnabled () {
       ])
       : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission
+  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission && !isCore
 }

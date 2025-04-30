@@ -18,6 +18,7 @@ export type Metadata = {
   error?: { details?: Record<string, unknown>[] }
   oneClickOptimize?: boolean
   preferences?: IntentPreferences
+  preferencesUpdatedAt?: string
   retries?: number
   scheduledAt: string
   scheduledBy?: string
