@@ -4,14 +4,13 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 
-import { Features, useIsSplitOn }                                                                                        from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, CommonUrlsInfo, NetworkSaveData, PersonaUrls, RulesManagementUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                      from '@acx-ui/store'
-import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor }                        from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                                                                  from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, NetworkSaveData, WifiUrlsInfo }                from '@acx-ui/rc/utils'
+import { Provider }                                                                               from '@acx-ui/store'
+import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                           from '@acx-ui/user'
 
-import { certificateAuthorityList, certificateTemplateList, policySetList } from '../../policies/CertificateTemplate/__test__/fixtures'
-import { mockPersonaGroupTableResult }                                      from '../../users/__tests__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
