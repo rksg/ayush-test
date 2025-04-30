@@ -204,11 +204,10 @@ export function WorkflowPanel (props: WorkflowPanelProps) {
         { params: { excludeContent: 'false' }, payload: [id] }
       ).unwrap()
       if (result) {
-        result.forEach(v => {
-          if (v.publishedDetails?.status === 'PUBLISHED') {
-            setPublished(v)
-          }
-        })
+        const publishedVersion = result?.find(v => v.publishedDetails?.status === 'PUBLISHED')
+        if (publishedVersion) {
+          setPublished(publishedVersion)
+        }
       }
     } catch (e) {}
   }
