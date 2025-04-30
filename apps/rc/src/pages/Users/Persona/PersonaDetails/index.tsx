@@ -160,7 +160,9 @@ function PersonaDetails () {
 
   useEffect(() => {
     if (identityClientsQuery?.data) {
-      setDeviceCount(identityClientsQuery.data?.totalCount ?? 0)
+      setDeviceCount(identityClientsQuery.data?.totalCount > 100
+        ? 100
+        : identityClientsQuery.data?.totalCount ?? 0)
     }
   }, [identityClientsQuery.data])
 

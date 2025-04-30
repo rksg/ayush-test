@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
-import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
+import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                                                                        from '@acx-ui/rc/components'
+import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetDHCPProfileListViewModelWithModeQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -14,6 +14,8 @@ import {
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
   DHCPPool,
+  DHCP_RESERVED_IPS,
+  DHCPConfigTypeEnum,
   IpUtilsService,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
@@ -30,8 +32,10 @@ export default function DHCPTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const tableQuery = useTableQuery({
-    useQuery: useGetDHCPProfileListViewModelQuery,
+    // eslint-disable-next-line max-len
+    useQuery: showWarning ? useGetDHCPProfileListViewModelWithModeQuery : useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
       filters: {},
       fields: [
@@ -143,6 +147,7 @@ export default function DHCPTable () {
 function useColumns () {
   const { $t } = useIntl()
   const params = useParams()
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },
@@ -183,13 +188,10 @@ function useColumns () {
       dataIndex: 'networkAddress'
     },
     {
-      key: 'networkAddress',
+      key: 'numberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      dataIndex: 'networkAddress',
-      align: 'center',
-      render: (_, row)=>{
-        return IpUtilsService.countIpRangeSize(row.startAddress, row.endAddress)
-      }
+      dataIndex: 'numberOfHosts',
+      align: 'center'
     }
   ]
   const columns: TableProps<DHCPSaveData>['columns'] = [
@@ -222,7 +224,14 @@ function useColumns () {
       sorter: true,
       render: (_, row) =>{
         if (!row.dhcpPools || row.dhcpPools.length === 0) return 0
-        const dhcpPools = row.dhcpPools
+        let dhcpPools
+        if (showWarning && row.dhcpMode === DHCPConfigTypeEnum.MULTIPLE) {
+          // eslint-disable-next-line max-len
+          dhcpPools = row.dhcpPools.map((item) => ({ ...item, numberOfHosts: IpUtilsService.countIpRangeSize(item.startAddress, item.endAddress) - DHCP_RESERVED_IPS }))
+        } else {
+          // eslint-disable-next-line max-len
+          dhcpPools = row.dhcpPools.map((item) => ({ ...item, numberOfHosts: IpUtilsService.countIpRangeSize(item.startAddress, item.endAddress) }))
+        }
         return <Tooltip title={
           <Table<DHCPPool>
             type='compactBordered'

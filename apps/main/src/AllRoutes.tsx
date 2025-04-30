@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
-import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
-import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
-import { RolesEnum }                         from '@acx-ui/types'
-import { AuthRoute, hasRoles }               from '@acx-ui/user'
-import { AccountTier }                       from '@acx-ui/utils'
+import { PageNoPermissions, PageNotFound }            from '@acx-ui/components'
+import { useStreamActivityMessagesQuery }             from '@acx-ui/rc/services'
+import { Route, TenantNavigate, rootRoutes }          from '@acx-ui/react-router-dom'
+import { RolesEnum }                                  from '@acx-ui/types'
+import { AuthRoute, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { AccountTier }                                from '@acx-ui/utils'
 
 import Administration                                                            from './pages/Administration'
 import MigrationForm                                                             from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
@@ -40,8 +40,10 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
+  const { data: userProfile } = useUserProfileContext()
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isSupportUser = Boolean(userProfile?.support)
 
   const getSpecialRoleRoute = () => {
     if (isGuestManager) {
@@ -80,7 +82,7 @@ function AllRoutes () {
           </Route>
           <Route path='dataStudio/*'
             element={
-              <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+              <AuthRoute unsupportedTiers={isSupportUser ? []: [AccountTier.CORE]}>
                 <ReportsBase />
               </AuthRoute>}>
             <Route path='*' element={<ReportsRoutes />} />

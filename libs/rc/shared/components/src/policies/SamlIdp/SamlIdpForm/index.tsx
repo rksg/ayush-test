@@ -262,6 +262,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 importRequest={handleImportRequest}
                 formDataName={'unitImports'}
                 onClose={() => setUploadXmlDrawerVisible(false)}
+                footerButtons={['cancel', 'import']}
               />
             </Col>
           </Row>
@@ -477,14 +478,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
         visible={encryptCertFormVisible}
         setVisible={setEncryptCertFormVisible}
         handleSave={handleEncryptCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.KEY_ENCIPHERMENT]}
       />
       <CertificateDrawer
         visible={signingCertFormVisible}
         setVisible={setSigningCertFormVisible}
         handleSave={handleSigningCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.DIGITAL_SIGNATURE]}
       />
     </>
