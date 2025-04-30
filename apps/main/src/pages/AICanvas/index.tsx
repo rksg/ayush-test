@@ -1,23 +1,81 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Divider, Form, Spin } from 'antd'
-import { debounce }            from 'lodash'
-import moment                  from 'moment'
-import { DndProvider }         from 'react-dnd'
-import { HTML5Backend }        from 'react-dnd-html5-backend'
-import { useIntl }             from 'react-intl'
-import { v4 as uuidv4 }        from 'uuid'
+import { Divider, Form, Spin }    from 'antd'
+import { debounce, difference }   from 'lodash'
+import moment                     from 'moment'
+import { DndProvider }            from 'react-dnd'
+import { HTML5Backend }           from 'react-dnd-html5-backend'
+import { defineMessage, useIntl } from 'react-intl'
+import { v4 as uuidv4 }           from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/components'
-import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation, useSendFeedbackMutation } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage }                                                             from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import {
+  SendMessageOutlined,
+  HistoricalOutlined,
+  Plus,
+  Close,
+  CanvasCollapse,
+  CanvasExpand
+}    from '@acx-ui/icons-new'
+import {
+  // useChatAiMutation,
+  useStreamChatsAiMutation,
+  useGetAllChatsQuery,
+  useGetChatsMutation,
+  useSendFeedbackMutation
+} from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
+
+enum MessageRole {
+  AI = 'AI',
+  SYSTEM = 'SYSTEM',
+  STREAMING = 'STATUS',
+  USER = 'USER'
+}
+
+const MAX_POLLING_TIMES = 30 // temp
+
+/* eslint-disable max-len */
+export const StreamingMessages = {
+  CRAFTING_QUERY: defineMessage({ defaultMessage: 'I’m crafting a query to answer your question!' }),
+  CRAFTING_SQL_QUERY: defineMessage({ defaultMessage: 'I’m crafting a SQL query to answer your questions!' }),
+  EXECUTE_QUERY: defineMessage({ defaultMessage: 'Let me execute the query.' }),
+  BUILD_RESULT: defineMessage({ defaultMessage: 'I will build the result that gets the job done.' })
+}
+/* eslint-enable max-len */
+
+export const getStreamingStep = (step: string) => {
+  const isRepeatStep = step !== '4.5' && step.includes('.')
+  if (isRepeatStep) {
+    return 3.5
+  } else if (step === '0') { //temp
+    return 1
+  }
+  return Number(step)
+}
+
+export const getStreamingWordingKey = (step?: number) => {
+  switch (step) {
+    case 1:
+      return 'CRAFTING_QUERY'
+      break
+    case 2:
+      return 'CRAFTING_SQL_QUERY'
+    case 3:
+    case 3.5:
+      return 'EXECUTE_QUERY'
+    case 4:
+    case 4.5:
+      return 'BUILD_RESULT'
+    default:
+      return 'CRAFTING_QUERY'
+  }
+}
 
 const Message = (props:{
     chat: ChatMessage,
@@ -59,13 +117,27 @@ const Message = (props:{
     }
   }, [chat.text])
 
-  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+  const streamingStep = chat.role === MessageRole.STREAMING
+    ? getStreamingStep(chat.text) : undefined
+  const streamingMsgKey = getStreamingWordingKey(streamingStep) as keyof typeof StreamingMessages
+
+  return chat.role === MessageRole.SYSTEM
+    ? <Divider plain>{deletedHint}</Divider>
     : <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        {/* eslint-disable-next-line max-len */}
-        <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+      <div className={`chat-container ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+        { chat.role !== MessageRole.STREAMING
+          // eslint-disable-next-line max-len
+          ? <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+          : <div className='chat-bubble loading' ref={chatBubbleRef} style={{ width: '90%' }}>
+            <div className='loader'></div>
+            { streamingMsgKey && $t(StreamingMessages[streamingMsgKey]) }
+            { !!streamingStep &&
+              <div className='progress-bar' style={{ width: `${streamingStep * 20}%` }}></div>
+            }
+          </div>
+        }
       </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+      { chat.role === MessageRole.AI && !!chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],
         sessionId,
         id: chat.id,
@@ -79,12 +151,14 @@ const Message = (props:{
         <div ref={messageTailRef}
           data-testid='messageTail'
           // eslint-disable-next-line max-len
-          className={`${chat.role === 'AI' ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
-          <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-            {moment(chat.created).format('hh:mm A')}
+          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
+          <div className={`timestamp ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+            { chat.created !== '-' && chat.role !== MessageRole.STREAMING
+              ? moment(chat.created).format('hh:mm A') : <>&nbsp;</>
+            }
           </div>
           {
-            chat.role === 'AI' &&
+            chat.role === MessageRole.AI &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 data-testid='thumbs-up-btn'
@@ -125,7 +199,8 @@ const Messages = memo((props:{
     text: $t({ defaultMessage:
       'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
   }
-  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef, onUserFeedback } = props
+  const { moreloading, chats, sessionId, groups, canvasRef, onUserFeedback } = props
+
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
@@ -139,7 +214,7 @@ const Messages = memo((props:{
       // eslint-disable-next-line max-len
       <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} onUserFeedback={onUserFeedback}/>
     ))}
-    {aiBotLoading && <div className='loading'><Spin /></div>}
+    {/* {aiBotLoading && <div className='loading'><Spin /></div>} */}
   </div>})
 
 export default function AICanvasModal (props: {
@@ -151,7 +226,9 @@ export default function AICanvasModal (props: {
   const { $t } = useIntl()
   const scrollRef = useRef(null)
   const [form] = Form.useForm()
-  const [chatAi] = useChatAiMutation()
+  // const [chatAi] = useChatAiMutation()
+  const [streamChatsAi] = useStreamChatsAiMutation()
+
   const [getChats] = useGetChatsMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
@@ -275,50 +352,157 @@ export default function AICanvasModal (props: {
       handleSearch()
     }
   }
+
+  const handlePollStreaming = async (
+    chatResponse: RuckusAiChat, sessionId: string, streamMessageIds: string[], attempt = 0
+  ) => {
+    if (attempt >= MAX_POLLING_TIMES) {
+      // console.warn('Polling stopped: max polling times reached')
+      setAiBotLoading(false)
+      return
+    }
+
+    try {
+      const streamingResponse = await getChats({
+        params: { sessionId },
+        payload: {
+          page: 1, //
+          pageSize: 100,
+          sortOrder: 'DESC'
+        }
+      }).unwrap()
+
+      const streamingMessageIds = streamingResponse.data
+        .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+      const successedStreamIds = difference(streamMessageIds, streamingMessageIds)
+
+      if (!!streamingMessageIds.length) {
+        setChats([...streamingResponse.data].reverse())
+        await handlePollStreaming(chatResponse, sessionId, streamMessageIds, attempt + 1)
+      } else {
+        // if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+        //   || !historyData?.length ) {
+        //   getAllChatsQuery.refetch()
+        // }
+        // if(sessionId && isNewChat) {
+        //   setIsNewChat(false)
+        // }
+        if(streamingResponse) {
+          const tempChats = streamingResponse.data.map(msg => {
+            if (successedStreamIds.includes(msg.id)) {
+              return {
+                ...msg,
+                role: MessageRole.STREAMING,
+                text: '4.5'
+              }
+            }
+            return msg
+          })
+          setChats(tempChats.reverse())
+          setTimeout(()=>{
+            if(chatResponse.sessionId && !sessionId) {
+              setSessionId(chatResponse.sessionId)
+            }
+            setChats([...streamingResponse.data].reverse())
+            setTotalPages(streamingResponse.totalPages)
+            setPage(1)
+          }, 1500)
+        }
+        setAiBotLoading(false)
+      }
+    } catch (error) {
+      console.error(error) // eslint-disable-line no-console
+      setAiBotLoading(false)
+      getSessionChats(1)
+    }
+  }
+
   const handleSearch = async (suggestion?: string) => {
     if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
     let question = suggestion || searchText
     question = question.replaceAll('\n', '<br/>')
     const newMessage = {
       id: uuidv4(),
-      role: 'USER',
+      created: '-',
+      role: MessageRole.USER,
       text: question
     }
-    setChats([...chats, newMessage])
+    const fakeInitStreamingMessage = {
+      id: uuidv4(),
+      created: '-',
+      role: MessageRole.STREAMING,
+      text: ''
+    }
+    setChats([...chats, newMessage, fakeInitStreamingMessage])
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    await chatAi({
+
+    await streamChatsAi({
       customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,
         ...(sessionId && { sessionId })
       }
-    })
-      .then(({ data: response, error })=>{
-        if(error) {
-          getSessionChats(1)
-        } else {
-          if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-        || !historyData?.length){
-            getAllChatsQuery.refetch()
-          }
-          if(sessionId && isNewChat) {
-            setIsNewChat(false)
-          }
-          if(response) {
-            if(response.sessionId && !sessionId) {
-              setSessionId(response.sessionId)
-            }
-            setChats([...response.messages].reverse())
-            setTotalPages(response.totalPages)
-            setPage(1)
-          }
+    }).then(async ({ data, error })=>{
+      if(error) {
+        getSessionChats(1)
+      } else {
+        const response = data as RuckusAiChat
+        if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+      || !historyData?.length){
+          getAllChatsQuery.refetch()
         }
-        setAiBotLoading(false)
-      })
+        if(sessionId && isNewChat) {
+          setIsNewChat(false)
+        }
+        if(response) {
+          if(response.sessionId && !sessionId) {
+            setSessionId(response.sessionId)
+          }
+          const startStreamIds = response?.messages
+            .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+
+          // setChats([...response.messages].reverse())
+          // setTotalPages(response.totalPages)
+          // setPage(1)
+          await handlePollStreaming(response, response.sessionId, startStreamIds)
+        }
+      }
+    })
+
+    // await chatAi({
+    //   customHeaders: { timezone },
+    //   payload: {
+    //     question,
+    //     pageSize: 100,
+    //     ...(sessionId && { sessionId })
+    //   }
+    // })
+    //   .then(({ data: response, error })=>{
+    //     if(error) {
+    //       getSessionChats(1)
+    //     } else {
+    //       if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+    //     || !historyData?.length){
+    //         getAllChatsQuery.refetch()
+    //       }
+    //       if(sessionId && isNewChat) {
+    //         setIsNewChat(false)
+    //       }
+    //       if(response) {
+    //         if(response.sessionId && !sessionId) {
+    //           setSessionId(response.sessionId)
+    //         }
+    //         setChats([...response.messages].reverse())
+    //         setTotalPages(response.totalPages)
+    //         setPage(1)
+    //       }
+    //     }
+    //     setAiBotLoading(false)
+    //   })
   }
 
   const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {

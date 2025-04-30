@@ -11,6 +11,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/chats',
     newApi: true
   },
+  streamChats: {
+    method: 'post',
+    url: '/ruckusAi/chats?stream=true',
+    newApi: true
+  },
   getChat: {
     method: 'get',
     url: '/ruckusAi/chats/:sessionId',
