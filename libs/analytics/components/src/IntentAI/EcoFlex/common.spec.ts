@@ -3,64 +3,53 @@ import { formatter }     from '@acx-ui/formatter'
 
 import { mockedKpiData } from './__tests__/mockedEcoFlex'
 import {
-  getDeltaRatio,
-  getDeltaValue,
-  getPillValue,
+  getKpiDelta,
   getKPIConfigsData,
   BenefitsConfig
 } from './common'
 
 describe('EcoFlex common utils', () => {
-  describe('getDeltaRatio', () => {
-    it('returns correct ratio for valid numbers', () => {
-      expect(getDeltaRatio(100, 120)).toBe(0.2)
-      expect(getDeltaRatio(50, 25)).toBe(-0.5)
-    })
-    it('returns 0 if previous is 0', () => {
-      expect(getDeltaRatio(0, 100)).toBe(0)
-    })
-    it('returns 0 if any arg is not a number', () => {
-      expect(getDeltaRatio(undefined, 100)).toBe(0)
-      expect(getDeltaRatio(100, undefined)).toBe(0)
-      expect(getDeltaRatio(undefined, undefined)).toBe(0)
-    })
-  })
-
-  describe('getDeltaValue', () => {
-    it('returns correct difference for valid numbers', () => {
-      expect(getDeltaValue(100, 120)).toBe(20)
-      expect(getDeltaValue(50, 25)).toBe(-25)
-    })
-    it('returns 0 if any arg is not a number', () => {
-      expect(getDeltaValue(undefined, 100)).toBe(0)
-      expect(getDeltaValue(100, undefined)).toBe(0)
-      expect(getDeltaValue(undefined, undefined)).toBe(0)
-    })
-  })
-
-  describe('getPillValue', () => {
-
+  describe('getKpiDelta', () => {
     const countFormatter = formatter('countFormat')
-
+    const percentFormatter = formatter('percentFormat')
     it('returns correct trend and value for "+" deltaSign', () => {
-      expect(getPillValue(5, countFormatter, '+'))
-        .toEqual({ value: '5', trend: TrendTypeEnum.Positive })
-      expect(getPillValue(-5, countFormatter, '+'))
+      expect(getKpiDelta(1, 6, '+', countFormatter))
+        .toEqual({ value: '+5', trend: TrendTypeEnum.Positive })
+      expect(getKpiDelta(6, 1, '+', countFormatter))
         .toEqual({ value: '-5', trend: TrendTypeEnum.Negative })
-      expect(getPillValue(0, countFormatter, '+'))
-        .toEqual({ value: '0', trend: TrendTypeEnum.None })
+      expect(getKpiDelta(6, 6, '+', countFormatter))
+        .toEqual({ value: '=', trend: TrendTypeEnum.None })
+      // percent
+      expect(getKpiDelta(10, 50, '+', percentFormatter))
+        .toEqual({ value: '+400%', trend: TrendTypeEnum.Positive })
+      expect(getKpiDelta(50, 10, '+', percentFormatter))
+        .toEqual({ value: '-80%', trend: TrendTypeEnum.Negative })
+      expect(getKpiDelta(60, 60, '+', percentFormatter))
+        .toEqual({ value: '=', trend: TrendTypeEnum.None })
     })
     it('returns correct trend and value for "-" deltaSign', () => {
-      expect(getPillValue(5, countFormatter, '-'))
-        .toEqual({ value: '5', trend: TrendTypeEnum.Negative })
-      expect(getPillValue(-5, countFormatter, '-'))
+      expect(getKpiDelta(1, 6, '-', countFormatter))
+        .toEqual({ value: '+5', trend: TrendTypeEnum.Negative })
+      expect(getKpiDelta(6, 1, '-', countFormatter))
         .toEqual({ value: '-5', trend: TrendTypeEnum.Positive })
-      expect(getPillValue(0, countFormatter, '-'))
-        .toEqual({ value: '0', trend: TrendTypeEnum.None })
+      expect(getKpiDelta(1, 1, '-', countFormatter))
+        .toEqual({ value: '=', trend: TrendTypeEnum.None })
+        // percent
+      expect(getKpiDelta(10, 50, '-', percentFormatter))
+        .toEqual({ value: '+400%', trend: TrendTypeEnum.Negative })
+      expect(getKpiDelta(50, 10, '-', percentFormatter))
+        .toEqual({ value: '-80%', trend: TrendTypeEnum.Positive })
+      expect(getKpiDelta(60, 60, '-', percentFormatter))
+        .toEqual({ value: '=', trend: TrendTypeEnum.None })
     })
     it('returns None trend for other deltaSign', () => {
-      expect(getPillValue(5, countFormatter, 'none'))
-        .toEqual({ value: '5', trend: TrendTypeEnum.None })
+      expect(getKpiDelta(1, 1, 'none', countFormatter))
+        .toEqual({ value: '=', trend: TrendTypeEnum.None })
+    })
+
+    it('returns undefined for invalid value', () => {
+      expect(getKpiDelta(1, null, 'none', countFormatter))
+        .toBeUndefined()
     })
   })
 
