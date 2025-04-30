@@ -40,8 +40,7 @@ export function WorkflowForm () {
             rules={[{ required: true }]}
             children={
               <Select
-                data-testid={'saml-idp-profile-select'}
-                style={{ width: '220px' }}
+                data-testid={'workflow-profile-select'}
                 options={[
                   { label: 'Workflow-1', value: 1 },
                   { label: 'Workflow-2', value: 2 }
