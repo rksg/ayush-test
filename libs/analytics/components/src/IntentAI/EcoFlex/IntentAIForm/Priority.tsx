@@ -25,7 +25,7 @@ export const usePriorityItems = () => {
       columns: [
         $t({ defaultMessage: 'Reduction in energy footprint' }),
         <FormattedMessage {...defineMessage({ defaultMessage: `
-          Leverage <b><i>Energy Saving AI</i></b>, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
+          Leverage <b><i>Energy Saving</i></b>, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
           In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
           ` })}
         values={richTextFormatValues}

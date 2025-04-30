@@ -44,7 +44,8 @@ export const CustomizeKPIGrid: React.FC<{
             <UI.Title>{$t(label)}</UI.Title>
             <UI.Statistic
               value={valueMessage? $t(valueMessage, values) : value}
-              suffix={<>
+              valueRender={() => (<span className='ant-statistic-content-value'>
+                {valueMessage? $t(valueMessage, { ...values, value }) : value}
                 {valueSuffixMessage && (<span className={valueSuffixClass}>
                   {$t(valueSuffixMessage, {
                     ...values,
@@ -54,8 +55,8 @@ export const CustomizeKPIGrid: React.FC<{
                     })
                   })}
                 </span>)}
-                {pillValue && <TrendPill {...pillValue} />}
-              </>}
+              </span>)}
+              suffix={pillValue && <TrendPill {...pillValue} />}
             />
           </Card>
         </GridCol>

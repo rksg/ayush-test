@@ -24,12 +24,12 @@ export const getKpiDelta = (
   before: number | null,
   after: number | null,
   sign: string,
-  format: ReturnType<typeof formatter> | ((x: number) => string)
+  format: ReturnType<typeof formatter> | ((x: number) => string),
+  isPill?: boolean
 ): { trend: TrendTypeEnum, value: string } | undefined => {
+  if (!isPill) return undefined
   const { trend, value } = getDeltaValue(before, after, 0, sign, format, false)
-  if (trend === 'transparent') {
-    return undefined
-  }
+  if (trend === 'transparent') return undefined
   return { trend, value }
 }
 
@@ -42,6 +42,7 @@ export type KPICardConfig = {
     previous?: string
     total?: string
     isShowPreviousSpan?: boolean
+    isPill?: boolean
   }
   valueMessage?: ReturnType<typeof defineMessage>;
   valueSuffixMessage?: ReturnType<typeof defineMessage>;
@@ -53,8 +54,8 @@ export type KPICardConfig = {
 export const getKPIConfigsData = (kpiConfigs: IntentKPIConfigExtend[], after: KpiResultExtend, before: KpiResultExtend):KPICardConfig[] => {
   return kpiConfigs.map((kpiConfig) => {
     const { key, label, format, deltaSign, valueAccessor, valueFormatter, valueMessage, valueSuffixMessage, valueSuffixClass, tooltip } = kpiConfig
-    const { value = null, previous = null, total = null, isShowPreviousSpan } = valueAccessor(after, before)
-    const pillValue = getKpiDelta(previous, value, deltaSign, format)
+    const { value = null, previous = null, total = null, isShowPreviousSpan, isPill } = valueAccessor(after, before)
+    const pillValue = getKpiDelta(previous, value, deltaSign, format, isPill)
     const valueFormat = valueFormatter || format
 
     return {
@@ -118,7 +119,8 @@ export const BenefitsConfig: IntentKPIConfigExtend[] = [{
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
       value: current.projectedPowerSaving,
-      previous: previous.projectedPowerSaving
+      previous: previous.projectedPowerSaving,
+      isPill: true
     }),
   valueFormatter: formatter('countFormat'),
   valueSuffixMessage: defineMessage({ defaultMessage: '/month' }),
@@ -135,7 +137,8 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
     ({
       value: current.enabled,
       previous: previous.enabled,
-      total: current.apTotalCount
+      total: current.apTotalCount,
+      isPill: true
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
 },{
@@ -148,7 +151,8 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
     ({
       value: current.disabled,
       previous: previous.disabled,
-      total: current.apTotalCount
+      total: current.apTotalCount,
+      isPill: true
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs manually excluded from AI-Driven Energy Saving. These APs operate at full power.' })
 },{
@@ -172,7 +176,8 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
       value: current.powerConsumption,
-      previous: previous.powerConsumption
+      previous: previous.powerConsumption,
+      isPill: true
     }),
   valueFormatter: formatter('countFormat'),
   tooltip: defineMessage({ defaultMessage: 'Total power consumed by all APs in this zone per day, measured in kilowatt-hours (kWh).' })
@@ -184,8 +189,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled,
-      previous: current.disabled
+      value: current.disabled
     }),
   tooltip: defineMessage({ defaultMessage: 'The highest power usage recorded by an AP, measured in watts (W).' })
 },{

@@ -37,8 +37,8 @@ export type KpiValuesExtend = {
   value?: number
   previous?: number
   total?: number
-  pill?: number
   isShowPreviousSpan?: boolean
+  isPill?: boolean
 }
 
 export type IntentKPIConfigExtend = {
