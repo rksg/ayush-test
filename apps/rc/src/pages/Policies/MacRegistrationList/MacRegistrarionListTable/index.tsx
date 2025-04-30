@@ -31,7 +31,7 @@ import {
   useTableQuery,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
-  MacRegListUrlsInfo, WifiNetwork
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { getOpsApi }                                               from '@acx-ui/utils'
@@ -114,9 +114,7 @@ export default function MacRegistrationListsTable () {
     selectFromResult: ({ data }) => {
       const networkList = new Map()
       data?.data.forEach( n => {
-        const network : WifiNetwork = n as WifiNetwork
-        // eslint-disable-next-line max-len
-        networkList.set(network.id, isWifiRbacEnabled ? network.venues.ids : network.venues.names) })
+        networkList.set(n.id, isWifiRbacEnabled ? n.venues.ids : n.venues.names) })
       return {
         networkVenuesMap: networkList
       }
