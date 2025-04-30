@@ -36,7 +36,6 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     fixed: 'left',
     width: 120,
     sorter: { compare: sortProp('name', defaultSort) },
-    defaultSortOrder: 'ascend',
     searchable: true
   }, {
     key: 'serial',
@@ -53,6 +52,7 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     fixed: 'left',
     width: 90,
     sorter: { compare: sortProp('mac', defaultSort) },
+    defaultSortOrder: 'ascend',
     searchable: true
   }, {
     key: 'reasonCodes',

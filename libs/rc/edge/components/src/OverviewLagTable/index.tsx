@@ -21,7 +21,7 @@ import {
   defaultSort,
   EdgeStatus,
   EdgeWanLinkHealthStatusEnum,
-  EdgeMultiWanConfigStatus
+  EdgeMultiWanConfigStats
 } from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
@@ -61,26 +61,26 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
   // eslint-disable-next-line max-len
   const [linkHealthDetailIfName, setLinkHealthDetailIfName]= useState<string | undefined>(undefined)
   // eslint-disable-next-line max-len
-  const [linkHealthDetail, setLinkHealthDetail]= useState<EdgeMultiWanConfigStatus | undefined>(undefined)
+  const [linkHealthDetail, setLinkHealthDetail]= useState<EdgeMultiWanConfigStats | undefined>(undefined)
 
   // eslint-disable-next-line max-len
-  const showDualWanColumns = isEdgeDualWanEnabled && data.some(lagItem => Boolean(lagItem.linkHealthMonitoring))
+  const showDualWanColumns = isEdgeDualWanEnabled && data.some(lagItem => Boolean(lagItem.multiWan))
 
   const dualWanColumns: TableProps<LagsTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Link Health Monitoring' }),
       key: 'healthCheckEnabled',
-      dataIndex: ['linkHealthMonitoring', 'linkHealthMonitorEnabled'],
+      dataIndex: ['multiWan', 'linkHealthMonitorEnabled'],
       sorter: false,
       show: false,
       render: (_, row) => {
         // eslint-disable-next-line max-len
-        const result = transformDisplayOnOff(row.linkHealthMonitoring?.linkHealthMonitorEnabled ?? false)
+        const result = transformDisplayOnOff(row.multiWan?.linkHealthMonitorEnabled ?? false)
 
-        return row.linkHealthMonitoring?.linkHealthMonitorEnabled
+        return row.multiWan?.linkHealthMonitorEnabled
           ? <Button type='link'
             onClick={() => {
-              setLinkHealthDetail(row.linkHealthMonitoring)
+              setLinkHealthDetail(row.multiWan)
               setLinkHealthDetailIfName(`lag${row.lagId}`)
             }}>
             {result}
@@ -91,14 +91,14 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
     {
       title: $t({ defaultMessage: 'Link Health Status' }),
       key: 'wanLinkStatus',
-      dataIndex: 'wanLinkStatus',
-      sorter: { compare: sortProp('wanLinkStatus', defaultSort) },
+      dataIndex: ['multiWan', 'wanLinkStatus'],
+      sorter: { compare: sortProp('multiWan.wanLinkStatus', defaultSort) },
       render: (_, row) => {
-        return row.wanLinkStatus
+        return row.multiWan?.wanLinkStatus
           ? <EdgeWanLinkHealthStatusLight
-            status={row.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
+            status={row.multiWan?.wanLinkStatus as EdgeWanLinkHealthStatusEnum}
             // eslint-disable-next-line max-len
-            targetIpStatus={row.wanLinkTargets as { ip: string; status: EdgeWanLinkHealthStatusEnum; }[]}
+            targetIpStatus={row.multiWan?.wanLinkTargets as { ip: string; status: EdgeWanLinkHealthStatusEnum; }[]}
           />
           : noDataDisplay
       }
@@ -106,18 +106,18 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
     {
       title: $t({ defaultMessage: 'WAN Role' }),
       key: 'wanPortRole',
-      dataIndex: ['linkHealthMonitoring', 'priority'],
+      dataIndex: ['multiWan', 'priority'],
       show: false,
-      sorter: { compare: sortProp('wanPortRole', defaultSort) },
+      sorter: { compare: sortProp('multiWan.wanPortRole', defaultSort) },
       render: (_, row) => {
-        return getDisplayWanRole(row.linkHealthMonitoring?.priority ?? 0)
+        return getDisplayWanRole(row.multiWan?.priority ?? 0)
       }
     },
     {
       title: $t({ defaultMessage: 'WAN Status' }),
       key: 'wanPortStatus',
-      dataIndex: 'wanPortStatus',
-      sorter: { compare: sortProp('wanPortStatus', defaultSort) }
+      dataIndex: ['multiWan', 'wanPortStatus'],
+      sorter: { compare: sortProp('multiWan.wanPortStatus', defaultSort) }
     }
   ]
 
