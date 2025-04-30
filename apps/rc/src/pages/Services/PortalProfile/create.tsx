@@ -7,6 +7,7 @@ import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import {
   getServiceAllowedOperation,
   getServiceListRoutePath,
+  getSelectServiceRoutePath,
   ServiceOperation,
   ServiceType,
   PortalProfileTabsEnum,
@@ -19,7 +20,7 @@ export default function CreatePortalProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const servicesCreatePageLink = useTenantLink(`${getServiceListRoutePath(true) + '/select'}`)
+  const servicesCreatePageLink = useTenantLink(getSelectServiceRoutePath(true))
   const createGuestPortalPath =
     useTenantLink(getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }))
   const createWebAuthSwitchPortalPath =
