@@ -136,6 +136,9 @@ describe('Property Unit Details', () => {
         PropertyUrlsInfo.getUnitById.url,
         (_, res, ctx) => res(ctx.json(unitData))
       ),
+      rest.get(
+        WifiUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
         (req, res, ctx) => {
