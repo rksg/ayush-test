@@ -120,6 +120,10 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'SAML Identity Provider (IdP)',
     description: 'Guest network type - SAML Identity Provider (IdP)'
+  }),
+  [GuestNetworkTypeEnum.Workflow]: defineMessage({
+    defaultMessage: 'Workflow',
+    description: 'Guest network type - Workflow'
   })
 }
 
@@ -142,7 +146,8 @@ export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
   [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
   [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server',
-  [GuestNetworkTypeEnum.SAML]: 'SAML Identity Provider (IdP)'
+  [GuestNetworkTypeEnum.SAML]: 'SAML Identity Provider (IdP)',
+  [GuestNetworkTypeEnum.Workflow]: 'Workflow'
 }
 
 export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
@@ -153,7 +158,8 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
   [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
   [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
   [GuestNetworkTypeEnum.Directory]: 'Users are required to enter an organizational username and password to gain access to the network',
-  [GuestNetworkTypeEnum.SAML]: 'Users authenticate through the organization\'s SAML Identity Provider (IdP)'
+  [GuestNetworkTypeEnum.SAML]: 'Users authenticate through the organization\'s SAML Identity Provider (IdP)',
+  [GuestNetworkTypeEnum.Workflow]: 'Users connect through an enhanced captive portal experience with Workflow'
 }
 
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
@@ -201,7 +207,8 @@ export const captiveTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
   [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
   [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' }),
   [GuestNetworkTypeEnum.Directory]: defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
-  [GuestNetworkTypeEnum.SAML]: defineMessage({ defaultMessage: 'SAML Identity Provider (IdP)' })
+  [GuestNetworkTypeEnum.SAML]: defineMessage({ defaultMessage: 'SAML Identity Provider (IdP)' }),
+  [GuestNetworkTypeEnum.Workflow]: defineMessage({ defaultMessage: 'Workflow' })
 }
 
 /* eslint-disable max-len */
@@ -237,6 +244,10 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP)',
     description: 'Description for SAML Identity Provider (IdP)'
+  }),
+  [GuestNetworkTypeEnum.Workflow]: defineMessage({
+    defaultMessage: 'Users connect through an enhanced captive portal experience with Workflow',
+    description: 'Description for Workflow'
   })
 }
 
