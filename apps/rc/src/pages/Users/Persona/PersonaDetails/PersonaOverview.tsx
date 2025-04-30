@@ -51,7 +51,7 @@ export function PersonaOverview (props:
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
-  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
+  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE) || true
   const [attributesDrawerVisible, setAttributesDrawerVisible] = useState<boolean>(false)
   const [authServiceExists, setAuthServiceExists] = useState(false)
 
@@ -203,14 +203,9 @@ export function PersonaOverview (props:
               }
             </GridCol>
             <GridCol col={{ span: 8 }}>
-              <Button style={{
-                marginRight: 0 ,
-                border: 0,
-                color: 'var(--acx-accents-blue-60)',
-                cursor: 'pointer',
-                fontSize: 'var(--acx-body-4-font-size)'
-              }}
-              type='default'
+              <Button
+              size='small'
+              type='link'
               onClick={()=>setAttributesDrawerVisible(true)}>
                 {$t({ defaultMessage: 'Show External Attributes' })}
               </Button>
@@ -344,7 +339,7 @@ export function PersonaOverview (props:
       </GridRow>
       {externalIdentityData !==undefined &&
       <CommonAttributesDrawer
-        externalData={externalIdentityData!!}
+        externalData={externalIdentityData}
         visible={attributesDrawerVisible}
         onClose={()=> setAttributesDrawerVisible(false)}
       />}

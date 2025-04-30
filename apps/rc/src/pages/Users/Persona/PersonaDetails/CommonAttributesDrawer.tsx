@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Descriptions, Drawer } from '@acx-ui/components'
 import { ExternalIdentity }     from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 export function CommonAttributesDrawer (props:{
     externalData: ExternalIdentity,
@@ -11,7 +12,6 @@ export function CommonAttributesDrawer (props:{
 {
   const { externalData, visible, onClose } = props
   const { $t } = useIntl()
-  const noDataDisplay = '--'
   return <Drawer
     visible={visible}
     destroyOnClose
