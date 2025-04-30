@@ -11,7 +11,7 @@ export const mockVenue = {
 }
 
 export const venuelist = {
-  totalCount: 2,
+  totalCount: 5,
   page: 1,
   data: [
     {

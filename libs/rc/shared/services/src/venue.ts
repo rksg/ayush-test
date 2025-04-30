@@ -80,7 +80,7 @@ import {
   ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
-  VeuneApAntennaTypeSettings,
+  VenueApAntennaTypeSettings,
   NetworkApGroup,
   ConfigTemplateUrlsInfo,
   getCurrentTimeSlotIndex,
@@ -2306,7 +2306,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+    getVenueAntennaType: build.query< VenueApAntennaTypeSettings[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined

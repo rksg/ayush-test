@@ -5,9 +5,9 @@ import { Col, Form, Row, Select } from 'antd'
 import { get, uniqBy }            from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { AnchorContext, Loader }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { ApAntennaTypeSelector }                  from '@acx-ui/rc/components'
+import { AnchorContext, Loader }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { ApAntennaTypeSelector, ApExtAntennaForm } from '@acx-ui/rc/components'
 import {
   useGetVenueAntennaTypeQuery,
   useGetVenueExternalAntennaQuery,
@@ -21,7 +21,7 @@ import {
   CapabilitiesApModel,
   ExternalAntenna,
   useConfigTemplate,
-  VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+  VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueUtilityContext }                        from '..'
@@ -32,7 +32,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../venueConfigTemplateApiSwitcher'
 
-import { ExternalAntennaForm } from './ExternalAntennaForm'
 
 export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
@@ -56,8 +55,8 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
   const [selectedApCapabilities, setSelectedApCapabilities] = useState(null as CapabilitiesApModel | null)
   const [apiSelectedApExternalAntenna, setApiSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
   const [selectedApExternalAntenna, setSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
-  const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
-  const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
+  const [antennaTypeModels, setAntennaTypeModels] = useState([] as VenueApAntennaTypeSettings[])
+  const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VenueApAntennaTypeSettings | null)
 
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -96,7 +95,7 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const handleUpdateAntennaType = async (data: VeuneApAntennaTypeSettings[]) => {
+  const handleUpdateAntennaType = async (data: VenueApAntennaTypeSettings[]) => {
     try {
       await updateVenueAntennaType({ params, payload: [ ...data ], enableRbac: isUseRbacApi })
     } catch (error) {
@@ -129,7 +128,7 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
 
       if (supportAntennaTypeSelection && antennaTypeSettings && antennaTypeSettings.length > 0) {
         setAntennaTypeModels(antennaTypeSettings)
-        antennaTypeSettings.forEach((item: VeuneApAntennaTypeSettings) => {
+        antennaTypeSettings.forEach((item: VenueApAntennaTypeSettings) => {
           selectItems.push({ label: item.model, value: item.model })
         })
         uniqBy(selectItems, 'value')
@@ -143,7 +142,7 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
 
   useEffect(() => {
     const apModelsMap = {} as { [index: string]: ExternalAntenna }
-    const antennaTypeModelsMap = {} as { [index: string]: VeuneApAntennaTypeSettings }
+    const antennaTypeModelsMap = {} as { [index: string]: VenueApAntennaTypeSettings }
 
     const externalAntennaLength = handledApExternalAntennas.length
     const antennaTypeModelsLength = antennaTypeModels.length
@@ -155,7 +154,7 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
     }
 
     if (antennaTypeModels.length) {
-      antennaTypeModels.forEach((item: VeuneApAntennaTypeSettings) => {
+      antennaTypeModels.forEach((item: VenueApAntennaTypeSettings) => {
         antennaTypeModelsMap[item.model] = item
       })
     }
@@ -200,11 +199,15 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
     }
   }
 
-  const handleExternalAntennasChanged = (apModels: { [index: string]: ExternalAntenna }) => {
-
+  const handleExternalAntennasChanged = (newExtAntSettings: ExternalAntenna) => {
+    const model = newExtAntSettings.model
+    const apExtAntennaSettings = {
+      ...editRadioContextData.apModels,
+      [model]: newExtAntSettings
+    }
     setEditRadioContextData({
       ...editRadioContextData,
-      apModels,
+      apModels: apExtAntennaSettings,
       updateExternalAntenna: handleUpdateExternalAntenna
     })
 
@@ -216,8 +219,8 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
     })
   }
 
-  const handleAntennaTypesChanged = (newApModelAntennaTypes: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => {
-    const newAntTypes = (newApModelAntennaTypes as VeuneApAntennaTypeSettings)
+  const handleAntennaTypesChanged = (newApModelAntennaTypes: VenueApAntennaTypeSettings | ApAntennaTypeEnum) => {
+    const newAntTypes = (newApModelAntennaTypes as VenueApAntennaTypeSettings)
     const model = newAntTypes.model
     const apModelAntennaTypes = {
       ...editRadioContextData.apModelAntennaTypes,
@@ -262,7 +265,7 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
               onAntennaTypeChanged={handleAntennaTypesChanged}/>
           }
           {(selectedApExternalAntenna && apiSelectedApExternalAntenna) &&
-            <ExternalAntennaForm
+            <ApExtAntennaForm
               model={selectedApExternalAntenna?.model}
               apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
               selectedApExternalAntenna={selectedApExternalAntenna}
