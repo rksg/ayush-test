@@ -88,6 +88,7 @@ import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
 import { SAMLForm }               from './CaptivePortal/SAMLForm'
 import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
 import { WISPrForm }              from './CaptivePortal/WISPrForm'
+import { WorkflowForm }           from './CaptivePortal/WorkflowForm'
 import {
   useUpdateEdgeSdLanActivations
 } from './edgeUtils'
@@ -800,6 +801,8 @@ export function NetworkForm (props:{
         return <DirectoryServerForm directoryServerDataRef={directoryServerDataRef} />
       case GuestNetworkTypeEnum.SAML:
         return <SAMLForm />
+      case GuestNetworkTypeEnum.Workflow:
+        return <WorkflowForm />
       default:
       // eslint-disable-next-line no-console
         console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)

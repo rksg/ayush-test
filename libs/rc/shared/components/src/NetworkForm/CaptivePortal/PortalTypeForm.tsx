@@ -139,6 +139,16 @@ function TypesForm () {
                 </RadioDescription>
               </Radio>
             }
+            {
+              // SANTODO: Add FF
+              !isTemplate &&
+              <Radio value={GuestNetworkTypeEnum.Workflow}>
+                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Workflow]}
+                <RadioDescription>
+                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Workflow]}
+                </RadioDescription>
+              </Radio>
+            }
           </Space>
         </Radio.Group>
       </Form.Item>
