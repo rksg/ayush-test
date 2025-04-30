@@ -139,12 +139,11 @@ export function RadioSettingsForm (props:{
 
 
   function formatter () {
-    // return `This configuration controls the responsiveness of ChannelFly technology
-    // to interference considering the impact on the associated client.
-    // ChannelFly avoids performing channel changes when a certain number of clients are associated to the AP on a per-radio basis.
-    // Default CCF value of 33 means the channel changes may occur only when there are three or fewer associated clients.
-    // For every 10% increase in CCF, AP allows channel change for 1 additional client connected.`
-    return `This configuration controls the responsiveness of ChannelFly technology to interference considering the impact on the associated client. ChannelFly avoids performing channel changes when a certain number of clients are associated to the AP on a per-radio basis. Default CCF value of 33 means the channel changes may occur only when there are three or fewer associated clients. For every 10% increase in CCF, AP allows channel change for 1 additional client connected.`
+    return `This configuration controls the responsiveness of ChannelFly technology
+    to interference considering the impact on the associated client.
+    ChannelFly avoids performing channel changes when a certain number of clients are associated to the AP on a per-radio basis.
+    Default CCF value of 33 means the channel changes may occur only when there are three or fewer associated clients.
+    For every 10% increase in CCF, AP allows channel change for 1 additional client connected.`
   }
 
   const onChangedByCustom = (fieldName: string) => {
