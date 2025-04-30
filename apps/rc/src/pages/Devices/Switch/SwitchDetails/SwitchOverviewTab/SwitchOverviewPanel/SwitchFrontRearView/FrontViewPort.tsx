@@ -8,7 +8,7 @@ import { Tooltip, cssStr }                                                      
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { getInactiveTooltip }                                                               from '@acx-ui/rc/components'
 import { useLazyGetLagListQuery }                                                           from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010g2Or10020b } from '@acx-ui/rc/utils'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010gOr10020b } from '@acx-ui/rc/utils'
 import { useParams }                                                                        from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                                                     from '@acx-ui/types'
 import { hasPermission }                                                                    from '@acx-ui/user'
@@ -112,7 +112,7 @@ export function FrontViewPort (props:{
           children={port.status}
         />
         {// eslint-disable-next-line max-len
-          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010g2Or10020b(switchFirmware) && (<>
+          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010gOr10020b(switchFirmware) && (<>
             <UI.TooltipStyle.Item
               label={$t({ defaultMessage: 'ErrDisabled' })}
               children={
