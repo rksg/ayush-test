@@ -104,7 +104,7 @@ export const MetricsConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled,
+      value: current.unsupported,
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Older generation APs that do not support AI-Driven Energy Saving due to hardware limitations.' })
@@ -163,7 +163,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled,
+      value: current.unsupported,
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Older generation APs that do not support AI-Driven Energy Saving due to hardware limitations.' })
@@ -189,7 +189,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled
+      value: current.maxApPower
     }),
   tooltip: defineMessage({ defaultMessage: 'The highest power usage recorded by an AP, measured in watts (W).' })
 },{
@@ -204,7 +204,7 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
       previous: previous.minApPower,
       isShowPreviousSpan: true
     }),
-  valueSuffixMessage: defineMessage({ defaultMessage: ' vs <previousSpan>{previous}W</previousSpan>' }),
+  valueSuffixMessage: defineMessage({ defaultMessage: 'vs <previousSpan>{previous}W</previousSpan>' }),
   valueSuffixClass: 'ant-statistic-content-suffix-conj',
   tooltip: defineMessage({ defaultMessage: 'Comparison of the lowest power consumed by an AP with and without AI-Driven Energy Saving.' })
 }]

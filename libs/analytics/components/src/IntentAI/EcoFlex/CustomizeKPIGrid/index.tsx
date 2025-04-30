@@ -43,7 +43,6 @@ export const CustomizeKPIGrid: React.FC<{
           <Card>
             <UI.Title>{$t(label)}</UI.Title>
             <UI.Statistic
-              value={valueMessage? $t(valueMessage, values) : value}
               valueRender={() => (<span className='ant-statistic-content-value'>
                 {valueMessage? $t(valueMessage, { ...values, value }) : value}
                 {valueSuffixMessage && (<span className={valueSuffixClass}>

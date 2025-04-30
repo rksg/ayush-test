@@ -18,30 +18,32 @@ export const MetricsGrid: React.FC<{
 
   const values:KPICardConfig[] = getKPIConfigsData(MetricsConfig, current ?? {},{})
 
-  return (<Loader states={[kpiQuery]}>
+  return (
     <DetailsSection data-testid='Metrics'>
       <DetailsSection.Title children={$t({ defaultMessage: 'Metrics' })} />
-      <GridRow>
-        {values.map(({ key, label, values,
-          valueMessage, tooltip
-        }) => (
-          <Tooltip
-            placement='top'
-            title={tooltip && $t(tooltip)}
-            key={`tooltip-${key}`}
-          >
-            <GridCol key={key} col={{ span: 8 }}>
-              <Card>
-                <UI.Title>{$t(label)}</UI.Title>
-                <UI.Statistic
-                  value={valueMessage && $t(valueMessage, values)}
-                />
-              </Card>
-            </GridCol>
-          </Tooltip>
-        ))}
-      </GridRow>
+      <Loader states={[kpiQuery]}>
+        <GridRow>
+          {values.map(({ key, label, values,
+            valueMessage, tooltip
+          }) => (
+            <Tooltip
+              placement='top'
+              title={tooltip && $t(tooltip)}
+              key={`tooltip-${key}`}
+            >
+              <GridCol key={key} col={{ span: 8 }}>
+                <Card>
+                  <UI.Title>{$t(label)}</UI.Title>
+                  <UI.Statistic
+                    value={valueMessage && $t(valueMessage, values)}
+                  />
+                </Card>
+              </GridCol>
+            </Tooltip>
+          ))}
+
+        </GridRow>
+      </Loader>
     </DetailsSection>
-  </Loader>
   )
 }

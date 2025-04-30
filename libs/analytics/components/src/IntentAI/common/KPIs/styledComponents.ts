@@ -44,6 +44,7 @@ export const Statistic = styled<ComponentType<StatisticProps>>(AntStatistic)`
     font-size: var(--acx-body-3-font-size);
     line-height: var(--acx-body-3-line-height);
     font-weight: var(--acx-headline-2-font-weight-bold);
+    margin-left: 6px;
     
   }
 
