@@ -368,6 +368,20 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'PORT' }]
     }),
+    getEdgeGeneralPortsStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeGeneralPortStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (response: TableResult<EdgePortStatus>) => {
+        response.data?.sort(physicalPortSorter)
+        return response
+      },
+      providesTags: [{ type: 'Edge', id: 'PORT' }]
+    }),
     getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeSubInterfacesStatusList)
@@ -562,6 +576,30 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     getEdgeLagsStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add LAG',
+            'Update LAG',
+            'Delete LAG'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG' }]))
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeGeneralLagsStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeGeneralLagStatusList, params)
         return {
           ...req,
           body: payload
@@ -1338,15 +1376,18 @@ export const {
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery,
   useLazyGetEdgePortsStatusListQuery,
+  useGetEdgeGeneralPortsStatusListQuery,
   useGetEdgeSubInterfacesStatusListQuery,
   useRebootEdgeMutation,
   useShutdownEdgeMutation,
   useFactoryResetEdgeMutation,
   useDownloadEdgesCSVMutation,
   useGetEdgeUptimeQuery,
+  useLazyGetEdgeUptimeQuery,
   useGetEdgeTopTrafficQuery,
   useGetEdgeResourceUtilizationQuery,
   useGetEdgePortTrafficQuery,
+  useLazyGetEdgePortTrafficQuery,
   useGetEdgeServiceListQuery,
   useGetEdgeClusterServiceListQuery,
   useGetEdgesTopTrafficQuery,
@@ -1355,6 +1396,7 @@ export const {
   useGetEdgePasswordDetailQuery,
   useImportSubInterfacesCSVMutation,
   useGetEdgeLagsStatusListQuery,
+  useGetEdgeGeneralLagsStatusListQuery,
   useAddEdgeLagMutation,
   useDeleteEdgeLagMutation,
   useGetEdgeLagListQuery,

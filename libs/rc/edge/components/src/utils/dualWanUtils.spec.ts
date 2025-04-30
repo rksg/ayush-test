@@ -4,7 +4,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeLinkDownCriteriaEnum } from '@acx-ui/rc/utils'
 
-import { getDualWanModeString, getWanProtocolString, getWanLinkDownCriteriaString } from './dualWanUtils'
+import {
+  getDualWanModeString,
+  getWanProtocolString,
+  getWanLinkDownCriteriaString,
+  isMultiWanClusterPrerequisite,
+  getDisplayWanRole
+} from './dualWanUtils'
 
 describe('getDualWanModeString', () => {
   it('returns the correct string for ACTIVE_BACKUP', () => {
@@ -19,6 +25,11 @@ describe('getDualWanModeString', () => {
 
   it('returns an empty string for an invalid enum value', () => {
     const result = getDualWanModeString('INVALID_VALUE' as EdgeMultiWanModeEnum)
+    expect(result).toBe('')
+  })
+
+  it('returns an empty string for undefined', () => {
+    const result = getDualWanModeString()
     expect(result).toBe('')
   })
 })
@@ -67,5 +78,47 @@ describe('getWanLinkDownCriteriaString', () => {
     // eslint-disable-next-line max-len
     const result = getWanLinkDownCriteriaString('INVALID_ENUM_VALUE' as unknown as EdgeLinkDownCriteriaEnum)
     expect(result).toBe('')
+  })
+})
+
+describe('getDisplayWanRole', () => {
+  it('should return an empty string for priority 0', () => {
+    expect(getDisplayWanRole(0)).toBe('')
+  })
+
+  it('should return "Active" for priority 1', () => {
+    expect(getDisplayWanRole(1)).toBe('Active')
+  })
+
+  it('should return "Backup" for priority other than 0 or 1', () => {
+    expect(getDisplayWanRole(2)).toBe('Backup')
+    expect(getDisplayWanRole(3)).toBe('Backup')
+    expect(getDisplayWanRole(-1)).toBe('Backup')
+  })
+})
+
+describe('isMultiWanClusterPrerequisite', () => {
+  it('returns false for undefined clusterInfo', () => {
+    expect(isMultiWanClusterPrerequisite(undefined)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with no edgeList', () => {
+    const clusterInfo = {}
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns false for clusterInfo with empty edgeList', () => {
+    const clusterInfo = { edgeList: [] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
+  })
+
+  it('returns true for clusterInfo with edgeList having one element', () => {
+    const clusterInfo = { edgeList: [{}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(true)
+  })
+
+  it('returns false for clusterInfo with edgeList having multiple elements', () => {
+    const clusterInfo = { edgeList: [{}, {}, {}] }
+    expect(isMultiWanClusterPrerequisite(clusterInfo)).toBe(false)
   })
 })

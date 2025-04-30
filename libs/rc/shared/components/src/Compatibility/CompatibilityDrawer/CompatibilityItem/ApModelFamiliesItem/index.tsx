@@ -36,7 +36,7 @@ export const ApModelFamiliesItem = (props: {
         tagWidth={hasLongTags? '80px' : '60px'}
       >
         {getApModelFamilyTag(name as ApModelFamilyType, displayName)}
-        <div>{models.join(', ').replace('R350:', '')}</div>
+        <div>{models.sort().join(', ').replace('R350:', '')}</div>
       </StyledApModelFamilyWrapper>
     ))}
   </>)
