@@ -30,11 +30,7 @@ export const DashboardSelectDropdown = createGlobalStyle`
       display: flex;
       align-items: center;
       padding: 8px 32px 8px 12px !important;
-      &.default {
-        .ant-select-item-option-content {
-          padding-left: 0;
-        }
-      }
+
       &.hasUpdated:after {
         content: '';
         display: inline-block;
@@ -56,6 +52,7 @@ export const DashboardSelectDropdown = createGlobalStyle`
         bottom: 50%;
         left: 0;
         margin: auto;
+        color: var(--acx-neutrals-70);
       }
     }
   }
@@ -91,8 +88,6 @@ export const DashboardList = styled.div`
       opacity: 0 !important;
     }
   }
-
-  
 `
 
 export const DashboardItem = styled.div`
@@ -146,6 +141,7 @@ export const DashboardItem = styled.div`
     svg {
       margin-left: 8px;
       flex-shrink: 0;
+      color: var(--acx-neutrals-70);
     }
     .name {
       text-overflow: ellipsis;
@@ -269,6 +265,7 @@ export const CanvasListItem = styled(AntList.Item)`
     svg {
       margin-left: 8px;
       flex-shrink: 0;
+      color: var(--acx-neutrals-70);
     }
     .name {
       text-overflow: ellipsis;

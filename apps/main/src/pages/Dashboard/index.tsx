@@ -435,14 +435,16 @@ function DashboardPageHeader (props: {
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
             const hasUpdated = item.author && item.diffWidgetIds && item.diffWidgetIds.length > 0
-            const icon = item.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+            const icon = item.visible || isDefault
+              ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+
             return <Select.Option
               key={item.id}
               value={item.id}
               label={item.name}
               className={isDefault ? 'default' : (hasUpdated ? 'hasUpdated' : '')}
             >
-              { !isDefault && icon }{ item.name }
+              { icon }{ item.name }
             </Select.Option>
           })
         }</UI.DashboardSelector>
