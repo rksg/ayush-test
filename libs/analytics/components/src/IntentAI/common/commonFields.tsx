@@ -5,13 +5,13 @@ import { useIntl }          from 'react-intl'
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { codes }            from '../config'
-import { getStatusTooltip } from '../services'
-import { Statuses }         from '../states'
+import { codes }             from '../config'
+import { getStatusTooltip }  from '../services'
+import { Statuses }          from '../states'
+import { type IntentDetail } from '../useIntentDetailsQuery'
 
 import { getIntentStatus } from './getIntentStatus'
 
-import type { IntentDetail } from '../useIntentDetailsQuery'
 
 export const useCommonFields = (intent: IntentDetail) => {
   const { $t } = useIntl()
@@ -51,6 +51,15 @@ export const useCommonFields = (intent: IntentDetail) => {
         label: $t({ defaultMessage: 'Scheduled Date' }),
         children: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.scheduledAt))
       }]
-      : []
+      : [],
+    ...(metadata.changedByName && metadata.preferencesUpdatedAt
+      ? [{
+        label: $t({ defaultMessage: 'Last Updated By' }),
+        children: $t({ defaultMessage: '{name} on {at}' }, {
+          name: metadata.changedByName,
+          at: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.preferencesUpdatedAt))
+        })
+      }]
+      : [])
   ]
 }
