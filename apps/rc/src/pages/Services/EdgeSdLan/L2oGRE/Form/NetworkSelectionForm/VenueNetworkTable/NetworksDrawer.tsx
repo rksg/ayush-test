@@ -132,7 +132,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    form.validateFields().then(() => {
+    form.validateFields(['validation']).then(() => {
       onSubmit(updateContent)
     }).catch(() => {
       // do nothing
