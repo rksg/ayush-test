@@ -1,20 +1,22 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }        from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { directoryServerApi }     from '@acx-ui/rc/services'
+import { StepsFormLegacy }                       from '@acx-ui/components'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { directoryServerApi, samlIdpProfileApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonUrlsInfo,
   GuestNetworkTypeEnum,
   WifiUrlsInfo,
-  SamlIdpProfileUrls
+  SamlIdpProfileUrls,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
 
+import { certList } from '../../policies/SamlIdp/__tests__/fixtures'
 import {
   cloudPathDataNone,
   mockAAAPolicyListResponse,
@@ -25,7 +27,9 @@ import {
   successResponse,
   venueListResponse,
   venuesResponse,
-  mockSAMLIdpQuery
+  mockSAMLIdpQuery,
+  mockSamlA7,
+  mockedNetworkId
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -91,12 +95,23 @@ describe('CaptiveNetworkForm - SAML', () => {
           SAMLQueryAPI()
           return res(ctx.json(mockSAMLIdpQuery))
         }
+      ),
+
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockSamlA7))
+        }
+      ),
+      rest.post(
+        CertificateUrls.getServerCertificates.url,
+        (_, res, ctx) => res(ctx.json(certList))
       )
     )
   })
 
   const params = {
-    networkId: '5c342542bb824a8b981a9bb041a8a2da',
+    networkId: mockedNetworkId,
     tenantId: 'tenant-id',
     action: 'edit'
   }
@@ -135,6 +150,24 @@ describe('CaptiveNetworkForm - SAML', () => {
     expect(
       await screen.findByRole('option', { name: /SAML-A7/ })
     ).toBeInTheDocument()
+
+    store.dispatch(
+      samlIdpProfileApi.util.invalidateTags([
+        { type: 'SamlIdpProfile', id: 'LIST' }
+      ])
+    )
+
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalledTimes(2))
+    await userEvent.click(saml)
+    await userEvent.click(await screen.findByText('SAML-A4'))
+
+    // find  view Details button
+    const viewDetailButton = screen.getByRole('button', {
+      name: 'View Details'
+    })
+    //click view detail button
+    await userEvent.click(viewDetailButton)
+
   })
 
   it('should handle empty SAML IDP profile list', async () => {
@@ -314,4 +347,47 @@ describe('CaptiveNetworkForm - SAML', () => {
       </NetworkFormContext.Provider>
     </Provider>)
   }
+
+  it('should test add saml drawer successfully', async () => {
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SAMLForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    const addButton = screen.getByTestId('saml-idp-profile-add-button')
+    await userEvent.click(addButton)
+
+    // wait for "Add SAML IdP Profile" in the screen
+    const drawerTitle = await screen.findByText('Add SAML Identity Provider')
+    expect(drawerTitle).toBeInTheDocument()
+
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    await userEvent.click(closeButton)
+
+    await userEvent.click(addButton)
+    const cancelButton = (await screen.findAllByRole('button', { name: 'Cancel' }))[1]
+    await userEvent.click(cancelButton)
+  })
 })

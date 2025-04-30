@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features }                                          from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
 import { edgeApi }                                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
@@ -223,5 +224,25 @@ describe('Edge Cluster Table', () => {
     const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Run Cluster & RUCKUS Edge configuration wizard' })).toBeNull()
+  })
+
+  describe('support cluster overview', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    })
+
+    it('should navigate to cluster overview when click on first level', async () => {
+      render(
+        <Provider>
+          <EdgeClusterTable />
+        </Provider>, {
+          route: { params, path: '/:tenantId/devices/edge' }
+        })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const targetRow = await screen.findByRole('row', { name: /Edge Cluster 1/i })
+      const clusterNameBtn = await within(targetRow).findByRole('link', { name: /Edge Cluster 1/i })
+      expect(clusterNameBtn).toHaveAttribute('href', `/${params.tenantId}/t/devices/edge/cluster/${mockEdgeClusterList.data[0].clusterId}/details/overview`)
+    })
   })
 })

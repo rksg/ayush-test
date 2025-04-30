@@ -674,6 +674,24 @@ describe('AuthRoute', () => {
     expect(await screen.findByText('test page')).toBeVisible()
   })
 
+  it('should go to correct page for support tier but abacEnabled with custom role', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      abacEnabled: true,
+      isCustomRole: true,
+      accountTier: AccountTier.GOLD
+    })
+    render(<Router>
+      <AuthRoute
+        unsupportedTiers={[AccountTier.CORE]}>
+        <div>test page</div>
+      </AuthRoute>
+    </Router>)
+
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
+
   it('should go to correct page for for correct permission with opsAPI', async () => {
     setRole({
       role: RolesEnum.ADMINISTRATOR,

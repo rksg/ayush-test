@@ -4,22 +4,17 @@ import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
 import { Loader, Table }                                         from '@acx-ui/components'
-import { useRbacClientTableColumns }                             from '@acx-ui/rc/components'
+import { defaultRbacClientPayload, useRbacClientTableColumns }   from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
   ClientInfo, defaultSort,
   IdentityClient, sortProp,
-  useTableQuery
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 
 import { IdentityDetailsContext } from './index'
 
-const defaultClientPayload = {
-  searchString: '',
-  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
-  fields: ['macAddress','ipAddress','username', 'hostname','osType',
-    'venueInformation', 'apInformation',
-    'lastUpdatedTime', 'networkInformation'],
+const defaultClientPagination = {
   page: 1,
   pageSize: 10000
 }
@@ -30,7 +25,9 @@ const onboardingTypesMapping: { [key: string]: string } = {
   'mac-auth': 'Mac Auth',
   'AAANetwork': 'AAA Network',
   'PSKNetwork': 'PSK Network',
-  'eap': 'EAP/TLS'
+  'eap': 'EAP/TLS',
+  'Hotspot20Network': 'Hotspot 2.0 Network',
+  'GuestNetwork': 'Guest Network'
 }
 
 const getOnboardingTerm = (type?: string): string => {
@@ -52,7 +49,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     getClientList,
     { isLoading: isEsClientLoading, isFetching: isEsClientFetching }
   ] = useLazyGetClientsQuery()
-  const tableQuery = useTableQuery<IdentityClient>({
+  const tableQuery = usePollingTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
     pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
@@ -79,6 +76,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   }, [tableQuery.data])
 
   useEffect(() => {
+    if (tableQuery.isFetching) return
     if (clientMacs.size === 0) return
 
     const aggregateClientInfo = (
@@ -108,18 +106,19 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
 
     getClientList({
       payload: {
-        ...defaultClientPayload,
+        ...defaultRbacClientPayload,
+        ...defaultClientPagination,
         filters: { macAddress: [...clientMacs] }  // should be lowered case
       }
     })
       .then(result => {
         if (!result.data?.data) return
         setDatasource(aggregateClientInfo(
-          datasource as unknown as IdentityClient[],
+          tableQuery.data?.data ?? [],
           result.data.data
         ))
       })
-  }, [clientMacs])
+  }, [clientMacs, tableQuery.isFetching])
 
   const useClientTableColumns = () => {
     return useRbacClientTableColumns(useIntl(), false).map(c => {

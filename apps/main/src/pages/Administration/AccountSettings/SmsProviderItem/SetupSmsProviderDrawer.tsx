@@ -28,7 +28,7 @@ interface SetupSmsProviderDrawerProps {
   isEditMode: boolean
   editData?: SmsProviderData
   setVisible: (visible: boolean) => void
-  setSelected: (selectedType: SmsProviderType) => void
+  setSelected: (selectedType: SmsProviderType, callback?: () => void) => void
 }
 
 enum MessageMethod {
@@ -214,10 +214,19 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               ? undefined : form.getFieldValue('sendUrl')
           }
 
-      await updateSmsProvider({
-        params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
-        payload: providerData }).unwrap()
-      setSelected(providerType as SmsProviderType)
+      if (isEnabledWhatsApp) {
+        setSelected(providerType as SmsProviderType, () => {
+          updateSmsProvider({
+            params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
+            payload: providerData
+          }).unwrap()
+        })
+      } else {
+        await updateSmsProvider({
+          params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
+          payload: providerData }).unwrap()
+        setSelected(providerType as SmsProviderType)
+      }
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -245,6 +254,9 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleMessageMethodChange = (e: RadioChangeEvent) => {
     setMessageMethod(e.target.value)
+    if (e.target.value === 0) {
+      form.setFieldValue('enableWhatsapp', false)
+    }
   }
 
   const formContent = <Form layout='vertical' form={form} >
@@ -376,7 +388,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
          />}
     </>}
     {/* eslint-disable-next-line max-len */}
-    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
+    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod === 1 && <>
       <Form.Item
         name='enableWhatsapp'
         valuePropName='checked'
