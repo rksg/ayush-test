@@ -195,16 +195,16 @@ export function PersonaOverview (props:
                   policyId: externalIdentityData?.identityProviderId!,
                   oper: PolicyOperation.DETAIL
                 })}>
-                  {externalIdentityData?.identityProviderType}
+                {externalIdentityData?.identityProviderType}
               </TenantLink>
                 : externalIdentityData?.identityProviderType
               }
             </GridCol>
             <GridCol col={{ span: 8 }}>
               <Button
-              size='small'
-              type='link'
-              onClick={()=>setAttributesDrawerVisible(true)}>
+                size='small'
+                type='link'
+                onClick={()=>setAttributesDrawerVisible(true)}>
                 {$t({ defaultMessage: 'Show External Attributes' })}
               </Button>
             </GridCol>

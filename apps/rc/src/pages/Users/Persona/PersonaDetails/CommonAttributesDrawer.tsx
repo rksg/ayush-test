@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Descriptions, Drawer } from '@acx-ui/components'
 import { ExternalIdentity }     from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { noDataDisplay }        from '@acx-ui/utils'
 
 export function CommonAttributesDrawer (props:{
     externalData: ExternalIdentity,
