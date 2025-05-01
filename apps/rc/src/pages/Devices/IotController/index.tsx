@@ -103,7 +103,7 @@ export default function IotController () {
       <PageHeader
         title={$t({ defaultMessage: 'IoT Controllers ({count})' }, { count })}
         extra={!isCustomRole && filterByAccess([
-          <TenantLink to='/iots/add'
+          <TenantLink to='/devices/iotController/add'
             // rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add IoT Controller' }) }</Button>
