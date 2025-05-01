@@ -16,11 +16,15 @@ import { useWorkflowContext }         from '../WorkflowContextProvider'
 
 import * as UI               from './styledComponents'
 import { EditorToolbarIcon } from './styledComponents'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string })
 {
   const { $t } = useIntl()
+  const workflowValidationEnhancementFFToggle =
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
   const nodeId = useNodeId()
   const nodes = useNodes()
   const isOverMaximumSteps = useMemo(() => nodes.length >= MaxTotalSteps, [nodes])
@@ -97,14 +101,45 @@ export default function BaseStepNode (props: NodeProps
         />
       </Tooltip>
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
-        <Button
-          size={'small'}
-          type={'link'}
-          rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
-          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
-          icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
-          onClick={onDeleteClick}
-        />
+        {workflowValidationEnhancementFFToggle ? 
+          <Popover
+            zIndex={1000}
+            content={<Space size={12} direction={'vertical'}>
+                <Button
+                  size={'small'}
+                  type={'link'}
+                  onClick={() => {}}
+                >{$t({defaultMessage: 'delete only step'})}</Button>
+                <Button
+                  size={'small'}
+                  type={'link'}
+                  onClick={() => {}}
+                  >{$t({defaultMessage: 'delete step and children'})}</Button>
+              </Space>}
+            trigger={'hover'}
+            placement={'bottomLeft'}
+            color={'var(--acx-primary-black)'}
+            overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
+            >
+              <Button
+                size={'small'}
+                type={'link'}
+                rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+                disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+                icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+                // onClick={onDeleteClick} // TODO: update me
+              />
+          </Popover>
+          : 
+          <Button
+              size={'small'}
+              type={'link'}
+              rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+              disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+              icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+              onClick={onDeleteClick}
+            />
+        } 
       </Tooltip>
     </Space>)
 
