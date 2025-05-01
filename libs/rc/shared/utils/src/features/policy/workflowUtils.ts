@@ -186,6 +186,8 @@ export const composeNext = (
     deletable: false
   })
 
+  let nextY = step.type === StepType.Start ? currentY : currentY + SPACE_OF_NODES
+
   if (nextStepId) {
     edges.push({
       id: `${id} -- ${nextStepId}`,
@@ -198,7 +200,7 @@ export const composeNext = (
     })
 
     composeNext(mode, nextStepId, stepMap, nodes, edges,
-      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+      currentX, nextY, type === StepType.Start)
   }
 }
 
@@ -209,7 +211,7 @@ export function toReactFlowData (
 ): { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
-  var START_X = 100
+  let START_X = 100
   const START_Y = 0
 
   if (steps.length === 0) {
