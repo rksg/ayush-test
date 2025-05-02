@@ -20,7 +20,7 @@ import {
   getServiceRoutePath,
   isDefaultWebAuth
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -73,7 +73,6 @@ type WebAuthSwitchType = {
 export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const location = useLocation()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data } = useGetWebAuthTemplateQuery({
@@ -125,7 +124,7 @@ export default function NetworkSegAuthDetail () {
           }
         ]}
         extra={filterByAccessForServicePolicyMutation([
-          <TenantLink state={{ from: location }}
+          <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.EDIT,
