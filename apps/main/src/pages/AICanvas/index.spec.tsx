@@ -9,11 +9,13 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import AICanvas from '.'
+import { getStreamingStep, getStreamingWordingKey } from './index.utils'
 
+import AICanvas from '.'
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
@@ -336,6 +338,7 @@ describe('AICanvas', () => {
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
     const searchBtn = await screen.findByTestId('search-button')
+    await waitFor(() => expect(searchBtn).not.toBeDisabled())
     fireEvent.click(searchBtn)
     expect(await screen.findByText('hello')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
@@ -382,5 +385,33 @@ describe('AICanvas', () => {
     const computedStyle = window.getComputedStyle(fixedElements[0])
     const widthInPixels = parseFloat(computedStyle.width)
     expect(widthInPixels).toBe(300)
+  })
+})
+
+describe('Test utils', () => {
+  it('Test getStreamingStep', async () => {
+    expect(getStreamingStep('0')).toBe(1)
+    expect(getStreamingStep('1')).toBe(1)
+    expect(getStreamingStep('2')).toBe(2)
+    expect(getStreamingStep('3')).toBe(3)
+    expect(getStreamingStep('1.1')).toBe(3.25)
+    expect(getStreamingStep('2.1')).toBe(3.25)
+    expect(getStreamingStep('3.1')).toBe(3.25)
+    expect(getStreamingStep('1.2')).toBe(3.5)
+    expect(getStreamingStep('2.2')).toBe(3.5)
+    expect(getStreamingStep('3.3')).toBe(3.5)
+    expect(getStreamingStep('3.2')).toBe(3.5)
+    expect(getStreamingStep('3.2')).toBe(3.5)
+    expect(getStreamingStep('4')).toBe(4)
+    expect(getStreamingStep('4.5')).toBe(4.5)
+  })
+  it('Test getStreamingWordingKey', async () => {
+    expect(getStreamingWordingKey(1)).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey(2)).toBe('SELECTING_DATA_SOURCES')
+    expect(getStreamingWordingKey(3)).toBe('PROCESSING_DATA_INITIAL')
+    expect(getStreamingWordingKey(3.25)).toBe('PROCESSING_DATA_RETRY_1')
+    expect(getStreamingWordingKey(3.5)).toBe('PROCESSING_DATA_RETRY_2')
+    expect(getStreamingWordingKey(4)).toBe('FINALIZING_RESULT')
+    expect(getStreamingWordingKey(4.5)).toBe('FINALIZING_RESULT')
   })
 })

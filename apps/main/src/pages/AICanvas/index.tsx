@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Divider, Form, Spin }    from 'antd'
-import { debounce, difference }   from 'lodash'
-import moment                     from 'moment'
-import { DndProvider }            from 'react-dnd'
-import { HTML5Backend }           from 'react-dnd-html5-backend'
-import { defineMessage, useIntl } from 'react-intl'
-import { v4 as uuidv4 }           from 'uuid'
+import { Divider, Form, Spin }  from 'antd'
+import { debounce, difference } from 'lodash'
+import moment                   from 'moment'
+import { DndProvider }          from 'react-dnd'
+import { HTML5Backend }         from 'react-dnd-html5-backend'
+import { useIntl }              from 'react-intl'
+import { v4 as uuidv4 }         from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import {
@@ -29,7 +29,13 @@ import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
-import * as UI                      from './styledComponents'
+import {
+  getStreamingStep,
+  getStreamingWordingKey,
+  StreamingMessages,
+  MAX_POLLING_TIMES
+} from './index.utils'
+import * as UI from './styledComponents'
 
 enum MessageRole {
   AI = 'AI',
@@ -38,44 +44,7 @@ enum MessageRole {
   USER = 'USER'
 }
 
-const MAX_POLLING_TIMES = 30 // temp
 
-/* eslint-disable max-len */
-export const StreamingMessages = {
-  CRAFTING_QUERY: defineMessage({ defaultMessage: 'I’m crafting a query to answer your question!' }),
-  CRAFTING_SQL_QUERY: defineMessage({ defaultMessage: 'I’m crafting a SQL query to answer your questions!' }),
-  EXECUTE_QUERY: defineMessage({ defaultMessage: 'Let me execute the query.' }),
-  BUILD_RESULT: defineMessage({ defaultMessage: 'I will build the result that gets the job done.' })
-}
-/* eslint-enable max-len */
-
-export const getStreamingStep = (step: string) => {
-  const isRepeatStep = step !== '4.5' && step.includes('.')
-  if (isRepeatStep) {
-    return 3.5
-  } else if (step === '0') { //temp
-    return 1
-  }
-  return Number(step)
-}
-
-export const getStreamingWordingKey = (step?: number) => {
-  switch (step) {
-    case 1:
-      return 'CRAFTING_QUERY'
-      break
-    case 2:
-      return 'CRAFTING_SQL_QUERY'
-    case 3:
-    case 3.5:
-      return 'EXECUTE_QUERY'
-    case 4:
-    case 4.5:
-      return 'BUILD_RESULT'
-    default:
-      return 'CRAFTING_QUERY'
-  }
-}
 
 const Message = (props:{
     chat: ChatMessage,
@@ -117,9 +86,9 @@ const Message = (props:{
     }
   }, [chat.text])
 
-  const streamingStep = chat.role === MessageRole.STREAMING
-    ? getStreamingStep(chat.text) : undefined
-  const streamingMsgKey = getStreamingWordingKey(streamingStep) as keyof typeof StreamingMessages
+  // eslint-disable-next-line max-len
+  const streamingStep = chat.role === MessageRole.STREAMING ? getStreamingStep(chat.text) : undefined
+  const streamingMsgKey = getStreamingWordingKey(streamingStep)
 
   return chat.role === MessageRole.SYSTEM
     ? <Divider plain>{deletedHint}</Divider>
@@ -356,8 +325,7 @@ export default function AICanvasModal (props: {
   const handlePollStreaming = async (
     chatResponse: RuckusAiChat, sessionId: string, streamMessageIds: string[], attempt = 0
   ) => {
-    if (attempt >= MAX_POLLING_TIMES) {
-      // console.warn('Polling stopped: max polling times reached')
+    if (attempt >= MAX_POLLING_TIMES) { //temp
       setAiBotLoading(false)
       return
     }
@@ -380,13 +348,6 @@ export default function AICanvasModal (props: {
         setChats([...streamingResponse.data].reverse())
         await handlePollStreaming(chatResponse, sessionId, streamMessageIds, attempt + 1)
       } else {
-        // if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-        //   || !historyData?.length ) {
-        //   getAllChatsQuery.refetch()
-        // }
-        // if(sessionId && isNewChat) {
-        //   setIsNewChat(false)
-        // }
         if(streamingResponse) {
           const tempChats = streamingResponse.data.map(msg => {
             if (successedStreamIds.includes(msg.id)) {
@@ -464,10 +425,6 @@ export default function AICanvasModal (props: {
           }
           const startStreamIds = response?.messages
             .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
-
-          // setChats([...response.messages].reverse())
-          // setTotalPages(response.totalPages)
-          // setPage(1)
           await handlePollStreaming(response, response.sessionId, startStreamIds)
         }
       }

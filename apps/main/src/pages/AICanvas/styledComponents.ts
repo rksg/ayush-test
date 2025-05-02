@@ -392,7 +392,7 @@ display: flex;
           background: var(--acx-accents-orange-25);
           bottom: 0;
           left: 0;
-          transition: .2s;
+          transition: .4s;
           width: 100%;
           transform-origin: top left;
           &:after{
