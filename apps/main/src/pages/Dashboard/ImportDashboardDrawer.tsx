@@ -93,6 +93,8 @@ export const ImportDashboardDrawer = (props: {
 
   const getCanvasesQuery = useGetCanvasesQuery({
     payload: getCanvasPayload()
+  }, {
+    skip: !visible
   })
   const { data: canvasList } = getCanvasesQuery
 
@@ -304,8 +306,10 @@ export const ImportDashboardDrawer = (props: {
       setSharedCanvasList(shared)
       setSelectedCanvases([])
     }
-    fetchCanvasList()
-  }, [canvasList])
+    if (visible) {
+      fetchCanvasList()
+    }
+  }, [canvasList, visible])
 
   return <Drawer
     title={$t({ defaultMessage: 'Select Canvases for your Dashboards' })}
@@ -313,8 +317,10 @@ export const ImportDashboardDrawer = (props: {
     onBackClick={props.onBackClick}
     visible={props.visible}
     onClose={props.onClose}
+    forceRender={true}
+    destroyOnClose={false}
     children={
-      <UI.Tabs
+      props.visible && <UI.Tabs
         type='third'
         activeKey={activeTab}
         defaultActiveKey={TabKey.Owned}

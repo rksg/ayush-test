@@ -312,7 +312,9 @@ export const DashboardDrawer = (props: {
     width={420}
     visible={props.visible}
     onClose={props.onClose}
-    children={<DndProvider backend={HTML5Backend}>
+    forceRender={true}
+    destroyOnClose={false}
+    children={props.visible && <DndProvider backend={HTML5Backend}>
       <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>
         {dashboardList.map((item, index) => (
           <ListItem

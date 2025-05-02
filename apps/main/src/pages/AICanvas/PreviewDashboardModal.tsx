@@ -73,6 +73,8 @@ export const PreviewDashboardModal = (props: {
           }
         }, 50)
       }
+    } else {
+      setCanvasId('')
     }
   }, [visible])
 
@@ -85,51 +87,55 @@ export const PreviewDashboardModal = (props: {
     visible={visible && !!canvasId}
     width={modalWidth}
     className={isFullmode ? 'fullmode' : ''}
+    forceRender
+    destroyOnClose={false}
   >
-    <div className='header'>
-      <div className='title'>{ data[0]?.name }</div>
-      <div className='action'>
-        {isFullmode
-          ? <Button
-            data-testid='collapsed-button'
-            ghost={true}
-            icon={<ArrowsIn size='md' />}
-            onClick={()=> setIsFullmode(false)}
-          />
-          : <>
-            <Button
-              data-testid='expanded-button'
+    { visible && !!canvasId && <>
+      <div className='header'>
+        <div className='title'>{ data[0]?.name }</div>
+        <div className='action'>
+          {isFullmode
+            ? <Button
+              data-testid='collapsed-button'
               ghost={true}
-              icon={<ArrowsOut size='md' />}
-              onClick={()=> setIsFullmode(true)}
+              icon={<ArrowsIn size='md' />}
+              onClick={()=> setIsFullmode(false)}
             />
-            <Button
-              data-testid='close-button'
-              ghost={true}
-              icon={<Close size='md' />}
-              onClick={()=> setVisible(false)}
+            : <>
+              <Button
+                data-testid='expanded-button'
+                ghost={true}
+                icon={<ArrowsOut size='md' />}
+                onClick={()=> setIsFullmode(true)}
+              />
+              <Button
+                data-testid='close-button'
+                ghost={true}
+                icon={<Close size='md' />}
+                onClick={()=> setVisible(false)}
+              />
+            </>}
+        </div>
+      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className='grid'>
+          <UI.Grid $type='pageview'>
+            <Layout
+              readOnly={true}
+              sections={sections}
+              groups={groups}
+              setGroups={setGroups}
+              compactType={'horizontal'}
+              layout={layout}
+              setLayout={setLayout}
+              canvasId={canvasId}
+              shadowCard={shadowCard}
+              setShadowCard={setShadowCard}
+              containerId='preview-container'
             />
-          </>}
-      </div>
-    </div>
-    <DndProvider backend={HTML5Backend}>
-      <div className='grid'>
-        <UI.Grid $type='pageview'>
-          <Layout
-            readOnly={true}
-            sections={sections}
-            groups={groups}
-            setGroups={setGroups}
-            compactType={'horizontal'}
-            layout={layout}
-            setLayout={setLayout}
-            canvasId={canvasId}
-            shadowCard={shadowCard}
-            setShadowCard={setShadowCard}
-            containerId='preview-container'
-          />
-        </UI.Grid>
-      </div>
-    </DndProvider>
+          </UI.Grid>
+        </div>
+      </DndProvider>
+    </>}
   </UI.PreviewModal>
 }
