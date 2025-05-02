@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 
 import { Button, Form, Input, Space } from 'antd'
-import { DefaultOptionType }          from 'antd/lib/select'
 import { useIntl }                    from 'react-intl'
 
-import { GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { useGetSamlIdpProfileViewDataListQuery }     from '@acx-ui/rc/services'
+import { Drawer, GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetSamlIdpProfileViewDataListQuery }             from '@acx-ui/rc/services'
 import {
   GuestNetworkTypeEnum,
   NetworkSaveData,
@@ -15,7 +14,8 @@ import {
   SamlIdpProfileViewData
 } from '@acx-ui/rc/utils'
 
-import { SAMLDrawer }              from '../../policies/SamlIdp/SamlDrawer'
+import { AddSamlIdp }              from '../../policies/SamlIdp/AddSamlIdp'
+import { SAMLDetailDrawer }        from '../../policies/SamlIdp/SamlDetailDrawer'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -36,10 +36,20 @@ export const SAMLForm = () => {
   const isSamlSsoEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
-  const [ selectedIdpProfile, setSelectedIdpProfile ] = useState<SamlIdpProfileViewData>()
-  const idpViewDataList = useGetSamlIdpProfileViewDataListQuery({
+
+  const { samlIdpOptions , idpViewDataList } = useGetSamlIdpProfileViewDataListQuery({
     payload: {
-      page: 1, pageSize: 10000, sortOrder: 'ASC'
+      page: 1, pageSize: 10000, sortOrder: 'ASC', sortField: 'name'
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        samlIdpOptions: data?.data?.map((item) => ({
+          label: item.name,
+          value: item.id
+        })) ?? [],
+        idpViewDataList: data?.data
+      }
     }
   })
 
@@ -48,30 +58,33 @@ export const SAMLForm = () => {
 
   const selectedSamlIdpProfilesId = Form.useWatch('samlIdpProfilesId', form)
   useEffect(() => {
-    const setData = async () => {
+    if(idpViewDataList && idpViewDataList.length > 0) {
       if ((editMode || cloneMode) && data) {
-        const idp = idpViewDataList.data?.data.find((idp) => {
+        const idp = idpViewDataList?.find((idp: SamlIdpProfileViewData) => {
           return idp.wifiNetworkIds.includes(data.id ?? '')
         })
+
         if (idp) {
           form.setFieldValue('samlIdpProfilesId', idp.id)
           form.setFieldValue('samlIdpProfilesName', idp.name)
         }
       }
     }
-    setData()
   }, [idpViewDataList])
 
   useEffect(() => {
-    if (selectedSamlIdpProfilesId) {
-      const idp = idpViewDataList.data?.data.find((idp) => {
+    if (selectedSamlIdpProfilesId && idpViewDataList) {
+      const idp = idpViewDataList.find((idp) => {
         return idp.id === selectedSamlIdpProfilesId
       })
       if (idp) {
-        setSelectedIdpProfile(idp)
+        form.setFieldValue('samlIdpProfilesName', idp.name)
+      } else {
+        setDetailDrawerVisible(false)
       }
     }
-  }, [selectedSamlIdpProfilesId])
+
+  }, [selectedSamlIdpProfilesId, idpViewDataList])
 
   return (
     <>
@@ -85,19 +98,13 @@ export const SAMLForm = () => {
               label={$t({
                 defaultMessage: 'Select Identity Provider (IdP) via SAML'
               })}
-              name={['samlIdpProfilesId']}
+              name={'samlIdpProfilesId'}
               rules={[{ required: true }]}
               children={
                 <Select
                   data-testid={'saml-idp-profile-select'}
                   style={{ width: '220px' }}
-                  onChange={(value, option) => {
-                    form.setFieldValue('samlIdpProfilesName',(option as DefaultOptionType).label)
-                  }}
-                  options={idpViewDataList.data?.data?.map((item) => ({
-                    label: item.name,
-                    value: item.id
-                  }))}
+                  options={samlIdpOptions}
                 />
               }
             />
@@ -111,7 +118,9 @@ export const SAMLForm = () => {
               >
                 {$t({ defaultMessage: 'View Details' })}
               </Button>
-              <Button type='link'
+              <Button
+                type='link'
+                data-testid={'saml-idp-profile-add-button'}
                 onClick={() => {
                   setAddDrawerVisible(true)
                 }}>
@@ -127,7 +136,7 @@ export const SAMLForm = () => {
           />
           {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='220px' />}
           <WlanSecurityFormItems />
-          <RedirectUrlInput></RedirectUrlInput>
+          <RedirectUrlInput />
           <DhcpCheckbox />
           <BypassCaptiveNetworkAssistantCheckbox />
           <WalledGardenTextArea
@@ -143,22 +152,38 @@ export const SAMLForm = () => {
           />
         </GridCol>
       </GridRow>
-      <SAMLDrawer
+      <Drawer
+        title={$t({ defaultMessage: 'Add SAML Identity Provider' })}
         visible={addDrawerVisible}
-        setVisible={setAddDrawerVisible}
-        readMode={false}
-        callbackFn={(createId: string) => {
-          if(createId) {
-            form.setFieldValue('samlIdpProfilesId', createId)
-            setAddDrawerVisible(false)
-          }
-        }}
+        onClose={() => setAddDrawerVisible(false)}
+        destroyOnClose={true}
+        width={450}
+        children={
+          <AddSamlIdp
+            isEmbedded={true}
+            onClose={() => setAddDrawerVisible(false)}
+            updateInstance={(createId: string) => {
+              if(createId) {
+                form.setFieldValue('samlIdpProfilesId', createId)
+                setAddDrawerVisible(false)
+              }
+            }}
+          />
+        }
+        footer={
+          // Workaround for add a footer to avoid drawer be hide when click outside
+          <Button
+            type='primary'
+            style={{ display: 'none' }}
+          >
+            {$t({ defaultMessage: 'OK' })}
+          </Button>
+        }
       />
-      <SAMLDrawer
+      <SAMLDetailDrawer
         visible={detailDrawerVisible}
         setVisible={setDetailDrawerVisible}
-        policy={selectedIdpProfile}
-        readMode={true}
+        samlIdpProfileId={selectedSamlIdpProfilesId}
       />
       {!editMode && !isRuckusAiMode && (
         <GridRow>

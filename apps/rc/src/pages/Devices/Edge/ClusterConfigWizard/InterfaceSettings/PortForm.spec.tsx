@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
-import { StepsForm }                                                                                                          from '@acx-ui/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen }                                                                                                     from '@acx-ui/test-utils'
+import { StepsForm }                                                                                                                            from '@acx-ui/components'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, screen }                                                                                                                       from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -109,5 +109,37 @@ describe('InterfaceSettings - PortForm', () => {
     const activePane = screen.getByRole('tabpanel', { hidden: false })
     expect(activePane.getAttribute('id')).toBe('rc-tabs-test-panel-serialNumber-2')
     expect(activePane.textContent).toBe('')
+  })
+
+  it('should be blocked when node does not exist valid gateway setting', async () => {
+    const mockNoWanPortData = _.cloneDeep(mockedHaWizardNetworkSettings)
+    Object.keys(mockNoWanPortData.portSettings).forEach(sn => {
+      Object.keys(mockNoWanPortData.portSettings[sn]).forEach(port => {
+        if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.WAN) {
+          mockNoWanPortData.portSettings[sn][port][0].portType = EdgePortTypeEnum.LAN
+        }
+
+        if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.LAN) {
+          mockNoWanPortData.portSettings[sn][port][0].corePortEnabled = false
+        }
+      })
+    })
+
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <StepsForm initialValues={mockNoWanPortData}>
+          <StepsForm.StepForm>
+            <PortForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    expect(screen.getByText('Port General Settings')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    // eslint-disable-next-line max-len
+    await screen.findByText('Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.')
   })
 })

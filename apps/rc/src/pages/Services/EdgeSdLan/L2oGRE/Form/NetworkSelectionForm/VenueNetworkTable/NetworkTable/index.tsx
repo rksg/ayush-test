@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
+import { Input }              from 'antd'
 import { DefaultOptionType }  from 'antd/es/cascader'
+import { NamePath }           from 'antd/lib/form/interface'
 import { find, isNil, merge } from 'lodash'
 import { AlignType }          from 'rc-table/lib/interface'
 import { useIntl }            from 'react-intl'
@@ -11,27 +13,33 @@ import { transToOptions }                                                     fr
 import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
 import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
 import {
+  ClusterHighAvailabilityModeEnum,
   defaultSort,
   EdgeMvSdLanFormModel,
+  IncompatibilityFeatures,
   isOweTransitionNetwork,
   Network,
   NetworkType,
   NetworkTypeEnum,
   sortProp,
-  useTableQuery,
-  WifiRbacUrlsInfo,
   TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  useHelpPageLink,
+  useTableQuery,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { WifiScopes }         from '@acx-ui/types'
-import { filterByAccess }     from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+import { WifiScopes }                          from '@acx-ui/types'
+import { filterByAccess }                      from '@acx-ui/user'
+import { compareVersions, getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { EdgeSdLanFormType }     from '../../..'
-import { useEdgeSdLanContext }   from '../../../EdgeSdLanContextProvider'
-import { NetworkActivationType } from '../../VenueNetworkTable/NetworksDrawer'
+import { EdgeSdLanFormType }      from '../../..'
+import { useEdgeSdLanContext }    from '../../../EdgeSdLanContextProvider'
+import { messageMappings }        from '../../../messageMappings'
+import { ValidationMessageField } from '../../styledComponents'
+import { NetworkActivationType }  from '../../VenueNetworkTable/NetworksDrawer'
 
 import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from './ActivateNetworkSwitchButton'
+
 
 // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
 const getRowDisabledInfo = (
@@ -88,7 +96,12 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const { $t } = useIntl()
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
-  const { availableTunnelProfiles = [] } = useEdgeSdLanContext()
+  const {
+    availableTunnelProfiles = [],
+    associatedEdgeClusters = [],
+    requiredFwMap = {}
+  } = useEdgeSdLanContext()
+  const helpUrl = useHelpPageLink()
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
@@ -116,20 +129,65 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   const allActivatedTunnelProfileIds = Object.values(allActivatedNetworks).flatMap(item => item.map(item => item.tunnelProfileId ?? ''))
   const currentNetworkList = activated?.[venueId]
 
-  const tunnelProfileOptions = useMemo(() =>[
-    {
-      label: $t({ defaultMessage: 'Core Port' }),
-      value: ''
-    },
-    ...transToOptions(
-      availableTunnelProfiles.filter(item => item.id !== dcTunnelProfileId),
-      [...(currentNetworkList?.map(item => item.tunnelProfileId ?? '') ?? []), ...(allActivatedTunnelProfileIds ?? [])]
+  const tunnelProfileOptions = useMemo(() => {
+    const dcTunnelProfileBoundClusterId = availableTunnelProfiles?.find(profile =>
+      profile.id === dcTunnelProfileId)?.destinationEdgeClusterId
+
+    const selectedCluster = associatedEdgeClusters?.find(
+      cluster => cluster.clusterId === dcTunnelProfileBoundClusterId
     )
-  ], [availableTunnelProfiles, activated])
+
+    const isSupportL2Gre = selectedCluster?.edgeList?.every(
+      edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.L2OGRE]) > -1
+    ) && selectedCluster.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
+    const filteredTunnelOptions = availableTunnelProfiles?.filter(profile =>
+      (isSupportL2Gre || profile.tunnelType !== TunnelTypeEnum.L2GRE) &&
+      profile.id !== dcTunnelProfileId)
+
+    const usedTunnelProfileIds = [
+      ...(currentNetworkList?.map(item => item.tunnelProfileId ?? '') ?? []),
+      ...(allActivatedTunnelProfileIds ?? [])
+    ]
+
+    return [
+      {
+        label: $t({ defaultMessage: 'Core Port' }),
+        value: ''
+      },
+      ...transToOptions(filteredTunnelOptions, usedTunnelProfileIds)
+    ]
+  }, [availableTunnelProfiles, activated])
 
   const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
     .filter(i => !isNil(i)) ?? []) as string[]
+
+  const checkCorePortConfigured = (tunnelProfileId?: string) => {
+    const targetTunnelProfile = availableTunnelProfiles?.find((tunnelProfile) =>
+      tunnelProfile.id === tunnelProfileId)
+
+    if(!tunnelProfileId || targetTunnelProfile?.tunnelType === TunnelTypeEnum.L2GRE) {
+      return Promise.resolve()
+    }
+
+    const associatedEdgeCluster = associatedEdgeClusters?.find((cluster) =>
+      cluster.clusterId === targetTunnelProfile?.destinationEdgeClusterId)
+    if (associatedEdgeCluster?.hasCorePort) {
+      return Promise.resolve()
+    } else {
+      return Promise.reject($t(messageMappings.setting_cluster_helper, {
+        infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+          {$t({ defaultMessage: 'See more information' })}
+        </a>
+      }))
+    }
+  }
+
+  const handleTunnelProfileChange = (row: Network, value: string, namePath: NamePath) => {
+    form.validateFields([namePath])
+    onTunnelProfileChange?.(row, value)
+  }
 
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
@@ -175,17 +233,24 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     title: $t({ defaultMessage: 'Forward Destination' }),
     key: 'action2',
     dataIndex: 'action2',
-    width: 120,
-    render: (_: unknown, row: Network) => {
+    width: 150,
+    render: (_: unknown, row: Network, index: number) => {
       const isEnabledTunneling = currentNetworkList?.some(item => item.networkId === row.id)
       const currentTunnelProfileId = currentNetworkList?.find(item => item.networkId === row.id)?.tunnelProfileId
       const processedOptions = getFilteredTunnelProfileOptions(row, tunnelProfileOptions, availableTunnelProfiles)
-      return isEnabledTunneling && <Select
-        style={{ width: 200 }}
-        value={currentTunnelProfileId ?? ''}
-        onChange={(value) => onTunnelProfileChange?.(row, value)}
-        options={processedOptions}
-      />
+      return isEnabledTunneling && <>
+        <Select
+          style={{ width: '100%' }}
+          value={currentTunnelProfileId ?? ''}
+          onChange={(value) => handleTunnelProfileChange(row, value, ['validation', index])}
+          options={processedOptions}
+        />
+        <ValidationMessageField
+          name={['validation', index]}
+          rules={[{ validator: () => checkCorePortConfigured(currentTunnelProfileId) }]}
+          children={<Input hidden />}
+        />
+      </>
     }
   }
   ]), [
@@ -245,7 +310,7 @@ export const getFilteredTunnelProfileOptions = (
 
   return tunnelProfileOptions
     .map(item => {
-      const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
+      const profile = availableTunnelProfiles?.find(profile => profile.id === item.value)
 
       // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
       if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {

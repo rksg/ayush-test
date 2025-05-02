@@ -100,6 +100,7 @@ export const {
   CopySolid,
   CrownOutlined,
   CrownSolid,
+  Dashboard,
   DashboardOutlined,
   DashboardSolid,
   DataStudioOutlined,

@@ -5,9 +5,9 @@ import { Space, Typography }                               from 'antd'
 import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Drawer }                                          from '@acx-ui/components'
-import { showSdLanCaptivePortalConflictModal }             from '@acx-ui/edge/components'
-import { EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Drawer, useStepFormContext }                                            from '@acx-ui/components'
+import { showSdLanCaptivePortalConflictModal }                                   from '@acx-ui/edge/components'
+import { EdgeMvSdLanFormModel, EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -21,8 +21,13 @@ const toggleItemFromSelected = (
 ) => {
   let newSelected: NetworkActivationType = cloneDeep(selectedNetworks)
   if (checked) {
+    let tunnelProfileIdDefaultValue = ''
+    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+      tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
+        .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
+    }
     newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
-      [{ networkId: data.id, networkName: data.name }], 'networkId')
+      [{ networkId: data.id, networkName: data.name, tunnelProfileId: tunnelProfileIdDefaultValue }], 'networkId')
   } else {
     newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
     remove(newSelected[venueId], item => item.networkId === data.id)
@@ -63,6 +68,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     pinNetworkIds
   } = props
 
+  const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
 
   const handleActivateChange = (
@@ -126,13 +132,17 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    onSubmit(updateContent)
+    form.validateFields(['validation']).then(() => {
+      onSubmit(updateContent)
+    }).catch(() => {
+      // do nothing
+    })
   }
 
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select Networks' }, { venueName })}
-      width={1000}
+      width={1100}
       visible={visible}
       onClose={onClose}
       footer={
@@ -159,7 +169,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             />
           </Typography.Paragraph>
         </div>
-
         <ActivatedNetworksTable
           venueId={venueId}
           activated={updateContent}

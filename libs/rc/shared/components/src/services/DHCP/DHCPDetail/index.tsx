@@ -93,7 +93,8 @@ export function DHCPDetail () {
         <Tabs.TabPane key={'DHCP_POOL'} tab={$t({ defaultMessage: 'DHCP Pool' })}>
           <GridRow>
             <GridCol col={{ span: 24 }}>
-              <PoolTable data={data ? data.dhcpPools:[]} readonly={true}/>
+              {// eslint-disable-next-line max-len
+                <PoolTable data={data ? data.dhcpPools:[]} configureType={data?.dhcpMode} readonly={true}/>}
             </GridCol>
           </GridRow>
         </Tabs.TabPane>
