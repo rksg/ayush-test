@@ -105,16 +105,16 @@ export default function BaseStepNode (props: NodeProps
           <Popover
             zIndex={1000}
             content={<Space size={12} direction={'vertical'}>
-                <Button
+                <UI.WhiteTextButton
                   size={'small'}
                   type={'link'}
                   onClick={() => {}}
-                >{$t({defaultMessage: 'delete only step'})}</Button>
-                <Button
+                >{$t({defaultMessage: 'Delete step only'})}</UI.WhiteTextButton>
+                <UI.WhiteTextButton
                   size={'small'}
                   type={'link'}
                   onClick={() => {}}
-                  >{$t({defaultMessage: 'delete step and children'})}</Button>
+                  >{$t({defaultMessage: 'Delete step and children'})}</UI.WhiteTextButton>
               </Space>}
             trigger={'hover'}
             placement={'bottomLeft'}
@@ -127,7 +127,6 @@ export default function BaseStepNode (props: NodeProps
                 rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
                 disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
                 icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
-                // onClick={onDeleteClick} // TODO: update me
               />
           </Popover>
           : 

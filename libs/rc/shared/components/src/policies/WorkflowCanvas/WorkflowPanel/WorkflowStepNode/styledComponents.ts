@@ -1,3 +1,4 @@
+import { Button } from '@acx-ui/components'
 import { Typography }            from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
@@ -163,6 +164,20 @@ export const EditorToolbarIcon = styled.div`
 
   :hover path {
     stroke: var(--acx-accents-orange-50) !important;
+  }
+`
+
+export const WhiteTextButton = styled(Button)`
+  color: var(--acx-primary-white);
+  text-decoration: none;
+  :after {
+    content: '';
+    display: block;
+  }
+  transition: all 0s;
+  
+  :hover, :focus, :active {
+    color: var(--acx-accents-orange-50) !important;
   }
 `
 
