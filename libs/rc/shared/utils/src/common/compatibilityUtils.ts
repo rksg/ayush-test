@@ -36,6 +36,8 @@ export const getCompatibilityFeatureDisplayName = (
       return $t({ defaultMessage: 'Tunnel Profile' })
     case IncompatibilityFeatures.DUAL_WAN:
       return $t({ defaultMessage: 'Dual WAN' })
+    case IncompatibilityFeatures.L2OGRE:
+      return $t({ defaultMessage: 'L2GRE' })
     default:
       return featureName
   }
