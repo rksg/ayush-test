@@ -536,11 +536,11 @@ function DashboardPageHeader (props: {
         onClose={() => setImportDashboardDrawerVisible(false)}
       />
 
-      <PreviewDashboardModal
+      { previewModalVisible && <PreviewDashboardModal
         data={previewData}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
-      />
+      />}
 
       { canvasModalVisible && <AICanvasModal
         isModalOpen={canvasModalVisible}

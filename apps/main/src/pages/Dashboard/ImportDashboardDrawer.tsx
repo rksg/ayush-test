@@ -98,7 +98,7 @@ export const ImportDashboardDrawer = (props: {
 
   const canvasTabs = [{
     key: TabKey.Owned,
-    label: $t({ defaultMessage: 'My canvases' }),
+    label: $t({ defaultMessage: 'My Canvases' }),
     list: ownedCanvasList
   }, {
     key: TabKey.Shared,
@@ -357,6 +357,7 @@ export const ImportDashboardDrawer = (props: {
               props.onImportClick(selectedCanvases)
             }}
             type='primary'
+            disabled={selectedCanvases.length === 0}
           >
             {$t({ defaultMessage: 'Import ({count})' }, { count: selectedCanvases.length })}
           </Button>

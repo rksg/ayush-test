@@ -235,7 +235,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
       expect(await within(canvasDrawer).findByText('Public Canvases')).toBeVisible()
 
       await userEvent.click(
@@ -376,7 +376,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       const tabPanel = screen.getByRole('tabpanel', { hidden: false })
       const canvasMoreBtn = await within(tabPanel).findAllByTestId('canvas-more-btn')
@@ -411,7 +411,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       await userEvent.click(
         await within(canvasDrawer).findByRole('button', { name: 'Canvas Editor' })
@@ -439,7 +439,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       const tabPanel = screen.getByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(tabPanel).findByText('Newcanvas 1'))
@@ -471,7 +471,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       await userEvent.click(await screen.findByRole('tab', { name: 'Public Canvases' }))
       const tabPanel = screen.getByRole('tabpanel', { hidden: false })
@@ -483,7 +483,7 @@ describe('Dashboard', () => {
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Clone as Private Copy' }))
       expect(mockCloneCanvas).toBeCalled()
       await waitFor(async ()=>{
-        const ownedTab = await screen.findByRole('tab', { name: 'My canvases' })
+        const ownedTab = await screen.findByRole('tab', { name: 'My Canvases' })
         expect(ownedTab.getAttribute('aria-selected')).toBeTruthy()
       })
     })
@@ -508,7 +508,7 @@ describe('Dashboard', () => {
       )
       const drawers = await screen.findAllByRole('dialog')
       const canvasDrawer = drawers[1]
-      expect(await within(canvasDrawer).findByText('My canvases')).toBeVisible()
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       const tabPanel = screen.getByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(tabPanel).findByText('Newcanvas 1'))
