@@ -529,8 +529,10 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
         }
         />
         { !isSsidEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handleSsidEdit}
-            style={{ marginTop: '4px'}}
+          <Button type='link'
+            disabled={!isAllowEdit || isReadOnly}
+            onClick={handleSsidEdit}
+            style={{ marginTop: '4px' }}
           >
             {$t({ defaultMessage: 'Change' })}
           </Button>
@@ -565,7 +567,9 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
           />}
         />
         { !isPassphraseEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handlePassphraseEdit}
+          <Button type='link'
+            disabled={!isAllowEdit || isReadOnly}
+            onClick={handlePassphraseEdit}
             style={{ marginTop: '4px' }}>
             {$t({ defaultMessage: 'Change' })}
           </Button>

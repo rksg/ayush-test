@@ -18,6 +18,7 @@ import {
   Modal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }      from '@acx-ui/icons'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useGetNetworkApGroupsV2Query,
@@ -49,7 +50,6 @@ import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InC
 import { ApGroupItem } from './ApGroupItem'
 import { RadioSelect } from './RadioSelect'
 import * as UI         from './styledComponents'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const isDisableAllAPs = (apGroups?: NetworkApGroup[]) => {
   if (!apGroups) {
