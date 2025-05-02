@@ -108,7 +108,8 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
   },
   removeDashboards: {
     method: 'delete',
-    url: '/ruckusAi/dashboards'
+    url: '/ruckusAi/dashboards',
+    newApi: true
   },
   sendFeedback: {
     method: 'post',
