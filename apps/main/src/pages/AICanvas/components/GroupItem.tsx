@@ -59,7 +59,7 @@ export default function GroupItem (props: GroupProps) {
 
   const getContainerHeight = () => {
     if (!hasCards && !draggable) {
-      return 'calc(80vh - 130px)' //TODO
+      return 'calc(80vh - 130px)'
     } else if (containerHeight > defaultLayout.containerHeight) {
       return containerHeight
     }

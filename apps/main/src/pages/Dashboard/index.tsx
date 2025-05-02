@@ -406,6 +406,7 @@ function DashboardPageHeader (props: {
   }, [dashboardFilters])
 
   const handleDashboardChange = (value: string) => {
+    //TODO: patch API to clear notifications
     setDashboardId(value)
   }
 

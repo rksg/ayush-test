@@ -875,13 +875,13 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-content {
     background: transparent;
     box-shadow: none !important;
-    transition: all .4s linear;
+    transition: all .2s linear;
     padding-top: 68px;
   }
   .ant-modal-body {
     padding: 0px 0 24px;
     height: calc(80vh - 68px);
-    transition: all .4s linear;  
+    transition: all .2s linear;  
     overflow: auto;
   }
   .ant-modal-footer {

@@ -168,7 +168,7 @@ describe('Dashboard', () => {
     expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
   })
 
-  describe('Dashboard canvas', () => { //TODO
+  describe('Dashboard canvas', () => {
     const mockCloneCanvas = jest.fn()
     const mockDeleteCanvas = jest.fn()
     jest.mocked(useGetCanvasesQuery).mockImplementation(() => ({
@@ -193,10 +193,6 @@ describe('Dashboard', () => {
           RuckusAiChatUrlInfo.removeDashboards.url,
           (req, res, ctx) => res(ctx.json({}))
         ),
-        // rest.post(
-        //   RuckusAiChatUrlInfo.getCanvases.url,
-        //   (req, res, ctx) => res(ctx.json(canvasList))
-        // ),
         rest.get(
           RuckusAiChatUrlInfo.getCanvasById.url,
           (req, res, ctx) => res(ctx.json(canvasData))
