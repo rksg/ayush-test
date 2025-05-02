@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { throttle } from 'lodash'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
 import { baseUrlFor }                                                            from '@acx-ui/config'
@@ -49,7 +48,6 @@ export default function PortalTable () {
   const [getPortalLang] = useGetPortalLangMutation()
   const [getPortal] = useLazyGetPortalQuery()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
-  const [portalId, setPortalId]=useState('')
   const [newDemo, setNewDemo]=useState({} as Demo)
 
   const tableQuery = useTableQuery({
@@ -65,9 +63,9 @@ export default function PortalTable () {
   })
 
   const resetDemo = useCallback(() => {
-    setPortalId('')
     setNewDemo({} as Demo)
-  }, [setPortalId, setNewDemo])
+    setPortalLang({})
+  }, [setNewDemo, setPortalLang])
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
@@ -160,38 +158,33 @@ export default function PortalTable () {
       dataIndex: 'demo',
       align: 'center',
       render: (_, row) =>{
-        return (<div aria-label={row.id}
-          onClick={throttle(async (e)=>{
-            const portalData = await getPortal({
-              params: { serviceId: row.id as string },
-              enableRbac: isEnabledRbacService }).unwrap() as Portal
-            const demoValue = portalData.content as Demo
-            const initDemo = { ...initialPortalData.content, ...demoValue } as Demo
-            const tempDemo = { ...initDemo,
-              poweredImg: demoValue.poweredImg?
-                await getImageDownloadUrl(isEnabledRbacService, demoValue.poweredImg):Powered,
-              logo: demoValue.logo?
-                await getImageDownloadUrl(isEnabledRbacService, demoValue.logo):Logo,
-              photo: demoValue.photo?
-                await getImageDownloadUrl(isEnabledRbacService, demoValue.photo): Photo,
-              bgImage: demoValue.bgImage?
-                await getImageDownloadUrl(isEnabledRbacService, demoValue.bgImage):'' }
-            setNewDemo(tempDemo)
-            getPortalLang({ params: { ...params, messageName:
-              tempDemo.displayLangCode+'.json' } }).unwrap().then(res=>{
-              setPortalId(row.id as string)
-              setPortalLang(res)
-            })
-            e.stopPropagation()
-          }, 1000)}>
+        return (
           <PortalPreviewModal
             demoValue={newDemo}
             portalLang={portalLang}
-            id={row.id}
-            portalId={portalId}
             fromPortalList={true}
+            onPreviewClick={async () => {
+              const portalData = await getPortal({
+                params: { serviceId: row.id as string },
+                enableRbac: isEnabledRbacService }).unwrap() as Portal
+              const demoValue = portalData.content as Demo
+              const initDemo = { ...initialPortalData.content, ...demoValue } as Demo
+              const tempDemo = { ...initDemo,
+                poweredImg: demoValue.poweredImg?
+                  await getImageDownloadUrl(isEnabledRbacService, demoValue.poweredImg):Powered,
+                logo: demoValue.logo?
+                  await getImageDownloadUrl(isEnabledRbacService, demoValue.logo):Logo,
+                photo: demoValue.photo?
+                  await getImageDownloadUrl(isEnabledRbacService, demoValue.photo): Photo,
+                bgImage: demoValue.bgImage?
+                  await getImageDownloadUrl(isEnabledRbacService, demoValue.bgImage):'' }
+              setNewDemo(tempDemo)
+              getPortalLang({ params: { ...params, messageName:
+                tempDemo.displayLangCode+'.json' } }).unwrap().then(res=>{
+                setPortalLang(res)
+              })
+            }}
             resetDemo={resetDemo}/>
-        </div>
         )
       }
     },

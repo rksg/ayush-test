@@ -33,6 +33,16 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  PortalPreviewModal: () => <div data-testid='PortalPreviewModal' />,
+  SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />,
+  getLanguage: () => 'English',
+  initialPortalData: {
+    network: [],
+    content: {}
+  }
+}))
+
 describe('PortalTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
