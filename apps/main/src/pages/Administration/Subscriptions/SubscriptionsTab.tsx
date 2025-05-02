@@ -93,7 +93,7 @@ export const SubscriptionTabs = (props: { tenantType: string }) => {
         </Typography.Text>
       </SpaceWrapper>
       <Tabs
-        defaultActiveKey='users'
+        defaultActiveKey='mySubscriptions'
         type='card'
         onChange={onTabChange}
         activeKey={params.activeSubTab}

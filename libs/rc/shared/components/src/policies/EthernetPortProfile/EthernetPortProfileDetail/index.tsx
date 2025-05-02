@@ -43,8 +43,16 @@ export const EthernetPortProfileDetail = () => {
   const { isTemplate } = useConfigTemplate()
 
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const supportSwitchPortProfile = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const supportWiredClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
+  let breadcrumbWithSwitchPortProfile = [...breadcrumb]
+  if (breadcrumbWithSwitchPortProfile.length >= 3) {
+    breadcrumbWithSwitchPortProfile[2] = {
+      ...breadcrumbWithSwitchPortProfile[2],
+      link: 'policies/portProfile/wifi'
+    }
+  }
 
   const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
@@ -164,7 +172,7 @@ export const EthernetPortProfileDetail = () => {
   return (<>
     <PageHeader
       title={ethernetPortProfileData?.name}
-      breadcrumb={breadcrumb}
+      breadcrumb={supportSwitchPortProfile ? breadcrumbWithSwitchPortProfile : breadcrumb}
       extra={filterByAccessForServicePolicyMutation([
         <PolicyConfigTemplateLinkSwitcher
           // eslint-disable-next-line max-len
