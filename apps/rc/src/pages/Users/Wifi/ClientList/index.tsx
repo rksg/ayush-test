@@ -11,7 +11,7 @@ import { useNavigate, useTenantLink }                                       from
 import { EmbeddedReport, ReportType, usePageHeaderExtra }                   from '@acx-ui/reports/components'
 import { RequestPayload }                                                   from '@acx-ui/types'
 import { filterByAccess }                                                   from '@acx-ui/user'
-import { DateRange }                                                        from '@acx-ui/utils'
+import { DateRange, TABLE_DEFAULT_PAGE_SIZE }                               from '@acx-ui/utils'
 
 import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
@@ -58,7 +58,8 @@ const useTabs = () : WirelessTab[] => {
   // eslint-disable-next-line max-len
   const clientTableQuery = usePollingTableQuery<ClientInfo|ClientList, RequestPayload<unknown>, unknown>({
     useQuery: isWifiRbacEnabled? useGetClientsQuery : useGetClientListQuery,
-    defaultPayload: { ...payload }
+    defaultPayload: { ...payload },
+    pagination: isWifiRbacEnabled ? { pageSize: 0 } : { pageSize: TABLE_DEFAULT_PAGE_SIZE }
   })
 
   const guestTableQuery = usePollingTableQuery({

@@ -38,6 +38,7 @@ const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] =
   const rbacQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: apsCountQueryPayload,
+    pagination: { pageSize: 0 },
     option: { skip: !isUseWifiRbacApi }
   })
 
