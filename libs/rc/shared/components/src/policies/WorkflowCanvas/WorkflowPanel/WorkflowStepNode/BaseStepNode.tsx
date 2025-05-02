@@ -6,7 +6,7 @@ import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
-import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
+import { useDeleteWorkflowStepAndDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation, useDeleteWorkflowStepByIdV2Mutation }                                                     from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls }             from '@acx-ui/rc/utils'
 import { hasAllowedOperations, hasPermission }                                                   from '@acx-ui/user'
 import { getOpsApi }                                                                             from '@acx-ui/utils'
@@ -34,6 +34,8 @@ export default function BaseStepNode (props: NodeProps
     stepDrawerState, workflowId
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
+  const [ deleteAndDetachStep, {isLoading: isDeleteDetachStepLoading }] = useDeleteWorkflowStepByIdV2Mutation()
+  const [ deleteStepAndDescendants, {isLoading: isDeleteStepAndDescendantsLoading }] = useDeleteWorkflowStepAndDescendantsByIdMutation()
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -68,6 +70,30 @@ export default function BaseStepNode (props: NodeProps
         $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
         deleteStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+      }
+    })
+  }
+
+  const onDeleteStepClick = (deleteChildren:Boolean) => {
+    onPreviewClose()
+    onHandleNode(props)
+    stepDrawerState.onClose()
+
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Step' }),
+        entityValue: $t(ActionTypeTitle[props.type as ActionType])
+          ?? $t({ defaultMessage: 'Step' })
+      },
+      content: deleteChildren ?
+        $t({ defaultMessage: 'Do you want to delete this step and all of its children?'})
+        : $t({ defaultMessage: 'Do you want to delete this step?' }),
+      onOk: () => {
+        deleteChildren ?
+        deleteStepAndDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+         : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
   }
@@ -108,12 +134,12 @@ export default function BaseStepNode (props: NodeProps
                 <UI.WhiteTextButton
                   size={'small'}
                   type={'link'}
-                  onClick={() => {}}
+                  onClick={() => onDeleteStepClick(false)}
                 >{$t({defaultMessage: 'Delete step only'})}</UI.WhiteTextButton>
                 <UI.WhiteTextButton
                   size={'small'}
                   type={'link'}
-                  onClick={() => {}}
+                  onClick={() => onDeleteStepClick(true)}
                   >{$t({defaultMessage: 'Delete step and children'})}</UI.WhiteTextButton>
               </Space>}
             trigger={'hover'}
@@ -146,7 +172,7 @@ export default function BaseStepNode (props: NodeProps
   return (
     <UI.StepNode selected={props.selected}>
       <Loader states={[
-        { isLoading: false, isFetching: isDeleteStepLoading }
+        { isLoading: false, isFetching: isDeleteStepLoading || isDeleteDetachStepLoading || isDeleteStepAndDescendantsLoading }
       ]}>
         {props.children}
       </Loader>
