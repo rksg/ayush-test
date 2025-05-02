@@ -12,7 +12,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useActivateCertificateTemplateMutation,
   useActivateDirectoryServerMutation,
@@ -79,27 +79,27 @@ import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTempla
 import { useGetNetwork }                                   from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SAMLForm }                from './CaptivePortal/SAMLForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }          from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }       from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }         from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
+import { SAMLForm }               from './CaptivePortal/SAMLForm'
+import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }              from './CaptivePortal/WISPrForm'
 import {
   useUpdateEdgeSdLanActivations
 } from './edgeUtils'
-import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext           from './NetworkFormContext'
-import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }              from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   handleServicePolicyRbacPayload,
   tranferSettingsToSave,
@@ -1544,8 +1544,7 @@ function useIdentityGroupOnNetworkActivation () {
       (network.type === NetworkTypeEnum.HOTSPOT20 ||
         network.type === NetworkTypeEnum.PSK ||
         network.type === NetworkTypeEnum.AAA ||
-        network.type === NetworkTypeEnum.CAPTIVEPORTAL ||
-        network.type === NetworkTypeEnum.OPEN
+        network.type === NetworkTypeEnum.CAPTIVEPORTAL
       )
     ) {
       const identityGroupId = network?.identityGroupId
