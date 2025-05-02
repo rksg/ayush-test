@@ -74,6 +74,7 @@ export enum Features {
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
   EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   EDGE_L2OGRE_TOGGLE = 'edge-l2ogre-toggle',
+  EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -335,6 +336,8 @@ export enum Features {
   WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE = 'wifi-ap-group-more-parameter-phase1-toggle',
   SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE = 'acx-ui-support-stack-neighbor-port-toggle',
   WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE = 'wifi-open-network-integrate-identity-group-toggle',
+  WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
+  WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle'
 }
 
