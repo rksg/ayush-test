@@ -71,10 +71,10 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
     searchable: true,
-    render: (_, record: ImpactedSwitchPortRow) => {
+    render: (_, record: ImpactedSwitchPortRow, __, highlightFn) => {
       if (typeof record.portNumbers !== 'string') return ''
-      return formatPortRanges(record.portNumbers.split(', '))
-    }
+      const formattedPorts = formatPortRanges(record.portNumbers.split(', '))
+      return ( <span> {highlightFn(formattedPorts)} </span> ) }
   }, {
     key: 'action',
     dataIndex: 'action',
