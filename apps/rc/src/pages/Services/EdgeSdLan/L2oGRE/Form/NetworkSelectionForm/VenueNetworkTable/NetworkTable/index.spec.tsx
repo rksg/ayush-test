@@ -26,6 +26,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   AddNetworkModal: () => <div data-testid='AddNetworkModal' />
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => ''
+}))
+
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()

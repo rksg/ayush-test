@@ -2,19 +2,21 @@ import { Form }       from 'antd'
 import { capitalize } from 'lodash'
 import { useIntl }    from 'react-intl'
 
-import { Drawer }                                             from '@acx-ui/components'
-import { EdgeWanLinkHealthCheckPolicy, transformDisplayText } from '@acx-ui/rc/utils'
+import { Drawer }                   from '@acx-ui/components'
+import { EdgeMultiWanConfigStats  } from '@acx-ui/rc/utils'
+
+import { getWanProtocolString, getWanLinkDownCriteriaString } from '../utils/dualWanUtils'
 
 interface EdgeWanLinkHealthDetailsDrawerProps {
   visible: boolean
   setVisible: (ifName: string | undefined) => void
   portName: string | undefined
-  healthCheckPolicy: EdgeWanLinkHealthCheckPolicy | undefined
+  data: EdgeMultiWanConfigStats | undefined
 }
 
 export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, portName, healthCheckPolicy } = props
+  const { visible, setVisible, portName, data } = props
 
   const onClose = () => {
     setVisible(undefined)
@@ -28,14 +30,14 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
       <Form.Item
         label={$t({ defaultMessage: 'Protocol' })}
         children={
-          transformDisplayText(healthCheckPolicy?.protocol)
+          getWanProtocolString(data?.monitorProtocol)
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Target IP Addresses' })}
         children={
           <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-            {healthCheckPolicy?.targetIpAddresses?.map((ip) => {
+            {data?.monitorTargets?.map((ip) => {
               return <li key={ip} children={ip} />
             })}
           </ul>
@@ -44,7 +46,7 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
       <Form.Item
         label={$t({ defaultMessage: 'Test Failure Condition' })}
         children={
-          transformDisplayText(healthCheckPolicy?.linkDownCriteria)
+          getWanLinkDownCriteriaString(data?.monitorLinkDownCriteria)
         }
       />
       <Form.Item
@@ -53,7 +55,7 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
           $t({ defaultMessage: `{interval} {interval, plural,
               one {Second}
               other {Seconds}}` },
-          { interval: healthCheckPolicy?.intervalSeconds } )
+          { interval: data?.monitorIntervalSec } )
         }
       />
       <Form.Item
@@ -62,7 +64,7 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
           $t({ defaultMessage: `{count} {count, plural,
               one {Try}
               other {Tries}}` },
-          { count: healthCheckPolicy?.maxCountToDown } )
+          { count: data?.monitorMaxCountToDown } )
         }
       />
 
@@ -72,7 +74,7 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
           $t({ defaultMessage: `{count} {count, plural,
             one {Try}
             other {Tries}}` },
-          { count: healthCheckPolicy?.maxCountToUp } )
+          { count: data?.monitorMaxCountToUp } )
         }
       />
     </Form>

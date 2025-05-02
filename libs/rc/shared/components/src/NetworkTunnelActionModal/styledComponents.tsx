@@ -36,3 +36,13 @@ export const TextButton = styled(Button)`
 export const StyledFormItem = styled(Form.Item)`
   margin-bottom: 0px;
 `
+
+export const FieldText = styled.div`
+  font-size: var(--acx-body-4-font-size);
+`
+
+export const ClusterSelectorHelper = styled(FieldText)`
+  & svg {
+    vertical-align: sub;
+  }
+`
