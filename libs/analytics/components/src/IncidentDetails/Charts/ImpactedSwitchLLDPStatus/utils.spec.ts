@@ -54,4 +54,37 @@ describe('formatPortRanges', () => {
 
     expect(formatPortRanges(ports)).toBe('1/1/1 to 1/1/48, 2/1/1 to 2/1/48, 3/1/1 to 3/1/48')
   })
+  it('should handle a single port with an invalid format', () => {
+    expect(formatPortRanges(['invalid-port'])).toBe('invalid-port')
+  })
+
+  it('should handle ports that are not sorted', () => {
+    expect(formatPortRanges(['1/1/3', '1/1/1', '1/1/2'])).toBe('1/1/1 to 1/1/3')
+  })
+
+  it('should handle ports with different slot numbers', () => {
+    expect(formatPortRanges(['1/1/1', '2/1/1', '1/1/2'])).toBe('1/1/1 to 1/1/2, 2/1/1')
+  })
+
+  it('should handle ports with different chassis numbers', () => {
+    expect(formatPortRanges(['1/1/1', '2/2/1', '1/1/2'])).toBe('1/1/1 to 1/1/2, 2/2/1')
+  })
+
+  it('should handle ports with large numbers', () => {
+    expect(formatPortRanges(['1/1/1000', '1/1/1001', '1/1/1002'])).toBe('1/1/1000 to 1/1/1002')
+  })
+
+  it('should handle ports with mixed separators', () => {
+    expect(formatPortRanges(['1-1-1', '1/1/2'])).toBe('1-1-1, 1/1/2')
+  })
+  it('should sort ports by port number when slot numbers are the same', () => {
+    const ports = ['1/3/1', '1/1/1', '1/2/1', '1/1/2']
+    const result = formatPortRanges(ports)
+    expect(result).toBe('1/1/1 to 1/1/2, 1/2/1, 1/3/1')
+  })
+  it('should sort ports by port number when slot numbers are same', () => {
+    const ports = ['1/3/1', '1/1/1', '1/2/1']
+    const result = formatPortRanges(ports)
+    expect(result).toBe('1/1/1, 1/2/1, 1/3/1')
+  })
 })
