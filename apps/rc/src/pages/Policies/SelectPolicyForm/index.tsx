@@ -90,6 +90,7 @@ export default function SelectPolicyForm () {
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -125,7 +126,7 @@ export default function SelectPolicyForm () {
       disabled: !supportHotspot20R1 || (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
     },
     {
-      type: PolicyType.IDENTITY_PROVIDER,
+      type: ((isCaptivePortalSsoSamlEnabled)? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER),
       categories: [RadioCardCategory.WIFI],
       disabled: !supportHotspot20R1 || (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
     },
