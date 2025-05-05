@@ -198,7 +198,7 @@ export default function MacRegistrationListsTable () {
         render: function (_, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
-            const venues = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
+            const venues = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item) ?? []
             const toolTipItems: string [] = isWifiRbacEnabled ?
               venueNameMap.filter(v => venues!.includes(v.key)).map(v => v.value)
               : Array.from(new Set(venues))
