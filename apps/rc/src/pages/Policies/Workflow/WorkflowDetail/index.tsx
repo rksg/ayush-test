@@ -5,13 +5,17 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                           from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                     from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                           from '@acx-ui/rc/services'
-import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { hasPermission }                                                                                                                                                                                             from '@acx-ui/user'
-import { getOpsApi }                                                                                                                                                                                                 from '@acx-ui/utils'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                                                                                                                                               from '@acx-ui/formatter'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                                   from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                                         from '@acx-ui/rc/services'
+import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls, StatusReason } from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                                                                                           from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                                                                                                                                                                                from '@acx-ui/utils'
+
+import PublishReadinessProgress from '../PublishReadinessProgress'
 
 
 
@@ -25,6 +29,9 @@ export default function WorkflowDetails () {
   const [isComparatorOpen, setIsComparatorOpen] = useState(false)
   const [publishable, setPublishable] = useState(true)
   const [data, setData] = useState<Workflow>()
+
+  const workflowValidationEnhancementFFToggle =
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
 
   const workflowQuery = useGetWorkflowByIdQuery({ params: { id: policyId } })
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
@@ -109,6 +116,12 @@ export default function WorkflowDetails () {
 
   const workflowInfo = [
     {
+      title: $t({ defaultMessage: 'Description' }),
+      content: data?.description || noDataDisplay,
+      visible: workflowValidationEnhancementFFToggle,
+      colSpan: 4
+    },
+    {
       title: $t({ defaultMessage: 'Status' }),
       content: $t({ defaultMessage: ` {
         status, select,
@@ -120,8 +133,39 @@ export default function WorkflowDetails () {
       colSpan: 2
     },
     {
+      title: $t({ defaultMessage: 'Last Published' }),
+      content: published?.publishedDetails?.publishedDate
+        ? formatter(
+          DateFormatEnum.DateTimeFormatWith12HourSystem)(published?.publishedDetails?.publishedDate)
+        : noDataDisplay,
+      visible: workflowValidationEnhancementFFToggle
+        && !!published?.publishedDetails?.publishedDate,
+      colSpan: 4
+    },
+    {
+      title: $t({ defaultMessage: 'Versions' }),
+      content: <Button
+        type='link'
+        onClick={()=>{
+          closeWorkflowDesigner()
+          setPreviewVisible(false)
+          setIsComparatorOpen(true)
+        }}>{ published?.publishedDetails?.version }</Button>,
+      visible: workflowValidationEnhancementFFToggle
+      && published?.publishedDetails?.status === 'PUBLISHED',
+      colSpan: 2
+    },
+    {
       title: $t({ defaultMessage: 'Onboarding Network' }),
       visible: false,
+      colSpan: 4
+    },
+    {
+      title: $t({ defaultMessage: 'Publishing Readiness' }),
+      visible: workflowValidationEnhancementFFToggle,
+      content: <PublishReadinessProgress
+        publishReadiness={data?.publishReadiness as number}
+        reasons={data?.statusReasons as StatusReason[]} />,
       colSpan: 4
     },
     {

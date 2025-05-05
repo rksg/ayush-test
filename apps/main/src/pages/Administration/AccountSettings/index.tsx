@@ -16,6 +16,7 @@ import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
+import { DeleteAccountFormItem }         from './DeleteAccountFormItem'
 import { EnableR1Beta }                  from './EnableR1Beta'
 import { EnableR1BetaFeatures }          from './EnableR1Beta/EnableR1BetaFeatures'
 import { MapRegionFormItem }             from './MapRegionFormItem'
@@ -58,6 +59,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
   const isLoginSSoTechpartnerEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_TECHPARTNER)
   const isLoginSSoMspEcEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_MSPEC)
+  const isSoftTenantDeleteEnabled = useIsSplitOn(Features.NUKETENANT_SOFT_TENANT_DELETE_TOGGLE)
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
@@ -70,6 +72,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || (isLoginSSoTechpartnerEnabled && isTechPartner)))
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
+  const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
+   canMSPDelegation
 
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
@@ -159,6 +163,14 @@ const AccountSettings = (props : AccountSettingsProps) => {
               />
             </>
           )}
+
+          { showSoftDeleteButton && (
+            <>
+              <Divider />
+              <DeleteAccountFormItem />
+            </>
+          )}
+
         </StepsForm.TextContent>
       </Form>
     </Loader>

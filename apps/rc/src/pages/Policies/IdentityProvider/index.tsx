@@ -57,7 +57,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
 
   const buttonLinkMapping: Record<IdentityProviderTabType, string> = {
     [IdentityProviderTabType.SAML]:
-      getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE }),
+      '/policies/samlIdp/add',
     [IdentityProviderTabType.Hotspot20]:
       getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })
   }

@@ -821,7 +821,7 @@ export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) 
   }
 }
 
-export const isFirmwareVersionAbove10010g2Or10020b = function (firmwareVersion?: string) {
+export const isFirmwareVersionAbove10010gOr10020b = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
   1. > 10010g < 10020
@@ -830,6 +830,20 @@ export const isFirmwareVersionAbove10010g2Or10020b = function (firmwareVersion?:
   if (firmwareVersion) {
     return isVerGEVer(firmwareVersion, '10010g', false) &&
     (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
+}
+
+export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010g_cd1 < 10020
+  2. > 10020b_cd1
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10010g_cd1', true) &&
+    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b_cd1', true))
   } else {
     return false
   }
