@@ -13,20 +13,16 @@ import { useGetPrivacySettingsQuery }                                   from '@a
 import { Client, ClientStatistic, ClientStatusEnum }                    from '@acx-ui/rc/utils'
 import { PrivacyFeatureName }                                           from '@acx-ui/rc/utils'
 import { useParams }                                                    from '@acx-ui/react-router-dom'
-import { getJwtTokenPayload }                                           from '@acx-ui/utils'
 import type { AnalyticsFilter }                                         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-const useAppVisibility = (tenantId: string) => {
+const useAppVisibility = (tenantId: string | undefined) => {
   const isRA = Boolean(get('IS_MLISA_SA'))
-  const isAppPrivacyFFEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+  const isAppPrivacyFFEnabled = useIsSplitOn(Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   const { data: privacySettings } = useGetPrivacySettingsQuery({
-    params: { tenantId },
-    customHeaders: { 'x-rks-tenantid': tenantId },
-    payload: { ignoreDelegation: true }
+    params: { tenantId }
   })
 
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
@@ -59,9 +55,8 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   connectedTimeStamp: string
 }) {
   const { $t } = useIntl()
-  const { clientId } = useParams()
+  const { clientId, tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const { tenantId } = getJwtTokenPayload()
   const isAppVisibilityEnabled = useAppVisibility(tenantId)
 
   const getTime = () => {
