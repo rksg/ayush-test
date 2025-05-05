@@ -141,7 +141,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const {
     untaggedVlan,
-    taggedVlans
+    taggedVlans,
+    type
   } = (useWatch([], form) ?? {})
 
   useEffect(() => {
@@ -262,12 +263,13 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       try {
         let payload = {
           ...value,
-          ..._.omit(value, 'portsType'),
+          ..._.omit(value, ['portsType', 'forceUp']),
           lagId: editData[0].lagId,
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
-          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan)),
+          ...(isSwitchLagForceUpEnabled && forceUpPort !== '' && { forceUpPort })
         }
 
         setLoading(true)
@@ -294,9 +296,14 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         let payload = {
           ...value,
           id: '',
-          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan)),
+          ...(isSwitchLagForceUpEnabled && forceUpPort !== '' && { forceUpPort })
         }
+
         delete payload.portsType
+        if(payload.forceUp){
+          delete payload.forceUp
+        }
         await addLag({
           params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
           payload,
@@ -460,7 +467,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setSelectModalVisible(true)
   }
 
-  const onActionClick = () => {
+  const resetForceUp = () => {
     setForceUpPort('')
     form.setFieldValue('forceUp', false)
   }
@@ -499,7 +506,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               <Space direction='vertical'>
                 <Radio
                   value={LAG_TYPE.STATIC}
-                  disabled={isEditMode}>
+                  disabled={isEditMode}
+                  onChange={() => resetForceUp()}>
                   {$t({ defaultMessage: 'Static' })}
                 </Radio>
                 <Radio
@@ -594,7 +602,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={$t({ defaultMessage: 'Force-Up Interface' })}
             action={{
               actionName: 'Reset',
-              onActionClick: onActionClick
+              onActionClick: resetForceUp
             }}
           >
             <GridRow style={{ flexFlow: '2' }}>
@@ -609,15 +617,18 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     selectedPorts.length === 1 &&
                     <><Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
                       {$t({ defaultMessage: 'Port ' })} {selectedPorts[0]}
-                    </Typography.Text><Form.Item
+                    </Typography.Text>
+                    <Form.Item
                       noStyle
                       name='forceUp'
                       valuePropName='checked'
                       children={<Switch
-                        disabled={forceUpPort !== '' && forceUpPort !== selectedPorts[0]}
+                        disabled={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
+                          type !== LAG_TYPE.DYNAMIC}
                         style={{ display: 'flex' }}
                         onChange={(value) => value ?
-                          setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />} /></>
+                          setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />}
+                    /></>
                   }
                   {
                     selectedPorts.length > 1 &&
