@@ -619,6 +619,11 @@ export interface ApBandModeSettings {
   useVenueSettings: boolean
 }
 
+export type ApExternalAntennaSettings = {
+  externalAntenna: ExternalAntenna,
+  useVenueSettings: boolean
+}
+
 export type ApAntennaTypeSettings = {
   antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
