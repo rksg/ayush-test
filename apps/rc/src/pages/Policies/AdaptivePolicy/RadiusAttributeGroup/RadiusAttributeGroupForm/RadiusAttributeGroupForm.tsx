@@ -169,6 +169,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
                 <RadiusAttributeGroupSettingForm
                   onAddClick={onAddClick}
                   onEditClick={onEditClick}
+                  editMode
                 />
               </GridCol>
             </GridRow>
