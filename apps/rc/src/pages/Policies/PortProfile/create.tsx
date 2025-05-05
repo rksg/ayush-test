@@ -8,18 +8,20 @@ import {
   getPolicyAllowedOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  LocationExtended,
   PolicyOperation,
   PolicyType,
   PortProfileTabsEnum,
   usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }       from '@acx-ui/user'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                    from '@acx-ui/user'
 
 export default function CreatePortProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
+  const fromPage = (useLocation() as LocationExtended)?.state?.from
   const createEthernetPortProfilePath = useTenantLink(
     getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })
   )
@@ -32,8 +34,10 @@ export default function CreatePortProfile () {
 
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('portProfileType')
-    navigate(type === PortProfileTabsEnum.WIFI ?
-      createEthernetPortProfilePath : createSwitchPortProfilePath)
+    navigate(type === PortProfileTabsEnum.WIFI
+      ? createEthernetPortProfilePath
+      : createSwitchPortProfilePath,
+    { state: { from: fromPage } })
   }
 
   const wifiPortProfileOids = getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)
