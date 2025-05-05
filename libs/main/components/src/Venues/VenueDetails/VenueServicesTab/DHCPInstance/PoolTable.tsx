@@ -18,11 +18,11 @@ import {
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
 import { DHCPSaveData, DHCPUrls, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                                                                  from '@acx-ui/types'
-import { hasPermission }                                                                                                                                               from '@acx-ui/user'
+import { WifiScopes }                                                                                                                                                            from '@acx-ui/types'
+import { hasPermission }                                                                                                                                                         from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                                             from '@acx-ui/utils'
 
 import { ReadonlySwitch } from './styledComponents'
-import { getOpsApi } from '@acx-ui/utils'
 
 interface VenuePoolTableProps {
   venueDHCPProfile?: VenueDHCPProfile,
