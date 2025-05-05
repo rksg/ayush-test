@@ -28,6 +28,8 @@ import {
   IpsecViewData
 } from '@acx-ui/rc/utils'
 
+export const mockedNetworkId = '5c342542bb824a8b981a9bb041a8a2da'
+
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -1504,6 +1506,60 @@ export const externalWifiProviders = {
       ],
       name: 'Test-Provider-0502',
       customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1850'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'US & LATAM',
+          authRadius: {
+            primary: {
+              ip: '34.205.245.152',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://socialsign.in/spot',
+          redirectUrl: 'https://socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'EMEA, UK & ISRAEL',
+          authRadius: {
+            primary: {
+              ip: '18.184.187.25',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://eu.socialsign.in/spot',
+          redirectUrl: 'https://eu.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'APAC & INDIA',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SocialSignin',
+      customExternalProvider: false
     }
   ]
 }
@@ -2766,7 +2822,7 @@ export const mockedDirectoryServerProfiles = {
       type: 'LDAP',
       domainName: 'dc=test,dc=tw',
       wifiNetworkIds: [
-        '5c342542bb824a8b981a9bb041a8a2da'
+        mockedNetworkId
       ]
     },
     {
@@ -2786,7 +2842,7 @@ export const mockedDirectoryServerProfiles = {
       type: 'LDAP',
       domainName: 'dc=tdcad,dc=com',
       wifiNetworkIds: [
-        '5c342542bb824a8b981a9bb041a8a2da'
+        mockedNetworkId
       ]
     },
     {
@@ -2981,19 +3037,26 @@ export const mockIdentityGroupQuery = {
   empty: false
 }
 
+export const mockSamlProfileA7Id = 'cbe337e7917f48878f6feb1982199430'
+// eslint-disable-next-line max-len
+export const mockedMetadata = '<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" ID="_mockedMetadata"></EntityDescriptor>'
+
+export const mockSamlA7 = {
+  id: mockSamlProfileA7Id,
+  tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+  name: 'SAML-A7',
+  signingCertificateEnabled: false,
+  encryptionCertificateEnabled: false,
+  metadata: Buffer.from(mockedMetadata).toString('base64'),
+  wifiNetworkIds: [mockedNetworkId]
+}
+
 export const mockSAMLIdpQuery = {
   fields: null,
   totalCount: 9,
   page: 1,
   data: [
-    {
-      id: 'cbe337e7917f48878f6feb1982199430',
-      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
-      name: 'SAML-A7',
-      signingCertificateEnabled: false,
-      encryptionCertificateEnabled: false,
-      wifiNetworkIds: []
-    },
+    mockSamlA7,
     {
       id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
       tenantId: '412b9d39bcd14fd286c3c195eef2c952',
@@ -3060,3 +3123,4 @@ export const mockSAMLIdpQuery = {
     }
   ]
 }
+

@@ -28,6 +28,7 @@ export * from './msp'
 export * from './license'
 export * from './edge'
 export * from './edgeOlt'
+export * from './iot'
 export * from './client'
 export * from './components'
 export * from './switch'
@@ -106,6 +107,7 @@ export interface Venue extends EnforceableFields {
   incompatible?: number
   incompatibleEdges?: number // GUI only
   addressLine?: string
+  tagList: string[]
 }
 
 export interface AlarmBase {

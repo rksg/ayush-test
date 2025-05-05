@@ -147,6 +147,49 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
       }
     }),
+    getDHCPProfileListViewModelWithMode: build.query<TableResult<DHCPSaveData>, RequestPayload>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const req = createHttpRequest(url, params)
+        const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(payload) : undefined })
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
+        }
+
+        const result = (res.data ?? []) as TableResult<DHCPSaveData>
+
+        for (let i = 0; i < result.data.length; i++) {
+          const dhcpReq = createHttpRequest(DHCPUrls.getDhcpProfileDetailRbac, { serviceId: result.data[i].id }, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          const dhcpRes = await fetchWithBQ({ ...dhcpReq })
+          result.data[i].dhcpMode = (dhcpRes.data as DHCPSaveData).dhcpMode
+        }
+
+        return {
+          data: {
+            data: result.data,
+            page: 0,
+            totalCount: result.data.length
+          }
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddDhcpConfigServiceProfile',
+            'UpdateDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'DHCP', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
@@ -1147,6 +1190,7 @@ export const {
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,
+  useGetDHCPProfileListViewModelWithModeQuery,
   useGetDHCPProfileListViewModelQuery,
   useLazyGetDHCPProfileListViewModelQuery
 } = serviceApi

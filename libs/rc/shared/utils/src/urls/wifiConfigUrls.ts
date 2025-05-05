@@ -123,6 +123,18 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}/apModelExternalAntennaSettings',
     newApi: true
   },
+  getApExternalAntennaSettings: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/externalAntennaSettings',
+    opsApi: 'GET:/venues/{id}/aps/{id}/externalAntennaSettings',
+    newApi: true
+  },
+  updateApExternalAntennaSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/externalAntennaSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/externalAntennaSettings',
+    newApi: true
+  },
 
   getVenueAntennaType: {
     method: 'get',

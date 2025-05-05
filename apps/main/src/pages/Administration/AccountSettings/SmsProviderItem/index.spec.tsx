@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { administrationApi }                       from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, SmsProviderType } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
+import { Provider, store }                         from '@acx-ui/store'
 import {
   render,
   screen,
@@ -33,6 +34,14 @@ const fakedTwilioData = {
     fromNumber: '+19388887785',
     apiKey: '29b04e7f-3bfb-4fed-b333-a49327981cab',
     url: 'test.com'
+  }
+}
+
+const fakedTwilioWhatsappData = {
+  data: {
+    ...fakedTwilioData.data,
+    enableWhatsapp: true,
+    authTemplateSid: 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6'
   }
 }
 
@@ -66,6 +75,7 @@ describe('SMS Provider Form Item', () => {
     services.useGetAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
+    store.dispatch(administrationApi.util.resetApiState())
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getNotificationSmsProvider.url,
@@ -169,6 +179,32 @@ describe('SMS Provider Form Item', () => {
     expect(screen.getByText('SMS Provider')).toBeVisible()
     expect(screen.getByText('Account SID')).toBeVisible()
     expect(screen.getByText('Auth Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
+  })
+  it('should render layout correctly when twilio data with whatsapp info exists', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsTwilioProvider }
+    })
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getNotificationSmsProvider.url,
+        (req, res, ctx) => res(ctx.json(fakedTwilioWhatsappData.data))
+      )
+    )
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('WhatsApp Authentication Template SID')).toBeVisible()
+
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('Account SID')).toBeVisible()
+    expect(screen.getByText('Auth Token')).toBeVisible()
+    expect(screen.getByText('WhatsApp Authentication Template SID')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
   })

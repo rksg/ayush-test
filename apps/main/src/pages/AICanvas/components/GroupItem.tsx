@@ -21,7 +21,9 @@ export interface GroupProps {
   groups: Group[]
   layout: LayoutConfig
   defaultLayout: LayoutConfig
-  shadowCard:CardInfo
+  shadowCard: CardInfo
+  draggable?: boolean
+  containerId: string
   moveCardInGroupItem:(hoverItem: GroupProps, x: number, y: number) => void
   onCardDropInGroupItem:() => void
   updateShadowCard:Dispatch<SetStateAction<CardInfo>>
@@ -32,11 +34,12 @@ export interface GroupProps {
 
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
-  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem } = props
+  // eslint-disable-next-line max-len
+  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem, containerId, draggable = true } = props
   // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
-    const containerDom = document.querySelector('#card-container')
+    const containerDom = document.querySelector(`#${containerId}`)
     if (containerDom) {
       clientWidth = containerDom.clientWidth
     }
@@ -61,9 +64,11 @@ export default function GroupItem (props: GroupProps) {
 
   const [, dropRef] = useDrop({
     accept: ItemTypes.CARD,
+    canDrop: () => draggable,
     drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
+      if (!draggable) return
       dropCard(dragItem, dropItem)
     },
     hover: (item: CardInfo, monitor) => {
@@ -93,7 +98,8 @@ export default function GroupItem (props: GroupProps) {
     <div className='rglb_group-item' ref={dropRef} id={'group' + id} data-testid='dropGroup'>
       <div className='group-item-container'>
         <section
-          id='card-container'
+          id={containerId}
+          className='card-container'
           // ref={sectionRef}
           style={{
             height:
@@ -111,6 +117,7 @@ export default function GroupItem (props: GroupProps) {
               groups={groups}
               layout={props.layout}
               dropCard={dropCard}
+              draggable={draggable}
               updateShadowCard={props.updateShadowCard}
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}

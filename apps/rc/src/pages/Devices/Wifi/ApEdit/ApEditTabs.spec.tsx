@@ -1,10 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, Features }                                                                               from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                      from '@acx-ui/rc/services'
-import { APGeneralFixtures, CommonRbacUrlsInfo, CommonUrlsInfo, MdnsProxyUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                      from '@acx-ui/store'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  ApDeep,
+  APGeneralFixtures,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  MdnsProxyUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -19,7 +27,7 @@ import {
   venueData
 } from '../../__tests__/fixtures'
 
-import { ApEdit } from '.'
+import { ApDataContext, ApEdit } from '.'
 
 const { mockAPList } = APGeneralFixtures
 const mockedUsedNavigate = jest.fn()
@@ -68,6 +76,12 @@ describe('ApEditTabs', () => {
       rest.post(
         MdnsProxyUrls.queryMdnsProxy.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0, page: 1, data: []
+        }))
       )
     )
   })
@@ -81,14 +95,20 @@ describe('ApEditTabs', () => {
   }
 
   it('should render correctly', async () => {
-    render(<Provider><ApEdit /></Provider>, {
+    render(<Provider>
+      <ApDataContext.Provider value={{
+        apData: apDetailsList[0] as unknown as ApDeep
+      }}>
+        <ApEdit />
+      </ApDataContext.Provider>
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
       }
     })
 
-    await screen.findByRole('heading', { name: 'test ap', level: 1 })
+    await screen.findByText('test ap')
     await waitFor(async () => {
       expect(await screen.findAllByRole('tab')).toHaveLength(5)
     })
