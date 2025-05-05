@@ -402,11 +402,11 @@ export function EmbeddedReport (props: ReportProps) {
       },
       // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
-      // username: isRA ? userId : externalId,
-      // isReadOnly: isRA
-      //   ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
-      //       || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
-      //   : isR1RoleReadOnly(),
+      username: isRA ? userId : externalId,
+      isReadOnly: isRA
+        ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
+            || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
+        : isR1RoleReadOnly(),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {

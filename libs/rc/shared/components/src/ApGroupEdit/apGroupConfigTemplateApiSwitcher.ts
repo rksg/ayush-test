@@ -6,8 +6,6 @@ import {
   useConfigTemplateQueryFnSwitcher,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-
 
 const getOpsApi = (apiInfo: ApiInfo) => {
   return apiInfo.opsApi || ''

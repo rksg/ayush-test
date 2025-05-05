@@ -18,7 +18,7 @@ import {
   uniq,
   flatten,
   cloneDeep,
-  set
+  set, isUndefined
 } from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -26,12 +26,10 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                             from '@acx-ui/icons'
 import {
   useLazyApListQuery,
-  useGetDefaultRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
@@ -41,12 +39,11 @@ import {
   useGetVenueTemplateTripleBandRadioSettingsQuery,
   useGetVenueTripleBandRadioSettingsQuery,
   useGetVenueTemplateDefaultRegulatoryChannelsQuery,
-  useGetVenueTemplateDefaultRadioCustomizationQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateRadioCustomizationMutation,
   useUpdateVenueTemplateTripleBandRadioSettingsMutation,
   useGetVenueTemplateApModelBandModeSettingsQuery,
-  useUpdateVenueTemplateApModelBandModeSettingsMutation
+  useUpdateVenueTemplateApModelBandModeSettingsMutation, useLazyGetVenueRadioCustomizationQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -61,7 +58,7 @@ import {
   ApGroupApModelBandModeSettings,
   ApGroupDefaultRegulatoryChannels,
   useSupportedApModelTooltip,
-  ApGroupRadioCustomization
+  ApGroupRadioCustomization, ApRadioParamsDual5G
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -119,27 +116,23 @@ const createCacheSettings = (
   switch (radioType) {
     case RadioType.Normal24GHz:
       return { ...cacheSettings,
-        // enable24G: currentSettings.enable24G,
         ...currentSettings.radioParams24G
-          ? { apRadioParams24G: currentSettings.radioParams24G }
+          ? { radioParams24G: currentSettings.radioParams24G }
           : undefined
       }
     case RadioType.Normal5GHz:
       return { ...cacheSettings,
-        // enable50G: currentSettings.enable50G,
-        ...currentSettings.radioParams50G ? { apRadioParams50G: currentSettings.radioParams50G } : undefined
+        ...currentSettings.radioParams50G ? { radioParams50G: currentSettings.radioParams50G } : undefined
       }
     case RadioType.Normal6GHz:
       return {
         ...cacheSettings,
-        // enable6G: currentSettings.enable6G,
-        ...currentSettings.radioParams6G ? { apRadioParams6G: currentSettings.radioParams6G } : undefined
+        ...currentSettings.radioParams6G ? { radioParams6G: currentSettings.radioParams6G } : undefined
       }
     case RadioType.Lower5GHz:
       return { ...cacheSettings,
         radioParamsDual5G:
           { ...cacheSettings?.radioParamsDual5G,
-            // lower5gEnabled: currentSettings?.radioParamsDual5G?.lower5gEnabled,
             ...currentSettings.radioParamsDual5G?.radioParamsLower5G ? { radioParamsLower5G: currentSettings.radioParamsDual5G?.radioParamsLower5G } : undefined
           }
       }
@@ -147,7 +140,6 @@ const createCacheSettings = (
       return { ...cacheSettings,
         radioParamsDual5G:
           { ...cacheSettings?.radioParamsDual5G,
-            // upper5gEnabled: currentSettings?.radioParamsDual5G?.upper5gEnabled,
             ...currentSettings.radioParamsDual5G?.radioParamsUpper5G ? { radioParamsUpper5G: currentSettings.radioParamsDual5G?.radioParamsUpper5G } : undefined
           }
       }
@@ -204,7 +196,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
   const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
-  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()
@@ -230,11 +221,12 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     editRadioContextData,
     setEditRadioContextData,
     venueId,
+    venueData,
     venueApCaps
   } = useContext(ApGroupEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { tenantId } = useParams()
+  const { tenantId, apGroupId } = useParams()
 
   const formRef = useRef<StepsFormLegacyInstance<ApGroupRadioCustomization>>()
   const venueRef = useRef<ApGroupRadioCustomization>()
@@ -278,20 +270,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       }
     })
 
-
-  // default radio data
-  const { data: defaultRadioSettingsData, isLoading: isLoadingDefaultRadioSettingsData } =
-    useApGroupConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
-      useQueryFn: useGetDefaultRadioCustomizationQuery,
-      useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
-      enableRbac: isUseRbacApi,
-      extraParams: { venueId },
-      extraQueryArgs: {
-        enableSeparation: is6gChannelSeparation
-      }
-    })
-
-
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
     useApGroupConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
@@ -322,6 +300,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       skip: !isWifiSwitchableRfEnabled,
       extraParams: { venueId }
     })
+
+  const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
     useApGroupConfigTemplateMutationFnSwitcher(
@@ -369,17 +349,106 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
   }, [supportChannelsData, supportWifi7_320MHz])
 
-
-  const afcProps = useMemo(() => {
-    return {
-      featureFlag: afcFeatureflag,
-      isAFCEnabled: supportChannelsData?.afcEnabled,
-      afcInfo: undefined
+  useEffect(() => {
+    if (isEmpty(venueData)) {
+      return
     }
-  }, [supportChannelsData, afcFeatureflag])
+
+    const setData = async () => {
+      const convertVenueRadioSetingsToApRadioSettings = (data: VenueRadioCustomization ) => {
+        const getVenue5GRadioSetting = (radioParams: any) => {
+          if (!radioParams) {
+            return undefined
+          }
+
+          const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, scanInterval, txPower } = radioParams
+          return {
+            allowedIndoorChannels,
+            allowedOutdoorChannels,
+            changeInterval,
+            channelBandwidth,
+            method,
+            scanInterval,
+            txPower
+          }
+        }
+
+        const getVenue6GRadioSetting = (radioParams: any) => {
+          if (!radioParams) {
+            return undefined
+          }
+
+          const { allowedIndoorChannels, allowedOutdoorChannels, changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc } = radioParams
+          return {
+            allowedIndoorChannels,
+            allowedOutdoorChannels,
+            changeInterval,
+            channelBandwidth,
+            method,
+            txPower,
+            bssMinRate6G,
+            mgmtTxRate6G,
+            channelBandwidth320MhzGroup,
+            enableAfc
+          }
+        }
+
+        const {
+          radioParams24G: venueRadioParams24G,
+          radioParams50G,
+          radioParamsDual5G,
+          radioParams6G } = data
+
+        const venueRadioParams50G = getVenue5GRadioSetting(radioParams50G)
+        const venueRadioParamsUpper5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsUpper5G)
+        const venueRadioParamsLower5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsLower5G)
+        const venueRadioParamsDual5G = (venueRadioParamsUpper5G || venueRadioParamsLower5G)? new ApRadioParamsDual5G() : undefined
+        const venueRadioParams6G = getVenue6GRadioSetting(radioParams6G)
+
+        if (venueRadioParamsDual5G) {
+          venueRadioParamsDual5G.enabled = (radioParamsDual5G?.enabled === true)
+          venueRadioParamsDual5G.lower5gEnabled = true
+          venueRadioParamsDual5G.upper5gEnabled = true
+          venueRadioParamsDual5G.radioParamsLower5G = venueRadioParamsLower5G
+          venueRadioParamsDual5G.radioParamsUpper5G = venueRadioParamsUpper5G
+        }
+
+        return {
+          radioParams24G: {
+            enabled: true,
+            ...venueRadioParams24G
+          },
+          radioParams50G: {
+            enabled: true,
+            ...venueRadioParams50G
+          },
+          radioParamsDual5G: {
+            enabled: true,
+            ...venueRadioParamsDual5G
+          },
+          radioParams6G: {
+            enabled: true,
+            ...venueRadioParams6G
+          }
+        }
+      }
+
+      const venueRadioData = (await getVenueCustomization({
+        params: { venueId },
+        enableRbac: isUseRbacApi,
+        enableSeparation: is6gChannelSeparation
+      }, true).unwrap())
+
+      const apVenueData = convertVenueRadioSetingsToApRadioSettings(venueRadioData)
+      venueRef.current = apVenueData as ApGroupRadioCustomization
+    }
+
+    setData()
+  }, [venueId, getVenueCustomization, apGroupId, venueData])
 
   const supportedApModelTooltip = useSupportedApModelTooltip()
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { triBandApModels, dual5gApModels, bandModeCaps } = useMemo(() => {
     if (venueApCaps) {
       const apModels = venueApCaps.apModels
@@ -515,6 +584,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
+
+      cachedDataRef.current = data
 
       const dual5GData = data?.radioParamsDual5G
       setIsDual5gMode(!!dual5GData?.enabled)
@@ -948,60 +1019,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     handleChange()
   }
 
-  const handleResetDefaultSettings = (radioType: ApRadioTypeEnum) => {
-    let currentData = formRef.current?.getFieldsValue()
-    let defaultRadioData
-
-    if (!defaultRadioSettingsData || !currentData) {
-      return
-    }
-
-    switch (radioType) {
-      case ApRadioTypeEnum.Radio24G:
-        defaultRadioData = defaultRadioSettingsData.radioParams24G
-        if (defaultRadioData) {
-          currentData.radioParams24G = defaultRadioData
-          formRef.current?.setFieldsValue(currentData)
-          handleChange()
-        }
-        break
-      case ApRadioTypeEnum.Radio5G:
-        defaultRadioData = defaultRadioSettingsData.radioParams50G
-        if (defaultRadioData) {
-          currentData.radioParams50G = defaultRadioData
-          formRef.current?.setFieldsValue(currentData)
-          handleChange()
-        }
-        break
-      case ApRadioTypeEnum.Radio6G:
-        defaultRadioData = defaultRadioSettingsData.radioParams6G
-        if (defaultRadioData) {
-          currentData.radioParams6G = defaultRadioData
-          formRef.current?.setFieldsValue(currentData)
-          handleChange()
-        }
-        break
-      case ApRadioTypeEnum.RadioLower5G:
-        defaultRadioData = defaultRadioSettingsData.radioParamsDual5G?.radioParamsLower5G
-        if (defaultRadioData && currentData.radioParamsDual5G) {
-          currentData.radioParamsDual5G.radioParamsLower5G = defaultRadioData
-          formRef.current?.setFieldsValue(currentData)
-          handleChange()
-        }
-        break
-      case ApRadioTypeEnum.RadioUpper5G:
-        defaultRadioData = defaultRadioSettingsData.radioParamsDual5G?.radioParamsUpper5G
-        if (defaultRadioData && currentData.radioParamsDual5G) {
-          currentData.radioParamsDual5G.radioParamsUpper5G = defaultRadioData
-          formRef.current?.setFieldsValue(currentData)
-          handleChange()
-        }
-        break
-      default:
-        return
-    }
-  }
-
   const displayVenueSettingOrApGroupAndCustomize = () => {
     const radioTypeKey = ApGroupRadioTypeDataKeyMap[currentTab as RadioType]
     return (
@@ -1051,12 +1068,37 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   }
 
+  const updateFormData = (data: ApGroupRadioCustomization) => {
+    formRef?.current?.setFieldsValue(data)
+  }
+
+  const applyState = (state: StateOfIsUseVenueSettings, settings: ApGroupRadioCustomization): ApGroupRadioCustomization => {
+    const cloneData = cloneDeep(settings)
+
+    if (!isUndefined(cloneData) && !isUndefined(cloneData.radioParams24G)) {
+      cloneData.radioParams24G.useVenueSettings = state.isUseVenueSettings24G
+    }
+    if (!isUndefined(cloneData) && !isUndefined(cloneData.radioParams50G)) {
+      cloneData.radioParams50G.useVenueSettings = state.isUseVenueSettings5G
+    }
+    if (!isUndefined(cloneData) && !isUndefined(cloneData.radioParams6G)) {
+      cloneData.radioParams6G.useVenueSettings = state.isUseVenueSettings6G
+    }
+    if (!isUndefined(cloneData) && !isUndefined(cloneData.radioParamsDual5G) && !isUndefined(cloneData.radioParamsDual5G.radioParamsLower5G)) {
+      cloneData.radioParamsDual5G.radioParamsLower5G.useVenueSettings = state.isUseVenueSettingsLower5G
+    }
+    if (!isUndefined(cloneData) && !isUndefined(cloneData.radioParamsDual5G) && !isUndefined(cloneData.radioParamsDual5G.radioParamsUpper5G)) {
+      cloneData.radioParamsDual5G.radioParamsUpper5G.useVenueSettings = state.isUseVenueSettingsUpper5G
+    }
+
+    return cloneData
+  }
+
   const handleStateOfIsUseVenueOrApGroupSettingsChange = () => {
     // 1. set updatedState
     const updatedState = {
       ...toggleState(stateOfIsUseVenueSettings, currentTab as RadioType)
     }
-
     setStateOfIsUseVenueSettings(updatedState)
 
     const currentSettings = formRef?.current?.getFieldsValue()
@@ -1070,9 +1112,9 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     const useSettings = isUseVenue ? venueRef.current : cachedDataRef.current
     const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab as RadioType) : undefined
     if (updatedSettings) {
-      // updateFormData(applyState(updatedState, updatedSettings))
+      updateFormData(applyState(updatedState, updatedSettings))
     }
-    // 4. set IsDual5gMode // todo: need to check isSupportDual5G
+    // 4. set IsDual5gMode
     setIsDual5gMode((updatedSettings?.radioParamsDual5G?.enabled) || false)
     // 5. update EditContext
     handleChange()
@@ -1080,7 +1122,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingDefaultRadioSettingsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData)),
+      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData)),
       isFetching: isUpdatingVenueRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy
@@ -1191,7 +1233,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal24GHz)}
-                onResetDefaultValue={handleResetDefaultSettings} />
+              />
             </div>
             <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
               <ApGroupSingleRadioSettings
@@ -1205,7 +1247,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
-                onResetDefaultValue={handleResetDefaultSettings} />
+              />
             </div>
             {(isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) &&
             <div style={{ display: (isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) &&
@@ -1221,7 +1263,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz)}
-                onResetDefaultValue={handleResetDefaultSettings} />
+              />
             </div>
             }
             {(isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
@@ -1265,7 +1307,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Lower5GHz)}
-                  onResetDefaultValue={handleResetDefaultSettings} />
+                />
               </div>
               <div style={{
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
@@ -1306,7 +1348,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Upper5GHz)}
-                  onResetDefaultValue={handleResetDefaultSettings} />
+                />
               </div>
             </>
             }

@@ -65,6 +65,7 @@ export function ApGroupSingleRadioSettings (props: ApGroupSingleRadioSettingsPor
               { radioTypeName: radioTypeName })}
           </DisabledDiv>) : (
           <SingleRadioSettings
+            context='apGroup'
             radioType={radioType}
             disabled={disabled}
             handleChanged={handleChanged}

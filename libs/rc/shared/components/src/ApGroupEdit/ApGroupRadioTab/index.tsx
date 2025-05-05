@@ -2,10 +2,15 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }                                       from '@acx-ui/components'
-import { redirectPreviousPage, VenueConfigTemplateUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                              from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }                                                from '@acx-ui/user'
+import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import {
+  ApGroupRadioCustomization,
+  redirectPreviousPage,
+  VenueConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }   from '@acx-ui/user'
 
 import { usePathBasedOnConfigTemplate }           from '../../configTemplates'
 import { useApGroupConfigTemplateOpsApiSwitcher } from '../apGroupConfigTemplateApiSwitcher'
@@ -57,15 +62,47 @@ export function ApGroupRadioTab () {
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      console.log('handleUpdateSetting: ', editRadioContextData)
-      // if (redirect) {
-      //   navigate({
-      //     ...basePath,
-      //     pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      //   })
-      // }
+      await editRadioContextData.updateWifiRadio?.
+      (editRadioContextData.radioData as ApGroupRadioCustomization)
+
+      resetEditContextData()
+
+      if (redirect) {
+        navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/devices/apgroups/${params.apGroupId}/details/members`
+        })
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handleDiscardChanges = async () => {
+    try {
+      await editRadioContextData.discardWifiRadioChanges?.()
+
+      resetEditContextData()
+
+      redirectPreviousPage(navigate, previousPath, basePath)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const resetEditContextData = () => {
+    setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'radio',
+      isDirty: false
+    })
+
+    if (editRadioContextData) {
+      const newData = { ...editRadioContextData }
+      delete newData.updateWifiRadio
+      delete newData.discardWifiRadioChanges
+
+      setEditRadioContextData(newData)
     }
   }
 
@@ -73,9 +110,7 @@ export function ApGroupRadioTab () {
   return (
     <StepsFormLegacy
       onFinish={() => handleUpdateSetting(false)}
-      onCancel={() =>
-        redirectPreviousPage(navigate, previousPath, basePath)
-      }
+      onCancel={() => handleDiscardChanges()}
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
