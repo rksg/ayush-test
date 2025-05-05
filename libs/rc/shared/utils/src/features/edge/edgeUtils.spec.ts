@@ -22,6 +22,7 @@ import {
   MAX_DUAL_WAN_PORT,
   optionSorter,
   validateClusterInterface,
+  validateConfiguredSubnetIsConsistent,
   validateEdgeClusterLevelGateway,
   validateEdgeGateway,
   validateSubnetIsConsistent,
@@ -202,11 +203,42 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for Cluster interface on all the edges in this Cluster.')
+  })
+
+  it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
+    const allIps = [
+      {
+        ip: '',
+        subnet: ''
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateConfiguredSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).not.toBeCalled()
   })
 
   it('Test validateUniqueIp success', async () => {
     const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp success for excluded empty ip', async () => {
+    const allIps = ['1.1.1.1', '', '']
     const mockErrorFn = jest.fn()
     try {
       await validateUniqueIp(allIps, 'true')

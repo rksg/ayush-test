@@ -7624,7 +7624,7 @@
   "zj2Eg4": "Wireless Client Isolation",
   "zjFzsg": "{name} was deleted",
   "zjYYpW": "AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.",
-  "zl5lNI": "The ip setting is not in the same subnet as other nodes.",
+  "zl5lNI": "Use IP addresses in the same subnet for Cluster interface on all the edges in this Cluster.",
   "zm37dx": "Special character is invalid",
   "zmEuGu": "Current Firmware",
   "zmVA9M": "TDLS direct-link teardown due to TDLS peer STA unreachable via the TDLS direct link",
