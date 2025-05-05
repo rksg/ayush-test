@@ -61,7 +61,8 @@ import {
   isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
   SwitchUrlsInfo,
-  isFirmwareVersionAbove10010g2Or10020b,
+  isFirmwareVersionAbove10010gOr10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
@@ -259,13 +260,15 @@ export function EditPortDrawer ({
   const isFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10020b(s.firmware))
   const isFirmwareAbove10010gOr10020b = !!selectedSwitchList?.length
-    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010g2Or10020b(s.firmware))
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010gOr10020b(s.firmware))
+  const isFirmwareAbove10010gCd1Or10020bCd1 = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010gCd1Or10020bCd1(s.firmware))
   const isAnyFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10020b(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
-  const isAnyFirmwareAbove10010gOr10020b = !!selectedSwitchList?.length
-      && selectedSwitchList?.some(s => isFirmwareVersionAbove10010g2Or10020b(s.firmware))
+  const isAnyFirmwareAbove10010gCd1Or10020bCd1 = !!selectedSwitchList?.length
+      && selectedSwitchList?.some(s => isFirmwareVersionAbove10010gCd1Or10020bCd1(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
@@ -366,7 +369,7 @@ export function EditPortDrawer ({
     payload: { sortField: 'name', pageSize: 10000 },
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gCd1Or10020bCd1 || !switchDetail?.venueId
   })
 
   const { data: macAclGlobalList } = useGetLayer2AclsQuery({
@@ -374,7 +377,7 @@ export function EditPortDrawer ({
     payload: { sortField: 'name', pageSize: 10000 },
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gCd1Or10020bCd1 || !switchDetail?.venueId
   })
 
   const stickyMacAclsColumns: TableProps<{ macAddress: string }>['columns'] = [
@@ -927,9 +930,9 @@ export function EditPortDrawer ({
       case 'adminPtToPt':
         return !isFirmwareAbove10020b
       case 'portSecurity':
-        return !isFirmwareAbove10010gOr10020b
+        return !isFirmwareAbove10010gCd1Or10020bCd1
       case 'switchMacAcl':
-        return !isFirmwareAbove10010gOr10020b || isCloudPort
+        return !isFirmwareAbove10010gCd1Or10020bCd1 || isCloudPort
       default: return false
     }
   }
@@ -2484,7 +2487,7 @@ export function EditPortDrawer ({
           />
         </div>
 
-        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gOr10020b && getFieldTemplate({
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 && getFieldTemplate({
           field: 'portSecurity',
           extraLabel: true,
           content: <Form.Item
@@ -2512,7 +2515,7 @@ export function EditPortDrawer ({
           />
         })}
 
-        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gOr10020b &&
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
           portSecurity && <div style={isMultipleEdit ? { marginLeft: '25px' } : {}}>
           {getFieldTemplate({
             field: 'portSecurityMaxEntries',
@@ -2544,7 +2547,7 @@ export function EditPortDrawer ({
           })}</div>
         }
 
-        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gOr10020b &&
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
           portSecurity && !isMultipleEdit && <Table
           rowKey='id'
           sortDirections={['ascend', 'descend', 'ascend']}
@@ -2638,7 +2641,7 @@ export function EditPortDrawer ({
           </>
         })}
 
-        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gOr10020b &&
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
         <MacACLDrawer
           visible={drawerMACAclVisible}
           setVisible={setDrawerMACAclVisible}
@@ -2647,7 +2650,7 @@ export function EditPortDrawer ({
           switchIds={selectedSwitchList?.map(p => p.id)}
         />
         }
-        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gOr10020b && getFieldTemplate({
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 && getFieldTemplate({
           field: 'switchMacAcl',
           content: <Form.Item
             noStyle
