@@ -118,9 +118,9 @@ describe('Iot Controller Form', () => {
     const toggle = screen.getByRole('switch')
     await user.click(toggle)
     expect(toggle).toBeChecked()
-    await screen.findByText('API Key')
+    await screen.findByText('API Token')
 
-    const passwordInput = screen.getByLabelText('API Key')
+    const passwordInput = screen.getByLabelText('API Token')
     // eslint-disable-next-line max-len
     await fireEvent.change(passwordInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
 

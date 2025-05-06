@@ -16,7 +16,8 @@ import {
   Loader,
   PageHeader,
   PasswordInput,
-  StepsForm
+  StepsForm,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useAddIotControllerMutation,
@@ -63,6 +64,8 @@ export function IotControllerForm () {
   const linkToIotController = useTenantLink('/devices/iotController')
   const [addIotController] = useAddIotControllerMutation()
   const [updateIotController] = useUpdateIotControllerMutation()
+
+  const [serialNumberEnabled, setSerialNumberEnabled] = useState(true)
 
   const { tenantId, iotId, venueId, action } = useParams()
   // eslint-disable-next-line max-len
@@ -167,7 +170,6 @@ export function IotControllerForm () {
                     { validator: (_, value) => trailingNorLeadingSpaces(value) }
                   ]}
                   validateFirst
-                  hasFeedback
                   children={<Input />}
                   validateTrigger={'onBlur'}
                 />
@@ -192,9 +194,15 @@ export function IotControllerForm () {
                   <Form.Item
                     name='publicEnabled'
                     valuePropName={'checked'}
-                  >
-                    <Switch disabled={isEditMode} />
-                  </Form.Item>
+                    children={<Switch
+                      onChange={(checked: boolean)=>{
+                        if(checked){
+                          setSerialNumberEnabled(false)
+                        } else {
+                          setSerialNumberEnabled(true)
+                        }
+                      }}/>}
+                  />
                 </StepsForm.FieldLabel>
                 <FieldTitle>
                   {
@@ -206,6 +214,7 @@ export function IotControllerForm () {
                   <Form.Item>
                     <Space>
                       <Form.Item
+                        style={{ width: '430px' }}
                         name='publicAddress'
                         initialValue={data?.publicAddress}
                         label={$t({ defaultMessage: 'FQDN / IP' })}
@@ -231,10 +240,19 @@ export function IotControllerForm () {
                   <Form.Item
                     name='apiKey'
                     initialValue={data?.apiKey}
-                    label={$t({ defaultMessage: 'API Key' })}
+                    label={<>{$t({ defaultMessage: 'API Token' })}
+                      <Tooltip.Question
+                        title={$t({ defaultMessage:
+                          // eslint-disable-next-line max-len
+                          'At any time API token in vRIOT controller is regenerated it should be updated in the R1 UI for successful connection.' })}
+                        placement='right'
+                        iconStyle={{
+                          width: 16,
+                          height: 16
+                        }}
+                      />
+                    </>}
                     rules={[
-                      { required: true,
-                        message: $t({ defaultMessage: 'Please enter API Key' }) },
                       { validator: (_, value) => excludeSpaceRegExp(value) }
                     ]}
                     children={<PasswordInput />}
@@ -252,7 +270,7 @@ export function IotControllerForm () {
                       loading={isTesting}
                       onClick={onClickTestConnection}
                     >
-                      {$t({ defaultMessage: 'Test Connection' })}
+                      {$t({ defaultMessage: 'Validate' })}
                     </Button>
                     {testConnectionStatus}
                   </div>
@@ -267,7 +285,7 @@ export function IotControllerForm () {
                       message: $t({ defaultMessage: 'Please enter Serial Number' })
                     }
                   ]}
-                  children={<Input disabled={isEditMode} />}
+                  children={<Input disabled={isEditMode || !serialNumberEnabled} />}
                   validateFirst
                 />
               </Col>
