@@ -14,7 +14,7 @@ import {
   MoreVertical
 }                    from '@acx-ui/icons-new'
 import {
-  useCloenCanvasMutation,
+  useCloneCanvasMutation,
   useDeleteCanvasMutation,
   useGetCanvasesQuery,
   useLazyGetCanvasesQuery,
@@ -88,7 +88,7 @@ export const ImportDashboardDrawer = (props: {
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
   const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
-  const [ cloenCanvas ] = useCloenCanvasMutation()
+  const [ cloneCanvas ] = useCloneCanvasMutation()
   const [ deleteCanvas ] = useDeleteCanvasMutation()
 
   const getCanvasesQuery = useGetCanvasesQuery({
@@ -179,7 +179,7 @@ export const ImportDashboardDrawer = (props: {
         })
         break
       case 'clone':
-        await cloenCanvas({
+        await cloneCanvas({
           params: { canvasId: selectedItem.id },
           payload: {}
         })
