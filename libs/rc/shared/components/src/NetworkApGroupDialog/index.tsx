@@ -280,7 +280,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       label={<>
                         {intl.$t({ defaultMessage: 'Radio Band' })}
                         {isR370Unsupported6gFeatures &&
-                         network?.wlanSecurity === WlanSecurityEnum.OWETransition && <>
+                         networkVenue?.oweTransWlanId && <>
                           <ApCompatibilityToolTip
                             title={''}
                             showDetailButton

@@ -607,7 +607,7 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
                 <Radio value='5-6-GHz' data-testid='radio56'>
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
-                <Radio value='5-GHz' data-testid='radio5' style={{ width: '100%' }}>
+                <Radio value='5-GHz' data-testid='radio5'>
                   {$t({ defaultMessage: '5 GHz' })}
                   <Mesh5GhzInfoIcon
                     compatibilityEnabled={isR370ToggleEnable}
