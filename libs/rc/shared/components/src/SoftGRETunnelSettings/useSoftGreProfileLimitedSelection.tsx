@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer } from 'react'
 
 import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import { omit, isEqual }     from 'lodash'
+import _, { omit, isEqual }  from 'lodash'
 
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
@@ -238,9 +238,9 @@ export const useSoftGreProfileLimitedSelection = (
       return board.softGreProfileId !== softGreProfileId && board.vote > 0
     })
 
-    selectedProfile.FQDNAddresses.forEach(FQDN => {
+    selectedProfile.FQDNAddresses.filter(FQDN => !_.isEmpty(FQDN)).forEach(FQDN => {
       activatedSoftGreProfilesWithoutSelected.forEach(board => {
-        if (board.FQDNAddresses.includes(FQDN)) {
+        if (board.FQDNAddresses.filter(FQDN => !_.isEmpty(FQDN)).includes(FQDN)) {
           isDuplicate = true
         }
       })
