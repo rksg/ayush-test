@@ -1,10 +1,10 @@
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { hasRoles }                   from '@acx-ui/user'
-import { getIntl }                    from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                        from '@acx-ui/types'
+import { hasRoles }                         from '@acx-ui/user'
+import { getIntl }                          from '@acx-ui/utils'
 
 import { LocationExtended }                                    from '../../common/redirect.utils'
 import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
@@ -55,7 +55,7 @@ export function usePoliciesBreadcrumb (): { text: string, link?: string }[] {
   return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled, from)
 }
 
-export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation) {
+export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation): Path | string {
   const fallbackPath = useTenantLink(getPolicyRoutePath({ type, oper }), 't')
   const location = useLocation()
 

@@ -1117,6 +1117,15 @@ function PolicyRoutes () {
       />
       {isSwitchMacAclEnabled && <>
         <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, SwitchScopes.CREATE]}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
           path='policies/accessControls/create'
           element={
             // eslint-disable-next-line max-len
@@ -1124,6 +1133,11 @@ function PolicyRoutes () {
               <CreateAccessControl />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/switch'} />}
         />
         <Route
           path='policies/accessControl/:activeTab/'

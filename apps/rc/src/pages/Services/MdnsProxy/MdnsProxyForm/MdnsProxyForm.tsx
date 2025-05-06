@@ -13,12 +13,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MdnsProxyFormData,
-  getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
@@ -35,10 +35,8 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
-  })
-  const serviceTablePath = useTenantLink(tablePath)
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.MDNS_PROXY, ServiceOperation.LIST)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params, enableRbac }, { skip: !editMode })
@@ -75,7 +73,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         await addMdnsProxy({ params, payload: data, enableRbac }).unwrap()
       }
 
-      navigate(serviceTablePath, { replace: true })
+      navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -93,7 +91,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(serviceTablePath)}
+          onCancel={() => navigate(previousPath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm

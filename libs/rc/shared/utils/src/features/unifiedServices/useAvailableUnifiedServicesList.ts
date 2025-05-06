@@ -11,8 +11,8 @@ import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }        from './constants'
-import { buildUnifiedServices, isUnifiedServiceAvailable, getUnifiedServiceRoute } from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
 
 
 type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
@@ -74,10 +74,9 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
       },
       {
-        type: PolicyType.ACCESS_CONTROL,
+        type: PolicyType.ACCESS_CONTROL_CONSOLIDATION,
         sourceType: UnifiedServiceSourceType.POLICY,
-        // eslint-disable-next-line max-len
-        products: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH] : [RadioCardCategory.WIFI],
+        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
         searchKeywords: [
           policyTypeLabelMapping[PolicyType.LAYER_2_POLICY],
@@ -85,12 +84,21 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
           policyTypeLabelMapping[PolicyType.DEVICE_POLICY],
           policyTypeLabelMapping[PolicyType.APPLICATION_POLICY]
         ],
-        route: isSwitchMacAclEnabled
-          ? '/policies/accessControl/wifi'
-          : getUnifiedServiceRoute({
-            type: PolicyType.ACCESS_CONTROL,
-            sourceType: UnifiedServiceSourceType.POLICY
-          }, 'list')
+        route: '/policies/accessControl/wifi',
+        disabled: !isSwitchMacAclEnabled
+      },
+      {
+        type: PolicyType.ACCESS_CONTROL,
+        sourceType: UnifiedServiceSourceType.POLICY,
+        products: [RadioCardCategory.WIFI],
+        category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
+        searchKeywords: [
+          policyTypeLabelMapping[PolicyType.LAYER_2_POLICY],
+          policyTypeLabelMapping[PolicyType.LAYER_3_POLICY],
+          policyTypeLabelMapping[PolicyType.DEVICE_POLICY],
+          policyTypeLabelMapping[PolicyType.APPLICATION_POLICY]
+        ],
+        disabled: isSwitchMacAclEnabled
       },
       {
         type: PolicyType.ADAPTIVE_POLICY,
