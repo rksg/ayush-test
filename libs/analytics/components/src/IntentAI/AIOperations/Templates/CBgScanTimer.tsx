@@ -114,7 +114,7 @@ export const createBgScanTimer = (
       const { $t } = useIntl()
       const { intent } = useIntentContext()
       return <>
-        <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
+        <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?' }, { zone: intent.sliceValue })} />
 
         <Form.Item name={['preferences','enable']}>
           <TradeOff
