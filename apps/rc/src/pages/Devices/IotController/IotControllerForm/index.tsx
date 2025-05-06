@@ -40,7 +40,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
 
-import { FieldTitle } from './styledComponents'
+import * as UI from './styledComponents'
 
 export enum TestConnectionStatusEnum {
   PASS = 'PASS',
@@ -204,12 +204,12 @@ export function IotControllerForm () {
                       }}/>}
                   />
                 </StepsForm.FieldLabel>
-                <FieldTitle>
+                <UI.FieldTitle>
                   {
                     // eslint-disable-next-line max-len
                     $t({ defaultMessage: 'If Public IP address is not enabled, no information will be fetched from vRIoT Controller.' })
                   }
-                </FieldTitle>
+                </UI.FieldTitle>
                 {publicEnabled && <>
                   <Form.Item>
                     <Space>
@@ -235,6 +235,8 @@ export function IotControllerForm () {
                           min={1}
                           max={65535}/>}
                       />
+                      {// eslint-disable-next-line max-len
+                        testConnectionStatus !== TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
                     </Space>
                   </Form.Item>
                   <Form.Item
@@ -272,7 +274,6 @@ export function IotControllerForm () {
                     >
                       {$t({ defaultMessage: 'Validate' })}
                     </Button>
-                    {testConnectionStatus}
                   </div>
                 </>}
                 <Form.Item

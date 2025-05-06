@@ -11,19 +11,19 @@ export const IotUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/iots/:iotId',
     newApi: true,
-    opsApi: 'GET:/iots/{iotId}'
+    opsApi: 'GET:/iots/{id}'
   },
   updateIotController: {
     method: 'PATCH',
     url: '/iots/:iotId',
     newApi: true,
-    opsApi: 'PATCH:/iots/{iotId}'
+    opsApi: 'PATCH:/iots/{id}'
   },
   deleteIotController: {
     method: 'delete',
     url: '/iots/:iotId',
     newApi: true,
-    opsApi: 'DELETE:/iotController/{iotId}'
+    opsApi: 'DELETE:/iotController/{id}'
   },
   getIotControllerList: {
     method: 'post',
