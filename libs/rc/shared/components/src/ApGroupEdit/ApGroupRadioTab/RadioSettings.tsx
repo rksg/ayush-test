@@ -249,6 +249,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const [currentVenueBandModeData, setCurrentVenueBandModeData] = useState([] as ApGroupApModelBandModeSettings[])
   const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as ApGroupApModelBandModeSettings[])
 
+  const [defaultRadioSettings, setDefaultRadioSettings] = useState<ApGroupRadioCustomization | undefined>(undefined)
+
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useApGroupConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
@@ -636,6 +638,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       const correctedApGroupData = correctApiRadioChannelData(apGroupRadioData)
       const mergedData = mergeRadioData(correctedData, correctedApGroupData)
       setRadioFormData(mergedData)
+      if (!defaultRadioSettings) setDefaultRadioSettings(mergedData)
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
@@ -995,7 +998,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         params: { venueId, apGroupId },
         payload: {
           // TODO: When the API is ready, include additional fields in the payload as required.
-          apGroupRadioParams24G: data.radioParams24G
+          apGroupRadioParams24G: {
+            ...defaultRadioSettings?.radioParams24G,
+            ...data.radioParams24G
+          }
         },
         enableRbac: resolvedRbacEnabled
       }).unwrap()
