@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { get }                             from '@acx-ui/config'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
+import { DOCS_HOME_URL }                   from '@acx-ui/rc/utils'
 
 import { AiFeatures } from '../config'
 
@@ -39,10 +40,10 @@ const ResourcesLinks = ({ feature }: { feature: AiFeatures }) => {
         ? [
           {
             icon: <LinkVideoIcon />,
-            label: $t(
-              { defaultMessage: '{appName} - {featureName} Demo' },
-              { appName, featureName: feature }
-            ),
+            label: `${appName} - ${$t(
+              { defaultMessage: '{featureName} Demo' },
+              { featureName: feature }
+            )}`,
             link: videoLink
           }
         ]
@@ -51,12 +52,12 @@ const ResourcesLinks = ({ feature }: { feature: AiFeatures }) => {
         ? [
           {
             icon: <LinkDocumentIcon />,
-            label: $t(
-              { defaultMessage: '{appName} - {featureName} Documentation' },
-              { appName, featureName: feature }
-            ),
+            label: `${appName} - ${$t(
+              { defaultMessage: '{featureName} Documentation' },
+              { featureName: feature }
+            )}`,
             // eslint-disable-next-line max-len
-            link: `https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/${featureToGuideIdMap[feature]}.html`
+            link: `${DOCS_HOME_URL}/${isMLISA ? 'RUCKUS-AI' : 'ruckusone'}/userguide/${featureToGuideIdMap[feature]}.html`
           }
         ]
         : [])

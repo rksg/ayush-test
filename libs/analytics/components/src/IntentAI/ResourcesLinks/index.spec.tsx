@@ -20,10 +20,10 @@ describe('ResourcesLinks', () => {
       render(<ResourcesLinks feature={feature} />)
 
       expect(
-        screen.getByText('RUCKUS AI - AI Operations Demo')
+        screen.getByText(`RUCKUS AI - ${feature} Demo`)
       ).toBeInTheDocument()
       expect(
-        screen.getByText('RUCKUS AI - AI Operations Documentation')
+        screen.getByText(`RUCKUS AI - ${feature} Documentation`)
       ).toBeInTheDocument()
     }
   )
@@ -35,10 +35,10 @@ describe('ResourcesLinks', () => {
       render(<ResourcesLinks feature={feature} />)
 
       expect(
-        screen.getByText('RUCKUS One - AI Operations Demo')
+        screen.getByText(`RUCKUS One - ${feature} Demo`)
       ).toBeInTheDocument()
       expect(
-        screen.getByText('RUCKUS One - AI Operations Documentation')
+        screen.getByText(`RUCKUS One - ${feature} Documentation`)
       ).toBeInTheDocument()
     }
   )
@@ -48,10 +48,10 @@ describe('ResourcesLinks', () => {
   ))('Should not render links for %s in RAI', (feature) => {
     render(<ResourcesLinks feature={feature} />)
     expect(
-      screen.queryByText('RUCKUS AI - AI Operations Demo')
+      screen.queryByText(`RUCKUS AI - ${feature} Demo`)
     ).not.toBeInTheDocument()
     expect(
-      screen.queryByText('RUCKUS AI - AI Operations Documentation')
+      screen.queryByText(`RUCKUS AI - ${feature} Documentation`)
     ).not.toBeInTheDocument()
   })
 
@@ -60,10 +60,10 @@ describe('ResourcesLinks', () => {
   ))('Should not render links for %s in R1', (feature) => {
     render(<ResourcesLinks feature={feature} />)
     expect(
-      screen.queryByText('RUCKUS One - AI Operations Demo')
+      screen.queryByText(`RUCKUS One - ${feature} Demo`)
     ).not.toBeInTheDocument()
     expect(
-      screen.queryByText('RUCKUS One - AI Operations Documentation')
+      screen.queryByText(`RUCKUS One - ${feature} Documentation`)
     ).not.toBeInTheDocument()
   })
 })
