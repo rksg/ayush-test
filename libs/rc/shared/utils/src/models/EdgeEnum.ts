@@ -141,7 +141,12 @@ export enum EdgeLinkDownCriteriaEnum {
 }
 
 export enum EdgeWanLinkHealthStatusEnum {
-  UP = 'UP',
-  DOWN = 'DOWN'
+  UP = 'Up',
+  DOWN = 'Down'
+}
+
+export enum EdgeWanPortRoleStatusEnum {
+  ACTIVE = 'Active',
+  BACKUP = 'Backup'
 }
 // ========== Multi WAN ===========
