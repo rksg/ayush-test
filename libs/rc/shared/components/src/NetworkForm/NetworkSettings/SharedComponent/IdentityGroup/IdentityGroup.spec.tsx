@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { PersonaUrls }                from '@acx-ui/rc/utils'
+import { PersonaUrls, DpskUrls }      from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -27,6 +27,10 @@ describe('IdentityGroup', () => {
           }
           return res(ctx.json(mockIdentityGroupQuery))
         }
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
