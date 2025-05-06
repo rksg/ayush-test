@@ -21,8 +21,13 @@ const toggleItemFromSelected = (
 ) => {
   let newSelected: NetworkActivationType = cloneDeep(selectedNetworks)
   if (checked) {
+    let tunnelProfileIdDefaultValue = ''
+    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+      tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
+        .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
+    }
     newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
-      [{ networkId: data.id, networkName: data.name }], 'networkId')
+      [{ networkId: data.id, networkName: data.name, tunnelProfileId: tunnelProfileIdDefaultValue }], 'networkId')
   } else {
     newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
     remove(newSelected[venueId], item => item.networkId === data.id)
@@ -127,7 +132,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    form.validateFields().then(() => {
+    form.validateFields(['validation']).then(() => {
       onSubmit(updateContent)
     }).catch(() => {
       // do nothing

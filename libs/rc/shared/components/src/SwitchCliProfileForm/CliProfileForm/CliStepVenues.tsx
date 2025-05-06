@@ -15,6 +15,7 @@ import {
 import {
   CliConfiguration,
   CliFamilyModels,
+  ConfigTemplateType,
   SwitchCliMessages,
   SwitchViewModel,
   Venue,
@@ -23,6 +24,7 @@ import {
   useTableQuery
 }            from '@acx-ui/rc/utils'
 
+import { useEnforcedStatus }         from '../../configTemplates'
 import { getCustomizedSwitchVenues } from '../../SwitchCli/CliVariableUtils'
 
 interface VenueExtend extends Venue {
@@ -51,6 +53,7 @@ export function CliStepVenues (props: {
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const [preselectedRows, setPreselectedRows] = useState<string[]>([])
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -127,14 +130,22 @@ export function CliStepVenues (props: {
         && _.intersection(models, venueApplyModels)?.length > 0
 
       const isPreselect = preselectedRows?.includes(venue.id)
+      const isEnforced = hasEnforcedItem([venue])
+
+      let inactiveTooltip = ''
+      if (isModelOverlap) {
+        inactiveTooltip = $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
+      } else if (isPreselect) {
+        inactiveTooltip = $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED)
+      } else if (isEnforced) {
+        inactiveTooltip = getEnforcedActionMsg([venue])
+      }
 
       return {
         ...venue,
         models: venueApplyModels,
-        inactiveRow: isModelOverlap || isPreselect,
-        inactiveTooltip: isModelOverlap
-          ? $t(SwitchCliMessages.OVERLAPPING_MODELS_TOOLTIP)
-          : (isPreselect ? $t(SwitchCliMessages.PRE_SELECT_VENUE_FOR_CUSTOMIZED) : '')
+        inactiveRow: isModelOverlap || isPreselect || isEnforced,
+        inactiveTooltip
       }
     })
   }

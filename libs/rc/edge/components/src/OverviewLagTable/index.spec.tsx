@@ -2,9 +2,9 @@ import userEvent                   from '@testing-library/user-event'
 import { cloneDeep }               from 'lodash'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgeStatus, EdgeWanLinkHealthStatusEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, screen, within }                                                         from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgeStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { render, screen, within }                            from '@acx-ui/test-utils'
 
 import { EdgeOverviewLagTable } from './index'
 
@@ -50,11 +50,7 @@ describe('EdgeOverviewLagTable', () => {
       mac: '00:11:22:33:44:55',
       ip: '192.168.1.1',
       ipMode: 'Static',
-      wanLinkStatus: EdgeWanLinkHealthStatusEnum.UP,
-      wanLinkTargets: [{ targetIp: '8.8.8.8', status: EdgeWanLinkHealthStatusEnum.UP }],
-      wanPortRole: 'Primary',
-      wanPortStatus: 'Up',
-      linkHealthMonitoring: mockedDualWanLinkHealthConfigStatus
+      multiWan: mockedDualWanLinkHealthConfigStatus
     }
   ]
 
@@ -94,7 +90,7 @@ describe('EdgeOverviewLagTable', () => {
       expect(screen.getByText('Edge Node 1')).toBeInTheDocument()
       expect(within(row).getByText('LAG 1')).toBeInTheDocument()
       expect(within(row).getByText('Static')).toBeInTheDocument()
-      expect(within(row).getByText('Active')).toBeInTheDocument()
+      expect(within(row).getAllByText('Active')).toHaveLength(2)
       expect(within(row).getByText('Enabled')).toBeInTheDocument()
       expect(within(row).getByText('WAN')).toBeInTheDocument()
       expect(within(row).getByText('192.168.1.1')).toBeInTheDocument()
@@ -102,13 +98,11 @@ describe('EdgeOverviewLagTable', () => {
 
       expect(screen.queryByRole('columnheader', { name: 'Link Health Status' })).toBeValid()
       expect(screen.queryByRole('columnheader', { name: 'WAN Status' })).toBeValid()
-      expect(within(row).getByText('Up')).toBeInTheDocument()
 
       // optional columns should not visible
       expect(screen.queryByRole('columnheader', { name: 'Link Health Monitoring' })).toBeNull()
       expect(screen.queryByRole('columnheader', { name: 'WAN Role' })).toBeNull()
       expect(within(row).queryByText('On')).not.toBeInTheDocument()
-      expect(within(row).queryByText('Primary')).not.toBeInTheDocument()
 
       // deprecated columns should not visible
       expect(screen.queryByRole('columnheader', { name: 'Description' })).toBeNull()
@@ -188,7 +182,7 @@ describe('EdgeOverviewLagTable', () => {
 
     it('should display text - off when link health check is off', async () => {
       const mockDataDisabledLinkHealth = cloneDeep(mockData)
-      mockDataDisabledLinkHealth[0].linkHealthMonitoring = {
+      mockDataDisabledLinkHealth[0].multiWan = {
         linkHealthMonitorEnabled: false
       }
 

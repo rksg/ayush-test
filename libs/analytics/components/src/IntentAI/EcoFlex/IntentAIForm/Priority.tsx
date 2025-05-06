@@ -15,10 +15,9 @@ import * as SideNotes from './SideNotes'
 const name = ['preferences', 'enable'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
 
-export function Priority () {
+export const usePriorityItems = () => {
   const { $t } = useIntl()
-  const { intent: { sliceValue } } = useIntentContext()
-  const priority = [
+  return [
     {
       key: 'yes',
       value: true,
@@ -26,7 +25,7 @@ export function Priority () {
       columns: [
         $t({ defaultMessage: 'Reduction in energy footprint' }),
         <FormattedMessage {...defineMessage({ defaultMessage: `
-          Leverage <b><i>Energy Saving AI</i></b>, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
+          Leverage <b><i>Energy Saving</i></b>, available only through IntentAI for AI/ML based Energy Saving Model for the network. 
           In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
           ` })}
         values={richTextFormatValues}
@@ -43,9 +42,15 @@ export function Priority () {
       ]
     }
   ]
+}
+
+export function Priority () {
+  const { $t } = useIntl()
+  const { intent: { sliceValue } } = useIntentContext()
+  const priority = usePriorityItems()
 
   const label = $t({
-    defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}'
+    defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?'
   },
   { zone: sliceValue }
   )

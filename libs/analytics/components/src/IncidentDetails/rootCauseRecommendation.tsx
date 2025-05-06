@@ -1217,7 +1217,6 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `<p>Enable LLDP on the affected device to restore proper network visibility and functionality, especially for AI. This will ensure that neighboring device details are accurately captured and analyzed, facilitating better network management and enabling the detection of potential incidents.</p>
 <ul>
   <li>If LLDP is disabled globally or at the port level, enable it accordingly also if LLDP is in transmit-only mode or receive-only mode, configure it to enable both transmit and receive.</li>
-  <li>If the maximum LLDP neighbor limit is reached, increase the neighbor limit to accommodate additional devices or reconfigure the scale as needed.</li>
 </ul>`
       })
     }

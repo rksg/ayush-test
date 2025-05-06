@@ -1,0 +1,5 @@
+.delete-account-modal {
+    .ant-modal-confirm-btns {
+        margin-top: 60px;
+    }
+}
