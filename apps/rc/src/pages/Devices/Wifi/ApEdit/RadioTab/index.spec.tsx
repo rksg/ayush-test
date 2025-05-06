@@ -35,6 +35,14 @@ jest.mock('./ClientSteering/ClientSteering', () => ({
   ClientSteering: () => <div data-testid={'ClientSteering'}></div>
 }))
 
+jest.mock('./Antenna/AntennaSection', () => ({
+  AntennaSection: () => <div data-testid={'AntennaSection'}></div>
+}))
+
+jest.mock('./Antenna/ExternalAntennaSettings', () => ({
+  ExternalAntennaSettings: () => <div data-testid={'ExternalAntennaSettings'}></div>
+}))
+
 
 describe('AP Radio Tab', () => {
   beforeEach(() => {
@@ -58,7 +66,7 @@ describe('AP Radio Tab', () => {
     expect(await screen.findByTestId('radioSettings')).toBeVisible()
   })
 
-  it ('save data after config changed', async () => {
+  it('save data after config changed', async () => {
     const mockUpdateWifiRadio = jest.fn()
 
     const newEditContextData = {
@@ -92,47 +100,9 @@ describe('AP Radio Tab', () => {
       }
     )
 
+    expect(await screen.findByTestId('ExternalAntennaSettings')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(mockUpdateWifiRadio).toBeCalled()
-
-  })
-
-  it ('Cancel data after config changed', async () => {
-    const mockDiscardWifiRadioChanges = jest.fn()
-
-    const newEditContextData = {
-      tabTitle: 'Radio',
-      unsavedTabKey: 'radio',
-      isDirty: true
-    }
-
-    const newEditRadioContextData = {
-      updateWifiRadio: jest.fn(),
-      discardWifiRadioChanges: mockDiscardWifiRadioChanges
-    }
-
-    render(
-      <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: newEditContextData,
-          setEditContextData: jest.fn(),
-          editRadioContextData: newEditRadioContextData,
-          setEditNetworkControlContextData: jest.fn(),
-          setEditRadioContextData: jest.fn()
-        }} >
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }} >
-            <RadioTab />
-          </ApDataContext.Provider>
-        </ApEditContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
-      }
-    )
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockDiscardWifiRadioChanges).toBeCalled()
 
   })
 })

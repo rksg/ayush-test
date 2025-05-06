@@ -1564,7 +1564,8 @@ function useIdentityGroupOnNetworkActivation () {
       (network.type === NetworkTypeEnum.HOTSPOT20 ||
         network.type === NetworkTypeEnum.PSK ||
         network.type === NetworkTypeEnum.AAA ||
-        network.type === NetworkTypeEnum.CAPTIVEPORTAL
+        network.type === NetworkTypeEnum.CAPTIVEPORTAL ||
+        network.type === NetworkTypeEnum.OPEN
       )
     ) {
       const identityGroupId = network?.identityGroupId

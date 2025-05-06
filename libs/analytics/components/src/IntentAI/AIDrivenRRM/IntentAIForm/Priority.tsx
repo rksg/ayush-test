@@ -53,7 +53,7 @@ export function Priority () {
       columns: [priority.content]
     }))
 
-  const label = $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: sliceValue })
+  const label = $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?' }, { zone: sliceValue })
 
   return <Row gutter={20}>
     <Col span={15}>
