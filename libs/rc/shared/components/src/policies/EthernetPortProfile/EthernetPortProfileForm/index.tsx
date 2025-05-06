@@ -312,7 +312,9 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           {!isTemplate &&
           <>
             <Subtitle level={3}>
-              {$t({ defaultMessage: '802.1X' })}
+              {isWiredClientVisibilityEnabled ?
+                $t({ defaultMessage: 'Authentication Options' }) :
+                $t({ defaultMessage: '802.1X' })}
             </Subtitle>
             <StepsForm.FieldLabel width={'280px'}>
               {$t({ defaultMessage: '802.1X Authentication' })}
@@ -479,31 +481,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                         </Row>}
                     </>
                   }
-                  <StepsForm.FieldLabel width={'280px'}>
-                    <Space>
-                      {$t({ defaultMessage: 'Client Visibility' })}
-                      <Tooltip.Question
-                        title={$t(EthernetPortProfileMessages.CLIENT_VISIBILITY)}
-                        placement='bottom'
-                        iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
-                    </Space>
-                    <Form.Item
-                      name='clientVisibilityEnabled'
-                      valuePropName={'checked'}
-                    >
-                      <Switch disabled={
-                        authTypeRole === EthernetPortAuthType.PORT_BASED ||
-                        authTypeRole === EthernetPortAuthType.MAC_BASED} />
-                    </Form.Item>
-                  </StepsForm.FieldLabel>
-                  {clientVisibilityEnabled &&
-                    <Alert
-                      showIcon={true}
-                      style={{ verticalAlign: 'middle', width: '19vw' }}
-                      message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />}
-                  <EthernetPortAAASettings enableAuth={authEnabled} />
                 </>
-               :
+                :
                 <>
                   <EthernetPortAAASettings enableAuth={authEnabled} />
                   <Row>
@@ -527,31 +506,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                     </Col>
                   </Row>
                 </>
-                )
-              // <>
-              //   <EthernetPortAAASettings enableAuth={authEnabled} />
-              //   <Row>
-              //     <Col span={12}>
-              //       <StepsForm.FieldLabel width={'280px'}>
-              //         <Space >
-              //           {$t({ defaultMessage: 'Use MAC auth bypass' })}
-              //           <Tooltip.Question
-              //             title={$t(EthernetPortProfileMessages.MAC_AUTH_BYPASS)}
-              //             placement='bottom'
-              //             iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              //           />
-              //         </Space>
-              //         <Form.Item
-              //           name='bypassMacAddressAuthentication'
-              //           valuePropName={'checked'}
-              //         >
-              //           <Switch />
-              //         </Form.Item>
-              //       </StepsForm.FieldLabel>
-              //     </Col>
-              //   </Row>
-              // </>
-              }
+              )}
               {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled &&
                 !isWiredClientVisibilityEnabled) &&
                 <>
@@ -599,6 +554,37 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 </>
               }
             </>}
+            {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
+             isWiredClientVisibilityEnabled &&
+             <>
+               <StepsForm.FieldLabel width={'280px'}>
+                 <Space>
+                   {$t({ defaultMessage: 'Client Visibility' })}
+                   <Tooltip.Question
+                     title={$t(EthernetPortProfileMessages.CLIENT_VISIBILITY)}
+                     placement='bottom'
+                     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                 </Space>
+                 <Form.Item
+                   name='clientVisibilityEnabled'
+                   valuePropName={'checked'}
+                 >
+                   <Switch disabled={
+                     authTypeRole === EthernetPortAuthType.PORT_BASED ||
+                    authTypeRole === EthernetPortAuthType.MAC_BASED} />
+                 </Form.Item>
+               </StepsForm.FieldLabel>
+               {clientVisibilityEnabled &&
+                <>
+                  <Alert
+                    showIcon={true}
+                    style={{ verticalAlign: 'middle', width: '19vw' }}
+                    message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />
+                  <EthernetPortAAASettings enableAuth={authEnabled} />
+                </>
+               }
+             </>
+            }
           </>}
         </StepsForm.StepForm>
       </StepsForm>

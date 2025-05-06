@@ -16,7 +16,7 @@ interface EthernetPortAAASettingsProps {
 
 export function EthernetPortAAASettings (props: EthernetPortAAASettingsProps) {
   const {
-    enableAuth = true
+    enableAuth = false
   } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
