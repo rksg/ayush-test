@@ -577,10 +577,16 @@ describe('Test createSwitchSerialPattern function', () => {
   it('support specific 8100 model', async () => {
     const patten = createSwitchSerialPatternForSpecific8100Model()
     expect(patten.test('FNX4898W00Z')).toBe(true)
+    expect(patten.test('FNX4808W00Z')).toBe(true)
     expect(patten.test('FNY4898W0LP')).toBe(true)
+    expect(patten.test('FNY4833W0LP')).toBe(true)
     expect(patten.test('FNZ4898W0F7')).toBe(true)
     expect(patten.test('FPA4898W00E')).toBe(true)
 
+    expect(patten.test('FNX4888W00Z')).toBe(false)
+    expect(patten.test('FNY4896W0LP')).toBe(false)
+    expect(patten.test('FNZ4897W0F7')).toBe(false)
+    expect(patten.test('FPA4899W00E')).toBe(false)
   })
 
   it('ICX8200-AV not supported', async () => {
