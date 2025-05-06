@@ -13,7 +13,8 @@ import {
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TxStatus, IdentityClient
+  TxStatus, IdentityClient,
+  ExternalIdentity
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -398,6 +399,25 @@ export const personaApi = basePersonaApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'IdentityClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    searchExternalIdentities: build.query<TableResult<ExternalIdentity>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchExternalIdentities,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewTableResult<ExternalIdentity>) {
+        return transferToTableResult<ExternalIdentity>(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'ExternalIdentity', id: 'ID' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -434,5 +454,6 @@ export const {
 
 export const {
   useSearchIdentityClientsQuery,
-  useLazySearchIdentityClientsQuery
+  useLazySearchIdentityClientsQuery,
+  useSearchExternalIdentitiesQuery
 } = personaApi

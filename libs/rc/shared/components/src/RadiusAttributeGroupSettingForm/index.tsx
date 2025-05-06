@@ -1,17 +1,18 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Table, TableProps }                           from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListByQueryQuery } from '@acx-ui/rc/services'
+import { Table, TableProps }                                     from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListByQueryQuery }           from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
   checkObjectNotExists,
   defaultSort,
   OperatorType,
   sortProp, trailingNorLeadingSpaces,
-  AttributeOperationLabelMapping
+  AttributeOperationLabelMapping, RadiusAttributeGroupUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { getOpsApi } from '@acx-ui/utils'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -38,7 +39,8 @@ function useColumns () {
 
 interface RadiusAttributeGroupSettingFormProps {
   onAddClick: () => void,
-  onEditClick: (attribute: AttributeAssignment) => void
+  onEditClick: (attribute: AttributeAssignment) => void,
+  editMode?: boolean
 }
 
 export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSettingFormProps) {
@@ -47,7 +49,11 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
   const { policyId } = useParams()
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
-  const { onEditClick, onAddClick } = props
+  const { onEditClick, onAddClick, editMode = false } = props
+
+  // eslint-disable-next-line max-len
+  const attributeTableRbacOpsIds = editMode ? [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]
+    : [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)]
 
   const handleAttributeAssignments = (attribute: AttributeAssignment[]) => {
     form.setFieldValue('attributeAssignments', attribute)
@@ -73,6 +79,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: attributeTableRbacOpsIds,
       onClick: (selectedRows, clearSelection) => {
         onEditClick(selectedRows[0])
         clearSelection()
@@ -80,6 +87,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: attributeTableRbacOpsIds,
       onClick: (selectedRows, clearSelection) => {
         const newAttributes = attributeAssignments.filter((r: AttributeAssignment) => {
           return selectedRows[0].id !== r.id
@@ -123,6 +131,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
             rowActions={rowActions}
             rowSelection={{ type: 'radio' }}
             actions={[{
+              rbacOpsIds: attributeTableRbacOpsIds,
               label: $t({ defaultMessage: 'Add' }),
               onClick: () => {
                 onAddClick()
