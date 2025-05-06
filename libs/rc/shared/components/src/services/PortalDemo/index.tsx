@@ -74,7 +74,8 @@ export function PortalDemo ({
       (view === PortalViewEnum.SelfSignIn||view === PortalViewEnum.SelfSignInRegister) ?
         GuestNetworkTypeEnum.SelfSignIn:
         view === PortalViewEnum.HostApproval?
-          GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
+          GuestNetworkTypeEnum.HostApproval : view === PortalViewEnum.SAML ?
+            GuestNetworkTypeEnum.SAML : GuestNetworkTypeEnum.ClickThrough
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   const params = useParams()
   const [getPortalLang] = useGetPortalLangMutation()

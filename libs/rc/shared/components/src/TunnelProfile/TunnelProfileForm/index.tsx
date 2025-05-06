@@ -77,6 +77,15 @@ interface TunnelProfileFormProps {
   isDefaultTunnelProfile?: boolean
 }
 
+const MtuSizeFormItem = (props: { value?: number,
+  onChange?: (value: number) => void,
+  disabled?:boolean }) => {
+  const { $t } = useIntl()
+  return <Space>
+    <InputNumber {...props} />
+    {$t({ defaultMessage: 'bytes' })}
+  </Space>
+}
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { isDefaultTunnelProfile = false } = props
@@ -141,14 +150,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
-  clusterServiceData
-    // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
-    .some(item => {
-      form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
-      return true
-    })
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
@@ -211,28 +212,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     }
   }, [form, clusterData, onEdgeClusterChange])
 
-  const mduSizeFormItem = <Form.Item
-    name='mtuSize'
-    rules={[
-      {
-        required: mtuType === MtuTypeEnum.MANUAL,
-        message: 'Please enter Path MTU size'
-      },
-      {
-        type: 'number',
-        min: 576,
-        max: 1450,
-        message: $t({
-          defaultMessage: 'Path MTU size must be between 576 and 1450'
-        })
-      }
-    ]}
-    children={<InputNumber
-      disabled={!!disabledFields?.includes('mtuSize')}/>}
-    validateFirst
-    noStyle
-  />
-
   return (
     <>
       {<Row>
@@ -266,7 +245,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             name='type'
             label={$t({ defaultMessage: 'Network Segment Type' })}
             initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+            tooltip={$t(MessageMapping.network_segment_type_tooltip)}
             children={
               <Radio.Group disabled={isDefaultTunnelProfile
                     || !!disabledFields?.includes('type')}
@@ -304,6 +283,13 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                     </Radio>
                     <Radio value={TunnelTypeEnum.L2GRE} disabled={isVniType} >
                       {$t({ defaultMessage: 'L2GRE' })}
+                      {<ApCompatibilityToolTip
+                        title={$t(MessageMapping.tunnel_type_l2ogre_tooltip)}
+                        placement='bottom'
+                        showDetailButton
+                        // eslint-disable-next-line max-len
+                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.L2OGRE)}
+                      />}
                     </Radio>
                   </Space>
                 </Radio.Group>
@@ -408,14 +394,26 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             {({ getFieldValue }) => {
               return (isEdgeL2greReady && getFieldValue('tunnelType') === TunnelTypeEnum.L2GRE) ?
                 <Form.Item
-                  name='mtuType'
+                  name='mtuSize'
                   label={$t({ defaultMessage: 'Gateway Path MTU' })}
-                >
-                  <Space>
-                    {mduSizeFormItem}
-                    <div>{$t({ defaultMessage: 'bytes' })}</div>
-                  </Space>
-                </Form.Item>
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter Path MTU size'
+                    },
+                    {
+                      type: 'number',
+                      min: 576,
+                      max: 1450,
+                      message: $t({
+                        defaultMessage: 'Path MTU size must be between 576 and 1450'
+                      })
+                    }
+                  ]}
+                  children={<MtuSizeFormItem
+                    disabled={!!disabledFields?.includes('mtuSize')}/>}
+                  validateFirst
+                />
                 : <Form.Item
                   name='mtuType'
                   label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
@@ -446,7 +444,27 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                             {
                               mtuType === MtuTypeEnum.MANUAL &&
                       <Space>
-                        {mduSizeFormItem}
+                        <Form.Item
+                          name='mtuSize'
+                          rules={[
+                            {
+                              required: mtuType === MtuTypeEnum.MANUAL,
+                              message: 'Please enter Path MTU size'
+                            },
+                            {
+                              type: 'number',
+                              min: 576,
+                              max: 1450,
+                              message: $t({
+                                defaultMessage: 'Path MTU size must be between 576 and 1450'
+                              })
+                            }
+                          ]}
+                          children={<InputNumber
+                            disabled={!!disabledFields?.includes('mtuSize')}/>}
+                          validateFirst
+                          noStyle
+                        />
                         <div>{$t({ defaultMessage: 'bytes' })}</div>
                       </Space>
                             }

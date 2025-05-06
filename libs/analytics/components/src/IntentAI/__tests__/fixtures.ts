@@ -559,6 +559,10 @@ export const intentHighlights = {
     ops: {
       new: 6,
       active: 12
+    },
+    ecoflex: {
+      new: 7,
+      active: 14
     }
   }
 }

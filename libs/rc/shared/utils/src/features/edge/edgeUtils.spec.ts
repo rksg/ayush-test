@@ -1,14 +1,16 @@
+/* eslint-disable max-len */
 import _ from 'lodash'
 
-import { EdgeLag }                                                                 from '../..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeSubInterface, EdgePortWithStatus }                                    from '../../types'
+import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
+  convertEdgePortsConfigToApiPayload,
+  convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
   getEdgeServiceHealth,
@@ -17,13 +19,14 @@ import {
   isAllPortsLagMember,
   isInterfaceInVRRPSetting,
   lanPortSubnetValidator,
+  MAX_DUAL_WAN_PORT,
   optionSorter,
   validateClusterInterface,
+  validateConfiguredSubnetIsConsistent,
+  validateEdgeClusterLevelGateway,
   validateEdgeGateway,
   validateSubnetIsConsistent,
-  validateUniqueIp,
-  convertEdgePortsConfigToApiPayload,
-  convertEdgeSubInterfaceToApiPayload
+  validateUniqueIp
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -200,11 +203,42 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')
+  })
+
+  it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
+    const allIps = [
+      {
+        ip: '',
+        subnet: ''
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateConfiguredSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).not.toBeCalled()
   })
 
   it('Test validateUniqueIp success', async () => {
     const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp success for excluded empty ip', async () => {
+    const allIps = ['1.1.1.1', '', '']
     const mockErrorFn = jest.fn()
     try {
       await validateUniqueIp(allIps, 'true')
@@ -830,6 +864,86 @@ describe('validateEdgeGateway', () => {
   })
 })
 
+describe('validateEdgeClusterLevelGateway', () => {
+  it('should reject if less than one gateway is configured', async () => {
+    const portsData: EdgePort[] = []
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = [{}, {}]
+    const isDualWanEnabled = false
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
+      'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.'
+    )
+  })
+
+  it('should resolve if exactly one gateway is configured', async () => {
+    const node1Ports = [{ interfaceName: 'port1', enabled: true, portType: EdgePortTypeEnum.WAN }]
+    const node2Ports = [{ interfaceName: 'port2', enabled: true, portType: EdgePortTypeEnum.WAN }]
+
+    const portsData: EdgePort[] = [...node1Ports, ...node2Ports]
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = [{}, {}]
+    const isDualWanEnabled = false
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).resolves.toBeUndefined()
+  })
+
+  it('should reject if more than one gateway is configured with core port', async () => {
+    const node1Ports = [{ interfaceName: 'port1', enabled: true, portType: EdgePortTypeEnum.WAN },
+      { interfaceName: 'port2', enabled: true, portType: EdgePortTypeEnum.WAN }]
+    const node2Ports = [{ interfaceName: 'port1', enabled: true, portType: EdgePortTypeEnum.WAN },
+      { interfaceName: 'port2', enabled: true, portType: EdgePortTypeEnum.WAN }]
+
+    const portsData = [...node1Ports, ...node2Ports] as EdgePort[]
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = [{}, {}]
+    const isDualWanEnabled = false
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
+      'Please configure exactly one gateway on each Edge.'
+    )
+  })
+
+  it('should reject if configured with core port and WAN at same time', async () => {
+    const node1Ports = [{ interfaceName: 'port1', enabled: true, portType: EdgePortTypeEnum.WAN },
+      { interfaceName: 'port2', enabled: true, portType: EdgePortTypeEnum.LAN, corePortEnabled: true }]
+    const node2Ports = [{ interfaceName: 'port1', enabled: true, portType: EdgePortTypeEnum.WAN },
+      { interfaceName: 'port2', enabled: true, portType: EdgePortTypeEnum.WAN }]
+
+    const portsData = [...node1Ports, ...node2Ports] as EdgePort[]
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = [{}, {}]
+    const isDualWanEnabled = true
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
+      'Please configure exactly one gateway on each Edge.'
+    )
+  })
+
+  it('should reject if more than MAX_DUAL_WAN_PORT gateways are configured without core port and dual WAN enabled', async () => {
+    const portsData: EdgePort[] = Array(MAX_DUAL_WAN_PORT + 1).fill({
+      enabled: true,
+      portType: EdgePortTypeEnum.WAN
+    })
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = [{}, {}]
+    const isDualWanEnabled = true
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).rejects.toBe(
+      `Please configure no more than ${MAX_DUAL_WAN_PORT} gateways on each Edge.`
+    )
+  })
+
+  it('should resolve if edge case: empty portsData, lagData, and edgeNodes', async () => {
+    const portsData: EdgePort[] = []
+    const lagData: EdgeLag[] = []
+    const edgeNodes: EdgeStatus[] = []
+    const isDualWanEnabled = false
+
+    await expect(validateEdgeClusterLevelGateway(portsData, lagData, edgeNodes, isDualWanEnabled)).resolves.toBeUndefined()
+  })
+})
+
 describe('isAllPortsLagMember', () => {
   // 3 ports
   const mockUnconfiguredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
@@ -966,6 +1080,27 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
     const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+  })
+
+  it('should set ip mode to DHCP if port type is UNCONFIGURED', () => {
+    const edgePort = {
+      id: '',
+      name: '',
+      statusIp: '192.168.10.11',
+      mac: '',
+      ip: '192.168.10.11',
+      subnet: '255.255.255.0',
+      gateway: '192.168.1.1',
+      natEnabled: false,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      portType: EdgePortTypeEnum.UNCONFIGURED
+    } as EdgePortWithStatus
+    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    expect(result.ipMode).toBe(EdgeIpModeEnum.DHCP)
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
     expect(result.gateway).toBe('')
   })
 

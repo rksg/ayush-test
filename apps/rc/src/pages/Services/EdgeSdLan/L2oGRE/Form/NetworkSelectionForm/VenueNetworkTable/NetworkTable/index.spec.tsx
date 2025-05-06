@@ -26,6 +26,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   AddNetworkModal: () => <div data-testid='AddNetworkModal' />
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => ''
+}))
+
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
@@ -82,10 +87,12 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
           <StepsForm.StepForm>
             <ActivatedNetworksTable
               venueId='mocked-venue'
-              activated={[
-                { networkId: 'network_2', networkName: 'MockedNetwork 2' },
-                { networkId: 'network_3', networkName: 'MockedNetwork 3' }
-              ]}
+              activated={{
+                'mocked-venue': [
+                  { networkId: 'network_2', networkName: 'MockedNetwork 2' },
+                  { networkId: 'network_3', networkName: 'MockedNetwork 3' }
+                ]
+              }}
               onActivateChange={mockedOnChangeFn}
             />
           </StepsForm.StepForm>

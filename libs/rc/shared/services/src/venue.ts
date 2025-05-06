@@ -80,7 +80,7 @@ import {
   ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
-  VeuneApAntennaTypeSettings,
+  VenueApAntennaTypeSettings,
   NetworkApGroup,
   ConfigTemplateUrlsInfo,
   getCurrentTimeSlotIndex,
@@ -114,7 +114,8 @@ import {
   VenueLanPortSettings,
   UnitLinkedPersona,
   IpsecUrls,
-  IpsecViewData
+  IpsecViewData,
+  VenueApIpMode
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -414,6 +415,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse: (result: { cityList: { name: string }[] }) => {
         return result.cityList
+      }
+    }),
+    getVenueTagList: build.query<string[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenueTagList, params)
+        return{
+          ...req
+        }
       }
     }),
     getVenueSettings: build.query<VenueSettings, RequestPayload>({
@@ -1788,6 +1797,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApIpMode: build.query<VenueApIpMode, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApIpMode: build.mutation<VenueApIpMode, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getVenueApSmartMonitor: build.query<VenueApSmartMonitor, RequestPayload>({
       query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2276,7 +2306,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+    getVenueAntennaType: build.query< VenueApAntennaTypeSettings[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
@@ -2466,6 +2496,7 @@ export const {
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueCityListQuery,
+  useGetVenueTagListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
   useGetVenueMeshQuery,
@@ -2560,6 +2591,9 @@ export const {
   useGetVenueBssColoringQuery,
   useLazyGetVenueBssColoringQuery,
   useUpdateVenueBssColoringMutation,
+  useGetVenueApIpModeQuery,
+  useLazyGetVenueApIpModeQuery,
+  useUpdateVenueApIpModeMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,

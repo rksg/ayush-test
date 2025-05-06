@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Space, Typography }                        from 'antd'
-import { assign, cloneDeep, find, remove, unionBy } from 'lodash'
-import { FormattedMessage, useIntl }                from 'react-intl'
+import { Form, Space, Typography }                         from 'antd'
+import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
+import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Drawer }  from '@acx-ui/components'
-import { Network } from '@acx-ui/rc/utils'
+import { Drawer }                                          from '@acx-ui/components'
+import { showSdLanCaptivePortalConflictModal }             from '@acx-ui/edge/components'
+import { EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -14,18 +15,25 @@ import { ActivatedNetworksTable } from './NetworkTable'
 
 const toggleItemFromSelected = (
   checked: boolean,
+  venueId: string,
   data: Network,
-  selectedNetworks: NetworkActivationType['venueId']
+  selectedNetworks: NetworkActivationType
 ) => {
-  let newSelected: NetworkActivationType['venueId'] = cloneDeep(selectedNetworks)
+  let newSelected: NetworkActivationType = cloneDeep(selectedNetworks)
   if (checked) {
-    newSelected = unionBy(selectedNetworks, [{
-      networkId: data.id,
-      networkName: data.name
-    }], 'networkId')
+    let tunnelProfileIdDefaultValue = ''
+    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+      tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
+        .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
+    }
+    newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
+      [{ networkId: data.id, networkName: data.name, tunnelProfileId: tunnelProfileIdDefaultValue }], 'networkId')
   } else {
-    newSelected = cloneDeep(selectedNetworks)
-    remove(newSelected, item => item.networkId === data.id)
+    newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
+    remove(newSelected[venueId], item => item.networkId === data.id)
+    // prevent issue when delete a deleted item
+    if (!Boolean(newSelected[venueId]?.length))
+      unset(newSelected, venueId)
   }
   return newSelected
 }
@@ -33,10 +41,10 @@ const toggleItemFromSelected = (
 export interface NetworksDrawerProps {
   visible: boolean,
   onClose: () => void,
-  onSubmit: (venueId: string, updates: NetworkActivationType['venueId']) => void,
+  onSubmit: (updates: NetworkActivationType) => void,
   venueId: string,
   venueName?: string,
-  tunneledNetworks?: NetworkActivationType['venueId'],
+  activatedNetworks?: NetworkActivationType,
   pinNetworkIds?: string[]
 }
 
@@ -56,34 +64,85 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     onSubmit,
     venueId,
     venueName,
-    tunneledNetworks = [],
+    activatedNetworks = {},
     pinNetworkIds
   } = props
 
-  const [updateContent, setUpdateContent] = useState<NetworkActivationType['venueId']>(tunneledNetworks)
+  const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
+  const [validationForm] = Form.useForm()
 
   const handleActivateChange = (
     data: Network,
     checked: boolean
   ) => {
-    setUpdateContent(toggleItemFromSelected(checked, data, updateContent))
+    setUpdateContent(toggleItemFromSelected(checked, venueId, data, updateContent))
   }
 
-  const handelTunnelProfileChange = (networkId: string, tunnelProfileId: string) => {
-    const targetVenueData = cloneDeep(updateContent ?? [])
-    const targetNetworkData = find(targetVenueData, { networkId })
+  const checkCaptivePortalConflict = (
+    networkData: Network,
+    tunnelProfileId: string
+  ) => {
+    showSdLanCaptivePortalConflictModal({
+      currentNetworkVenueId: venueId,
+      currentNetworkId: networkData.id,
+      currentNetworkName: networkData.name,
+      tunnelProfileId: tunnelProfileId,
+      tunneledWlans: Object.entries(activatedNetworks).flatMap(([venueId, networks]) => networks.map(network => ({
+        venueId,
+        networkId: network.networkId,
+        networkName: network.networkName,
+        forwardingTunnelProfileId: network.tunnelProfileId
+      }))) as unknown as EdgeSdLanTunneledWlan[],
+      onOk: (impactVenueIds: string[]) => {
+        const newUpdateContent = cloneDeep(updateContent)
+        const currentVenueNetworkList = newUpdateContent[venueId] ?? []
+        const currentNetworkData = currentVenueNetworkList.find(item => item.networkId === networkData.id)
+        if(currentNetworkData) {
+          currentNetworkData.tunnelProfileId = tunnelProfileId
+        } else {
+          currentVenueNetworkList.push({
+            networkId: networkData.id,
+            networkName: networkData.name,
+            tunnelProfileId: tunnelProfileId
+          })
+        }
+        if (impactVenueIds.length !== 0) {
+          impactVenueIds.forEach((impactVenueId) => {
+            const impactNetwork = newUpdateContent[impactVenueId].find(item => item.networkId === networkData.id)
+            if(impactNetwork) {
+              impactNetwork.tunnelProfileId = tunnelProfileId
+            }
+          })
+        }
+        setUpdateContent(newUpdateContent)
+      }
+    })
+  }
+
+  const handelTunnelProfileChange = (data: Network, tunnelProfileId: string) => {
+    const cloneUpdateContent = cloneDeep(updateContent ?? {})
+    const targetVenueData = cloneUpdateContent[venueId]
+    const targetNetworkData = find(targetVenueData, { networkId: data.id })
     assign(targetNetworkData, { tunnelProfileId })
-    setUpdateContent(targetVenueData)
+    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+      checkCaptivePortalConflict(data, tunnelProfileId)
+    } else {
+      setUpdateContent(cloneUpdateContent)
+    }
   }
 
   const handleSubmit = async () => {
-    onSubmit(venueId, updateContent)
+    validationForm.validateFields().then(() => {
+      onSubmit(updateContent)
+    }).catch(() => {
+      // do nothing
+    })
   }
 
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select Networks' }, { venueName })}
-      width={1000}
+      width={1100}
       visible={visible}
       onClose={onClose}
       footer={
@@ -110,14 +169,16 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             />
           </Typography.Paragraph>
         </div>
-
-        <ActivatedNetworksTable
-          venueId={venueId}
-          activated={updateContent ?? []}
-          onActivateChange={handleActivateChange}
-          onTunnelProfileChange={handelTunnelProfileChange}
-          pinNetworkIds={pinNetworkIds}
-        />
+        <Form form={validationForm}>
+          <ActivatedNetworksTable
+            venueId={venueId}
+            activated={updateContent}
+            onActivateChange={handleActivateChange}
+            onTunnelProfileChange={handelTunnelProfileChange}
+            pinNetworkIds={pinNetworkIds}
+            validationFormRef={validationForm}
+          />
+        </Form>
       </Space>
     </Drawer>
   )

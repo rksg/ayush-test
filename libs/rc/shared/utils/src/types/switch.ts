@@ -13,6 +13,7 @@ export const SWITCH_SERIAL_8200AV = '(FPG|FPF)'
 export const SWITCH_SERIAL_8100X = '(FPP|FPQ|FPR|FPS|FPT)'
 export const SWITCH_SERIAL_7550Zippy = '(FPH)'
 export const SWITCH_SERIAL_SUFFIX = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
+export const SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4]|98)([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
 
 export const SwitchPortViewModelQueryFields = [
   'adminStatus',
@@ -70,7 +71,8 @@ export const SwitchPortViewModelQueryFields = [
   'errorDisableStatus',
   'stickyMacAclAllowList',
   'stickyMacAclAllowCount',
-  'switchMacAcl'
+  'switchMacAcl',
+  'stackingNeighborPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -165,8 +167,6 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
-  portSecurity?: boolean
-  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''
@@ -553,6 +553,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowList?: string[]
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
+  stackingNeighborPort?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {

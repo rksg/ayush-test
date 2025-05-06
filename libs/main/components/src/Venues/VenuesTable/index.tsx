@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
@@ -91,6 +91,7 @@ function useColumns (
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
+  const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -107,6 +108,14 @@ function useColumns (
             {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description',
+      sorter: true,
+      show: false,
+      searchable: searchable
     },
     {
       title: $t({ defaultMessage: 'Address' }),
@@ -237,7 +246,17 @@ function useColumns (
           </>
         )
       }
-    }
+    },
+    ...(isTagsColumnEnabled ? [{
+      title: $t({ defaultMessage: 'Tags' }),
+      key: 'tagList',
+      dataIndex: 'tagList',
+      sorter: true,
+      searchable: searchable,
+      render: (data: ReactNode, row: Venue) => (
+        row.tagList?.join(', ')
+      )
+    }] : [])
   ]
 
   return columns.filter(({ key }) =>
@@ -266,9 +285,10 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'addressLine'
+      'addressLine',
+      'tagList'
     ],
-    searchTargetFields: ['name', 'addressLine'],
+    searchTargetFields: ['name', 'addressLine', 'description', 'tagList'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'

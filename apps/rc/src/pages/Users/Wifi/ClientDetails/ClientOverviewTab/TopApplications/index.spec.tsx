@@ -56,7 +56,8 @@ describe('TopApplicationsWidget', () => {
     mockUseGetPrivacySettingsQuery.mockReturnValue({
       data: [{
         featureName: PrivacyFeatureName.APP_VISIBILITY,
-        isEnabled: true
+        isEnabled: true,
+        enforceDefault: false
       }]
     })
   })
@@ -99,7 +100,8 @@ describe('TopApplicationsWidget', () => {
     mockUseGetPrivacySettingsQuery.mockReturnValue({
       data: [{
         featureName: PrivacyFeatureName.APP_VISIBILITY,
-        isEnabled: false
+        isEnabled: false,
+        enforceDefault: false
       }]
     })
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficPerClient', {
@@ -126,7 +128,8 @@ describe('TopApplicationsWidget', () => {
     mockUseGetPrivacySettingsQuery.mockReturnValue({
       data: [{
         featureName: PrivacyFeatureName.APP_VISIBILITY,
-        isEnabled: false
+        isEnabled: false,
+        enforceDefault: false
       }]
     })
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficPerClient', {

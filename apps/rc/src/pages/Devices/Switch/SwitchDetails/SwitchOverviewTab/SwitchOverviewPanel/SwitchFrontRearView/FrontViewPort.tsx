@@ -4,15 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip, cssStr }                                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }                                                               from '@acx-ui/rc/components'
-import { useLazyGetLagListQuery }                                                           from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010g2Or10020b } from '@acx-ui/rc/utils'
-import { useParams }                                                                        from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                                                     from '@acx-ui/types'
-import { hasPermission }                                                                    from '@acx-ui/user'
-import { getOpsApi }                                                                        from '@acx-ui/utils'
+import { Tooltip, cssStr }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { getInactiveTooltip }                                                              from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery }                                                          from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010gOr10020b } from '@acx-ui/rc/utils'
+import { useParams }                                                                       from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                    from '@acx-ui/types'
+import { hasPermission }                                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                       from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -30,6 +30,7 @@ export function FrontViewPort (props:{
 }) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
+  const isSupportStackNeighborPort = useIsSplitOn(Features.SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE)
 
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
@@ -111,7 +112,7 @@ export function FrontViewPort (props:{
           children={port.status}
         />
         {// eslint-disable-next-line max-len
-          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010g2Or10020b(switchFirmware) && (<>
+          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010gOr10020b(switchFirmware) && (<>
             <UI.TooltipStyle.Item
               label={$t({ defaultMessage: 'ErrDisabled' })}
               children={
@@ -144,7 +145,8 @@ export function FrontViewPort (props:{
           </>)}
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
-          children={port.neighborName || port.neighborMacAddress || '--'}
+          children={port.neighborName || port.neighborMacAddress ||
+            (isSupportStackNeighborPort && port.stackingNeighborPort) || '--'}
         />
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' })}

@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, max-len */
-import { useEffect, useRef, useState, createContext } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
-import { Form }                                                                     from 'antd'
-import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy, cloneDeep } from 'lodash'
-import _                                                                            from 'lodash'
-import { defineMessage, useIntl }                                                   from 'react-intl'
+import { Form }                                                                        from 'antd'
+import _, { cloneDeep, get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
+import { defineMessage, useIntl }                                                      from 'react-intl'
 
 import {
   Loader,
@@ -13,82 +12,85 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
-  useAddNetworkMutation,
-  useAddNetworkVenuesMutation,
-  useDeleteNetworkVenuesMutation,
-  useUpdateNetworkMutation,
-  useUpdateNetworkVenuesMutation,
-  useAddNetworkTemplateMutation,
-  useUpdateNetworkTemplateMutation,
-  useAddNetworkVenueTemplatesMutation,
-  useActivateWifiOperatorOnWifiNetworkMutation,
-  useActivateIdentityProviderOnWifiNetworkMutation,
   useActivateCertificateTemplateMutation,
-  useUpdateNetworkVenueTemplateMutation,
-  useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useActivateMacRegistrationPoolMutation,
+  useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
   useActivateDpskServiceTemplateMutation,
-  useGetDpskServiceQuery,
-  useGetDpskServiceTemplateQuery,
-  useGetCertificateTemplateNetworkBindingQuery,
-  useAddNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation,
+  useActivateMacRegistrationPoolMutation,
   useActivatePortalMutation,
   useActivatePortalTemplateMutation,
-  useGetEnhancedPortalProfileListQuery,
-  useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation,
-  useGetMacRegistrationPoolNetworkBindingQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useAddNetworkMutation,
+  useAddNetworkTemplateMutation,
+  useAddNetworkVenuesMutation,
+  useAddNetworkVenueTemplateMutation,
+  useAddNetworkVenueTemplatesMutation,
   useAddRbacNetworkVenueMutation,
-  useDeleteRbacNetworkVenueMutation,
-  useActivateDirectoryServerMutation,
   useBindingPersonaGroupWithNetworkMutation,
   useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
-  useActivateIdentityProviderProfileOnNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useDeleteNetworkVenuesMutation,
+  useDeleteNetworkVenuesTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useDeleteRbacNetworkVenueMutation,
+  useGetCertificateTemplateNetworkBindingQuery,
+  useGetDpskServiceQuery,
+  useGetDpskServiceTemplateQuery,
+  useGetEnhancedPortalProfileListQuery,
+  useGetEnhancedPortalTemplateListQuery,
+  useGetMacRegistrationPoolNetworkBindingQuery,
+  useUpdateNetworkMutation,
+  useUpdateNetworkTemplateMutation,
+  useUpdateNetworkVenueMutation,
+  useUpdateNetworkVenuesMutation,
+  useUpdateNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
+  ConfigTemplateType,
   Demo,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
   Network,
   NetworkSaveData,
-  SocialIdentities,
+  NetworkTunnelIpsecAction,
+  NetworkTunnelSdLanAction,
+  NetworkTunnelSoftGreAction,
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
-  useConfigTemplateBreadcrumb,
+  SocialIdentities,
   useConfigTemplate,
+  useConfigTemplateBreadcrumb,
   useConfigTemplateMutationFnSwitcher,
-  WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
-  NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction,
   VlanPool,
-  NetworkTunnelIpsecAction,
-  ConfigTemplateType
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate, useEnforcedStatus } from '../configTemplates'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
 import { useGetNetwork }                                   from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SAMLForm }                from './CaptivePortal/SAMLForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { CloudpathForm }          from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }    from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }          from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }       from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }         from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
+import { SAMLForm }               from './CaptivePortal/SAMLForm'
+import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }              from './CaptivePortal/WISPrForm'
+import {
+  useUpdateEdgeSdLanActivations
+} from './edgeUtils'
 import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -106,21 +108,20 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                from './PortalInstance'
+import PortalInstance from './PortalInstance'
 import {
-  useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
-  useRadiusServer,
-  useVlanPool,
-  useClientIsolationActivations,
-  useWifiCalling,
-  useAccessControlActivation,
-  getDefaultMloOptions,
-  useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations,
   deriveWISPrFieldsFromServerData,
+  getDefaultMloOptions,
+  hasControlnetworkVenuePermission,
+  useAccessControlActivation,
+  useClientIsolationActivations,
+  useNetworkVxLanTunnelProfileInfo,
+  useRadiusServer,
   useUpdateIpsecActivations,
-  hasControlnetworkVenuePermission
+  useUpdateSoftGreActivations,
+  useVlanPool,
+  useWifiCalling
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -684,7 +685,9 @@ export function NetworkForm (props:{
         ...saveState.wlan,
         ...data.wlan
       },
-      portalServiceProfileId: data.portalServiceProfileId
+      portalServiceProfileId: data.portalServiceProfileId,
+      samlIdpProfilesId: data.samlIdpProfilesId,
+      samlIdpProfilesName: data.samlIdpProfilesName
     }
     if(!tmpGuestPageState.portalServiceProfileId){
       delete tmpGuestPageState.portalServiceProfileId
@@ -699,6 +702,7 @@ export function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
+
     updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
@@ -1017,14 +1021,12 @@ export function NetworkForm (props:{
           afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
-        if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
+        if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
+          // eslint-disable-next-line max-len
+          afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
+        } else if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
-
-          if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
-            // eslint-disable-next-line max-len
-            afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
-          }
         }
       }
 
@@ -1225,19 +1227,16 @@ export function NetworkForm (props:{
         )
       }
 
-      // eslint-disable-next-line max-len
-      if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
+      if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
+        afterVenueActivationRequest.push(
+          // eslint-disable-next-line max-len
+          updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
+        )
+      } else if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
-
-        if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
-          afterVenueActivationRequest.push(
-            // eslint-disable-next-line max-len
-            updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
-          )
-        }
       }
 
       if (payload.id) {
@@ -1545,7 +1544,8 @@ function useIdentityGroupOnNetworkActivation () {
       (network.type === NetworkTypeEnum.HOTSPOT20 ||
         network.type === NetworkTypeEnum.PSK ||
         network.type === NetworkTypeEnum.AAA ||
-        network.type === NetworkTypeEnum.CAPTIVEPORTAL
+        network.type === NetworkTypeEnum.CAPTIVEPORTAL ||
+        network.type === NetworkTypeEnum.OPEN
       )
     ) {
       const identityGroupId = network?.identityGroupId

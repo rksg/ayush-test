@@ -260,7 +260,7 @@ export interface VenueApModelBandModeSettings {
 	bandMode: BandModeEnum
 }
 
-export type VeuneApAntennaTypeSettings = {
+export type VenueApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum
 }
@@ -330,7 +330,8 @@ export interface VenueExtended extends EnforceableFields {
   id?: string
   country: string
   countryCode?: string
-  version?: string
+  version?: string,
+  tags?: string[]
 }
 
 export interface VenueSettings {
@@ -780,6 +781,17 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export enum IPModeEnum {
+  IPv4 = 'IPV4',
+  IPv6 = 'IPV6',
+  Dual = 'IPV4_IPV6',
+  NONE = 'NONE'
+}
+
+export interface VenueApIpMode {
+	mode: IPModeEnum
 }
 
 export interface VenueApRebootTimeout {
