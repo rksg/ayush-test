@@ -40,8 +40,8 @@ const ResourcesLinks = ({ feature }: { feature: AiFeatures }) => {
           {
             icon: <LinkVideoIcon />,
             label: $t(
-              { defaultMessage: '{appName} - AI Operations Demo' },
-              { appName }
+              { defaultMessage: '{appName} - {featureName} Demo' },
+              { appName, featureName: feature }
             ),
             link: videoLink
           }
@@ -52,8 +52,8 @@ const ResourcesLinks = ({ feature }: { feature: AiFeatures }) => {
           {
             icon: <LinkDocumentIcon />,
             label: $t(
-              { defaultMessage: '{appName} - AI Operations Documentation' },
-              { appName }
+              { defaultMessage: '{appName} - {featureName} Documentation' },
+              { appName, featureName: feature }
             ),
             // eslint-disable-next-line max-len
             link: `https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/${featureToGuideIdMap[feature]}.html`
