@@ -506,54 +506,53 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                       </StepsForm.FieldLabel>
                     </Col>
                   </Row>
+                  {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled) &&
+                    <>
+                      <StepsForm.FieldLabel width={'280px'}>
+                        <Space >
+                          {$t({ defaultMessage: 'Dynamic VLAN' })}
+                          <Tooltip.Question
+                            title={$t(EthernetPortProfileMessages.DYNAMIC_VLAN)}
+                            placement='bottom'
+                          />
+                        </Space>
+
+                        <Form.Item
+                          name='dynamicVlanEnabled'
+                          valuePropName={'checked'}
+                        >
+                          <Switch />
+                        </Form.Item>
+                      </StepsForm.FieldLabel>
+                      {dynamicVlanEnabled &&
+                        <Row>
+                          <Col span={12}>
+                            <Form.Item
+                              name='unauthenticatedGuestVlan'
+                              label={<>
+                                {$t({ defaultMessage: 'Guest VLAN' })}
+                                <Tooltip.Question
+                                  title={$t(EthernetPortProfileMessages.GUEST_VLAN)}
+                                  placement='bottom'
+                                />
+                              </>
+                              }
+                              rules={[
+                                { required: true }
+                              ]}
+                            >
+                              <InputNumber
+                                min={1}
+                                max={4094}
+                                style={{ width: '100%' }}
+                              />
+                            </Form.Item>
+                          </Col>
+                        </Row>}
+                    </>
+                  }
                 </>
               )}
-              {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled &&
-                !isWiredClientVisibilityEnabled) &&
-                <>
-                  <StepsForm.FieldLabel width={'280px'}>
-                    <Space >
-                      {$t({ defaultMessage: 'Dynamic VLAN' })}
-                      <Tooltip.Question
-                        title={$t(EthernetPortProfileMessages.DYNAMIC_VLAN)}
-                        placement='bottom'
-                      />
-                    </Space>
-
-                    <Form.Item
-                      name='dynamicVlanEnabled'
-                      valuePropName={'checked'}
-                    >
-                      <Switch />
-                    </Form.Item>
-                  </StepsForm.FieldLabel>
-                  {dynamicVlanEnabled &&
-                    <Row>
-                      <Col span={12}>
-                        <Form.Item
-                          name='unauthenticatedGuestVlan'
-                          label={<>
-                            {$t({ defaultMessage: 'Guest VLAN' })}
-                            <Tooltip.Question
-                              title={$t(EthernetPortProfileMessages.GUEST_VLAN)}
-                              placement='bottom'
-                            />
-                          </>
-                          }
-                          rules={[
-                            { required: true }
-                          ]}
-                        >
-                          <InputNumber
-                            min={1}
-                            max={4094}
-                            style={{ width: '100%' }}
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>}
-                </>
-              }
             </>}
             {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
              isWiredClientVisibilityEnabled &&
