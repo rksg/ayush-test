@@ -36,7 +36,8 @@ import {
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   vlanPortsParser,
   getFamilyAndModel,
-  createSwitchSerialPattern
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model
 } from '.'
 
 const switchRow ={
@@ -571,6 +572,15 @@ describe('Test createSwitchSerialPattern function', () => {
     expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
     expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
     expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+  })
+
+  it('support specific 8100 model', async () => {
+    const patten = createSwitchSerialPatternForSpecific8100Model()
+    expect(patten.test('FNX4898W00Z')).toBe(true)
+    expect(patten.test('FNY4898W0LP')).toBe(true)
+    expect(patten.test('FNZ4898W0F7')).toBe(true)
+    expect(patten.test('FPA4898W00E')).toBe(true)
+
   })
 
   it('ICX8200-AV not supported', async () => {
