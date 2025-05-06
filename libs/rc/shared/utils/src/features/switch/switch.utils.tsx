@@ -754,7 +754,9 @@ export const getAdminPassword = (
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const serialNumberRegExp = createSwitchSerialPattern(supportModels)
+  const serialNumberRegExp = (supportModels.isSupport8100 && isSpecific8100Model(data?.id))
+    ? createSwitchSerialPatternForSpecific8100Model()
+    : createSwitchSerialPattern(supportModels)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
