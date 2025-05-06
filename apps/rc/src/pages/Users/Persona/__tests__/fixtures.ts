@@ -14,7 +14,8 @@ import {
   BillingCycleType,
   DPSKDeviceInfo,
   PropertyUnit,
-  PropertyUnitStatus
+  PropertyUnitStatus,
+  ExternalIdentity
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -341,4 +342,40 @@ export const mockConnectionMeteringTable : NewTableResult<ConnectionMetering> = 
   totalPages: 1,
   totalElements: 4,
   sort: defaultPageable.sort
+}
+
+export const mockExternalIdentity: ExternalIdentity = {
+  id: 'id',
+  userId: 'userId',
+  identityProviderId: 'idpId',
+  identityProviderType: 'SAML',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  displayName: 'displayName',
+  roles: ['r1'],
+  groups: null,
+  email: 'user@email.com',
+  phoneNumber: '+12334566',
+  organization: 'org'
+}
+
+export const mockExternalIdentityList: NewTableResult<ExternalIdentity> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [{
+    id: 'id',
+    userId: 'userId',
+    identityProviderId: 'idpId',
+    identityProviderType: 'SAML',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    displayName: 'displayName',
+    roles: ['r1'],
+    groups: null,
+    email: 'user@email.com',
+    phoneNumber: '+12334566',
+    organization: 'org'
+  }]
 }

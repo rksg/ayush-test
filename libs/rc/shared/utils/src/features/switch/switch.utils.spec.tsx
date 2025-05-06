@@ -32,10 +32,12 @@ import {
   isFirmwareSupportAdminPassword,
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010g2Or10020b,
+  isFirmwareVersionAbove10010gOr10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
   vlanPortsParser,
   getFamilyAndModel,
-  createSwitchSerialPattern
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model
 } from '.'
 
 const switchRow ={
@@ -508,20 +510,39 @@ describe('Test isFirmwareVersionAbove10020b function', () => {
   })
 })
 
-describe('Test isFirmwareVersionAbove10010g2Or10020b function', () => {
+describe('Test isFirmwareVersionAbove10010gOr10020b function', () => {
   it('should render correctly', async () => {
-    expect(isFirmwareVersionAbove10010g2Or10020b('SPR09010f')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10010c_cd1')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020a_rc35')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_b467')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_cd1_rc11')).toBe(false)
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_cd2')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020a_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_cd1_rc11')).toBe(false)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010f_cd2')).toBe(false)
 
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010g_rc50')).toBe(true)
-    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020b_rc35')).toBe(true)
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10020b_b205')).toBe(true)
-    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10020b_cd1')).toBe(true)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10010g_rc50')).toBe(true)
+    expect(isFirmwareVersionAbove10010gOr10020b('SPR10020b_rc35')).toBe(true)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_b205')).toBe(true)
+    expect(isFirmwareVersionAbove10010gOr10020b('TNR10020b_cd1')).toBe(true)
+  })
+})
+
+describe('Test isFirmwareVersionAbove10010gCd1Or10020bCd1 function', () => {
+  it('should render correctly', async () => {
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020a_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_cd1_rc11')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010f_cd2')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_rc50')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('SPR10020b_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_b205')).toBe(false)
+
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10010g_cd1')).toBe(true)
+    expect(isFirmwareVersionAbove10010gCd1Or10020bCd1('TNR10020b_cd1')).toBe(true)
   })
 })
 
@@ -551,6 +572,21 @@ describe('Test createSwitchSerialPattern function', () => {
     expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
     expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
     expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+  })
+
+  it('support specific 8100 model', async () => {
+    const patten = createSwitchSerialPatternForSpecific8100Model()
+    expect(patten.test('FNX4898W00Z')).toBe(true)
+    expect(patten.test('FNX4808W00Z')).toBe(true)
+    expect(patten.test('FNY4898W0LP')).toBe(true)
+    expect(patten.test('FNY4833W0LP')).toBe(true)
+    expect(patten.test('FNZ4898W0F7')).toBe(true)
+    expect(patten.test('FPA4898W00E')).toBe(true)
+
+    expect(patten.test('FNX4888W00Z')).toBe(false)
+    expect(patten.test('FNY4896W0LP')).toBe(false)
+    expect(patten.test('FNZ4897W0F7')).toBe(false)
+    expect(patten.test('FPA4899W00E')).toBe(false)
   })
 
   it('ICX8200-AV not supported', async () => {

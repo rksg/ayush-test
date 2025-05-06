@@ -4,7 +4,7 @@ import { baseQuery } from './baseQuery'
 
 export const basePersonaApi = createApi({
   baseQuery: baseQuery,
-  tagTypes: ['PersonaGroup', 'Persona', 'IdentityClient'],
+  tagTypes: ['PersonaGroup', 'Persona', 'IdentityClient', 'ExternalIdentity'],
   reducerPath: 'personaGroupApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
