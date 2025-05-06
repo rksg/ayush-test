@@ -11,7 +11,7 @@ import { useNavigate, useTenantLink }                                       from
 import { EmbeddedReport, ReportType, usePageHeaderExtra }                   from '@acx-ui/reports/components'
 import { RequestPayload }                                                   from '@acx-ui/types'
 import { filterByAccess }                                                   from '@acx-ui/user'
-import { DateRange, TABLE_DEFAULT_PAGE_SIZE }                               from '@acx-ui/utils'
+import { DateRange }                                                        from '@acx-ui/utils'
 
 import { ClientTab }           from './ClientTab'
 import { GuestsTab }           from './GuestsTab'
