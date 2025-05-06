@@ -402,7 +402,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: commonQueryFn(WorkflowUrls.createWorkflowStep),
       invalidatesTags: [{ type: 'Step' }]
     }),
-    
+
     createWorkflowChildStep: build.mutation<WorkflowStep, RequestPayload>({
       query: commonQueryFn(WorkflowUrls.createWorkflowChildStep),
       invalidatesTags: [{ type: 'Step' }]
@@ -418,7 +418,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
     deleteWorkflowStepByIdV2: build.mutation({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.deleteWorkflowStep, params,
-          {'Accept': 'application/vnd.ruckus.v2+json'}
+          { Accept: 'application/vnd.ruckus.v2+json' }
         )
       },
       invalidatesTags: [{ type: 'Step' }]
@@ -430,7 +430,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Step' }]
     }),
-    
+
     getWorkflowStepsById: build.query<NewAPITableResult<WorkflowStep>, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowStepsById, params)

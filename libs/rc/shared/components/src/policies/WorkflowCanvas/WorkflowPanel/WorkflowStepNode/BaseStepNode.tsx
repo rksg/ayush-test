@@ -5,18 +5,19 @@ import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
-import { useDeleteWorkflowStepAndDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation, useDeleteWorkflowStepByIdV2Mutation }                                                     from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls }             from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                                   from '@acx-ui/user'
-import { getOpsApi }                                                                             from '@acx-ui/utils'
+import { useDeleteWorkflowStepAndDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
+  useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission }                                       from '@acx-ui/user'
+import { getOpsApi }                                                                 from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
 
 import * as UI               from './styledComponents'
 import { EditorToolbarIcon } from './styledComponents'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string })
@@ -34,8 +35,10 @@ export default function BaseStepNode (props: NodeProps
     stepDrawerState, workflowId
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
-  const [ deleteAndDetachStep, {isLoading: isDeleteDetachStepLoading }] = useDeleteWorkflowStepByIdV2Mutation()
-  const [ deleteStepAndDescendants, {isLoading: isDeleteStepAndDescendantsLoading }] = useDeleteWorkflowStepAndDescendantsByIdMutation()
+  const [ deleteAndDetachStep, { isLoading: isDeleteDetachStepLoading }]
+    = useDeleteWorkflowStepByIdV2Mutation()
+  const [ deleteStepAndDescendants, { isLoading: isDeleteStepAndDescendantsLoading }]
+    = useDeleteWorkflowStepAndDescendantsByIdMutation()
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -88,12 +91,12 @@ export default function BaseStepNode (props: NodeProps
           ?? $t({ defaultMessage: 'Step' })
       },
       content: deleteChildren ?
-        $t({ defaultMessage: 'Do you want to delete this step and all of its children?'})
+        $t({ defaultMessage: 'Do you want to delete this step and all of its children?' })
         : $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
         deleteChildren ?
-        deleteStepAndDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
-         : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+          deleteStepAndDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+          : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
   }
@@ -127,44 +130,44 @@ export default function BaseStepNode (props: NodeProps
         />
       </Tooltip>
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
-        {workflowValidationEnhancementFFToggle ? 
+        {workflowValidationEnhancementFFToggle ?
           <Popover
             zIndex={1000}
             content={<Space size={12} direction={'vertical'}>
-                <UI.WhiteTextButton
-                  size={'small'}
-                  type={'link'}
-                  onClick={() => onDeleteStepClick(false)}
-                >{$t({defaultMessage: 'Delete step only'})}</UI.WhiteTextButton>
-                <UI.WhiteTextButton
-                  size={'small'}
-                  type={'link'}
-                  onClick={() => onDeleteStepClick(true)}
-                  >{$t({defaultMessage: 'Delete step and children'})}</UI.WhiteTextButton>
-              </Space>}
+              <UI.WhiteTextButton
+                size={'small'}
+                type={'link'}
+                onClick={() => onDeleteStepClick(false)}
+              >{$t({ defaultMessage: 'Delete step only' })}</UI.WhiteTextButton>
+              <UI.WhiteTextButton
+                size={'small'}
+                type={'link'}
+                onClick={() => onDeleteStepClick(true)}
+              >{$t({ defaultMessage: 'Delete step and children' })}</UI.WhiteTextButton>
+            </Space>}
             trigger={'hover'}
             placement={'bottomLeft'}
             color={'var(--acx-primary-black)'}
             overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
-            >
-              <Button
-                size={'small'}
-                type={'link'}
-                rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
-                disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
-                icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
-              />
-          </Popover>
-          : 
-          <Button
+          >
+            <Button
               size={'small'}
               type={'link'}
               rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
               disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
               icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
-              onClick={onDeleteClick}
             />
-        } 
+          </Popover>
+          :
+          <Button
+            size={'small'}
+            type={'link'}
+            rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+            disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+            icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+            onClick={onDeleteClick}
+          />
+        }
       </Tooltip>
     </Space>)
 
@@ -172,7 +175,8 @@ export default function BaseStepNode (props: NodeProps
   return (
     <UI.StepNode selected={props.selected}>
       <Loader states={[
-        { isLoading: false, isFetching: isDeleteStepLoading || isDeleteDetachStepLoading || isDeleteStepAndDescendantsLoading }
+        { isLoading: false, isFetching: (isDeleteStepLoading
+          || isDeleteDetachStepLoading || isDeleteStepAndDescendantsLoading) }
       ]}>
         {props.children}
       </Loader>
