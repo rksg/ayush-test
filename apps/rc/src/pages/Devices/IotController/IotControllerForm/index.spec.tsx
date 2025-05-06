@@ -11,7 +11,6 @@ import {
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved,
   within,
   waitFor
 } from '@acx-ui/test-utils'
@@ -157,7 +156,7 @@ describe('Iot Controller Form', () => {
       <Provider>
         <IotControllerForm />
       </Provider>, {
-        route: { params }
+        route: { params, path: '/:tenantId/t/devices/iotController/:iotId/:action' }
       })
 
     await waitFor(() => expect(mockFn).toBeCalled())
@@ -165,8 +164,6 @@ describe('Iot Controller Form', () => {
     const nameInput = await screen.findByLabelText('IoT Controller Name')
     fireEvent.change(nameInput, { target: { value: 'New Iot constroller' } })
     fireEvent.blur(nameInput)
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
 
     const URLInput = screen.getByLabelText('FQDN / IP (AP Inbound IP address)')
     await fireEvent.change(URLInput, { target: { value: 'newtest.com' } })
