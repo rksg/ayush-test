@@ -203,7 +203,7 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for Cluster interface on all the edges in this Cluster.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')
   })
 
   it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
