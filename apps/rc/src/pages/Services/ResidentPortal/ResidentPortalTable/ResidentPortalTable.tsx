@@ -41,7 +41,7 @@ export default function ResidentPortalTable () {
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
-      visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
+      disabled: (([selectedRow]) => (selectedRow && !selectedRow.venueCount)? false : true),
       scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       rbacOpsIds: getServiceAllowedOperation(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
