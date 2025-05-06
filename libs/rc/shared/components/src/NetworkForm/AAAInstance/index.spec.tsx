@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
 import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                from '@acx-ui/store'
 import {
@@ -128,6 +128,7 @@ describe('AAA Instance Page', () => {
 
   it('should render RadSec instance page', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, isRuckusAiMode: false,
@@ -175,6 +176,7 @@ describe('AAA Instance Page', () => {
 
   it('should exclude RadSec when edit PSK network', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const radSecItem = mockAAAPolicyListResponse.data.find(aaa => aaa.radSecOptions?.tlsEnabled)!
     // eslint-disable-next-line max-len
