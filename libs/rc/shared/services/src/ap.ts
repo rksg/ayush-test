@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter } from '@acx-ui/components'
+import { Filter }                  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -95,7 +95,9 @@ import {
   APLanPortSettings,
   mergeLanPortSettings,
   IpsecUrls,
-  IpsecViewData
+  IpsecViewData,
+  ApGroupRadioCustomization,
+  ApGroupQueryRadioCustomization
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -107,6 +109,7 @@ import {
   getEnabledDialogImproved,
   ignoreErrorModal
 } from '@acx-ui/utils'
+
 
 import {
   addApGroupFn,
@@ -771,6 +774,40 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
+    getApGroupRadioCustomization: build.query<ApGroupRadioCustomization, RequestPayload>({
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+
+        const req = createHttpRequest(urlsInfo.getApGroupRadioCustomization, params)
+        const response = await fetchWithBQ(req)
+
+        if (response.error) {
+          return { error: response.error }
+        }
+
+        const responseData = response.data as ApGroupQueryRadioCustomization
+
+        return {
+          data: {
+            radioParams24G: responseData.apGroupRadioParams24G,
+            radioParams50G: responseData.apGroupRadioParams50G,
+            radioParams60G: responseData.apGroupRadioParams6G,
+            radioParamsDual5G: responseData.apGroupRadioParamsDual5G
+          } as ApGroupRadioCustomization
+        }
+      },
+      providesTags: [{ type: 'ApGroup', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApGroupRadioSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'ApGroup', id: 'RADIO' }]))
+          })
+        })
+      }
+    }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -782,6 +819,17 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
+    }),
+    updateApGroupRadioCustomization: build.mutation<ApGroupRadioCustomization, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const req = createHttpRequest(urlsInfo.updateApGroupRadioCustomization, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => { // non RBAC API
@@ -1855,7 +1903,9 @@ export const {
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
   useGetApRadioCustomizationQuery,
+  useGetApGroupRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
+  useUpdateApGroupRadioCustomizationMutation,
   useGetPacketCaptureStateQuery,
   useStopPacketCaptureMutation,
   useStartPacketCaptureMutation,

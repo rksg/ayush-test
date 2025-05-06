@@ -26,13 +26,12 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                             from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                    from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                from '@acx-ui/icons'
 import {
   useLazyApListQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
-  useUpdateVenueRadioCustomizationMutation,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
@@ -40,10 +39,11 @@ import {
   useGetVenueTripleBandRadioSettingsQuery,
   useGetVenueTemplateDefaultRegulatoryChannelsQuery,
   useGetVenueTemplateRadioCustomizationQuery,
-  useUpdateVenueTemplateRadioCustomizationMutation,
   useUpdateVenueTemplateTripleBandRadioSettingsMutation,
   useGetVenueTemplateApModelBandModeSettingsQuery,
-  useUpdateVenueTemplateApModelBandModeSettingsMutation, useLazyGetVenueRadioCustomizationQuery
+  useUpdateVenueTemplateApModelBandModeSettingsMutation,
+  useLazyGetVenueRadioCustomizationQuery,
+  useGetApGroupRadioCustomizationQuery, useUpdateApGroupRadioCustomizationMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -282,10 +282,17 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       }
     })
 
+  const { data: apGroupRadioData, isLoading: isLoadingApGroupData } =
+    useApGroupConfigTemplateQueryFnSwitcher<ApGroupRadioCustomization>({
+      useQueryFn: useGetApGroupRadioCustomizationQuery,
+      useTemplateQueryFn: useGetApGroupRadioCustomizationQuery,
+      enableRbac: isUseRbacApi,
+      extraParams: { venueId, apGroupId }
+    })
 
-  const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useApGroupConfigTemplateMutationFnSwitcher(
-    useUpdateVenueRadioCustomizationMutation,
-    useUpdateVenueTemplateRadioCustomizationMutation
+  const [ updateApGroupRadioCustomization, { isLoading: isUpdatingApGroupRadio } ] = useApGroupConfigTemplateMutationFnSwitcher(
+    useUpdateApGroupRadioCustomizationMutation,
+    useUpdateApGroupRadioCustomizationMutation
   )
 
   const [ updateVenueTripleBandRadioSettings ] = useApGroupConfigTemplateMutationFnSwitcher(
@@ -559,12 +566,43 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       return data
     }
 
+    const mergeRadioData = (data: ApGroupRadioCustomization, apGroupData: ApGroupRadioCustomization) => {
+      let mergedData = {} as ApGroupRadioCustomization
+      const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
+      const { radioParams24G: apGroupRadioParams24G, radioParams50G: apGroupRadioParams50G, radioParams6G: apGroupRadioParams6G, radioParamsDual5G: apGroupRadioParamsDual5G } = apGroupData
+      return {
+        ...mergedData,
+        radioParams24G: {
+          ...(apGroupRadioParams24G?.useVenueSettings ? radioParams24G : apGroupRadioParams24G)
+        },
+        radioParams50G: {
+          ...(apGroupRadioParams50G?.useVenueSettings ? radioParams50G : apGroupRadioParams50G)
+        },
+        radioParams6G: {
+          ...(apGroupRadioParams6G?.useVenueSettings ? radioParams6G : apGroupRadioParams6G)
+        },
+        radioParamsDual5G: {
+          ...radioParamsDual5G,
+          radioParamsLower5G: {
+            ...(apGroupRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings || apGroupRadioParamsDual5G?.radioParamsLower5G === undefined
+              ? radioParamsDual5G?.radioParamsLower5G
+              : apGroupRadioParamsDual5G?.radioParamsLower5G
+            ),
+            ...(apGroupRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings || apGroupRadioParamsDual5G?.radioParamsUpper5G === undefined
+              ? radioParamsDual5G?.radioParamsUpper5G
+              : apGroupRadioParamsDual5G?.radioParamsUpper5G
+            )
+          }
+        }
+      } as ApGroupRadioCustomization
+    }
+
     const setRadioFormData = (data: ApGroupRadioCustomization) => {
       // set EditRadioContext enableAfc false if AFC is not enable
       // Otherwise the data could be true and it will case backend throw error
       const isAFCEnabled = supportChannelsData?.afcEnabled
       if (!isAFCEnabled) {
-        set(data, 'radioParams6G.e nableAfc', false)
+        set(data, 'radioParams6G.enableAfc', false)
       }
       const { radioParams6G } = data
       if (radioParams6G) {
@@ -573,14 +611,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           set(data, 'radioParams6G.enableMulticastRateLimiting', true)
         }
       }
-
-      // mock data
-      set(data, 'radioParams24G.useVenueSettings', true)
-      set(data, 'radioParams24G.enabled', true)
-      set(data, 'radioParams50G.useVenueSettings', true)
-      set(data, 'radioParams50G.enabled', true)
-      set(data, 'radioParams6G.useVenueSettings', true)
-      set(data, 'radioParams6G.enabled', true)
 
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
@@ -601,13 +631,15 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       })
     }
 
-    if (!isLoadingVenueData && venueSavedChannelsData && formRef?.current && supportRadioChannels) {
+    if (!isLoadingVenueData && venueSavedChannelsData && apGroupRadioData && formRef?.current && supportRadioChannels) {
       const correctedData = correctApiRadioChannelData(venueSavedChannelsData)
-      setRadioFormData(correctedData)
+      const correctedApGroupData = correctApiRadioChannelData(apGroupRadioData)
+      const mergedData = mergeRadioData(correctedData, correctedApGroupData)
+      setRadioFormData(mergedData)
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [isLoadingVenueData, venueSavedChannelsData, formRef?.current, supportRadioChannels])
+  }, [isLoadingVenueData, venueSavedChannelsData, apGroupRadioData, formRef?.current, supportRadioChannels])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData || !venueSavedChannelsData) {
@@ -959,11 +991,13 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         }).unwrap()
       }
 
-      await updateVenueRadioCustomization({
-        params: { tenantId, venueId },
-        payload: data,
-        enableRbac: resolvedRbacEnabled,
-        enableSeparation: is6gChannelSeparation
+      await updateApGroupRadioCustomization({
+        params: { venueId, apGroupId },
+        payload: {
+          // TODO: When the API is ready, include additional fields in the payload as required.
+          apGroupRadioParams24G: data.radioParams24G
+        },
+        enableRbac: resolvedRbacEnabled
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -1122,8 +1156,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData)),
-      isFetching: isUpdatingVenueRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
+      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupData)),
+      isFetching: isUpdatingApGroupRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy
         formRef={formRef}

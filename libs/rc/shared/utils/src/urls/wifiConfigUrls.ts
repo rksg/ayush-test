@@ -49,6 +49,26 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}/apRadioSettings',
     newApi: true
   },
+  getApGroupRadioCustomization: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/radioSettings',
+    opsApi: 'GET:/venues/{id}/apGroups/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateApGroupRadioCustomization: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/radioSettings',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getApRadioCustomization: {
     method: 'get',
     //url: '/venues/aps/:serialNumber/radioSettings',
