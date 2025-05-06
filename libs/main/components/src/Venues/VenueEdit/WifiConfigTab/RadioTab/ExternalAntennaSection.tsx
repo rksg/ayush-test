@@ -5,7 +5,7 @@ import { Col, Form, Row, Select } from 'antd'
 import { get, uniqBy }            from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { AnchorContext, Loader }                   from '@acx-ui/components'
+import { AnchorContext, Loader, showActionModal }  from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ApAntennaTypeSelector, ApExtAntennaForm } from '@acx-ui/rc/components'
 import {
@@ -84,23 +84,45 @@ export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
   const [updateVenueAntennaType, { isLoading: isUpdateAntennaType }] = useUpdateVenueAntennaTypeMutation()
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
-    try {
-      await updateVenueExternalAntenna({
-        params,
-        payload: [ ...data ],
-        enableRbac: resolvedRbacEnabled
-      })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'External Antenna Settings Change' }),
+      content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          await updateVenueExternalAntenna({
+            params,
+            payload: [ ...data ],
+            enableRbac: resolvedRbacEnabled
+          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+      }
+    })
   }
 
   const handleUpdateAntennaType = async (data: VenueApAntennaTypeSettings[]) => {
-    try {
-      await updateVenueAntennaType({ params, payload: [ ...data ], enableRbac: isUseRbacApi })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'Antenna Type Change' }),
+      content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Modifying the Antenna type will cause a reboot will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?' }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          await updateVenueAntennaType({ params, payload: [ ...data ], enableRbac: isUseRbacApi })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+      }
+    })
   }
 
   const filterModelCapabilities = (model: string) => {
