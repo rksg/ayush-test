@@ -30,7 +30,6 @@ import Canvas, { CanvasRef, Group }          from './Canvas'
 import { DraggableChart }                    from './components/WidgetChart'
 import HistoryDrawer                         from './HistoryDrawer'
 import {
-  getStreamingStep,
   getStreamingWordingKey,
   StreamingMessages
   // MAX_POLLING_TIMES
@@ -84,9 +83,8 @@ const Message = (props:{
     }
   }, [chat.text])
 
-  // eslint-disable-next-line max-len
-  const streamingStep = chat.role === MessageRole.STREAMING ? getStreamingStep(chat.text) : undefined
-  const streamingMsgKey = getStreamingWordingKey(streamingStep)
+  const streamingMsgKey = chat.role === MessageRole.STREAMING
+    ? getStreamingWordingKey(chat.text) : undefined
 
   return chat.role === MessageRole.SYSTEM
     ? <Divider plain>{deletedHint}</Divider>
@@ -98,9 +96,6 @@ const Message = (props:{
           : <div className='chat-bubble loading' ref={chatBubbleRef} style={{ width: '90%' }}>
             <div className='loader'></div>
             { streamingMsgKey && $t(StreamingMessages[streamingMsgKey]) }
-            { !!streamingStep &&
-              <div className='progress-bar' style={{ width: `${streamingStep * 20}%` }}></div>
-            }
           </div>
         }
       </div>
@@ -212,6 +207,7 @@ export default function AICanvasModal (props: {
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
   const [skipScrollTo, setSkipScrollTo] = useState(false)
+  // const [enablePollStreaming, setEnablePollStreaming] = useState(true)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -286,14 +282,15 @@ export default function AICanvasModal (props: {
     }
   }
 
-  const getSessionChats = async (pageNum: number)=>{
+  const getSessionChats = async (pageNum: number, sessionChatId?: string)=>{
     if(pageNum ===1) {
       setIsChatsLoading(true)
     } else {
       setMoreLoading(true)
     }
+    const id: string = sessionChatId || sessionId
     const response = await getChats({
-      params: { sessionId },
+      params: { sessionId: id },
       payload: {
         page: pageNum,
         pageSize: 100,
@@ -320,11 +317,22 @@ export default function AICanvasModal (props: {
     }
   }
 
+  // const handleStopGenerating = () => {
+  //   setEnablePollStreaming(false)
+  // }
+
   const handlePollStreaming = async (
-    chatResponse: RuckusAiChat, sessionId: string, streamMessageIds: string[], attempt = 0
+    sessionId: string, streamMessageIds: string[], attempt = 0 //enabledGenerating: boolean = true
   ) => {
     // if (attempt >= MAX_POLLING_TIMES) { //temp
     //   setAiBotLoading(false)
+    //   return
+    // }
+
+    // TODO: enhancement
+    // if (!enabledGenerating) {
+    //   setAiBotLoading(false)
+    //   setEnablePollStreaming(true)
     //   return
     // }
 
@@ -332,7 +340,7 @@ export default function AICanvasModal (props: {
       const streamingResponse = await getChats({
         params: { sessionId },
         payload: {
-          page: 1, //
+          page: 1,
           pageSize: 100,
           sortOrder: 'DESC'
         }
@@ -343,9 +351,9 @@ export default function AICanvasModal (props: {
       const successedStreamIds = difference(streamMessageIds, streamingMessageIds)
 
       if (!!streamingMessageIds.length) {
-        // await new Promise(res => setTimeout(res, 300))
+        await new Promise(res => setTimeout(res, 300))
         setChats([...streamingResponse.data].reverse())
-        await handlePollStreaming(chatResponse, sessionId, streamMessageIds, attempt + 1)
+        await handlePollStreaming(sessionId, streamMessageIds, attempt + 1)
       } else {
         if(streamingResponse) {
           const tempChats = streamingResponse.data.map(msg => {
@@ -360,9 +368,6 @@ export default function AICanvasModal (props: {
           })
           setChats(tempChats.reverse())
           setTimeout(()=>{
-            if(chatResponse.sessionId && !sessionId) {
-              setSessionId(chatResponse.sessionId)
-            }
             setChats([...streamingResponse.data].reverse())
             setTotalPages(streamingResponse.totalPages)
             setPage(1)
@@ -373,7 +378,7 @@ export default function AICanvasModal (props: {
     } catch (error) {
       console.error(error) // eslint-disable-line no-console
       setAiBotLoading(false)
-      getSessionChats(1)
+      getSessionChats(1, sessionId)
     }
   }
 
@@ -422,9 +427,11 @@ export default function AICanvasModal (props: {
           if(response.sessionId && !sessionId) {
             setSessionId(response.sessionId)
           }
-          const startStreamIds = response?.messages
+          const startStreamingIds = response?.messages
             .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
-          await handlePollStreaming(response, response.sessionId, startStreamIds)
+
+          // setEnablePollStreaming(true)
+          await handlePollStreaming(response.sessionId, startStreamingIds)
         }
       }
     })
@@ -661,6 +668,14 @@ export default function AICanvasModal (props: {
                         }
                       </div>
                     }
+                    {/* TODO: enhancement */}
+                    {/* { aiBotLoading && <div className='button-wrapper'>
+                      <div className='buttons'>
+                        <Button className='btn-stop' type='primary' onClick={handleStopGenerating}>
+                          { $t({ defaultMessage: 'Stop generating' }) }
+                        </Button>
+                      </div>
+                    </div>} */}
                   </div>
                   <div className='input'>
                     <Form form={form} >

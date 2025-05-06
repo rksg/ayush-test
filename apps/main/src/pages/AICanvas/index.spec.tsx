@@ -13,7 +13,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { getStreamingStep, getStreamingWordingKey } from './index.utils'
+import { getStreamingWordingKey } from './index.utils'
 
 import AICanvas from '.'
 
@@ -389,29 +389,20 @@ describe('AICanvas', () => {
 })
 
 describe('Test utils', () => {
-  it('Test getStreamingStep', async () => {
-    expect(getStreamingStep('0')).toBe(1)
-    expect(getStreamingStep('1')).toBe(1)
-    expect(getStreamingStep('2')).toBe(2)
-    expect(getStreamingStep('3')).toBe(3)
-    expect(getStreamingStep('1.1')).toBe(3.25)
-    expect(getStreamingStep('2.1')).toBe(3.25)
-    expect(getStreamingStep('3.1')).toBe(3.25)
-    expect(getStreamingStep('1.2')).toBe(3.5)
-    expect(getStreamingStep('2.2')).toBe(3.5)
-    expect(getStreamingStep('3.3')).toBe(3.5)
-    expect(getStreamingStep('3.2')).toBe(3.5)
-    expect(getStreamingStep('3.2')).toBe(3.5)
-    expect(getStreamingStep('4')).toBe(4)
-    expect(getStreamingStep('4.5')).toBe(4.5)
-  })
   it('Test getStreamingWordingKey', async () => {
-    expect(getStreamingWordingKey(1)).toBe('INITIALIZING_INTENT')
-    expect(getStreamingWordingKey(2)).toBe('SELECTING_DATA_SOURCES')
-    expect(getStreamingWordingKey(3)).toBe('PROCESSING_DATA_INITIAL')
-    expect(getStreamingWordingKey(3.25)).toBe('PROCESSING_DATA_RETRY_1')
-    expect(getStreamingWordingKey(3.5)).toBe('PROCESSING_DATA_RETRY_2')
-    expect(getStreamingWordingKey(4)).toBe('FINALIZING_RESULT')
-    expect(getStreamingWordingKey(4.5)).toBe('FINALIZING_RESULT')
+    expect(getStreamingWordingKey('0')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('1')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('2')).toBe('SELECTING_DATA_SOURCES')
+    expect(getStreamingWordingKey('3')).toBe('PROCESSING_DATA_INITIAL')
+    expect(getStreamingWordingKey('1.1')).toBe('PROCESSING_DATA_RETRY_1_1')
+    expect(getStreamingWordingKey('2.1')).toBe('PROCESSING_DATA_RETRY_2_1')
+    expect(getStreamingWordingKey('3.1')).toBe('PROCESSING_DATA_RETRY_3_1')
+    expect(getStreamingWordingKey('1.2')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.2')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('3.2')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('1.3')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.3')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('4')).toBe('FINALIZING_RESULT')
+    expect(getStreamingWordingKey('4.5')).toBe('FINALIZING_RESULT')
   })
 })
