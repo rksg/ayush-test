@@ -1,14 +1,13 @@
 import { Provider, intentAIApi, intentAIUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor }     from '@acx-ui/test-utils'
 
-import { mocked, mockKpiData, mockKpiResultDataWithUnknownField } from '../__tests__/mockedEcoFlex'
-
-import { useIntentAIEcoFlexQuery } from './services'
+import { mocked, mockKpiData, mockKpiResultDataWithUnknownField } from './__tests__/mockedEcoFlex'
+import { useIntentAIEcoFlexQuery }                                from './services'
 
 const mockedIntentParams = jest.fn()
 
-jest.mock('../../useIntentDetailsQuery', () => ({
-  ...jest.requireActual('../../useIntentDetailsQuery'),
+jest.mock('../useIntentDetailsQuery', () => ({
+  ...jest.requireActual('../useIntentDetailsQuery'),
   useIntentParams: () => mockedIntentParams
 }))
 
@@ -34,10 +33,10 @@ describe('useIntentAIEcoFlexQuery', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data?.compareData.timestamp)
       .toEqual(mockKpiData.kpi.compareData.timestamp)
-    expect(result.current.data?.compareData.data[0].value)
+    expect(result.current.data?.compareData.data.unsupported)
       .toEqual(mockKpiData.kpi.compareData.result.unsupported)
     expect(result.current.data?.data.timestamp).toEqual(mockKpiData.kpi.data.timestamp)
-    expect(result.current.data?.data.data[0].value)
+    expect(result.current.data?.data.data.unsupported)
       .toEqual(mockKpiData.kpi.data.result.unsupported)
   })
 
@@ -73,9 +72,9 @@ describe('useIntentAIEcoFlexQuery', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     // kpi result has unknown fields
-    expect(result.current.data?.data.data[0].value).toEqual(0)
+    expect(result.current.data?.data.data).toHaveProperty('xxx')
     // kpi result has null compareData
-    expect(result.current.data?.compareData.data).toEqual([])
+    expect(result.current.data?.compareData.data.apTotalCount).toEqual(0)
   })
 
 })

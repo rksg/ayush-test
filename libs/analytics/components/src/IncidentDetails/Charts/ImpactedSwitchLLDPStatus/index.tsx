@@ -15,6 +15,7 @@ import {
   ImpactedSwitchPortRow
 } from '../ImpactedSwitchesTable/services'
 
+import { formatPortRanges } from './utils'
 
 import type { ChartProps } from '../types'
 
@@ -26,9 +27,9 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
-    render: (_, { mac, name },__,highlightFn) =>
+    render: (_, { mac, name, serial },__,highlightFn) =>
       <TenantLink
-        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
           ? 'reports': 'overview'}`
         }>
         {highlightFn(name)}
@@ -69,25 +70,33 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     fixed: 'left',
     width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
-    searchable: true
+    searchable: true,
+    render: (_, record: ImpactedSwitchPortRow, __, highlightFn) => {
+      if (typeof record.portNumbers !== 'string') return ''
+      const formattedPorts = formatPortRanges(record.portNumbers.split(', '))
+      return ( <span> {highlightFn(formattedPorts)} </span> ) }
   }, {
     key: 'action',
     dataIndex: 'action',
     title: $t({ defaultMessage: 'Action' }),
     width: 50,
-    render: (_, { portNumbers, portCount }) => {
+    render: (_, record: ImpactedSwitchPortRow ) => {
       return (
         <Tooltip
           title={$t({ defaultMessage: 'Copy Port number{plural} to clipboard.' }
-            ,{ plural: portCount > 1 ? 's' : '' })}
+            ,{ plural: record.portCount > 1 ? 's' : '' })}
           placement='top'>
           <CopyOutlined
             onClick={() => {
-              navigator.clipboard.writeText(portNumbers)
+              navigator.clipboard.writeText(
+                typeof record.portNumbers === 'string'
+                  ? formatPortRanges(record.portNumbers.split(', '))
+                  : ''
+              )
               showToast({
                 type: 'success',
                 content: $t({ defaultMessage: 'Port number{plural} copied to clipboard.' },
-                  { plural: portCount > 1 ? 's' : '' }
+                  { plural: record.portCount > 1 ? 's' : '' }
                 )
               })
             }}

@@ -48,7 +48,7 @@ export function Priority () {
   ]
 
   const label = $t({
-    defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}'
+    defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?'
   },
   { zone: sliceValue }
   )
