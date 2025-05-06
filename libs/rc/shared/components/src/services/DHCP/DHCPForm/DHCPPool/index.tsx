@@ -253,6 +253,7 @@ export default function DHCPPoolTable ({
                 // eslint-disable-next-line max-len
                 'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' })}
               placement='right'
+              overlayStyle={{ maxWidth: '400px' }}
               iconStyle={{
                 width: 16,
                 height: 16
