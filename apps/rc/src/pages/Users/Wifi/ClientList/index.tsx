@@ -59,7 +59,7 @@ const useTabs = () : WirelessTab[] => {
   const clientTableQuery = usePollingTableQuery<ClientInfo|ClientList, RequestPayload<unknown>, unknown>({
     useQuery: isWifiRbacEnabled? useGetClientsQuery : useGetClientListQuery,
     defaultPayload: { ...payload },
-    pagination: isWifiRbacEnabled ? { pageSize: 0 } : { pageSize: TABLE_DEFAULT_PAGE_SIZE }
+    pagination: isWifiRbacEnabled ? { pageSize: 0 } : {}
   })
 
   const guestTableQuery = usePollingTableQuery({
