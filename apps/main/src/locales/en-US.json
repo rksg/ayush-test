@@ -23122,7 +23122,7 @@
     "defaultMessage": "AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone."
   },
   "zl5lNI": {
-    "defaultMessage": "Use IP addresses in the same subnet for Cluster interface on all the edges in this Cluster."
+    "defaultMessage": "The ip setting is not in the same subnet as other nodes."
   },
   "zm37dx": {
     "defaultMessage": "Special character is invalid",

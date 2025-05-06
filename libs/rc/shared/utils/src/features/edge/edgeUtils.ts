@@ -311,7 +311,7 @@ export const validateSubnetIsConsistent = (
       const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
       if(first.first !== second.first || first.last !== second.last) {
         // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'Use IP addresses in the same subnet for Cluster interface on all the edges in this Cluster.' }))
+        return Promise.reject($t({ defaultMessage: 'Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.' }))
       }
     }
   }
