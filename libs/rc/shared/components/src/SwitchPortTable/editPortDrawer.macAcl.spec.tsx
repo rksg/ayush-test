@@ -219,7 +219,7 @@ describe('EditPortDrawer', () => {
     describe('FF enabled', () => {
       const switchList = [{
         id: 'c0:c5:20:aa:32:79',
-        firmware: 'TNR10020b_b205'
+        firmware: 'TNR10020b_cd1'
       }] as SwitchRow[]
 
       beforeEach(() => {
@@ -231,7 +231,7 @@ describe('EditPortDrawer', () => {
           rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
             (_, res, ctx) => res(ctx.json({
               ...switchDetailHeader,
-              firmware: 'TNR10020b_b205',
+              firmware: 'TNR10020b_cd1',
               isMacAclSupported: true
             }))
           )
