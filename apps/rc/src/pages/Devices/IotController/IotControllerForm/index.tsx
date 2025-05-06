@@ -21,12 +21,10 @@ import {
 import {
   useAddIotControllerMutation,
   useGetIotControllerQuery,
-  useLazyGetIotControllerListQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
 import {
-  checkObjectNotExists,
   redirectPreviousPage,
   whitespaceOnlyRegExp,
   IotControllerSetting,
@@ -40,7 +38,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
-import { validationMessages }    from '@acx-ui/utils'
 
 import { FieldTitle } from './styledComponents'
 
@@ -69,10 +66,8 @@ export function IotControllerForm () {
 
   const { tenantId, iotId, venueId, action } = useParams()
   // eslint-disable-next-line max-len
-  // const data: IotControllerSetting = { name: '', id: '', publicAddress: '', publicPort: 0, apiKey: '', inboundAddress: '', iotSerialNumber: '' }
-  const { data } = useGetIotControllerQuery({ params: { tenantId, iotId, venueId } },
+  const { data, isLoading: isIotControllerLoading } = useGetIotControllerQuery({ params: { tenantId, iotId, venueId } },
     { skip: !iotId })
-  // const basePath = useTenantLink(`/devices/${iotId}/details`)
 
   const onClickTestConnection = async () => {
     try {
@@ -98,24 +93,6 @@ export function IotControllerForm () {
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
-  }
-
-  const iotControllerListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
-  }
-  const [iotControllerList] = useLazyGetIotControllerListQuery()
-  const nameValidator = async (value: string) => {
-    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
-      return Promise.reject($t(validationMessages.name))
-    }
-    const payload = { ...iotControllerListPayload, searchString: value }
-    const list = (await iotControllerList({ params: { iotId, tenantId }, payload }, true)
-      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Iot Controller' }))
   }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
@@ -174,7 +151,7 @@ export function IotControllerForm () {
       >
         <StepsForm.StepForm>
           <Loader states={[{
-            isLoading: false
+            isLoading: isIotControllerLoading
           }]}>
             <Row gutter={20}>
               <Col span={8}>
@@ -187,9 +164,6 @@ export function IotControllerForm () {
                     { min: 2, transform: (value) => value.trim() },
                     { max: 32, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
-                    {
-                      validator: (_, value) => nameValidator(value)
-                    },
                     { validator: (_, value) => trailingNorLeadingSpaces(value) }
                   ]}
                   validateFirst
@@ -261,8 +235,6 @@ export function IotControllerForm () {
                     rules={[
                       { required: true,
                         message: $t({ defaultMessage: 'Please enter API Key' }) },
-                      { max: 80, min: 80,
-                        message: $t({ defaultMessage: 'API key must be 80 characters long.' }) },
                       { validator: (_, value) => excludeSpaceRegExp(value) }
                     ]}
                     children={<PasswordInput />}

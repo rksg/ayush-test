@@ -11,6 +11,7 @@ import {
   render,
   screen,
   fireEvent,
+  waitForElementToBeRemoved,
   within,
   waitFor
 } from '@acx-ui/test-utils'
@@ -24,14 +25,16 @@ const successResponse = {
 const iotController = {
   requestId: 'request-id',
   response: {
-    id: 'bbc41563473348d29a36b76e95c50381',
-    name: 'ruckusdemos',
-    inboundAddress: '192.168.1.1',
-    publicAddress: 'ruckusdemos.cloud',
-    publicPort: 443,
-    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    iotSerialNumber: 'rewqfdsafasd'
-  } as IotControllerSetting
+    data: {
+      id: 'bbc41563473348d29a36b76e95c50381',
+      name: 'ruckusdemos',
+      inboundAddress: '192.168.1.1',
+      publicAddress: 'ruckusdemos.cloud',
+      publicPort: 443,
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      iotSerialNumber: 'rewqfdsafasd'
+    } as IotControllerSetting
+  }
 }
 
 const iotControllerList = {
@@ -81,7 +84,7 @@ describe('Iot Controller Form', () => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }),
-      rest.post(IotUrlsInfo.updateIotController.url,
+      rest.patch(IotUrlsInfo.updateIotController.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
@@ -106,7 +109,7 @@ describe('Iot Controller Form', () => {
     expect(await screen.findByText(/add iot controller/i)).toBeVisible()
 
     const iotControllerInput = await screen.findByLabelText('IoT Controller Name')
-    fireEvent.change(iotControllerInput, { target: { value: 'ruckusdemos1' } })
+    fireEvent.change(iotControllerInput, { target: { value: 'ruckusdemos11' } })
     fireEvent.blur(iotControllerInput)
 
     const URLInput = screen.getByLabelText('FQDN / IP (AP Inbound IP address)')
@@ -127,6 +130,8 @@ describe('Iot Controller Form', () => {
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
 
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
+
   })
 
   it('should edit iot controller successfully', async () => {
@@ -145,7 +150,7 @@ describe('Iot Controller Form', () => {
       tenantId: 'tenant-id',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       action: 'edit',
-      iotId: iotController.response.id
+      iotId: '123'
     }
 
     render(
@@ -160,10 +165,20 @@ describe('Iot Controller Form', () => {
     const nameInput = await screen.findByLabelText('IoT Controller Name')
     fireEvent.change(nameInput, { target: { value: 'New Iot constroller' } })
     fireEvent.blur(nameInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    const URLInput = screen.getByLabelText('FQDN / IP (AP Inbound IP address)')
+    await fireEvent.change(URLInput, { target: { value: 'newtest.com' } })
+
+    const serialInput = screen.getByLabelText('IoT Controller Serial Number')
+    // eslint-disable-next-line max-len
+    await fireEvent.change(serialInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
 
     const saveButton = screen.getByText('Save')
     await userEvent.click(saveButton)
 
+    await waitFor(() => expect(mockedReqFn).toBeCalled())
   })
 
   it('should back to iot controller list', async () => {

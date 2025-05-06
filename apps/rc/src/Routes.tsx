@@ -89,7 +89,7 @@ import EdgeDetails                                  from './pages/Devices/Edge/E
 import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
-import IotController                                from './pages/Devices/IotController'
+import { IotController }                            from './pages/Devices/IotController'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'

@@ -50,7 +50,7 @@ function useColumns (
   return columns
 }
 
-export default function IotController () {
+export function IotController () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const iotControllerActions = useIotControllerActions()
