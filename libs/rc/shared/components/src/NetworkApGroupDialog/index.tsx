@@ -40,8 +40,7 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   VLANPoolViewModelType,
-  validateRadioBandForDsaeNetwork,
-  WlanSecurityEnum
+  validateRadioBandForDsaeNetwork
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
