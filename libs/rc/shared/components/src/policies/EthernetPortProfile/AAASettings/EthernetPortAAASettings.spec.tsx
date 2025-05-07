@@ -168,7 +168,7 @@ describe('EthernetPortProfile with Client Visibility', () => {
       )
     )
   })
-  
+
   it('Render component successfully if 802.1X authentication is OFF', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE ||
