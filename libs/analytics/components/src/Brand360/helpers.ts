@@ -2,10 +2,10 @@ import { groupBy }       from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter }     from '@acx-ui/formatter'
-import { MspEc }         from '@acx-ui/msp/utils'
-import { TableResult }   from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
+import { formatter }              from '@acx-ui/formatter'
+import { MspEc }                  from '@acx-ui/msp/utils'
+import { TableResult }            from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
 export type ChartKey = 'incident' | 'experience' | 'compliance' | 'mdu'
@@ -65,7 +65,8 @@ const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) =
     return null
   }
 }
-export const transformToLspView = (properties: Response[]): Lsp[] => {
+export const transformToLspView = (properties: Response[], lspLabel: string): Lsp[] => {
+  const { $t } = getIntl()
   const lsps = properties.reduce((lspMap, p) => {
     p.lsps.forEach(lsp => {
       if (lspMap[lsp]) {
@@ -131,7 +132,7 @@ export const transformToLspView = (properties: Response[]): Lsp[] => {
     )
     return {
       id: `${lsp}-${ind}`,
-      lsp,
+      lsp: lsp === '-' ? $t({ defaultMessage: 'No {lspLabel}' }, { lspLabel }) : lsp,
       propertyCount: properties.length,
       avgConnSuccess,
       avgTTC,
@@ -249,10 +250,12 @@ export const transformVenuesData = (
   return Object.keys(lookupAndMappingData).reduce((newObj, tenantId, ind) => {
     const mappingData = lookupAndMappingData[tenantId]
     const tenantData = groupByTenantID[tenantId]
-    mappingData?.integrators?.length && newObj.push({
+    mappingData.type === 'MSP_REC' && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
-      lsps: mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name),
+      lsps: mappingData?.integrators?.length
+        ? mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
+        : ['-'],
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
       ssidCompliance: isMDU

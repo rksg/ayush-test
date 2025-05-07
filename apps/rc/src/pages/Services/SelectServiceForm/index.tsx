@@ -9,7 +9,7 @@ import {
   StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached }               from '@acx-ui/rc/components'
 import {
   ServiceOperation,
   ServiceType,
@@ -41,6 +41,7 @@ export default function SelectServiceForm () {
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -109,7 +110,11 @@ export default function SelectServiceForm () {
           categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeTnmServiceReady
         },
-        { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
+        {
+          type: ServiceType.WIFI_CALLING,
+          categories: [RadioCardCategory.WIFI],
+          disabled: isWifiCallingLimitReached
+        }
       ]
     },
     {

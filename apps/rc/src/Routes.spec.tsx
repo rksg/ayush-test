@@ -188,6 +188,10 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   default: jest.fn().mockReturnValue(undefined)
 }))
 
+jest.mock('./pages/Devices/IotController', () => ({
+  IotController: () => <div data-testid='IotController' />
+}))
+
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })

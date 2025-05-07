@@ -1232,6 +1232,7 @@ export enum PowerSavingStatusEnum {
 
 export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
+export const DHCP_RESERVED_IPS = 10
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
 export const CLIENT_ISOLATION_LIMIT_NUMBER = 64

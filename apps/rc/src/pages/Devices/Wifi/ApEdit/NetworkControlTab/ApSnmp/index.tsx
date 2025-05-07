@@ -72,6 +72,7 @@ export function ApSnmp (props: ApEditItemProps) {
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const profileIdRef = useRef<string>('')
+  const isClickUseVenueSettings = useRef<boolean>(false)
 
   const [apSnmpSettings, setApSnmpSettings] = useState(defaultApSnmpSettings)
   const [venueApSnmpSettings, setVenueApSnmpSettings] = useState(defaultVenueApSnmpSettings)
@@ -107,7 +108,11 @@ export function ApSnmp (props: ApEditItemProps) {
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
 
-        setIsApSnmpEnable(apSnmp.enableApSnmp)
+        if (apSnmp.useVenueSettings) {
+          setIsApSnmpEnable(venueApSnmpSetting.enableApSnmp)
+        } else {
+          setIsApSnmpEnable(apSnmp.enableApSnmp)
+        }
         setIsUseVenueSettings(apSnmp.useVenueSettings)
         isUseVenueSettingsRef.current = apSnmp.useVenueSettings
         setFormInitializing(false)
@@ -183,21 +188,44 @@ export function ApSnmp (props: ApEditItemProps) {
         hasError: false
       })
 
-      if (useVenueSettings === true) {
-        // eslint-disable-next-line max-len
-        await resetApSnmpSettings({ params: {
-          serialNumber,
-          venueId
-        },
-        enableRbac: isUseRbacApi }).unwrap()
+      if (useVenueSettings) {
+        if(apSnmpSettings.enableApSnmp) {
+          await updateApSnmpSettings({
+            params: {
+              serialNumber,
+              venueId,
+              profileId: apSnmpSettings.apSnmpAgentProfileId
+            },
+            enableRbac: isUseRbacApi,
+            payload: {
+              enableApSnmp: false
+            }
+          }).unwrap()
+        }
+        await resetApSnmpSettings({
+          params: { serialNumber, venueId },
+          payload: { useVenueSettings: true },
+          enableRbac: isUseRbacApi
+        }).unwrap()
       } else {
-        await updateApSnmpSettings({ params: {
-          serialNumber,
-          venueId,
-          profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
-        },
-        enableRbac: isUseRbacApi,
-        payload }).unwrap()
+        if(apSnmpSettings.useVenueSettings && isClickUseVenueSettings.current) {
+          await resetApSnmpSettings({
+            params: { serialNumber, venueId },
+            payload: { useVenueSettings: false },
+            enableRbac: isUseRbacApi
+          }).unwrap()
+        }
+        if(!(!payload.enableApSnmp && isClickUseVenueSettings.current)) {
+          await updateApSnmpSettings({
+            params: {
+              serialNumber,
+              venueId,
+              profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
+            },
+            enableRbac: isUseRbacApi,
+            payload
+          }).unwrap()
+        }
       }
 
     } catch (error) {
@@ -206,6 +234,7 @@ export function ApSnmp (props: ApEditItemProps) {
         content: $t({ defaultMessage: 'An error occurred' })
       })
     }
+    isClickUseVenueSettings.current = false
   }
 
   const memorizeProfileIdWhenApSnmpOff = (state: boolean) => {
@@ -218,6 +247,7 @@ export function ApSnmp (props: ApEditItemProps) {
     let isUseVenue = !isUseVenueSettings
     setIsUseVenueSettings(isUseVenue)
     isUseVenueSettingsRef.current = isUseVenue
+    isClickUseVenueSettings.current = true
 
     const settings = (isUseVenue)? venueApSnmpSettings : apSnmpSettings
 

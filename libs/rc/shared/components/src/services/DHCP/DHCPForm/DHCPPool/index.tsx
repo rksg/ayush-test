@@ -5,7 +5,11 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }      from '@acx-ui/components'
+import {
+  Drawer,
+  Tooltip
+} from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   DHCPPool,
   LeaseUnit,
@@ -16,6 +20,7 @@ import {
   countIpSize,
   IpInSubnetPool,
   IpUtilsService,
+  DHCP_RESERVED_IPS,
   DHCPConfigTypeEnum
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -105,6 +110,7 @@ export default function DHCPPoolTable ({
   isDefaultService
 }: DHCPPoolTableProps) {
   const { $t } = useIntl()
+  const showWarning = useIsSplitOn(Features.ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING)
   const [form] = Form.useForm<DHCPPool>()
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
@@ -240,7 +246,20 @@ export default function DHCPPoolTable ({
         />
         <Form.Item
           name='endIpAddress'
-          label={$t({ defaultMessage: 'End Host Address' })}
+          label={<>{$t({ defaultMessage: 'End Host Address' })}
+            {showWarning && dhcpMode === DHCPConfigTypeEnum.MULTIPLE &&
+            <Tooltip.Question
+              title={$t({ defaultMessage:
+                // eslint-disable-next-line max-len
+                'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' })}
+              placement='right'
+              overlayStyle={{ maxWidth: '400px' }}
+              iconStyle={{
+                width: 16,
+                height: 16
+              }}
+            />}
+          </>}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
@@ -252,9 +271,14 @@ export default function DHCPPoolTable ({
             } },
             { validator: (_, value) => {
               if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
-                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
-                  // eslint-disable-next-line max-len
-                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= DHCP_RESERVED_IPS){
+                  if (showWarning) {
+                    // eslint-disable-next-line max-len
+                    return Promise.reject($t({ defaultMessage: 'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' }))
+                  } else {
+                    // eslint-disable-next-line max-len
+                    return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                  }
                 }
               }
               else if(dhcpMode===DHCPConfigTypeEnum.HIERARCHICAL){
@@ -353,6 +377,7 @@ export default function DHCPPoolTable ({
     <>
       <PoolTable
         data={values()}
+        configureType={dhcpMode}
         onAdd={onAddOrEdit}
         onEdit={onAddOrEdit}
         onDelete={onDelete}

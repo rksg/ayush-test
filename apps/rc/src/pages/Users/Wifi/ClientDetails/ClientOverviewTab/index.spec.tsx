@@ -35,7 +35,8 @@ import {
   GuestClients,
   VenueList,
   dpskPassphraseClient,
-  nonRbacClientRadioType
+  nonRbacClientRadioType,
+  clientMeta
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -99,6 +100,9 @@ describe('ClientOverviewTab root', () => {
         }),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json(clientMeta))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -109,6 +113,9 @@ describe('ClientOverviewTab root', () => {
         (_, res, ctx) => res(ctx.json(histClientList))),
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(CommonUrlsInfo.getVenues.url,
         (_, res, ctx) => res(ctx.json(VenueList))
@@ -263,6 +270,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       ),
       rest.post(ClientUrlsInfo.getClientList.url,
         (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
