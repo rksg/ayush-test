@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/rc/switch/utils/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rc/switch/utils/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/rc/switch/utils"],
+      "options": {
+        "jestConfig": "libs/rc/switch/utils/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
