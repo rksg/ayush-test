@@ -111,6 +111,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/dashboards',
     newApi: true
   },
+  patchDashboard: {
+    method: 'PATCH',
+    url: '/ruckusAi/dashboards/:dashboardId',
+    newApi: true
+  },
   sendFeedback: {
     method: 'post',
     url: '/ruckusAi/chats/:sessionId/:messageId',

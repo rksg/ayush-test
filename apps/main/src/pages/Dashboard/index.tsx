@@ -53,6 +53,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useGetDashboardsQuery,
+  usePatchDashboardMutation,
   useUpdateDashboardsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -319,6 +320,7 @@ function DashboardPageHeader (props: {
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
+  const [patchDashboard] = usePatchDashboardMutation()
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -405,8 +407,18 @@ function DashboardPageHeader (props: {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  const handleDashboardChange = (value: string) => {
-    //TODO: patch API to clear notifications
+  const handleDashboardChange = async (value: string) => {
+    const [current] = dashboardList.filter(item => item.id === dashboardId)
+    const shouldClearNotifications = !!current.author
+      && current.diffWidgetIds && current.diffWidgetIds?.length > 0
+
+    if (shouldClearNotifications) {
+      await patchDashboard({
+        params: { dashboardId: current.id },
+        payload: {}
+      })
+    }
+
     setDashboardId(value)
   }
 
