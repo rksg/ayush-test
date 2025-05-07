@@ -302,12 +302,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       },
       {
-        type: ServiceType.EDGE_SD_LAN_P2,
-        sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES
-      },
-      {
         type: ServiceType.EDGE_TNM_SERVICE,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],

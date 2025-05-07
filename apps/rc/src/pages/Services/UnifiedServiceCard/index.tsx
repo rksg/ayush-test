@@ -10,12 +10,13 @@ import { useLocation, useNavigate, useTenantLink }                              
 export type UnifiedServiceCardProps = Pick<RadioCardProps, 'type'> & {
   unifiedService: ExtendedUnifiedService
   helpIcon?: ReactNode
+  isLimitReached?: boolean
 }
 
 export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { unifiedService, type: cardType, helpIcon } = props
+  const { unifiedService, type: cardType, helpIcon, isLimitReached = false } = props
   const linkToCreate = useTenantLink(getUnifiedServiceRoute(unifiedService, 'create'))
   const linkToList = useTenantLink(unifiedService.route)
   const navigate = useNavigate()
@@ -41,7 +42,7 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
       ? defineMessage({ defaultMessage: 'Add' })
       : undefined
     }
-    buttonProps={{ disabled: unifiedService.readonly ?? false }}
+    buttonProps={{ disabled: (unifiedService.readonly ?? false) || isLimitReached }}
     key={unifiedService.type}
     value={unifiedService.type}
     title={formatServiceName()}

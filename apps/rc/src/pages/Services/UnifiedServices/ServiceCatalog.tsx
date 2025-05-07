@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, PageHeader }                                                                                                 from '@acx-ui/components'
 import { Features }                                                                                                                     from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType }                                                       from '@acx-ui/rc/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached }                  from '@acx-ui/rc/components'
 import { IncompatibilityFeatures, PolicyType, ServiceType, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
@@ -32,8 +32,12 @@ export function ServiceCatalog () {
   } = useUnifiedServiceSearchFilter(rawUnifiedServiceList, defaultSortOrder)
 
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-  // eslint-disable-next-line max-len
-  const [ edgeCompatibilityFeature, setEdgeCompatibilityFeature ] = useState<IncompatibilityFeatures | undefined>()
+  const [
+    edgeCompatibilityFeature,
+    setEdgeCompatibilityFeature
+  ] = useState<IncompatibilityFeatures | undefined>()
+
+  const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
 
   const buildHelpIcon = (type: UnifiedServiceType): React.ReactNode | null => {
     const edgeIncompatibilityType = edgeServicesHelpIconMap[type]
@@ -68,6 +72,9 @@ export function ServiceCatalog () {
               unifiedService={service}
               type={'button'}
               helpIcon={buildHelpIcon(service.type)}
+              isLimitReached={
+                service.type === ServiceType.WIFI_CALLING && isWifiCallingLimitReached
+              }
             />
           </GridCol>
         ))}
