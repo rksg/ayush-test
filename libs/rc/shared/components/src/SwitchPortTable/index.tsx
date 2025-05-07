@@ -15,7 +15,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
-  isOperationalSwitch,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
@@ -28,6 +27,7 @@ import {
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
+import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'
 import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
 import { SwitchScopes }                                                from '@acx-ui/types'

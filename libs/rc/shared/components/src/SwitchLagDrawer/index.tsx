@@ -25,10 +25,9 @@ import {
   useSwitchDetailHeaderQuery
 }                            from '@acx-ui/rc/services'
 import {
-  isOperationalSwitch,
-  Lag,
   SwitchRbacUrlsInfo
 }      from '@acx-ui/rc/utils'
+import { Lag, isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'

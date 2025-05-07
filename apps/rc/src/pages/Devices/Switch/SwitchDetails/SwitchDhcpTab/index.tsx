@@ -11,10 +11,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   IP_ADDRESS_TYPE,
-  isOperationalSwitch,
   SwitchRbacUrlsInfo,
   VenueMessages
 } from '@acx-ui/rc/utils'
+import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                          from '@acx-ui/types'
 import { hasPermission }                         from '@acx-ui/user'

@@ -40,7 +40,6 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isOperationalSwitch,
   isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
@@ -55,6 +54,7 @@ import {
   createSwitchSerialPatternForSpecific8100Model,
   isSpecific8100Model
 } from '@acx-ui/rc/utils'
+import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import {
   useLocation,
   useNavigate,
