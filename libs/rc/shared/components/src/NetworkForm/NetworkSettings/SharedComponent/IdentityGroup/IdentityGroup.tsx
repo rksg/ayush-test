@@ -42,7 +42,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
   const [associationBlockVisible, setAssociationBlockVisible] = useState(false)
   const [detailDrawerVisible, setDetailDrawerVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
-  const [identityGroupDrawerVisible, setidentityGroupDrawerVisible] = useState(false)
+  const [identityGroupDrawerVisible, setIdentityGroupDrawerVisible] = useState(false)
   const [identityGroups, setIdentityGroups] = useState<PersonaGroup[]>([])
   const [selectedIdentityGroup, setSelectedIdentityGroup] = useState<PersonaGroup>()
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
@@ -50,7 +50,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
   const resetAllDrawer = () => {
     setDetailDrawerVisible(false)
     setIdentitySelectorDrawerVisible(false)
-    setidentityGroupDrawerVisible(false)
+    setIdentityGroupDrawerVisible(false)
   }
 
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
@@ -173,7 +173,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
             <Button type='link'
               onClick={() => {
                 resetAllDrawer()
-                setidentityGroupDrawerVisible(true)
+                setIdentityGroupDrawerVisible(true)
               }}>
               {$t({ defaultMessage: 'Add' })}
             </Button>
