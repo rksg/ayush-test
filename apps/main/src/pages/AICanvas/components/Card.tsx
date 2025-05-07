@@ -34,6 +34,7 @@ interface CardProps {
 
 export interface WidgetProperty {
   name: string
+  timeRange?: string
 }
 
 const DraggableCard = (props: CardProps) => {
@@ -166,7 +167,8 @@ function Card (props: CardProps) {
     let cardTmp = _.cloneDeep(card)
     cardTmp = {
       ...cardTmp,
-      name: widget.name
+      name: widget.name,
+      timeRange: widget.timeRange
     }
     groupsTmp[groupIndex].cards.some((item, index) => {
       if(item.id === cardTmp.id) {

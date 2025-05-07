@@ -13,7 +13,8 @@ const mockWidget = {
   chartOption: [],
   chartType: '',
   chatId: '',
-  sessionId: ''
+  sessionId: '',
+  defaultTimeRange: 'Last 7 days'
 }
 
 const mockProps = {
@@ -114,15 +115,20 @@ describe('CustomizeWidgetDrawer', () => {
       </Provider>
     )
     expect(screen.getByText('Time Range')).toBeInTheDocument()
+    expect(screen.getByText('Last 7 days')).toBeInTheDocument()
 
     fireEvent.click(screen.getByText('Change'))
 
     await userEvent.click(screen.getByText('Select...'))
 
+    expect(screen.getByText('Reset to default range')).not.toBeVisible()
     expect(screen.getByText('Last 8 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 24 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
     expect(screen.getByText('Last 30 Days')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByText('Last 30 Days'))
+    expect(screen.getByText('Reset to default range')).toBeVisible()
   })
 
   it('no render time range if the feature flag is off', async () => {

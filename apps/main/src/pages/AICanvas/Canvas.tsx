@@ -50,6 +50,7 @@ export interface CardInfo {
   widgetId?: string
   chatId?: string
   canvasId?: string
+  timeRange?: string
 }
 export interface Group {
   id: string
@@ -511,7 +512,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                   <div className='type'>
                     <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
                     <div>
-                      {$t({ defaultMessage: `Hide this canvas from the public. 
+                      {$t({ defaultMessage: `Hide this canvas from the public.
                           The canvas will be visible to the owner only.` })}
                     </div>
                   </div>

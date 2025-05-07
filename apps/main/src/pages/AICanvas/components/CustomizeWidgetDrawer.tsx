@@ -37,11 +37,12 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
     await updateWidget({
       params: { canvasId, widgetId: widget.id },
       payload: {
+        timeRange: formValues.timeRange,
         name: formValues.name
       }
     }).unwrap().then(()=> {
       changeWidgetProperty({
-        // TODO: time range
+        timeRange: formValues.timeRange,
         name: formValues.name
       })
     })
@@ -118,7 +119,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
               </Row>
               <Space style={{ display: 'flex', justifyContent: 'space-between' }}
                 hidden={enabledTimeRangeOption}>
-                <Space>{form.getFieldValue('defaultTimeRange')}</Space>
+                <Space>{widget.defaultTimeRange}</Space>
                 <Button type='link'
                   onClick={()=>{
                     setEnabledReset(false)
