@@ -66,7 +66,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
     reactFlowInstance.fitView({
       padding: isEditMode ? 0.1 : 0.3,
-      nodes: isEditMode ? initialNodes : initialNodes.slice(0, MIN_STEP_COUNT),
+      nodes: initialNodes,
       duration: isDesignMode ? 800 : undefined,
       maxZoom: isEditMode ? (initialNodes.length < MIN_STEP_COUNT + 2 ? 1.1 : undefined) : 1.1
     })
