@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Space, Typography }                               from 'antd'
+import { Form, Space, Typography }                         from 'antd'
 import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
@@ -21,8 +21,13 @@ const toggleItemFromSelected = (
 ) => {
   let newSelected: NetworkActivationType = cloneDeep(selectedNetworks)
   if (checked) {
+    let tunnelProfileIdDefaultValue = ''
+    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+      tunnelProfileIdDefaultValue = Object.values(selectedNetworks).flat()
+        .find(item => item.networkId === data.id)?.tunnelProfileId ?? ''
+    }
     newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
-      [{ networkId: data.id, networkName: data.name }], 'networkId')
+      [{ networkId: data.id, networkName: data.name, tunnelProfileId: tunnelProfileIdDefaultValue }], 'networkId')
   } else {
     newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
     remove(newSelected[venueId], item => item.networkId === data.id)
@@ -64,6 +69,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   } = props
 
   const [updateContent, setUpdateContent] = useState<NetworkActivationType>(activatedNetworks)
+  const [validationForm] = Form.useForm()
 
   const handleActivateChange = (
     data: Network,
@@ -126,13 +132,17 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    onSubmit(updateContent)
+    validationForm.validateFields().then(() => {
+      onSubmit(updateContent)
+    }).catch(() => {
+      // do nothing
+    })
   }
 
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select Networks' }, { venueName })}
-      width={1000}
+      width={1100}
       visible={visible}
       onClose={onClose}
       footer={
@@ -159,14 +169,16 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
             />
           </Typography.Paragraph>
         </div>
-
-        <ActivatedNetworksTable
-          venueId={venueId}
-          activated={updateContent}
-          onActivateChange={handleActivateChange}
-          onTunnelProfileChange={handelTunnelProfileChange}
-          pinNetworkIds={pinNetworkIds}
-        />
+        <Form form={validationForm}>
+          <ActivatedNetworksTable
+            venueId={venueId}
+            activated={updateContent}
+            onActivateChange={handleActivateChange}
+            onTunnelProfileChange={handelTunnelProfileChange}
+            pinNetworkIds={pinNetworkIds}
+            validationFormRef={validationForm}
+          />
+        </Form>
       </Space>
     </Drawer>
   )
