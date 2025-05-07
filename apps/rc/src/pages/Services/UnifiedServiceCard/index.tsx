@@ -6,7 +6,6 @@ import { RadioCard, RadioCardProps }                                            
 import { getUnifiedServiceRoute, ExtendedUnifiedService, hasUnifiedServiceCreatePermission } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
 
-import { RadioCardWrapper } from './styledComponents'
 
 export type UnifiedServiceCardProps = Pick<RadioCardProps, 'type'> & {
   unifiedService: ExtendedUnifiedService
@@ -36,31 +35,29 @@ export function UnifiedServiceCard (props: UnifiedServiceCardProps) {
     return $t({ defaultMessage: '{name} ({count})' }, { name, count: unifiedService.totalCount })
   }
 
-  return (<RadioCardWrapper $readonly={unifiedService.readonly}>
-    <RadioCard
-      type={cardType}
-      buttonText={isAddButtonAllowed()
-        ? defineMessage({ defaultMessage: 'Add' })
-        : undefined
-      }
-      key={unifiedService.type}
-      value={unifiedService.type}
-      title={formatServiceName()}
-      description={unifiedService.description ?? ''}
-      categories={unifiedService.products}
-      categoryDisplayMode='icon'
-      onClick={() => {
-        if (unifiedService.readonly) return
+  return <RadioCard
+    type={cardType}
+    buttonText={isAddButtonAllowed()
+      ? defineMessage({ defaultMessage: 'Add' })
+      : undefined
+    }
+    buttonProps={{ disabled: unifiedService.readonly ?? false }}
+    key={unifiedService.type}
+    value={unifiedService.type}
+    title={formatServiceName()}
+    description={unifiedService.description ?? ''}
+    categories={unifiedService.products}
+    categoryDisplayMode='icon'
+    onClick={() => {
+      if (unifiedService.readonly) return
 
-        if (isAddButtonAllowed()) {
-          navigate(linkToCreate, { state: { from: location } })
-        } else if (cardType === 'default') {
-          navigate(linkToList)
-        }
-      }}
-      helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
-      isBetaFeature={unifiedService.isBetaFeature}
-    />
-  </RadioCardWrapper>
-  )
+      if (isAddButtonAllowed()) {
+        navigate(linkToCreate, { state: { from: location } })
+      } else if (cardType === 'default') {
+        navigate(linkToList)
+      }
+    }}
+    helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
+    isBetaFeature={unifiedService.isBetaFeature}
+  />
 }

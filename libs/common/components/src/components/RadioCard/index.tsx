@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { RadioProps, Tooltip }                       from 'antd'
+import { ButtonProps, RadioProps, Tooltip }          from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { SmartEdgeSolid, SwitchSolid, WiFi } from '@acx-ui/icons'
@@ -27,6 +27,7 @@ export type RadioCardProps = RadioProps & {
   categories?: RadioCardCategory[]
   categoryDisplayMode?: 'text' | 'icon'
   buttonText?: MessageDescriptor,
+  buttonProps?: ButtonProps,
   onClick?: () => void
   isBetaFeature?: boolean
   helpIcon?: React.ReactNode
@@ -55,7 +56,7 @@ const categoryIconMapping = {
 
 export function RadioCard ({
   type = 'default', title, description, value, categories = [], categoryDisplayMode = 'text',
-  buttonText, onClick, isBetaFeature, helpIcon, ...rest
+  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, ...rest
 }: RadioCardProps) {
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
@@ -66,7 +67,12 @@ export function RadioCard ({
     <Description>{description}</Description>
     <CategoryViewer categories={categories} categoryDisplayMode={categoryDisplayMode} />
     {(type === 'button' && buttonText) &&
-      <Button onClick={onClick} size='small' type='primary'>{$t(buttonText)}</Button>}
+      <Button
+        {...buttonProps}
+        onClick={onClick}
+        size='small'
+        type='primary'
+      >{$t(buttonText)}</Button>}
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }
