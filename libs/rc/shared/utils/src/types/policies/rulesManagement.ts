@@ -43,7 +43,8 @@ export interface RuleAttribute {
   name: string,
   attributeTextMatch: string,
   attributeType: string,
-  description?: string
+  description?: string,
+  category?: string
 }
 
 export interface AccessCondition {

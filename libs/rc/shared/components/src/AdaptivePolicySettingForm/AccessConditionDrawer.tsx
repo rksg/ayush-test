@@ -5,6 +5,7 @@ import moment                                            from 'moment-timezone'
 import { useIntl }                                       from 'react-intl'
 
 import { Drawer, Loader }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useLazyGetPolicyTemplateAttributesListQuery } from '@acx-ui/rc/services'
 import {
   AccessCondition,
@@ -32,9 +33,13 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
+  const [subAttributes, setSubAttributes] = useState([] as RuleAttribute [])
+  const [showSubType, setShowSubType] = useState(false)
 
   const conditionId = Form.useWatch('conditionId', form)
   const attributeType = Form.useWatch('attributeType', form)
+
+  const isIdentityCommonAttributesEnabled = useIsSplitOn(Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
 
   const [attributeList, { isLoading } ] = useLazyGetPolicyTemplateAttributesListQuery()
 
@@ -45,7 +50,15 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           params: { templateId: templateId.toString() },
           payload: { page: '1', pageSize: '10000' }
         }, true).unwrap())
-        setAttributes(list.data)
+
+        if (isIdentityCommonAttributesEnabled) {
+          // eslint-disable-next-line max-len
+          const attrs = list.data.filter(p => p.category !== 'Identity' || p.attributeTextMatch === 'identity_name')
+          setAttributes(attrs)
+          setSubAttributes(list.data.filter(p => p.category === 'Identity'))
+        } else {
+          setAttributes(list.data)
+        }
       }
       setData()
     } else {
@@ -65,6 +78,27 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
 
   useEffect(() => {
     if (editCondition && visible) {
+      // eslint-disable-next-line max-len
+      if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category === 'identity') {
+        const editData = {
+          conditionId: editCondition.id,
+          templateAttributeId: attributes.find(p => p.category === 'identity')?.id,
+          subTemplateAttributeId: editCondition.templateAttributeId,
+          name: editCondition.name ?? editCondition.templateAttribute?.name,
+          ...toEvaluationRuleForm(editCondition.evaluationRule)
+        }
+        form.setFieldsValue(editData)
+        setShowSubType(true)
+      } else {
+        const editData = {
+          conditionId: editCondition.id,
+          templateAttributeId: editCondition.templateAttributeId,
+          name: editCondition.name ?? editCondition.templateAttribute?.name,
+          ...toEvaluationRuleForm(editCondition.evaluationRule)
+        }
+        form.setFieldsValue(editData)
+      }
+
       const editData = {
         conditionId: editCondition.id,
         templateAttributeId: editCondition.templateAttributeId,
@@ -84,7 +118,16 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
 
   const onSubmit = () => {
     const data = form.getFieldsValue()
-    const condition = {
+    const condition = showSubType ? {
+      id: data.conditionId,
+      name: data.subName,
+      templateAttributeId: data.subTemplateAttributeId,
+      evaluationRule: toEvaluationRuleData({ ...data, attributeType: data.subAttributeType }),
+      templateAttribute: {
+        attributeType: data.subAttributeType
+      }
+    } as AccessCondition :
+    {
       id: data.conditionId,
       name: data.name,
       templateAttributeId: data.templateAttributeId,
@@ -156,11 +199,14 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         <Form.Item name='conditionId' hidden children={<Input />}/>
         <Form.Item name='name' hidden children={<Input />}/>
         <Form.Item name='attributeType' hidden children={<Input />}/>
+        <Form.Item name='subAttributeType' hidden children={<Input />}/>
+        <Form.Item name='subName' hidden children={<Input />}/>
         <Form.Item name='templateAttributeId'
           label={$t({ defaultMessage: 'Condition Type' })}
           rules={[
             { required: true },
-            { validator: (_, value) => conditionsValidator(value) }
+            // eslint-disable-next-line max-len
+            { validator: (_, value) => showSubType ? Promise.resolve() : conditionsValidator(value) }
           ]}>
           <Select
             disabled={isEdit}
@@ -172,16 +218,49 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
             onChange={(value) => {
               const attr = attributes.find((attribute) => attribute.id === value)
               if(attr) {
+                if (attr.category !== 'Identity') {
+                  form.setFieldsValue({
+                    templateAttributeId: attr.id,
+                    name: attr.name,
+                    attributeType: attr.attributeType
+                  })
+                  setShowSubType(false)
+                } else {
+                  setShowSubType(true)
+                }
+              }
+            }}
+          >
+          </Select>
+        </Form.Item>
+        {showSubType && <Form.Item name='subTemplateAttributeId'
+          label={$t({ defaultMessage: 'Sub-type Attributes' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => conditionsValidator(value) }
+          ]}>
+          <Select
+            disabled={isEdit}
+            options={subAttributes
+              .map(p => {
+                const label = p.attributeType === 'DATE_RANGE' ? p.name :
+                  $t({ defaultMessage: '{name} (Regex)' }, { name: p.name })
+                return ({ label, value: p.id })
+              })}
+            onChange={(value) => {
+              const attr = subAttributes.find((attribute) => attribute.id === value)
+              if(attr) {
                 form.setFieldsValue({
-                  templateAttributeId: attr.id,
-                  name: attr.name,
-                  attributeType: attr.attributeType
+                  subTemplateAttributeId: attr.id,
+                  subName: attr.name,
+                  subAttributeType: attr.attributeType
                 })
               }
             }}
           >
           </Select>
         </Form.Item>
+        }
         {
           attributeType !== 'DATE_RANGE' ?
             <Form.Item label={$t({ defaultMessage: 'Condition Value' })}

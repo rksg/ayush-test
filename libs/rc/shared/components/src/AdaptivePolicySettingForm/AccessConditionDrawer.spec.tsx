@@ -71,7 +71,7 @@ describe('AccessConditionDrawer', () => {
     expect(inputs[0]).toHaveValue(condition.id)
     expect(inputs[1]).toHaveValue(condition.templateAttribute.name)
     expect(inputs[2]).toHaveValue('STRING')
-    expect(inputs[3]).toHaveValue(condition.evaluationRule.regexStringCriteria)
+    expect(inputs[5]).toHaveValue(condition.evaluationRule.regexStringCriteria)
 
     await userEvent.click(saveButton)
   })
