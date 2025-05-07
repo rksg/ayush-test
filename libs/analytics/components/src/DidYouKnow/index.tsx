@@ -4,13 +4,13 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Carousel }                 from '@acx-ui/components'
+import { Loader }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import {
-  useAvailableFactsQuery,
-  useFactsQuery
-} from './services'
+import { useAvailableFactsQuery, useFactsQuery } from './services'
+import { Carousel }                              from './styledComponent'
 
 export { DidYouKnowWidget as DidYouKnow }
 
@@ -30,6 +30,7 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const [offset, setOffset] = useState(0)
   const [loaded, setLoaded] = useState<string[]>([])
   const [content, setContent] = useState<Record<string, string>>({})
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const factListQuery = useAvailableFactsQuery(filters)
   const factsList = factListQuery.data
   const factsQuery = useFactsQuery(factsList, loaded, offset, filters)
@@ -72,6 +73,12 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const onChange = useCallback((_: number, nextSlide: number) => {
     setOffset(nextSlide)
   }, [])
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.DID_YOU_KNOW,
+    states: [factsQuery, factListQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[factsQuery, factListQuery]}>

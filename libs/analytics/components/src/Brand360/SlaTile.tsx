@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Typography } from 'antd'
+import { Tooltip, Typography } from 'antd'
 import {
   meanBy,
   mean,
@@ -13,9 +13,11 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Card }               from '@acx-ui/components'
-import { UpArrow, DownArrow } from '@acx-ui/icons'
-import { noDataDisplay }      from '@acx-ui/utils'
+import { useBrand360Config }                       from '@acx-ui/analytics/services'
+import { Card }                                    from '@acx-ui/components'
+import { UpArrow, DownArrow, InformationOutlined } from '@acx-ui/icons'
+import { getUserProfile, isCoreTier }              from '@acx-ui/user'
+import { noDataDisplay }                           from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
 import { Lsp, Property, transformToLspView, transformToPropertyView } from './helpers'
@@ -92,10 +94,10 @@ const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | und
   return calculateMean(keys, currData)
 }
 
-const groupBySliceType = (type: SliceType, data?: Response[]) => {
+const groupBySliceType = (type: SliceType, lspLabel: string, data?: Response[]) => {
   if (!data || !data.length) return {}
   return type === 'lsp'
-    ? groupBy(transformToLspView(data), type)
+    ? groupBy(transformToLspView(data, lspLabel), type)
     : groupBy(transformToPropertyView(data), type)
 }
 
@@ -166,11 +168,28 @@ export function SlaTile ({
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const name = sliceType === 'lsp' ? lsp : property
-  const groupedData = groupBySliceType(sliceType, tableData)
+  const { names } = useBrand360Config()
+  const groupedData = groupBySliceType(sliceType, names.lsp, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
-  return <Card title={$t(getTitle(isMDU), { name })}
+
+  const getTooltip = (chartKey: string) => {
+    if(chartKey === 'experience' && isCore) {
+      return <Tooltip placement='top'
+        title={$t({ // eslint-disable-next-line max-len
+          defaultMessage: 'This value is calculated using data from Essential and Professional tier properties only.' })}>
+        <InformationOutlined />
+      </Tooltip>
+    }
+    return null
+  }
+
+  return <Card title={{
+    title: ($t(getTitle(isMDU), { name })),
+    icon: getTooltip(chartKey) }}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}

@@ -22,11 +22,11 @@ import { useParams }                                         from '@acx-ui/react
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
 import { getJwtTokenPayload, isDelegationMode, AccountTier } from '@acx-ui/utils'
 
-import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
 enum SubscriptionTierType {
   Platinum = 'Professional',
-  Gold = 'Essentials'
+  Gold = 'Essentials',
+  Core = 'Core'
 }
 
 const subscriptionUtilizationTransformer = (
@@ -73,8 +73,13 @@ export const SubscriptionHeader = () => {
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
-  const subscriptionVal = ( tier === AccountTier.GOLD? SubscriptionTierType.Gold
-    : SubscriptionTierType.Platinum )
+  const subscriptionVal = (
+    tier === AccountTier.GOLD
+      ? SubscriptionTierType.Gold
+      : tier === AccountTier.CORE
+        ? SubscriptionTierType.Core
+        : SubscriptionTierType.Platinum
+  )
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
@@ -107,7 +112,6 @@ export const SubscriptionHeader = () => {
                   }}
                 />
               </Typography.Text>
-              <ConvertNonVARMSPButton />
             </SpaceWrapper>
           </Col>
         </Row>

@@ -18,10 +18,11 @@ export default function SolutionTokenLicenses () {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
   const adaptivePolicyToggle = useIsSplitOn(Features.ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE)
-  const piNetworkToggle = useIsSplitOn(Features.ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE)
   const sisIntegrationToggle = useIsSplitOn(Features.ENTITLEMENT_SIS_INTEGRATION_TOGGLE)
   const pmsIntegrationToggle = useIsSplitOn(Features.ENTITLEMENT_PMS_INTEGRATION_TOGGLE)
   const hybridCloudSecToggle = useIsSplitOn(Features.ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE)
+  const piNetworkToggle = useIsSplitOn(Features.ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const mspEcTenantsPayload = {
     filters: {
@@ -45,7 +46,8 @@ export default function SolutionTokenLicenses () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
@@ -154,14 +156,15 @@ export default function SolutionTokenLicenses () {
       }
     }] : []),
     ...(piNetworkToggle ? [{
-      title: $t({ defaultMessage: 'Personal Identity Network' }),
+      title: $t({ defaultMessage: 'PIN For Ruckus One Identity' }),
       dataIndex: 'piNetworkCount',
       key: 'piNetworkCount',
       align: 'center' as AlignType,
       sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
-        return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.SLTN_PI_NET,
+        return mspUtils.getConfiguredDevices(
+          ComplianceMspCustomersDevicesTypes.SLTN_PIN_FOR_IDENTITY,
           row.entitlements)
       }
     }] : []),

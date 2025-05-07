@@ -306,7 +306,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   margin-top: 40px;
 }
 
-.c8 {
+.c9 {
   width: 130px;
 }
 
@@ -337,18 +337,18 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   fill: var(--acx-neutrals-60);
 }
 
-.c9 {
+.c8 {
   width: 16px;
   height: 16px;
   margin-bottom: -4px;
   margin-right: 3px;
 }
 
-.c9 path:first-of-type {
+.c8 path:first-of-type {
   fill: var(--acx-neutrals-60);
 }
 
-.c9 path {
+.c8 path {
   stroke: var(--acx-neutrals-60);
 }
 
@@ -580,7 +580,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item c8"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item c6"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-disabled"
@@ -597,9 +597,8 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                             </span>
                                             <span>
                                               <svg
-                                                class="c9"
+                                                class="c8"
                                                 data-testid="Whatsapp"
-                                                style="opacity: 0.5;"
                                               />
                                               WhatsApp
                                             </span>
@@ -630,7 +629,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -684,7 +683,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -738,7 +737,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -792,7 +791,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                                           class="ant-form-item-control-input-content"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c8"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
                                           >
                                             <span
                                               class="ant-checkbox ant-checkbox-checked"
@@ -1336,7 +1335,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
                               <button
                                 class="ant-btn ant-btn-link c11"
                                 data-testid="walled-garden-clear-button"
-                                style="margin-left: 90px; margin-right: 10px;"
+                                style="margin-left: 90px;"
                                 type="button"
                               >
                                 <span>
@@ -1443,7 +1442,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
         </div>
       </div>
       <div
-        class="c17 c18"
+        class="c17 c18 action-footer single-step"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

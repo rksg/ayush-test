@@ -28,7 +28,10 @@ import {
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
   useGetDirectoryServerViewDataListQuery,
-  useSwitchPortProfilesCountQuery
+  useSwitchPortProfilesCountQuery,
+  useGetIpsecViewDataListQuery,
+  useGetSamlIdpProfileViewDataListQuery,
+  useAccessControlsCountQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -48,6 +51,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -150,10 +154,12 @@ interface PolicyCardData {
 
 function useCardData (): PolicyCardData[] {
   const params = useParams()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -171,6 +177,9 @@ function useCardData (): PolicyCardData[] {
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   return [
     {
@@ -191,7 +200,22 @@ function useCardData (): PolicyCardData[] {
         }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })),
+      disabled: isSwitchMacAclEnabled
+    },
+    {
+      type: PolicyType.ACCESS_CONTROL,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      totalCount: Number(useGetEnhancedAccessControlProfileListQuery({
+        params, payload: {
+          ...defaultPayload,
+          noDetails: true
+        }, enableRbac
+      }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
+        params }, { skip: !isSwitchMacAclEnabled }).data ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/accessControl/wifi'),
+      disabled: !isSwitchMacAclEnabled
     },
     {
       type: PolicyType.CLIENT_ISOLATION,
@@ -213,14 +237,21 @@ function useCardData (): PolicyCardData[] {
       disabled: !supportHotspot20R1
     },
     {
-      type: PolicyType.IDENTITY_PROVIDER,
+      type: (isCaptivePortalSsoSamlEnabled) ? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetIdentityProviderListQuery({
+      totalCount: (useGetIdentityProviderListQuery({
         params, payload: { tenantId: params.tenantId }
-      }, { skip: !supportHotspot20R1 }).data?.totalCount,
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1
+      }, { skip: !supportHotspot20R1 }).data?.totalCount ?? 0) +
+      (useGetSamlIdpProfileViewDataListQuery({
+        params, payload: { tenantId: params.tenantId }
+      }, { skip: !isCaptivePortalSsoSamlEnabled }).data?.totalCount ?? 0),
+      listViewPath: useTenantLink(getPolicyRoutePath(
+        ((isCaptivePortalSsoSamlEnabled) ?
+          { type: PolicyType.SAML_IDP, oper: PolicyOperation.LIST } :
+          { type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST }
+        )
+      )),
+      disabled: !supportHotspot20R1 && !isCaptivePortalSsoSamlEnabled
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
@@ -314,7 +345,7 @@ function useCardData (): PolicyCardData[] {
       }, { skip: !isWorkflowFFEnabled || !isWorkflowTierEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
-      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled
+      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled || isCore
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,
@@ -379,6 +410,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/portProfile/wifi'),
       disabled: !isSwitchPortProfileEnabled
+    },
+    {
+      type: PolicyType.IPSEC,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetIpsecViewDataListQuery({ params, payload: {} }, { skip: !isIpsecEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.LIST })),
+      disabled: !isIpsecEnabled
     }
   ]
 }

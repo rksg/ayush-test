@@ -23,7 +23,8 @@ import {
   fakeIncidentDDoS,
   fakeIncidentPortCongestion,
   fakeIncidentUplinkPortCongestion,
-  fakeIncidentLoopDetection
+  fakeIncidentLoopDetection,
+  fakeIncidentLLDPStatus
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { Provider }                            from '@acx-ui/store'
@@ -50,6 +51,7 @@ import { LoadSzCpuLoad }              from './LoadSzCpuLoad'
 import { NetSzNetLatency }            from './NetSzNetLatency'
 import { NetTime }                    from './NetTime'
 import { RadiusFailure }              from './RadiusFailure'
+import { SwitchLLDPStatus }           from './SwitchLLDPStatus'
 import { SwitchLoopDetection }        from './SwitchLoopDetection'
 import { SwitchMemoryHigh }           from './SwitchMemoryHigh'
 import { SwitchPoePd }                from './SwitchPoePd'
@@ -93,6 +95,19 @@ jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
 
 jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
   ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
+}))
+jest.mock('../Charts/ImpactedSwitchesTable', () => ({
+  ImpactedSwitchesTable: () => <div data-testid='impactedSwitchesTable' />
+}))
+
+
+jest.mock('../Charts/ImpactedSwitchesDonut/byParam', () => ({
+  ImpactedSwitchesByParamDonut: () => <div data-testid='ImpactedSwitchesByParamDonut' />
+}))
+
+jest.mock('../Charts/ImpactedSwitchPortCongestion', () => ({
+  SwitchDetail: () => <div data-testid='SwitchDetail' />,
+  ImpactedSwitchPortConjestionTable: () => <div data-testid='ImpactedSwitchPortConjestionTable' />
 }))
 
 jest.mock('../Charts/ImpactedSwitchLoopDetection', () => ({
@@ -228,6 +243,13 @@ describe('Test', () => {
       {
         component: SwitchLoopDetection,
         fakeIncident: fakeIncidentLoopDetection,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: SwitchLLDPStatus,
+        fakeIncident: fakeIncidentLLDPStatus,
         hasNetworkImpact: false,
         hasTimeSeries: false,
         charts: []
@@ -428,6 +450,13 @@ describe('Test', () => {
     {
       component: SwitchLoopDetection,
       fakeIncident: fakeIncidentLoopDetection,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchLLDPStatus,
+      fakeIncident: fakeIncidentLLDPStatus,
       hasNetworkImpact: false,
       hasTimeSeries: false,
       charts: []

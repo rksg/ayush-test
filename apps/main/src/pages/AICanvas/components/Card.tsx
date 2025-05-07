@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
@@ -25,10 +25,18 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  draggable?: boolean
+  // sectionRef?: React.MutableRefObject<null>
 }
+
+export interface WidgetProperty {
+  name: string
+}
+
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
+    canDrag: props.draggable,
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
@@ -47,7 +55,7 @@ const DraggableCard = (props: CardProps) => {
   }, [preview])
 
   return (
-    <div>
+    <div style={{ cursor: props.draggable ? 'grab' : 'default' }}>
       <Card
         {...props}
         drag={drag}
@@ -64,6 +72,7 @@ function Card (props: CardProps) {
     deleteCard,
     drag,
     card
+    // ,sectionRef
   } = props
   const {
     id,
@@ -75,6 +84,8 @@ function Card (props: CardProps) {
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
   const [visible, setVisible] = useState(false)
+
+  const readOnly = !props.draggable
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -112,26 +123,89 @@ function Card (props: CardProps) {
     props.updateGroupList(groupsTmp)
   }
 
+  const changeWidgetProperty = (widget: WidgetProperty) => {
+    let groupsTmp = _.cloneDeep(props.groups)
+    let cardTmp = _.cloneDeep(card)
+    cardTmp = {
+      ...cardTmp,
+      name: widget.name
+    }
+    groupsTmp[groupIndex].cards.some((item, index) => {
+      if(item.id === cardTmp.id) {
+        groupsTmp[groupIndex].cards[index] = cardTmp
+        return true
+      }
+      return false
+    })
+    props.updateGroupList(groupsTmp)
+  }
+
   const increaseCard = () => {
     const nextSizeIndex = card.currentSizeIndex + 1
-    if(nextSizeIndex >= card.sizes.length) {
-      return
+    if(nextSizeIndex < card.sizes.length) {
+      changeCardsLayout(nextSizeIndex)
     }
-
-    changeCardsLayout(nextSizeIndex)
   }
 
   const decreaseCard = () => {
     const nextSizeIndex = card.currentSizeIndex - 1
-    if(nextSizeIndex < 0) {
-      return
+    if(nextSizeIndex >= 0) {
+      changeCardsLayout(nextSizeIndex)
     }
-
-    changeCardsLayout(nextSizeIndex)
   }
 
+  const widgetRef = useRef(null)
+  // const [resizing, setResizing] = useState(false)
+  // const handler = (mouseDownEvent, card) => {
+  //   mouseDownEvent.preventDefault() // prevent drag event
+  //   const startSize = { x: x + wPx, y: y + hPx }
+  //   const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY }
+  //   const ranges = card.sizes.map(s => {
+  //     const { wPx, hPx } = utils.calWHtoPx(
+  //       s.width,
+  //       s.height,
+  //       margin,
+  //       rowHeight,
+  //       calWidth
+  //     )
+  //     return ({ x: x + wPx, y: y + hPx })
+  //   })
+
+  //   function onMouseMove (mouseMoveEvent) {
+  //     const x = startSize.x - startPosition.x + mouseMoveEvent.pageX
+  //     const y = startSize.y - startPosition.y + mouseMoveEvent.pageY
+  //     ranges.some((r, index) => {
+  //       if(index === ranges.length-1) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
+  //       if (x <= r.x && y <= r.y) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
+
+  //       if((x > r.x || y > r.y) && (x < ranges[index + 1].x || y < ranges[index + 1].y)) {
+  //         changeCardsLayout(index+1)
+  //         return true
+  //       }
+  //       return false
+  //     })
+  //   }
+  //   function onMouseUp () {
+  //     setResizing(false)
+  //     widgetRef.current.removeEventListener('mousemove', onMouseMove)
+  //     // uncomment the following line if not using `{ once: true }`
+  //     // widgetRef.current.removeEventListener("mouseup", onMouseUp);
+  //   }
+  //   if (widgetRef && widgetRef.current && sectionRef) {
+  //     setResizing(true)
+  //     widgetRef.current.addEventListener('mousemove', onMouseMove)
+  //     sectionRef.current.addEventListener('mouseup', onMouseUp, { once: true })
+  //   }
+  // }
+
   return (
-    <div>
+    <div ref={widgetRef}>
       {
         isShadow ?
           <div
@@ -149,11 +223,11 @@ function Card (props: CardProps) {
             style={{
               width: wPx,
               height: hPx,
-              opacity: 1,
+              opacity: 1, //resizing ? 0.6 : 1,
               transform: `translate(${x}px, ${y}px)`
             }}
           >
-            <div className='card-actions'>
+            { !readOnly && <div className='card-actions'>
               <div
                 data-testid='increaseCard'
                 className={`icon ${
@@ -191,15 +265,17 @@ function Card (props: CardProps) {
               >
                 <DeleteOutlined />
               </div>
-            </div>
+            </div>}
             {
               card.chartType &&
               <WidgetChart
                 data={card as unknown as WidgetListData}
                 visible={visible}
                 setVisible={setVisible}
+                changeWidgetProperty={changeWidgetProperty}
               />
             }
+            {/* <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/> */}
           </div>
       }
     </div>

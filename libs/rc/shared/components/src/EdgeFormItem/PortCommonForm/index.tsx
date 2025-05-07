@@ -12,7 +12,7 @@ import {
   EdgePortTypeEnum,
   edgePortIpValidator,
   getEdgePortTypeOptions,
-  lanPortsubnetValidator,
+  lanPortSubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
   validateGatewayInSubnet
@@ -29,7 +29,7 @@ interface formFieldsPropsType {
       label: string,
       value: EdgePortTypeEnum
     }[]
-    disabled?: boolean
+    disabled?: boolean,
   }
 }
 export interface EdgePortCommonFormProps {
@@ -145,7 +145,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               },
               {
                 validator: () =>
-                  lanPortsubnetValidator(
+                  lanPortSubnetValidator(
                     getCurrentSubnetInfo(),
                     [...getSubnetInfoWithoutCurrent(), ...subnetInfoForValidation]
                   )
@@ -207,7 +207,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   },
                   {
                     validator: () =>
-                      lanPortsubnetValidator(
+                      lanPortSubnetValidator(
                         getCurrentSubnetInfo(),
                         [...getSubnetInfoWithoutCurrent(), ...subnetInfoForValidation]
                       )
@@ -274,7 +274,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     <Form.Item
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
-      {..._.omit(_.get(formFieldsProps, 'portType'), 'validator')}
+      {..._.omit(_.get(formFieldsProps, 'portType'), 'rules')}
       validateFirst
       rules={[
         { required: true },
@@ -288,7 +288,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           } else {
             return Promise.resolve()
           }
-        } }
+        } },
+        ...(_.get(formFieldsProps, 'portType.rules') as FormItemProps['rules'] ?? [])
       ]}
     >
       <Select disabled={_.get(formFieldsProps, 'portType')?.disabled}>

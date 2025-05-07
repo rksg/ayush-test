@@ -55,6 +55,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const [membersGroupId, setMemberGroupId] = useState('')
   const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
+  const MAX_SSO_GROUP_ALLOWED = 20
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
@@ -114,7 +115,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       key: 'processingPriority',
       dataIndex: 'processingPriority',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('processingPriority', defaultSort) }
+      sorter: { compare: sortProp('processingPriority', defaultSort) },
+      align: 'center'
     },
     {
       dataIndex: 'sort',
@@ -182,7 +184,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   }
 
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
+  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC &&
+    (adminList && adminList.length < MAX_SSO_GROUP_ALLOWED)) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add SSO Group' }),
       onClick: handleClickAdd
@@ -244,7 +247,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       }
     ]}>
       <DndProvider backend={HTML5Backend} >
-        <Table
+        <Table style={{ paddingBottom: '40px' }}
           columns={columns}
           dataSource={adminList}
           rowKey='id'
@@ -261,6 +264,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          // set defaultPageSize to 10000 (big number) to hide pagination for this table
+          pagination={{ defaultPageSize: 10000 }}
           data-testid='AdminGroupTable'
         />
       </DndProvider>

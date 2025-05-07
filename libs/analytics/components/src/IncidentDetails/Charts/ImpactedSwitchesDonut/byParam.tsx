@@ -42,7 +42,8 @@ export function ImpactedSwitchesByParamDonut ({ incident, param }: DonutChartByP
   const topDataKey = sortedData?.at(0)?.at(0) || ''
 
   const title=$t({ defaultMessage: 'Switch {param}{plural}' },
-    { param, plural: sortedData?.length ? 's' : '' })
+    { param: param.charAt(0).toUpperCase() + param.slice(1),
+      plural: sortedData?.length ? 's' : '' })
   const subtitle = $t({
     defaultMessage: 'Top impacted {param} is {value}' },
   { param, value: topDataKey })
@@ -60,7 +61,8 @@ export function ImpactedSwitchesByParamDonut ({ incident, param }: DonutChartByP
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switch {param}{plural}' },
-      { param, plural: sortedData?.length ? 's' : '' })}
+      { param: param.charAt(0).toUpperCase() + param.slice(1),
+        plural: sortedData?.length ? 's' : '' })}
     type='no-border'>
       {druidRolledup
         ? <NoGranularityText />

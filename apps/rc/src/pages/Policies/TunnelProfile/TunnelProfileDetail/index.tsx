@@ -8,6 +8,7 @@ import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/servic
 import {
   filterByAccessForServicePolicyMutation,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -16,6 +17,7 @@ import {
   getTunnelTypeString,
   mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
+  NetworkSegmentTypeEnum,
   PolicyOperation,
   PolicyType,
   transformDisplayOnOff,
@@ -23,6 +25,7 @@ import {
   TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { noDataDisplay }         from '@acx-ui/utils'
 
 import { ageTimeUnitConversion } from '../util'
 
@@ -34,6 +37,7 @@ const TunnelProfileDetail = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath({
@@ -57,14 +61,25 @@ const TunnelProfileDetail = () => {
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
 
   const tunnelInfo = [
-    // {
-    //   title: $t({ defaultMessage: 'Tags' }),
-    //   content: () => (tunnelProfileData.tags)
-    // },
+    ...(isEdgeL2greReady ? [{
+      title: $t({ defaultMessage: 'Tunnel Type' }),
+      content: () => {
+        return getTunnelTypeString($t, tunnelProfileData.tunnelType || TunnelTypeEnum.VXLAN_GPE)
+      }
+    }] : []),
+    ...(isEdgeL2greReady ? [{
+      title: $t({ defaultMessage: 'Destination' }),
+      content: () => {
+        return TunnelTypeEnum.VXLAN_GPE === tunnelProfileData.tunnelType ?
+          `${tunnelProfileData.destinationEdgeClusterName || noDataDisplay}` :
+          `${tunnelProfileData.destinationIpAddress || noDataDisplay}`
+      }
+    }] : []),
     ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN,
+        // eslint-disable-next-line max-len
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }
     }] : []),
@@ -114,7 +129,8 @@ const TunnelProfileDetail = () => {
     ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
+        // eslint-disable-next-line max-len
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
       }
     }] : []),
     ...(isEdgeVxLanKaReady ? [

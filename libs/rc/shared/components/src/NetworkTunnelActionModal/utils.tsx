@@ -1,18 +1,20 @@
 /* eslint-disable max-len */
+
 import { cloneDeep, findIndex } from 'lodash'
 
-import { Features }                                                                                                                from '@acx-ui/feature-toggle'
-import { useGetEdgePinViewDataListQuery }                                                                                          from '@acx-ui/rc/services'
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                                                 from '@acx-ui/utils'
+import { useEdgeSdLanActions }                                                                                                                     from '@acx-ui/edge/components'
+import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
+import { useGetEdgePinViewDataListQuery }                                                                                                          from '@acx-ui/rc/services'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum, PersonalIdentityNetworksViewData, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                                                 from '@acx-ui/utils'
 
-import { isGuestTunnelUtilized, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../EdgeSdLan/edgeSdLanUtils'
-import { showSdLanGuestFwdConflictModal }                                                  from '../EdgeSdLan/SdLanGuestFwdConflictModal'
-import { useEdgeMvSdLanActions }                                                           from '../EdgeSdLan/useEdgeSdLanActions'
-import { useIsEdgeFeatureReady }                                                           from '../useEdgeActions'
+import { isDmzTunnelUtilized, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../EdgeSdLan/edgeSdLanUtils'
+import { showSdLanGuestFwdConflictModal }                                                from '../EdgeSdLan/SdLanGuestFwdConflictModal'
+import { useEdgeMvSdLanActions }                                                         from '../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }                                                         from '../useEdgeActions'
 
 import { NetworkTunnelActionModalProps }                  from './NetworkTunnelActionModal'
-import { NetworkTunnelTypeEnum, NetworkTunnelActionForm } from './types'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { useEdgeMvSdLanData }                             from './useEdgeMvSdLanData'
 import { SoftGreNetworkTunnel, useSoftGreTunnelActions }  from './useSoftGreTunnelActions'
 
@@ -114,6 +116,8 @@ export const getTunnelTypeDisplayText = (tunnelType: NetworkTunnelTypeEnum | und
 
 export const useUpdateNetworkTunnelAction = () => {
   const { toggleNetwork } = useEdgeMvSdLanActions()
+  const { toggleNetworkChange } = useEdgeSdLanActions()
+  const isEdgeL2oGreReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const updateSdLanNetworkTunnel = async (
     formValues: NetworkTunnelActionForm,
@@ -121,7 +125,6 @@ export const useUpdateNetworkTunnelAction = () => {
     tunnelTypeInitVal: NetworkTunnelTypeEnum,
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
-
     const formTunnelType = formValues.tunnelType
     if (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
       return Promise.resolve()
@@ -137,17 +140,37 @@ export const useUpdateNetworkTunnelAction = () => {
       return Promise.reject()
     }
 
+    const currentFwdTunnelProfileId = formValues.sdLan?.forwardingTunnelProfileId
+    const currentFwdTunnelType = formValues.sdLan?.forwardingTunnelType
+    const originFwdTunnelId = (venueSdLanInfo?.tunneledWlans || [])
+      ?.find(item => item.venueId === networkVenueId && item.networkId === networkId)
+      ?.forwardingTunnelProfileId
+
     const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
-    const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled ?? false
+    const sdLanTunnelDmz = (formValues.sdLan?.isGuestTunnelEnabled ||
+      currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE) ?? false
 
     const triggerSdLanOperations = async () => {
-      return await toggleNetwork(
-        venueSdLanInfo?.id!,
-        networkVenueId,
-        networkId!,
-        sdLanTunneled,
-        sdLanTunneled && sdLanTunnelGuest
-      )
+      return new Promise<void | boolean>((resolve, reject) => {
+        isEdgeL2oGreReady?
+          toggleNetworkChange(
+          venueSdLanInfo?.id!,
+          networkVenueId,
+          networkId!,
+          currentFwdTunnelProfileId!,
+          originFwdTunnelId!,
+          () => resolve()
+          ).catch(() => reject())
+          :
+          toggleNetwork(
+            venueSdLanInfo?.id!,
+            networkVenueId,
+            networkId!,
+            sdLanTunneled,
+            sdLanTunneled && sdLanTunnelDmz,
+            () => resolve()
+          ).catch(() => reject())
+      })
     }
 
     // deactivate SDLAN tunneling
@@ -165,32 +188,53 @@ export const useUpdateNetworkTunnelAction = () => {
       }
     } else {
       // activate or still sdlan
-      const isGuestTunnelUtilizedInitState = isGuestTunnelUtilized(venueSdLanInfo, networkId, networkVenueId)
-
+      const isDmzTunnelUtilizedInitState = isDmzTunnelUtilized(venueSdLanInfo, networkId, networkVenueId)
       // if no changes
-      if (formTunnelType === tunnelTypeInitVal && isGuestTunnelUtilizedInitState === sdLanTunnelGuest)
+      if (formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState === sdLanTunnelDmz)
         return Promise.resolve()
-
       // check conflict when is CAPTIVEPORTAL network
       // and 1. still SDLAN and tunnel guest changed
       // or 2. activate SDLAN
-      if(((formTunnelType === tunnelTypeInitVal && isGuestTunnelUtilizedInitState !== sdLanTunnelGuest)
+      if(((formTunnelType === tunnelTypeInitVal && isDmzTunnelUtilizedInitState !== sdLanTunnelDmz)
       || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
       && network.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+        const activatedDmz = formValues.sdLan.isGuestTunnelEnabled ||
+          (currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE)
         return await new Promise<void | boolean>((resolve) =>
           showSdLanGuestFwdConflictModal({
             currentNetworkVenueId: network?.venueId!,
             currentNetworkId: network?.id!,
             currentNetworkName: '',
-            activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
+            activatedDmz: activatedDmz,
             tunneledWlans: venueSdLanInfo!.tunneledWlans,
             tunneledGuestWlans: venueSdLanInfo!.tunneledGuestWlans,
+            isL2oGreReady: isEdgeL2oGreReady,
             onOk: async (impactVenueIds: string[]) => {
               if (impactVenueIds.length) {
                 // has conflict and confirmed
                 const actions = [triggerSdLanOperations()]
                 actions.push(...impactVenueIds.map(impactVenueId =>
-                  toggleNetwork(venueSdLanInfo?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
+                  new Promise<void | boolean>((resolve, reject) => {
+                    isEdgeL2oGreReady?
+                      toggleNetworkChange(
+                        venueSdLanInfo?.id!,
+                        impactVenueId,
+                        network?.id!,
+                        currentFwdTunnelProfileId!,
+                        undefined,
+                        () => resolve()
+                      ).catch(() => reject())
+                      :
+                      toggleNetwork(
+                        venueSdLanInfo?.id!,
+                        impactVenueId,
+                        network?.id!,
+                        true,
+                        formValues.sdLan.isGuestTunnelEnabled,
+                        () => resolve()
+                      ).catch(() => reject())
+                  })
+                ))
                 await Promise.all(actions)
               } else {
                 await triggerSdLanOperations()
@@ -211,30 +255,38 @@ export const useUpdateNetworkTunnelAction = () => {
 }
 
 export const useDeactivateNetworkTunnelByType = () => {
-  const { dectivateSoftGreTunnel } = useSoftGreTunnelActions()
+  const { dectivateSoftGreTunnel, deactivateIpSecOverSoftGre } = useSoftGreTunnelActions()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
 
-  const deactivateNetworkTunnelByType = (
+  const deactivateNetworkTunnelByType = async (
     tunnelType: NetworkTunnelTypeEnum,
     formValues: NetworkTunnelActionForm,
     network: NetworkTunnelActionModalProps['network'],
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
-    switch (tunnelType) {
-      case NetworkTunnelTypeEnum.SdLan:
-        updateSdLanNetworkTunnel(
-          formValues,
-          network,
-          tunnelType,
-          venueSdLanInfo
-        )
-        return
-      case NetworkTunnelTypeEnum.SoftGre:
-        dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
-        return
-      case NetworkTunnelTypeEnum.Pin:
-      default:
-        return
+    try {
+      switch (tunnelType) {
+        case NetworkTunnelTypeEnum.SdLan:
+          await updateSdLanNetworkTunnel(
+            formValues,
+            network,
+            tunnelType,
+            venueSdLanInfo
+          )
+          return
+        case NetworkTunnelTypeEnum.SoftGre:
+          if (formValues.ipsec && formValues.ipsec.enableIpsec) {
+            await deactivateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+          } else {
+            await dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+          }
+          return
+        case NetworkTunnelTypeEnum.Pin:
+        default:
+          return
+      }
+    } catch(err) {
+      // mute error
     }
   }
 

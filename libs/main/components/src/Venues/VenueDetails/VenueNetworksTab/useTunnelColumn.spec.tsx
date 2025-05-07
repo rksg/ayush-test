@@ -60,7 +60,8 @@ const disabledFFs = [
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
-  Features.EDGE_PIN_ENHANCE_TOGGLE
+  Features.EDGE_PIN_ENHANCE_TOGGLE,
+  Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -86,7 +87,7 @@ jest.mock('@acx-ui/rc/components', () => ({
     scopedNetworkIds: []
   }),
   transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)'),
-  useEdgeAllPinData: jest.fn().mockReturnValue([]),
+  useEdgeAllPinData: jest.fn().mockReturnValue({ venuePins: [] }),
   NetworkTunnelActionModal: jest.fn().mockImplementation((props: NetworkTunnelActionModalProps) => {
     return <div data-testid='rc-NetworkTunnelActionModal' >
       {''+props.isPinNetwork}
@@ -205,6 +206,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
         && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
 
@@ -303,6 +305,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
         && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
 
@@ -313,7 +316,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
     }
 
     it('should correctly display tunnel column when PIN is running on it', async () => {
-      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinStatsList.data)
+      jest.mocked(useEdgeAllPinData).mockReturnValue({ venuePins: mockPinStatsList.data })
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
@@ -334,7 +337,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const mockPinList = cloneDeep(EdgePinFixtures.mockPinStatsList)
       mockPinList.data[0].tunneledWlans.push({ networkId: targetNetworkId })
 
-      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinList.data)
+      jest.mocked(useEdgeAllPinData).mockReturnValue({ venuePins: mockPinList.data })
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
@@ -363,7 +366,8 @@ describe('VenueNetworksTab - PIN enabled', () => {
         ff !== Features.EDGES_SD_LAN_TOGGLE &&
         ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
         ff !== Features.EDGE_SD_LAN_MV_TOGGLE &&
-        ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
+        ff !== Features.EDGE_PIN_ENHANCE_TOGGLE &&
+        ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
     })
 
     it('should correctly display tunnel column when SoftGre is running on it', async () => {

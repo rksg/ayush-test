@@ -82,6 +82,12 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.PORT_PROFILE:
       transform = $t({ defaultMessage: 'Port Profile' })
       break
+    case ConfigTypeEnum.PORT_DISABLE_RECOVERY:
+      transform = $t({ defaultMessage: 'Port Disable Recovery' })
+      break
+    case ConfigTypeEnum.MAC_ACL:
+      transform = $t({ defaultMessage: 'MAC ACL' })
+      break
   }
 
   return transform

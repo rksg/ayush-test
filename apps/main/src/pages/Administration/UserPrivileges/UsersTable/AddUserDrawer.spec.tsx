@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }       from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -58,9 +58,16 @@ const mockedCloseDialog = jest.fn()
 const mockedAddAdminFn = jest.fn()
 const mockReqAdminsData = jest.fn()
 const services = require('@acx-ui/rc/services')
+const mobilePlaceHolder = '555'
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
+}))
 
 describe('Add user drawer component', () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
 
   beforeEach(() => {
     mockReqAdminsData.mockReset()
@@ -71,6 +78,10 @@ describe('Add user drawer component', () => {
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
       ),
       rest.get(
@@ -116,6 +127,7 @@ describe('Add user drawer component', () => {
         email: 'c123@email.com',
         role: 'READ_ONLY',
         detailLevel: 'debug',
+        phoneNumber: '',
         delegateToAllECs: false
       })
     })
@@ -145,6 +157,7 @@ describe('Add user drawer component', () => {
         email: 'c123@email.com',
         role: 'wi-fi privilege group',
         detailLevel: 'debug',
+        phoneNumber: '',
         delegateToAllECs: false
       })
     })
@@ -178,6 +191,7 @@ describe('Add user drawer component', () => {
         role: 'READ_ONLY',
         detailLevel: 'debug',
         delegateToAllECs: false,
+        phoneNumber: '',
         delegatedECs: ['2242a683a7594d7896385cfef1fe1234']
       })
     })
@@ -332,5 +346,37 @@ describe('Add user drawer component', () => {
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
     await userEvent.click(await screen.findByText( 'Guest Manager' ))
     await userEvent.click(await screen.findByText('Add User'))
+  })
+
+  it('should MSP submit correctly with common account management FF On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    await render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={true}
+          currentUserDetailLevel='debug'
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText('Read Only'))
+    await userEvent.click(await screen.findByText('Add User'))
+    await expect(mockedAddAdminFn).toBeCalledWith({
+      email: 'c123@email.com',
+      lastName: '',
+      name: '',
+      role: 'READ_ONLY',
+      detailLevel: 'debug',
+      phoneNumber: '',
+      delegateToAllECs: false
+    })
   })
 })

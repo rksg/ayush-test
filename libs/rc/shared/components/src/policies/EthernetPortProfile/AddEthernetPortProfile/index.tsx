@@ -1,8 +1,13 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useCreateEthernetPortProfileMutation, useUpdateEthernetPortProfileRadiusIdMutation } from '@acx-ui/rc/services'
-import { EthernetPortProfileFormType }                                                        from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import {
+  useAddEthernetPortProfileTemplateMutation,
+  useCreateEthernetPortProfileMutation,
+  useUpdateEthernetPortProfileRadiusIdMutation
+} from '@acx-ui/rc/services'
+import { EthernetPortProfileFormType, useConfigTemplate, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
 
@@ -15,18 +20,25 @@ interface AddEthernetPortProfileFormProps {
 
 export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) => {
   const { $t } = useIntl()
-  const [ createEthernetPortProfile ] = useCreateEthernetPortProfileMutation()
-  const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [form] = Form.useForm()
+  const { isTemplate } = useConfigTemplate()
   const { onClose, isEmbedded, updateInstance } = props
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+
+  const [ createEthernetPortProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateEthernetPortProfileMutation,
+    useTemplateMutationFn: useAddEthernetPortProfileTemplateMutation
+  })
+
+  const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
+      const payload = requestPreProcess(isWiredClientVisibilityEnabled, data)
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
       const createId = createResult.response?.id
-      if (createId) {
+      if (createId && !isTemplate) {
         if (payload.authRadiusId) {
           updateEthernetPortProfileRadiusId({ params: {
             id: createId,
@@ -54,7 +66,6 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
     <Row>
       <Col span={12}>
         <EthernetPortProfileForm
-          title={$t({ defaultMessage: 'Add Ethernet Port Profile' })}
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
           onFinish={handleAddEthernetPortProfile}
           form={form}
@@ -63,6 +74,5 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
         />
       </Col>
     </Row>
-
   )
 }

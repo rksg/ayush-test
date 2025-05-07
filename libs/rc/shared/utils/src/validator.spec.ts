@@ -29,12 +29,14 @@ import {
   validateRecoveryPassphrasePart,
   validateVlanId,
   validateVlanExcludingReserved,
+  validateVlanRangeFormat,
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
   URLProtocolRegExp,
   radiusIpAddressRegExp,
-  checkTaggedVlan
+  checkTaggedVlan,
+  validateDuplicateName
 } from './validator'
 
 describe('validator', () => {
@@ -193,6 +195,23 @@ describe('validator', () => {
       const result1 = validateVlanExcludingReserved('4092')
       // eslint-disable-next-line max-len
       await expect(result1).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+  })
+
+  describe('validateVlanRangeFormat', () => {
+    it('should render correctly', async () => {
+      await expect(validateVlanRangeFormat('20')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20,22,30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20,22, 30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20, 22, 30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20, 22,  30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 22,, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-2 0, 22, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1--20, 22, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 22,')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat(',1-20, 22')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, -22, 33')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 0.1, 33')).rejects.toMatch(/Invalid format/)
     })
   })
 
@@ -614,6 +633,15 @@ describe('validator', () => {
       await expect(checkTaggedVlan('1,10,100,1000,4095')).resolves.toBeUndefined()
       await expect(checkTaggedVlan('1')).resolves.toBeUndefined()
       await expect(checkTaggedVlan('1,2,3,4,5')).resolves.toBeUndefined()
+    })
+  })
+
+  describe('validateDuplicateName', () => {
+    it('Should validate duplicate name correctly', async () => {
+      await expect(validateDuplicateName({ name: '1', id: '1' }, [{ name: '2', id: '1' }]))
+        .resolves.toEqual(undefined)
+      await expect(validateDuplicateName({ name: '1', id: '1' }, [{ name: '1', id: '2' }]))
+        .rejects.toEqual('The name already exists')
     })
   })
 })

@@ -9,11 +9,20 @@ export interface NetworkTunnelActionForm {
   tunnelType: NetworkTunnelTypeEnum
   sdLan: {
     isGuestTunnelEnabled: boolean,
+    forwardingTunnelProfileId: string
+    forwardingTunnelType: string
   },
   softGre: {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+  ,
+  ipsec?: {
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }
 

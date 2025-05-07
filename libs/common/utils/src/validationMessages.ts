@@ -399,6 +399,10 @@ export const validationMessages = {
     defaultMessage: 'The ACL name already exists',
     description: 'Validation - The ACL name already exists'
   }),
+  nameDuplicateInvalid: defineMessage({
+    defaultMessage: 'The name already exists',
+    description: 'Validation - The name already exists'
+  }),
   aclRuleSequenceInvalid: defineMessage({
     defaultMessage: 'The Sequence already exists',
     description: 'Validation - The Sequence already exists'
@@ -411,9 +415,27 @@ export const validationMessages = {
     defaultMessage: 'The VLAN ID already exists',
     description: 'Validation - validate vlan id'
   }),
+  vlanIdSetAsDeaultVlan: defineMessage({
+    defaultMessage: 'This list cannot include the default VLAN {defaultVlan}',
+    description: 'Validation - validate vlan id'
+  }),
   vlanNameInvalidWithDefaultVlans: defineMessage({
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
+  }),
+  invalidVlanRange: defineMessage({
+    defaultMessage: 'Please enter a valid range.',
+    description: 'Validation - validate vlan range'
+  }),
+  invalidVlanRangeRegExp: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.',
+    description: 'Validation - validate vlan range format'
+  }),
+  originalVlanNotIncluded: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'The VLAN range above does not include the VLAN selected from the table. Select at least one VLAN from the range defined above and try editing again.',
+    description: 'Validation - validate vlan range does not include the original VLAN'
   }),
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
@@ -496,6 +518,10 @@ export const validationMessages = {
     // eslint-disable-next-line max-len
     defaultMessage: 'Duplicate MAC OUI and LLDP TLV values are being used. Please ensure that the MAC OUI and LLDP TLV are not duplicated across the profiles.',
     description: 'Validation - Switch Port Profiles Duplicate Invalid'
+  }),
+  IpsecProfileDhcpOpion43InvalidValue: defineMessage({
+    defaultMessage: 'The available range is 3-243, excluding 6',
+    description: 'Validation - Ipsec Profile DHCP Option 43 Invalid Value'
   })
 }
 

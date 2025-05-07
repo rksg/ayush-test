@@ -31,7 +31,6 @@ import {
   venueSetting,
   venueVersionList,
   deviceAps,
-  iotCompatibilites,
   r650Cap
 } from '../../__tests__/fixtures'
 
@@ -146,10 +145,6 @@ describe('ApEdit', () => {
         WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
       ),
-      rest.post(
-        WifiRbacUrlsInfo.getApCompatibilities.url,
-        (req, res, ctx) => res(ctx.json(iotCompatibilites))
-      ),
       rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(apDetailsList[0]))
@@ -157,6 +152,12 @@ describe('ApEdit', () => {
       rest.get(
         WifiRbacUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(r650Cap))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0, page: 1, data: []
+        }))
       )
     )
   })
@@ -178,7 +179,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -204,7 +204,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -221,7 +220,6 @@ describe('ApEdit', () => {
       })
 
       jest.restoreAllMocks()
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -242,7 +240,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })

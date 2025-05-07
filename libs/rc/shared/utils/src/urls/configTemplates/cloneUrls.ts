@@ -1,13 +1,6 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-import { ConfigTemplateType } from '../../types'
-
-export type AllowedCloneTemplateTypes = ConfigTemplateType.NETWORK | ConfigTemplateType.VENUE
-
-export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
-  ConfigTemplateType.NETWORK,
-  ConfigTemplateType.VENUE
-])
+import { AllowedCloneTemplateTypes, ConfigTemplateType } from '../../types'
 
 export const ConfigTemplateCloneUrlsInfo: Record<AllowedCloneTemplateTypes, ApiInfo> = {
   [ConfigTemplateType.NETWORK]: {
@@ -29,5 +22,25 @@ export const ConfigTemplateCloneUrlsInfo: Record<AllowedCloneTemplateTypes, ApiI
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'POST:/templates/venues/{id}/cloneSettings'
+  },
+  [ConfigTemplateType.DPSK]: {
+    method: 'post',
+    url: '/templates/dpskServices/:templateId/cloneSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/dpskServices/{id}/cloneSettings'
+  },
+  [ConfigTemplateType.WIFI_CALLING]: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles/:templateId/cloneSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/wifiCallingServiceProfiles/{id}/cloneSettings'
   }
 }

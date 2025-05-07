@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space } from 'antd'
 import TextArea                                 from 'antd/lib/input/TextArea'
@@ -10,15 +10,19 @@ import {
   useAdaptivePolicySetListQuery,
   useLazySearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles }                                       from '@acx-ui/user'
+import {
+  checkObjectNotExists,
+  getPolicyAllowedOperation, PolicyOperation, PolicyType,
+  trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
 
 import { AdaptivePolicySetForm } from '../../AdaptivePolicySetForm'
 
-export function IdentityGroupSettingForm () {
+export function IdentityGroupSettingForm ({ modalMode }: { modalMode?: boolean }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const id = Form.useWatch<string>('id', form)
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
@@ -32,7 +36,9 @@ export function IdentityGroupSettingForm () {
       const list = (await searchPersonaGroupList({
         params: { size: '2147483647', page: '0' },
         payload: { keyword: name }
-      }, true).unwrap()).data.map(g => ({ name: g.name }))
+      }, true).unwrap()).data
+        .filter(g => g.id !== id)
+        .map(g => ({ name: g.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity Group' }))
     } catch (e) {
       return Promise.resolve()
@@ -42,11 +48,14 @@ export function IdentityGroupSettingForm () {
   return (
     <>
       <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
+        <Form.Item name='id' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{$t({ defaultMessage: 'Settings' })}</Subtitle>
           </Col>
-          <Col span={21}>
+          <Col span={modalMode ? 8 :6}>
             <Form.Item
               name='name'
               label={$t({ defaultMessage: 'Identity Group Name' })}
@@ -79,7 +88,7 @@ export function IdentityGroupSettingForm () {
               <Col span={24}>
                 <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
               </Col>
-              <Col span={21}>
+              <Col span={modalMode ? 8 :6}>
                 <Form.Item name='policySetId'
                   label={$t({ defaultMessage: 'Adaptive Policy Set' })}
                   rules={[
@@ -96,7 +105,8 @@ export function IdentityGroupSettingForm () {
                 />
               </Col>
               {
-                hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                // eslint-disable-next-line max-len
+                hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? []) &&
                 <Col span={2}>
                   <Button
                     type={'link'}

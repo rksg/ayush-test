@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -31,10 +31,11 @@ import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, Venu
 import {
   useGetVenueRadioCustomizationQuery,
   useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
-import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
-import { useNavigateToPath }                  from '@acx-ui/react-router-dom'
-import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
-import type { AnalyticsFilter }               from '@acx-ui/utils'
+import { ShowTopologyFloorplanOn }                             from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                   from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                          from '@acx-ui/user'
+import { generateVenueFilter, useDateFilter, LoadTimeContext } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -45,6 +46,7 @@ export function VenueOverviewTab () {
     earliestStart: getDefaultEarliestStart() })
   const { venueId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const venueFilter = {
     ...dateFilter,
@@ -71,6 +73,14 @@ export function VenueOverviewTab () {
     }
   ]
 
+  useEffect(() => {
+    onPageFilterChange?.(venueFilter, true)
+  }, [])
+
+  useEffect(() => {
+    onPageFilterChange?.(venueFilter)
+  }, [venueFilter])
+
   return (<>
     {
       (
@@ -84,37 +94,51 @@ export function VenueOverviewTab () {
       <LowPowerBannerAndModal from={'venue'} />
     }
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' />
+    <ContentSwitcher
+      tabDetails={tabDetails}
+      size='large'
+      defaultValue={localStorage.getItem('venue-tab') || tabDetails[0].value}
+      onChange={(value: string): void => {
+        localStorage.setItem('venue-tab', value)
+      }}
+    />
   </>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
   const { venueId } = useParams()
   const [incidentCount, setIncidentCount] = useState(0)
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const onIncidentClick =
     useNavigateToPath(`/venues/${venueId}/venue-details/analytics/incidents/overview`)
 
   const filters = props.filters
   return (
     <GridRow>
-      <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
+      <GridCol col={{ span: isCore ? 12 : 7 }} style={{ height: '176px' }}>
         <VenueAlarmWidget />
       </GridCol>
-      <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <UI.Container
-          incidentCount={incidentCount}
-          onClick={incidentCount > 0 ? onIncidentClick : undefined}
-        >
-          <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
-        </UI.Container>
-      </GridCol>
-      <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
+      {!isCore &&
+        <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
+          <UI.Container
+            incidentCount={incidentCount}
+            onClick={incidentCount > 0 ? onIncidentClick : undefined}
+          >
+            <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
+          </UI.Container>
+        </GridCol>
+      }
+      <GridCol col={{ span: isCore ? 12 : 10 }} style={{ height: '176px' }}>
         <VenueDevicesWidget />
       </GridCol>
 
-      <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
-        <VenueHealth filters={filters}/>
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
+          <VenueHealth filters={filters}/>
+        </GridCol>
+      }
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
         <TopologyFloorPlanWidget
@@ -125,21 +149,27 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
 }
 
 function ApWidgets (props: { filters: AnalyticsFilter }) {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const filters = props.filters
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TrafficByVolume filters={filters} />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <NetworkHistory filters={filters} />
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <NetworkHistory filters={filters} />
+        </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopApplicationsByTraffic filters={filters} />
-      </GridCol>
+      {!isCore &&
+        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <TopApplicationsByTraffic filters={filters} />
+        </GridCol>
+      }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSSIDsByTraffic filters={filters} />
       </GridCol>

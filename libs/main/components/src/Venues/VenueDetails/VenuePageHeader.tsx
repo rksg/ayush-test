@@ -1,17 +1,17 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { EnforcedButton, usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
-import { useVenueDetailsHeaderQuery }                       from '@acx-ui/rc/services'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }                             from '@acx-ui/rc/components'
+import { useVenueDetailsHeaderQuery }                               from '@acx-ui/rc/services'
 import {
-  ConfigTemplateType,
   CommonUrlsInfo,
-  SwitchRbacUrlsInfo,
+  PropertyUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
-  VenueDetailHeader
+  VenueDetailHeader,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -44,8 +44,10 @@ function DatePicker () {
 function VenuePageHeader () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId, activeTab } = useParams()
-  const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
+  const { tenantId, venueId, activeTab, activeSubTab, categoryTab } = useParams()
+  const isWifiReportView = (activeSubTab === 'wifi' && categoryTab === 'overview')
+  // eslint-disable-next-line max-len
+  const enableTimeFilter = () => !['clients', 'networks', 'services', 'units'].includes(activeTab as string)
 
   const { data } = useVenueDetailsHeaderQuery({
     params: { tenantId, venueId },
@@ -68,14 +70,16 @@ function VenuePageHeader () {
       title={data?.venue?.name || ''}
       breadcrumb={breadcrumb}
       extra={[
-        enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
-        ...filterByAccess([<EnforcedButton
-          configTemplateType={ConfigTemplateType.VENUE}
-          instanceId={venueId}
+        // eslint-disable-next-line max-len
+        enableTimeFilter() || isWifiReportView ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
+        ...filterByAccess([<Button
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
@@ -85,7 +89,7 @@ function VenuePageHeader () {
               }
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>])
+        >{$t({ defaultMessage: 'Configure' })}</Button>])
       ]}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />

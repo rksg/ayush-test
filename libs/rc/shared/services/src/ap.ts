@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }        from '@acx-ui/components'
+import { Filter }             from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -93,7 +93,10 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   APLanPortSettings,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecUrls,
+  IpsecViewData,
+  ApExternalAntennaSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -102,6 +105,7 @@ import {
   ApiInfo,
   batchApi,
   createHttpRequest,
+  getEnabledDialogImproved,
   ignoreErrorModal
 } from '@acx-ui/utils'
 
@@ -366,7 +370,7 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...ignoreErrorModal,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal),
           ...apiCustomHeader
         })
         return {
@@ -463,7 +467,9 @@ export const apApi = baseApApi.injectEndpoints({
           const activities = [
             'UpdateAp',
             'UpdateApCustomization',
-            'ResetApCustomization'
+            'ResetApCustomization',
+            'ActivateMulticastDnsProxyProfile',
+            'DeactivateMulticastDnsProxyProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
@@ -490,7 +496,7 @@ export const apApi = baseApApi.injectEndpoints({
           const apListQueryPayload = {
             fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { id: [ap.serialNumber] }
+            filters: { serialNumber: [ap.serialNumber] }
           }
           const apListQuery = await fetchWithBQ({
             ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
@@ -522,8 +528,8 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateAp, params, {
-          ...ignoreErrorModal,
-          ...apiCustomHeader
+          ...apiCustomHeader,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal)
         })
         return {
           ...req,
@@ -931,7 +937,8 @@ export const apApi = baseApApi.injectEndpoints({
         params, enableRbac,
         enableEthernetProfile,
         enableSoftGreOnEthernet,
-        enableClientIsolationOnEthernet
+        enableClientIsolationOnEthernet,
+        enableIpsecOverNetwork
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -1031,6 +1038,29 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
 
+        if (enableIpsecOverNetwork) {
+          const ipsecReq = {
+            ...createHttpRequest(IpsecUrls.getIpsecViewDataList),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const ipsecListQuery = await fetchWithBQ(ipsecReq)
+          const ipsecList = ipsecListQuery.data as TableResult<IpsecViewData>
+          if (ipsecList.data && apLanPorts.lanPorts) {
+            for (let ipsec of ipsecList.data) {
+              findTargetLanPorts(apLanPorts, ipsec.apActivations, params.serialNumber).forEach(targetPort => {
+                targetPort.ipsecProfileId = ipsec.id
+                targetPort.ipsecEnabled = true
+              })
+            }
+          }
+        }
+
         if (enableClientIsolationOnEthernet) {
           const clientIsolationReq = {
             ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
@@ -1104,7 +1134,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true) && (!!!l.ipsecEnabled))
             .map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1115,6 +1145,17 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const ipsecActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                softGreProfileId: l.softGreProfileId,
+                ipsecProfileId: l.ipsecProfileId
               }
             }))
           const clientIsolationActivateRequests = apSettings?.lanPorts
@@ -1154,6 +1195,9 @@ export const apApi = baseApApi.injectEndpoints({
           if(!useVenueSettings) {
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(IpsecUrls.activateIpsecOnApLanPort,
+              ipsecActivateRequests!, fetchWithBQ, customHeaders)
 
             await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
               clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
@@ -1261,6 +1305,27 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    getApExternalAntennaSettings: build.query<ApExternalAntennaSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApExternalAntennaSettings, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
+    }),
+    updateApExternalAntennaSettings: build.mutation<CommonResult, RequestPayload<ApExternalAntennaSettings>>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApExternalAntennaSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
     }),
     getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
@@ -1830,6 +1895,8 @@ export const {
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
+  useLazyGetApExternalAntennaSettingsQuery,
+  useUpdateApExternalAntennaSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,
@@ -1879,7 +1946,6 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
-  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,

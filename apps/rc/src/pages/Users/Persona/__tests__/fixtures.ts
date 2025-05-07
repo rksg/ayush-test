@@ -12,7 +12,10 @@ import {
   PropertyConfigStatus,
   ConnectionMetering,
   BillingCycleType,
-  DPSKDeviceInfo
+  DPSKDeviceInfo,
+  PropertyUnit,
+  PropertyUnitStatus,
+  ExternalIdentity
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -71,6 +74,13 @@ export const mockPersona: Persona = {
   ],
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
   expirationDate: moment().add(-8, 'days').toISOString()
+}
+
+export const mockUnit: PropertyUnit = {
+  id: 'unit-id-1',
+  name: 'unit-id-name',
+  status: PropertyUnitStatus.ENABLED,
+  personaId: 'persona-id-1'
 }
 
 export const mockPersonaGroup: PersonaGroup = {
@@ -332,4 +342,40 @@ export const mockConnectionMeteringTable : NewTableResult<ConnectionMetering> = 
   totalPages: 1,
   totalElements: 4,
   sort: defaultPageable.sort
+}
+
+export const mockExternalIdentity: ExternalIdentity = {
+  id: 'id',
+  userId: 'userId',
+  identityProviderId: 'idpId',
+  identityProviderType: 'SAML',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  displayName: 'displayName',
+  roles: ['r1'],
+  groups: null,
+  email: 'user@email.com',
+  phoneNumber: '+12334566',
+  organization: 'org'
+}
+
+export const mockExternalIdentityList: NewTableResult<ExternalIdentity> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [{
+    id: 'id',
+    userId: 'userId',
+    identityProviderId: 'idpId',
+    identityProviderType: 'SAML',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    displayName: 'displayName',
+    roles: ['r1'],
+    groups: null,
+    email: 'user@email.com',
+    phoneNumber: '+12334566',
+    organization: 'org'
+  }]
 }

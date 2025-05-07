@@ -167,7 +167,12 @@ export function DistributionSwitchDrawer (props: {
         </Form.Item>
         <Form.Item name='loopbackInterfaceIp'
           label={$t({ defaultMessage: 'Loopback Interface IP Address' })}
-          rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            // eslint-disable-next-line max-len
+            { validator: (_, value) => validateLoopbackIpUnique(value, dsId, pinForm.getFieldValue('distributionSwitchInfos') || []) }
+          ]}>
           <Input />
         </Form.Item>
         {isEdgePinEnhanceReady && <UI.StyledTextParagraph
@@ -324,6 +329,27 @@ export function subnetMaskIpRegExp (value: string) {
   const re = new RegExp('^((128|192|224|240|248|252|254)\.0\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0)|255\.(0|128|192|224|240|248|252|254|255)))))$')
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.subnetMask))
+  }
+  return Promise.resolve()
+}
+
+export function validateLoopbackIpUnique (
+  loopbackIp: string,
+  dsId: string,
+  distributionSwitchInfos: DistributionSwitch[]
+) {
+  const { $t } = getIntl()
+  if (!loopbackIp) return Promise.resolve()
+
+  // Get all distribution switch IPs except the one being edited
+  const usedIPs = distributionSwitchInfos
+    .filter((ds: DistributionSwitch) => ds.id !== dsId)
+    .map((ds: DistributionSwitch) => ds.loopbackInterfaceIp)
+
+  if (usedIPs.includes(loopbackIp)) {
+    return Promise.reject($t({
+      defaultMessage: 'This IP address is already used by another distribution switch'
+    }))
   }
   return Promise.resolve()
 }

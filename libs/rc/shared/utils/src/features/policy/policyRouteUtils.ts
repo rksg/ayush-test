@@ -34,6 +34,7 @@ const operationPathMapping: Record<PolicyOperation, string> = {
 export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
+  [PolicyType.SWITCH_ACCESS_CONTROL]: 'accessControls',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
   [PolicyType.WIFI_OPERATOR]: 'wifiOperator',
   [PolicyType.IDENTITY_PROVIDER]: 'identityProvider',
@@ -63,7 +64,9 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.SERVER_CERTIFICATES]: 'serverCertificates',
   [PolicyType.DIRECTORY_SERVER]: 'directoryServer',
   [PolicyType.PORT_PROFILE]: 'portProfile',
-  [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile'
+  [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile',
+  [PolicyType.IPSEC]: 'ipsec',
+  [PolicyType.SAML_IDP]: 'samlIdp'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

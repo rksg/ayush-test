@@ -168,10 +168,11 @@ export function AssignedSubscriptionTable () {
         const type = solutionTokenFFToggled
           ? response?.licenseType === 'APSW'
             ? $t({ defaultMessage: 'Device Networking' })
-            : $t({ defaultMessage: 'Devices' })
-          : response?.licenseType === 'SLTN_TOKEN'
-            ? $t({ defaultMessage: 'Solution Tokens' })
-            : $t({ defaultMessage: 'Devices' })
+            : response?.licenseType === 'SLTN_TOKEN'
+              ? $t({ defaultMessage: 'Solution Tokens' })
+              : $t({ defaultMessage: 'Devices' })
+          : $t({ defaultMessage: 'Devices' })
+
         return {
           ...response,
           name: (response?.isTrial

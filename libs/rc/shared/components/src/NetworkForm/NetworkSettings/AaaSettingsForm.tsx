@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Input, Radio, Space } from 'antd'
 import {
@@ -21,9 +21,9 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { InformationSolid }                from '@acx-ui/icons'
-import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import { useGetCertificateTemplatesQuery }                        from '@acx-ui/rc/services'
 import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
@@ -37,9 +37,12 @@ import {
   hasPolicyPermission,
   macAuthMacFormatOptions,
   useConfigTemplate,
-  SecurityOptionsDescription
+  SecurityOptionsDescription,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import {
   ApCompatibilityDrawer,
@@ -55,6 +58,8 @@ import NetworkFormContext                                      from '../NetworkF
 import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                                                 from '../styledComponents'
 
+import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
+
 
 const { Option } = Select
 
@@ -65,10 +70,11 @@ export function AaaSettingsForm () {
   const form = Form.useFormInstance()
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [hasSetRuckusAiFields, setRuckusAiFields] = useState(false)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
@@ -139,6 +145,8 @@ function SettingsForm () {
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
@@ -212,6 +220,12 @@ function SettingsForm () {
             </Radio.Group>
           </Form.Item>
         </div>
+        {
+          (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
+          <Form.Item>
+            <IdentityGroup comboWidth='210px' />
+          </Form.Item>
+        }
         <div>
           {useCertificateTemplate ? <CertAuth /> : <AaaService />}
         </div>
@@ -246,6 +260,7 @@ function CertAuth () {
         </GridCol>
         { hasPolicyPermission({
           type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          hasAllowedOperations([getOpsApi(CertificateUrls.addCertificateTemplate)]) &&
         <Button
           type='link'
           style={{ top: '28px' }}
@@ -291,8 +306,10 @@ function AaaService () {
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
 
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+    && isRadSecFeatureTierAllowed
 
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
@@ -323,13 +340,13 @@ function AaaService () {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAuthProxy', true)
     }
-  }, [selectedAuthRadius])
+  }, [supportRadsec, selectedAuthRadius])
 
   useEffect(() => {
     if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
       form.setFieldValue('enableAccountingProxy', true)
     }
-  }, [selectedAcctRadius])
+  }, [supportRadsec, selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'

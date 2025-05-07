@@ -21,13 +21,15 @@ import {
   isRouter,
   SWITCH_TYPE,
   StackMember,
-  isFirmwareVersionAbove10020b
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { MacACLs }                           from '@acx-ui/switch/components'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
@@ -48,7 +50,8 @@ export function SwitchOverviewTab () {
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const [syncedStackMember, setSyncedStackMember] = useState([] as StackMember[])
-  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const switchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const switchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader, switchData } = switchDetailsContextData
@@ -109,6 +112,13 @@ export function SwitchOverviewTab () {
     })
   }
 
+  const onCategoryTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${params.activeSubTab}/${tab}`
+    })
+  }
+
 
   return <>
     <GridRow>
@@ -151,10 +161,25 @@ export function SwitchOverviewTab () {
       }
       {switchDetail &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
-          <SwitchOverviewACLs switchDetail={switchDetail} />
+          {switchMacAclEnabled &&
+            isFirmwareVersionAbove10010gCd1Or10020bCd1(switchDetail.firmware) ?
+            <Tabs
+              data-testid='MacACLsTabs'
+              onChange={onCategoryTabChange}
+              activeKey={params.categoryTab}
+              type='third'
+            >
+              <Tabs.TabPane tab={$t({ defaultMessage: 'Layer 2' })} key='layer2'>
+                <MacACLs switchDetail={switchDetail} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={$t({ defaultMessage: 'Layer 3' })} key='layer3'>
+                <SwitchOverviewACLs switchDetail={switchDetail} />
+              </Tabs.TabPane>
+            </Tabs> :
+            <SwitchOverviewACLs switchDetail={switchDetail} />}
         </Tabs.TabPane>
       }
-      {switchDetail && isSwitchPortProfileEnabled &&
+      {switchDetail && switchPortProfileEnabled &&
         isFirmwareVersionAbove10020b(switchDetail?.firmware) &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Port Profiles' })} key='portProfiles'>
           <SwitchOverviewPortProfiles switchDetail={switchDetail} />

@@ -6,11 +6,13 @@ import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Drawer }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Drawer }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyViewModelListQuery,
-  useGetEthernetPortProfileByIdQuery } from '@acx-ui/rc/services'
+  useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileTemplateQuery
+} from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortAuthType,
@@ -20,7 +22,9 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortCredentialTypeString,
   getEthernetPortTypeString,
-  getPolicyDetailsLink } from '@acx-ui/rc/utils'
+  getPolicyDetailsLink,
+  transformDisplayOnOff,
+  useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EthernetPortProfileDetailsDrawerProps {
@@ -37,6 +41,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const params = useParams()
   const { title, visible, setVisible, ethernetPortProfileData } = props
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -59,9 +64,11 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
     })
   })
 
-  const { data: ethernetData } = useGetEthernetPortProfileByIdQuery({
-    params: { id: ethernetPortProfileData?.id }
-  }, {
+  const { data: ethernetData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfileByIdQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
+    enableRbac: true,
+    extraParams: { id: ethernetPortProfileData?.id },
     skip: !ethernetPortProfileData?.id
   })
 
@@ -96,10 +103,20 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
       <Form.Item
         label={$t({ defaultMessage: '802.1X' })}
         children={
-          (ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED)?
-            'Off': 'On'
+          transformDisplayOnOff(!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED ||
+           ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN))
         }
       />
+      {enableClientVisibility &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Client Visibility' })}
+          children={
+            transformDisplayOnOff(ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN ||
+            ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED ||
+            ethernetDataForDisplay?.authType === EthernetPortAuthType.PORT_BASED)
+          }
+        />
+      }
       {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED) &&
       <>
         <Divider/>
@@ -134,7 +151,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
 
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service(Auth)' })}
-            children={(ethernetDataForDisplay?.enableAuthProxy)? 'On' : 'Off'}
+            children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
           />
 
           <Form.Item
@@ -153,21 +170,21 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
           />
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service(Accounting)' })}
-            children={(ethernetDataForDisplay?.enableAuthProxy)? 'On' : 'Off'}
+            children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
           />
 
           {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
           <>
             <Form.Item
               label={$t({ defaultMessage: 'MAC Auth Bypass' })}
-              children={(ethernetDataForDisplay?.bypassMacAddressAuthentication)? 'On' : 'Off'}
+              children={transformDisplayOnOff(!!ethernetDataForDisplay?.bypassMacAddressAuthentication)}
             />
 
             {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
               <>
                 <Form.Item
                   label={$t({ defaultMessage: 'Dynamic VLAN' })}
-                  children={(ethernetDataForDisplay?.dynamicVlanEnabled)? 'On' : 'Off'}
+                  children={transformDisplayOnOff(!!ethernetDataForDisplay?.dynamicVlanEnabled)}
                 />
                 { ethernetDataForDisplay?.dynamicVlanEnabled &&
                   <Form.Item

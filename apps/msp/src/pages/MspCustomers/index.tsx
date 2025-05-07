@@ -37,7 +37,8 @@ import {
   MspEc,
   MSPUtils,
   MspEcTierEnum,
-  MspEcAccountType
+  MspEcAccountType,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -48,10 +49,10 @@ import {
   SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 import * as UI    from '../Subscriptions/styledComponent'
@@ -66,7 +67,7 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isAssignMultipleEcEnabled =
-    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
   const MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE = 100
 
@@ -75,7 +76,7 @@ export function MspCustomers () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
   const isUpgradeMultipleEcEnabled =
-    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
@@ -89,6 +90,7 @@ export function MspCustomers () {
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isCustomFilterEnabled = useIsSplitOn(Features.VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -118,11 +120,18 @@ export function MspCustomers () {
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
   const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignTechPartnerPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const allowManageAdmin =
-      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
+      (hasAssignAdminPermission && !userProfile?.support) || isSupportToMspDashboardAllowed
   const allowSelectTechPartner =
-      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+      (hasAssignTechPartnerPermission && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
@@ -145,7 +154,11 @@ export function MspCustomers () {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
-    }
+    },
+    option: {
+      skip: techPartnerAssignEcsEanbled
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   useEffect(() => {
@@ -429,7 +442,7 @@ export function MspCustomers () {
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
           return (
-            allowSelectTechPartner
+            (allowSelectTechPartner)
               ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
@@ -540,7 +553,8 @@ export function MspCustomers () {
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -562,6 +576,7 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.updateMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -577,6 +592,8 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
@@ -589,6 +606,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.mspEcFirmwareUpgradeSchedules)],
         visible: (selectedRows) => {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
@@ -603,6 +621,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -613,6 +632,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Deactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' &&
@@ -637,13 +657,15 @@ export function MspCustomers () {
               `
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
-            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
       },
       {
         label: $t({ defaultMessage: 'Reactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.reactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
             (selectedRows[0].status === 'Active' ||
@@ -666,13 +688,15 @@ export function MspCustomers () {
               { formattedName: name }
             ),
             okText: $t({ defaultMessage: 'Reactivate' }),
-            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -765,7 +789,8 @@ export function MspCustomers () {
       search: {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -875,14 +900,15 @@ export function MspCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink> : null,
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
-                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
+                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed)
+                  || !onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import { IntentDetail }   from '../../useIntentDetailsQuery'
-import { categoryStyles } from '../ComparisonDonutChart/services'
+import { cssStr } from '@acx-ui/components'
+
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
@@ -105,7 +106,11 @@ export const mockKpiData = {
       result: {
         unsupported: 10,
         enabled: 10,
-        disabled: 40
+        disabled: 40,
+        projectedPowerSaving: 15.1,
+        powerConsumption: 48,
+        maxApPower: 20,
+        minApPower: 10
       }
     },
     compareData: {
@@ -113,7 +118,11 @@ export const mockKpiData = {
       result: {
         unsupported: 10,
         enabled: 20,
-        disabled: 30
+        disabled: 30,
+        projectedPowerSaving: 30.2,
+        powerConsumption: 50,
+        maxApPower: 20,
+        minApPower: 5
       }
     }
   }
@@ -135,31 +144,31 @@ export const mockKpiResultData = {
   data: {
     timestamp: '2024-09-25T03:16:17.999Z',
     data: [ { value: 10,
-      name: 'are not supporting EcoFlex.',
-      color: categoryStyles[0].color
+      name: 'are not supporting Energy Saving.',
+      color: cssStr('--acx-viz-qualitative-1')
     },
     { value: 15,
-      name: 'are not supporting and disabling EcoFlex.',
-      color: categoryStyles[1].color
+      name: 'are not supporting and disabling Energy Saving.',
+      color: cssStr('--acx-semantics-green-30')
     },
     { value: 35,
-      name: 'are not supporting and enabling EcoFlex.',
-      color: categoryStyles[2].color
+      name: 'are not supporting and enabling Energy Saving.',
+      color: cssStr('--acx-accents-orange-50')
     }]
   },
   compareData: {
     timestamp: '2024-09-24T03:16:17.999Z',
     data: [ { value: 10,
-      name: 'are not supporting EcoFlex.',
-      color: categoryStyles[0].color
+      name: 'are not supporting Energy Saving.',
+      color: cssStr('--acx-viz-qualitative-1')
     },
     { value: 20,
-      name: 'are not supporting and disabling EcoFlex.',
-      color: categoryStyles[1].color
+      name: 'are not supporting and disabling Energy Saving.',
+      color: cssStr('--acx-semantics-green-30')
     },
     { value: 30,
-      name: 'are not supporting and enabling EcoFlex.',
-      color: categoryStyles[2].color
+      name: 'are not supporting and enabling Energy Saving.',
+      color: cssStr('--acx-accents-orange-50')
     }]
   }
 }
@@ -197,3 +206,33 @@ export const mockNetworkNodes = [
     ]
   }
 ]
+
+
+export const mockedKpiData = {
+  data: {
+    timestamp: '2025-04-01T00:00:00Z',
+    data: {
+      projectedPowerSaving: 15.1,
+      enabled: 80,
+      disabled: 10,
+      unsupported: 10,
+      powerConsumption: 48,
+      maxApPower: 20,
+      minApPower: 10,
+      apTotalCount: 100
+    }
+  },
+  compareData: {
+    timestamp: '2025-03-01T00:00:00Z',
+    data: {
+      projectedPowerSaving: 30.2,
+      enabled: 10,
+      disabled: 80,
+      unsupported: 10,
+      powerConsumption: 50,
+      maxApPower: 20,
+      minApPower: 5,
+      apTotalCount: 100
+    }
+  }
+}

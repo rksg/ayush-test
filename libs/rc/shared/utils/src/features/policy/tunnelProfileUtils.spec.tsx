@@ -1,9 +1,9 @@
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelTypeEnum } from '../../models'
-import { TunnelProfile, TunnelProfileViewData }                            from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
+import { TunnelProfile, TunnelProfileViewData }                                                    from '../../types/policies/tunnelProfile'
 
-import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
+import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getTunnelTypeString, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const defaultVxLANProfileName = 'Default tunnel profile (PIN)'
@@ -24,7 +24,7 @@ const mockedVxlanDefaultTunnelProfileViewData = {
 const mockedVlanVxlanDefaultTunnelProfileViewData = {
   ...mockedVxlanDefaultTunnelProfileViewData,
   id: `SL${tenantId}`,
-  type: TunnelTypeEnum.VLAN_VXLAN,
+  type: NetworkSegmentTypeEnum.VLAN_VXLAN,
   name: defaultVLANVxLANProfileName
 }
 
@@ -142,7 +142,8 @@ describe('tunnelProfileUtils', () => {
         ])
     })
     it('should return vxlan default when is only need vxlan', () => {
-      expect(getTunnelProfileOptsWithDefault(mockedNoDefaultTunnelProfiles, TunnelTypeEnum.VXLAN))
+      // eslint-disable-next-line max-len
+      expect(getTunnelProfileOptsWithDefault(mockedNoDefaultTunnelProfiles, NetworkSegmentTypeEnum.VXLAN))
         .toStrictEqual([
           { label: mockedNonDefaultProfile.name, value: mockedNonDefaultProfile.id },
           { label: defaultVxLANProfileName, value: tenantId }
@@ -151,7 +152,7 @@ describe('tunnelProfileUtils', () => {
 
     it('should return vlan_vxlan default when is only need vlan_vxlan', () => {
       // eslint-disable-next-line max-len
-      expect(getTunnelProfileOptsWithDefault(mockedNoDefaultTunnelProfiles, TunnelTypeEnum.VLAN_VXLAN))
+      expect(getTunnelProfileOptsWithDefault(mockedNoDefaultTunnelProfiles, NetworkSegmentTypeEnum.VLAN_VXLAN))
         .toStrictEqual([
           { label: mockedNonDefaultProfile.name, value: mockedNonDefaultProfile.id },
           { label: defaultVLANVxLANProfileName, value: `SL${tenantId}` }
@@ -281,6 +282,22 @@ describe('tunnelProfileUtils', () => {
 
     it('should handle undefined', () => {
       expect(mtuRequestTimeoutUnitConversion(undefined)).toStrictEqual(undefined)
+    })
+  })
+
+  describe('getTunnelTypeString', () => {
+    const mockT = ({ defaultMessage }: { defaultMessage: string }) => defaultMessage
+
+    it('should return VXLAN GPE', () => {
+      expect(getTunnelTypeString(mockT, TunnelTypeEnum.VXLAN_GPE))
+        .toStrictEqual('VXLAN GPE')
+    })
+    it('should return L2GRE', () => {
+      expect(getTunnelTypeString(mockT, TunnelTypeEnum.L2GRE))
+        .toStrictEqual('L2GRE')
+    })
+    it('should return empty string when tunnel type is undefined', () => {
+      expect(getTunnelTypeString(mockT, undefined)).toStrictEqual('')
     })
   })
 })

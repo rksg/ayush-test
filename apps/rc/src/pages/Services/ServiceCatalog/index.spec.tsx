@@ -11,6 +11,7 @@ import {
 
 import ServiceCatalog from '.'
 
+const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
@@ -19,7 +20,8 @@ jest.mock('@acx-ui/rc/components', () => ({
     <div data-testid='EdgeCompatibilityDrawer'>
       {props.featureName}
     </div>,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -35,6 +37,10 @@ describe('ServiceCatalog', () => {
   }
 
   const path = '/t/:tenantId'
+
+  beforeEach(() => {
+    mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+  })
 
   it('should render service catalog', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -246,6 +252,34 @@ describe('ServiceCatalog', () => {
       })
 
       expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
+    })
+  })
+
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(<Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      })
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(<Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
     })
   })
 })

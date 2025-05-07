@@ -53,6 +53,7 @@ export default function MdnsProxyInstances () {
   const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Change' }),
+      rbacOpsIds: [getOpsApi(MdnsProxyUrls.addMdnsProxyApsRbac)],
       scopeKey: [WifiScopes.UPDATE],
       onClick: (rows: MdnsProxyAp[]) => {
         setSelectedApIds(rows.map(r => r.serialNumber))
@@ -62,6 +63,7 @@ export default function MdnsProxyInstances () {
     },
     {
       label: $t({ defaultMessage: 'Remove' }),
+      rbacOpsIds: [getOpsApi(MdnsProxyUrls.deleteMdnsProxyApsRbac)],
       scopeKey: [WifiScopes.UPDATE],
       onClick: (rows: MdnsProxyAp[], clearSelection) => {
         doDelete(rows, clearSelection)
@@ -114,7 +116,10 @@ export default function MdnsProxyInstances () {
       render: function (_, row) {
         return <Switch
           checked={true}
-          disabled={!hasPermission({ scopes: [WifiScopes.UPDATE] })}
+          disabled={!hasPermission({
+            scopes: [WifiScopes.UPDATE],
+            rbacOpsIds: [getOpsApi(MdnsProxyUrls.addMdnsProxyApsRbac)]
+          })}
           onChange={checked => {
             if (checked) return
 
@@ -144,6 +149,8 @@ export default function MdnsProxyInstances () {
     })
   }
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <>
       <UI.TableTitle>
@@ -162,10 +169,8 @@ export default function MdnsProxyInstances () {
           }])}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'radio' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
         />
       </Loader>
       <AddMdnsProxyInstanceDrawer

@@ -1,16 +1,50 @@
+import { useState, useEffect } from 'react'
+
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { divide, round }      from 'lodash'
 import { useIntl }            from 'react-intl'
 
 import { ClientHealth }                                                 from '@acx-ui/analytics/components'
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
+import { get }                                                          from '@acx-ui/config'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { formatter, convertEpochToRelativeTime }                        from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery }                                   from '@acx-ui/rc/services'
 import { Client, ClientStatistic, ClientStatusEnum }                    from '@acx-ui/rc/utils'
+import { PrivacyFeatureName }                                           from '@acx-ui/rc/utils'
 import { useParams }                                                    from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                                         from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+
+const useAppVisibility = (tenantId: string | undefined) => {
+  const isRA = Boolean(get('IS_MLISA_SA'))
+  const isAppPrivacyFFEnabled = useIsSplitOn(Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
+
+  const { data: privacySettings } = useGetPrivacySettingsQuery({
+    params: { tenantId }
+  })
+
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+
+  useEffect(() => {
+    if (!isAppPrivacyFFEnabled || isRA) {
+      setIsAppVisibilityEnabled(true)
+      return
+    }
+
+    if (privacySettings) {
+      const privacyVisibilitySetting = privacySettings
+        .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      setIsAppVisibilityEnabled(
+        privacyVisibilitySetting?.enforceDefault ||
+        Boolean(privacyVisibilitySetting?.isEnabled))
+    }
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
+
+  return isAppVisibilityEnabled
+}
 
 // eslint-disable-next-line
 export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters, connectedTimeStamp }: {
@@ -21,8 +55,9 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   connectedTimeStamp: string
 }) {
   const { $t } = useIntl()
-  const { clientId } = useParams()
+  const { clientId, tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isAppVisibilityEnabled = useAppVisibility(tenantId)
 
   const getTime = () => {
     if(isWifiRbacEnabled) {
@@ -94,7 +129,9 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
             $t({ defaultMessage: 'Applications' })
           }</UI.Title>
           <Subtitle level={2}>{
-            Math.floor(clientStatistic?.applications ?? 0)
+            isAppVisibilityEnabled
+              ? Math.floor(clientStatistic?.applications ?? 0)
+              : 'N/A'
           }</Subtitle>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>

@@ -7,10 +7,13 @@ import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 
 import { GridDataRow } from './'
 
-export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
-export const SWITCH_SERIAL_PATTERN_INCLUDED_8100=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
-export const SWITCH_SERIAL_PATTERN_INCLUDED_8200AV=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FPG|FPF)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
-export const SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB|FPG|FPF)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_BASE = '(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)'
+export const SWITCH_SERIAL_8100 = '(FNX|FNY|FNZ|FPA|FPB)'
+export const SWITCH_SERIAL_8200AV = '(FPG|FPF)'
+export const SWITCH_SERIAL_8100X = '(FPP|FPQ|FPR|FPS|FPT)'
+export const SWITCH_SERIAL_7550Zippy = '(FPH)'
+export const SWITCH_SERIAL_SUFFIX = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
+export const SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4]|98)([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
 
 export const SwitchPortViewModelQueryFields = [
   'adminStatus',
@@ -64,7 +67,12 @@ export const SwitchPortViewModelQueryFields = [
   'vlanIds',
   'vsixEgressAclName',
   'vsixIngressAclName',
-  'authDefaultVlan'
+  'authDefaultVlan',
+  'errorDisableStatus',
+  'stickyMacAclAllowList',
+  'stickyMacAclAllowCount',
+  'switchMacAcl',
+  'stackingNeighborPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -393,6 +401,11 @@ export interface StackMemberList {
   venueName: string
 }
 
+export interface StackMembers {
+  activeSerial: string,
+  members: StackMember[]
+}
+
 export interface ConfigurationHistory {
   switchName: string
   startTime: string
@@ -533,9 +546,14 @@ export interface SwitchPortViewModel extends GridDataRow {
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction?: string
-	authTimeoutAction?: string,
-  switchPortProfileName?: string,
+	authTimeoutAction?: string
+  switchPortProfileName?: string
   switchPortProfileType?: string
+  errorDisableStatus?: string
+  stickyMacAclAllowList?: string[]
+  stickyMacAclAllowCount?: number
+  switchMacAcl?: string
+  stackingNeighborPort?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1072,4 +1090,66 @@ export interface SwitchPortProfilesAppliedTargets {
 export enum PortProfileTabsEnum {
   WIFI = 'wifi',
   SWITCH = 'switch',
+}
+
+export enum NetworkTypeTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
+
+export interface PortDisableRecoverySetting {
+  bpduGuard: boolean,
+  loopDetection: boolean,
+  packetInError: boolean,
+  loamRemoteCriticalEvent: boolean,
+  pvstplusProtect: boolean,
+  bpduTunnelThreshold: boolean,
+  lagOperationalSpeedMismatch: boolean,
+  recoveryInterval?: number
+}
+
+export interface PortDisableRecoverySettingForm {
+  recoveryInterval: number,
+  recoverySetting: PortDisableRecoverySetting,
+}
+
+export interface SwitchAccessControl {
+  id: string,
+  policyName?: string,
+  description?: string,
+  accessControlPolicyName?: string,
+  layer2AclPolicyId?: string,
+  layer2AclPolicyName?: string
+}
+
+export interface MacAclRule {
+	id?: string,
+  key?: string,
+	action: string,
+	sourceAddress?: string,
+	sourceMask?: string,
+	destinationAddress?: string,
+	destinationMask?: string
+}
+
+export interface MacAclOverview {
+	id: string,
+	switchId: string,
+  switchName: string,
+  serialNumber: string,
+  model: string,
+  venueId: string,
+  venueName: string,
+  ports: string[]
+}
+
+export interface MacAcl {
+	id: string,
+	name: string,
+	appliedSwitchesInfo?: MacAclOverview[],
+	switchMacAclRules?: MacAclRule[],
+  macAclRules?: MacAclRule[],
+	switchId?: string,
+  customized?: boolean,
+  sharedWithPolicyAndProfile?: boolean
 }

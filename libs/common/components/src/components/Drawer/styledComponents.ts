@@ -4,7 +4,8 @@ import styled, { createGlobalStyle, css } from 'styled-components'
 export enum DrawerTypes {
   Default = 'default',
   FullHeight = 'fullHeight',
-  Left='left'
+  Left='left',
+  ModalLeft='modalLeft'
 }
 
 const fullHeightStyle = css`
@@ -15,13 +16,31 @@ const fullHeightStyle = css`
 `
 
 const leftStyle = css`
+:root .ant-drawer {
+  height: calc(100vh - var(--acx-header-height));
+  margin-top: var(--acx-header-height);
+  div.ant-drawer-content-wrapper {
+    border-radius: 0px;
+    .ant-drawer-content {
+      background: var(--acx-neutrals-10);
+      .ant-drawer-header {
+        border: 0px;
+      }
+    }
+  }
+}
+`
+
+const modalLeftStyle = css`
   :root .ant-drawer {
-    height: calc(100vh - var(--acx-header-height));
-    margin-top: var(--acx-header-height);
+    height: 100%;
+    margin: 0;
     div.ant-drawer-content-wrapper {
       border-radius: 0px;
       .ant-drawer-content {
-        background: var(--acx-neutrals-15);
+        background: var(--acx-neutrals-10);
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
         .ant-drawer-header {
           border: 0px;
         }
@@ -32,17 +51,55 @@ const leftStyle = css`
 const styles = {
   default: '',
   fullHeight: fullHeightStyle,
-  left: leftStyle
+  left: leftStyle,
+  modalLeft: modalLeftStyle
 }
 
 export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
   ${props => styles[props.$type]}
 `
 
-export const Drawer = styled(AntDrawer)`
+const getStepsFormStyle = (width: number | string) => {
+  const padding = 20
+
+  const formWidth = `calc(100% - ${padding}px)`
+  let formFooterWidth = typeof width === 'number' ? `${width}px` : width
+  formFooterWidth = `calc(${formFooterWidth} - ${padding}px)`
+
+  return `
+    .ant-pro-steps-form {
+      width: ${formWidth};
+    }
+
+    /* ACX-83679: Only apply styles to the StepsForm's footer action container,
+     not to other action containers (e.g., those inside .ant-form-item) */
+
+    .action-footer[class*="styledComponents__ActionsContainer"] {
+      padding-left: 20px;
+      margin-left: -16px;
+      display: flex;
+      width: ${formFooterWidth};
+      min-width: unset;
+      &:before {
+        position: unset;
+      }
+      &.single-step {
+        justify-content: flex-end;
+        .ant-space-horizontal {
+          flex-direction: row-reverse;
+        }
+      }
+    }
+
+  `
+}
+
+export const Drawer = styled(AntDrawer)<{ width: number | string }>`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
+
+    ${({ width }) => getStepsFormStyle(width)}
   }
 `
 
@@ -88,7 +145,7 @@ export const History = styled.div`
     .title {
       font-size: 10px;
       font-weight: 700;
-      line-height: 16px;   
+      line-height: 16px;
       color: var(--acx-neutrals-60);
       margin-bottom: 6px;
       padding: 20px 16px 0px;
@@ -97,7 +154,7 @@ export const History = styled.div`
     .chat {
       padding: 12px 16px;
       cursor: pointer;
-      &:hover { 
+      &:hover {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
       }

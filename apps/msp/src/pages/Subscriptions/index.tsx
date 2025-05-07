@@ -32,10 +32,11 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary } from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                      from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }               from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                                       from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                from '@acx-ui/rc/services'
 import {
+  AdminRbacUrlsInfo,
   dateSort,
   defaultSort,
   EntitlementDeviceType,
@@ -48,8 +49,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
-import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
-import { noDataDisplay }                                                    from '@acx-ui/utils'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -80,13 +81,6 @@ const defaultSelectedFilters: Filter = {
   status: ['VALID', 'FUTURE']
 }
 
-const entitlementSummaryPayload = {
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'ASSIGNED'
-  }
-}
-
 const entitlementRefreshPayload = {
   status: 'synchronize',
   usageType: 'ASSIGNED'
@@ -96,12 +90,18 @@ export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/mspLicenses', 'v')
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      [getOpsApi(MspRbacUrlsInfo.addMspAssignment), getOpsApi(MspRbacUrlsInfo.updateMspAssignment),
+        getOpsApi(MspRbacUrlsInfo.deleteMspAssignment)]
+    ])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const [hasAttentionNotes, setHasAttentionNotes] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
@@ -277,6 +277,7 @@ export function Subscriptions () {
     },
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -284,6 +285,7 @@ export function Subscriptions () {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         refreshEntitlement({ params: { tenantId }, payload: entitlementRefreshPayload,
           enableRbac: isEntitlementRbacApiEnabled })
@@ -407,11 +409,20 @@ export function Subscriptions () {
     const queryResults = useMspAssignmentSummaryQuery({
       params: useParams()
     },{
+      skip: isEntitlementRbacApiEnabled,
       selectFromResult: ({ data, ...rest }) => ({
         data,
         ...rest
       })
     })
+
+    const entitlementSummaryPayload = {
+      filters: {
+        licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+        usageType: 'ASSIGNED'
+      }
+    }
+
     const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
         { params: useParams(), payload: entitlementSummaryPayload },
@@ -456,10 +467,13 @@ export function Subscriptions () {
               const summary = summaryData[item.value]
               const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
                   (![EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP,
-                    EntitlementDeviceType.MSP_APSW_TEMP]
+                    EntitlementDeviceType.MSP_APSW_TEMP,
+                    EntitlementDeviceType.SLTN_TOKEN]
                     .includes(item.value) || isAssignedActive))
 
-              if (isvSmartEdgeEnabled && ![EntitlementDeviceType.MSP_SLTN_TOKEN,
+              if (isvSmartEdgeEnabled && ![
+                EntitlementDeviceType.SLTN_TOKEN,
+                EntitlementDeviceType.MSP_SLTN_TOKEN,
                 EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP].includes(item.value)) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
@@ -573,7 +587,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive || !isAdmin}
+              hidden={!isAssignedActive || !hasPermission}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>

@@ -45,9 +45,10 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const dpskWlanSecurity = useWatch('dpskWlanSecurity', form)
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   useEffect(()=>{
     // TODO: Remove deprecated codes below when RadSec feature is delivery
@@ -64,7 +65,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
     if(supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [data?.id])
+  }, [supportRadsec, data?.id])
 
   // only create mode
   useEffect(()=>{
@@ -114,9 +115,10 @@ function SettingsForm () {
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
@@ -131,6 +133,10 @@ function SettingsForm () {
   ) => {
     if(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed && isCloudpathEnabled) {
       setData && setData({ ...data, enableAccountingProxy: false, enableAuthProxy: false })
+      form.setFieldsValue({
+        enableAccountingProxy: false,
+        enableAuthProxy: false
+      })
     }
   }
   useEffect(()=>{
@@ -138,15 +144,21 @@ function SettingsForm () {
   },[data])
 
   useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data, wlanSecurity: dpskWlanSecurity })
-  },[data?.id, data?.wlanSecurity, dpskWlanSecurity])
+    supportRadsec && form.setFieldsValue({ ...data })
+  },[data?.id])
 
   useEffect(() => {
     if (!isSupportDpsk3NonProxyMode && dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
       form.setFieldValue('isCloudpathEnabled', false)
 
     handleDpsk3NonProxyMode(dpskWlanSecurity, isCloudpathEnabled)
+
   }, [dpskWlanSecurity, isCloudpathEnabled])
+
+  useEffect(() => {
+    form.setFieldValue('wlanSecurity', dpskWlanSecurity)
+    form.setFieldValue(['wlan', 'wlanSecurity'], dpskWlanSecurity)
+  }, [dpskWlanSecurity])
 
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)

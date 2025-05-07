@@ -1,13 +1,17 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi, policyApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { venueApi, policyApi }    from '@acx-ui/rc/services'
 import {
   AdministrationUrlsInfo,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  IpsecUrls,
   LanPortsUrls,
+  SoftGreUrls,
   SwitchUrlsInfo,
   SyslogUrls,
   WifiRbacUrlsInfo,
@@ -178,11 +182,21 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       ),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockedUseIsConfigTemplateGA.mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    Modal.destroyAll()
   })
 
   describe('Overview', () => {
@@ -414,6 +428,33 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
         await showUnsavedChangesModal('Networking', buttonAction.SAVE_CHANGES)
       })
+      it('should not open unsaved changes modal when this venue is enforced', async () => {
+        // eslint-disable-next-line max-len
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_ENFORCED_VENUE)
+
+        mockServer.use(
+          rest.get(CommonUrlsInfo.getVenue.url,
+            (_, res, ctx) => res(ctx.json({
+              ...venueData,
+              isEnforced: true
+            }))
+          )
+        )
+
+        render(<Provider><VenueEdit /></Provider>, {
+          route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        })
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+        await waitFor(() => screen.findByText('AP Model'))
+        await updateMeshNetwork()
+
+        const advancedTab = screen.getByRole('tab', { name: 'Advanced' })
+        await userEvent.click(advancedTab)
+
+        // Check if the advanced tab is selected
+        // eslint-disable-next-line max-len
+        expect(await screen.findByRole('heading', { name: 'Access Point LEDs', level: 3 })).toBeVisible()
+      })
     })
 
     describe('Radio', () => {
@@ -489,7 +530,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await userEvent.click(toggle50G)
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Radio', buttonAction.SAVE_CHANGES)
+        await showUnsavedChangesModal('Radio', buttonAction.DISCARD_CHANGES)
       })
     })
 

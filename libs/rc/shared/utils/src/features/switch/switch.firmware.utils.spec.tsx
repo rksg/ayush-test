@@ -1,4 +1,10 @@
-import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
+import {
+  compareSwitchVersion,
+  isVerGEVer,
+  invalidVersionFor82Av,
+  invalidVersionFor81X,
+  invalidVersionFor75Zippy
+} from './switch.firmware.utils'
 
 
 describe('switch.firmware.utils', () => {
@@ -79,5 +85,42 @@ describe('switch.firmware.utils', () => {
     expect(isVerGEVer('SPR10010f_b467', '10010f', false)).toBe(true)
     expect(isVerGEVer('10010f_b467', '10020', false)).toBe(false)
     expect(isVerGEVer('SPR10010f_b467', '10020', false)).toBe(false)
+  })
+
+  it('should check unsupported versions of ICX8200AV switch', () => {
+    expect(invalidVersionFor82Av('09010h_cd1_rc80')).toBe(true)
+    expect(invalidVersionFor82Av('10010b_b36')).toBe(true)
+    expect(invalidVersionFor82Av('10020a_cd1_rc22')).toBe(true)
+
+
+    expect(invalidVersionFor82Av('10010f_b467')).toBe(false)
+    expect(invalidVersionFor82Av('10010f_cd1_rc11')).toBe(false)
+    expect(invalidVersionFor82Av('10020b_cd2')).toBe(false)
+    expect(invalidVersionFor82Av('10020c_cd2_rc11')).toBe(false)
+  })
+
+  it('should check unsupported versions of ICX8100X switch', () => {
+    expect(invalidVersionFor81X('09010h_cd1_rc80')).toBe(true)
+    expect(invalidVersionFor81X('10010b_b36')).toBe(true)
+    expect(invalidVersionFor81X('10010f_cd2')).toBe(true)
+    expect(invalidVersionFor81X('10020a_cd1_rc22')).toBe(true)
+    expect(invalidVersionFor81X('10020b_cd2')).toBe(true)
+    expect(invalidVersionFor81X('10010g_b123')).toBe(true)
+    expect(invalidVersionFor81X('10010g_rc641')).toBe(true)
+
+    expect(invalidVersionFor81X('10010g_cd1_rc13')).toBe(false)
+    expect(invalidVersionFor81X('10020c_cd2_rc11')).toBe(false)
+  })
+
+  it('should check unsupported versions of ICX7550 Zippy switch', () => {
+    expect(invalidVersionFor75Zippy('09010h_cd1_rc80')).toBe(true)
+    expect(invalidVersionFor75Zippy('10010b_b36')).toBe(true)
+    expect(invalidVersionFor75Zippy('10010f_cd2')).toBe(true)
+    expect(invalidVersionFor75Zippy('10010g_b123')).toBe(true)
+    expect(invalidVersionFor75Zippy('10020_rc55')).toBe(true)
+    expect(invalidVersionFor75Zippy('10020b_b555')).toBe(true)
+
+    expect(invalidVersionFor75Zippy('10020b_cd1_rc11')).toBe(false)
+    expect(invalidVersionFor75Zippy('10020c_cd2_rc11')).toBe(false)
   })
 })

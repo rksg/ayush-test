@@ -5,9 +5,9 @@ import { Col, Divider, Form, Row } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }                from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery }  from '@acx-ui/rc/services'
+import { StepsFormLegacy, Subtitle }                              from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
 import {
   Demo,
   GuestNetworkTypeEnum,
@@ -52,8 +52,9 @@ export function SummaryForm (props: {
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const isRuckusAiMode = (useContext(NetworkFormContext)?.isRuckusAiMode || props.isRuckusAiMode === true)
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const { summaryData, portalData, extraData, ruckusAiSummaryTitle } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
@@ -138,6 +139,13 @@ export function SummaryForm (props: {
             <Form.Item
               label={$t({ defaultMessage: 'Directory Server:' })}
               children={extraData?.directoryServer?.name ?? ''}
+            />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.SAML &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Provider (IdP) via SAML:' })}
+              children={summaryData.samlIdpProfilesName ?? ''}
             />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
             summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&

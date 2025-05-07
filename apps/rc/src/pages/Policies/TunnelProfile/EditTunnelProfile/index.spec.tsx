@@ -1,19 +1,21 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
-import { edgeSdLanApi, pinApi, tunnelProfileApi }                                                      from '@acx-ui/rc/services'
-import { EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                              from '@acx-ui/test-utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                         from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, pinApi, tunnelProfileApi }                                                                                         from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, EdgeUrlsInfo, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                                 from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
 
 const {
   mockedTunnelProfileData,
-  mockedDefaultTunnelProfileData
+  mockedDefaultTunnelProfileData,
+  mockedTunnelTypeL2greData
 } = EdgeTunnelProfileFixtures
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedSdLanDataListP2, mockedL2oGreSdLanDataList } = EdgeSdLanFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -31,6 +33,20 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 const editViewPath = '/:tenantId/t/policies/tunnelProfile/:policyId/edit'
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useTunnelProfileActions: () => ({
+    updateTunnelProfileOperation: jest.fn(() => {
+      mockedUsedNavigate({
+        pathname: editViewPath,
+        hash: '',
+        search: ''
+      })
+      return Promise.resolve()
+    })
+  })
+}))
 
 describe('EditTunnelProfile', () => {
   let params: { tenantId: string, policyId: string }
@@ -50,6 +66,35 @@ describe('EditTunnelProfile', () => {
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
         (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterServiceList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [
+            {
+              serviceId: 'service1',
+              edgeClusterId: 'cluster1',
+              serviceType: 'TUNNEL_PROFILE'
+            },
+            {
+              serviceId: 'service2',
+              edgeClusterId: 'cluster2',
+              serviceType: 'TUNNEL_PROFILE'
+            }
+          ]
+        }))
       )
     )
   })
@@ -61,6 +106,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
@@ -192,8 +238,6 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqPin).toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).toBeDisabled()
       jest.mocked(useIsTierAllowed).mockReset()
     })
 
@@ -226,8 +270,6 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqPin).not.toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).toBeDisabled()
       expect(screen.queryByText('Enable NAT-T Support')).not.toBeInTheDocument()
     })
   })
@@ -302,5 +344,141 @@ describe('EditTunnelProfile', () => {
       expect(natTraversalSwitch).toBeDisabled()
     })
 
+  })
+
+  describe('when L2GRE is ready', () => {
+    const mockPinList = {
+      totalCount: 0,
+      data: []
+    }
+
+    const mockedSdLanDataList = {
+      totalCount: 1,
+      data: [{ id: 'testSDLAN' }]
+    }
+
+    const mockedReqSdLan = jest.fn()
+    const mockedReqPin = jest.fn()
+    beforeEach(() => {
+      store.dispatch(edgeSdLanApi.util.resetApiState())
+      store.dispatch(pinApi.util.resetApiState())
+      mockedReqSdLan.mockClear()
+      mockedReqPin.mockClear()
+
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_SD_LAN_TOGGLE ||
+          flag === Features.EDGES_TOGGLE ||
+          flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
+          flag === Features.EDGE_PIN_HA_TOGGLE ||
+          flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
+          flag === Features.EDGE_L2OGRE_TOGGLE
+        ) return true
+        return false
+      })
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json(mockedSdLanDataList))
+          }
+        ),
+        rest.post(
+          EdgePinUrls.getEdgePinStatsList.url,
+          (_, res, ctx) => {
+            mockedReqPin()
+            return res(ctx.json(mockPinList))
+          }
+        )
+      )
+    })
+
+    it('should lock type fields when it is used in PIN / SD-LAN P1', async () => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
+
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params } }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      expect(mockedReqPin).toBeCalled()
+
+      jest.mocked(useIsTierAllowed).mockReset()
+    })
+
+    it('should lock disabled fields when it is used in SD-LAN HA case', async () => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json({ data: mockedL2oGreSdLanDataList }))
+          }
+        )
+      )
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params: {
+          ...params,
+          policyId: mockedL2oGreSdLanDataList[0].tunnelProfileId
+        } } }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      expect(mockedReqPin).not.toBeCalled()
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+      expect(screen.getByRole('combobox', { name: 'Destination RUCKUS Edge cluster' }))
+        .toBeDisabled()
+      jest.mocked(useIsTierAllowed).mockReset()
+    })
+
+    it('should lock disabled fields when it is used in SD-LAN network tunneling', async () => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json({ data: mockedL2oGreSdLanDataList }))
+          }
+        )
+        ,
+        rest.get(
+          TunnelProfileUrls.getTunnelProfile.url,
+          (_, res, ctx) => res(ctx.json(mockedTunnelTypeL2greData))
+        )
+      )
+
+      const policyId = mockedL2oGreSdLanDataList[0]?.tunneledWlans?.[0]?.forwardingTunnelProfileId
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params: {
+          ...params,
+          policyId: policyId
+        } } }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      expect(mockedReqPin).not.toBeCalled()
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+      expect(await screen.findByRole('textbox', { name: 'Destination IP Address' })).toBeDisabled()
+      jest.mocked(useIsTierAllowed).mockReset()
+    })
   })
 })

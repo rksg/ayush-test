@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { overlapsRollup }                                     from '@acx-ui/analytics/utils'
+import { defaultSort, overlapsRollup, sortProp }              from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, NoGranularityText } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
 import { TenantLink }                                         from '@acx-ui/react-router-dom'
@@ -65,35 +65,41 @@ function ImpactedSwitchesTable (props: {
         }>
         {highlightFn(name)}
       </TenantLink>,
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     key: 'mac',
     dataIndex: 'mac',
     title: $t({ defaultMessage: 'Switch MAC' }),
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('mac', defaultSort) }
   }, {
     key: 'portNumber',
     dataIndex: 'portNumber',
     title: $t({ defaultMessage: 'Switch Port/LAG' }),
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('portNumber', defaultSort) }
   },
   {
     key: 'connectedDevicePort',
     dataIndex: 'devicePort',
     title: $t({ defaultMessage: 'Peer Port' }),
     width: 150,
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('devicePort', defaultSort) }
   }, {
     key: 'connectedDeviceName',
     dataIndex: 'deviceName',
     title: $t({ defaultMessage: 'Peer Device' }),
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('deviceName', defaultSort) }
   }, {
     key: 'connectedDeviceMac',
     dataIndex: 'deviceMac',
     title: $t({ defaultMessage: 'Peer Device MAC' }),
     width: 150,
-    searchable: true
+    searchable: true,
+    sorter: { compare: sortProp('deviceMac', defaultSort) }
   }
   ]
 

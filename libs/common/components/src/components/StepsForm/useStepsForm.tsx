@@ -1,12 +1,12 @@
 import React, { ReactNode, useState } from 'react'
 
-import { Col, Form, Row, Space, Steps }    from 'antd'
-import _                                   from 'lodash'
-import { ValidateErrorEntity }             from 'rc-field-form/es/interface'
-import { useIntl }                         from 'react-intl'
-import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
+import { Col, Form, Row, Space, Steps, Tooltip } from 'antd'
+import _                                         from 'lodash'
+import { ValidateErrorEntity }                   from 'rc-field-form/es/interface'
+import { useIntl }                               from 'react-intl'
+import { useStepsForm as useStepsFormAnt }       from 'sunflower-antd'
 
-import { Button } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
@@ -22,6 +22,11 @@ export const enum StepsFormActionButtonEnum {
 
 function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
+}
+
+export type CustomButtonPropsType = {
+  disabled?: boolean
+  tooltip?: string | React.ReactNode
 }
 
 type UseStepsFormParam <T> = Omit<
@@ -48,6 +53,10 @@ type UseStepsFormParam <T> = Omit<
     apply?: string
   }
 
+  buttonProps?: {
+    apply?: CustomButtonPropsType
+  }
+
   customSubmit?: {
     label: string,
     onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
@@ -63,6 +72,7 @@ export function useStepsForm <T> ({
   editMode,
   steps,
   buttonLabel = {},
+  buttonProps = {},
   onFinish,
   onCancel,
   onFinishFailed,
@@ -234,14 +244,15 @@ export function useStepsForm <T> ({
     />,
     // TODO:
     // - handle disable when validation not passed
-    apply: labels.apply.length === 0 ? null : <Button
-      type='primary'
-      value={StepsFormActionButtonEnum.SUBMIT}
-      loading={loading}
-      disabled={customSubmitLoading}
-      onClick={() => submit()}
-      children={labels.apply}
-    />,
+    apply: labels.apply.length === 0
+      ? null
+      : <ApplyButton
+        loading={loading}
+        disabled={customSubmitLoading}
+        onClick={() => submit()}
+        children={labels.apply}
+        customProps={buttonProps.apply}
+      />,
     submit: labels.submit.length === 0 ? null : (!isLastStep
       ? <Button
         type='primary'
@@ -286,7 +297,10 @@ export function useStepsForm <T> ({
     {buttons.cancel}
   </>
 
-  const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
+  const buttonEls = <UI.ActionsContainer
+    data-testid='steps-form-actions'
+    className={`action-footer${steps.length === 1 ? ' single-step' : ''}`}
+  >
     <UI.ActionsButtons
       $editMode={!!editMode}
       $multipleSteps={steps.length > 1}
@@ -324,4 +338,22 @@ export function useStepsForm <T> ({
   }
 
   return { ...newConfig, elements }
+}
+
+type ApplyButtonProps = ButtonProps & { customProps?: CustomButtonPropsType }
+function ApplyButton (props: ApplyButtonProps) {
+  const { loading, disabled, children, onClick, customProps = {} } = props
+  const { tooltip, ...restCustomProps } = customProps
+
+  const button = <Button
+    type='primary'
+    value={StepsFormActionButtonEnum.SUBMIT}
+    loading={loading}
+    disabled={disabled}
+    onClick={onClick}
+    children={children}
+    {...restCustomProps}
+  />
+
+  return tooltip ? <Tooltip title={tooltip}><span>{button}</span></Tooltip> : button
 }

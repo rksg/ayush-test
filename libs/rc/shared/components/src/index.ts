@@ -14,6 +14,7 @@ export { groupedFields } from './ApTable/config'
 export { newDefaultApPayload } from'./ApTable/NewApTable'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
 export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
+export { ApExtAntennaForm } from './ApExtAntennaForm'
 export { ApGroupTable  } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ApGroupEdit } from './ApGroupEdit'
@@ -21,6 +22,7 @@ export { ApGroupNetworksTable } from './ApGroupNetworkTable'
 export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
+export { useRbacClientTableColumns } from './ConnectedClientsTable/RbacClientsTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
@@ -147,8 +149,6 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 export { EdgeHaSettingsForm } from './EdgeFormItem/EdgeHaSettingsForm'
 export type { EdgeHaSettingsFormType } from './EdgeFormItem/EdgeHaSettingsForm'
 export {
@@ -194,7 +194,11 @@ export {
   useEdgePinDetailsCompatibilitiesData,
   useEdgePinsCompatibilityData,
   useEdgeMdnsDetailsCompatibilitiesData,
-  useEdgeMdnssCompatibilityData
+  useEdgeMdnssCompatibilityData,
+  useEdgeHqosDetailsCompatibilitiesData,
+  useEdgeHqosCompatibilityData,
+  useEdgeDhcpDetailsCompatibilitiesData,
+  useEdgeDhcpCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
 export * from './EdgeMdns/EdgeMdnsProxyForm'
@@ -202,6 +206,7 @@ export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsPr
 export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
+export { useIotControllerActions } from './useIotControllerActions'
 export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
 export {
   useRegisterMessageTemplates,
@@ -242,8 +247,8 @@ export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
-  tansformSdLanScopedVenueMap,
-  isSdLanGuestUtilizedOnDiffVenue,
+  transformSdLanScopedVenueMap,
+  isSdLanDmzUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal
 } from './EdgeSdLan/edgeSdLanUtils'
@@ -271,7 +276,6 @@ export {
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
-export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 export { EdgeLagTable } from './EdgeLagTable'
@@ -284,7 +288,6 @@ export type {
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
-export { EditContext } from './EdgeFormItem/EdgeEditContext'
 export type { EditEdgeFormControlType, EditEdgeContextType } from './EdgeFormItem/EdgeEditContext'
 export {
   getFieldFullPath,
@@ -336,3 +339,4 @@ export * from './WorkflowActionPreviewModal'
 export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
 export * from './SoftGRETunnelSettings'
+export { ResourceBanner } from './ResourceBanner'

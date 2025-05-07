@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer } from 'react'
 
 import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import { omit, isEqual }     from 'lodash'
+import _, { omit, isEqual }  from 'lodash'
 
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
@@ -10,6 +10,7 @@ import {
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
   SoftGreOptionCandidate,
+  useConfigTemplate,
   Voter,
   VoteTallyBoard
 } from '@acx-ui/rc/utils'
@@ -18,7 +19,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 export const useSoftGreProfileLimitedSelection = (
   venueId: string
 ) => {
-
+  const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
@@ -28,12 +29,17 @@ export const useSoftGreProfileLimitedSelection = (
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
   const [ isTheOnlyVoter, setIsTheOnlyVoter] = useState<boolean>(false)
+  const [ isBoundIpsec, setIsBoundIpsec] = useState<boolean>(false)
+
+  const allowSoftGetGrePorfiles = !isTemplate
+    && isEthernetSoftgreEnabled
+    && isEthernetPortProfileEnabled
 
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
 
   useEffect(() => {
     const setData = async () => {
-      const softGreProfileList = ((isEthernetSoftgreEnabled && isEthernetPortProfileEnabled) ?
+      const softGreProfileList = ((allowSoftGetGrePorfiles) ?
         (await getSoftGreViewDataList({
           params,
           payload: {}
@@ -94,6 +100,7 @@ export const useSoftGreProfileLimitedSelection = (
         }
         return option
       }))
+    } else if (isBoundIpsec) {
     } else {
       setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
         return omit(option, 'disabled') as DefaultOptionType
@@ -231,9 +238,9 @@ export const useSoftGreProfileLimitedSelection = (
       return board.softGreProfileId !== softGreProfileId && board.vote > 0
     })
 
-    selectedProfile.FQDNAddresses.forEach(FQDN => {
+    selectedProfile.FQDNAddresses.filter(FQDN => !_.isEmpty(FQDN)).forEach(FQDN => {
       activatedSoftGreProfilesWithoutSelected.forEach(board => {
-        if (board.FQDNAddresses.includes(FQDN)) {
+        if (board.FQDNAddresses.filter(FQDN => !_.isEmpty(FQDN)).includes(FQDN)) {
           isDuplicate = true
         }
       })
@@ -279,10 +286,31 @@ export const useSoftGreProfileLimitedSelection = (
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           addCandidate(next?.index, next?.candidate, next?.voter)
           break
+        case SoftGreDuplicationChangeState.BoundIpSec:
+          boundIpSec(next?.softGreProfileId)
+          break
+        case SoftGreDuplicationChangeState.UnboundIpSec:
+          unboundIpSec()
+          break
       }
       return next
     }
 
+  const boundIpSec = (softGreProfileId?: string) => {
+    setIsBoundIpsec(true)
+    setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
+      if (option.value === softGreProfileId) {
+        return { ...option, disabled: false }
+      }
+      return { ...option, disabled: true }
+    }))
+  }
+  const unboundIpSec = () => {
+    setIsBoundIpsec(false)
+    setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
+      return { ...option, disabled: false }
+    }))
+  }
 
   // eslint-disable-next-line
   const [duplicationChangeState, duplicationChangeDispatch] = useReducer(actionRunner, {

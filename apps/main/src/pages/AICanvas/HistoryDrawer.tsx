@@ -26,6 +26,8 @@ export default function HistoryDrawer (props: DrawerProps) {
   const [history, setHistory] = useState([] as HistoryListItem[])
   const [editModeId, setEditModeId] = useState('')
   const [form] = Form.useForm()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations will be deleted due to the 30-day retention policy.' })
 
   const checkDate = (chats: ChatHistory[]) => {
     const list = {
@@ -141,7 +143,7 @@ export default function HistoryDrawer (props: DrawerProps) {
   }
 
   const editChatTitle = (j: ChatHistory) =>
-    <div className={'chat' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
+    <div className={'chat-title' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
       <div className='edit-input'>
         <Form.Item
           name='chatTitle'
@@ -172,47 +174,54 @@ export default function HistoryDrawer (props: DrawerProps) {
       </div>
     </div>
 
-  const content = <Form form={form} onFinish={onSubmit}><UI.History>
-    {
-      history.map(i => <div className='duration' key={i.duration}>
-        <div className='time'>{i.duration}</div>
-        {
-          i.history.map(j =>
-            // eslint-disable-next-line max-len
-            isEditMode(j) ? (
-              editChatTitle(j)
-            ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
-              <Tooltip title={j.name}>
-                <div className='title' onClick={() => onClickChat(j.id)}>
-                  {j.name}
-                </div>
-              </Tooltip>
-              <div className='action'>
-                <div className='button'
-                  data-testid='edit'
-                  onClick={()=> { onEditChatTitle(j) }}>
-                  <EditOutlined size='sm' />
-                </div>
-                <div className='button'
-                  data-testid='delete'
-                  onClick={()=> { onDeleteChat(j) }}>
-                  <DeleteOutlined size='sm' />
-                </div>
-              </div>
-            </div>))
-        }
-      </div>)
-    }
-  </UI.History></Form>
+  const content = <UI.History>
+    <Form form={form} onFinish={onSubmit}>
+      {
+        history.map(i => <div className='duration' key={i.duration}>
+          <div className='time'>{i.duration}</div>
+          {
+            i.history.map(j =>
+              isEditMode(j) ? (
+                editChatTitle(j)
+              ) : (
+                <div className={'chat-title' + (sessionId === j.id ? ' active' : '')} key={j.id}>
+                  <Tooltip title={j.name}>
+                    <div className='title' onClick={() => onClickChat(j.id)}>
+                      {j.name}
+                    </div>
+                  </Tooltip>
+                  <div className='action'>
+                    <div className='button'
+                      data-testid='edit'
+                      onClick={()=> { onEditChatTitle(j) }}>
+                      <EditOutlined size='sm' />
+                    </div>
+                    <div className='button'
+                      data-testid='delete'
+                      onClick={()=> { onDeleteChat(j) }}>
+                      <DeleteOutlined size='sm' />
+                    </div>
+                  </div>
+                </div>))
+          }
+        </div>)
+      }
+    </Form>
+    <div className='hint'>{deletedHint}</div>
+  </UI.History>
 
   return (
     <Drawer
-      drawerType={DrawerTypes.Left}
+      drawerType={DrawerTypes.ModalLeft}
       visible={visible}
       onClose={handleDrawerClose}
       children={content}
       placement={'left'}
       width={'320px'}
+      mask={true}
+      maskClosable={true}
+      getContainer={false}
+      style={{ position: 'absolute' }}
     />
   )
 }

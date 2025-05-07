@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
 import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within }                  from '@acx-ui/test-utils'
@@ -74,7 +74,11 @@ describe('AAAForm', () => {
         AaaUrls.getServerCertificateOnRadius.url.replace('?certType=SERVER', ''),
         (_, res, ctx) => {
           return res(ctx.json(radiusServerCertRef))
-        })
+        }),
+      rest.post(
+        ConfigTemplateUrlsInfo.getConfigTemplates.url,
+        (_, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
@@ -117,6 +121,7 @@ describe('AAAForm', () => {
 
   it('should create RadSec AAA successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
       route: { params }

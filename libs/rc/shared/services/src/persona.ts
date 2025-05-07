@@ -13,7 +13,8 @@ import {
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TxStatus
+  TxStatus, IdentityClient,
+  ExternalIdentity
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -245,7 +246,10 @@ export const personaApi = basePersonaApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateDevice',
-            'DeleteDevice'
+            'DeleteDevice',
+            'UpdatePersona',
+            'DELETE_DPSK_PASSPHRASE',
+            'Delete_DPSK_Passphrase_network_service'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(personaApi.util.invalidateTags([
@@ -376,6 +380,44 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Persona', id: 'ID' }]
+    }),
+    searchIdentityClients: build.query<TableResult<IdentityClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchIdentityClients,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewTableResult<IdentityClient>) {
+        return transferToTableResult<IdentityClient>(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'IdentityClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    searchExternalIdentities: build.query<TableResult<ExternalIdentity>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchExternalIdentities,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewTableResult<ExternalIdentity>) {
+        return transferToTableResult<ExternalIdentity>(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'ExternalIdentity', id: 'ID' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -408,4 +450,10 @@ export const {
   useDeletePersonaDevicesMutation,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery
+} = personaApi
+
+export const {
+  useSearchIdentityClientsQuery,
+  useLazySearchIdentityClientsQuery,
+  useSearchExternalIdentitiesQuery
 } = personaApi

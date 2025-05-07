@@ -18,8 +18,11 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { defaultApGroupsFilterOptsPayload, GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  defaultApGroupsFilterOptsPayload,
+  GoogleMapWithPreference
+} from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -54,7 +57,10 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, AFCStatus
+  validateTags,
+  DhcpAp,
+  AFCStatus,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -62,7 +68,13 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages, CatchErrorResponse } from '@acx-ui/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
+import {
+  validationMessages,
+  CatchErrorResponse,
+  getEnabledDialogImproved,
+  getOpsApi
+} from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
@@ -265,7 +277,9 @@ export function ApForm () {
       }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 
@@ -361,7 +375,9 @@ export function ApForm () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 
@@ -469,7 +485,7 @@ export function ApForm () {
         { params: { venueId: value } })).data
       if (targetVenueMgmtVlan?.keepAp) {
         setChangeMgmtVlan(false)
-      } else {
+      } else if (apDetails?.venueId) {
         const apMgmtVlan = (await getApMgmtVlan(
           { params: { venueId: apDetails?.venueId, serialNumber } })).data
         setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
@@ -533,6 +549,18 @@ export function ApForm () {
       })
     }
   }
+
+  const hasChangeVenueApGroupPermission = hasAllowedOperations([
+    getOpsApi(WifiRbacUrlsInfo.moveApToTargetApGroup)
+  ])
+
+  const disableVenueCombobox = apMeshRoleDisabled
+    || dhcpRoleDisabled
+    || !hasChangeVenueApGroupPermission
+
+  const disableApGroupCombobox = !selectedVenue
+    || apGroupOption?.length < 2
+    || !hasChangeVenueApGroupPermission
 
   return <>
     {!isEditMode && <PageHeader
@@ -616,7 +644,7 @@ export function ApForm () {
                   message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
                 children={<Select
-                  disabled={apMeshRoleDisabled || dhcpRoleDisabled}
+                  disabled={disableVenueCombobox}
                   options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
@@ -645,7 +673,7 @@ export function ApForm () {
                 label={$t({ defaultMessage: 'AP Group' })}
                 initialValue={null}
                 children={<Select
-                  disabled={!selectedVenue || apGroupOption?.length < 2}
+                  disabled={disableApGroupCombobox}
                   options={selectedVenue?.id ? apGroupOption : []}
                 />}
               />
@@ -873,18 +901,34 @@ function CoordinatesModal (props: {
     }
   }
 
-  const onDragEndMaker = (event: google.maps.MapMouseEvent) => {
-    const hasError = formRef?.current
-      ? formRef?.current?.getFieldError(fieldName).length > 0 : false
+  const onDragEndMaker = async (event: google.maps.MapMouseEvent) => {
+    if (!event.latLng) return
+
     const latLng = [
-      event.latLng?.lat().toFixed(6),
-      event.latLng?.lng().toFixed(6)
+      event.latLng.lat().toFixed(6),
+      event.latLng.lng().toFixed(6)
     ]
-    if (hasError) {
-      updateMarkerPosition(event?.latLng as google.maps.LatLng)
-      formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
-    }
+
+    updateMarkerPosition(event.latLng)
+    formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
+
+    if (default6gEnablementToggle && !isApAfcEnabled) {
+      try {
+        const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+        if (country !== selectedVenue.country) {
+          setCoordinatesValid(false)
+          formRef.current?.setFields([{
+            name: fieldName,
+            errors: [$t(validationMessages.diffApGpsWithVenueCountry)]
+          }])
+          return
+        }
+      } catch (error) {
+        console.warn('Failed to validate country:', error) // eslint-disable-line no-console
+      }
+    }
+
     setCoordinatesValid(true)
   }
 
@@ -923,7 +967,10 @@ function CoordinatesModal (props: {
       disabled: !coordinatesValid
     }}
     onOk={onApplyCoordinates}
-    onCancel={() => setGpsModalVisible(false)}
+    onCancel={() => {
+      formRef?.current?.setFields([{ name: fieldName, errors: [] }])
+      setGpsModalVisible(false)
+    }}
   >
     <GoogleMap.FormItem>
       <Form.Item

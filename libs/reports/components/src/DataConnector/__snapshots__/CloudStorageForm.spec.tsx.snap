@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CloudStorageForm should save on apply click for create 1`] = `
+Object {
+  "connectionType": "sftp",
+  "sftpHost": "some sftpHost",
+  "sftpPassword": "some sftpPassword",
+  "sftpPort": "22",
+  "sftpStoragePath": "some sftpStoragePath",
+  "sftpUserName": "some sftpUsername",
+}
+`;
+
+exports[`CloudStorageForm should save on apply click for edit 1`] = `
+Object {
+  "azureAccountName": "some name",
+  "azureConnectionType": "azureFiles",
+  "azureShareName": "share name",
+  "azureStoragePath": "storage/path",
+  "connectionType": "azure",
+  "id": "id",
+}
+`;
+
+exports[`CloudStorageForm should show error on apply click 1`] = `
+Object {
+  "azureAccountName": "some name",
+  "azureConnectionType": "azureBlob",
+  "azureContainerName": "name",
+  "azureStoragePath": "some/path",
+  "connectionType": "azure",
+  "id": "id",
+}
+`;

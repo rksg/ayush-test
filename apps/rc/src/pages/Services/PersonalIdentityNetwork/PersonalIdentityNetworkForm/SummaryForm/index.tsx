@@ -11,7 +11,6 @@ import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData }   f
 
 import { DistributionSwitchTable }            from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                           from '../GeneralSettingsForm/styledComponents'
-import { NetworkTopologyType }                from '../NetworkTopologyForm'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
@@ -19,16 +18,18 @@ styled(Subtitle).attrs({ level: 4 })`
   margin-top: 1.2em;
 `
 export const SummaryForm = () => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { $t } = useIntl()
-  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     getVenueName,
     getClusterName,
     getDhcpName,
     getTunnelProfileName,
-    getNetworksName
+    getNetworksName,
+    personaGroupData,
+    dpskData
   } = useContext(PersonalIdentityNetworkFormContext)
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
@@ -36,13 +37,11 @@ export const SummaryForm = () => {
   const venueId = form.getFieldValue('venueId')
   const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
-  const devices = form.getFieldValue('devices')
   const dhcpId = form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const tunnelProfileId = form.getFieldValue('vxlanTunnelProfileId')
   const networkIds = form.getFieldValue('networkIds')
   const poolName = form.getFieldValue('poolName')
-  const networkTopologyType = form.getFieldValue('networkTopologyType')
 
   const distributionSwitchInfos = form.getFieldValue(
     'distributionSwitchInfos'
@@ -65,12 +64,11 @@ export const SummaryForm = () => {
       {
         edgeName: getClusterName(edgeClusterId),
         segments: segments.toString(),
-        devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
         dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeClusterId, segments, devices, dhcpId, poolId, poolName])
+  }, [edgeClusterId, segments, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({
@@ -82,10 +80,7 @@ export const SummaryForm = () => {
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-    {
-      // eslint-disable-next-line max-len
-      (!isEdgePinEnhanceReady || (isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier))
-    && <Alert message={alertMsg} type='info' showIcon />}
+    <Alert message={alertMsg} type='info' showIcon />
     <Subtitle level={4}>
       { $t({ defaultMessage: 'General Settings' }) }
     </Subtitle>
@@ -93,10 +88,31 @@ export const SummaryForm = () => {
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={pinName} />
       </Col>
-      <Col flex={1}>{/* eslint-disable-next-line max-len */}
-        <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
-          children={getVenueName(venueId)} />
-      </Col>
+      {
+        isL2GreEnabled ?
+          <>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'Tunnel Profile' })}
+                children={getTunnelProfileName(tunnelProfileId)} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+                children={getVenueName(venueId)} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'Identity Group' })}
+                children={personaGroupData?.name} />
+            </Col>
+            <Col flex={1}>{/* eslint-disable-next-line max-len */}
+              <Form.Item label={$t({ defaultMessage: 'DPSK Service' })}
+                children={dpskData?.name} />
+            </Col>
+          </> :
+          <Col flex={1}>{/* eslint-disable-next-line max-len */}
+            <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
+              children={getVenueName(venueId)} />
+          </Col>
+      }
     </Row>
     <Subtitle level={4}>
       { $t({ defaultMessage: 'RUCKUS Edge' }) }
@@ -104,86 +120,50 @@ export const SummaryForm = () => {
     <Form.Item>
       <SmartEdgeTable data={smartEdgeData} />
     </Form.Item>
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Wireless Network' }) }
+    </Subtitle>
     {
-      !isEdgePinEnhanceReady &&
-      <>
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Wireless Network' }) }
-        </Subtitle>
-        <Row gutter={20}>
-          <Col flex={1}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tunnel Profile' })}
-              children={getTunnelProfileName(tunnelProfileId)}
-            />
-          </Col>
-        </Row>
-        <Row gutter={20}>
-          <Col flex={1}>
-            <Form.Item label={$t({ defaultMessage: 'Wireless Networks ({num})' },
-              { num: networkIds?.length??0 })}
-            children={
-              (networkIds?.length ?? 0) === 0 ? '0' :
-                getNetworksName(networkIds)?.map((item, index) => (
-                  <Row key={`networkNames-${index}`}>
-                    {item}
-                  </Row>
-                ))
-            }
-            />
-          </Col>
-        </Row>
-      </>
+      !isL2GreEnabled &&
+      <Row gutter={20}>
+        <Col flex={1}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Tunnel Profile' })}
+            children={getTunnelProfileName(tunnelProfileId)}
+          />
+        </Col>
+      </Row>
     }
-    {
-      !(isEdgePinEnhanceReady && networkTopologyType === NetworkTopologyType.Wireless) &&
-      <>
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Distribution Switch ({num})' },
-            { num: distributionSwitchInfos?.length??0 }) }
-        </Subtitle>
-        { distributionSwitchInfos?.length && <Form.Item>
-          <DistributionSwitchTable type='form'
-            dataSource={distributionSwitchInfos} /></Form.Item>}
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Access Switch ({num})' },
-            { num: accessSwitchData?.length??0 }) }
-        </Subtitle>
-        { accessSwitchData?.length && <Form.Item>
-          <AccessSwitchTable type='form'
-            dataSource={accessSwitchData} /></Form.Item>}
-      </>
-    }
-    {
-      (isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier) &&
-      <>
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Wireless Network' }) }
-        </Subtitle>
-        <Row gutter={20}>
-          <Col flex={1}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tunnel Profile' })}
-              children={getTunnelProfileName(tunnelProfileId)}
-            />
-          </Col>
-        </Row>
-        <Row gutter={20}>
-          <Col flex={1}>
-            <Form.Item label={$t({ defaultMessage: 'Wireless Networks ({num})' },
-              { num: networkIds?.length??0 })}
-            children={
-              (networkIds?.length ?? 0) === 0 ? '0' :
-                getNetworksName(networkIds)?.map((item, index) => (
-                  <Row key={`networkNames-${index}`}>
-                    {item}
-                  </Row>
-                ))
-            }
-            />
-          </Col>
-        </Row>
-      </>
-    }
+    <Row gutter={20}>
+      <Col flex={1}>
+        <Form.Item label={$t({ defaultMessage: 'Wireless Networks ({num})' },
+          { num: networkIds?.length??0 })}
+        children={
+          (networkIds?.length ?? 0) === 0 ? undefined :
+            getNetworksName(networkIds)?.map((item, index) => (
+              <Row key={`networkNames-${index}`}>
+                {item}
+              </Row>
+            ))
+        }
+        />
+      </Col>
+    </Row>
+
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Distribution Switch ({num})' },
+        { num: distributionSwitchInfos?.length??0 }) }
+    </Subtitle>
+    { distributionSwitchInfos?.length && <Form.Item>
+      <DistributionSwitchTable type='form'
+        dataSource={distributionSwitchInfos} /></Form.Item>}
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Access Switch ({num})' },
+        { num: accessSwitchData?.length??0 }) }
+    </Subtitle>
+    { accessSwitchData?.length && <Form.Item>
+      <AccessSwitchTable type='form'
+        dataSource={accessSwitchData} />
+    </Form.Item>}
   </>)
 }

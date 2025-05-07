@@ -7,8 +7,10 @@ import {
   Table,
   TableProps,
   NoData } from '@acx-ui/components'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { TenantLink }                       from '@acx-ui/react-router-dom'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
 import { CustomTable }                                        from './styledComponents'
@@ -22,6 +24,7 @@ function TopSwitchesByErrorWidget ({
 }) {
   const { $t } = useIntl()
   const queryResults = useTopSwitchesByErrorQuery(filters)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const columns: TableProps<TopSwitchesByErrorData>['columns']=[
     {
@@ -78,6 +81,12 @@ function TopSwitchesByErrorWidget ({
       rowKey='mac'
     />
   </CustomTable> : <NoData/>
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.TOP_SWITCHES_BY_ERROR,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults]}>

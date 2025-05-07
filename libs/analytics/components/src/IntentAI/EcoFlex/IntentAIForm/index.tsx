@@ -5,15 +5,15 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm }   from '@acx-ui/components'
 import { useNavigate } from '@acx-ui/react-router-dom'
+import { NetworkNode } from '@acx-ui/utils'
 
-import { NetworkNode }                                                                      from '../../../NetworkFilter/services'
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
 import { parseExcludedHours, buildExcludedHours }                                           from '../../common/ScheduleWeekly'
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
-import { useIntentAIEcoFlexQuery }                                                          from '../ComparisonDonutChart/services'
+import { useIntentAIEcoFlexQuery }                                                          from '../services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'

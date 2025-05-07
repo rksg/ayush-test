@@ -515,6 +515,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             payload: { page: 1, pageSize: 10000 }
           }
 
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], false, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
           const {
             error: networkVenuesListQueryError,
             networkDeep
@@ -541,6 +546,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
@@ -1754,6 +1764,24 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    bindingPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
+    }),
+    bindingSpecificIdentityPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -2116,7 +2144,9 @@ export const {
   useDeactivateVenueApGroupMutation,
   useUpdateVenueApGroupMutation,
   useVenueWifiRadioActiveNetworksQuery,
-  useLazyVenueWifiRadioActiveNetworksQuery
+  useLazyVenueWifiRadioActiveNetworksQuery,
+  useBindingPersonaGroupWithNetworkMutation,
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

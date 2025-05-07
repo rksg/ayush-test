@@ -1,6 +1,12 @@
 /* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
 
+
+export enum IdentityProviderTabType {
+  SAML = 'SAML',
+  Hotspot20 = 'Hotspot20'
+}
+
 export enum NaiRealmEcodingEnum {
   RFC4282 = 'RFC4282',
   UTF8 = 'UTF8'
@@ -132,7 +138,8 @@ export enum IdentityProviderActionType {
   AUTH_RADIUS_ID = 'AUTH_RADIUS_ID',
   ACCOUNT_RADIUS_ENABLED = 'ACCOUNT_RADIUS_ENABLED',
   ACCOUNT_RADIUS_ID = 'ACCOUNT_RADIUS_ID',
-  UPDATE_STATE = 'UPDATE_STATE'
+  UPDATE_STATE = 'UPDATE_STATE',
+  LOAD_PRECONFIGURED = 'LOAD_PRECONFIGURED'
 }
 
 export type IdentityProviderActionPayload = {
@@ -190,6 +197,11 @@ export type IdentityProviderActionPayload = {
   }
 } | {
   type: IdentityProviderActionType.UPDATE_STATE,
+  payload: {
+    state: IdentityProvider
+  }
+} | {
+  type: IdentityProviderActionType.LOAD_PRECONFIGURED,
   payload: {
     state: IdentityProvider
   }

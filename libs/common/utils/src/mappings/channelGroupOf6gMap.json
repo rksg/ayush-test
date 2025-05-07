@@ -1,0 +1,697 @@
+[
+  {
+    "channelWidth": "40",
+    "channelGroups": [
+      {
+        "channel": 1,
+        "group": 3
+      },
+      {
+        "channel": 5,
+        "group": 3
+      },
+      {
+        "channel": 9,
+        "group": 11
+      },
+      {
+        "channel": 13,
+        "group": 11
+      },
+      {
+        "channel": 17,
+        "group": 19
+      },
+      {
+        "channel": 21,
+        "group": 19
+      },
+      {
+        "channel": 25,
+        "group": 27
+      },
+      {
+        "channel": 29,
+        "group": 27
+      },
+      {
+        "channel": 33,
+        "group": 35
+      },
+      {
+        "channel": 37,
+        "group": 35
+      },
+      {
+        "channel": 41,
+        "group": 43
+      },
+      {
+        "channel": 45,
+        "group": 43
+      },
+      {
+        "channel": 49,
+        "group": 51
+      },
+      {
+        "channel": 53,
+        "group": 51
+      },
+      {
+        "channel": 57,
+        "group": 59
+      },
+      {
+        "channel": 61,
+        "group": 59
+      },
+      {
+        "channel": 65,
+        "group": 67
+      },
+      {
+        "channel": 69,
+        "group": 67
+      },
+      {
+        "channel": 73,
+        "group": 75
+      },
+      {
+        "channel": 77,
+        "group": 75
+      },
+      {
+        "channel": 81,
+        "group": 83
+      },
+      {
+        "channel": 85,
+        "group": 83
+      },
+      {
+        "channel": 89,
+        "group": 91
+      },
+      {
+        "channel": 93,
+        "group": 91
+      },
+      {
+        "channel": 97,
+        "group": 99
+      },
+      {
+        "channel": 101,
+        "group": 99
+      },
+      {
+        "channel": 105,
+        "group": 107
+      },
+      {
+        "channel": 109,
+        "group": 107
+      },
+      {
+        "channel": 113,
+        "group": 115
+      },
+      {
+        "channel": 117,
+        "group": 115
+      },
+      {
+        "channel": 121,
+        "group": 123
+      },
+      {
+        "channel": 125,
+        "group": 123
+      },
+      {
+        "channel": 129,
+        "group": 131
+      },
+      {
+        "channel": 133,
+        "group": 131
+      },
+      {
+        "channel": 137,
+        "group": 139
+      },
+      {
+        "channel": 141,
+        "group": 139
+      },
+      {
+        "channel": 145,
+        "group": 147
+      },
+      {
+        "channel": 149,
+        "group": 147
+      },
+      {
+        "channel": 153,
+        "group": 155
+      },
+      {
+        "channel": 157,
+        "group": 155
+      },
+      {
+        "channel": 161,
+        "group": 163
+      },
+      {
+        "channel": 165,
+        "group": 163
+      },
+      {
+        "channel": 169,
+        "group": 171
+      },
+      {
+        "channel": 173,
+        "group": 171
+      },
+      {
+        "channel": 177,
+        "group": 179
+      },
+      {
+        "channel": 181,
+        "group": 179
+      },
+      {
+        "channel": 185,
+        "group": 187
+      },
+      {
+        "channel": 189,
+        "group": 187
+      },
+      {
+        "channel": 193,
+        "group": 195
+      },
+      {
+        "channel": 197,
+        "group": 195
+      },
+      {
+        "channel": 201,
+        "group": 203
+      },
+      {
+        "channel": 205,
+        "group": 203
+      },
+      {
+        "channel": 209,
+        "group": 211
+      },
+      {
+        "channel": 213,
+        "group": 211
+      },
+      {
+        "channel": 217,
+        "group": 219
+      },
+      {
+        "channel": 221,
+        "group": 219
+      },
+      {
+        "channel": 225,
+        "group": 227
+      },
+      {
+        "channel": 229,
+        "group": 227
+      }
+    ]
+  },
+  {
+    "channelWidth": "80",
+    "channelGroups": [
+      {
+        "channel": 1,
+        "group": 7
+      },
+      {
+        "channel": 5,
+        "group": 7
+      },
+      {
+        "channel": 9,
+        "group": 7
+      },
+      {
+        "channel": 13,
+        "group": 7
+      },
+      {
+        "channel": 17,
+        "group": 23
+      },
+      {
+        "channel": 21,
+        "group": 23
+      },
+      {
+        "channel": 25,
+        "group": 23
+      },
+      {
+        "channel": 29,
+        "group": 23
+      },
+      {
+        "channel": 33,
+        "group": 39
+      },
+      {
+        "channel": 37,
+        "group": 39
+      },
+      {
+        "channel": 41,
+        "group": 39
+      },
+      {
+        "channel": 45,
+        "group": 39
+      },
+      {
+        "channel": 49,
+        "group": 55
+      },
+      {
+        "channel": 53,
+        "group": 55
+      },
+      {
+        "channel": 57,
+        "group": 55
+      },
+      {
+        "channel": 61,
+        "group": 55
+      },
+      {
+        "channel": 65,
+        "group": 71
+      },
+      {
+        "channel": 69,
+        "group": 71
+      },
+      {
+        "channel": 73,
+        "group": 71
+      },
+      {
+        "channel": 77,
+        "group": 71
+      },
+      {
+        "channel": 81,
+        "group": 87
+      },
+      {
+        "channel": 85,
+        "group": 87
+      },
+      {
+        "channel": 89,
+        "group": 87
+      },
+      {
+        "channel": 93,
+        "group": 87
+      },
+      {
+        "channel": 97,
+        "group": 103
+      },
+      {
+        "channel": 101,
+        "group": 103
+      },
+      {
+        "channel": 105,
+        "group": 103
+      },
+      {
+        "channel": 109,
+        "group": 103
+      },
+      {
+        "channel": 113,
+        "group": 119
+      },
+      {
+        "channel": 117,
+        "group": 119
+      },
+      {
+        "channel": 121,
+        "group": 119
+      },
+      {
+        "channel": 125,
+        "group": 119
+      },
+      {
+        "channel": 129,
+        "group": 135
+      },
+      {
+        "channel": 133,
+        "group": 135
+      },
+      {
+        "channel": 137,
+        "group": 135
+      },
+      {
+        "channel": 141,
+        "group": 135
+      },
+      {
+        "channel": 145,
+        "group": 151
+      },
+      {
+        "channel": 149,
+        "group": 151
+      },
+      {
+        "channel": 153,
+        "group": 151
+      },
+      {
+        "channel": 157,
+        "group": 151
+      },
+      {
+        "channel": 161,
+        "group": 167
+      },
+      {
+        "channel": 165,
+        "group": 167
+      },
+      {
+        "channel": 169,
+        "group": 167
+      },
+      {
+        "channel": 173,
+        "group": 167
+      },
+      {
+        "channel": 177,
+        "group": 183
+      },
+      {
+        "channel": 181,
+        "group": 183
+      },
+      {
+        "channel": 185,
+        "group": 183
+      },
+      {
+        "channel": 189,
+        "group": 183
+      },
+      {
+        "channel": 193,
+        "group": 199
+      },
+      {
+        "channel": 197,
+        "group": 199
+      },
+      {
+        "channel": 201,
+        "group": 199
+      },
+      {
+        "channel": 205,
+        "group": 199
+      },
+      {
+        "channel": 209,
+        "group": 215
+      },
+      {
+        "channel": 213,
+        "group": 215
+      },
+      {
+        "channel": 217,
+        "group": 215
+      },
+      {
+        "channel": 221,
+        "group": 215
+      }
+    ]
+  },
+  {
+    "channelWidth": "160",
+    "channelGroups": [
+      {
+        "channel": 1,
+        "group": 15
+      },
+      {
+        "channel": 5,
+        "group": 15
+      },
+      {
+        "channel": 9,
+        "group": 15
+      },
+      {
+        "channel": 13,
+        "group": 15
+      },
+      {
+        "channel": 17,
+        "group": 15
+      },
+      {
+        "channel": 21,
+        "group": 15
+      },
+      {
+        "channel": 25,
+        "group": 15
+      },
+      {
+        "channel": 29,
+        "group": 15
+      },
+      {
+        "channel": 33,
+        "group": 47
+      },
+      {
+        "channel": 37,
+        "group": 47
+      },
+      {
+        "channel": 41,
+        "group": 47
+      },
+      {
+        "channel": 45,
+        "group": 47
+      },
+      {
+        "channel": 49,
+        "group": 47
+      },
+      {
+        "channel": 53,
+        "group": 47
+      },
+      {
+        "channel": 57,
+        "group": 47
+      },
+      {
+        "channel": 61,
+        "group": 47
+      },
+      {
+        "channel": 65,
+        "group": 79
+      },
+      {
+        "channel": 69,
+        "group": 79
+      },
+      {
+        "channel": 73,
+        "group": 79
+      },
+      {
+        "channel": 77,
+        "group": 79
+      },
+      {
+        "channel": 81,
+        "group": 79
+      },
+      {
+        "channel": 85,
+        "group": 79
+      },
+      {
+        "channel": 89,
+        "group": 79
+      },
+      {
+        "channel": 93,
+        "group": 79
+      },
+      {
+        "channel": 97,
+        "group": 111
+      },
+      {
+        "channel": 101,
+        "group": 111
+      },
+      {
+        "channel": 105,
+        "group": 111
+      },
+      {
+        "channel": 109,
+        "group": 111
+      },
+      {
+        "channel": 113,
+        "group": 111
+      },
+      {
+        "channel": 117,
+        "group": 111
+      },
+      {
+        "channel": 121,
+        "group": 111
+      },
+      {
+        "channel": 125,
+        "group": 111
+      },
+      {
+        "channel": 129,
+        "group": 143
+      },
+      {
+        "channel": 133,
+        "group": 143
+      },
+      {
+        "channel": 137,
+        "group": 143
+      },
+      {
+        "channel": 141,
+        "group": 143
+      },
+      {
+        "channel": 145,
+        "group": 143
+      },
+      {
+        "channel": 149,
+        "group": 143
+      },
+      {
+        "channel": 153,
+        "group": 143
+      },
+      {
+        "channel": 157,
+        "group": 143
+      },
+      {
+        "channel": 161,
+        "group": 175
+      },
+      {
+        "channel": 165,
+        "group": 175
+      },
+      {
+        "channel": 169,
+        "group": 175
+      },
+      {
+        "channel": 173,
+        "group": 175
+      },
+      {
+        "channel": 177,
+        "group": 175
+      },
+      {
+        "channel": 181,
+        "group": 175
+      },
+      {
+        "channel": 185,
+        "group": 175
+      },
+      {
+        "channel": 189,
+        "group": 175
+      },
+      {
+        "channel": 193,
+        "group": 207
+      },
+      {
+        "channel": 197,
+        "group": 207
+      },
+      {
+        "channel": 201,
+        "group": 207
+      },
+      {
+        "channel": 205,
+        "group": 207
+      },
+      {
+        "channel": 209,
+        "group": 207
+      },
+      {
+        "channel": 213,
+        "group": 207
+      },
+      {
+        "channel": 217,
+        "group": 207
+      },
+      {
+        "channel": 221,
+        "group": 207
+      }
+    ]
+  }
+]

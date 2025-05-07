@@ -15,8 +15,20 @@ import {
   NetworkHotspot20Settings,
   SmsProviderType,
   SoftGreViewData,
-  MtuTypeEnum
+  MtuTypeEnum,
+  EspProposal,
+  IkeProposal,
+  IpsecActivation,
+  IpSecAuthEnum,
+  IpSecDhGroupEnum,
+  IpSecEncryptionAlgorithmEnum,
+  IpSecIntegrityAlgorithmEnum,
+  IpSecProposalTypeEnum,
+  IpSecPseudoRandomFunctionEnum,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
+
+export const mockedNetworkId = '5c342542bb824a8b981a9bb041a8a2da'
 
 export const networksResponse = {
   fields: ['name', 'id'],
@@ -1494,6 +1506,60 @@ export const externalWifiProviders = {
       ],
       name: 'Test-Provider-0502',
       customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1850'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'US & LATAM',
+          authRadius: {
+            primary: {
+              ip: '34.205.245.152',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://socialsign.in/spot',
+          redirectUrl: 'https://socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'EMEA, UK & ISRAEL',
+          authRadius: {
+            primary: {
+              ip: '18.184.187.25',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://eu.socialsign.in/spot',
+          redirectUrl: 'https://eu.socialsign.in/spot/success',
+          showAnalyticsData: false
+        },
+        {
+          name: 'APAC & INDIA',
+          authRadius: {
+            primary: {
+              ip: '13.251.243.65',
+              port: '1812'
+            }
+          },
+          captivePortalUrl: 'https://sp.socialsign.in/spot',
+          redirectUrl: 'https://sp.socialsign.in/spot/success',
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SocialSignin',
+      customExternalProvider: false
     }
   ]
 }
@@ -2548,6 +2614,27 @@ export const mock_SelfSignIn_SMS_Off = {
   }
 }
 
+export const mock_SelfSignIn_WhatsApp_Error = {
+  guestPortal: {
+    redirectUrl: '123.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: false,
+    enableWhatsapp: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+
 export const mockSoftGreTable = {
   totalCount: 2,
   page: 1,
@@ -2621,6 +2708,99 @@ export const mockSoftGreTable = {
   ] as SoftGreViewData[]
 }
 
+export const mockIpSecTable = {
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      id: '67d5c0eed90f4ed0b664a3f7b13604d8',
+      name: 'ipsecProfileName1',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
+      ikeProposals: [] as IkeProposal[],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: [
+            '9b33509cc0a1464cad9447778a72006f',
+            '797a1f499c254260b7a1aedafba524a3',
+            'b946294426b8413d819751cb3d320a20'
+          ]
+        }
+      ]
+    },
+    {
+      id: '1fd70d0dc56443e7b9e3f6e0ec75c153',
+      name: 'ipsecProfileName2',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    },
+    {
+      id: '07146f7c5b2c41f2a6227ed902a1cdac',
+      name: 'ipsecProfileName3',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        },
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    },
+    {
+      id: '380043b71ed7411d8e95a41af65d0f50',
+      name: 'ipsecProfileName4',
+      serverAddress: '7.7.7.7',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        },
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    }
+  ] as IpsecViewData[]
+}
+
 export const mockedDirectoryServerProfiles = {
   fields: [
     'wifiNetworkIds',
@@ -2642,7 +2822,7 @@ export const mockedDirectoryServerProfiles = {
       type: 'LDAP',
       domainName: 'dc=test,dc=tw',
       wifiNetworkIds: [
-        '5c342542bb824a8b981a9bb041a8a2da'
+        mockedNetworkId
       ]
     },
     {
@@ -2662,7 +2842,7 @@ export const mockedDirectoryServerProfiles = {
       type: 'LDAP',
       domainName: 'dc=tdcad,dc=com',
       wifiNetworkIds: [
-        '5c342542bb824a8b981a9bb041a8a2da'
+        mockedNetworkId
       ]
     },
     {
@@ -2742,3 +2922,205 @@ export const mockedMacRegistrationPools = {
   numberOfElements: 1,
   empty: false
 }
+
+export const mockIdentityGroupQuery = {
+  totalElements: 4,
+  totalPages: 1,
+  size: 2000,
+  content: [
+    {
+      id: 'd613141c-780f-4296-8795-4289489a73a7',
+      name: 'DPSK_auto-generated-from-dpsk_d6131',
+      description: null,
+      dpskPoolId: '3afaeffc909e468691045ac499f02504',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-01-13T10:24:18.603153Z',
+      updatedAt: '2025-01-28T05:17:50.486872Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/d613141c-780f-4296-8795-4289489a73a7'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 1
+    },
+    {
+      id: '68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      name: 'Identity_Group_68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: '752bbef5-a645-4cb0-861b-545843cfa6f9',
+      propertyId: null,
+      createdAt: '2025-01-09T06:10:38.81519Z',
+      updatedAt: '2025-01-20T13:19:54.531194Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/68c6f030-2aa9-4911-b116-7c50cf17f08c'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 0
+    },
+    {
+      id: '0d973a0e-15e1-46cb-884a-d3d04bdc8db8',
+      name: 'IG-1',
+      description: null,
+      dpskPoolId: '317a063e01c44467871b9a28a42bcdd6',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:47:45.081437Z',
+      updatedAt: '2025-02-26T17:03:18.620709Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/0d973a0e-15e1-46cb-884a-d3d04bdc8db8'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 11
+    },
+    {
+      id: '4e548bc7-e473-49eb-98c8-617de8ca516a',
+      name: 'IG-2',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:52:58.297587Z',
+      updatedAt: '2025-02-26T16:52:58.297587Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/4e548bc7-e473-49eb-98c8-617de8ca516a'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 5
+    }
+  ],
+  number: 0,
+  sort: {
+    empty: false,
+    unsorted: false,
+    sorted: true
+  },
+  last: true,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 2000,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    offset: 0,
+    unpaged: false,
+    paged: true
+  },
+  first: true,
+  numberOfElements: 4,
+  empty: false
+}
+
+export const mockSamlProfileA7Id = 'cbe337e7917f48878f6feb1982199430'
+// eslint-disable-next-line max-len
+export const mockedMetadata = '<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" ID="_mockedMetadata"></EntityDescriptor>'
+
+export const mockSamlA7 = {
+  id: mockSamlProfileA7Id,
+  tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+  name: 'SAML-A7',
+  signingCertificateEnabled: false,
+  encryptionCertificateEnabled: false,
+  metadata: Buffer.from(mockedMetadata).toString('base64'),
+  wifiNetworkIds: [mockedNetworkId]
+}
+
+export const mockSAMLIdpQuery = {
+  fields: null,
+  totalCount: 9,
+  page: 1,
+  data: [
+    mockSamlA7,
+    {
+      id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A4',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '846c1033256b4bd98e513193f415a0f2',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'eb9b1b54aaa646dda2f457b54d645b22',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '5e75c9ae21a64ac78e067c6076d0bc43',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A5',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'f71491f6164448d986e9d1defbb0b584',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '571f87b3bb3344c59d13102de7b0f376',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'a7bc844b82724af5bfad3586f82d74b1',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '07977919a7a34e29a1c2169c2bd2d044',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    }
+  ]
+}
+

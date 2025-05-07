@@ -5,6 +5,7 @@ import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
@@ -30,6 +31,8 @@ export function BrandTable ({
   sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel, isMDU
 }: BrandTableProps) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
   const thresholdProspectCount = thresholds['sla-prospect-count' as keyof typeof slaThreshold]
@@ -40,7 +43,7 @@ export function BrandTable ({
   const noDataColor = 'var(--acx-primary-black)'
 
   const tableData = sliceType === 'lsp'
-    ? transformToLspView(data)
+    ? transformToLspView(data, lspLabel)
     : transformToPropertyView(data)
   const commonCols: TableProps<Common>['columns'] = [
     {
@@ -65,6 +68,8 @@ export function BrandTable ({
       dataIndex: 'guestExp',
       key: 'guestExp',
       sorter: { compare: sortProp('guestExp', customSort) },
+      // eslint-disable-next-line max-len
+      tooltip: isCore ? $t({ defaultMessage: 'This value is calculated using data from Essential and Professional tier properties only.' }) : '',
       render: (_, row: Common) => <Tooltip
         placement='top'
         title={$t({

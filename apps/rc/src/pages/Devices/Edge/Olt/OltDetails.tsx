@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
 
-import { Col }                    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { GridRow, Tabs, Loader }                    from '@acx-ui/components'
+import { Tabs, Loader }                             from '@acx-ui/components'
 import { EdgeNokiaOltDetailsPageHeader }            from '@acx-ui/edge/components'
 import { useGetEdgeCageListQuery }                  from '@acx-ui/rc/services'
 import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum } from '@acx-ui/rc/utils'
 
 import { CagesTab }       from './CagesTab'
-import { PerformanceTab } from './PerofrmanceTab'
+import { PerformanceTab } from './PerformanceTab'
+import { UplinkTab }      from './UplinkTab'
 
 enum OverviewInfoType {
     PERFORMANCE = 'peromance',
     CAGES = 'cages',
+    UPLINK = 'uplink'
 }
 
 export const EdgeNokiaOltDetails = () => {
@@ -48,7 +49,7 @@ export const EdgeNokiaOltDetails = () => {
 
   const tabs = [{
     label: $t({ defaultMessage: 'Performance' }),
-    value: 'performance',
+    value: OverviewInfoType.PERFORMANCE,
     children: <PerformanceTab
       isOltOnline={isOltOnline}
       cagesList={cagesList}
@@ -57,46 +58,44 @@ export const EdgeNokiaOltDetails = () => {
     />
   }, {
     label: $t({ defaultMessage: 'Cages' }),
-    value: 'cages',
+    value: OverviewInfoType.CAGES,
     children: <CagesTab
       oltData={oltDetails}
       cagesList={cagesList}
       isLoading={isCagesLoading}
       isFetching={isCagesFetching}
     />
+  }, {
+    label: $t({ defaultMessage: 'Uplink' }),
+    value: OverviewInfoType.UPLINK,
+    children: <UplinkTab />
   }]
 
-  return (
-    <GridRow>
-      <Col span={24}>
-        <EdgeNokiaOltDetailsPageHeader
-          currentOlt={oltDetails}
-          cagesList={cagesList}
-          isLoading={isCagesLoading}
-          isFetching={isCagesFetching}
-        />
-      </Col>
-      <Col span={24}>
-        <Tabs type='card'
-          activeKey={currentTab}
-          defaultActiveKey={activeSubTab || tabs[0].value}
-          onChange={handleTabChange}
+  return <>
+    <EdgeNokiaOltDetailsPageHeader
+      currentOlt={oltDetails}
+      cagesList={cagesList}
+      isLoading={isCagesLoading}
+      isFetching={isCagesFetching}
+    />
+    <Tabs type='card'
+      activeKey={currentTab}
+      defaultActiveKey={activeSubTab || tabs[0].value}
+      onChange={handleTabChange}
+    >
+      {tabs.map((tab) => (
+        <Tabs.TabPane
+          tab={tab.label}
+          key={tab.value}
         >
-          {tabs.map((tab) => (
-            <Tabs.TabPane
-              tab={tab.label}
-              key={tab.value}
-            >
-              <Loader
-                states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
-                style={{ minHeight: '100px' }}
-              >
-                {tab.children}
-              </Loader>
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
-      </Col>
-    </GridRow>
-  )
+          <Loader
+            states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
+            style={{ minHeight: '100px' }}
+          >
+            {tab.children}
+          </Loader>
+        </Tabs.TabPane>
+      ))}
+    </Tabs>
+  </>
 }

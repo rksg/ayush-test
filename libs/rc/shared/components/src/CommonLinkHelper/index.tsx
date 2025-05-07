@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
   DpskDetailsTabKey,
@@ -60,13 +61,13 @@ export function IdentityDetailsLink (
     name?: string })
 {
   const { personaGroupId, personaId, name } = props
-  return (
-    <TenantLink
+  return personaId && personaGroupId
+    ? <TenantLink
       to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
     >
       {name ?? personaId}
     </TenantLink>
-  )
+    : <>{name ?? ''}</>
 }
 
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {
@@ -169,10 +170,13 @@ export function PropertyUnitLink (props: {
   showNoData?: boolean
 }) {
   const { venueId, unitId, name, showNoData } = props
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   return (
     (venueId && unitId)
       ? <TenantLink
-        to={`venues/${venueId}/venue-details/units`}
+        to={!isMultipleIdentityUnits ?
+          `venues/${venueId}/venue-details/units` :
+          `/venues/${venueId}/${unitId}/property-units`}
       >
         {name ?? unitId}
       </TenantLink>

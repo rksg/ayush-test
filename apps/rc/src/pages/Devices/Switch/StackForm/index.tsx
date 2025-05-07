@@ -57,10 +57,6 @@ import {
 import {
   Switch,
   getSwitchModel,
-  SWITCH_SERIAL_PATTERN,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
@@ -79,7 +75,10 @@ import {
   FirmwareSwitchVenueVersionsV1002,
   getStackUnitsMinLimitationV1002,
   getSwitchFwGroupVersionV1002,
-  SwitchFirmwareModelGroup
+  SwitchFirmwareModelGroup,
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model,
+  isSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -107,28 +106,33 @@ const defaultPayload = {
   search: '', updateAvailable: ''
 }
 
-const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P',
-  'ICX8100-48', 'ICX8100-48P', 'ICX8100-C08PF']
+const modelNotSupportStack =
+['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
+  'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
+  'ICX8100-48P-X', 'ICX8100-C08PF-X']
 
 export type SwitchModelParams = {
   serialNumber: string;
   isSupport8200AV: boolean;
   isSupport8100: boolean;
+  isSupport8100X: boolean;
+  isSupport7550Zippy: boolean;
   activeSerialNumber?: string;
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8200AV, isSupport8100, activeSerialNumber } = props
+  const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X,
+    isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
-  const switchSerialPatterns = [
-    // eslint-disable-next-line max-len
-    { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
-    { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
-    { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
-  ]
-  const matchedPattern = switchSerialPatterns.find(p => p.condition)
-  const re = new RegExp(matchedPattern ? matchedPattern.pattern : SWITCH_SERIAL_PATTERN)
+  const re = (isSupport8100 && isSpecific8100Model(serialNumber))
+    ? createSwitchSerialPatternForSpecific8100Model()
+    : createSwitchSerialPattern({
+      isSupport8200AV: isSupport8200AV,
+      isSupport8100: isSupport8100,
+      isSupport8100X: isSupport8100X,
+      isSupport7550Zippy: isSupport7550Zippy
+    })
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }
@@ -178,6 +182,8 @@ export function StackForm () {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -712,6 +718,8 @@ export function StackForm () {
                   serialNumber: value,
                   isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
+                  isSupport8100X: isSupport8100X,
+                  isSupport7550Zippy: isSupport7550Zippy,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
                 return validatorSwitchModel(switchModelParams)}
@@ -1129,14 +1137,14 @@ export function StackForm () {
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     {readOnly &&
                       <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                    <SwitchStackSetting
+                    {switchDetail && <SwitchStackSetting
                       switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
-                    />
+                    />}
                   </div>
                 }
               </Col>

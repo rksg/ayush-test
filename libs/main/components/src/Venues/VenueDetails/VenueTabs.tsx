@@ -9,18 +9,20 @@ import {
   useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { hasRaiPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                     from '@acx-ui/types'
+import { hasRaiPermission, hasRoles, isCoreTier, useUserProfileContext } from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isCustomRole, accountTier } = useUserProfileContext()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const templateBasePath = useConfigTemplateTenantLink(`venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
-  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCore = isCoreTier(accountTier)
+  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {
@@ -33,7 +35,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const propertyConfig = useGetPropertyConfigsQuery({ params }, {
     skip: !enableProperty || isTemplate
   })
-  const { isCustomRole } = useUserProfileContext()
+
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
@@ -50,6 +52,13 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       return
     }
 
+    if (tab === 'clients') {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${tab}/wifi`
+      })
+      return
+    }
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -86,7 +95,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane
+      { (hasRaiPermission('READ_INCIDENTS') && !isCore) && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
       /> }

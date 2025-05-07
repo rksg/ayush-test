@@ -61,6 +61,32 @@ export const events = [{
   id: '3082c3547b674eb0b481842595090110',
   entity_id: 'FEK3204N013',
   message: '{ "message_template": "@@switchName Switch is deleted by the cloud controller." }'
+}, {
+  severity: 'Major',
+  product: 'EDGE',
+  serialNumber: '9649DF7CBBD88511EFA46EBE7632E75374',
+  entity_type: 'EDGE',
+  event_datetime: '2025-02-26T22:42:00Z',
+  indexName: 'events-2025.02.26-000912',
+  venueId: '04a61e4ee3484e3c857d170f2465bcb3',
+  name: 'EdgeVxLANTunnelCreationFailedV1',
+  id: '004e6496bbc247a088fba2e5c11ddec5',
+  entity_id: '9649DF7CBBD88511EFA46EBE7632E75374',
+  message: '{"message_template":"Edge @@edgeName : Dynamic VxLAN creation has failed for VLAN 123 for remote device @@remoteApName."}',
+  remoteApSerialId: '962202006696'
+}, {
+  severity: 'Info',
+  product: 'SWITCH',
+  macAddress: 'c0:c5:20:a6:0a:ed',
+  serialNumber: 'FEK3215R074',
+  entity_type: 'SWITCH',
+  event_datetime: '2025-03-26T08:35:38Z',
+  indexName: 'events-2025.03.26-000937',
+  venueId: '53b8e768ae73480596992496e1628957',
+  name: 'SwitchConfigUpdated',
+  id: 'ee640ef73c5f4fee893b7b83ea3234e1',
+  entity_id: 'FEK3215R074',
+  message: '{"data":{"switchName":{"entityType":"SWITCH"},"transactionId":{"entityType":"CONFIG"}},"message_template":"%%switchName: %%transactionId completed successfully."}'
 }].map(event => ({
   ...event,
   tableKey: event.event_datetime + event.id
@@ -103,6 +129,29 @@ export const eventsMeta = [{
   id: '3082c3547b674eb0b481842595090110',
   isApExists: false,
   isVenueExists: true,
+  isSwitchExists: true
+}, {
+  switchName: '9649DF7CBBD88511EFA46EBE7632E75374',
+  id: '004e6496bbc247a088fba2e5c11ddec5',
+  remoteApName: 'R750-11-40',
+  isRemoteApExists: true,
+  isRemoteedgeExists: false,
+  isVenueExists: true,
+  venueName: 'vEdge-Venue-A',
+  edgeName: 'vEdge_1101_n1',
+  isEdgeExists: true,
+  isApExists: false,
+  isSwitchExists: false
+}, {
+  switchName: 'ICX7150-C12 Router',
+  switchMac: 'c0:c5:20:a6:0a:ed',
+  id: 'ee640ef73c5f4fee893b7b83ea3234e1',
+  isRemoteedgeExists: false,
+  isVenueExists: true,
+  venueName: 'test-1',
+  edgeName: 'FEK3215R074',
+  isEdgeExists: false,
+  isApExists: false,
   isSwitchExists: true
 }]
 

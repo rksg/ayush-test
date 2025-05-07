@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                                     from 'antd/lib/select'
-import _                                                         from 'lodash'
+import { Checkbox, Divider, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                                  from 'antd/lib/select'
+import _                                                                      from 'lodash'
 
 import {
   Alert,
@@ -11,10 +11,12 @@ import {
   showActionModal,
   Subtitle,
   Tooltip,
-  Loader
+  Loader,
+  Table,
+  TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { PoeUsage }                                from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -31,7 +33,10 @@ import {
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
   useCyclePoeMutation,
-  useLazyPortProfileOptionsForMultiSwitchesQuery
+  useLazyPortProfileOptionsForMultiSwitchesQuery,
+  useGetSwitchStickyMacAclsQuery,
+  useGetSwitchMacAclsQuery,
+  useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -55,10 +60,14 @@ import {
   VlanModalType,
   isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  isFirmwareVersionAbove10010gOr10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { store }              from '@acx-ui/store'
+import { MacACLDrawer }       from '@acx-ui/switch/components'
 import { SwitchScopes }       from '@acx-ui/types'
 import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
@@ -131,7 +140,8 @@ import {
   MultipleText,
   updateSwitchVlans,
   getPortProfileOptions,
-  ptToPtMacActionMessages
+  ptToPtMacActionMessages,
+  getMacAclOptions
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -151,7 +161,7 @@ export const allMultipleEditableFields = [
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt'
+  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl'
 ]
 
 interface ProfileVlans {
@@ -203,6 +213,7 @@ export function EditPortDrawer ({
     lldpQosCheckbox,
     ingressAclCheckbox,
     egressAclCheckbox,
+    switchMacAclCheckbox,
     profileName,
     // Flex auth
     authenticationProfileId,
@@ -220,7 +231,8 @@ export function EditPortDrawer ({
     restrictedVlanCheckbox,
     authTimeoutAction,
     authTimeoutActionCheckbox,
-    criticalVlanCheckbox
+    criticalVlanCheckbox,
+    portSecurity
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -233,10 +245,12 @@ export function EditPortDrawer ({
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
+  const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
-    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAcl)]
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAcl), getOpsApi(SwitchUrlsInfo.addSwitchMacAcl)]
   })
 
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
@@ -245,16 +259,23 @@ export function EditPortDrawer ({
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
   const isFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10020b(s.firmware))
+  const isFirmwareAbove10010gOr10020b = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010gOr10020b(s.firmware))
+  const isFirmwareAbove10010gCd1Or10020bCd1 = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010gCd1Or10020bCd1(s.firmware))
   const isAnyFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10020b(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
+  const isAnyFirmwareAbove10010gCd1Or10020bCd1 = !!selectedSwitchList?.length
+      && selectedSwitchList?.some(s => isFirmwareVersionAbove10010gCd1Or10020bCd1(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
   const hasBreakoutPort = selectedPorts.filter(p => p.portIdentifier.includes(':')).length > 0
 
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
+  const [macAclsOptions, setMacAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
   const [portSpeedOptions, setPortSpeedOptions] = useState([] as string[])
   const [poeClassOptions, setPoeClassOptions] = useState([] as {
@@ -295,7 +316,9 @@ export function EditPortDrawer ({
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [drawerAclVisible, setDrawerAclVisible] = useState(false)
+  const [drawerMACAclVisible, setDrawerMACAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
+  const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -314,7 +337,7 @@ export function EditPortDrawer ({
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -340,6 +363,45 @@ export function EditPortDrawer ({
   }, {
     skip: !switchDetail?.venueId
   })
+
+  const { data: macAclList } = useGetSwitchMacAclsQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: { sortField: 'name', pageSize: 10000 },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gCd1Or10020bCd1 || !switchDetail?.venueId
+  })
+
+  const { data: macAclGlobalList } = useGetLayer2AclsQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: { sortField: 'name', pageSize: 10000 },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gCd1Or10020bCd1 || !switchDetail?.venueId
+  })
+
+  const stickyMacAclsColumns: TableProps<{ macAddress: string }>['columns'] = [
+    {
+      key: 'macAddress',
+      title: $t({ defaultMessage: 'Sticky MAC Allow List (Learned MAC Address)' }),
+      dataIndex: 'macAddress'
+    }
+  ]
+
+  const stickyMacAclsQuery = useTableQuery({
+    useQuery: useGetSwitchStickyMacAclsQuery,
+    defaultPayload: {
+      portId: `${selectedPorts?.[0].switchSerial}/${selectedPorts?.[0].portIdentifier}`,
+      fields: ['id']
+    },
+    enableRbac: isSwitchRbacEnabled,
+    apiParams: { switchId, venueId: (switchDetail?.venueId || '') as string },
+    sorter: { sortField: 'id', sortOrder: 'ASC' },
+    option: { skip: !isSwitchMacAclEnabled || !portSecurity || !switchDetail?.venueId }
+  })
+
+  const switchDefaultVlanIds
+    = switchesDefaultVlan?.map(v => v.defaultVlanId).toString()
 
   const getVlans = async () => {
     if (isSwitchLevelVlanEnabled) {
@@ -532,6 +594,7 @@ export function EditPortDrawer ({
       setVlanUsedByVe(vlanUsedByVe)
       setPortSpeedOptions(portSpeed)
       setAclsOptions(getAclOptions(aclUnion))
+      setMacAclsOptions(getMacAclOptions(macAclList?.data, macAclGlobalList?.data))
       setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
@@ -539,6 +602,9 @@ export function EditPortDrawer ({
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
       setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
+      setShowErrorRecoveryTooltip(isSwitchErrorRecoveryEnabled &&
+        ((selectedSwitchList && selectedSwitchList.length > 1) ||
+        isFirmwareAbove10010gOr10020b))
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -559,7 +625,7 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchDefaultVlanIds, visible, macAclList, macAclGlobalList])
 
   const getSinglePortValue = async (
     portSpeed: string[],
@@ -726,6 +792,12 @@ export function EditPortDrawer ({
           }
         }
         return ''
+      case 'portSecurity':
+        return flexAuthEnabled
+          ? $t(EditPortMessages.CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED) : ''
+      case 'switchMacAcl':
+        return flexAuthEnabled
+          ? $t(EditPortMessages.CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED) : ''
       default: return ''
     }
   }
@@ -765,7 +837,7 @@ export function EditPortDrawer ({
           flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       // Flex auth
       case 'flexibleAuthenticationEnabled':
-        return (isMultipleEdit && !checkboxEnabled)
+        return (isMultipleEdit && !checkboxEnabled) || portSecurity
           || !!getFlexAuthButtonStatus(commonRequiredProps)
       case 'authenticationProfileId':
         return isMultipleEdit && !(checkboxEnabled && flexibleAuthenticationEnabledCheckbox)
@@ -792,6 +864,14 @@ export function EditPortDrawer ({
           || getAuthFieldDisabled(field, authfieldValues)
       case 'switchPortProfileId':
         return (isMultipleEdit && !checkboxEnabled) || isCloudPort
+      case 'portSecurity':
+        return (isMultipleEdit && !checkboxEnabled) ||
+        getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+      case 'switchMacAcl':
+        return (isMultipleEdit && !checkboxEnabled) ||
+            getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+              flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       default:
         return isMultipleEdit && !checkboxEnabled
     }
@@ -849,6 +929,10 @@ export function EditPortDrawer ({
         return !isFirmwareAbove10020b || isCloudPort
       case 'adminPtToPt':
         return !isFirmwareAbove10020b
+      case 'portSecurity':
+        return !isFirmwareAbove10010gCd1Or10020bCd1
+      case 'switchMacAcl':
+        return !isFirmwareAbove10010gCd1Or10020bCd1 || isCloudPort
       default: return false
     }
   }
@@ -856,9 +940,10 @@ export function EditPortDrawer ({
   const getFieldTemplate = (props: {
     content: React.ReactNode,
     field: string,
-    extraLabel?: boolean
+    extraLabel?: boolean,
+    tooltip?: React.ReactNode
   }) => {
-    const { content, field, extraLabel } = props
+    const { content, field, extraLabel, tooltip } = props
     const shouldControlHiddenFields = [
       'changeAuthOrder', 'restrictedVlan', 'criticalVlan'
     ]
@@ -878,7 +963,8 @@ export function EditPortDrawer ({
           disabled={getOverrideDisabled(field)}
         />}
       />}
-      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }</UI.ExtraLabel> }
+      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }
+        <UI.FieldTemplateTooltip>{tooltip}</UI.FieldTemplateTooltip></UI.ExtraLabel> }
       { content }
     </UI.FormItem>
   }
@@ -1265,6 +1351,32 @@ export function EditPortDrawer ({
     }).catch((err) => {
       console.log(err) // eslint-disable-line no-console
     })
+  }
+
+  const onPortSecurityChange = (value: boolean) => {
+    if(value && !hasMultipleValue.includes('portSecurityMaxEntries')) {
+      form.setFieldValue('portSecurityMaxEntriesCheckbox', true)
+    }
+  }
+
+  const onPortSecurityMaxEntriesChange = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    const value = Number(event.target.value)
+    if (value && editPortData?.portSecurityMaxEntries &&
+      value < editPortData.portSecurityMaxEntries) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
+        content: $t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'This value is lower than the previously set limit. The existing list of MACs will be deleted and re-learnt if you proceed. Are you sure you want to delete?'
+        }),
+        okText: $t({ defaultMessage: 'Delete' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onCancel: () => {
+          form.setFieldsValue({ portSecurityMaxEntries: editPortData?.portSecurityMaxEntries })
+        }
+      })
+    }
   }
 
   const footer = [
@@ -2250,6 +2362,8 @@ export function EditPortDrawer ({
         { getFieldTemplate({
           field: 'stpBpduGuard',
           extraLabel: true,
+          tooltip: showErrorRecoveryTooltip &&
+            <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>,
           content: <Form.Item
             noStyle
             label={false}
@@ -2373,6 +2487,88 @@ export function EditPortDrawer ({
           />
         </div>
 
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 && getFieldTemplate({
+          field: 'portSecurity',
+          extraLabel: true,
+          content: <Form.Item
+            noStyle
+            children={<Tooltip title={getFieldTooltip('portSecurity')}>
+              <Space>
+                <Form.Item
+                  noStyle
+                  name='portSecurity'
+                  valuePropName='checked'
+                  initialValue={false}
+                  validateFirst
+                >
+                  <Switch
+                    data-testid='port-security-checkbox'
+                    disabled={getFieldDisabled('portSecurity')}
+                    className={getToggleClassName('portSecurity',
+                      isMultipleEdit, hasMultipleValue)}
+                    onChange={onPortSecurityChange}
+                  />
+                </Form.Item>
+              </Space>
+            </Tooltip>
+            }
+          />
+        })}
+
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
+          portSecurity && <div style={isMultipleEdit ? { marginLeft: '25px' } : {}}>
+          {getFieldTemplate({
+            field: 'portSecurityMaxEntries',
+            content: <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='portSecurityMaxEntries'
+              label={$t(FIELD_LABEL.portSecurityMaxEntries)}
+              initialValue={1}
+              rules={[
+                {
+                  type: 'number',
+                  min: 1,
+                  max: 8256
+                }
+              ]}
+              validateFirst
+              children={
+                shouldRenderMultipleText({
+                  field: 'portSecurityMaxEntries', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <InputNumber
+                    min={1}
+                    max={8256}
+                    data-testid='port-security-max-entries-input'
+                    style={{ width: '100%' }}
+                    onBlur={onPortSecurityMaxEntriesChange}
+                  />}
+            />
+          })}</div>
+        }
+
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
+          portSecurity && !isMultipleEdit && <Table
+          rowKey='id'
+          sortDirections={['ascend', 'descend', 'ascend']}
+          columns={stickyMacAclsColumns}
+          onChange={(pagination, filters, sorter, extra) => {
+            if (extra.action === 'paginate') {
+              const currentSorter = {
+                ...Array.isArray(sorter) ? sorter[0] : sorter,
+                field: stickyMacAclsQuery.sorter.sortField || 'id'
+              }
+              stickyMacAclsQuery.handleTableChange?.(pagination, filters, currentSorter, extra)
+            } else {
+              stickyMacAclsQuery.handleTableChange?.(pagination, filters, sorter, extra)
+            }
+          }}
+          pagination={stickyMacAclsQuery.pagination}
+          dataSource={stickyMacAclsQuery.data?.data}
+          style={{ marginBottom: '30px' }}
+        />
+        }
+
         <ACLSettingDrawer
           visible={drawerAclVisible}
           setVisible={setDrawerAclVisible}
@@ -2443,6 +2639,51 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>
+        })}
+
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 &&
+        <MacACLDrawer
+          visible={drawerMACAclVisible}
+          setVisible={setDrawerMACAclVisible}
+          editMode={false}
+          venueId={switchDetail?.venueId || ''}
+          switchIds={selectedSwitchList?.map(p => p.id)}
+        />
+        }
+        { isSwitchMacAclEnabled && isAnyFirmwareAbove10010gCd1Or10020bCd1 && getFieldTemplate({
+          field: 'switchMacAcl',
+          content: <Form.Item
+            noStyle
+            children={<><Tooltip title={getFieldTooltip('switchMacAcl')}>
+              <Form.Item
+                {...getFormItemLayout(isMultipleEdit)}
+                name='switchMacAcl'
+                label={$t(FIELD_LABEL.switchMacAcl)}
+                initialValue=''
+                children={shouldRenderMultipleText({
+                  field: 'switchMacAcl', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <Select
+                    data-testid='switchMacAclSelectList'
+                    options={macAclsOptions}
+                    disabled={getFieldDisabled('switchMacAcl')}
+                  />
+                }
+              />
+            </Tooltip>
+            {((isMultipleEdit && switchMacAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
+              <Space style={{ marginLeft: '8px' }}>
+                <Button type='link'
+                  key='add-mac-acl'
+                  size='small'
+                  disabled={(isMultipleEdit && !switchMacAclCheckbox) ||
+                    getFieldDisabled('switchMacAcl')}
+                  onClick={() => { setDrawerMACAclVisible(true) }}
+                >{$t({ defaultMessage: 'Add MAC ACL' })}
+                </Button>
+              </Space>}</>
+            }
+          />
         })}
 
         {getFieldTemplate({

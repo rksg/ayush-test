@@ -1,0 +1,240 @@
+import { useMemo } from 'react'
+
+import { Form, FormInstance, Radio, Select, Space } from 'antd'
+import { useIntl }                                  from 'react-intl'
+
+import { Button }       from '@acx-ui/components'
+import {
+  defaultDualWanLinkHealthCheckPolicy,
+  getWanLinkDownCriteriaString,
+  getWanProtocolString,
+  multiWanLimitations
+} from '@acx-ui/edge/components'
+import {
+  EdgeLinkDownCriteriaEnum,
+  EdgeMultiWanProtocolEnum,
+  EdgeWanLinkHealthCheckPolicy,
+  networkWifiIpRegExp
+} from '@acx-ui/rc/utils'
+
+import { InputInlineEditor }                    from './InputInlineEditor'
+import { StyledFormItem, StyledHiddenFormItem } from './styledComponents'
+
+const {
+  MIN_HEALTH_CHECK_INTERVAL,
+  MAX_HEALTH_CHECK_INTERVAL,
+  MIN_COUNT_DOWN,
+  MAX_COUNT_DOWN,
+  MIN_COUNT_UP,
+  MAX_COUNT_UP,
+  MAX_TARGET_IP
+} = multiWanLimitations
+
+interface LinkHealthMonitorSettingFormProps {
+  form: FormInstance
+  onFinish: (values: EdgeWanLinkHealthCheckPolicy) => Promise<void>
+  editData?: EdgeWanLinkHealthCheckPolicy
+}
+
+export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingFormProps) => {
+  const { $t } = useIntl()
+  const { form, onFinish, editData } = props
+
+  const initialValues = useMemo(() => {
+    const {
+      protocol: defaultProtocol,
+      targetIpAddresses: defaultTargetIpAddresses,
+      linkDownCriteria: defaultLinkDownCriteria,
+      intervalSeconds: defaultIntervalSeconds,
+      maxCountToDown: defaultMaxCountToDown,
+      maxCountToUp: defaultMaxCountToUp
+    } = defaultDualWanLinkHealthCheckPolicy
+
+    return {
+      protocol: (!editData?.protocol || editData?.protocol === EdgeMultiWanProtocolEnum.NONE)
+        ? defaultProtocol
+        : editData?.protocol,
+      targetIpAddresses: editData?.targetIpAddresses?.length
+        ? editData?.targetIpAddresses
+        : defaultTargetIpAddresses,
+      // eslint-disable-next-line max-len
+      linkDownCriteria: (!editData?.linkDownCriteria || editData?.linkDownCriteria === EdgeLinkDownCriteriaEnum.INVALID)
+        ? defaultLinkDownCriteria
+        : editData?.linkDownCriteria,
+      intervalSeconds: editData?.intervalSeconds ?? defaultIntervalSeconds,
+      maxCountToDown: editData?.maxCountToDown ?? defaultMaxCountToDown,
+      maxCountToUp: editData?.maxCountToUp ?? defaultMaxCountToUp
+    }
+  }, [editData])
+
+  const handleOnFinish = async (formValues: EdgeWanLinkHealthCheckPolicy) => {
+    try {
+      await onFinish({
+        ...formValues,
+        intervalSeconds: Number(formValues.intervalSeconds),
+        maxCountToDown: Number(formValues.maxCountToDown),
+        maxCountToUp: Number(formValues.maxCountToUp)
+      })
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    }
+  }
+
+  return <Form
+    layout='vertical'
+    form={form}
+    onFinish={handleOnFinish}
+    initialValues={initialValues}
+  >
+    <Form.Item
+      name='protocol'
+      label={$t({ defaultMessage: 'Protocol' })}
+    >
+      <Select
+        disabled
+        children={
+          Object.keys(EdgeMultiWanProtocolEnum).map((key) => {
+            return <Select.Option key={key} value={key}>
+              {getWanProtocolString(key as EdgeMultiWanProtocolEnum)}
+            </Select.Option>
+          })}
+      />
+    </Form.Item>
+
+    <Form.Item
+      label={$t({ defaultMessage: 'Target IP Addresses (Up to {max})' }, { max: MAX_TARGET_IP })}
+      required
+    >
+      <Form.List name='targetIpAddresses'>
+        {(fields, { add, remove }) => {
+          return <>
+            {fields?.map((field, index) =>
+              <StyledFormItem
+                {...field}
+                rules={[
+                  { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
+                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                ]}
+              >
+                <InputInlineEditor
+                  index={index}
+                  onDelete={remove}
+                  // on change validation since we will only setFormValue when user click InputInlineEditor submit
+                  rules={[ networkWifiIpRegExp ]}
+                />
+              </StyledFormItem>
+            )}
+
+            <Button
+              type='link'
+              onClick={() => add()}
+              disabled={fields.length >= MAX_TARGET_IP}
+            >
+              {$t({ defaultMessage: 'Add Target' })}
+            </Button>
+          </>
+        }}
+      </Form.List>
+    </Form.Item>
+
+    <StyledHiddenFormItem
+      name='validateTargetIpAddresses'
+      dependencies={['targetIpAddresses']}
+      rules={[{ validator: async () => {
+        const ips = form.getFieldValue(['targetIpAddresses'])
+        return ips && ips.length > 0 && ips.length <= MAX_TARGET_IP
+          ? Promise.resolve()
+        // eslint-disable-next-line max-len
+          : Promise.reject(new Error($t({ defaultMessage: 'Target IP must be between 1 and {max} addresses' }, { max: MAX_TARGET_IP })))
+      } }]}
+      children={
+        // eslint-disable-next-line react/jsx-no-useless-fragment
+        <></>
+      }
+      style={{ marginBottom: 10 }}
+    />
+
+    <Form.Item
+      name='linkDownCriteria'
+      label={$t({ defaultMessage: 'Failure Condition' })}
+    >
+      <Radio.Group style={{ width: '100%' }}>
+        {Object.keys(EdgeLinkDownCriteriaEnum).map((key) =>
+          key === EdgeLinkDownCriteriaEnum.INVALID ? null : <Radio
+            key={key}
+            value={key}
+          >
+            {getWanLinkDownCriteriaString(key as EdgeLinkDownCriteriaEnum)}
+          </Radio>)}
+      </Radio.Group>
+    </Form.Item>
+
+    <Form.Item label={$t({ defaultMessage: 'Check Interval' })}>
+      <Space>
+        <Form.Item
+          name='intervalSeconds'
+          noStyle
+          rules={[{
+            type: 'number',
+            transform: Number,
+            max: MAX_HEALTH_CHECK_INTERVAL,
+            min: MIN_HEALTH_CHECK_INTERVAL
+          }]}
+        >
+          <Select style={{ width: '60px' }}>
+            {getNumberOptions(MIN_HEALTH_CHECK_INTERVAL, MAX_HEALTH_CHECK_INTERVAL)}
+          </Select>
+        </Form.Item>
+        <span>{$t({ defaultMessage: 'Seconds' })}</span>
+      </Space>
+    </Form.Item>
+
+    <Form.Item label={$t({ defaultMessage: 'Mark link as DOWN after ...' })}>
+      <Space>
+        <Form.Item
+          name='maxCountToDown'
+          noStyle
+          rules={[{
+            type: 'number',
+            transform: Number,
+            max: MAX_COUNT_DOWN,
+            min: MIN_COUNT_DOWN
+          }]}
+        >
+          <Select style={{ width: '60px' }}>
+            {getNumberOptions(MIN_COUNT_DOWN, MAX_COUNT_DOWN)}
+          </Select>
+        </Form.Item>
+        <span>{$t({ defaultMessage: 'tries' })}</span>
+      </Space>
+    </Form.Item>
+
+    <Form.Item label={$t({ defaultMessage: 'Mark link as UP after ...' })}>
+      <Space>
+        <Form.Item
+          name='maxCountToUp'
+          noStyle
+          rules={[{
+            type: 'number',
+            transform: Number,
+            max: MAX_COUNT_UP,
+            min: MIN_COUNT_UP
+          }]}
+        >
+          <Select style={{ width: '60px' }}>
+            {getNumberOptions(MIN_COUNT_UP, MAX_COUNT_UP)}
+          </Select>
+        </Form.Item>
+        <span>{$t({ defaultMessage: 'tries' })}</span>
+      </Space>
+    </Form.Item>
+  </Form>
+}
+
+const getNumberOptions = (min: number, max: number) => {
+  return Array.from({ length: max - min + 1 }, (_, i) => min + i)
+    .map((val) => <Select.Option key={val} value={val}>
+      {val}
+    </Select.Option>)
+}

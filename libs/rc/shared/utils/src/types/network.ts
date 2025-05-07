@@ -1,4 +1,4 @@
-import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Persona, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -109,7 +109,7 @@ export interface NetworkDetail {
 
 export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
 
-export interface NetworkSaveData {
+export interface NetworkSaveData extends EnforceableFields {
   id?: string
   name?: string
   tenantId?: string
@@ -179,6 +179,12 @@ export interface NetworkSaveData {
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
+  identityGroupId?: string,
+  identity?: Persona,
+  enableIdentityAssociation?: boolean,
+  samlIdpProfilesId?: string
+  samlIdpProfilesName?: string
 }
 
 export interface NetworkSummaryExtracData {
@@ -268,6 +274,8 @@ export interface NetworkTunnelSdLanAction {
   networkId: string,
   guestEnabled: boolean, // forward guest traffic
   enabled: boolean,      // is local breakout
+  forwardingTunnelProfileId: string,
+  forwardingTunnelType: string,
   venueSdLanInfo?: EdgeMvSdLanViewData
 }
 
@@ -276,5 +284,15 @@ export interface NetworkTunnelSoftGreAction {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+}
+
+export interface NetworkTunnelIpsecAction {
+  [name:string]: {
+    softGreProfileId: string,
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }

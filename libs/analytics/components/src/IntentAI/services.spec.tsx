@@ -12,15 +12,35 @@ import { DateRange }                                                       from 
 import {
   intentHighlights,
   intentListResult,
-  filterOptions
+  filterOptions,
+  intentListWithAllStatus
 } from './__tests__/fixtures'
-import { mockedIntentAps }                                                                from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { IntentListItem }                                                                 from './config'
-import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAP, formatValues } from './services'
-import { DisplayStates, Statuses, StatusReasons }                                         from './states'
-import { Actions }                                                                        from './utils'
+import { mockedIntentAps }          from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentListItem, Metadata } from './config'
+import {
+  api,
+  useIntentAITableQuery,
+  TransitionMutationResponse,
+  IntentAP,
+  formatValues,
+  getStatusTooltip
+} from './services'
+import { DisplayStates, Statuses, StatusReasons } from './states'
+import { Actions }                                from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+
+describe('getStatusTooltip', () => {
+  it.each(intentListWithAllStatus.intents.data)(
+    'returns correct tooltip for $displayStatus',
+    (intent) => {
+      const state = intent.displayStatus as DisplayStates
+      const metadata = intent.metadata as Metadata
+      const { asFragment } = render(getStatusTooltip(state, intent.sliceValue, metadata))
+      expect(asFragment()).toMatchSnapshot()
+    }
+  )
+})
 
 describe('formatValues', () => {
   it('renders elements', () => {
@@ -596,6 +616,10 @@ describe('Intent services', () => {
       ops: {
         new: 6,
         active: 12
+      },
+      ecoflex: {
+        new: 7,
+        active: 14
       }
     }
 

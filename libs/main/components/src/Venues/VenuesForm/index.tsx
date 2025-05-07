@@ -11,10 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                                            from '@acx-ui/icons'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                      from '@acx-ui/icons'
 import {
-  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggleVenue,
+  usePlacesAutocomplete, wifiCountryCodes, useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -23,7 +24,8 @@ import {
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
   useLazyGetVenuesTemplateListQuery,
-  useLazyGetTimezoneQuery
+  useLazyGetTimezoneQuery,
+  useGetVenueTagListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -39,7 +41,9 @@ import {
   TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplatePageHeaderTitle,
-  CommonResult
+  CommonResult,
+  ConfigTemplateType,
+  validateTags
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -155,6 +159,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const { modalMode = false, modalCallBack, specifiedAction, dataFromParent } = props
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isTagsEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
@@ -179,6 +184,8 @@ export function VenuesForm (props: VenuesFormProps) {
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [countryCode, setCountryCode] = useState('')
+  const [validating, setValidating] = useState(false)
+  const [venueTagOptions, setVenueTagOptions] = useState<{ label: string, value: string }[]>()
 
   const action = specifiedAction ?? params.action ?? 'add'
   const { data = dataFromParent } = useGetVenueInstance()
@@ -194,6 +201,17 @@ export function VenuesForm (props: VenuesFormProps) {
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
   const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const venueTagList = useGetVenueTagListQuery({ params }, { skip: !isTagsEnabled })
+
+  useEffect(() => {
+    if (venueTagList.data) {
+      const tags = venueTagList.data.map((item) => ({
+        label: item, value: item
+      }))
+      setVenueTagOptions(tags)
+    }
+  },[venueTagList.data])
 
   useEffect(() => {
     if (data) {
@@ -205,7 +223,8 @@ export function VenuesForm (props: VenuesFormProps) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
-        address: { ...data?.address, countryCode: defaultCountryCode }
+        address: { ...data?.address, countryCode: defaultCountryCode },
+        tags: data?.tags
       })
       updateAddress(data?.address as Address)
 
@@ -349,14 +368,23 @@ export function VenuesForm (props: VenuesFormProps) {
   }
 
   const handleAddVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsInvalid())
+      return
     await handleSubmit(values, addVenue)
   }
 
   const handleEditVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsInvalid())
+      return
     await handleSubmit(values, updateVenue, false)
   }
 
   const handleOverrideVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsInvalid())
+      return
     await handleSubmit(values, undefined, false)
   }
 
@@ -373,6 +401,34 @@ export function VenuesForm (props: VenuesFormProps) {
   const isHeaderVisible = (): boolean => {
     return action !== 'edit' && !modalMode
   }
+
+  const checkFormIsInvalid = () => {
+    const errors = formRef.current?.getFieldsError()
+    const hasErrors = errors?.some((field) => field.errors.length > 0)
+    return hasErrors
+  }
+
+  const onBlurNameHandling = async (ev: React.FocusEvent<HTMLInputElement, Element>) => {
+    if (checkFormIsInvalid())
+      return
+    checkNameExists(ev.target.value)
+  }
+
+  const checkNameExists = async (name: string) => {
+    setValidating(true)
+    formRef.current?.setFields([{ name: 'name', validating: true }])
+    try {
+      await nameValidator(name)
+      formRef.current?.setFields([{ name: 'name', errors: [],
+        validating: false }])
+    } catch (error: unknown | string) {
+      formRef.current?.setFields([{ name: 'name', errors: [error as string],
+        validating: false }])
+    } finally {
+      setValidating(false)
+    }
+  }
+
 
   return (
     <>
@@ -391,6 +447,7 @@ export function VenuesForm (props: VenuesFormProps) {
           buttonLabel={{ submit: action === 'edit' ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Add' }) }}
+          {...getEnforcedStepsFormProps('StepsFormLegacy')}
         >
           <StepsFormLegacy.StepForm>
             <Row gutter={20}>
@@ -398,31 +455,35 @@ export function VenuesForm (props: VenuesFormProps) {
                 <Form.Item
                   name='name'
                   label={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
+                  validateStatus={validating ? 'validating' : undefined}
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
                     { max: 63, transform: (value) => value.trim() },
-                    { validator: (_, value) => whitespaceOnlyRegExp(value) },
-                    {
-                      validator: (_, value) => nameValidator(value)
-                    }
+                    { validator: (_, value) => whitespaceOnlyRegExp(value) }
                   ]}
                   validateFirst
                   hasFeedback
-                  children={<Input />}
-                  validateTrigger={'onBlur'}
+                  validateTrigger={'onChange'}
+                  children={<Input onBlur={onBlurNameHandling}/>}
                 />
                 <Form.Item
                   name='description'
                   label={intl.$t({ defaultMessage: 'Description' })}
                   children={<Input.TextArea rows={2} maxLength={180} />}
                 />
-                {/* // TODO: Waiting for TAG feature support
-              <Form.Item
-              name='tags'
-              label='Tags:'
-              children={<Input />} />
-              */}
+                {isTagsEnabled && <Form.Item
+                  name='tags'
+                  label={intl.$t({ defaultMessage: 'Tags' })}
+                  rules={[{
+                    validator: (_, value) => validateTags(value)
+                  }]}
+                  children={<Select
+                    options={venueTagOptions}
+                    mode='tags'
+                    maxLength={24} />}
+                />}
+
               </Col>
             </Row>
             <Row gutter={20}>
@@ -496,7 +557,7 @@ export function VenuesForm (props: VenuesFormProps) {
             {!modalMode &&
               <Row gutter={20}>
                 <Col span={8}>
-                  <ProtectedEnforceTemplateToggle templateId={data?.id} />
+                  <ProtectedEnforceTemplateToggleVenue initValue={data?.isEnforced} />
                 </Col>
               </Row>
             }

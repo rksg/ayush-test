@@ -1,30 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { IncidentsToggleFilter, calculateGranularity, incidentsToggle }   from '@acx-ui/analytics/utils'
-import { dataApi }                                                        from '@acx-ui/store'
-import { generateDomainFilter, emptyFilter, FilterNameNode, NodesFilter } from '@acx-ui/utils'
-
-export const calcGranularityForBrand360 = (
-  start: string, end: string
-): string => calculateGranularity(start, end, undefined, [
-  { granularity: 'PT72H', hours: 24 * 30 }, // > 1 month
-  { granularity: 'PT24H', hours: 24 * 7 }, // 8 days to 30 days
-  { granularity: 'PT1H', hours: 8 }, // 8 hours to 7 days
-  { granularity: 'PT15M', hours: 0 } // less than 8 hours
-])
-
-const getDomainFilters = (tenantIds: string[]) => {
-  if (tenantIds.length === 0) {
-    return emptyFilter
-  } else {
-    return tenantIds.reduce((acc, id) => {
-      const domainNode: [FilterNameNode] = generateDomainFilter(id)
-      acc.networkNodes?.push(domainNode)
-      acc.switchNodes?.push(domainNode)
-      return acc
-    }, { networkNodes: [], switchNodes: [] } as NodesFilter)
-  }
-}
+import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                                                      from '@acx-ui/store'
 
 export interface Response {
   id?: string
@@ -44,7 +21,6 @@ export interface BrandTimeseriesPayload {
   end: string,
   ssidRegex: string,
   granularity?: 'all',
-  tenantIds: (string | undefined)[]
   isMDU?: boolean
 }
 export interface FranchisorTimeseries {
@@ -73,17 +49,15 @@ const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilt
     start,
     end,
     ssidRegex,
-    tenantIds,
     granularity
   } = payload
   return {
     start,
     end,
     ssidRegex,
-    granularity: granularity || calcGranularityForBrand360(start, end),
+    granularity: granularity || calculateGranularity(start, end),
     severity: { gt: 0.9, lte: 1 },
-    code: incidentsToggle(payload),
-    filter: getDomainFilters(tenantIds as string[])
+    code: incidentsToggle(payload)
   }
 }
 
@@ -98,16 +72,16 @@ export const api = dataApi.injectEndpoints({
           $ssidRegex: String,
           $granularity: String,
           $severity:[Range],
-          $code: [String],
-          $filter: FilterInput) {
+          $code: [String]
+        ) {
           franchisorTimeseries(
             start: $start,
             end: $end,
             ssidRegex: $ssidRegex,
             granularity: $granularity,
             severity: $severity,
-            code: $code,
-            filter: $filter) {
+            code: $code
+          ) {
               time
               incidentCount
               timeToConnectSLA

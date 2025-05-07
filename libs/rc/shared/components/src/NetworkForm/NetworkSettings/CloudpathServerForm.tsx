@@ -9,7 +9,7 @@ import { defineMessages, useIntl } from 'react-intl'
 
 
 import { Subtitle, Tooltip }                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
@@ -34,20 +34,21 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
   }
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const isNonProxyAcctDpskFFEnabled = useIsSplitOn(Features.ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
     !supportRadsec && form.setFieldsValue({ ...data })
-  },[data])
+  },[supportRadsec, data])
 
   useEffect(()=>{
     supportRadsec && form.setFieldsValue({ ...data })
-  },[data?.id])
+  },[supportRadsec, data?.id])
 
   useEffect(() => {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
@@ -161,7 +162,8 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
               dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
             }
           />
-          {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
+          {(data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
+            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               { $t({ defaultMessage: 'Proxy Service' }) }
@@ -176,7 +178,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
                 data-testid='enable-accounting-proxy'
                 onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
                 disabled={
-                  dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed ||
                   (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled)
                 }
               />}

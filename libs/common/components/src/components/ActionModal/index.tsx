@@ -4,12 +4,15 @@ import { Modal, Collapse, Form, Input } from 'antd'
 import { TextAreaRef }                  from 'antd/lib/input/TextArea'
 import { ModalFuncProps }               from 'antd/lib/modal'
 import { pick, has }                    from 'lodash'
+import moment                           from 'moment'
 import { RawIntlProvider }              from 'react-intl'
 
-import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
-import { getIntl }                          from '@acx-ui/utils'
+import { ExpandSquareUp, ExpandSquareDown, CopyOutlined, ReportsOutlined, ReportsSolid } from '@acx-ui/icons'
+import { getIntl, getEnabledDialogImproved }                                             from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
+import { Descriptions }        from '../Descriptions'
+import { Tooltip }             from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -34,7 +37,9 @@ type DeleteContent = {
 
 type ErrorContent = {
   action: 'SHOW_ERRORS',
-  errorDetails?: ErrorDetailsProps
+  errorDetails?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number
 }
 
 type CustomButtonsContent = {
@@ -53,7 +58,8 @@ type CodeContent = {
 
 export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
-  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent
+  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent,
+  isUsingLegacyErrorModal?: boolean
 }
 
 export interface ModalRef {
@@ -75,6 +81,11 @@ export interface ErrorDetailsProps {
   error?: string
 }
 
+export interface ErrorResponse {
+  requestId: string,
+  errors?: string
+}
+
 export interface CustomButtonProps {
   text: string,
   type: ButtonProps['type'],
@@ -89,7 +100,7 @@ export const convertToJSON = (content: ErrorDetailsProps) => {
 
 export const showActionModal = (props: ActionModalProps) => {
   const modal = Modal[props.type]({})
-  const config = transformProps(props, modal)
+  const config = transformProps(props, modal, props.isUsingLegacyErrorModal)
   modal.update({
     ...config,
     content: <RawIntlProvider value={getIntl()} children={config.content} />,
@@ -98,10 +109,14 @@ export const showActionModal = (props: ActionModalProps) => {
   return pick(modal, 'destroy')
 }
 
-const transformProps = (props: ActionModalProps, modal: ModalRef) => {
+const transformProps = (
+  props: ActionModalProps,
+  modal: ModalRef,
+  isUsingLegacyErrorModal?: boolean) => {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
+  const enabledDialogImproved = isUsingLegacyErrorModal ? false : getEnabledDialogImproved()
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -136,11 +151,20 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
       }
       break
     case 'SHOW_ERRORS':
-      const { errorDetails } = props.customContent
+      const { errorDetails, path, errorCode } = props.customContent
       props = {
         ...props,
-        content: <ErrorTemplate
+        content: enabledDialogImproved ? <ApiErrorTemplate
           content={props.content}
+          path={path}
+          errorCode={errorCode}
+          errors={errorDetails}
+          modal={modal}
+          onOk={props.onOk}
+        /> : <ErrorTemplate
+          content={props.content}
+          path={path}
+          errorCode={errorCode}
           errors={errorDetails}
           modal={modal}
           onOk={props.onOk}
@@ -184,6 +208,8 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
 function ErrorTemplate ({ errors, ...props }: {
   content: React.ReactNode,
   errors?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number,
   onOk?: () => void,
   modal: ModalRef
 }) {
@@ -195,8 +221,49 @@ function ErrorTemplate ({ errors, ...props }: {
   return <CodeTemplate {...props} code={code} />
 }
 
+function ApiErrorTemplate ({ errors, ...props }: {
+  content: React.ReactNode,
+  errors?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number,
+  onOk?: () => void,
+  modal: ModalRef
+}) {
+  const { $t } = getIntl()
+  const code = errors && convertToJSON(errors)
+  const okText = $t({ defaultMessage: 'OK' })
+  return (
+    <>
+      {props.content && <UI.Content children={props.content} />}
+      <UI.Footer>
+        {code && <ApiCollapsePanel
+          content={code}
+          path={props.path}
+          errorCode={props.errorCode}
+        />
+        }
+        <UI.FooterButtons
+          style={{ pointerEvents: 'none' }}>
+          <Button
+            type='primary'
+            style={{ pointerEvents: 'auto' }}
+            onClick={() => {
+              props.onOk?.()
+              props.modal.destroy()
+            }}
+          >
+            {okText}
+          </Button>
+        </UI.FooterButtons>
+      </UI.Footer>
+    </>
+  )
+}
+
 function CodeTemplate (props: {
   content?: React.ReactNode
+  path?: string,
+  errorCode?: number,
   onOk?: () => void
   modal: ModalRef
   code?: {
@@ -215,13 +282,18 @@ function CodeTemplate (props: {
           expanded={props.code.expanded}
           header={props.code.label}
           content={props.code.content}
-        />}
+        />
+        }
         <UI.FooterButtons>
-          <Button type='primary'
+          <Button
+            type='primary'
             onClick={() => {
               props.onOk?.()
               props.modal.destroy()
-            }}>{okText}</Button>
+            }}
+          >
+            {okText}
+          </Button>
         </UI.FooterButtons>
       </UI.Footer>
     </>
@@ -275,6 +347,150 @@ function CustomButtonsTemplate (props: {
   </>)
 }
 
+
+function ApiCollapsePanel (props: {
+  content: string
+  path?: string
+  errorCode?: number
+}) {
+
+  const copyText = () => {
+    const content = getCopyText()
+    navigator.clipboard.writeText(content)
+  }
+
+  const getCopyText = function () {
+    const { $t } = getIntl()
+    const content = props.content
+    const object = JSON.parse(content)
+    const errorObj = object.errors?.[0] || {}
+
+    let result = `${$t({ defaultMessage: 'URL' })}: ${props.path}\n`
+    result += `${$t({ defaultMessage: 'HTTP Code' })}: ${props.errorCode}\n`
+
+    if (object.requestId) {
+      result += `${$t({ defaultMessage: 'Request ID' })}: ${object.requestId}\n`
+    }
+    result += `${$t({ defaultMessage: 'Timestamp' })}: ${moment().format('YYYYMMDD-HHmmss')}\n`
+
+    if (errorObj.code) {
+      result += `${$t({ defaultMessage: 'RUCKUS Code' })}: ${errorObj.code}\n`
+    }
+
+    if (errorObj.reason) {
+      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
+    }
+    // if (errorObj.reason || errorObj.message) { // Next phase
+    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    // }
+
+    if (errorObj.suggestion) {
+      result += `${$t({ defaultMessage: 'Suggestion' })}: ${errorObj.suggestion}\n`
+    }
+
+    result += 'Error Response:\n'
+    result += content
+
+    return result
+  }
+
+  const getContent = function () {
+    const { $t } = getIntl()
+    const content = props.content
+    const object = JSON.parse(content)
+    const errorObj = object.errors?.[0] || object.error || {}
+    return <UI.ErrorDescriptions labelWidthPercent={errorObj.suggestion? 26 : 28}
+      contentStyle={{ alignItems: 'center' }}>
+      {props.path &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'URL' })}
+          children={props.path} />
+      }
+      {props.errorCode && <Descriptions.Item
+        label={$t({ defaultMessage: 'HTTP Code' })}
+        children={props.errorCode} />
+      }
+      {object.requestId &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Request ID' })}
+          children={object.requestId} />
+      }
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Timestamp' })}
+        children={moment().format('YYYYMMDD-HHmmss')} />
+      {errorObj.code &&
+         <Descriptions.Item
+           style={{ paddingTop: '16px' }}
+           label={$t({ defaultMessage: 'RUCKUS Code' })}
+           children={errorObj.code} />
+      }
+      {errorObj.reason &&
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Reason' })}
+           children={errorObj.reason} />
+      }
+      {/* {(errorObj.reason || errorObj.message) && Next phase
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Reason' })}
+           children={errorObj.reason || errorObj.message} />
+      } */}
+      {errorObj.suggestion &&
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Suggestion' })}
+           children={errorObj.suggestion} />
+      }
+      { !(errorObj.reason || errorObj.suggestion ) &&
+      <>
+        <Descriptions.Item
+          label={'Error Response'}
+          children={''} />
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          {content}
+        </div>
+      </>
+      }
+    </UI.ErrorDescriptions>
+  }
+
+  const getExpandIcon = (isActive: boolean | undefined) => {
+    const { $t } = getIntl()
+    const iconStyle = {
+      marginLeft: '-5px',
+      height: '16px',
+      marginBottom: '-10px'
+    }
+
+    return (
+      <Tooltip placement='top' title={$t({ defaultMessage: 'Show more details' })}>
+        {isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' /> :
+          <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />}
+      </Tooltip>
+    )
+  }
+
+  return (
+    <UI.Collapse
+      ghost
+      expandIconPosition='end'
+      expandIcon={({ isActive }) => getExpandIcon(isActive)}
+    >
+      <Panel header={undefined} key={'ApiCollapsePanel'}>
+        <div style={{ backgroundColor: 'var(--acx-neutrals-10)', borderRadius: '4px' }}>
+          {getContent()}
+        </div>
+        <UI.CopyButton
+          type='link'
+          data-testid='copyButton'
+          onClick={copyText}
+        >
+          <CopyOutlined />
+        </UI.CopyButton>
+      </Panel>
+    </UI.Collapse>
+  )
+}
+
+
 function CollapsePanel (props: {
   header: string
   content: string
@@ -295,10 +511,10 @@ function CollapsePanel (props: {
     >
       <Panel header={props.header} key={props.header}>
         <TextArea ref={inputEl} rows={20} readOnly={true} value={props.content} />
-        <UI.CopyButton
+        <UI.CopyButtonLegacy
           type='link'
           onClick={copyText}
-        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
+        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButtonLegacy>
       </Panel>
     </UI.Collapse>
   )

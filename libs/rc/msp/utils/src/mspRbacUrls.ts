@@ -1,46 +1,48 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
-  // getMspCustomersList: {
-  //   method: 'post',
-  //   url: '/mspecs/query',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
-  //   newApi: true
-  // },
+  getMspCustomersList: {
+    method: 'post',
+    url: '/tenants/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
+    newApi: true,
+    opsApi: 'POST:/tenants/query'
+  },
   // getMspECList: {
   //   method: 'post',
   //   url: '/ecs/query?delegations=true',
   //   oldUrl: '/mspecs/query',
   //   newApi: true
   // },
-  // getIntegratorCustomersList: {
-  //   method: 'post',
-  //   url: '/techpartners/mspecs/query',
-  //   oldUrl: '/techpartners/mspecs/query',
-  //   newApi: true
-  // },
-  // getMspDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:tenantId/ecInventories/query',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
-  //   newApi: true
-  // },
-  // getIntegratorDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:mspTenantId/ecInventories/query',
-  //   oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
-  //   newApi: true
-  // },
+  getIntegratorCustomersList: {
+    method: 'post',
+    url: '/tenants/query?type=techpartner',
+    oldUrl: '/techpartners/mspecs/query',
+    newApi: true
+  },
+  getMspDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
+    newApi: true
+  },
+  getIntegratorDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query',
+    oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
+    newApi: true
+  },
   getVarDelegations: {
     method: 'post',
-    url: '/delegations',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/delegations',
+    url: '/delegations/query',
+    oldUrl: '/delegations',
     newApi: true
   },
   deleteMspEcAccount: {
     method: 'delete',
     url: '/tenants/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId',
+    opsApi: 'DELETE:/tenants/{id}',
     newApi: true
   },
   // getMspAdminList: {
@@ -99,25 +101,28 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/self/entitlements/assignments',
     oldUrl: '/assignments',
+    opsApi: 'POST:/tenants/self/entitlements/assignments',
     newApi: true
   },
   updateMspAssignment: {
     method: 'PATCH',
     url: '/tenants/self/entitlements/assignments/:assignmentId',
     oldUrl: '/assignments',
+    opsApi: 'PATCH:/tenants/self/entitlements/assignments/{id}',
     newApi: true
   },
   deleteMspAssignment: {
     method: 'delete',
     url: '/tenants/self/entitlements/assignments/:assignmentId',
     oldUrl: '/assignments',
+    opsApi: 'DELETE:/tenants/self/entitlements/assignments/{id}',
     newApi: true
   },
   resendEcInvitation: {
-    // method: 'post',
-    method: 'get',
+    method: 'put',
     url: '/tenants/:mspEcTenantId/invitations',
     oldUrl: '/mspCustomers/:mspEcTenantId/invitations',
+    opsApi: 'PUT:/tenants/{id}/invitations',
     newApi: true
   },
   // getMspCustomersListDropdown: {
@@ -176,12 +181,14 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants',
     oldUrl: '/mspCustomers',
+    opsApi: 'POST:/tenants',
     newApi: true
   },
   updateMspEcAccount: {
     method: 'put',
     url: '/tenants/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId',
+    opsApi: 'PUT:/tenants/{id}',
     newApi: true
   },
   getMspEcDelegatedAdmins: {
@@ -194,6 +201,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/:mspEcTenantId/adminDelegations',
     oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
+    opsApi: 'PUT:/tenants/{id}/adminDelegations',
     newApi: true
   },
   getMspEcSupport: {
@@ -206,24 +214,28 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
+    opsApi: 'PUT:/tenantActivations/supportStatus/{id}',
     newApi: true
   },
   disableMspEcSupport: {
     method: 'delete',
     url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
+    opsApi: 'DELETE:/tenantActivations/supportStatus/{id}',
     newApi: true
   },
   assignMspEcToIntegrator: {
     method: 'put',
     url: '/tenants/:mspIntegratorId/tenantDelegations',
     oldUrl: '/mspIntegrators/:mspIntegratorId',
+    opsApi: 'PUT:/tenants/{id}/tenantDelegations',
     newApi: true
   },
   assignMspEcToMultiIntegrators: {
     method: 'PATCH',
     url: '/tenantDelegations',
     oldUrl: '/mspCustomers/delegations',
+    opsApi: 'PATCH:/tenantDelegations',
     newApi: true
   },
   getAssignedMspEcToIntegrator: {
@@ -236,24 +248,29 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   method: 'put',
   //   url: '/api/mspservice/tenant/:mspEcTenantId/delegation/assignedmspadmins'
   // },
-  // exportMspEcDeviceInventory: {
-  //   method: 'post',
-  //   url: '/msps/:tenantId/ecInventories/query/csvFiles',
-  //   oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
-  //   newApi: true
-  // },
-  // deactivateMspEcAccount: {
-  //   // method: 'PATCH',
-  //   // url: /mspCustomers/:mspEcTenantId
-  //   method: 'post',
-  //   url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
-  // },
-  // reactivateMspEcAccount: {
-  //   // method: 'PATCH',
-  //   // url: /mspCustomers/:mspEcTenantId
-  //   method: 'post',
-  //   url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
-  // },
+  exportMspEcDeviceInventory: {
+    method: 'post',
+    url: '/tenants/inventories/query/csv',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
+    newApi: true,
+    opsApi: 'POST:/tenants/inventories/query/csv'
+  },
+  deactivateMspEcAccount: {
+    method: 'delete',
+    url: '/tenantActivations/:mspEcTenantId',
+    newApi: true,
+    opsApi: 'DELETE:/tenantActivations/{id}'
+    // method: 'post',
+    // url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
+  },
+  reactivateMspEcAccount: {
+    method: 'put',
+    url: '/tenantActivations/:mspEcTenantId',
+    newApi: true,
+    opsApi: 'PUT:/tenantActivations/{id}'
+    // method: 'post',
+    // url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
+  },
   getMspBaseURL: {
     method: 'get',
     url: '/brandings/suffix',
@@ -270,12 +287,14 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/brandings',
     oldUrl: '/mspLabels',
+    opsApi: 'POST:/brandings',
     newApi: true
   },
   updateMspLabel: {
     method: 'put',
     url: '/brandings',
     oldUrl: '/mspLabels',
+    opsApi: 'PUT:/brandings',
     newApi: true
   },
   acceptRejectInvitation: {
@@ -344,8 +363,9 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
-    url: '/tenants/firmwareUpgradeSchedules',
+    url: '/firmwareUpgradeSchedules',
     oldUrl: '/mspCustomers/firmwareUpgradeSchedules',
+    opsApi: 'POST:/firmwareUpgradeSchedules',
     newApi: true
   },
   getAvailableMspRecCustomers: {
@@ -368,6 +388,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addBrandCustomers: {
     method: 'post',
     url: '/tenants',
+    opsApi: 'POST:/tenants',
     newApi: true
   },
   getUploadURL: {
@@ -379,6 +400,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getEntitlementsCompliances: {
     method: 'post',
     url: '/entitlements/compliances/query',
+    opsApi: 'POST:/entitlements/compliances/query',
     newApi: true
   },
   getSolutionTokenSettings: {
@@ -404,11 +426,13 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateMspEcDelegations: {
     method: 'put',
     url: '/tenants/:mspEcTenantId/adminDelegations',
+    opsApi: 'PUT:/tenants/{id}/adminDelegations',
     newApi: true
   },
   updateMspMultipleEcDelegations: {
     method: 'PATCH',
     url: '/adminDelegations',
+    opsApi: 'PATCH:/adminDelegations',
     newApi: true
   },
   getLicenseMileageReports: {

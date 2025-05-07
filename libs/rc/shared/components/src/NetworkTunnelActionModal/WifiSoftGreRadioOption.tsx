@@ -23,6 +23,7 @@ import { NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }  from './useSoftGreTunnelActions'
 
 
+
 const defaultPayload = {
   fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
     'venueActivations', 'apActivations'],
@@ -32,13 +33,12 @@ const defaultPayload = {
   filters: {}
 }
 
-interface WiFISoftGreRadioOptionProps {
+export interface WiFISoftGreRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum
   venueId: string
   networkId?: string
   cachedSoftGre: SoftGreNetworkTunnel[] | undefined
   disabledInfo?: { // can't change for edge
-    noChangePermission: boolean,
     isDisabled: boolean,
     tooltip: string | undefined
   }
@@ -63,7 +63,8 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   const optionsDataQuery = useGetSoftGreOptionsQuery(
     { params: { venueId, networkId },
-      payload: { ...defaultPayload }
+      payload: { ...defaultPayload },
+      enableIpsec: false
     },
     { skip: !venueId || !networkId }
   )
@@ -122,7 +123,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     let isValid = true
     if (value) {
       const queryData = await getSoftGreOptions(
-        { params: { venueId, networkId }, payload: { ...defaultPayload } }
+        { params: { venueId, networkId }, payload: { ...defaultPayload }, enableIpsec: false }
       ).unwrap()
       if (queryData) {
         const { id, gatewayIps, activationProfiles } = queryData
@@ -161,7 +162,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       <UI.RadioWrapper>
         <Tooltip title={disabledInfo?.tooltip}>
           <Radio value={NetworkTunnelTypeEnum.SoftGre}
-            disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
+            disabled={disabledInfo?.isDisabled}>
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={''}
@@ -182,43 +183,43 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
           </Radio>
         </Tooltip>
         {currentTunnelType === NetworkTunnelTypeEnum.SoftGre &&
-              <Space wrap>
-                <Form.Item noStyle
-                  name={['softGre', 'newProfileId']}
-                  rules={[
-                    { required: currentTunnelType === NetworkTunnelTypeEnum.SoftGre,
-                      message: $t({ defaultMessage: 'Please select a SoftGRE Profile' })
+            <Space wrap>
+              <Form.Item noStyle
+                name={['softGre', 'newProfileId']}
+                rules={[
+                  { required: currentTunnelType === NetworkTunnelTypeEnum.SoftGre,
+                    message: $t({ defaultMessage: 'Please select a SoftGRE Profile' })
+                  },
+                  { validator: (_, value) => gatewayIpValidator(value) }
+                ]}
+                initialValue=''
+                children={<Select
+                  style={{ width: '150px' }}
+                  onChange={onChange}
+                  options={[
+                    {
+                      label: $t({ defaultMessage: 'Select...' }), value: ''
                     },
-                    { validator: (_, value) => gatewayIpValidator(value) }
+                    ...softGreOption
                   ]}
-                  initialValue=''
-                  children={<Select
-                    style={{ width: '150px' }}
-                    onChange={onChange}
-                    options={[
-                      {
-                        label: $t({ defaultMessage: 'Select...' }), value: ''
-                      },
-                      ...softGreOption
-                    ]}
-                    placeholder={$t({ defaultMessage: 'Select...' })} />}
-                />
-                <UI.TextButton
-                  type='link'
-                  disabled={!softGreProfileId}
-                  onClick={handleClickProfileDetail}
-                >
-                  {$t({ defaultMessage: 'Profile details' })}
-                </UI.TextButton>
-                <UI.TextButton
-                  type='link'
-                  disabled={!hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
-                  onClick={handleClickAdd}
-                  style={{ marginLeft: 5 }}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </UI.TextButton>
-              </Space>}
+                  placeholder={$t({ defaultMessage: 'Select...' })} />}
+              />
+              <UI.TextButton
+                type='link'
+                disabled={!softGreProfileId}
+                onClick={handleClickProfileDetail}
+              >
+                {$t({ defaultMessage: 'Profile details' })}
+              </UI.TextButton>
+              <UI.TextButton
+                type='link'
+                disabled={!hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+                onClick={handleClickAdd}
+                style={{ marginLeft: 5 }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </UI.TextButton>
+            </Space>}
       </UI.RadioWrapper>
     </Form.Item>
     <SoftGreDrawer

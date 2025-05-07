@@ -14,8 +14,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -42,8 +42,8 @@ import {
   VenueMessages,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }   from '@acx-ui/user'
+import { useNavigate, useParams }                           from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations, isCoreTier } from '@acx-ui/user'
 
 import { VenueEditContext }               from '../..'
 import {
@@ -95,6 +95,8 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
@@ -103,6 +105,7 @@ export function SecurityTab () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const venueDosProtectionOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateDenialOfServiceProtection,
@@ -362,6 +365,7 @@ export function SecurityTab () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
+        {...getEnforcedStepsFormProps('StepsFormLegacy')}
       >
         <StepsFormLegacy.StepForm>
           <FieldsetItem
@@ -442,7 +446,7 @@ export function SecurityTab () {
               }}
             />
           </FieldsetItem>
-          <FieldsetItem
+          { !isCore && <FieldsetItem
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             disabled={!isAllowEditRogueAp}
@@ -498,17 +502,19 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                { isAllowEditRogueAp && <RogueApModal
+                {isAllowEditRogueAp && <RogueApModal
                   setPolicyId={setRogueApPolicyId}
                 />
                 }
               </Space>
-              { rogueDrawerVisible && <RogueApDrawer
+              {rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}
                 setVisible={setRogueDrawerVisible}
-                policyId={roguePolicyIdValue} /> }
+                policyId={roguePolicyIdValue} />}
             </Form.Item>
           </FieldsetItem>
+          }
+
           { !isTemplate && supportTlsKeyEnhance && <Space align='start'>
             <StepsFormLegacy.FieldLabel
               width='max-content'

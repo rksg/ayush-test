@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
 import { edgeApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
 import {
   EdgeCompatibilityFixtures,
@@ -41,8 +42,13 @@ jest.mock('@acx-ui/rc/components', () => {
     SimpleListTooltip: rcComponents.SimpleListTooltip,
     TrafficClassSettingsTable: rcComponents.TrafficClassSettingsTable,
     ToolTipTableStyle: rcComponents.ToolTipTableStyle,
+    useEdgeHqosCompatibilityData: () => ({
+      compatibilities: mockEdgeHqosCompatibilities,
+      isLoading: false
+    }),
     // eslint-disable-next-line max-len
-    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />
+    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
+    useIsEdgeFeatureReady: jest.fn()
   }
 })
 
@@ -67,6 +73,7 @@ describe('HqosBandwidthTable', () => {
   })
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }

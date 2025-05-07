@@ -15,7 +15,7 @@ import { EdgePermissions }                                                      
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                                 from '@acx-ui/rc/components'
 import {
-  EdgeStatusEnum, EdgeUrlsInfo, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
+  EdgeStatusEnum, EdgeUrlsInfo, rebootShutdownEdgeStatusWhiteList, resettableEdgeStatuses
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -69,7 +69,7 @@ export const EdgeDetailsPageHeader = () => {
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
-      showupstatus: resettabaleEdgeStatuses
+      showupstatus: resettableEdgeStatuses
     },
     {
       scopeKey: [EdgeScopes.DELETE],

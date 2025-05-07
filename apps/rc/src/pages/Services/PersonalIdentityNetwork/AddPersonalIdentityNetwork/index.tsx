@@ -4,7 +4,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader }                                                                  from '@acx-ui/components'
-import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady }                                    from '@acx-ui/rc/components'
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
 import {
@@ -14,12 +15,18 @@ import {
   PersonalIdentityNetworkForm,
   SmartEdgeStep,
   SummaryStep,
-  WirelessNetworkStep
+  WirelessNetworkStep,
+  PrerequisiteStep
 } from '../PersonalIdentityNetworkForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
-const AddPersonalIdentityNetwork = () => {
+// eslint-disable-next-line max-len
+const pinSteps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep, SummaryStep]
+const pinEnhancedSteps = [PrerequisiteStep].concat(pinSteps)
 
+const AddPersonalIdentityNetwork = () => {
+  const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { tenantId } = useParams()
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -28,8 +35,6 @@ const AddPersonalIdentityNetwork = () => {
   const tablePath = getServiceRoutePath(
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
-  // eslint-disable-next-line max-len
-  const steps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep, SummaryStep]
 
   return (
     <>
@@ -44,9 +49,10 @@ const AddPersonalIdentityNetwork = () => {
       <PersonalIdentityNetworkFormDataProvider>
         <PersonalIdentityNetworkForm
           form={form}
-          steps={steps}
+          hasPrerequisite={isEdgePinEnhancementReady}
+          steps={isEdgePinEnhancementReady ? pinEnhancedSteps : pinSteps}
           initialValues={{
-            vxlanTunnelProfileId: tenantId
+            vxlanTunnelProfileId: isL2GreEnabled ? undefined : tenantId
           }}
           onFinish={addPin}
         />

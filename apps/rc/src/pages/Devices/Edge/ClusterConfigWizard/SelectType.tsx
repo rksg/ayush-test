@@ -34,6 +34,7 @@ export const SelectType = () => {
   const isEdgeHaSubInterfaceReady = useIsEdgeFeatureReady(Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   useEffect(() => {
     if(!clusterNetworkSettings?.portSettings) return
@@ -45,7 +46,8 @@ export const SelectType = () => {
         try {
           await validateEdgeGateway(
             portSetting.ports,
-            lagSetting?.lags ?? []
+            lagSetting?.lags ?? [],
+            isDualWanEnabled
           )
         } catch (error) {
           break

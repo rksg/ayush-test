@@ -48,6 +48,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/citylist/query',
     newApi: true
   },
+  getVenueTagList: {
+    method: 'get',
+    url: '/venues/tags',
+    newApi: true
+  },
   GetApPosition: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
@@ -81,6 +86,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addGuestPass: {
     method: 'post',
     url: '/wifiNetworks/:networkId/guestUsers',
+    opsApi: 'POST:/wifiNetworks/{id}/guestUsers',
     newApi: true
   },
   getExternalProviders: {
@@ -93,6 +99,12 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/alarms',
     opsApi: 'DELETE:/venues/{id}/alarms',
+    newApi: true
+  },
+  clearAllAlarms: {
+    method: 'delete',
+    url: '/venues/alarms',
+    opsApi: 'DELETE:/venues/alarms',
     newApi: true
   },
   deleteGateway: {

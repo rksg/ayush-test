@@ -70,6 +70,7 @@ export const transformFromApiToFormData =
      }, {} as InterfaceSettingsFormType['lagSubInterfaces'][EdgeSerialNumber])
    })
 
+
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
@@ -78,7 +79,8 @@ export const transformFromApiToFormData =
      fallbackSettings: fallbackSettings,
      loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution,
      portSubInterfaces,
-     lagSubInterfaces
+     lagSubInterfaces,
+     multiWanSettings: apiData?.multiWanSettings
    } as InterfaceSettingsFormType
  }
 
@@ -457,7 +459,8 @@ export const transformFromFormToApiData = (
     } : {}),
     ...(isEdgeCoreAccessSeparationReady ?
       { subInterfaceSettings } :
-      {})
+      {}),
+    multiWanSettings: data.multiWanSettings
   }
 }
 

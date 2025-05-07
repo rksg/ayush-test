@@ -11,25 +11,30 @@ import {
   ApIncompatibleDevice,
   ClusterNetworkSettings,
   EdgeAlarmSummary,
+  EdgeIncompatibleFeature,
+  EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
-  EdgeServiceApCompatibility,
+  EdgeSdLanApCompatibility,
   EdgeSerialNumber,
+  EdgeServiceApCompatibility,
   EdgeServiceCompatibility,
+  EdgeServiceCompatibilityV1_1,
   EdgeStatus,
   EdgeSubInterface,
   EntityCompatibility,
-  VenueSdLanApCompatibility,
-  EdgeSdLanApCompatibility
+  EntityCompatibilityV1_1,
+  VenueSdLanApCompatibility
 } from '../../types'
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
 const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
+export const MAX_DUAL_WAN_PORT = 2
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -41,7 +46,6 @@ export const edgePhysicalPortInitialConfigs = {
   natEnabled: true,
   corePortEnabled: false
 }
-
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -64,12 +68,12 @@ export const allowRebootShutdownForStatus = (edgeStatus: string) => {
 }
 
 export const allowResetForStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = resettabaleEdgeStatuses
+  const stringStatus: string[] = resettableEdgeStatuses
   return stringStatus.includes(edgeStatus)
 }
 
 export const allowSendOtpForStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = unconfigedEdgeStatuses
+  const stringStatus: string[] = unconfiguredEdgeStatuses
   return stringStatus.includes(edgeStatus)
 }
 
@@ -84,9 +88,9 @@ export const rebootShutdownEdgeStatusWhiteList = [
   EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
-export const resettabaleEdgeStatuses = rebootShutdownEdgeStatusWhiteList
+export const resettableEdgeStatuses = rebootShutdownEdgeStatusWhiteList
 
-export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
+export const unconfiguredEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
 export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
@@ -148,12 +152,24 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
   }
 }
 
-export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
+// eslint-disable-next-line max-len
+export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
+
+  if (payload.portType === EdgePortTypeEnum.UNCONFIGURED) {
+    payload.ipMode = EdgeIpModeEnum.DHCP
+  }
 
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
   }
+
+  // prevent DHCP mode from having IP and subnet
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
+  }
+
 
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
@@ -181,11 +197,11 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   return payload
 }
 
-export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
+export const convertEdgeSubInterfaceToApiPayload = (formData: EdgeSubInterface) => {
   const payload = { ...formData }
   if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-    payload.ip = ''
-    payload.subnet = ''
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
   }
 
   return payload
@@ -263,7 +279,7 @@ export const optionSorter = (
   return 0
 }
 
-export async function lanPortsubnetValidator (
+export async function lanPortSubnetValidator (
   currentSubnet: { ip: string, subnetMask: string },
   allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
@@ -295,11 +311,19 @@ export const validateSubnetIsConsistent = (
       const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
       if(first.first !== second.first || first.last !== second.last) {
         // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
+        return Promise.reject($t({ defaultMessage: 'Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.' }))
       }
     }
   }
   return Promise.resolve()
+}
+
+export const validateConfiguredSubnetIsConsistent = (
+  allIps: { ip?: string, subnet?: string }[],
+  value?: string
+) => {
+  const configuredIps = allIps.filter(ip => Boolean(ip.ip) && Boolean(ip.subnet))
+  return validateSubnetIsConsistent(configuredIps, value)
 }
 
 const isUnique = (value: string, index: number, array: string[]) => {
@@ -309,8 +333,8 @@ const isUnique = (value: string, index: number, array: string[]) => {
 export const validateUniqueIp = (ips: string[], value?: string) => {
   if(!Boolean(value)) return Promise.resolve()
   const { $t } = getIntl()
-
-  if(ips.every(isUnique)) {
+  const configuredIps = ips.filter(ip => Boolean(ip))
+  if(configuredIps.every(isUnique)) {
     return Promise.resolve()
   }
   return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
@@ -340,15 +364,6 @@ export const isAllPortsLagMember = (portsData: EdgePort[], lagData: EdgeLag[]) =
   return isAllPortsLagMember
 }
 
-export const getLagGatewayCount = (lagData: EdgeLag[]) => {
-  const lagWithGateway = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.WAN
-      || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
-  ).length
-  return lagWithGateway
-}
-
 export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: EdgeLag[]) => {
   const { $t } = getIntl()
 
@@ -363,24 +378,79 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
   }
 }
 
-export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) => {
-  const { $t } = getIntl()
+const hasCorePhysicalPort = (portsData: EdgePort[]) => {
+  return portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
+}
 
-  const portWithGateway = portsData.filter(port =>
+const hasCoreLag = (lagData: EdgeLag[]) => {
+  return lagData.some(lag =>
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
+    && (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+}
+
+const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {
+  return portsData.filter(port =>
     port.enabled
     && (port.portType === EdgePortTypeEnum.WAN
       || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
   ).length
+}
+// eslint-disable-next-line max-len
+export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], isDualWanEnabled: boolean) => {
+  const { $t } = getIntl()
 
+  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
+  const hasCoreLagPort = hasCoreLag(lagData)
+  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
+
+  const portWithGateway = getPhysicalPortGatewayCount(portsData)
   const lagWithGateway = getLagGatewayCount(lagData)
-
   const totalGateway = portWithGateway + lagWithGateway
 
   if (totalGateway === 0) {
     // eslint-disable-next-line max-len
     return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
-  } else if (totalGateway > 1) {
+  } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
+  } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways.' }, {
+      maxWanPortCount: MAX_DUAL_WAN_PORT
+    }))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+// portsData: all ports in a cluster
+// lagData: all lags in a cluster
+// eslint-disable-next-line max-len
+export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: EdgeLag[], edgeNodes: EdgeStatus[], isDualWanEnabled: boolean) => {
+  const { $t } = getIntl()
+  const nodeCount = edgeNodes.length
+
+  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
+  const hasCoreLagPort = hasCoreLag(lagData)
+  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
+
+  const portWithGateway = getPhysicalPortGatewayCount(portsData)
+  const lagWithGateway = getLagGatewayCount(lagData)
+  const totalGateway = portWithGateway + lagWithGateway
+
+  if (totalGateway < nodeCount) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.' }))
+
+  } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > nodeCount) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
+
+  } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways on each Edge.' }, {
+      maxWanPortCount: MAX_DUAL_WAN_PORT
+    }))
+
   } else {
     return Promise.resolve()
   }
@@ -430,44 +500,66 @@ export const isInterfaceInVRRPSetting = (
 }
 
 // eslint-disable-next-line max-len
-const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
+const getTotalScopedCount = (clusterCompatibilities: EntityCompatibilityV1_1[] | EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
   return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
 }
 
 // eslint-disable-next-line max-len
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility | undefined) => {
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibilityV1_1 | EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility | undefined) => {
   const resultMapping : Record<string, ApCompatibility> = {}
   if (isNil(compatibleData)) return resultMapping
 
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
   if (isEdgePerspective) {
-    const data = (compatibleData as EdgeServiceCompatibility).clusterEdgeCompatibilities ?? []
+    // eslint-disable-next-line max-len
+    const data = (compatibleData as EdgeServiceCompatibilityV1_1 | EdgeServiceCompatibility).clusterEdgeCompatibilities ?? []
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(clusterCompatibilities => {
       clusterCompatibilities.incompatibleFeatures?.forEach(feature => {
-        const featureName = feature.featureRequirement.featureName
+        if (feature.hasOwnProperty('featureType') && feature.hasOwnProperty('featureLevel')) {
+          feature = feature as EdgeIncompatibleFeatureV1_1
+          const featureName = feature.featureName
 
-        if (!resultMapping[featureName]) {
-          resultMapping[featureName] = {
-            id: `edge_incompatible_details_${featureName}`,
-            incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.featureRequirement.requiredFw
-            }],
-            incompatible: 0,
-            // `total` should beyound features
-            total: totalScoped
-          } as ApCompatibility
+          if (!resultMapping[featureName]) {
+            resultMapping[featureName] = {
+              id: `ap_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                ...feature,
+                featureName
+              }],
+              incompatible: 0,
+              total: totalScoped
+            } as ApCompatibility
+          }
+          // eslint-disable-next-line max-len
+          resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+          resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+            { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice
+          ]
+        } else {
+          feature = feature as EdgeIncompatibleFeature
+          const featureName = feature.featureRequirement.featureName
+
+          if (!resultMapping[featureName]) {
+            resultMapping[featureName] = {
+              id: `edge_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                featureName,
+                requiredFw: feature.featureRequirement.requiredFw
+              }],
+              incompatible: 0,
+              // `total` should beyond features
+              total: totalScoped
+            } as ApCompatibility
+          }
+          // eslint-disable-next-line max-len
+          resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+          resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+            { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice
+          ]
         }
-
-        // eslint-disable-next-line max-len
-        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-
-
-        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
-          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
       })
     })
   } else {
@@ -516,4 +608,40 @@ export const genExpireTimeString = (seconds?: number) => {
       time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
     }
   )
+}
+
+export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+  if (!lagData) return []
+
+  const lagWithGateways = lagData.filter(lag =>
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    && (lag.portType === EdgePortTypeEnum.WAN
+      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  )
+  return lagWithGateways
+}
+
+// eslint-disable-next-line max-len
+export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+  return getLagGateways(lagData, includeCorePort).length
+}
+
+// eslint-disable-next-line max-len
+export const getEdgeWanInterfaces = (portsData: EdgePort[] | undefined, lagData: EdgeLag[] | undefined) => {
+  const physicalWans= portsData ? portsData.filter(port =>
+    port.enabled && port.portType === EdgePortTypeEnum.WAN
+  ) : []
+
+  const lagWans = getLagGateways(lagData, false)
+
+  const wans: (EdgePort | EdgeLag)[] = lagWans
+  wans.push(...physicalWans)
+
+  return wans
+}
+
+// eslint-disable-next-line max-len
+export const getEdgeWanInterfaceCount = (portsData: EdgePort[] | undefined, lagData: EdgeLag[] | undefined) => {
+  const wans = getEdgeWanInterfaces(portsData, lagData)
+  return wans.length
 }

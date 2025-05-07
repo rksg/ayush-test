@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -9,13 +9,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                           from '@acx-ui/rc/components'
 import {
   doProfileDelete, useAdaptivePolicySetListByQueryQuery,
-  useDeleteMacRegListMutation,
-  useLazyNetworkListQuery,
-  useSearchMacRegListsQuery
+  useDeleteMacRegListMutation, useGetVenuesQuery,
+  useNetworkListQuery,
+  useSearchMacRegListsQuery, useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
@@ -30,15 +30,16 @@ import {
   returnExpirationString,
   useTableQuery,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                               from '@acx-ui/utils'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-  const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
@@ -66,7 +67,25 @@ export default function MacRegistrationListsTable () {
     { isLoading: isDeleteMacRegListUpdating }
   ] = useDeleteMacRegListMutation()
 
-  const [getNetworkList] = useLazyNetworkListQuery()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
 
   const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListByQueryQuery(
     { payload: { page: 1, pageSize: '2000' } }, {
@@ -80,23 +99,27 @@ export default function MacRegistrationListsTable () {
       }
     })
 
-  useEffect(() => {
-    if (tableQuery.isLoading)
-      return
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
 
-    getNetworkList({
-      params,
-      payload: {
-        fields: [ 'venues', 'id' ],
-        page: 1,
-        pageSize: 10000
-      } }).then(result => {
+  const { networkVenuesMap } = getNetworkListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: [ 'venues', 'id', 'venueApGroups' ],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => {
       const networkList = new Map()
-      result.data?.data.forEach(n => networkList.set(n.id, n.venues.names))
-      setNetworkVenuesMap(networkList)
-    })
-
-  }, [tableQuery.data])
+      data?.data.forEach( n => {
+        networkList.set(n.id, isWifiRbacEnabled ? n.venues.ids : n.venues.names) })
+      return {
+        networkVenuesMap: networkList
+      }
+    }
+  })
 
   function useColumns () {
     const columns: TableProps<MacRegistrationPool>['columns'] = [
@@ -116,6 +139,7 @@ export default function MacRegistrationListsTable () {
                 policyId: row.id!,
                 activeTab: MacRegistrationDetailsTabKey.OVERVIEW
               })}
+              rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.getMacRegistrationPool)]}
             >{highlightFn(row.name)}</TenantLink>
           )
         }
@@ -161,6 +185,7 @@ export default function MacRegistrationListsTable () {
                 policyId: row.id!,
                 activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS
               })}
+              rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.getMacRegistrations)]}
             >{row.registrationCount ?? 0}</TenantLink>
           )
         }
@@ -173,8 +198,10 @@ export default function MacRegistrationListsTable () {
         render: function (_, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
-            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
-            const toolTipItems: string [] = Array.from(new Set(venueNames))
+            const venues = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item) ?? []
+            const toolTipItems: string [] = isWifiRbacEnabled ?
+              venueNameMap.filter(v => venues!.includes(v.key)).map(v => v.value)
+              : Array.from(new Set(venues))
             return toolTipItems.length === 0 ? 0 :
               <SimpleListTooltip items={toolTipItems} displayText={toolTipItems.length}/>
           }
@@ -187,6 +214,7 @@ export default function MacRegistrationListsTable () {
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -201,6 +229,7 @@ export default function MacRegistrationListsTable () {
   },
   {
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       if (isIdentityRequired) {
@@ -271,6 +300,7 @@ export default function MacRegistrationListsTable () {
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
             scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE)}
+            rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.createMacRegistrationPool)]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>

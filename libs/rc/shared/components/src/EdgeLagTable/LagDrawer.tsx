@@ -66,6 +66,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
@@ -97,14 +98,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
       form.resetFields()
       const corePortInfo = getEnabledCorePortInfo(portList, existedLagList)
       const hasCorePortEnabled = !!corePortInfo.key
-      let defaultPortType = defaultFormValues.portType
+
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
-        defaultPortType = EdgePortTypeEnum.LAN
+        form.setFieldsValue({
+          ...defaultFormValues,
+          portType: EdgePortTypeEnum.LAN,
+          ipMode: EdgeIpModeEnum.STATIC,
+          ...data
+        })
+        return
       }
 
       form.setFieldsValue({
         ...defaultFormValues,
-        portType: defaultPortType,
         ...data
       })
     }
@@ -317,7 +323,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
         lagEnabled={lagEnabled}/>}
     />
 
-
     <Form.Item
       noStyle
       shouldUpdate={(prev, cur) => forceUpdateCondition(prev, cur)}
@@ -335,6 +340,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           formFieldsProps={{
+            // we should not apply Edge gateway validator on LAG Drawer
+            // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {
               options: portTypeOptions,
               disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig)

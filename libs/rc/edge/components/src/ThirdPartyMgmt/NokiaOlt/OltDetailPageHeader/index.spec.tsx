@@ -46,7 +46,7 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
       <EdgeNokiaOltDetailsPageHeader {...props} />
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Status')).toBeVisible()
-    expect(screen.getByText('Cages')).toBeVisible()
+    expect(screen.getAllByText('Cages').length).toBe(3)
   })
 
   it('should display loading icon on cage chart', async () => {
@@ -60,7 +60,7 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     </Provider>, { route: { params, path: mockPath } })
 
     screen.getByRole('img', { name: 'loader' })
-    expect(screen.queryByText('Cages')).toBeNull()
+    expect(screen.queryAllByText('Cages').length).toBe(2)
 
     const button = screen.getByText('Device Details')
     await userEvent.click(button)

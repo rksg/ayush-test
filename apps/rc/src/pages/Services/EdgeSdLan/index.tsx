@@ -1,68 +1,31 @@
 import { Features }              from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { goToNotFound }          from '@acx-ui/user'
 
-import AddEdgeMvSdLan    from './multiVenue/AddEdgeSdLan'
-import EdgeMvSdLanDetail from './multiVenue/EdgeSdLanDetail'
-import EdgeMvSdLanTable  from './multiVenue/EdgeSdLanTable'
-import EditEdgeMvSdLan   from './multiVenue/EditEdgeSdLan'
-import AddEdgeSdLanP1    from './P1/AddEdgeSdLan'
-import EdgeSdLanDetailP1 from './P1/EdgeSdLanDetail'
-import EdgeSdLanTableP1  from './P1/EdgeSdLanTable'
-import EditEdgeSdLanP1   from './P1/EditEdgeSdLan'
-import AddEdgeSdLanP2    from './P2/AddEdgeSdLan'
-import EdgeSdLanDetailP2 from './P2/EdgeSdLanDetail'
-import EdgeSdLanTableP2  from './P2/EdgeSdLanTable'
-import EditEdgeSdLanP2   from './P2/EditEdgeSdLan'
+import { AddEdgeSdLan as AddEdgeSdLanL2oGRE }           from './L2oGRE/AddEdgeSdLan'
+import { EdgeSdLanDetail as EdgeSdLanDetailL2oGRE }     from './L2oGRE/EdgeSdLanDetail'
+import { EdgeSdLanTable as EdgeSdLanTableL2oGRE }       from './L2oGRE/EdgeSdLanTable'
+import { EditEdgeSdLan as EditEdgeSdLanL2oGRE }         from './L2oGRE/EditEdgeSdLan'
+import { AddEdgeSdLan as AddEdgeSdLanMultiVenue }       from './MultiVenue/AddEdgeSdLan'
+import { EdgeSdLanDetail as EdgeSdLanDetailMultiVenue } from './MultiVenue/EdgeSdLanDetail'
+import { EdgeSdLanTable as EdgeSdLanTableMultiVenue }   from './MultiVenue/EdgeSdLanTable'
+import { EditEdgeSdLan as EditEdgeSdLanMultiVenue }     from './MultiVenue/EditEdgeSdLan'
 
-export const EdgeSdLanTable = () => {
-  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-    return goToNotFound()
-
-  return isEdgeSdLanMvEnabled
-    ? <EdgeMvSdLanTable />
-    : (isEdgeSdLanHaEnabled ? <EdgeSdLanTableP2 /> : <EdgeSdLanTableP1 />)
+export const AddEdgeSdLan = () => {
+  const isL2oGREnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  return isL2oGREnabled ? <AddEdgeSdLanL2oGRE /> : <AddEdgeSdLanMultiVenue />
 }
 
 export const EdgeSdLanDetail = () => {
-  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-    return goToNotFound()
-
-  return isEdgeSdLanMvEnabled
-    ? <EdgeMvSdLanDetail />
-    : (isEdgeSdLanHaEnabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetailP1 />)
+  const isL2oGREnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  return isL2oGREnabled ? <EdgeSdLanDetailL2oGRE /> : <EdgeSdLanDetailMultiVenue />
 }
 
-export const AddEdgeSdLan = () => {
-  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-    return goToNotFound()
-
-  return isEdgeSdLanMvEnabled
-    ? <AddEdgeMvSdLan />
-    : (isEdgeSdLanHaEnabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLanP1 />)
+export const EdgeSdLanTable = () => {
+  const isL2oGREnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  return isL2oGREnabled ? <EdgeSdLanTableL2oGRE /> : <EdgeSdLanTableMultiVenue />
 }
 
 export const EditEdgeSdLan = () => {
-  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-
-  if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-    return goToNotFound()
-
-  return isEdgeSdLanMvEnabled
-    ? <EditEdgeMvSdLan />
-    : (isEdgeSdLanHaEnabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLanP1 />)
+  const isL2oGREnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
+  return isL2oGREnabled ? <EditEdgeSdLanL2oGRE /> : <EditEdgeSdLanMultiVenue />
 }

@@ -25,7 +25,21 @@ export const mockIntentContext = (config: {
   return context
 }
 
-//Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
+export const mockVenueList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      networks: { names: ['n3', 'n4', 'n5'] },
+      name: 'My-Venue'
+    },
+    {
+      networks: { names: ['n5', 'n6'] },
+      name: 'test'
+    }
+  ]
+}
+
 export const notEnoughLicenses = {
   id: '19',
   code: 'c-bgscan24g-enable',
@@ -403,6 +417,32 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
+      statusReason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
+      metadata: {
+        failures: ['Revert failed'],
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        error: {
+          details: [{
+            apMac: '80:F0:CF:0A:11:D0',
+            apName: 'R750_181_74',
+            message: 'AP removed',
+            apSerial: '192322025599',
+            configKey: 'radio24g'
+          },
+          {
+            apMac: 'B4:79:C8:3E:BE:10',
+            apName: 'H350_116_189',
+            message: 'AP removed',
+            apSerial: '502006000116',
+            configKey: 'radio24g'
+          }]
+        }
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
       statusReason: 'reverted',
       displayStatus: 'paused-reverted',
       metadata: {
@@ -519,6 +559,10 @@ export const intentHighlights = {
     ops: {
       new: 6,
       active: 12
+    },
+    ecoflex: {
+      new: 7,
+      active: 14
     }
   }
 }

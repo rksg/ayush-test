@@ -3,8 +3,12 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Button, Loader, StepsForm }  from '@acx-ui/components'
-import { DpskSaveData, PersonaGroup } from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm }                    from '@acx-ui/components'
+import { Features }                                     from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                        from '@acx-ui/rc/components'
+import { DpskSaveData, PersonaGroup, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                         from '@acx-ui/user'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../../PersonalIdentityNetworkFormContext'
 import * as UI                                from '../../styledComponents'
@@ -19,6 +23,7 @@ interface PropertyManagementInfoProps {
 export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
   const { $t } = useIntl()
   const { venueId, editMode } = props
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const form = Form.useFormInstance()
   const {
     personaGroupId,
@@ -27,7 +32,8 @@ export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
     isPersonaGroupLoading,
     isDpskLoading,
     personaGroupData,
-    dpskData
+    dpskData,
+    getVenueName
   } = useContext(PersonalIdentityNetworkFormContext)
   const [propertyManagementDrawerVisible, setPropertyManagementDrawerVisible] = useState(false)
 
@@ -43,11 +49,27 @@ export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
     setPropertyManagementDrawerVisible(true)
   }
 
+  const hasActivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyConfigs)])
+
   return <>
     <Loader states={[{
       isLoading: false,
       isFetching: isPropertyConfigLoading || isPersonaGroupLoading || isDpskLoading
     }]}>
+      {
+        isL2GreEnabled && <StepsForm.FieldLabel width='140px'>
+          {$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}
+          <Form.Item
+            children={
+              <UI.FieldTitle>
+                {getVenueName(venueId)}
+              </UI.FieldTitle>
+            }
+            style={{ marginBottom: 0 }}
+          />
+        </StepsForm.FieldLabel>
+      }
       <StepsForm.FieldLabel width='140px'>
         {$t({ defaultMessage: 'Property management:' })}
         <Form.Item
@@ -68,7 +90,8 @@ export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
         ? <PersonaInfo
           personaGroupData={personaGroupData}
           dpskData={dpskData} />
-        : <Button type='link' onClick={openPropertyManagementDrawer}>
+        : hasActivatePropertyPermission
+        && <Button type='link' onClick={openPropertyManagementDrawer}>
           {$t({ defaultMessage: 'Activate Property Management' })}
         </Button>}
 

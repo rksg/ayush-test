@@ -7,11 +7,12 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { BarChartData, calculateGranularity, getBarChartSeriesData }                from '@acx-ui/analytics/utils'
 import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }                                                   from '@acx-ui/formatter'
 import { useGetEdgesTopResourcesQuery }                                             from '@acx-ui/rc/services'
 import { EdgesTopResources }                                                        from '@acx-ui/rc/utils'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { FilterNameNode }                                                           from '@acx-ui/utils'
+import { FilterNameNode, useTrackLoadTime, widgetsMapping }                         from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByResourcesWidget as TopEdgesByResources }
@@ -78,12 +79,14 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
   const intl = useIntl()
   const basePath = useTenantLink('/devices/edge/')
   const navigate = useNavigate()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const [currentDataType, setCurrentDataType] = useState('disk')
   const queryResults = useGetEdgesTopResourcesQuery({
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'),
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate),
       venueIds: filters?.filter?.networkNodes?.flatMap(
         item => item.map(v => (v as FilterNameNode).name)
       )
@@ -122,6 +125,12 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
       value: 'memory'
     }
   ]
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.TOP_5_RUCKUS_EDGES_BY_RESOURCE_UTILIZATION,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults]}>

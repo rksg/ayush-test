@@ -52,7 +52,7 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('./pages/AICanvas', () => () => {
+jest.mock('./pages/AICanvas/archived/AICanvasQ1', () => () => {
   return <div data-testid='canvas' />
 })
 jest.mock('./routes/AnalyticsRoutes', () => () => {
@@ -155,10 +155,10 @@ describe('AllRoutes', () => {
     })
     await screen.findByTestId('reports')
   })
-  test('should navigate to dataSubscriptions', async () => {
+  test('should navigate to dataConnector', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/dataSubscriptions',
+        path: '/tenantId/t/dataConnector',
         wrapRoutes: false
       }
     })

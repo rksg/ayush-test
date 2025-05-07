@@ -1,5 +1,5 @@
 export const MAX_SEGMENT_PER_VENUE = 10000
-export const MAX_DEVICE_PER_SEGMENT = 10
+export const MAX_DEVICE_PER_SEGMENT = 253
 
 export const edgePinDefaultPayloadFields = [
   'id', 'name',
@@ -14,6 +14,8 @@ export const edgePinDefaultPayloadFields = [
   'tunnelNumber',
   'edgeAlarmSummary'
 ]
+
+// the logic is from https://ruckus.atlassian.net/wiki/spaces/ACX/pages/31319369/Auto+Expand+NSG+Script+for+External+DHCP+server
 
 function cidrToSubnetMask (cidr: number) {
   if (cidr < 0 || cidr > 32) {
@@ -136,30 +138,35 @@ function calculateDHCPPool (ipStart: number, ipEnd: number, panNum: number, panS
   }
 
   const PANIPSize = tempPanSize
-  const pinIPStart = Math.floor((ipStart / PANIPSize + 1) * PANIPSize)
-  const pinIPEnd = Math.floor((ipEnd / PANIPSize) * PANIPSize - 1)
+  const PANNetNumberMaskBits = 32 - i
 
+  // Determine the first and last usable IP address based on ip_start and ip_end
+  // Usable means Ip subnet will be used for DHCP pool.
+  const pinIPStart = ipStart >= 2
+    ? Math.floor((ipStart - 2) / PANIPSize + 1) * PANIPSize
+    : 0
+  const pinIPEnd = Math.floor((ipEnd + 2) / PANIPSize) * PANIPSize - 1
+
+  // Determine if pan_num can be allowed based on given dhcp ip range
   const pinPANNumMax = Math.floor((pinIPEnd - pinIPStart + 1) / PANIPSize)
   if (pinPANNumMax < panNum) {
     throw new Error(`error: DHCP pool size is too small to configure ${panNum} PANs
     Currently range can hold ${pinPANNumMax} number of PANs`)
-
   }
 
   const dhcpGwAddr = []
   const dhcpPoolStart = []
   const dhcpPoolEnd = []
 
-  for (let i = 0;; i++) {
-    if ((i + 1) * PANIPSize - 2 + pinIPStart > pinIPEnd) {
-      break
-    }
-    dhcpGwAddr[i] = i * PANIPSize + pinIPStart
-    dhcpPoolStart[i] = i * PANIPSize + 1 + pinIPStart
-    dhcpPoolEnd[i] = i * PANIPSize + panSize + pinIPStart
+  // Given a pool index i, calculate DHCP pool range and GW address
+  for (let i = 0; i < panNum; i++) {
+    const baseIP = i * PANIPSize + pinIPStart
+    dhcpGwAddr[i] = baseIP + 1
+    dhcpPoolStart[i] = baseIP + 2
+    dhcpPoolEnd[i] = baseIP + PANIPSize -2
   }
 
-  return [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, 32 - i]
+  return [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, PANNetNumberMaskBits]
 }
 
 export function genDhcpConfigByPinSetting
@@ -169,7 +176,6 @@ export function genDhcpConfigByPinSetting
   panSize: number,
   devicePerPan: number
 ) {
-
   const [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr] = calculateDHCPPool(
     ip2Long(ipStart),
     ip2Long(ipEnd),

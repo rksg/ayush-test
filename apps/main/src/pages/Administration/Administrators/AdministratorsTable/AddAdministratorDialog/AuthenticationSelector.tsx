@@ -7,19 +7,21 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SpaceWrapper }           from '@acx-ui/rc/components'
 
 import * as UI from './styledComponents'
 
 
 interface AuthenticationSelectorProps {
   ssoConfigured: boolean
-  setSelected: (selectedAuth: string) => void
+  setSelected: (selectedAuth: AuthTypeRadioButtonEnum) => void
 }
 
 export enum AuthTypeRadioButtonEnum {
   sso = 'sso',
-  idm = 'idm'
+  idm = 'idm',
+  commonAccount = 'commonAccount'
 }
 
 export const GetAuthTypeString = (type: AuthTypeRadioButtonEnum) => {
@@ -28,6 +30,8 @@ export const GetAuthTypeString = (type: AuthTypeRadioButtonEnum) => {
       return defineMessage({ defaultMessage: 'SSO with 3rd Party' })
     case AuthTypeRadioButtonEnum.idm:
       return defineMessage({ defaultMessage: 'RUCKUS Identity Management' })
+    case AuthTypeRadioButtonEnum.commonAccount:
+      return defineMessage({ defaultMessage: 'Ruckus Account Management' })
   }
 }
 
@@ -43,8 +47,22 @@ export const getAuthTypes = () => {
     }]
 }
 
+export const getAuthTypesWithCAM = () => {
+  return [
+    {
+      label: GetAuthTypeString(AuthTypeRadioButtonEnum.sso),
+      value: AuthTypeRadioButtonEnum.sso
+    },
+    {
+      label: GetAuthTypeString(AuthTypeRadioButtonEnum.commonAccount),
+      value: AuthTypeRadioButtonEnum.commonAccount
+    }]
+}
+
 const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
   const { $t } = useIntl()
+
+  const isCAMFFEnabled = useIsSplitOn(Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
 
   let { ssoConfigured, setSelected } = props
 
@@ -52,7 +70,8 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
     setSelected(e.target.value)
   }
 
-  const authTypesList = getAuthTypes().map((item) => ({
+  const authTypes = isCAMFFEnabled ? getAuthTypesWithCAM() : getAuthTypes()
+  const authTypesList = authTypes.map((item) => ({
     label: $t(item.label),
     value: item.value
   }))
@@ -61,7 +80,9 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
     <Form.Item
       name='authType'
       label={$t({ defaultMessage: 'Authentication Type' })}
-      initialValue={AuthTypeRadioButtonEnum.idm}
+      initialValue={isCAMFFEnabled
+        ? AuthTypeRadioButtonEnum.commonAccount
+        : AuthTypeRadioButtonEnum.idm}
       rules={[{ required: true }]}
     >
       <Radio.Group
@@ -85,7 +106,7 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
           dependencies={['authType']}
         >
           {({ getFieldValue }) => {
-            return (getFieldValue('authType') === AuthTypeRadioButtonEnum.idm)
+            return (getFieldValue('authType') === AuthTypeRadioButtonEnum.idm && !isCAMFFEnabled)
               ? (
                 <UI.RadioLabel>
                   {$t({ defaultMessage: 'To use this authentication type,'+

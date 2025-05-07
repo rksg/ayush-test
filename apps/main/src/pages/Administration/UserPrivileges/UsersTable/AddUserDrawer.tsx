@@ -64,7 +64,11 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const [form] = Form.useForm()
   const [addAdmin] = useAddAdminMutation()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
-  const [selectedAuth, setSelectedAuth] = useState('')
+  const isCAMFFEnabled = useIsSplitOn(Features.PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE)
+  const [selectedAuth, setSelectedAuth] =
+    useState<AuthTypeRadioButtonEnum>(isCAMFFEnabled
+      ? AuthTypeRadioButtonEnum.commonAccount
+      : AuthTypeRadioButtonEnum.idm)
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const [isSystemRoleSelected, setSelectedRole] = useState<Boolean>()
 
@@ -106,8 +110,12 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   }
 
   const onClose = () => {
-    setVisible(false)
+    const _selectedAuth = isCAMFFEnabled
+      ? AuthTypeRadioButtonEnum.commonAccount
+      : AuthTypeRadioButtonEnum.idm
+    setSelectedAuth(_selectedAuth)
     form.resetFields()
+    setVisible(false)
   }
 
   const handleSubmit = async () => {
@@ -131,25 +139,23 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
       }
 
       payload.email = formValues.newEmail
+      payload.phoneNumber =
+        notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
       if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
         payload.name = formValues.firstName ?? ''
-        payload.phoneNumber =
-          notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
+      } else if (isCAMFFEnabled && formValues.authType === AuthTypeRadioButtonEnum.commonAccount) {
+        payload.lastName = formValues.lastName ?? ''
+        payload.name = formValues.firstName ?? ''
       }
 
       await addAdmin({ params, payload }).unwrap()
-      handleCancel()
+      onClose()
     } catch(error) {
       const respData = error as CommonErrorsResult<CatchErrorDetails>
       handleSubmitFailed(respData)
     }
-  }
-
-  const handleCancel = () => {
-    setVisible(false)
-    form.resetFields()
   }
 
   const selectedPrivilegeGroup = (selected: PrivilegeGroup) => {
@@ -189,7 +195,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
           buttonLabel={{
             save: $t({ defaultMessage: 'Add User' })
           }}
-          onCancel={handleCancel}
+          onCancel={onClose}
           onSave={async () => form.submit()}
         />
       }
@@ -199,7 +205,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
         layout='vertical'
         onFinish={handleSubmit}
       >
-        {isSsoConfigured && <AuthenticationSelector
+        {(isCAMFFEnabled || isSsoConfigured) && <AuthenticationSelector
           ssoConfigured={isSsoConfigured}
           setSelected={setSelectedAuth}
         />}
@@ -227,7 +233,9 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
           />
         </Form.Item>
 
-        {selectedAuth === AuthTypeRadioButtonEnum.sso && isSsoConfigured &&
+        {((selectedAuth === AuthTypeRadioButtonEnum.sso && isSsoConfigured)
+          || (isCAMFFEnabled
+            && selectedAuth === AuthTypeRadioButtonEnum.commonAccount)) &&
           <div>
             <Form.Item
               name='firstName'
@@ -255,17 +263,18 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
                 placeholder={$t({ defaultMessage: 'Enter family name' })}
               />
             </Form.Item>
-            {notificationAdminContextualEnabled && <Form.Item
-              label={$t({ defaultMessage: 'Phone' })}
-              name='mobile'
-              rules={[
-                { validator: (_, value) => generalPhoneRegExp(value) }
-              ]}
-              initialValue=''
-              validateFirst >
-              <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
-            </Form.Item>}
           </div>}
+
+        {notificationAdminContextualEnabled && <Form.Item
+          label={$t({ defaultMessage: 'Phone' })}
+          name='mobile'
+          rules={[
+            { validator: (_, value) => generalPhoneRegExp(value) }
+          ]}
+          initialValue=''
+          validateFirst >
+          <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+        </Form.Item>}
 
         {isAbacToggleEnabled
           ? <PrivilegeGroupSelector

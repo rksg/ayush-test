@@ -45,7 +45,6 @@ import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
   useCasesToRefreshNetworkTemplateList
 } from './constants'
-import { AllowedEnforcedConfigTemplateTypes, configTemplateInstanceEnforcedApiMap } from './utils'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -107,6 +106,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             payload: { isTemplate: true, page: 1, pageSize: 10000 }
           }
 
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], true, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
           const {
             error: networkVenuesListQueryError,
             networkDeep
@@ -125,6 +129,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
@@ -505,27 +514,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           body: JSON.stringify({ isEnforced: payload?.enabled })
         }
       }
-    }),
-    getConfigTemplateInstanceEnforced: build.query<
-    { isEnforced: boolean },
-      RequestPayload<{ instanceId: string, type: AllowedEnforcedConfigTemplateTypes }>
-    >({
-      query: ({ params, payload }) => {
-        const { instanceId, type } = payload!
-        const apiInfo = configTemplateInstanceEnforcedApiMap[type]
-        return {
-          ...createHttpRequest(apiInfo, params),
-          body: JSON.stringify({
-            fields: ['id', 'isEnforced'],
-            filters: { id: [instanceId] }
-          })
-        }
-      },
-      transformResponse (result: TableResult<{ isEnforced: boolean }>) {
-        return {
-          isEnforced: result.data[0]?.isEnforced ?? false
-        }
-      }
     })
   })
 })
@@ -558,6 +546,5 @@ export const {
   useLazyGetDriftReportQuery,
   usePatchDriftReportMutation,
   useCloneTemplateMutation,
-  useUpdateEnforcementStatusMutation,
-  useGetConfigTemplateInstanceEnforcedQuery
+  useUpdateEnforcementStatusMutation
 } = configTemplateApi

@@ -4,15 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }                        from '@acx-ui/rc/components'
-import { useLazyGetLagListQuery }                    from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
-import { SwitchScopes }                              from '@acx-ui/types'
-import { hasPermission }                             from '@acx-ui/user'
-import { getOpsApi }                                 from '@acx-ui/utils'
+import { Tooltip, cssStr }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { getInactiveTooltip }                                                              from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery }                                                          from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010gOr10020b } from '@acx-ui/rc/utils'
+import { useParams }                                                                       from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                    from '@acx-ui/types'
+import { hasPermission }                                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                       from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -26,12 +26,15 @@ export function FrontViewPort (props:{
   labelPosition: 'top' | 'bottom',
   tooltipEnable: boolean,
   disabledClick?:boolean
+  switchFirmware?: string
 }) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
+  const isSupportStackNeighborPort = useIsSplitOn(Features.SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE)
 
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
-    disabledClick } = props
+    disabledClick, switchFirmware } = props
   const {
     setEditPortDrawerVisible,
     setSelectedPorts,
@@ -73,8 +76,17 @@ export function FrontViewPort (props:{
     const poeUsed = Math.round(port.poeUsed / 1000)
     const poeTotal = Math.round(port.poeTotal / 1000)
 
+    const incompatibleIconStyle = {
+      height: '16px',
+      width: '16px',
+      marginBottom: '-4px',
+      marginRight: '4px',
+      color: cssStr('--acx-semantics-red-50'),
+      borderColor: cssStr('--acx-accents-red-30')
+    }
+
     return <div>
-      <UI.TooltipStyle labelWidthPercent={50}>
+      <UI.TooltipStyle labelWidthPercent={40}>
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Port' })}
           children={port.portIdentifier}
@@ -99,9 +111,42 @@ export function FrontViewPort (props:{
           label={$t({ defaultMessage: 'Port State' })}
           children={port.status}
         />
+        {// eslint-disable-next-line max-len
+          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010gOr10020b(switchFirmware) && (<>
+            <UI.TooltipStyle.Item
+              label={$t({ defaultMessage: 'ErrDisabled' })}
+              children={
+                !port.errorDisableStatus ? $t({ defaultMessage: 'No' })
+                  : <>
+                    <Tooltip.Warning
+                      isFilled
+                      isTriangle
+                      iconStyle={incompatibleIconStyle}
+                    />
+                    {$t({ defaultMessage: 'Yes' })}
+                  </>
+              }
+            />
+            {port.errorDisableStatus &&
+              <UI.TooltipStyle.Item
+                label={$t({ defaultMessage: 'ErrDisable Reason' })}
+                children={
+                  <>
+                    <Tooltip.Warning
+                      isFilled
+                      isTriangle
+                      iconStyle={incompatibleIconStyle}
+                    />
+                    {port.errorDisableStatus}
+                  </>
+                }
+              />
+            }
+          </>)}
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
-          children={port.neighborName || port.neighborMacAddress || '--'}
+          children={port.neighborName || port.neighborMacAddress ||
+            (isSupportStackNeighborPort && port.stackingNeighborPort) || '--'}
         />
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' })}

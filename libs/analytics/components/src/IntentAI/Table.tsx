@@ -2,14 +2,27 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip, Banner }                                          from '@acx-ui/components'
-import { get }                                                                                 from '@acx-ui/config'
-import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
-import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                          from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
+import { Loader, TableProps, Table, Tooltip, Banner }    from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
+import { useNavigate, useTenantLink, TenantLink }        from '@acx-ui/react-router-dom'
+import { WifiScopes }                                    from '@acx-ui/types'
+import {
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import {
+  noDataDisplay,
+  PathFilter,
+  useEncodedParameter,
+  useTrackLoadTime,
+  widgetsMapping
+} from '@acx-ui/utils'
 
 import { Icon }                                       from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }          from './config'
@@ -83,7 +96,7 @@ export const iconTooltips = {
   />,
   [AiFeatures.EcoFlex]: <IconTooltip
     icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'EcoFlex' })}
+    title={defineMessage({ defaultMessage: 'Energy Saving' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
     subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
@@ -110,7 +123,8 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
     >
       <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
-    {props.status === Statuses.new
+    {props.status === Statuses.new &&
+      hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] })
       ? <span>{props.aiFeature}</span>
       : <TenantLink to={get('IS_MLISA_SA')
         ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
@@ -130,6 +144,7 @@ export function IntentAITable (
   const basePath = useTenantLink('/analytics/intentAI')
   const intentActions = useIntentAIActions()
   const revertInitialDate = useRef(getDefaultTime())
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const {
     tableQuery: queryResults,
@@ -301,6 +316,19 @@ export function IntentAITable (
       render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.INTENT_AI_TABLE,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_INTENT_AI',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIntentAI]
+  })
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />
@@ -321,8 +349,7 @@ export function IntentAITable (
         columns={columns}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] }) && {
+        rowSelection={hasRowSelection && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

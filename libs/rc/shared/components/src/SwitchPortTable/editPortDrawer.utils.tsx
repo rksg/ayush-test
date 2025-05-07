@@ -3,8 +3,8 @@ import { DefaultOptionType }                from 'antd/lib/select'
 import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { cssStr }          from '@acx-ui/components'
-import { switchApi }       from '@acx-ui/rc/services'
+import { cssStr }    from '@acx-ui/components'
+import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
   getPortSpeedOptions,
@@ -16,7 +16,8 @@ import {
   SwitchVlanUnion,
   PortSettingModel,
   Vlan,
-  PortProfilesBySwitchId
+  PortProfilesBySwitchId,
+  MacAcl
 } from '@acx-ui/rc/utils'
 import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
@@ -60,7 +61,10 @@ export const FIELD_LABEL: Record<string, MessageDescriptor> = {
   ingressAcl: defineMessage({ defaultMessage: 'Ingress ACL (IPv4)' }),
   egressAcl: defineMessage({ defaultMessage: 'Egress ACL (IPv4)' }),
   tags: defineMessage({ defaultMessage: 'Tags' }),
-  portProfile: defineMessage({ defaultMessage: 'Port Profile' })
+  portProfile: defineMessage({ defaultMessage: 'Port Profile' }),
+  switchMacAcl: defineMessage({ defaultMessage: 'MAC ACL' }),
+  portSecurity: defineMessage({ defaultMessage: 'Port MAC Security' }),
+  portSecurityMaxEntries: defineMessage({ defaultMessage: 'Sticky MAC List Size Limit' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,6 +152,27 @@ export const getAclOptions = (acls?: AclUnion) => {
   return [
     { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
     ...sortOptions(options)
+  ] as DefaultOptionType[]
+}
+
+export const getMacAclOptions = (macAclList?: MacAcl[], macAclGlobalList?: MacAcl[]) => {
+  const { $t } = getIntl()
+
+  const switchMacAclList = new Set(macAclList?.map(macAcl => macAcl.name) || [])
+
+  const globalFilterMacAclList = macAclGlobalList?.filter(
+    macAcl => !switchMacAclList.has(macAcl.name)) || []
+
+  const options = [...macAclList?.map((macAcl: MacAcl) =>
+    ({ value: macAcl.name,
+      // eslint-disable-next-line max-len
+      label: `${macAcl.name} ${macAcl.customized && macAclGlobalList?.some((globalMacAcl: MacAcl) => globalMacAcl.name === macAcl.name) ? $t({ defaultMessage: '(Customized)' }) : ''}` })) || [],
+  ...globalFilterMacAclList?.map((macAcl: MacAcl) =>
+    ({ value: macAcl.name, label: macAcl.name })) || []]
+
+  return [
+    { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
+    ...options
   ] as DefaultOptionType[]
 }
 
@@ -353,10 +378,10 @@ export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) 
 export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
   const nonePoeClassModels = [
     'ICX8200-24', 'ICX8200-24F', 'ICX8200-24FX', 'ICX8200-48', 'ICX8200-48F',
-    'ICX8100-24', 'ICX8100-48'
+    'ICX8100-24', 'ICX8100-48', 'ICX8100-24-X', 'ICX8100-48-X'
   ]
   const supportPoe5to8Models = [
-    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP'
+    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP', 'ICX7550-24XZP'
   ]
 
   const poeClassOptions = [

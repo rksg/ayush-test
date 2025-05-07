@@ -3,19 +3,26 @@ import { createContext, useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
+import { ConfigTemplateEnforcementContext, useEnforcedStatus } from '@acx-ui/rc/components'
+import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
-  VeuneApAntennaTypeSettings,
-  CommonUrlsInfo } from '@acx-ui/rc/utils'
+  VenueApAntennaTypeSettings,
+  CommonUrlsInfo,
+  useConfigTemplate,
+  WifiRbacUrlsInfo,
+  ConfigTemplateType
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
 import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles }               from '@acx-ui/user'
+  hasRoles
+}               from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
@@ -62,8 +69,8 @@ export interface RadioContext {
   apiApModels?: { [index: string]: ExternalAntenna }
   apModels?: { [index: string]: ExternalAntenna }
   updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
-  apModelAntennaTypes?: { [index: string]: VeuneApAntennaTypeSettings }
-  updateAntennaType?: ((data: VeuneApAntennaTypeSettings[]) => void)
+  apModelAntennaTypes?: { [index: string]: VenueApAntennaTypeSettings }
+  updateAntennaType?: ((data: VenueApAntennaTypeSettings[]) => void)
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
@@ -108,7 +115,7 @@ export function VenueEdit () {
   const basePath = useTenantLink('')
 
   const { rbacOpsApiEnabled } = getUserProfile()
-  const { activeTab } = useParams()
+  const { venueId, activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
   const Tab = tabs[activeTab as keyof typeof tabs]
@@ -142,7 +149,10 @@ export function VenueEdit () {
     if (!activeTab) {
       const navigateTo =
       hasDetailsPermission ? 'details' :
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) ? 'wifi' :
           hasPermission({
             scopes: [SwitchScopes.UPDATE],
             rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
@@ -158,18 +168,24 @@ export function VenueEdit () {
     }
 
     const hasNoPermissions
-    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
+    = (!hasPermission({
+      scopes: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+    }) && activeTab === 'wifi')
     || (!hasPermission({
       scopes: [SwitchScopes.UPDATE],
       rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
     }) && activeTab === 'switch')
     || (!hasDetailsPermission && activeTab === 'details')
-    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
+    || (!enablePropertyManagement && activeTab === 'property')
 
     if (hasNoPermissions) {
       navigate(notPermissions, { replace: true })
     }
   }, [activeTab, basePath, enablePropertyManagement, navigate])
+
+
+  const isEnforced = useIsVenueEnforced(venueId)
 
   return (
     <VenueEditContext.Provider value={{
@@ -188,8 +204,10 @@ export function VenueEdit () {
       previousPath,
       setPreviousPath
     }}>
-      <VenueEditPageHeader />
-      { Tab && <Tab /> }
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced }}>
+        <VenueEditPageHeader />
+        { Tab && <Tab /> }
+      </ConfigTemplateEnforcementContext.Provider>
     </VenueEditContext.Provider>
   )
 }
@@ -215,7 +233,7 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
 }
 
 // eslint-disable-next-line max-len
-export function getAntennaTypePayload (antTypeModels: { [index: string]: VeuneApAntennaTypeSettings }) {
+export function getAntennaTypePayload (antTypeModels: { [index: string]: VenueApAntennaTypeSettings }) {
   return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 
@@ -445,4 +463,14 @@ export function createAnchorSectionItem (title: string, titleId: string, content
       {content}
     </>
   }
+}
+
+function useIsVenueEnforced (venueId?: string): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const { isEnforcedAvailable } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const { data } = useGetVenueQuery(
+    { params: { venueId } }, { skip: !venueId || isTemplate || !isEnforcedAvailable() }
+  )
+
+  return data?.isEnforced ?? false
 }

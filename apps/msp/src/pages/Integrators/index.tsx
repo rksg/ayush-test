@@ -26,14 +26,15 @@ import {
   useGetMspLabelQuery
 } from '@acx-ui/msp/services'
 import {
-  MspEc
+  MspEc,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
-import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
+import { useTableQuery }                                                                                    from '@acx-ui/rc/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import {
-  AccountType, isDelegationMode
+  AccountType, getOpsApi, isDelegationMode
 } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
@@ -58,6 +59,7 @@ export function Integrators () {
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -71,6 +73,13 @@ export function Integrators () {
     ? { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
     : { mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignEcPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToIntegrator)]) : isAdmin
 
   const defaultPayload = {
     searchString: '',
@@ -124,7 +133,7 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignAdminPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -133,7 +142,8 @@ export function Integrators () {
       },
       render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
+          (hasAssignAdminPermission)
+            ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
     },
@@ -144,7 +154,7 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignEcPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
@@ -153,7 +163,7 @@ export function Integrators () {
         } : {}
       },
       render: function (_, row) {
-        return (isPrimeAdmin || isAdmin)
+        return (hasAssignEcPermission)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)
       }
@@ -186,7 +196,8 @@ export function Integrators () {
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
     const [
       deleteMspEc,
@@ -196,6 +207,7 @@ export function Integrators () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.updateMspEcAccount)],
         onClick: (selectedRows) => {
           const type = selectedRows[0].tenantType
           navigate({
@@ -206,6 +218,7 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         onClick: (selectedRows) => {
           setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
@@ -213,6 +226,7 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
             type: 'confirm',
@@ -257,14 +271,14 @@ export function Integrators () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Tech Partners' })}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink> : null,
             <MspTenantLink to='/integrators/create'>
               <Button
-                hidden={!onBoard}
+                hidden={!onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]

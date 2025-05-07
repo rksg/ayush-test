@@ -1,11 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
+import { rest }  from 'msw'
 
-import { Features, useIsBetaEnabled }                                 from '@acx-ui/feature-toggle'
-import { getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                                 from '@acx-ui/test-utils'
+import { Features, useIsBetaEnabled }                                               from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo, getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, renderHook, screen }                                   from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+
 
 import { TunnelProfileForm } from './index'
 
@@ -55,14 +59,15 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
+
 describe('TunnelProfileForm', () => {
   const defaultValues = getTunnelProfileFormDefaultValues()
 
   it('should render TunnelProfileForm successfully', () => {
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
 
     expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeVisible()
@@ -77,9 +82,9 @@ describe('TunnelProfileForm', () => {
   it('should show MTU size field when select Manual', async () => {
     const user = userEvent.setup()
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
     await user.click(screen.getByRole('radio', { name: 'Manual' }))
     const spinBtns = await screen.findAllByRole('spinbutton') // MTU size / idleTime unit
@@ -90,9 +95,9 @@ describe('TunnelProfileForm', () => {
 
   it('should show error when ageTime is invalid', async () => {
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
 
@@ -109,9 +114,9 @@ describe('TunnelProfileForm', () => {
 
   it('should trigger ageTime validate when change unit', async () => {
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
     const ageTimeInput = await screen.findByRole('spinbutton')
     await userEvent.clear(ageTimeInput)
@@ -127,9 +132,9 @@ describe('TunnelProfileForm', () => {
 
   it('Input invalid profile name will show error message', async () => {
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
     const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await userEvent.type(profileNameField, '``')
@@ -158,9 +163,9 @@ describe('TunnelProfileForm', () => {
     })
 
     render(
-      <Form form={formRef.current} initialValues={defaultValues}>
+      <Provider><Form form={formRef.current} initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
 
     expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
@@ -178,59 +183,11 @@ describe('TunnelProfileForm', () => {
 
   it('MTU help message should only display when manual', async () => {
     render(
-      <Form initialValues={defaultValues}>
+      <Provider><Form initialValues={defaultValues}>
         <TunnelProfileForm />
-      </Form>
+      </Form></Provider>
     )
 
-  })
-
-
-  describe('when SD-LAN is ready and Keep Alive is not ready', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-    })
-
-    it('should correctly set tunnel type', async () => {
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        form.setFieldValue('disabledFields', undefined)
-        return form
-      })
-
-      render(
-        <Form form={formRef.current}>
-          <TunnelProfileForm />
-        </Form>
-      )
-
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).not.toBeDisabled()
-      expect(screen.queryByText('Network Segment Type')).not.toBeInTheDocument()
-      await userEvent.selectOptions(
-        typeField,
-        await screen.findByRole('option', { name: 'VxLAN' })
-      )
-    })
-
-    it('should lock tunnel type when the disableTunnelType is true', async () => {
-      const { result: formRef } = renderHook(() => {
-        const [form] = Form.useForm()
-        form.setFieldValue('disabledFields', ['type'])
-        return form
-      })
-
-      render(
-        <Form form={formRef.current}>
-          <TunnelProfileForm />
-        </Form>
-      )
-
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).toBeDisabled()
-    })
   })
 
   describe('when SD-LAN and Keep Alive are ready', () => {
@@ -243,9 +200,9 @@ describe('TunnelProfileForm', () => {
 
     it('should display network segment type and keep alive related columns', async () => {
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.queryByText('Tunnel Type')).not.toBeInTheDocument()
@@ -257,9 +214,9 @@ describe('TunnelProfileForm', () => {
 
     it('should show error when mtuRequestTimeout is invalid', async () => {
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
 
       const spinBtns = (await screen.findAllByRole('spinbutton'))
@@ -279,9 +236,9 @@ describe('TunnelProfileForm', () => {
 
     it('should trigger mtuRequestTime validate when change unit', async () => {
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       const mtuTimeInput = (await screen.findAllByRole('spinbutton'))
         .filter(p => p.id === 'mtuRequestTimeout')[0]
@@ -299,9 +256,9 @@ describe('TunnelProfileForm', () => {
 
     it('should show error when keepAliveRetry and keepAliveInterval are invalid', async () => {
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       const keepAliveRetryInput = (await screen.findAllByRole('spinbutton'))
         .filter(p => p.id === 'keepAliveRetry')[0]
@@ -336,9 +293,9 @@ describe('TunnelProfileForm', () => {
     it('NAT-T switch should be enable when type is vlan_vxlan', async () => {
       const user = userEvent.setup()
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
@@ -351,9 +308,9 @@ describe('TunnelProfileForm', () => {
     it('NAT-T switch should be disabled when type is vxlan', async () => {
       const user = userEvent.setup()
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
@@ -369,9 +326,9 @@ describe('TunnelProfileForm', () => {
     it('should show "NAT Traversal" compatibility component', async () => {
       const user = userEvent.setup()
       render(
-        <Form initialValues={defaultValues}>
+        <Provider><Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
 
       const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
@@ -385,12 +342,129 @@ describe('TunnelProfileForm', () => {
 
     it('should show BetaIndicator when "NAT Traversal" is beta feature', async () => {
       jest.mocked(useIsBetaEnabled).mockReturnValue(true)
-      render(
+
+      render(<Provider>
         <Form initialValues={defaultValues}>
           <TunnelProfileForm />
-        </Form>
+        </Form></Provider>
       )
       expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
   })
+
+  describe('when L2GRE Support is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+          || ff === Features.EDGE_PIN_HA_TOGGLE
+          || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE
+          || ff === Features.EDGE_L2OGRE_TOGGLE
+        )
+      mockServer.use(
+        rest.post(
+          EdgeUrlsInfo.getEdgeClusterServiceList.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.post(
+          EdgeUrlsInfo.getEdgeClusterStatusList.url,
+          (_, res, ctx) => res(ctx.json({ data: [
+            {
+              name: 'clusterName',
+              venueId: 'venueId',
+              clusterId: 'clusterId',
+              firmwareVersion: 'fw'
+            }
+          ] }))
+        )
+      )
+    })
+
+    it('should show edge cluster select when tunnel type is VxLAN_GPE', async () => {
+      render(
+        <Provider><Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form></Provider>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
+      expect(screen.getByText('Destination RUCKUS Edge cluster')).toBeInTheDocument()
+      // eslint-disable-next-line max-len
+      const selector =await screen.findByRole('combobox', { name: 'Destination RUCKUS Edge cluster' })
+      expect(selector).toHaveAttribute('placeholder', 'Select ...')
+
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      expect(screen.getByText('Gateway Path MTU Mode')).toBeInTheDocument()
+      expect(screen.getByText('Path MTU Request Timeout')).toBeInTheDocument()
+      expect(screen.getByText('Path MTU Request Retries')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Idle Timeout')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Keep Alive Retries')).toBeInTheDocument()
+
+      expect(screen.queryByText('Destination IP Address')).not.toBeInTheDocument()
+    })
+
+    it('should show ip address input when tunnel type is L2GRE', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <Provider><Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form></Provider>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
+      await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
+      expect(screen.getByText('Destination IP Address')).toBeInTheDocument()
+      expect(screen.getByText('Gateway Path MTU')).toBeInTheDocument()
+
+      expect(screen.queryByText('Destination RUCKUS Edge cluster')).not.toBeInTheDocument()
+      expect(screen.queryByText('Enable NAT-T Support')).not.toBeInTheDocument()
+      expect(screen.queryByText('Gateway Path MTU Mode')).not.toBeInTheDocument()
+      expect(screen.queryByText('Path MTU Request Timeout')).not.toBeInTheDocument()
+      expect(screen.queryByText('Path MTU Request Retries')).not.toBeInTheDocument()
+      expect(screen.queryByText('Tunnel Idle Timeout')).not.toBeInTheDocument()
+      expect(screen.queryByText('Tunnel Keep Alive Retries')).not.toBeInTheDocument()
+    })
+
+    it('should disabled L2GRE when network segment type is VNI', async () => {
+      const user = userEvent.setup()
+      render(
+        <Provider><Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form></Provider>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
+      await user.click(screen.getByRole('radio', { name: 'VNI' }))
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: /L2GRE/i })).toBeDisabled()
+    })
+
+    it('should lock disabled fields L2GRE ff enabled', async () => {
+      const formInitValues = _.clone(defaultValues)
+      formInitValues.disabledFields = []
+      formInitValues.disabledFields.push('type')
+      formInitValues.disabledFields.push('tunnelType')
+      formInitValues.disabledFields.push('destinationIpAddress')
+      formInitValues.disabledFields.push('edgeClusterId')
+      render(
+        <Provider><Form initialValues={formInitValues}>
+          <TunnelProfileForm />
+        </Form></Provider>
+      )
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: /L2GRE/i })).toBeDisabled()
+
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
+      expect(screen.getByRole('combobox', { name: 'Destination RUCKUS Edge cluster' }))
+        .toBeDisabled()
+    })
+
+  })
+
 })

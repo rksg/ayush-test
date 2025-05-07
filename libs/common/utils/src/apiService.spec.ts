@@ -8,7 +8,10 @@ import {
   isIgnoreErrorModal, isShowApiError,
   createHttpRequest,
   getFilters,
-  batchApi
+  getUrlForTest,
+  getOpsApi,
+  batchApi,
+  isShowImprovedErrorSuggestion
 } from './apiService'
 
 const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
@@ -29,6 +32,26 @@ describe('ApiInfo', () => {
     req.headers.set('Build-In-Error-Modal', 'ignore')
     expect(isIgnoreErrorModal(req)).toBe(true)
     expect(isShowApiError(new Request('/foo/bar'))).toBe(false)
+  })
+
+  it('Check the getEnabledDialogImproved flag', async () => {
+    expect(isIgnoreErrorModal()).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with empty errors', async () => {
+    expect(isShowImprovedErrorSuggestion({ errors: [] })).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with errors', async () => {
+    expect(isShowImprovedErrorSuggestion({ errors: [{ reason: 'test' }] })).toBe(true)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with empty error', async () => {
+    expect(isShowImprovedErrorSuggestion({ error: {} })).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with error', async () => {
+    expect(isShowImprovedErrorSuggestion({ error: { reason: 'test' } })).toBe(true)
   })
 
   it('getFilters', async () => {
@@ -64,6 +87,57 @@ describe('ApiInfo', () => {
 
     expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
     expect(apiInfo1.url).toBe('/venues/aaaServers/query')
+  })
+
+  it('Check enable new API with newApi flag', async () => {
+    const apiInfo1 = {
+      method: 'post',
+      url: '/venues/aaaServers/query',
+      oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query',
+      newApi: true
+    }
+    const httpRequest = {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      url: 'http://localhost/venues/aaaServers/query'
+    }
+
+    expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
+    expect(apiInfo1.url).toBe('/venues/aaaServers/query')
+  })
+
+  it('test getUrlForTest', async () => {
+    const apiInfo1 = {
+      method: 'post',
+      url: '/venues/aaaServers/query'
+    }
+
+    expect(getUrlForTest({
+      ...apiInfo1,
+      newApi: true
+    })).toBe('/venues/aaaServers/query')
+
+    expect(getUrlForTest({
+      ...apiInfo1,
+      oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query'
+    })).toBe('/api/switch/tenant/:tenantId/aaaServer/query')
+  })
+
+  it('test getOpsApi', async () => {
+    const apiInfo1 = {
+      method: 'post',
+      url: '/venues/aaaServers/query'
+    }
+
+    expect(getOpsApi(apiInfo1)).toBe('')
+    expect(getOpsApi({
+      ...apiInfo1,
+      opsApi: 'POST:/venues/aaaServers/query'
+    })).toBe('POST:/venues/aaaServers/query')
   })
 
   it('batchApi: success', async () => {

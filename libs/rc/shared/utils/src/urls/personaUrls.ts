@@ -12,7 +12,8 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet'
+  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet' |
+  'searchIdentityClients' | 'searchExternalIdentities'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -204,5 +205,25 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id/vnis`,
     opsApi: 'DELETE:/identityGroups/{id}/identities/{id}/vnis',
     newApi: true
+  },
+  searchIdentityClients: {
+    method: 'post',
+    url: `/identities/clients/query${paginationParams}`,
+    opsApi: 'POST:/identities/clients/query',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  searchExternalIdentities: {
+    method: 'post',
+    url: `/externalIdentities/query${paginationParams}`,
+    opsApi: 'POST:/externalIdentities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

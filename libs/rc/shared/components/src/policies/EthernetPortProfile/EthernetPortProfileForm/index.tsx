@@ -5,8 +5,8 @@ import { cloneDeep }                                                            
 import { useIntl }                                                                 from 'react-intl'
 import { useLocation, useNavigate }                                                from 'react-router-dom'
 
-import { PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Alert, PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   LocationExtended,
   PolicyOperation,
@@ -23,14 +23,16 @@ import {
   getEthernetPortTypeOptions,
   getEthernetPortAuthTypeOptions,
   getEthernetPortCredentialTypeOptions,
-  EthernetPortType
+  EthernetPortType,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { EthernetPortAAASettings } from '../AAASettings/EthernetPortAAASettings'
 
 interface EthernetPortProfileFormProps {
-  title: string
   submitButtonLabel: string
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
@@ -41,7 +43,6 @@ interface EthernetPortProfileFormProps {
 
 export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
   const {
-    title,
     submitButtonLabel,
     onFinish,
     form: formRef,
@@ -50,14 +51,35 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     isEmbedded = false
   } = props
   const { $t } = useIntl()
-  const portType = Form.useWatch('type', formRef)
-  const untagId = Form.useWatch('untagId', formRef)
-  const authTypeRole = Form.useWatch('authTypeRole', formRef)
-  const supplicantType = Form.useWatch(['supplicantAuthenticationOptions', 'type'], formRef)
-  const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
-  const authEnabled = Form.useWatch('authEnabled', formRef)
+  const { isTemplate } = useConfigTemplate()
+
+  const { useWatch } = Form
+  const portType = useWatch('type', formRef)
+  const untagId = useWatch('untagId', formRef)
+  const authTypeRole = useWatch('authTypeRole', formRef)
+  const supplicantType = useWatch(['supplicantAuthenticationOptions', 'type'], formRef)
+  const dynamicVlanEnabled = useWatch('dynamicVlanEnabled', formRef)
+  const authEnabled = useWatch('authEnabled', formRef)
+  const clientVisibilityEnabled = useWatch('clientVisibilityEnabled', formRef)
+
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+
+  const wifiBreadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
+  const switchBreadcrumb = [
+    { text: $t({ defaultMessage: 'Network Control' }) },
+    {
+      text: $t({ defaultMessage: 'Policies & Profiles' }),
+      link: getPolicyListRoutePath(true)
+    },
+    {
+      text: $t({ defaultMessage: 'Ethernet Port Profile' }),
+      link: '/policies/portProfile/wifi'
+    }
+  ]
+  const breadcrumb = (isSwitchPortProfileEnabled && !isTemplate)? switchBreadcrumb : wifiBreadcrumb
+  const pageTitle = usePolicyPageHeaderTitle(isEditMode, PolicyType.ETHERNET_PORT_PROFILE)
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -171,23 +193,20 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     }
   }, [untagId])
 
+  useEffect(()=>{
+    if (authTypeRole === EthernetPortAuthType.PORT_BASED ||
+      authTypeRole === EthernetPortAuthType.MAC_BASED) {
+      formRef.setFieldValue('clientVisibilityEnabled', true)
+    }
+  }, [authTypeRole])
+
   return (
     <>
       {!isEmbedded &&
-      <PageHeader
-        title={title}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: isSwitchPortProfileEnabled ? '/policies/portProfile/wifi' : tablePath
-          }
-        ]}
-      />
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
       }
       <StepsForm
         form={formRef}
@@ -290,44 +309,73 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               </Form.Item>
             </Col>
           </Row>
-          <Subtitle level={3}>
-            {$t({ defaultMessage: '802.1X' })}
-          </Subtitle>
-          <StepsForm.FieldLabel width={'280px'}>
-            {$t({ defaultMessage: '802.1X Authentication' })}
-            <Form.Item
-              name='authEnabled'
-              valuePropName={'checked'}
-            >
-              <Switch disabled={isEditMode} />
-            </Form.Item>
-          </StepsForm.FieldLabel>
-          {authEnabled && <>
-            <Row>
-              <Col span={12}>
-                <Form.Item
-                  name='authTypeRole'
-                  label={<>
-                    {$t({ defaultMessage: '802.1X Role' })}
+          {!isTemplate &&
+          <>
+            <Subtitle level={3}>
+              {$t({ defaultMessage: '802.1X' })}
+            </Subtitle>
+            <StepsForm.FieldLabel width={'280px'}>
+              {$t({ defaultMessage: '802.1X Authentication' })}
+              <Form.Item
+                name='authEnabled'
+                valuePropName={'checked'}
+              >
+                <Switch disabled={isEditMode} />
+              </Form.Item>
+            </StepsForm.FieldLabel>
+            {isWiredClientVisibilityEnabled && authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
+              <>
+                <StepsForm.FieldLabel width={'280px'}>
+                  <Space>
+                    {$t({ defaultMessage: 'Client Visibility' })}
                     <Tooltip.Question
-                      title={
-                        (portType === EthernetPortType.TRUNK) ?
-                          $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_TRUNK):
-                          $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_ACCESS)
-                      }
+                      title={$t(EthernetPortProfileMessages.CLIENT_VISIBILITY)}
                       placement='bottom'
+                      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                  </Space>
+                  <Form.Item
+                    name='clientVisibilityEnabled'
+                    valuePropName={'checked'}
+                  >
+                    <Switch disabled={
+                      authTypeRole === EthernetPortAuthType.PORT_BASED ||
+                      authTypeRole === EthernetPortAuthType.MAC_BASED} />
+                  </Form.Item>
+                </StepsForm.FieldLabel>
+                {clientVisibilityEnabled &&
+                  <Alert
+                    showIcon={true}
+                    style={{ verticalAlign: 'middle', width: '19vw' }}
+                    message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />
+                }
+              </>
+            }
+            {authEnabled && <>
+              <Row>
+                <Col span={12}>
+                  <Form.Item
+                    name='authTypeRole'
+                    label={<>
+                      {$t({ defaultMessage: '802.1X Role' })}
+                      <Tooltip.Question
+                        title={
+                          (portType === EthernetPortType.TRUNK) ?
+                            $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_TRUNK):
+                            $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_ACCESS)
+                        }
+                        placement='bottom'
+                      />
+                    </>
+                    }
+                  >
+                    <Select
+                      options={authTypeRoleOptionsArray}
+                      disabled={isEditMode}
                     />
-                  </>
-                  }
-                >
-                  <Select
-                    options={authTypeRoleOptionsArray}
-                    disabled={isEditMode}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            {authTypeRole === EthernetPortAuthType.SUPPLICANT &&
+                  </Form.Item>
+                </Col>
+              </Row>
+              {authTypeRole === EthernetPortAuthType.SUPPLICANT &&
               <Row>
                 <Col span={12}>
                   <Form.Item
@@ -345,8 +393,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Form.Item>
                 </Col>
               </Row>
-            }
-            {supplicantType === EthernetPortSupplicantType.CUSTOM &&
+              }
+              {supplicantType === EthernetPortSupplicantType.CUSTOM &&
               <>
                 <Row>
                   <Col span={12}>
@@ -389,8 +437,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Col>
                 </Row>
               </>
-            }
-            {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
+              }
+              {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
               <>
                 <EthernetPortAAASettings />
                 <Row>
@@ -401,6 +449,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                         <Tooltip.Question
                           title={$t(EthernetPortProfileMessages.MAC_AUTH_BYPASS)}
                           placement='bottom'
+                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                         />
                       </Space>
                       <Form.Item
@@ -413,8 +462,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Col>
                 </Row>
               </>
-            }
-            {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled) &&
+              }
+              {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled) &&
             <StepsForm.FieldLabel width={'280px'}>
               <Space >
                 {$t({ defaultMessage: 'Dynamic VLAN' })}
@@ -431,10 +480,10 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 <Switch />
               </Form.Item>
             </StepsForm.FieldLabel>
+              }
+            </>
             }
-          </>
-          }
-          {dynamicVlanEnabled &&
+            {dynamicVlanEnabled &&
           <Row>
             <Col span={12}>
               <Form.Item
@@ -459,17 +508,27 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               </Form.Item>
             </Col>
           </Row>
-          }
+            }
+          </>}
         </StepsForm.StepForm>
       </StepsForm>
     </>
   )
 }
-export const requestPreProcess = (data: EthernetPortProfileFormType) => {
-  const { authRadius, accountingRadius, authEnabled, authTypeRole, ...result } = cloneDeep(data)
+export const requestPreProcess = (
+  isWiredClientVisibilityEnabled: boolean, data: EthernetPortProfileFormType) => {
+  const {
+    authRadius,
+    accountingRadius,
+    authEnabled,
+    authTypeRole,
+    clientVisibilityEnabled,
+    ...result } = cloneDeep(data)
 
   result.authType = (authEnabled) ?
-    (authTypeRole ?? EthernetPortAuthType.DISABLED) : EthernetPortAuthType.DISABLED
+    (authTypeRole ?? EthernetPortAuthType.DISABLED) :
+    (isWiredClientVisibilityEnabled && clientVisibilityEnabled ?
+      EthernetPortAuthType.OPEN : EthernetPortAuthType.DISABLED)
 
   return result
 }

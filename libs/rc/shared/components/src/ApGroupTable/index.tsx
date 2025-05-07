@@ -17,10 +17,10 @@ import {
   usePollingTableQuery,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
-import { WifiScopes }                               from '@acx-ui/types'
-import { filterByAccess, hasPermission }            from '@acx-ui/user'
-import { DateRange, getDateRangeFilter, getOpsApi } from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                                                  from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                 from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasPermission, isCoreTier }                  from '@acx-ui/user'
+import { DateRange, getDateRangeFilter, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
 
@@ -62,7 +62,10 @@ const defaultTableData: ApGroupViewModel[] = []
 export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
@@ -117,7 +120,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     }
 
     if (apGroupsData.length > 0) {
-      addIncidentsData()
+      isCore ? setTableData(apGroupsData) : addIncidentsData()
     } else {
       setTableData([])
     }
@@ -154,6 +157,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   }
 
   const columns = getTableColumns(intl, props, params?.venueId, isWifiRbacEnabled)
+    .filter(column => !(column.key === 'incidents' && isCore))
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -174,8 +178,13 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     }
   }]
 
-
   const basePath = useTenantLink('/devices')
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.AP_GROUP_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[tableQuery]}>

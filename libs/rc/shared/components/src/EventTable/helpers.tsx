@@ -14,11 +14,12 @@ type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes
   = [
     'ap',
+    'remoteAp',
     'client',
     'network',
     'switch',
     'venue',
-    'transaction',
+    'transactionId',
     'edge',
     'remoteedge',
     'unit',
@@ -36,6 +37,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     ap: {
       path: 'devices/wifi/:serialNumber/details/overview',
       params: ['serialNumber']
+    },
+    remoteAp: {
+      path: 'devices/wifi/:remoteApSerialId/details/overview',
+      params: ['remoteApSerialId']
     },
     client: {
       path: 'users/wifi/clients/:clientMac/details/overview',
@@ -57,7 +62,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'venues/:venueId/venue-details/overview',
       params: ['venueId']
     },
-    transaction: {
+    transactionId: {
       path: 'devices/switch/:switchMac/:serialNumber/details/configuration/history',
       params: ['switchMac', 'serialNumber']
     },
@@ -79,13 +84,17 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   if (entityTypes.includes(entityKey as EntityType)) {
     entity = entityKey as EntityType
   } else {
-    [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+    const parts = _.kebabCase(entityKey).split('-')
+    if (parts[parts.length - 1] === 'name') {
+      parts.pop()
+    }
+    entity = _.camelCase(parts.join('-')) as EntityType
   }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
 
-  const existKey = `is${_.capitalize(identifyExistKey(entity))}Exists` as EntityExistsKey
+  const existKey = `is${_.upperFirst(identifyExistKey(entity))}Exists` as EntityExistsKey
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
@@ -178,12 +187,12 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 }
 
 const extraHandle = (entityType: EntityType) => {
-  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+  return 'transactionId' === entityType ? configurationUpdate : noDataDisplay
 }
 
 const identifyExistKey = (entityType: EntityType) => {
   switch (entityType) {
-    case 'transaction':
+    case 'transactionId':
       return 'switch'
     case 'clientMldMac':
       return 'client'

@@ -10,14 +10,15 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
-import { getUserProfile }                                 from '@acx-ui/user'
+import { getUserProfile, isCoreTier }                     from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
   dateRangeMap,
   resetRanges,
   dateRangeForLast,
-  AccountTier
+  AccountTier,
+  defaultCoreTierRanges
 } from '@acx-ui/utils'
 
 import { Tooltip } from '../Tooltip'
@@ -60,10 +61,10 @@ export const restrictDateToMonthsRange = (
   let endDate = values?.[1] || null
   if (endDate && startDate && endDate.diff(startDate, 'months', true) > maxMonthRange) {
     if (range === 'start') {
-      endDate = startDate.clone().add(maxMonthRange, 'months')
+      endDate = startDate.clone().add(convertMonthsToDays(maxMonthRange), 'days')
     }
     if (range === 'end') {
-      startDate = endDate.clone().subtract(maxMonthRange, 'months')
+      startDate = endDate.clone().subtract(convertMonthsToDays(maxMonthRange), 'days')
     }
   }
   return { startDate, endDate }
@@ -82,8 +83,10 @@ export const RangePicker = ({
   allowedMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const { translatedRanges, translatedOptions } = useMemo(() => {
-    const ranges = defaultRanges(rangeOptions)
+    const ranges = isCore ? defaultCoreTierRanges(rangeOptions) : defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
     const translatedOptions: Record<string, DateRange> = {}
     for (const rangeOption in ranges) {
@@ -97,20 +100,25 @@ export const RangePicker = ({
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const { accountTier } = getUserProfile()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const allowedDateRange = (showResetMsg && allowedMonthRange)
-    ? dateRangeForLast(allowedMonthRange,'months')
-    : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(1, 'month')
-      : dateRangeForLast(isReport ? 12 : 3, 'months'))
+  let allowedDateRange =
+    (showResetMsg && allowedMonthRange) ?
+      dateRangeForLast(convertMonthsToDays(allowedMonthRange), 'days')
+      : (accountTier === AccountTier.GOLD ? dateRangeForLast(30, 'days')
+        : isReport ? dateRangeForLast(12, 'months') // Use 12 months to represent a full year, not fixed 365 days
+          : dateRangeForLast(90, 'days')
+      )
 
+
+  if (isCoreTier(accountTier)) {
+    allowedDateRange = dateRangeForLast(14, 'days')
+  }
 
   const disabledDate = useCallback(
     (current: Moment) => (
       (activeIndex === 1 && current.isAfter(
-        range.startDate?.clone().add(maxMonthRange || 3, 'months'))) ||
+        range.startDate?.clone().add(convertMonthsToDays(maxMonthRange || 3) , 'days'))) ||
       !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
     ),
     [allowedDateRange, activeIndex]
@@ -310,9 +318,21 @@ export const DateTimePicker = ({
 
 export function getDefaultEarliestStart (props?: { isReport?: boolean }) {
   const { accountTier } = getUserProfile()
-  const allowedDateRange = (accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1,'month')
-    : dateRangeForLast(props?.isReport ? 12 : 3, 'months')
-  )
+  const allowedDateRange =
+    (accountTier === AccountTier.GOLD ? dateRangeForLast(30, 'days')
+      : props?.isReport ? dateRangeForLast(12 , 'months') // Use 12 months to represent a full year, not fixed 365 days
+        : dateRangeForLast(90, 'days')
+    )
   return allowedDateRange[0].startOf('day')
+}
+
+/**
+ * Converts a number of months into an approximate number of days.
+ * Assumes 1 month = 30 days for simplicity.
+ *
+ * @param months - Number of months
+ * @returns Equivalent number of days
+ */
+const convertMonthsToDays = (months: number): number => {
+  return months * 30
 }

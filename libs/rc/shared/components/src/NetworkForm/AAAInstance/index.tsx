@@ -6,7 +6,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
 import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
@@ -40,7 +40,9 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
-  const isRadSecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE) && !isTemplate
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const primaryRadius = watchedRadius?.[AaaServerOrderEnum.PRIMARY]
   const secondaryRadius = watchedRadius?.[AaaServerOrderEnum.SECONDARY]
 
@@ -51,7 +53,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const isRadSecRadius = canFindRadSecItem(aaaListQuery?.data, form.getFieldValue(radiusIdName))
 
   const shouldExcludeRadSec = (): boolean => {
-    return isRadSecFeatureEnabled && excludeRadSec
+    return supportRadsec && excludeRadSec
   }
   const convertAaaListToDropdownItems = (
     targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
@@ -129,10 +131,10 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       <Form.Item
         label={<>
           {serverLabel}
-          {excludeRadSec && networkType === NetworkTypeEnum.DPSK &&
+          {excludeRadSec && networkType === NetworkTypeEnum.DPSK && type === 'authRadius' &&
           <Tooltip.Question
             title={
-              'For a DPSK network with WPA3/WPA2 mixed mode,'+
+              'For a DPSK network with WPA2/WPA3 mixed mode,'+
               ' only Cloudpath RADIUS server configured in non-proxy mode is supported.'
             }
             placement='bottom'
@@ -161,17 +163,16 @@ export const AAAInstance = (props: AAAInstanceProps) => {
               ]}
             />}
           />
-          <Tooltip>
-            <AAAPolicyModal updateInstance={(data) => {
-              setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-              form.setFieldValue(radiusIdName, data.id)
-              form.setFieldValue(type, data)
-            }}
-            aaaCount={aaaDropdownItems.length}
-            type={radiusType}
-            forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
-            />
-          </Tooltip></Space>
+          <AAAPolicyModal updateInstance={(data) => {
+            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+            form.setFieldValue(radiusIdName, data.id)
+            form.setFieldValue(type, data)
+          }}
+          aaaCount={aaaDropdownItems.length}
+          type={radiusType}
+          forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
+          />
+        </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
@@ -208,7 +209,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
                 value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
             />}
-          {isRadSecFeatureEnabled &&
+          {supportRadsec &&
             <Form.Item
               label={$t({ defaultMessage: 'RadSec' })}
               children={$t({ defaultMessage: '{tlsEnabled}' }, {

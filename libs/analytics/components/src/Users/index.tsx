@@ -16,6 +16,7 @@ import {
 import type { Settings }                      from '@acx-ui/analytics/utils'
 import { Loader, showToast, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { hasPermission }                      from '@acx-ui/user'
 import { getIntl }                            from '@acx-ui/utils'
 
 import { ImportSSOFileDrawer }    from './ImportSSOFileDrawer'
@@ -82,10 +83,14 @@ export const useUsers = () => {
   const [deleteInvitation, deleteInvitationResponse] = useDeleteInvitationMutation()
 
   const { names: { brand } } = useBrand360Config()
-  const usersQuery = useGetUsersQuery(brand)
+  const usersQuery = useGetUsersQuery(brand, {
+    skip: !hasPermission({ permission: 'READ_USERS' })
+  })
 
   const [visible, setVisible] = useState(false)
-  const settingsQuery = useGetTenantSettingsQuery()
+  const settingsQuery = useGetTenantSettingsQuery(undefined, {
+    skip: !hasPermission({ permission: 'READ_USERS' })
+  })
   const ssoConfig = getSSOsettings(settingsQuery.data)
   const isEditMode = typeof ssoConfig?.metadata === 'string'
 

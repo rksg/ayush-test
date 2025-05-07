@@ -23,6 +23,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/aaaServers',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'POST:/venues/{id}/aaaServers',
     newApi: true
   },
   updateAaaServer: {
@@ -54,6 +55,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switches/aggregationDetails',
     oldUrl: '/api/viewmodel/:tenantId/switch/grouped',
+    newApi: true
+  },
+  getSwitchMemberList: {
+    method: 'post',
+    url: '/venues/switches/members/query',
     newApi: true
   },
   getSwitchModelList: {
@@ -786,6 +792,116 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getPortProfilesListBySwitchId: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',
+    newApi: true
+  },
+  getPortDisableRecovery: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    newApi: true
+  },
+  updatePortDisableRecovery: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/portDisableRecoverySetting',
+    newApi: true
+  },
+  getLayer2Acls: {
+    method: 'post',
+    url: '/switchL2AclPolicies/query',
+    newApi: true
+  },
+  getLayer2AclById: {
+    method: 'get',
+    url: '/switchL2AclPolicies/:accessControlId',
+    newApi: true
+  },
+  getLayer2AclRules: {
+    method: 'post',
+    url: '/switchL2AclPolicies/l2AclPolicyRules/:accessControlId',
+    newApi: true
+  },
+  getLayer2AclOverview: {
+    method: 'post',
+    url: '/switchL2AclPolicies/:accessControlId/appliedSwitches/query',
+    newApi: true
+  },
+  getAccessControlCount: {
+    method: 'get',
+    url: '/switchAccessControlProfiles/totalAmounts',
+    newApi: true
+  },
+  addLayer2Acl: {
+    method: 'post',
+    url: '/switchL2AclPolicies',
+    opsApi: 'POST:/switchL2AclPolicies',
+    newApi: true
+  },
+  updateLayer2Acl: {
+    method: 'put',
+    url: '/switchL2AclPolicies/:l2AclId',
+    opsApi: 'PUT:/switchL2AclPolicies/{id}',
+    newApi: true
+  },
+  deleteLayer2Acl: {
+    method: 'delete',
+    url: '/switchL2AclPolicies/:l2AclId',
+    opsApi: 'DELETE:/switchL2AclPolicies/{id}',
+    newApi: true
+  },
+  getSwitchMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls/query',
+    newApi: true
+  },
+  addSwitchMacAcl: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls',
+    opsApi: 'POST:/venues/{id}/switches/{id}/switchL2Acls',
+    newApi: true
+  },
+  updateSwitchMacAcl: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls/:macAclId',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/switchL2Acls/{id}',
+    newApi: true
+  },
+  deleteSwitchMacAcl: {
+    method: 'delete',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls/:macAclId',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/switchL2Acls/{id}',
+    newApi: true
+  },
+  getSwitchStickyMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/stickyMacAcls/query',
+    newApi: true
+  },
+  getSwitchAccessControlSetById: {
+    method: 'get',
+    url: '/switchAccessControlProfiles/:accessControlId',
+    newApi: true
+  },
+  getSwitchAccessControlSet: {
+    method: 'post',
+    url: '/switchAccessControlProfiles/query',
+    newApi: true
+  },
+  addSwitchAccessControlSet: {
+    method: 'post',
+    url: '/switchAccessControlProfiles',
+    opsApi: 'POST:/switchAccessControlProfiles',
+    newApi: true
+  },
+  updateSwitchAccessControlSet: {
+    method: 'put',
+    url: '/switchAccessControlProfiles/:accessControlId',
+    opsApi: 'PUT:/switchAccessControlProfiles/{id}',
+    newApi: true
+  },
+  deleteSwitchAccessControlSet: {
+    method: 'delete',
+    url: '/switchAccessControlProfiles/:accessControlId',
+    opsApi: 'DELETE:/switchAccessControlProfiles/{id}',
     newApi: true
   }
 }

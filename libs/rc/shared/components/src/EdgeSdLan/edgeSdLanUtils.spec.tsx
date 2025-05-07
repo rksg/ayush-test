@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { EdgeSdLanFixtures, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import {
   render,
   renderHook,
@@ -12,10 +12,10 @@ import {
 import { mockMvSdLanFormData } from './__tests__/fixtures'
 import {
   edgeSdLanFormRequestPreProcess,
-  isGuestTunnelUtilized,
-  isSdLanGuestUtilizedOnDiffVenue,
+  isDmzTunnelUtilized,
+  isSdLanDmzUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   useGetNetworkTunnelInfo
 } from './edgeSdLanUtils'
 
@@ -108,58 +108,105 @@ describe('edgeSdLanFormRequestPreProcess', () => {
   })
 })
 
-describe('isGuestTunnelUtilized', () => {
+describe('isDmzTunnelUtilized', () => {
   const mockDcData = mockedMvSdLanDataList[1]
   const mockDmzData = mockedMvSdLanDataList[0]
 
   it('should return false when it is DC scenario', async () => {
-    const result = isGuestTunnelUtilized(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
+    const result = isDmzTunnelUtilized(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
     expect(result).toBe(false)
   })
 
   it('should return false when it is DMZ scenario and no guest forwared', async () => {
     const mockData = cloneDeep(mockDmzData)
     mockData.tunneledGuestWlans = []
-    const result = isGuestTunnelUtilized(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isDmzTunnelUtilized(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(false)
   })
 
   it('should return false when one of paramters is undefined', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData)
+    const result = isDmzTunnelUtilized(mockDmzData)
     expect(result).toBe(false)
-    const result2 = isGuestTunnelUtilized(mockDmzData, 'network_4')
+    const result2 = isDmzTunnelUtilized(mockDmzData, 'network_4')
     expect(result2).toBe(false)
-    const result3 = isGuestTunnelUtilized(mockDmzData, undefined, 'a307d7077410456f8f1a4fc41d861567')
+    const result3 = isDmzTunnelUtilized(mockDmzData, undefined, 'a307d7077410456f8f1a4fc41d861567')
     expect(result3).toBe(false)
   })
 
   it('should return false when no parameter given', async () => {
-    const result = isGuestTunnelUtilized()
+    const result = isDmzTunnelUtilized()
     expect(result).toBe(false)
   })
 
   it('should return false when target network venue is not guest forwared', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData, 'mock_network_1', 'mock_venue_1')
+    const result = isDmzTunnelUtilized(mockDmzData, 'mock_network_1', 'mock_venue_1')
     expect(result).toBe(false)
   })
 
   it('should return true when it is DMZ scenario', async () => {
-    const result = isGuestTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isDmzTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(true)
+  })
+
+  it('should return true when tunnel type is VXLAN_GPE', async () => {
+    const mockData = cloneDeep(mockDmzData)
+    mockData.tunneledGuestWlans = []
+    mockData.tunneledWlans = [{
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.VXLAN_GPE
+    }]
+    const result = isDmzTunnelUtilized(mockData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(true)
+  })
+
+  it('should return false when tunnel type is L2OGRE', async () => {
+    const mockL2greData = cloneDeep(mockDmzData)
+    mockL2greData.tunneledGuestWlans = []
+    const mockL2greNetwork = {
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.L2GRE
+    }
+    mockL2greData.tunneledWlans = [mockL2greNetwork]
+    const result = isDmzTunnelUtilized(mockL2greData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
+  })
+
+  it('should return false when tunnel type is CorePort', async () => {
+    const mockCorePortData = cloneDeep(mockDmzData)
+    mockCorePortData.tunneledGuestWlans = []
+    const mockCorePortNetwork = {
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Mocked-Venue-1',
+      networkId: 'network_5',
+      networkName: 'Mocked_network_5',
+      wlanId: '30',
+      forwardingTunnelType: TunnelTypeEnum.L2GRE
+    }
+    mockCorePortData.tunneledWlans = [mockCorePortNetwork]
+    const result = isDmzTunnelUtilized(mockCorePortData, 'network_5', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
   })
 })
 
-describe('isSdLanGuestUtilizedOnDiffVenue', () => {
+describe('isSdLanDmzUtilizedOnDiffVenue', () => {
   const mockDcData = mockedMvSdLanDataList[1]
   const mockDmzData = mockedMvSdLanDataList[0]
 
   it('should return false when DC case', async () => {
-    const result = isSdLanGuestUtilizedOnDiffVenue(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560', undefined)
     expect(result).toBe(false)
   })
 
   it('should return false when DMZ case but no guest forwarded on other venues', async () => {
-    const result = isSdLanGuestUtilizedOnDiffVenue(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567', undefined)
     expect(result).toBe(false)
   })
 
@@ -175,14 +222,40 @@ describe('isSdLanGuestUtilizedOnDiffVenue', () => {
     mockData.tunneledWlans?.push(mockNetwork)
     mockData.tunneledGuestWlans?.push(mockNetwork)
 
-    const result = isSdLanGuestUtilizedOnDiffVenue(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567', undefined)
+    expect(result).toBe(true)
+  })
+
+  it('should return false when tunnelType is not VXLAN_GPE', async () => {
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861567', TunnelTypeEnum.L2GRE)
+    expect(result).toBe(false)
+  })
+
+  it('should return false when tunnelType is VXLAN_GPE but no guest forwarded on other venues', async () => {
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567', TunnelTypeEnum.VXLAN_GPE)
+    expect(result).toBe(false)
+  })
+
+  it('should return true when tunnelType is VXLAN_GPE and has guest forwarded on other venues', async () => {
+    const mockData = cloneDeep(mockDmzData)
+    const mockNetwork = {
+      venueId: 'other_venue_1_id',
+      venueName: 'Mocked-Other-Venue-1',
+      networkId: 'network_4',
+      networkName: 'Mocked_network_4',
+      wlanId: '30'
+    }
+    mockData.isGuestTunnelEnabled = false
+    mockData.tunneledWlans?.push(mockNetwork)
+
+    const result = isSdLanDmzUtilizedOnDiffVenue(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567', TunnelTypeEnum.VXLAN_GPE)
     expect(result).toBe(true)
   })
 })
 
-describe('tansformSdLanScopedVenueMap', () => {
+describe('transformSdLanScopedVenueMap', () => {
   it('should correctly transform', async () => {
-    const result = tansformSdLanScopedVenueMap(mockedMvSdLanDataList)
+    const result = transformSdLanScopedVenueMap(mockedMvSdLanDataList)
     expect(result).toStrictEqual({
       a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0],
       a307d7077410456f8f1a4fc41d861560: mockedMvSdLanDataList[1],
@@ -191,7 +264,7 @@ describe('tansformSdLanScopedVenueMap', () => {
   })
 
   it('should return empty object when no data given', async () => {
-    const result = tansformSdLanScopedVenueMap()
+    const result = transformSdLanScopedVenueMap()
     expect(result).toStrictEqual({})
   })
 
@@ -199,7 +272,7 @@ describe('tansformSdLanScopedVenueMap', () => {
     const mockData = cloneDeep(mockedMvSdLanDataList)
     mockData[1].tunneledWlans = undefined
 
-    const result = tansformSdLanScopedVenueMap(mockData)
+    const result = transformSdLanScopedVenueMap(mockData)
     expect(result).toStrictEqual({
       a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0]
     })

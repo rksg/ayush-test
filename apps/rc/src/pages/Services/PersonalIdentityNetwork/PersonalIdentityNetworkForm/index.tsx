@@ -6,6 +6,8 @@ import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
+import { Features }                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                           from '@acx-ui/rc/components'
 import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
@@ -14,22 +16,19 @@ import {
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage,
-  EdgeClusterInfo,
-  DistributionSwitch,
-  AccessSwitch
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
-import { AccessSwitchForm }                         from './AccessSwitchForm'
-import { DistributionSwitchForm }                   from './DistributionSwitchForm'
-import { GeneralSettingsForm }                      from './GeneralSettingsForm'
-import { NetworkTopologyForm, NetworkTopologyType } from './NetworkTopologyForm'
-import { Prerequisite }                             from './Prerequisite'
-import { SmartEdgeForm }                            from './SmartEdgeForm'
-import { SummaryForm }                              from './SummaryForm'
-import { WirelessNetworkForm }                      from './WirelessNetworkForm'
+import { AccessSwitchForm }       from './AccessSwitchForm'
+import { DistributionSwitchForm } from './DistributionSwitchForm'
+import { GeneralSettingsForm }    from './GeneralSettingsForm'
+import { Prerequisite }           from './Prerequisite'
+import { SmartEdgeForm }          from './SmartEdgeForm'
+import { SummaryForm }            from './SummaryForm'
+import { WirelessNetworkForm }    from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -53,10 +52,6 @@ export const GeneralSettingsStep = {
   title: defineMessage({ defaultMessage: 'General Settings' }),
   content: <GeneralSettingsForm />
 }
-export const NetworkTopologyStep = {
-  title: defineMessage({ defaultMessage: 'Network Topology' }),
-  content: <NetworkTopologyForm />
-}
 export const SmartEdgeStep = {
   title: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
   content: <SmartEdgeForm />
@@ -79,6 +74,7 @@ export const SummaryStep = {
 }
 
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -92,11 +88,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
   // eslint-disable-next-line max-len
   const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    // skip when topology type is wireless
-    if (formData.networkTopologyType === NetworkTopologyType.Wireless) {
-      return Promise.resolve()
-    }
-
     if (formData.distributionSwitchInfos?.length > 0 && (
       formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
         as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
@@ -159,16 +150,15 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
     try {
       await validateEdgePinClusterConfig({
         payload: {
-          edgeClusterInfo: payload.edgeClusterInfo as EdgeClusterInfo
+          // eslint-disable-next-line max-len
+          edgeClusterInfo: payload.edgeClusterInfo as EdgeClusterInfo || payload.networkSegmentConfiguration
         }
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const errorRes = error as CatchErrorResponse
 
-      // expected error format
-      // eslint-disable-next-line max-len
-      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+      if (errorRes.data.errors.length > 0) {
         showActionModal({
           type: 'error',
           title: $t({ defaultMessage: 'Validation Error' }),
@@ -187,8 +177,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
   // eslint-disable-next-line max-len
   const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    const payload = getSubmitPayload(formData)
-
+    const payload = isL2GreEnabled ? getL2GreSubmitPayload(formData) : getSubmitPayload(formData)
     try {
       await doEdgeClusterValidation(payload)
       await doSwitchValidation(formData, payload, gotoStep, skipValidation)
@@ -252,13 +241,12 @@ export const afterSubmitMessage = (
   const { $t } = getIntl()
 
   const errorMsg = error.data.errors[0].message //TODO: for each errors
-  const webAuthVlanDNE = /\[WebAuth VLAN\]/.test(errorMsg)
   const forceOverwriteReboot = /\[forceOverwriteReboot\]/.test(errorMsg)
   const hasVXLAN = /VXLAN/i.test(errorMsg)
 
   const macRegexString = '([0-9a-fA-F][0-9a-fA-F]:){5}[0-9a-fA-F][0-9a-fA-F]'
   const macRegex = new RegExp(macRegexString, 'g')
-  const macGroupRegex = new RegExp('\\[('+macRegexString+',? ?){1,}\\]', 'g')
+  const macGroupRegex = new RegExp('('+macRegexString+',? ?){1,}', 'g')
 
   const switchIdList = errorMsg.match(macGroupRegex) as string[]
 
@@ -275,7 +263,7 @@ export const afterSubmitMessage = (
   if (forceOverwriteReboot && switchIdList.length > 0) {
     if (hasVXLAN) {
       message.push($t({ defaultMessage:
-        'Distribution Switch {switchName} already has VXLAN config.' },
+        'Distribution Switch {switchName} will overwrite its existing VXLAN configuration.' },
       { switchName: replaceMacWithName(switchIdList.shift()) }
       ))
     }
@@ -287,32 +275,13 @@ export const afterSubmitMessage = (
     }
 
     message.push($t({ defaultMessage: 'Click Yes to proceed, No to cancel.' }))
-  } else if (webAuthVlanDNE) {
+  } else {
     message.push(replaceMacWithName(errorMsg))
   }
   return message.map(m=><p>{m}</p>)
 }
 
-export const getStepsByTopologyType = (type: string) => {
-  const steps = [PrerequisiteStep, GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
-  switch (type) {
-    case NetworkTopologyType.Wireless:
-      steps.push(WirelessNetworkStep, SummaryStep)
-      break
-    case NetworkTopologyType.TwoTier:
-      steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
-      break
-    case NetworkTopologyType.ThreeTier:
-      steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
-      break
-  }
-  return steps
-}
-
 export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
-  // `networkTopologyType` have value only when PIN enhancement FF is enabled
-  const networkTopologyType = formData.networkTopologyType
-
   const payload = {
     id: formData.id,
     name: formData.name,
@@ -320,25 +289,33 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     edgeClusterInfo: {
       edgeClusterId: formData.edgeClusterId,
       segments: formData.segments,
-      devices: formData.devices,
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },
-    networkIds: [] as string[],
-    distributionSwitchInfos: [] as DistributionSwitch[],
-    accessSwitchInfos: [] as AccessSwitch[]
-  }
-
-  if (networkTopologyType !== NetworkTopologyType.Wireless) {
-    payload.distributionSwitchInfos = formData.distributionSwitchInfos?.map(ds => omit(
-      ds, ['accessSwitches', 'name']))
-
-    payload.accessSwitchInfos = formData.accessSwitchInfos?.map(as => omit(
+    networkIds: formData.networkIds,
+    distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
+      ds, ['accessSwitches', 'name'])),
+    accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
       as, ['name', 'familyId', 'firmwareVersion', 'model']))
   }
 
-  if (networkTopologyType !== NetworkTopologyType.TwoTier) {
-    payload.networkIds = formData.networkIds
+  return payload
+}
+
+const getL2GreSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
+  const payload = {
+    id: formData.id,
+    name: formData.name,
+    vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
+    networkSegmentConfiguration: {
+      segments: formData.segments,
+      dhcpInfoId: formData.dhcpId,
+      dhcpPoolId: formData.poolId
+    },
+    distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
+      ds, ['accessSwitches', 'name'])),
+    accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
+      as, ['name', 'familyId', 'firmwareVersion', 'model']))
   }
 
   return payload

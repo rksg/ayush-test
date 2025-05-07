@@ -4,12 +4,12 @@ import { useIntl }         from 'react-intl'
 import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
 
 import { messageMappings }       from '../messageMappings'
-import { usePermissionResult }   from '../NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum } from '../types'
+import { usePermissionResult }   from '../usePermissionResult'
 
 interface NetworkTunnelSwitchBtnProps {
   tunnelType: NetworkTunnelTypeEnum
-  onClick: (checked: boolean) => void
+  onClick: (checked: boolean) => Promise<void> | void
   venueSdLanInfo: EdgeMvSdLanViewData | undefined
   disabled?: boolean
   tooltip?: string
@@ -18,20 +18,39 @@ interface NetworkTunnelSwitchBtnProps {
 export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
   const { $t } = useIntl()
   const { tunnelType, onClick, venueSdLanInfo } = props
-  const hasPermission = usePermissionResult()
+  const {
+    hasPartialPermission,
+    hasEdgeSdLanPermission,
+    hasSoftGrePermission
+  } = usePermissionResult()
+
   // eslint-disable-next-line max-len
   const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
+  const hasPermission = (
+    tunnelType === NetworkTunnelTypeEnum.None && hasPartialPermission
+  ) || (
+    (tunnelType === NetworkTunnelTypeEnum.SdLan && hasEdgeSdLanPermission) ||
+    (tunnelType === NetworkTunnelTypeEnum.SoftGre && hasSoftGrePermission)
+  )
   // eslint-disable-next-line max-len
   const needDisabled = isTheLastSdLanWlan || tunnelType === NetworkTunnelTypeEnum.Pin || !hasPermission
   const tooltip = isTheLastSdLanWlan
     ? $t(messageMappings.disable_deactivate_last_network)
     : undefined
 
-  return<Tooltip title={props.tooltip || tooltip}>
+  const handleOnClick = async (val: boolean) => {
+    try {
+      await onClick(val)
+    } catch {
+      // no-op
+    }
+  }
+
+  return <Tooltip title={props.tooltip || tooltip}>
     <Switch
       checked={tunnelType !== NetworkTunnelTypeEnum.None}
       disabled={props.disabled || needDisabled}
-      onClick={onClick}
+      onClick={handleOnClick}
     />
   </Tooltip>
 }

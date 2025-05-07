@@ -9,7 +9,7 @@ import {
   isEmpty,
   uniq,
   isInteger
-}                from 'lodash'
+} from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'
@@ -1025,6 +1025,16 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   }
 }
 
+export function validateDuplicateName (currentItem: { id:string, name:string }, nameList: { id:string, name:string }[]) {
+  const { $t } = getIntl()
+  const index = nameList.filter(item => item.name === currentItem.name && item.id !== currentItem.id)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.nameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
 export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.value === aclName)
@@ -1049,6 +1059,15 @@ export function validateVlanExcludingReserved (vlanName: string){
   const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
   if (!vlanRegexp.test(vlanName)) {
     return Promise.reject($t(validationMessages.vlanInvalidExclReserved))
+  }
+  return Promise.resolve()
+}
+
+export const validateVlanRangeFormat = (value: string) => {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.invalidVlanRangeRegExp))
   }
   return Promise.resolve()
 }

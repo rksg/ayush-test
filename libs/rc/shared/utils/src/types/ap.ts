@@ -108,7 +108,9 @@ export interface NewAPModel {
   serialNumber: string
   name?: string
   apGroupId?: string
+  apGroupName?: string
   venueId?: string
+  venueName? : string
   tags?: string[]
   model?: string
   supportSecureBoot?: boolean
@@ -193,6 +195,10 @@ export interface NewAPModelExtended extends NewAPModel {
   networks?: {
     count?: number
   }
+  networksInfo?: {
+    count?: number
+    names?: string[]
+  }
   switchSerialNumber?: string
   switchId?: string
   switchName?: string
@@ -200,6 +206,8 @@ export interface NewAPModelExtended extends NewAPModel {
   rogueCategory?: { [key: string]: number }
   incompatible?: number
   compatibilityStatus?: string
+  children?: NewAPModel[]
+  deviceGroupName?: string
 }
 export interface NewCelluarInfo {
   activeSim: string,
@@ -489,6 +497,8 @@ export interface LanPort {
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
   softGreEnabled?: boolean,
+  ipsecProfileId?: string,
+  ipsecEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
   clientIsolationEnabled?: boolean,
@@ -544,6 +554,7 @@ export interface CapabilitiesApModel {
   supportSmartMonitor?: boolean,
   supportMesh5GOnly6GOnly?: boolean,
   supportSoftGre?: boolean,
+  supportIoT?: boolean,
   usbPowerEnable?: boolean
 }
 
@@ -605,6 +616,11 @@ export interface ApUsbSettings {
 
 export interface ApBandModeSettings {
   bandMode: BandModeEnum,
+  useVenueSettings: boolean
+}
+
+export type ApExternalAntennaSettings = {
+  externalAntenna: ExternalAntenna,
   useVenueSettings: boolean
 }
 
@@ -749,6 +765,7 @@ export interface NewAPExtendedGrouped extends NewAPModelExtended {
   id?: number | string
   deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
   deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
+  networksInfo?: { count: number, names: string[] } | undefined
 }
 export type ImportErrorRes = {
   errors: {
@@ -1035,7 +1052,9 @@ export enum SoftGreDuplicationChangeState {
   TurnOffLanPort,
   ResetToDefault,
   FindTheOnlyVoter,
-  ReloadOptionList
+  ReloadOptionList,
+  BoundIpSec,
+  UnboundIpSec
 }
 
 export interface SoftGreDuplicationChangeDispatcher {
@@ -1097,4 +1116,23 @@ export interface VenueLanPortSettings {
 export interface APLanPortSettings extends VenueLanPortSettings {
   overwriteUntagId?: number
   overwriteVlanMembers?: string
+}
+
+export enum IpsecOptionChangeState {
+  Init,
+  OnChange,
+  ReloadOptionList,
+  AddSoftGreOption,
+  ResetToDefault,
+  OnSave
+}
+
+export interface IpsecOptionChangeDispatcher {
+  state: IpsecOptionChangeState
+  index?: number,
+  portId?: string,
+  apModel?: string
+  serialNumber?: string
+  newOption?: DefaultOptionType,
+  voters?: Voter[]
 }

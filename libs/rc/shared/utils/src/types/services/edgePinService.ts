@@ -9,6 +9,7 @@ export interface PersonalIdentityNetworks {
   tunneledWlans: EdgePinTunneledWlan[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
+  networkSegmentConfiguration: Omit<EdgeClusterInfo, 'edgeClusterId'>
 }
 
 export interface PersonalIdentityNetworksViewData {
@@ -41,7 +42,6 @@ export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetwork
   poolName: string
   tags: string[]
   segments: number
-  devices: number
   tunnelProfileName: string
   networkNames: string[]
   originalAccessSwitchInfos: AccessSwitch[]
@@ -58,7 +58,6 @@ export interface EdgePinTunneledWlan {
 export interface EdgeClusterInfo {
   edgeClusterId: string
   segments: number
-  devices: number
   dhcpInfoId: string
   dhcpPoolId: string
 }

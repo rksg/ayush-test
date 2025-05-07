@@ -4,10 +4,11 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { BarChartData, calculateGranularity, getBarChartSeriesData }                from '@acx-ui/analytics/utils'
 import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { formatter }                                                                from '@acx-ui/formatter'
 import { useGetEdgesTopTrafficQuery }                                               from '@acx-ui/rc/services'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { FilterNameNode }                                                           from '@acx-ui/utils'
+import { FilterNameNode, useTrackLoadTime, widgetsMapping }                         from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByTrafficWidget as TopEdgesByTraffic }
@@ -47,11 +48,13 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const basePath = useTenantLink('/devices/edge/')
   const navigate = useNavigate()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const queryResults = useGetEdgesTopTrafficQuery({
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'),
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate),
       venueIds: filters?.filter?.networkNodes?.flatMap(
         item => item.map(v => (v as FilterNameNode).name)
       )
@@ -74,6 +77,12 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
     }
   })
   const { data } = queryResults
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.TOP_5_RUCKUS_EDGES_BY_TRAFFIC,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults]}>

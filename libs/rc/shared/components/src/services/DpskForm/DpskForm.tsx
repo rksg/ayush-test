@@ -35,12 +35,16 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  useServicePreviousPath
+  useServicePreviousPath,
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { useEnforcedStatus } from '../../configTemplates'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
@@ -60,7 +64,8 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
@@ -94,6 +99,8 @@ export function DpskForm (props: DpskFormProps) {
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.DPSK)
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -120,6 +127,7 @@ export function DpskForm (props: DpskFormProps) {
   const saveData = async (data: CreateDpskFormFields) => {
     const dpskSaveData = transferFormFieldsToSaveData(data)
     let result: DpskMutationResult
+    let entityId: string | undefined
 
     try {
       if (editMode) {
@@ -128,6 +136,8 @@ export function DpskForm (props: DpskFormProps) {
           payload: _.omit(dpskSaveData, 'id'),
           enableRbac
         }).unwrap()
+
+        entityId = params.serviceId
       } else {
         if (isIdentityGroupRequired) {
           result = await createDpskWithIdentityGroup({
@@ -141,6 +151,12 @@ export function DpskForm (props: DpskFormProps) {
             enableRbac
           }).unwrap()
         }
+
+        entityId = result.id
+      }
+
+      if (entityId) {
+        await saveEnforcementConfig(entityId)
       }
 
       if (modalMode) {
@@ -165,6 +181,7 @@ export function DpskForm (props: DpskFormProps) {
           onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}
           editMode={editMode}
+          {...getEnforcedStepsFormProps('StepsFormLegacy', dataFromServer?.isEnforced)}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'
@@ -172,7 +189,11 @@ export function DpskForm (props: DpskFormProps) {
             initialValues={initialValues}
             preserve={modalMode ? false : true}
           >
-            <DpskSettingsForm modalMode={modalMode} editMode={editMode} />
+            <DpskSettingsForm
+              modalMode={modalMode}
+              editMode={editMode}
+              isEnforced={dataFromServer?.isEnforced}
+            />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
       </Loader>

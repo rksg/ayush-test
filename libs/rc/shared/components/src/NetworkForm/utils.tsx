@@ -1,96 +1,102 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, max-len */
 import { useEffect, useMemo, useState } from 'react'
 
-import { FormInstance }            from 'antd'
-import _, { cloneDeep, findIndex } from 'lodash'
-import { Params }                  from 'react-router-dom'
+import { FormInstance } from 'antd'
+import _                from 'lodash'
+import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   ActionItem,
-  comparePayload,
   ComparisonObjectType,
   UpdateActionItem,
+  WifiActionMapType,
+  comparePayload,
+  useActivateAccessControlProfileOnWifiNetworkMutation,
+  useActivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useActivateApplicationPolicyOnWifiNetworkMutation,
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useActivateDeviceOnWifiNetworkMutation,
+  useActivateDeviceTemplateOnWifiNetworkMutation,
+  useActivateIpsecMutation,
   useActivateL2AclOnWifiNetworkMutation,
-  useDeactivateL2AclOnWifiNetworkMutation,
+  useActivateL2AclTemplateOnWifiNetworkMutation,
+  useActivateL3AclOnWifiNetworkMutation,
+  useActivateL3AclTemplateOnWifiNetworkMutation,
   useActivateRadiusServerMutation,
+  useActivateRadiusServerTemplateMutation,
+  useActivateSoftGreMutation,
   useActivateVlanPoolMutation,
-  useBindClientIsolationMutation,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
   useActivateWifiCallingServiceMutation,
+  useActivateWifiCallingServiceTemplateMutation,
+  useBindClientIsolationMutation,
+  useDeactivateAccessControlProfileOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useDeactivateDeviceOnWifiNetworkMutation,
+  useDeactivateDeviceTemplateOnWifiNetworkMutation,
+  useDeactivateIpsecMutation,
+  useDeactivateL2AclOnWifiNetworkMutation,
+  useDeactivateL2AclTemplateOnWifiNetworkMutation,
+  useDeactivateL3AclOnWifiNetworkMutation,
+  useDeactivateL3AclTemplateOnWifiNetworkMutation,
   useDeactivateRadiusServerMutation,
+  useDeactivateRadiusServerTemplateMutation,
   useDeactivateVlanPoolMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useDeactivateWifiCallingServiceMutation,
+  useDeactivateWifiCallingServiceTemplateMutation,
+  useDectivateSoftGreMutation,
+  useGetAAAPolicyTemplateListQuery,
   useGetAAAPolicyViewModelListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceTemplateListQuery,
   useGetRadiusServerSettingsQuery,
+  useGetRadiusServerTemplateSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useActivateVlanPoolTemplateOnWifiNetworkMutation,
-  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation,
-  WifiActionMapType,
-  useActivateL3AclOnWifiNetworkMutation,
-  useDeactivateL3AclOnWifiNetworkMutation,
-  useActivateDeviceOnWifiNetworkMutation,
-  useDeactivateDeviceOnWifiNetworkMutation,
-  useActivateApplicationPolicyOnWifiNetworkMutation,
-  useDeactivateApplicationPolicyOnWifiNetworkMutation,
-  useActivateAccessControlProfileOnWifiNetworkMutation,
-  useDeactivateAccessControlProfileOnWifiNetworkMutation,
-  useDeactivateRadiusServerTemplateMutation,
-  useActivateRadiusServerTemplateMutation,
-  useUpdateRadiusServerTemplateSettingsMutation,
-  useGetRadiusServerTemplateSettingsQuery,
-  useGetAAAPolicyTemplateListQuery,
-  useActivateWifiCallingServiceTemplateMutation,
-  useDeactivateWifiCallingServiceTemplateMutation,
-  useGetEnhancedWifiCallingServiceTemplateListQuery,
-  useActivateL2AclTemplateOnWifiNetworkMutation,
-  useDeactivateL2AclTemplateOnWifiNetworkMutation,
-  useActivateL3AclTemplateOnWifiNetworkMutation,
-  useDeactivateL3AclTemplateOnWifiNetworkMutation,
-  useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation,
-  useActivateAccessControlProfileTemplateOnWifiNetworkMutation,
-  useDeactivateDeviceTemplateOnWifiNetworkMutation,
-  useActivateDeviceTemplateOnWifiNetworkMutation,
-  useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useUpdateRadiusServerTemplateSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
-  GuestNetworkTypeEnum,
-  NetworkSaveData,
-  NetworkTypeEnum,
-  DpskWlanAdvancedCustomization,
-  TunnelTypeEnum,
-  TunnelProfileViewData,
-  useConfigTemplate,
+  CommonResult,
   ConfigTemplateType,
+  ConfigTemplateUrlsInfo,
+  DpskWlanAdvancedCustomization,
+  GuestNetworkTypeEnum,
+  NetworkRadiusSettings,
+  NetworkSaveData,
+  NetworkSegmentTypeEnum,
+  NetworkTunnelIpsecAction,
+  NetworkTunnelSoftGreAction,
+  NetworkTypeEnum,
+  NetworkVenue,
+  TunnelProfileViewData,
+  VlanPool,
+  WifiRbacUrlsInfo,
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
-  CommonResult,
-  VlanPool,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  NetworkVenue,
-  useConfigTemplateQueryFnSwitcher,
-  NetworkRadiusSettings,
-  EdgeMvSdLanViewData,
-  NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }  from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
-import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
-import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
-import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
-import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                                 from '../useEdgeActions'
+import { useIsConfigTemplateEnabledByType } from '../configTemplates'
+import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useIsEdgeReady }                   from '../useEdgeActions'
 
-import type { NetworkTunnelActionModalProps } from '../NetworkTunnelActionModal'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -206,7 +212,7 @@ export const useNetworkVxLanTunnelProfileInfo =
       { skip: !isEdgeEnabled || !data }
     )
 
-    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
+    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
       && item.personalIdentityNetworkIds.length > 0)
     const enableTunnel = !_.isEmpty(tunnelProfileData?.data)
     const enableVxLan = !_.isEmpty(vxLanTunnels)
@@ -870,24 +876,6 @@ export const getDefaultMloOptions = (wifi7Mlo3LinkFlag: boolean) => ({
   enable6G: wifi7Mlo3LinkFlag ? true : false
 })
 
-export const useUpdateEdgeSdLanActivations = () => {
-  const { toggleNetwork } = useEdgeMvSdLanActions()
-
-  // eslint-disable-next-line max-len
-  const updateEdgeSdLanActivations = async (networkId: string, updates: NetworkTunnelSdLanAction[], activatedVenues: NetworkVenue[]) => {
-    const actions = updates.filter(item => {
-      return _.find(activatedVenues, { venueId: item.venueId })
-    }).map((actInfo) => {
-      // eslint-disable-next-line max-len
-      return toggleNetwork(actInfo.serviceId, actInfo.venueId, networkId, actInfo.enabled, actInfo.enabled && actInfo.guestEnabled)
-    })
-
-    return await Promise.all(actions)
-  }
-
-  return updateEdgeSdLanActivations
-}
-
 export const useUpdateSoftGreActivations = () => {
   const [ activateSoftGre ] = useActivateSoftGreMutation()
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
@@ -913,65 +901,63 @@ export const useUpdateSoftGreActivations = () => {
   return updateSoftGreActivations
 }
 
-export const getNetworkTunnelSdLanUpdateData = (
-  modalFormValues: NetworkTunnelActionForm,
-  sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
-  networkInfo: NetworkTunnelActionModalProps['network'],
-  venueSdLanInfo: EdgeMvSdLanViewData
-) => {
-  // networkId is undefined in Add mode.
-  const networkId = networkInfo?.id ?? TMP_NETWORK_ID
-  const networkVenueId = networkInfo?.venueId
-
-  const formTunnelType = modalFormValues.tunnelType
-  const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
-  const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
-
-  const tunnelTypeInitVal = getNetworkTunnelType(networkInfo, [], venueSdLanInfo)
-  const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
-  let isNeedUpdate: boolean = false
-
-  // activate/deactivate SDLAN tunneling
-  if (formTunnelType !== tunnelTypeInitVal) {
-    // activate/deactivate network
-    isNeedUpdate = true
-  } else {
-  // tunnelType still SDLAN
-    if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
-      const isGuestTunnelEnabledInitState = !!venueSdLanInfo?.isGuestTunnelEnabled
-      && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
-        wlan.networkId === networkId && wlan.venueId === networkVenueId))
-
-      // check if tunnel guest changed
-      if(isGuestTunnelEnabledInitState !== sdLanTunnelGuest) {
-
-        // activate/deactivate network
-        isNeedUpdate = true
-      }
-    }
-  }
-
-  if (!isNeedUpdate)
-    return
-
-  const updateContent = cloneDeep(sdLanAssociationUpdates as NetworkTunnelSdLanAction[]) ?? []
+export const useUpdateIpsecActivations = () => {
+  const [ activateIpsec ] = useActivateIpsecMutation()
+  const [ deactivateIpsec ] = useDeactivateIpsecMutation()
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
-  const existDataIdx = findIndex(updateContent, { serviceId: venueSdLanInfo?.id, venueId: networkVenueId })
+  const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
+        return deactivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
+        return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      } else if (action.softGreProfileId && action.enableIpsec === false) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.softGreProfileId } })
+      }
+      return Promise.resolve()
+    })
 
-  if (existDataIdx !== -1) {
-    updateContent[existDataIdx].guestEnabled = isFwdGuest
-    updateContent[existDataIdx].enabled = sdLanTunneled
-  } else {
-    updateContent.push({
-      serviceId: venueSdLanInfo?.id!,
-      venueId: networkVenueId,
-      guestEnabled: isFwdGuest,
-      networkId: networkId,
-      enabled: sdLanTunneled,
-      venueSdLanInfo
-    } as NetworkTunnelSdLanAction)
+    return await Promise.all(actions)
   }
 
-  return updateContent
+  return updateIpsecActivations
+}
+
+export const hasControlnetworkVenuePermission = (isTemplate: boolean) => {
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
+  const { rbacOpsApiEnabled } = getUserProfile()
+
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasActivatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasActivatePermission)
+
+  return {
+    addNetworkVenueOpsAPi,
+    updateNetworkVenueOpsAPi,
+    deleteNetworkVenueOpsAPi,
+    hasActivateNetworkVenuePermission,
+    hasUpdateNetworkVenuePermission
+  }
 }

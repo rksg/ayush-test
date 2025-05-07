@@ -2,13 +2,16 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                         from '@acx-ui/components'
-import { Features, useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Tabs }                                            from '@acx-ui/components'
+import { Features, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
   useConfigTemplate,
-  type LocationExtended
+  WifiRbacUrlsInfo,
+  type LocationExtended,
+  PropertyUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -21,7 +24,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles
+  hasRoles,
+  isCoreTier
 }             from '@acx-ui/user'
 import { getOpsApi } from '@acx-ui/utils'
 
@@ -34,10 +38,12 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
   const { editContextData, setEditContextData } = venueEditTabContext
+  const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const enablePropertyManagement = usePropertyManagementEnabled()
+
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -56,17 +62,28 @@ function VenueEditTabs () {
   const unblockRef = useRef<Function>()
 
   useEffect(() => {
+    if (hasEnforcedFieldsFromContext() && editContextData.isDirty) {
+      unblockRef.current?.()
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
+      return
+    }
+
     if (editContextData.isDirty) {
       unblockRef.current?.()
       unblockRef.current = blockNavigator.block((tx: Transition) => {
         if (tx.location.hash) {
           return
         }
+
         // do not trigger modal twice
         setEditContextData({
           ...editContextData,
           isDirty: false
         })
+
         showUnsavedModal({
           ...venueEditTabContext,
           callback: tx.retry
@@ -93,7 +110,10 @@ function VenueEditTabs () {
           key='details' />
       }
       {
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) &&
         <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       }
       {hasPermission({
@@ -105,7 +125,7 @@ function VenueEditTabs () {
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
         />
       }
-      {enablePropertyManagement &&
+      { enablePropertyManagement &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
           key='property'
@@ -117,9 +137,18 @@ function VenueEditTabs () {
 export default VenueEditTabs
 
 export function usePropertyManagementEnabled () {
+  const { rbacOpsApiEnabled } = getUserProfile()
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
-  const hasPropertyManagementPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+  const hasPropertyManagementPermission =
+    rbacOpsApiEnabled
+      ? hasAllowedOperations([
+        getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+        getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
+      ])
+      : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission
+  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission && !isCore
 }

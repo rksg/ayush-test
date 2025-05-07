@@ -23,7 +23,7 @@ import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
 import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
-import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, RWGStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, EnforceableFields, RWGStatusEnum, SwitchStatusEnum } from './index'
 
 
 
@@ -260,7 +260,7 @@ export interface VenueApModelBandModeSettings {
 	bandMode: BandModeEnum
 }
 
-export type VeuneApAntennaTypeSettings = {
+export type VenueApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum
 }
@@ -307,7 +307,7 @@ enum DhcpModeEnum {
   DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
 }
 
-export interface VenueExtended {
+export interface VenueExtended extends EnforceableFields {
   name: string
   description?: string
   notes?: string
@@ -330,7 +330,8 @@ export interface VenueExtended {
   id?: string
   country: string
   countryCode?: string
-  version?: string
+  version?: string,
+  tags?: string[]
 }
 
 export interface VenueSettings {
@@ -780,6 +781,17 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export enum IPModeEnum {
+  IPv4 = 'IPV4',
+  IPv6 = 'IPV6',
+  Dual = 'IPV4_IPV6',
+  NONE = 'NONE'
+}
+
+export interface VenueApIpMode {
+	mode: IPModeEnum
 }
 
 export interface VenueApRebootTimeout {

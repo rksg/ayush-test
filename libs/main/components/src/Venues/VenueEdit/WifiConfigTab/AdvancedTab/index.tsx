@@ -2,10 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }  from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
+  ConfigTemplateType,
   redirectPreviousPage,
   useConfigTemplate,
   VenueConfigTemplateUrlsInfo,
@@ -20,6 +21,7 @@ import { useVenueConfigTemplateOpsApiSwitcher }      from '../../../venueConfigT
 
 import { AccessPointLED }   from './AccessPointLED'
 import { AccessPointUSB }   from './AccessPointUSB'
+import { ApIpMode }         from './ApIpMode'
 import { ApManagementVlan } from './ApManagementVlan'
 import { BssColoring }      from './BssColoring'
 import { RebootTimeout }    from './RebootTimeout'
@@ -35,7 +37,8 @@ export interface AdvanceSettingContext {
   updateAccessPointUSB?: (() => void),
   updateBssColoring?: (() => void),
   updateApManagementVlan?: (() => void),
-  updateRebootTimeout?: (() => void)
+  updateRebootTimeout?: (() => void),
+  updateApIpMode?: (() => void)
 }
 
 export function AdvancedTab () {
@@ -46,6 +49,8 @@ export function AdvancedTab () {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const bssColoringOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueBssColoring,
@@ -62,13 +67,15 @@ export function AdvancedTab () {
     isAllowEditVenueUsb,
     isAllowEditVenueBssColoring,
     isAllowEditVenueMgmtVlan,
-    isAllowEditRebootTimeout
+    isAllowEditRebootTimeout,
+    isAllowEditApIpMode
   ] = [
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLedOn)]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueApUsbStatus)]),
     hasAllowedOperations([bssColoringOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueApManagementVlan)]),
-    hasAllowedOperations([rebootTimeoutOpsApi])
+    hasAllowedOperations([rebootTimeoutOpsApi]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueApIpMode)])
   ]
 
   const {
@@ -120,7 +127,15 @@ export function AdvancedTab () {
         <RebootTimeout isAllowEdit={isAllowEditRebootTimeout} />,
         'apAutoRebootOnGwTimeout'
       )
-    ] : [])
+    ] : []),
+    ...((isApIpModeFFEnabled && !isTemplate) ? [
+      createAnchorSectionItem(
+        $t({ defaultMessage: 'AP IP Mode' }),
+        'ap-ip-mode',
+        <ApIpMode isAllowEdit={isAllowEditApIpMode} />,
+        'apIpMode'
+      )
+    ]: [])
   ]
 
 
@@ -132,6 +147,7 @@ export function AdvancedTab () {
       await editAdvancedContextData?.updateBssColoring?.()
       await editAdvancedContextData?.updateApManagementVlan?.()
       await editAdvancedContextData?.updateRebootTimeout?.()
+      await editAdvancedContextData?.updateApIpMode?.()
 
       setEditContextData({
         ...editContextData,
@@ -147,6 +163,7 @@ export function AdvancedTab () {
         delete newData.updateBssColoring
         delete newData.updateApManagementVlan
         delete newData.updateRebootTimeout
+        delete newData.updateApIpMode
         setEditAdvancedContextData(newData)
       }
 
@@ -162,6 +179,7 @@ export function AdvancedTab () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />

@@ -25,7 +25,7 @@ export class NetworkVenue {
   apGroups?: NetworkApGroup[]
 
   // *Deprecated* Legacy all ap groups radio type configuration (might be removed in later release)
-  allApGroupsRadio: RadioEnum
+  allApGroupsRadio?: RadioEnum
 
   scheduler?: NetworkVenueScheduler
 
@@ -45,6 +45,8 @@ export class NetworkVenue {
   vlanPoolName?: string
 
   vlanMembers?: string[]
+
+  oweTransWlanId?: number
 
   constructor () {
     this.dual5gEnabled = true

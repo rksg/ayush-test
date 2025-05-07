@@ -17,6 +17,10 @@ export const TooltipGlobalStyle = createGlobalStyle`
       > :last-child {
         margin-bottom: 0;
       }
+
+      .ant-typography {
+        color: inherit;
+      }
     }
 
     ul {

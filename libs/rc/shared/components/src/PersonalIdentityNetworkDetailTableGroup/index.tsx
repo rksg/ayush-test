@@ -2,29 +2,32 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs }                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { useApListQuery, useGetEdgePinByIdQuery }                     from '@acx-ui/rc/services'
-import { Persona, TableQuery, transformDisplayNumber, useTableQuery } from '@acx-ui/rc/utils'
+import { useIdentityListQuery }                                                      from '@acx-ui/cloudpath/components'
+import { Loader, Tabs }                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { PersonalIdentityNetworkApiVersion, useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
+import { Persona, TableQuery, transformDisplayNumber, useTableQuery }                from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery } from '../usePersonaListQuery'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { AccessSwitchTable, AccessSwitchTableDataType } from './AccessSwitchTable'
 import { ApsTable, defaultApPayload }                   from './ApsTable'
 import { AssignedSegmentsTable }                        from './AssignedSegmentsTable'
 import { DistSwitchesTable }                            from './DistSwitchesTable'
 
-interface PersonalIdentitNetworkDetailTableGroupProps {
+interface PersonalIdentityNetworkDetailTableGroupProps {
   pinId: string
 }
 
 export const PersonalIdentityNetworkDetailTableGroup = (
-  props: PersonalIdentitNetworkDetailTableGroupProps
+  props: PersonalIdentityNetworkDetailTableGroupProps
 ) => {
 
   const { pinId } = props
   const { $t } = useIntl()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
@@ -32,7 +35,8 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     data: pinData,
     isLoading: isPinDataLoading
   } = useGetEdgePinByIdQuery({
-    params: { serviceId: pinId }
+    params: { serviceId: pinId },
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
   })
 
   const apListTableQuery = useTableQuery({
@@ -44,7 +48,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     option: { skip: !isApPayloadReady },
     enableRbac: isWifiRbacEnabled
   })
-  const personaListTableQuery = usePersonaListQuery({
+  const personaListTableQuery = useIdentityListQuery({
     personaGroupId: pinData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 

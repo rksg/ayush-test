@@ -2,55 +2,32 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { defaultSort, overlapsRollup, sortProp } from '@acx-ui/analytics/utils'
-import {  Card, Loader, Table,
-  TableProps, NoGranularityText,
+import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
+import {  TableProps,
   showToast,
   Tooltip } from '@acx-ui/components'
 import { get }          from '@acx-ui/config'
 import { CopyOutlined } from '@acx-ui/icons-new'
 import { TenantLink }   from '@acx-ui/react-router-dom'
 
+import { ImpactedSwitchesTable } from '../ImpactedSwitchesTable'
 import {
-  ImpactedSwitchPortRow,
-  useImpactedSwitchDDoSQuery
-} from './services'
+  ImpactedSwitchPortRow
+} from '../ImpactedSwitchesTable/services'
 
 import type { ChartProps } from '../types'
 
 export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
-  const { id } = incident
-  const druidRolledup = overlapsRollup(incident.endTime)
-
-  const response = useImpactedSwitchDDoSQuery({ id },
-    { skip: druidRolledup })
-
-  return <Loader states={[response]}>
-    <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
-      {druidRolledup
-        ? <NoGranularityText />
-        : <ImpactedSwitchTable data={response.data!} />
-      }
-    </Card>
-  </Loader>
-}
-
-
-function ImpactedSwitchTable (props: {
-  data: ImpactedSwitchPortRow[]
-}) {
-  const { $t } = useIntl()
-  const rows = props.data
   const isMLISA = get('IS_MLISA_SA')
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
-    render: (_, { mac, name },__,highlightFn) =>
+    render: (_, { mac, name, serial },__,highlightFn) =>
       <TenantLink
-        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
           ? 'reports': 'overview'}`
         }>
         {highlightFn(name)}
@@ -113,11 +90,10 @@ function ImpactedSwitchTable (props: {
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ],[])
-
-  return <Table
-    rowKey='mac'
-    columns={columns}
-    dataSource={rows}
-    pagination={{ defaultPageSize: 5, pageSize: 5 }}
-  />
+  return (
+    <ImpactedSwitchesTable
+      incident={incident}
+      columns={columns}
+    />
+  )
 }

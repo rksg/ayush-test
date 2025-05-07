@@ -2,7 +2,59 @@
 
 exports[`Topology AP Card should render correctly 1`] = `
 <DocumentFragment>
-  .c0 {
+  .c4 {
+  padding: calc(var(--acx-descriptions-space) / 2) 0;
+}
+
+.c4 .ant-descriptions-row:last-child .ant-descriptions-item {
+  padding-bottom: 0;
+}
+
+.c4 .ant-descriptions-item {
+  padding: 0;
+  padding-bottom: var(--acx-descriptions-space);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-label,
+.c4 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+  width: 50%;
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: unset;
+}
+
+.c5 {
+  width: 100%;
+}
+
+.c0 {
   height: 100%;
   width: 100%;
 }
@@ -75,58 +127,6 @@ exports[`Topology AP Card should render correctly 1`] = `
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.c4 {
-  padding: calc(var(--acx-descriptions-space) / 2) 0;
-}
-
-.c4 .ant-descriptions-row:last-child .ant-descriptions-item {
-  padding-bottom: 0;
-}
-
-.c4 .ant-descriptions-item {
-  padding: 0;
-  padding-bottom: var(--acx-descriptions-space);
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-label,
-.c4 .ant-descriptions-item .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-label {
-  color: var(--acx-neutrals-60);
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-label::after {
-  top: unset;
-  bottom: 0;
-  margin: 0 0.25em 0 0;
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-content {
-  color: var(--acx-primary-black);
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-container {
-  -webkit-align-items: baseline;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
-  align-items: baseline;
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
-  width: 50%;
-}
-
-.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  display: unset;
-}
-
-.c5 {
-  width: 100%;
 }
 
 h1.c9.ant-typography {

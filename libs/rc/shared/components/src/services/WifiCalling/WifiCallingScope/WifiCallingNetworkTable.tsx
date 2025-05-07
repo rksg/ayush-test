@@ -14,10 +14,12 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
+  ConfigTemplateType,
+  Network, NetworkTypeEnum, networkTypes, ServicesConfigTemplateUrlsInfo,
+  useActivativationPermission, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery,
   WifiCallingActionPayload,
-  WifiCallingActionTypes, WifiNetwork
+  WifiCallingActionTypes, WifiCallingUrls, WifiNetwork
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -26,10 +28,7 @@ import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const defaultPayload = {
   searchString: '',
-  fields: [
-    'name', 'nwSubType', 'venues', 'id', 'venueApGroups',
-    'isEnforced', 'isManagedByTemplate'
-  ]
+  fields: ['name', 'nwSubType', 'venues', 'id', 'venueApGroups', 'isEnforced']
 }
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
@@ -42,13 +41,24 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.NETWORK)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
     skip: !useParams().hasOwnProperty('serviceId'),
     enableRbac: enableServicePolicyRbac
+  })
+
+  const {
+    activateOpsApi,
+    deactivateOpsApi,
+    hasFullActivationPermission
+  } = useActivativationPermission({
+    activateApiInfo: WifiCallingUrls.activateWifiCalling,
+    activateTemplateApiInfo: ServicesConfigTemplateUrlsInfo.activateWifiCalling,
+    deactivateApiInfo: WifiCallingUrls.deactivateWifiCalling,
+    deactivateTemplateApiInfo: ServicesConfigTemplateUrlsInfo.deactivateWifiCalling
   })
 
   const basicColumns: TableProps<Network>['columns'] = [
@@ -91,7 +101,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
           placement='bottom'>
           <Switch
             checked={state.networkIds.includes(row.id)}
-            disabled={isEnforcedByTemplate}
+            disabled={isEnforcedByTemplate || !hasFullActivationPermission}
             onClick={(_, e) => {
               e.stopPropagation()
               state.networkIds.includes(row.id)
@@ -152,6 +162,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    rbacOpsIds: [activateOpsApi],
     disabled: (selectedRows: Network[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: Network[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: Network[], clearSelection: () => void) => {
@@ -160,6 +171,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    rbacOpsIds: [deactivateOpsApi],
     disabled: (selectedRows: Network[]) => hasEnforcedItem(selectedRows),
     tooltip: (selectedRows: Network[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: Network[], clearSelection: () => void) => {
@@ -168,6 +180,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     }
   }]
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <Table
       columns={basicColumns}
@@ -175,8 +189,10 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      rowActions={allowedRowActions}
+      rowSelection={hasAccess({
+        rbacOpsIds: [activateOpsApi, deactivateOpsApi]
+      }) && { type: 'checkbox' }}
     />
   )
 }

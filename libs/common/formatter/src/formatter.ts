@@ -23,7 +23,7 @@ const networkSpeed = [
   ' Zbps',
   ' Ybps'
 ]
-const txpowerMapping = {
+export const txpowerMapping = {
   _FULL: 'Full',
   _1DB: '-1dB',
   _2DB: '-2dB',

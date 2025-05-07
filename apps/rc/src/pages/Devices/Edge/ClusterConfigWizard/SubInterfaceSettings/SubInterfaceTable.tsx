@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { showActionModal, Table, TableProps }                   from '@acx-ui/components'
-import { EdgePortInfo, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
+import { convertEdgeSubInterfaceToApiPayload, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
 import { EdgeScopes }                                           from '@acx-ui/types'
 import { filterByAccess, hasPermission }                        from '@acx-ui/user'
 
@@ -149,13 +149,15 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }
 
   const handleAdd = (data: SubInterface) => {
-    onChange?.([...value, { ...data, interfaceName: `${currentInterfaceName}.${data.vlan}` }])
+    const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
+    onChange?.([...value, { ...savedData, interfaceName: `${currentInterfaceName}.${data.vlan}` }])
   }
 
   const handleUpdate = (data: SubInterface) => {
+    const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
     const updatedData = value?.map((item: SubInterface) =>
       item.id === data.id ?
-        { ...data, interfaceName: `${currentInterfaceName}.${data.vlan}` } :
+        { ...savedData, interfaceName: `${currentInterfaceName}.${data.vlan}` } :
         item
     )
     onChange?.(updatedData)

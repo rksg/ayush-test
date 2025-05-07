@@ -34,6 +34,8 @@ export function SwitchConfigHistoryTable (props: {
   const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchDisabledRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
 
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
@@ -112,6 +114,12 @@ export function SwitchConfigHistoryTable (props: {
     }
     if(!isSwitchPortProfileEnabled){
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_PROFILE)
+    }
+    if(!isSwitchMacAclEnabled){
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.MAC_ACL)
+    }
+    if(!isSwitchDisabledRecoveryEnabled){
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_DISABLE_RECOVERY)
     }
     return configTypeOptions.map(ctype=>({
       key: ctype, value: transformConfigType(ctype)

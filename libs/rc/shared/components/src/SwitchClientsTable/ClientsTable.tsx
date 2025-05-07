@@ -25,10 +25,10 @@ import {
   SwitchPortStatus,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes } from '@acx-ui/types'
-import { hasPermission }                from '@acx-ui/user'
-import { getOpsApi }                    from '@acx-ui/utils'
+import { useParams, TenantLink }                       from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }                from '@acx-ui/types'
+import { hasPermission }                               from '@acx-ui/user'
+import { getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -57,8 +57,6 @@ export const defaultSwitchClientPayload = {
     'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
     'vlanName', 'vni', 'clientAuthType'
   ],
-  sortField: 'clientMac',
-  sortOrder: 'DESC',
   filters: {}
 }
 
@@ -74,8 +72,8 @@ export function ClientsTable (props: {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -97,9 +95,14 @@ export function ClientsTable (props: {
       ...defaultSwitchClientPayload
     },
     search: {
+      searchString: '',
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
+    sorter: {
+      sortField: 'clientName',
+      sortOrder: 'ASC'
+    },
     pagination: { settingsId },
     enableRbac: isSwitchRbacEnabled
   })
@@ -107,6 +110,12 @@ export function ClientsTable (props: {
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.WIRED_CLIENTS_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {
@@ -380,7 +389,7 @@ export function ClientsTable (props: {
           onFilterChange={handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          filterPersistence={enabledUXOptFeature}
+          filterPersistence={true}
         />
         {editLagModalVisible && <SwitchLagModal
           isEditMode={true}

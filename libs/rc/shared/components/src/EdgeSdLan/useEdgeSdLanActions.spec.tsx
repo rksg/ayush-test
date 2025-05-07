@@ -8,7 +8,7 @@ import {
   EdgeSdLanUrls,
   EdgeSdLanSettingP2,
   CommonErrorsResult,
-  CatchErrorDetails,
+  ErrorDetails,
   EdgeSdLanFixtures,
   EdgeMvSdLanExtended
 } from '@acx-ui/rc/utils'
@@ -239,7 +239,7 @@ describe('useEdgeMvSdLanActions', () => {
 
       const mockedCallbackInnerFn = jest.fn()
       const mockedCBFn = jest.fn()
-        .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
+        .mockImplementation((response: CommonErrorsResult<ErrorDetails>) => {
           mockedCallbackInnerFn(response.data.errors[0].code)
         })
       const { result } = renderHook(() => useEdgeMvSdLanActions(), {
@@ -593,7 +593,7 @@ describe('useEdgeMvSdLanActions', () => {
           callback: mockedCBFn
         })
       } catch(err) {
-        errResult = (err as CommonErrorsResult<CatchErrorDetails>).data.errors[0].code
+        errResult = (err as CommonErrorsResult<ErrorDetails>).data.errors[0].code
       }
 
       expect(errResult).toBe('EDGE-00000')
@@ -812,7 +812,7 @@ describe('useEdgeSdLanActions', () => {
 
       const mockedCallbackInnerFn = jest.fn()
       const mockedCBFn = jest.fn()
-        .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
+        .mockImplementation((response: CommonErrorsResult<ErrorDetails>) => {
           mockedCallbackInnerFn(response.data.errors[0].code)
         })
       const { result } = renderHook(() => useEdgeSdLanActions(), {
@@ -1098,7 +1098,7 @@ describe('useEdgeSdLanActions', () => {
 
       const mockedCallbackInnerFn = jest.fn()
       const mockedCBFn = jest.fn()
-        .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
+        .mockImplementation((response: CommonErrorsResult<ErrorDetails>) => {
           mockedCallbackInnerFn(response.data.errors[0].code)
         })
       const mockedPayload = {

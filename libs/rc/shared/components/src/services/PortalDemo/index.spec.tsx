@@ -11,6 +11,7 @@ import { Provider }                              from '@acx-ui/store'
 import { render, fireEvent, screen, mockServer } from '@acx-ui/test-utils'
 
 import { PortalDemoDefaultSize } from './commonUtils'
+import PortalViewSelfSignConnect from './PortalViewSelfSignConnect'
 
 import { PortalDemo } from './index'
 
@@ -146,5 +147,54 @@ describe('PortalDemo', () => {
     expect(await screen.findAllByText(
       'Terms & conditions is enabled but not configured!'
     )).not.toBeNull()
+  })
+
+  it('should show tooltip message when select SAML Identity Provider (IdP)', async () => {
+    render(
+      <Provider>
+        <Form>
+          <PortalDemo value={mockDemo}
+            isPreview={true}
+            networkSocial={{ smsEnabled: true, facebookEnabled: true,
+              googleEnabled: true, twitterEnabled: true, linkedInEnabled: true }} />
+        </Form>
+      </Provider>
+    )
+
+    const combobox = (await screen.findAllByRole('combobox'))[0]
+    await userEvent.click(combobox)
+    await userEvent.click((await screen.findAllByTitle('Click Through'))[0])
+    await userEvent.click(combobox)
+    await userEvent.click((await screen.findAllByTitle('SAML Identity Provider (IdP)'))[0])
+
+    const message = 'Users authenticate through the organization\'s SAML Identity Provider (IdP)'
+
+    const questionTooltip = screen.getAllByTestId('QuestionMarkCircleOutlined')
+    await userEvent.hover(questionTooltip[0])
+    expect(await screen.findAllByText(message)).not.toBeNull()
+  })
+})
+
+describe('PortalViewSelfSignConnect', () => {
+  it('should render PortalViewSelfSignConnect successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <PortalViewSelfSignConnect
+            portalLang={{
+              connectWithEmail: 'Connect with Email'
+            }}
+            networkSocial={{
+              smsEnabled: true,
+              emailEnabled: true,
+              facebookEnabled: true,
+              googleEnabled: true,
+              twitterEnabled: true,
+              linkedInEnabled: true
+            }} />
+        </Form>
+      </Provider>
+    )
+    expect(await screen.findByTestId('self-sign-in-email-otp')).toBeInTheDocument()
   })
 })

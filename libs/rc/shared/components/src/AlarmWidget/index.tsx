@@ -7,6 +7,7 @@ import { useIsSplitOn, Features }                              from '@acx-ui/fea
 import { useAlarmSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { AlaramSeverity, Dashboard }                           from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
+import { useTrackLoadTime, widgetsMapping }                    from '@acx-ui/utils'
 import { useDashboardFilter }                                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -41,6 +42,7 @@ export function AlarmWidgetV2 () {
   // Dashboard overview query
   const { venueIds } = useDashboardFilter()
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewAlarmQueryEnabled ? useAlarmSummariesQuery : useDashboardV2OverviewQuery
 
   const overviewV2Query = query({
@@ -65,6 +67,13 @@ export function AlarmWidgetV2 () {
   }
 
   const { data } = overviewV2Query
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.ALARMS_WIDGET,
+    states: [overviewV2Query],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[overviewV2Query]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}

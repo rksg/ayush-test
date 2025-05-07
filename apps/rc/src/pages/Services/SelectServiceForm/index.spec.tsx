@@ -31,9 +31,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
+const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -51,6 +53,10 @@ describe('Select Service Form', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
   const path = '/:tenantId/' + getSelectServiceRoutePath()
+
+  beforeEach(() => {
+    mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+  })
 
   it('should navigate to the correct service page', async () => {
     render(
@@ -163,5 +169,40 @@ describe('Select Service Form', () => {
     })
 
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
+  })
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
+  })
+
+  describe('Wi-Fi Calling', () => {
+    it('should not render Wi-Fi calling when limit is reached', () => {
+      mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: true })
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
+    })
   })
 })

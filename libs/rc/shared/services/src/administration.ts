@@ -891,7 +891,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if(msg.steps?.find((step) =>
+            (step.id === 'UpdateSMSProvider'))?.status === 'SUCCESS') {
+            if (typeof requestArgs.callback === 'function') {
+              requestArgs.callback()
+            }
+          }
+        })
+      }
     }),
     getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
       query: ({ params }) => {
@@ -899,7 +909,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -949,7 +960,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
@@ -1016,9 +1028,12 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
-    getPrivacySettings: build.query<PrivacySettings[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.getPrivacySettings, params)
+    getPrivacySettings: build.query<PrivacySettings[], RequestPayload<
+    { ignoreDelegation?: boolean }>>({
+      query: ({ params, customHeaders, payload }) => {
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivacySettings, params, customHeaders,
+          payload?.ignoreDelegation)
         return {
           ...req
         }
@@ -1040,6 +1055,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return response.privacyFeatures
       },
       invalidatesTags: [{ type: 'Privacy', id: 'DETAIL' }]
+    }),
+    deleteTenant: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteTenant, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1136,5 +1160,6 @@ export const {
   useDeleteWebhookMutation,
   useWebhookSendSampleEventMutation,
   useGetPrivacySettingsQuery,
-  useUpdatePrivacySettingsMutation
+  useUpdatePrivacySettingsMutation,
+  useDeleteTenantMutation
 } = administrationApi

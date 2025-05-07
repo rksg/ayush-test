@@ -1,3 +1,4 @@
+import { TunnelTypeEnum }   from '../../models'
 import { EdgeAlarmSummary } from '../edge'
 
 export interface EdgeSdLanSetting {
@@ -87,7 +88,8 @@ export interface EdgeSdLanViewDataP2 {
 }
 
 export interface EdgeSdLanActivateNetworkPayload {
-  isGuestTunnelUtilized?: boolean
+  isGuestTunnelUtilized?: boolean // To be deprecated
+  forwardingTunnelProfileId?: string
 }
 
 export interface EdgeSdLanToggleDmzPayload {
@@ -119,11 +121,13 @@ export interface EdgeMvSdLanExtended extends PartiallyOptional<EdgeMvSdLanRespon
 }
 
 export interface EdgeSdLanTunneledWlan {
-  venueId: string,
-  venueName: string,
-  networkId: string,
-  networkName: string,
-  wlanId: string,
+  venueId: string
+  venueName: string
+  networkId: string
+  networkName: string
+  wlanId: string
+  forwardingTunnelProfileId?: string
+  forwardingTunnelType?: TunnelTypeEnum | string
 }
 
 export interface EdgeMvSdLanViewData {
@@ -187,4 +191,15 @@ export interface EdgeSdLanDmzTunnelInfo {
   serialNumber: string
   activeNodeCount: number
   allocatedNodeCount: number
+}
+
+export interface EdgeSdLanServiceProfile {
+  id?: string
+  name: string
+  tunnelProfileId: string
+  activeNetwork: {
+    venueId: string
+    networkId: string
+    tunnelProfileId?: string
+  }[]
 }

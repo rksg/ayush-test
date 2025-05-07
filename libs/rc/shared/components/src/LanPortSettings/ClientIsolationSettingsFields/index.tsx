@@ -3,23 +3,30 @@ import { useEffect, useState } from 'react'
 import { Form, Space, Switch } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Button, Drawer, Select, StepsForm, Tooltip, Alert }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { useGetClientIsolationListQuery }                                                from '@acx-ui/rc/services'
-import { ClientIsolationMessages, IsolatePacketsTypeEnum, getIsolatePacketsTypeOptions } from '@acx-ui/rc/utils'
-import { useParams }                                                                     from '@acx-ui/react-router-dom'
+import { Button, Drawer, Select, StepsForm, Tooltip, Alert } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetClientIsolationListQuery }                    from '@acx-ui/rc/services'
+import {
+  ClientIsolationMessages,
+  IsolatePacketsTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  getIsolatePacketsTypeOptions,
+  hasPolicyPermission
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ClientIsolationForm } from '../../policies/ClientIsolationForm/ClientIsolationForm'
 import { FieldLabel }          from '../styledComponents'
 
 import ClientIsolationAllowListDetailsDrawer from './ClientIsolationListDetailsDrawer'
 
-interface ClientIsplationSettingFieldsProps {
+interface ClientIsolationSettingFieldsProps {
     index: number,
     readOnly?: boolean,
     onGUIChanged?: (fieldName: string) => void
 }
-const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps) => {
+const ClientIsolationSettingsFields = (props: ClientIsolationSettingFieldsProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const params = useParams()
@@ -69,7 +76,6 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
       setClientIsoCreateId('')
     }
   }, [clientIsolationAllowListOptions])
-
 
   return (
     <>
@@ -145,22 +151,24 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
           <Space split='|'>
             <Button
               type='link'
+              children={$t({ defaultMessage: 'Policy Details' })}
               onClick={()=>setDetailVisible(true)}
               disabled={!clientIsolationProfileId}
-            >
-              {$t({ defaultMessage: 'Policy Details' })}
-            </Button>
+            />
+            {hasPolicyPermission(
+              { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE }) &&
             <Button
               type='link'
+              children={$t({ defaultMessage: 'Add Policy' })}
               onClick={()=>setFormVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add Policy' })}
-            </Button>
+            />
+            }
+
           </Space>
           <ClientIsolationAllowListDetailsDrawer
             visible={detailVisible}
             setVisible={setDetailVisible}
-            clientIsolationPropfileId={clientIsolationProfileId}
+            clientIsolationProfileId={clientIsolationProfileId}
           />
           <Drawer
             title={$t({ defaultMessage: 'Add Client Isolation' })}
@@ -173,7 +181,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
                 updateInstance={updateClientIsolationInstance}
               />
             }
-            width={'80%'}
+            width={'600px'}
           />
         </Space>
       </>}

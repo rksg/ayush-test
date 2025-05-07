@@ -80,7 +80,7 @@ import {
   ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
-  VeuneApAntennaTypeSettings,
+  VenueApAntennaTypeSettings,
   NetworkApGroup,
   ConfigTemplateUrlsInfo,
   getCurrentTimeSlotIndex,
@@ -112,7 +112,10 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   VenueLanPortSettings,
-  UnitLinkedPersona
+  UnitLinkedPersona,
+  IpsecUrls,
+  IpsecViewData,
+  VenueApIpMode
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -137,7 +140,8 @@ import {
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
   mappingLanPortWithClientIsolationPolicy,
   mappingLanPortWithEthernetPortProfile,
-  mappingLanPortWithSoftGreProfile
+  mappingLanPortWithSoftGreProfile,
+  mappingLanPortWithIpsecProfile
 } from './venue.utils'
 
 const customHeaders = {
@@ -411,6 +415,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse: (result: { cityList: { name: string }[] }) => {
         return result.cityList
+      }
+    }),
+    getVenueTagList: build.query<string[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenueTagList, params)
+        return{
+          ...req
+        }
       }
     }),
     getVenueSettings: build.query<VenueSettings, RequestPayload>({
@@ -1785,6 +1797,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApIpMode: build.query<VenueApIpMode, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApIpMode: build.mutation<VenueApIpMode, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueApIpMode, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getVenueApSmartMonitor: build.query<VenueApSmartMonitor, RequestPayload>({
       query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2094,16 +2127,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    addUnitLinkedIdentity: build.mutation<UnitLinkedPersona, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.addUnitLinkedIdentity, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
-    }),
     deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
@@ -2125,6 +2148,38 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getUnitsLinkedIdentities: build.query<TableResult<UnitLinkedPersona>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getUnitsLinkedIdentities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<UnitLinkedPersona>) {
+        return transferToTableResult<UnitLinkedPersona>(result)
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    removeUnitLinkedIdentity: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.removeUnitLinkedIdenity, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit' }]
+    }),
+    addUnitLinkedIdentity: build.mutation<UnitLinkedPersona, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addUnitLinkedIdentity, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -2251,7 +2306,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
+    getVenueAntennaType: build.query< VenueApAntennaTypeSettings[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
@@ -2298,6 +2353,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
+        const isIpSecOverNetworkEnabled = (arg.payload as any)?.isIpSecOverNetworkEnabled
 
         if(venueId) {
 
@@ -2329,6 +2385,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
             )
             const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
             mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping IpSec profile relation to Lan port settings
+          if(isEthernetPortProfileEnabled && isIpSecOverNetworkEnabled) {
+            const ipsecProfileReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+            const ipsecProfileQuery = await fetchWithBQ(
+              { ...ipsecProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
+                  }
+                })
+              }
+            )
+            const ipsecProfiles = (ipsecProfileQuery.data as TableResult<IpsecViewData>).data
+            mappingLanPortWithIpsecProfile(venueLanPortSettings, ipsecProfiles, venueId)
           }
 
           // Mapping Client Isolation Policy relation to Lan port settings
@@ -2424,6 +2496,7 @@ export const {
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueCityListQuery,
+  useGetVenueTagListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
   useGetVenueMeshQuery,
@@ -2518,6 +2591,9 @@ export const {
   useGetVenueBssColoringQuery,
   useLazyGetVenueBssColoringQuery,
   useUpdateVenueBssColoringMutation,
+  useGetVenueApIpModeQuery,
+  useLazyGetVenueApIpModeQuery,
+  useUpdateVenueApIpModeMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,
@@ -2534,9 +2610,11 @@ export const {
   useGetPropertyUnitListQuery,
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
-  useAddUnitLinkedIdentityMutation,
   useDeletePropertyUnitsMutation,
   useNotifyPropertyUnitsMutation,
+  useGetUnitsLinkedIdentitiesQuery,
+  useAddUnitLinkedIdentityMutation,
+  useRemoveUnitLinkedIdentityMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,

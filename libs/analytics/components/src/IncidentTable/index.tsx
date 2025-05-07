@@ -18,14 +18,27 @@ import {
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }                                                       from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }                                                            from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
+import {
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  hasCrossVenuesPermission,
+  hasPermission,
+  aiOpsApis
+} from '@acx-ui/user'
+import {
+  exportMessageMapping,
+  noDataDisplay,
+  handleBlobDownloadFile,
+  useTrackLoadTime,
+  widgetsMapping
+} from '@acx-ui/utils'
 
 import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
 import { useIncidentToggles }             from '../useIncidentToggles'
@@ -126,6 +139,8 @@ export function IncidentTable ({ filters }: {
   const toggles = useIncidentToggles()
   const { $t } = intl
   const queryResults = useIncidentsListQuery({ ...filters, toggles })
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
@@ -142,13 +157,28 @@ export function IncidentTable ({ filters }: {
     ? queryResults.data
     : filterMutedIncidents(queryResults.data)
 
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
+  const hasUpdateSwitchIncidentPermission = hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
+  const hasUpdateWifiIncidentPermission = hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
+
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       key: getShowWithoutRbacCheckKey('mute'),
-      visible: ([row]) => row && hasPermission({
-        permission: 'WRITE_INCIDENTS',
-        scopes: [row.sliceType.startsWith('switch') ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
-      }),
+      visible: ([row]) => row && row.sliceType.startsWith('switch')
+        ? !!hasUpdateSwitchIncidentPermission
+        : !!hasUpdateWifiIncidentPermission,
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
@@ -270,6 +300,13 @@ export function IncidentTable ({ filters }: {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.INCIDENT_TABLE,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
@@ -285,10 +322,7 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={hasCrossVenuesPermission() && hasPermission({
-          permission: 'WRITE_INCIDENTS',
-          scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-        }) && {
+        rowSelection={hasRowSelection && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

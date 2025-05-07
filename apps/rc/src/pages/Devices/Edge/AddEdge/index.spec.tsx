@@ -38,6 +38,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false),
+  isShowImprovedErrorSuggestion: jest.fn().mockReturnValue(false)
+}))
+
 describe('AddEdge', () => {
   let params: { tenantId: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

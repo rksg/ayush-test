@@ -6,7 +6,7 @@
  * Some icons are checking with the designer:
  * Blocked, BulbOff, CalendarDateSolid, ChatbotLink, CheckMark, ClockSolid,
  * Drag, DeleteSolid, DevicesSolid, PlaySolid2, StopSolid, SignalDown, SignalLeft, SignalUp,
- * SpeedIndicatorSolid, StackDeviceSolid, SuccessSolid, Switch, TagsOutline, TagsSolid
+ * SpeedIndicatorSolid, StackDeviceSolid, SuccessSolid, Switch, Sync, TagsOutline, TagsSolid
  * QuestionMarkCircleOutlined, QuestionMarkCircleSolid, WarningTriangleOutlined, WarningTriangleSolid
  *
  */
@@ -19,6 +19,7 @@ export const {
   AccessPointSolid,
   AccessPointWiFiOutlined,
   AccessPointWiFiSolid,
+  AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
   ApOutlined,
@@ -29,6 +30,7 @@ export const {
   ArrowChevronRight,
   ArrowCollapse,
   ArrowExpand,
+  ArrowsIn,
   ArrowsOut,
   BarChartOutlined,
   BarChartSolid,
@@ -47,6 +49,8 @@ export const {
   CalendarSolid,
   CancelCircleOutlined,
   CancelCircleSolid,
+  CanvasCollapse,
+  CanvasExpand,
   CaretDoubleDownOutlined,
   CaretDoubleDownSolid,
   CaretDoubleLeftCircleOutlined,
@@ -96,6 +100,7 @@ export const {
   CopySolid,
   CrownOutlined,
   CrownSolid,
+  Dashboard,
   DashboardOutlined,
   DashboardSolid,
   DataStudioOutlined,
@@ -158,6 +163,7 @@ export const {
   ListSolid,
   LocationOutlined,
   LocationSolid,
+  LockOutlined,
   LogOut,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassMinusSolid,
@@ -242,6 +248,7 @@ export const {
   Switch,
   SwitchOutlined,
   SwitchSolid,
+  Sync,
   TabletOutlined,
   TextMinus,
   TextPlus,

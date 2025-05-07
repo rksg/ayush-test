@@ -116,6 +116,7 @@ export interface EventBase {
   clientMac?: string
   clientName?: string
   remoteEdgeId?: string
+  remoteApSerialId?: string
   clientMldMac?: string
   turnOnTimestamp?: string
   turnOffTimestamp?: string
@@ -135,14 +136,17 @@ export interface EventMeta {
   isVenueExists: boolean,
   isUnitExists: boolean,
   isRemoteedgeExists: boolean,
+  isRemoteApExists: boolean,
   networkId?: string
   networkName?: string
+  serviceName?: string,
   switchMac?: string
   switchName: string
   venueName: string
   tableKey?: string
   edgeName: string,
   remoteedgeName: string,
+  remoteApName: string
   unitName: string,
   profileName: string
 }

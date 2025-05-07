@@ -19,14 +19,21 @@ export interface LayoutProps {
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
   compactType: string
-  canvasId: string
+  canvasId: string,
+  setLayout: React.Dispatch<React.SetStateAction<LayoutConfig>>
+  shadowCard: CardInfo
+  setShadowCard: React.Dispatch<React.SetStateAction<CardInfo>>
+  readOnly?: boolean
+  containerId?: string
 }
 
 export default function Layout (props: LayoutProps) {
   const defaultLayout = props.layout
-  const { groups, setGroups, sections, canvasId } = props
-  const [layout, setLayout] = useState(props.layout)
-  const [shadowCard, setShadowCard] = useState({} as CardInfo)
+  // eslint-disable-next-line max-len
+  const {
+    groups, setGroups, sections, canvasId, layout, setLayout, shadowCard, setShadowCard,
+    containerId = 'card-container', readOnly
+  } = props
   const [resizeWaiter, setResizeWaiter] = useState(false)
   const [createWidget] = useCreateWidgetMutation()
 
@@ -36,7 +43,7 @@ export default function Layout (props: LayoutProps) {
       setTimeout(() => {
         setResizeWaiter(false)
         let clientWidth
-        const containerDom = document.querySelector('#card-container')
+        const containerDom = document.querySelector(`#${containerId}`)
         if (containerDom) {
           clientWidth = containerDom.clientWidth
         } else {
@@ -107,9 +114,9 @@ export default function Layout (props: LayoutProps) {
       })
     })
 
-    const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY }
-
     let groupIndex = hoverItem.index
+    const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY, groupIndex }
+
     if(typeof groupIndex == 'number') {
       // Add the shadowed card
       groupsTmp[groupIndex].cards.push(shadowCard)
@@ -146,23 +153,29 @@ export default function Layout (props: LayoutProps) {
     const groupsTmp = _.cloneDeep(groups)
     const { compactType } = props
     if(!shadowCard.widgetId) {
-      const response = await createWidget({
+      await createWidget({
         params: {
           canvasId
         },
         payload: {
           messageId: shadowCard.chatId
         }
-      }).unwrap()
-
-
-      groupsTmp.forEach(g => {
-        g.cards.forEach(c => {
-          if(c.id == shadowCard.id) {
-            c.widgetId = response.id
-            c.canvasId = canvasId
-          }
-        })
+      }).then((response)=> {
+        if(response?.data?.id) {
+          groupsTmp.forEach(g => {
+            g.cards.forEach(c => {
+              if(c.id == shadowCard.id) {
+                c.widgetId = response.data.id
+                c.name = response.data.name
+                // TODO: time range
+                c.canvasId = canvasId
+              }
+            })
+          })
+        }else {
+          groupsTmp[shadowCard.groupIndex].cards = groupsTmp[shadowCard.groupIndex].cards
+            .filter((item) => item.id !== shadowCard.id)
+        }
       })
     }
     // Remove shadows from all cards within all groups.
@@ -186,11 +199,11 @@ export default function Layout (props: LayoutProps) {
   }
 
   const deleteCard = (id: string, groupIndex:number) => {
-    let cards = groups[groupIndex].cards.filter((item) => item.id !== id)
+    const groupsTmp = _.cloneDeep(groups)
+    let cards = groupsTmp[groupIndex].cards.filter((item) => item.id !== id)
     let compactedLayout = compactLayoutHorizontal(cards, 4, null)
-    groups[groupIndex].cards = compactedLayout
-    const tmp = [...groups]
-    setGroups(tmp)
+    groupsTmp[groupIndex].cards = compactedLayout
+    setGroups(groupsTmp)
   }
 
   return (
@@ -247,6 +260,8 @@ export default function Layout (props: LayoutProps) {
               updateGroupList={setGroups}
               handleLoad={handleLoad}
               deleteCard={deleteCard}
+              draggable={!readOnly}
+              containerId={containerId}
             /> : <></>)
           }
           {/* </>

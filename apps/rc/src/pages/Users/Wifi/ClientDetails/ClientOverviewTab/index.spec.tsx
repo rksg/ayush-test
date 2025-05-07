@@ -1,5 +1,6 @@
 import { graphql, rest } from 'msw'
 
+import * as config                                from '@acx-ui/config'
 import { useIsSplitOn, Features  }                from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
@@ -34,7 +35,8 @@ import {
   GuestClients,
   VenueList,
   dpskPassphraseClient,
-  nonRbacClientRadioType
+  nonRbacClientRadioType,
+  clientMeta
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -58,8 +60,15 @@ jest.mock('@acx-ui/utils', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchClientListQuery: () => ({ data: {} })
+  useGetSwitchClientListQuery: () => ({ data: {} }),
+  useGetPrivacySettingsQuery: () => ({ data: [{
+    featureName: 'APP_VISIBILITY',
+    isEnabled: false
+  }] })
 }))
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 jest.mock('./TopApplications', () => ({
   TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
@@ -91,6 +100,9 @@ describe('ClientOverviewTab root', () => {
         }),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json(clientMeta))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -101,6 +113,9 @@ describe('ClientOverviewTab root', () => {
         (_, res, ctx) => res(ctx.json(histClientList))),
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(CommonUrlsInfo.getVenues.url,
         (_, res, ctx) => res(ctx.json(VenueList))
@@ -169,12 +184,54 @@ describe('ClientOverviewTab root', () => {
           clientStatus='Connected'
           clientDetails={clientList[0] as unknown as Client}
           filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
+          connectedTimeStamp='2023-01-01T00:00:00Z'
         />
       </Provider>)
       expect(await screen.findByText('Current Status')).toBeVisible()
       expect(await screen.findByText('2.4 GHz')).toBeVisible()
       expect(await screen.findByText('5 GHz')).toBeVisible()
       expect(await screen.findByText('6 GHz')).toBeVisible()
+    })
+
+    it('should show N/A when app visibility is disabled', async () => {
+      // Set up all required conditions for app visibility
+      jest.requireMock('@acx-ui/config').get.mockImplementation((key: string) =>
+        key === 'IS_MLISA_SA' ? false : undefined
+      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE ? true : false
+      )
+      get.mockReturnValue('')
+
+      const mockStats = {
+        applications: 5,
+        apsConnected: 1,
+        avgRateBPS: '1000',
+        userTrafficBytes: 5000,
+        avgSessionLengthSeconds: 0,
+        sessions: 0,
+        userTraffic5GBytes: 0,
+        userTraffic6GBytes: 0,
+        userTraffic24GBytes: 0
+      } as ClientStatistic
+
+      render(<Provider>
+        <ClientOverviewWidget
+          clientStatistic={mockStats}
+          clientStatus='Connected'
+          clientDetails={clientList[0] as unknown as Client}
+          filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
+          connectedTimeStamp='2023-01-01T00:00:00Z'
+        />
+      </Provider>)
+
+      // Wait for the Applications section to be visible
+      await waitFor(() => {
+        expect(screen.getByText('Applications')).toBeVisible()
+      })
+
+      // Then check for N/A
+      expect(screen.getByText('N/A')).toBeVisible()
     })
 
     it('should render ClientOverviewWidget on undefined ClientStatistic', async () => {
@@ -184,6 +241,7 @@ describe('ClientOverviewTab root', () => {
           clientStatus='Connected'
           clientDetails={clientList[0] as unknown as Client}
           filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
+          connectedTimeStamp='2023-01-01T00:00:00Z'
         />
       </Provider>)
     })
@@ -212,6 +270,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       ),
       rest.post(ClientUrlsInfo.getClientList.url,
         (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,

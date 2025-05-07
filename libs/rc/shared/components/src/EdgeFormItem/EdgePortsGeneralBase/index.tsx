@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Tabs, Tooltip } from '@acx-ui/components'
+import { Features }      from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
   EdgeLag, EdgePort,
@@ -16,6 +17,7 @@ import {
   validateEdgeGateway
 } from '@acx-ui/rc/utils'
 
+import { useIsEdgeFeatureReady }   from '../../useEdgeActions'
 import { EdgePortCommonFormProps } from '../PortCommonForm'
 
 import { PortConfigForm } from './PortConfigForm'
@@ -42,6 +44,7 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
   isCluster?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   subInterfaceList?: SubInterface[]
+  isClusterWizard?: boolean
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -55,9 +58,12 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     isCluster,
     formFieldsProps,
     vipConfig = [],
-    subInterfaceList = []
+    subInterfaceList = [],
+    isClusterWizard
   } = props
   const { $t } = useIntl()
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const [currentTab, setCurrentTab] = useState<string>('')
   const form = Form.useFormInstance()
   const data = (fieldHeadPath.length
@@ -126,11 +132,14 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
       name='validate'
       rules={[
         { validator: () => {
+          // cluster level check is in ClusterConfigWizard
+          if (isClusterWizard) return Promise.resolve()
+
           const allPortsValues = (fieldHeadPath.length
             ? _.get(form.getFieldsValue(true), fieldHeadPath)
             : form.getFieldsValue(true)) as { [portId:string ]: EdgePort[] }
           const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-          return validateEdgeGateway(portsData, lagData ?? [])
+          return validateEdgeGateway(portsData, lagData ?? [], isDualWanEnabled)
         } }
       ]}
       children={<input hidden/>}

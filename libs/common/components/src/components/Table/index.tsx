@@ -87,6 +87,7 @@ export interface TableProps <RecordType>
     searchableWidth?: number
     stickyHeaders?: boolean
     stickyPagination?: boolean
+    stickyOffsetY?: number
     enableResizableColumn?: boolean
     enablePagination?: boolean
     onDisplayRowChange?: (displayRows: RecordType[]) => void
@@ -458,7 +459,15 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall' || !!enablePagination) {
     pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
-    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
+    const defaultPageSize = pagination.defaultPageSize!
+    const currentPageSize = (props.pagination && props.pagination.pageSize) || defaultPageSize
+    const totalItems = pagination.total ?? dataSource?.length ?? 0
+
+    const isCurrentPageSizeLessThanDefault = currentPageSize < defaultPageSize
+    const isTotalItemsLessThanOrEqualToDefault = totalItems <= defaultPageSize
+
+    // Disable pagination if total is small and user didn't select a smaller page size
+    if (isTotalItemsLessThanOrEqualToDefault && !isCurrentPageSizeLessThanDefault) {
       pagination = false
     }
   }
@@ -579,7 +588,8 @@ function Table <RecordType extends Record<string, any>> ({
     </UI.HeaderComps>
   </> : null
 
-  let offsetHeader = layout.pageHeaderY
+  const pageHeaderY = layout.pageHeaderY + (props.stickyOffsetY ?? 0)
+  let offsetHeader = pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
   const sticky = stickyHeaders &&
@@ -593,7 +603,7 @@ function Table <RecordType extends Record<string, any>> ({
   return <UI.Wrapper
     style={{
       ...(style ?? {}),
-      '--sticky-offset': `${layout.pageHeaderY}px`,
+      '--sticky-offset': `${pageHeaderY}px`,
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}

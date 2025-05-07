@@ -28,12 +28,14 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
 
   if ('requirements' in props.data) {
     const data = props.data as IncompatibleFeature
+    const isEdgeWithoutModelData = deviceType === CompatibilityDeviceEnum.EDGE
+      && !data.requirements?.hasOwnProperty('model')
 
     return data.requirements
       ? <SpaceWrapper direction='vertical' fullWidth size={8}>
         {data.requirements.map((requirement: ApRequirement, reqIndex) => (
           <UI.StyledRequirementWrapper
-            $hasBackground={!hasBackgroundColor}
+            $hasBackground={!isEdgeWithoutModelData && !hasBackgroundColor}
             key={`requirements_${reqIndex}`}
           >
             <UI.StyledFormItem
@@ -46,7 +48,7 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
             <UI.StyledFormItem
               label={$t({ defaultMessage: 'Supported ICX Models' })}
             >
-              {requirement.models.join(', ')}
+              {[...requirement.models].sort().join(', ')}
             </UI.StyledFormItem>}
 
             { apModelFamilies && requirement?.models && deviceType === CompatibilityDeviceEnum.AP &&

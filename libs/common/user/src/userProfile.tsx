@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import { isEmpty }                          from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get }            from '@acx-ui/config'
@@ -9,6 +10,7 @@ import {
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 import {
   type UserProfile,
@@ -29,6 +31,7 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
+  activityAllVenuesEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
@@ -66,6 +69,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
+  userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
@@ -206,7 +210,7 @@ export function hasPermission (props?: {
  */
 export function hasScope (userScopes: ScopeKeys) {
   const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
-  if(abacEnabled && isCustomRole) {
+  if(abacEnabled && isCustomRole && !isEmpty(userScopes)) {
     return userScopes?.some(scope => {
       if(Array.isArray(scope)) {
         return scope.every(i => scopes.includes(i))
@@ -263,27 +267,37 @@ export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
     rbacOpsIds?: RbacOpsIds,
+    unsupportedTiers?: AccountTier[]
     requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsIds = [] } = props
-  const { rbacOpsApiEnabled } = getUserProfile()
+  const { scopes = [], children,
+    requireCrossVenuesPermission, rbacOpsIds = [], unsupportedTiers } = props
+  const { rbacOpsApiEnabled, accountTier } = getUserProfile()
+
+  let authorizedElement = children
+
+  if (Array.isArray(unsupportedTiers) && unsupportedTiers.length > 0) {
+    authorizedElement = unsupportedTiers.includes(accountTier as AccountTier)
+      ? <TenantNavigate replace to='/no-permissions' /> : children
+  }
 
   if (rbacOpsApiEnabled) {
     const shouldSkipRBACCheck = rbacOpsIds.length === 0
-    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds)) ?
-      children : <TenantNavigate replace to='/no-permissions' />
+    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds))
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
 
   if(typeof requireCrossVenuesPermission === 'object') {
     return hasCrossVenuesPermission(requireCrossVenuesPermission)
-      ? children : <TenantNavigate replace to='/no-permissions' />
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
 
   if(requireCrossVenuesPermission) {
     return hasScope(scopes) && hasCrossVenuesPermission()
-      ? children : <TenantNavigate replace to='/no-permissions' />
+      ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
   }
-  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
+
+  return hasScope(scopes) ? authorizedElement : <TenantNavigate replace to='/no-permissions' />
 }
 
 

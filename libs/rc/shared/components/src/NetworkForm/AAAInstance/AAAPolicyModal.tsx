@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                                                                       from '@acx-ui/components'
+import { Button, Drawer }                                                                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { AAAPolicyType, AAA_LIMIT_NUMBER, PolicyOperation, PolicyType, useTemplateAwarePolicyPermission } from '@acx-ui/rc/utils'
 
@@ -44,15 +44,15 @@ export default function AAAPolicyModal (props:{
         disabled={aaaCount>=radiusMaxiumnNumber || props.disabled}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
-      <Modal
+      <Drawer
         title={$t({ defaultMessage: 'Add AAA Server' })}
-        type={ModalType.ModalStepsForm}
         visible={visible}
         mask={true}
         children={getContent}
         destroyOnClose={true}
-        width={600}
-        bodyStyle={{ width: '600px' }}
+        onClose={onClose}
+        width={500}
+        footer={<div />} // ACX-83553: Prevent parent drawer from closing when this drawer is open
       />
     </>
   )

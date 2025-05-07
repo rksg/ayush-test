@@ -511,7 +511,7 @@ h5.c7.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -835,7 +835,7 @@ h5.c7.ant-typography {
                 <h4
                   class="ant-typography c7 c8 c9"
                 >
-                  Network Intent plays a crucial role in wireless network design
+                  Wireless network design involves balancing different priorities:
                 </h4>
                 <div
                   class="ant-typography"
@@ -907,7 +907,7 @@ h5.c7.ant-typography {
         </div>
       </div>
       <div
-        class="c11"
+        class="c11 action-footer"
         data-testid="steps-form-actions"
       >
         <div
@@ -1392,6 +1392,7 @@ h5.c5.ant-typography {
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-2-line-height);
   border: 1px solid transparent;
+  cursor: pointer;
 }
 
 .c11.highlight {
@@ -1481,7 +1482,7 @@ h5.c5.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -1677,7 +1678,7 @@ h5.c5.ant-typography {
               <h4
                 class="ant-typography c5 c6 c7"
               >
-                What is your primary network intent for Venue: My-Venue
+                What is your primary network intent for Venue “My-Venue” ?
               </h4>
               <div
                 class="ant-form-item"
@@ -1794,7 +1795,7 @@ h5.c5.ant-typography {
                               Leverage 
                               <b>
                                 <i>
-                                  EcoFlexAI
+                                  Energy Saving
                                 </i>
                               </b>
                               , available only through IntentAI for AI/ML based Energy Saving Model for the network. In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
@@ -1839,73 +1840,6 @@ h5.c5.ant-typography {
                   <h4
                     class="ant-typography c5 c6 c7"
                   >
-                    Industry average power price per kWh
-                  </h4>
-                  <div
-                    class="ant-typography"
-                  >
-                    <div
-                      style="display: flex;"
-                    >
-                      <div
-                        class="ant-form-item ant-form-item-has-success"
-                        style="width: 60px;"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <input
-                                  class="ant-input ant-input-status-success"
-                                  id="averagePowerPrice_currency"
-                                  type="text"
-                                  value="SGD"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                        style="margin-left: 5px;"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <input
-                                  class="ant-input"
-                                  id="averagePowerPrice_value"
-                                  type="text"
-                                  value="0.131"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <h4
-                    class="ant-typography c5 c6 c7"
-                  >
                     Potential trade-off
                   </h4>
                   <div
@@ -1914,7 +1848,7 @@ h5.c5.ant-typography {
                     <div
                       class="ant-typography"
                     >
-                      EcoFlex enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.
+                      Energy Saving enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.
                     </div>
                   </div>
                 </div>
@@ -1924,7 +1858,7 @@ h5.c5.ant-typography {
         </div>
       </div>
       <div
-        class="c14"
+        class="c14 action-footer"
         data-testid="steps-form-actions"
       >
         <div
@@ -2739,7 +2673,7 @@ h5.c6.ant-typography {
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              EcoFlex
+              Energy Saving
             </h1>
           </span>
         </div>
@@ -4161,7 +4095,7 @@ h5.c6.ant-typography {
                             />
                           </span>
                           <span>
-                            Do not apply EcoFlex during the following time slots of the week
+                            Do not apply Energy Saving during the following time slots of the week
                           </span>
                         </label>
                       </div>
@@ -8777,7 +8711,7 @@ h5.c6.ant-typography {
                             />
                           </span>
                           <span>
-                            Do not apply EcoFlex to the following APs
+                            Do not apply Energy Saving to the following APs
                           </span>
                         </label>
                       </div>
@@ -8942,7 +8876,7 @@ h5.c6.ant-typography {
         </div>
       </div>
       <div
-        class="c20"
+        class="c20 action-footer"
         data-testid="steps-form-actions"
       >
         <div

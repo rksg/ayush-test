@@ -18,26 +18,17 @@ describe('userLogout', () => {
     })
 
     it('should logout correctly', () => {
-      // Object.keys(localStorage) does not return set items in tests so we need to monkey patch it
-      const mockedRemoveItem = jest.fn()
-      const originalRemoveItem = localStorage.removeItem
-      localStorage.removeItem = mockedRemoveItem
-      localStorage['SPLITIO-foo'] = 'bar'
-      localStorage['table-pagesize'] = '20'
       sessionStorage.setItem('jwt', 'testToken')
       sessionStorage.setItem('ACX-ap-compatibiliy-note-hidden', 'true')
       sessionStorage.setItem('table-pagesize', '20')
+      sessionStorage.setItem('some-filter', 'some-filter-value')
 
       userLogout()
       expect(window.location.href).toEqual('/logout?token=testToken')
       expect(sessionStorage.getItem('jwt')).toBeNull()
       expect(sessionStorage.getItem('ACX-ap-compatibiliy-note-hidden')).toBeNull()
       expect(sessionStorage.getItem('table-pagesize')).toBeNull()
-      expect(mockedRemoveItem).toHaveBeenCalledWith('SPLITIO-foo')
-
-      delete localStorage['SPLITIO-foo']
-      delete localStorage['table-pagesize']
-      localStorage.removeItem = originalRemoveItem
+      expect(sessionStorage.getItem('some-filter')).toBeNull()
     })
 
     it('should logout without token', () => {
@@ -48,9 +39,12 @@ describe('userLogout', () => {
 
   describe('RA', () => {
     const { location } = window
+    let originalAppendChild: typeof document.body.appendChild
+    let originalCreateElement: typeof document.createElement
+    let mockedForm: HTMLFormElement
+
     beforeEach(async () => {
       process.env.NX_IS_MLISA_SA = 'true'
-      const env = { MLISA_LOGOUT_URL: '/logout' }
       jest.resetModules()
       Object.defineProperty(window, 'location', {
         writable: true,
@@ -61,33 +55,52 @@ describe('userLogout', () => {
       })
       mockServer.resetHandlers()
       mockServer.use(
-        rest.get(`${document.baseURI}globalValues.json`, (_, res, ctx) => res(ctx.json(env)))
+        rest.get(`${document.baseURI}globalValues.json`, (_, res, ctx) => res(ctx.json({
+          MLISA_LOGOUT_URL: '/logout'
+        })))
       )
       const { initialize } = require('@acx-ui/config')
       await initialize()
+      originalAppendChild = document.body.appendChild
+      originalCreateElement = document.createElement
+      document.body.appendChild = jest.fn()
+      mockedForm = { submit: jest.fn() } as unknown as HTMLFormElement
+      document.createElement = (tagName: string) => tagName === 'form'
+        ? mockedForm
+        : originalCreateElement.call(document, tagName)
     })
     afterEach(() => {
       Object.defineProperty(window, 'location', { writable: true, value: { location } })
       delete process.env.NX_IS_MLISA_SA
+      document.createElement = originalCreateElement
+      document.body.appendChild = originalAppendChild
     })
 
     it('should logout correctly', async () => {
       const { userLogout: raUserLogout } = require('./user')
-
-      const originalAppendChild = document.body.appendChild
-      document.body.appendChild = jest.fn()
-      const mockedForm = {
-        submit: jest.fn()
-      } as unknown as HTMLFormElement
-      jest.spyOn(document, 'createElement').mockReturnValue(mockedForm)
-
+      sessionStorage.setItem('jwt', 'testToken')
       raUserLogout()
-      expect(mockedForm.action).toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==')
+      expect(mockedForm.action)
+        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==&token=testToken')
       expect(mockedForm.method).toEqual('POST')
       expect(mockedForm.submit).toHaveBeenCalled()
       expect(document.body.appendChild).toHaveBeenCalledWith(mockedForm)
+      expect(sessionStorage.getItem('jwt')).toBeNull()
+    })
 
-      document.body.appendChild = originalAppendChild
+    it('should logout without token', () => {
+      const { userLogout: raUserLogout } = require('./user')
+      raUserLogout()
+      expect(mockedForm.action)
+        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==')
+    })
+
+    it('should logout without query parameters', () => {
+      const { userLogout: raUserLogout } = require('./user')
+      Object.defineProperty(window, 'location', { writable: true, value: { location } })
+      raUserLogout()
+      expect(mockedForm.action)
+        .toEqual('/logout')
     })
   })
 })

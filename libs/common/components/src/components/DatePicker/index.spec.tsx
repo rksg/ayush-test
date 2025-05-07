@@ -15,7 +15,13 @@ import {
   AccountTier
 } from '@acx-ui/utils'
 
-import { DatePicker, DateTimePicker, RangePicker, restrictDateToMonthsRange } from '.'
+import {
+  DatePicker,
+  DateTimePicker,
+  getDefaultEarliestStart,
+  RangePicker,
+  restrictDateToMonthsRange
+} from '.'
 
 const mockUseDateFilter = useDateFilter as jest.Mock
 
@@ -269,6 +275,35 @@ describe('RangePicker', () => {
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
   })
+  it('should test reset message', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      (ff === Features.ACX_UI_DATE_RANGE_LIMIT || ff === Features.ACX_UI_DATE_RANGE_RESET_MSG))
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          maxMonthRange={1}
+          allowedMonthRange={1}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[0])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+  })
+
   it('should reset when select startTime greater than allowedMonthRange', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ACX_UI_DATE_RANGE_LIMIT)
     render(
@@ -297,14 +332,15 @@ describe('RangePicker', () => {
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
   })
   it('should limit to 3months sliding window within 12months for reports', async () => {
+    const staticDate = '20250402'
     render(
       <IntlProvider locale='en'>
         <RangePicker
           isReport
           selectionType={DateRange.custom}
           selectedRange={{
-            startDate: moment().subtract(7, 'months').seconds(0),
-            endDate: moment().subtract(6, 'months').seconds(0)
+            startDate: moment(staticDate).subtract(7, 'months').seconds(0),
+            endDate: moment(staticDate).subtract(6, 'months').seconds(0)
           }}
           onDateApply={() => {}}
         />
@@ -313,10 +349,10 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const yesterday = moment().subtract(7, 'months').subtract(1, 'day')
+    const yesterday = moment(staticDate).subtract(7, 'months').subtract(1, 'day')
     const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    const today = formatter(DateFormatEnum.DateFormat)(moment().subtract(6, 'months'))
+    const today = formatter(DateFormatEnum.DateFormat)(moment(staticDate).subtract(6, 'months'))
     const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
     expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
   })
@@ -431,6 +467,37 @@ describe('RangePicker', () => {
     await user.click(calenderSelect)
     const dateSelect = await screen.findAllByTitle(
       moment().subtract(2, 'months').format('YYYY-MM-DD')
+    )
+    await user.click(dateSelect[0])
+    const applyButton = await screen.findByText('Apply')
+    await user.click(applyButton)
+    expect(apply).toHaveBeenCalledTimes(1)
+  })
+
+  it('should restrict date for core tier license', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
+    const apply = jest.fn()
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          onDateApply={apply}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const dateSelect = await screen.findAllByTitle(
+      moment().subtract(7, 'days').format('YYYY-MM-DD')
     )
     await user.click(dateSelect[0])
     const applyButton = await screen.findByText('Apply')
@@ -666,7 +733,7 @@ describe('restrictDateTo3Months', () => {
       endDate: moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
     })
   })
-  it('changes the range if longer than 3 months', () => {
+  it('changes the range if longer than 90 days', () => {
     expect(JSON.stringify(restrictDateToMonthsRange([
       moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
       moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
@@ -677,7 +744,43 @@ describe('restrictDateTo3Months', () => {
       moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
       moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
     ], 'end', 3))).toEqual(
-      '{"startDate":"2023-04-16T14:30:00.000Z","endDate":"2023-07-16T14:30:00.000Z"}'
+      '{"startDate":"2023-04-17T14:30:00.000Z","endDate":"2023-07-16T14:30:00.000Z"}'
     )
   })
 })
+describe('getDefaultEarliestStart', () => {
+
+  const now = new Date('2025-04-01T00:00:00.000Z').getTime()
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(now)
+  })
+  afterEach(() => jest.restoreAllMocks())
+
+  it('should return the earliest start date for GOLD account tier with 30 days range', () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.GOLD
+    })
+    const result = getDefaultEarliestStart()
+    expect(result.isSame(moment('2025-03-02'), 'day')).toBe(true)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should return the earliest start date for other tiers with 90 days or 12 months range', () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.PLATINUM
+    })
+
+    // Test without `isReport`
+    const result = getDefaultEarliestStart()
+    expect(result.isSame(moment('2025-01-01'), 'day')).toBe(true)
+
+    // Test with `isReport: true`
+    const resultWithReport = getDefaultEarliestStart({ isReport: true })
+    expect(resultWithReport.isSame(moment('2024-04-01'), 'day')).toBe(true)
+  })
+})
+

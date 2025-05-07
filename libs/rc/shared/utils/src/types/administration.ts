@@ -1,3 +1,5 @@
+import { TreeDataNode } from 'antd'
+
 import { RolesEnum }   from '@acx-ui/types'
 import { AccountTier } from '@acx-ui/utils'
 
@@ -89,6 +91,7 @@ export interface Administrator {
   roleDsc?: string;
   fullName?: string;
   authenticationId?: string;
+  phoneNumber?: string;
 }
 
 export interface TenantMspEc {
@@ -101,7 +104,7 @@ export interface NotificationPreference {
   DEVICE_AP_FIRMWARE?: boolean;
   DEVICE_SWITCH_FIRMWARE?: boolean;
   DEVICE_EDGE_FIRMWARE?: boolean;
-  DEVICE_API_CHANGES?: boolean;
+  API_CHANGES?: boolean;
 }
 
 export interface TenantDetails {
@@ -551,7 +554,8 @@ export enum PrivacyFeatureName {
 
 export interface PrivacySettings {
   featureName: PrivacyFeatureName,
-  isEnabled: boolean
+  isEnabled: boolean,
+  enforceDefault?: boolean
 }
 
 export interface PrivacyFeatures {
@@ -563,5 +567,10 @@ export interface ScopeFeature {
   name: string,
   description: string,
   category: string,
-  subFeatures?: ScopeFeature[]
+  subFeatures?: ScopeFeature[],
+  inTandem?: boolean
+}
+
+export interface ScopeTreeDataNode extends TreeDataNode {
+  inTandem?: boolean
 }

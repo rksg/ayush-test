@@ -7,6 +7,7 @@ import { administrationApi }                                      from '@acx-ui/
 import { AdministrationUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                         from '@acx-ui/user'
 
 import { PendingActivations } from '.'
 
@@ -190,5 +191,23 @@ describe('PendingActivations', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /aaa/i }))
     expect(await screen.findByText('Activate Purchase')).toBeVisible()
+  })
+
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
+    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /aaa/i })).toBeVisible()
   })
 })

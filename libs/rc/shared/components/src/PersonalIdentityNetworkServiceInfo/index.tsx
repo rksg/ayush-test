@@ -4,7 +4,9 @@ import styled      from 'styled-components'
 import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
+  PersonalIdentityNetworkApiVersion,
   useApListQuery,
+  useGetDpskQuery,
   useGetEdgeDhcpServiceQuery,
   useGetEdgePinByIdQuery,
   useGetEdgePinViewDataListQuery,
@@ -19,30 +21,35 @@ import {
   getPolicyDetailsLink,
   getServiceDetailsLink,
   edgePinDefaultPayloadFields,
-  transformDisplayNumber
+  transformDisplayNumber,
+  MAX_DEVICE_PER_SEGMENT,
+  DpskDetailsTabKey
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
 
 import { EdgeServiceStatusLight } from '../EdgeServiceStatusLight'
 import { defaultApPayload }       from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
+import { useIsEdgeFeatureReady }  from '../useEdgeActions'
 
 import * as UI from './styledComponents'
 
-interface PersonalIdentitNetworkServiceInfoProps {
+interface PersonalIdentityNetworkServiceInfoProps {
   pinId: string
   className?: string
 }
 
 export const PersonalIdentityNetworkServiceInfo = styled((
-  props: PersonalIdentitNetworkServiceInfoProps
+  props: PersonalIdentityNetworkServiceInfoProps
 ) => {
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { pinId } = props
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId } = params
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     pinViewData,
@@ -64,7 +71,8 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     data: pinData,
     isLoading: isPinDataLoading
   } = useGetEdgePinByIdQuery({
-    params: { serviceId: pinId }
+    params: { serviceId: pinId },
+    customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
   })
 
   const apListQuery = useApListQuery({
@@ -110,13 +118,22 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     }
   )
 
+  const {
+    data: dpskData,
+    isLoading: isDpskLoading
+  } = useGetDpskQuery(
+    { params: { serviceId: personaGroupData?.dpskPoolId } },
+    { skip: !isEdgePinEnhanceReady || !personaGroupData?.dpskPoolId })
+
   const pinInfo = [
     {
       title: $t({ defaultMessage: 'Service Status' }),
-      content: pinViewData?.serviceStatus || $t({ defaultMessage: 'Down' })
+      content: pinViewData?.serviceStatus || $t({ defaultMessage: 'Down' }),
+      colSpan: 4
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
+      colSpan: 4,
       content: () => ((pinViewData?.edgeClusterInfo)
         ? <EdgeServiceStatusLight data={pinViewData.edgeAlarmSummary} />
         : noDataDisplay
@@ -124,6 +141,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      colSpan: 4,
       content: () => {
         return (
           <TenantLink
@@ -136,14 +154,33 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Identity Group' }),
+      colSpan: 4,
       content: () => (
         <TenantLink to={`users/identity-management/identity-group/${personaGroupData?.id}`}>
           {personaGroupData?.name}
         </TenantLink>
       )
     },
+    ...(isEdgePinEnhanceReady? [{
+      title: $t({ defaultMessage: 'DPSK Service' }),
+      colSpan: 4,
+      content: () => {
+        return <Loader states={[{ isLoading: isDpskLoading }]}>
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.DPSK,
+            oper: ServiceOperation.DETAIL,
+            serviceId: dpskData?.id || '',
+            activeTab: DpskDetailsTabKey.OVERVIEW
+          })}
+          >
+            {dpskData?.name}
+          </TenantLink>
+        </Loader>
+      }
+    }]: []),
     {
       title: $t({ defaultMessage: 'Cluster' }),
+      colSpan: 4,
       content: () => {
         const clusterInfo = pinViewData?.edgeClusterInfo
         return (
@@ -157,14 +194,17 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
+      colSpan: 4,
       content: pinData?.edgeClusterInfo?.segments
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: pinData?.edgeClusterInfo?.devices
+      colSpan: 4,
+      content: MAX_DEVICE_PER_SEGMENT
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
+      colSpan: 4,
       content: () => {
         if(dhcpName) {
           const dhcpPoolId = pinData?.edgeClusterInfo?.dhcpPoolId
@@ -185,7 +225,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     {
       title: () => (
         <>
-          <span className='text-align'>{$t({ defaultMessage: 'Tunnel' })}</span>
+          <span className='text-align'>{$t({ defaultMessage: 'Tunnel Profile' })}</span>
           <Tooltip
             title={tunnelTooltipMsg}
             placement='bottom'
@@ -194,6 +234,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
           </Tooltip>
         </>
       ),
+      colSpan: 4,
       content: () => (
         tunnelData &&
           <TenantLink to={getPolicyDetailsLink({
@@ -208,7 +249,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
           </TenantLink>
       )
     },
-    {
+    ...(isEdgePinEnhanceReady ? [] : [{
       title: $t({ defaultMessage: 'Networks' }),
       content: transformDisplayNumber(pinViewData?.tunneledWlans?.length)
     },
@@ -223,7 +264,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     {
       title: $t({ defaultMessage: 'Access Switches' }),
       content: pinData?.accessSwitchInfos.length
-    }
+    }])
   ]
 
   return (

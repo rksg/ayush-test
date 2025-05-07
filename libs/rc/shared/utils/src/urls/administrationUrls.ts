@@ -5,6 +5,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/self',
     oldUrl: '/api/tenant/:tenantId',
+    opsApi: 'GET:/tenants/self',
     newApi: true
   },
   updateTenantSelf: {
@@ -23,6 +24,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'GET:/admins',
     newApi: true
   },
   updateAdmin: {
@@ -75,6 +77,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/delegations?type=VAR',
     oldUrl: '/api/tenant/:tenantId/delegation?type=VAR',
+    opsApi: 'GET:/tenants/delegations',
     newApi: true
   },
   getTenantDelegation: {
@@ -125,6 +128,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/delegations/:delegationId',
     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    opsApi: 'DELETE:/tenants/delegations/{id}',
     newApi: true
   },
   inviteVAR: {
@@ -144,6 +148,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'GET:/tenants/notificationRecipients',
     newApi: true
   },
   addRecipient: {
@@ -188,11 +193,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getEntitlementsActivations: {
     method: 'post',
     url: '/entitlements/orders/query',
+    opsApi: 'POST:/entitlements/orders/query',
     newApi: true
   },
   patchEntitlementsActivations: {
     method: 'PATCH',
     url: '/entitlements/orders/:orderId',
+    opsApi: 'PATCH:/entitlements/orders/{id}',
     newApi: true
   },
   refreshLicensesData: {
@@ -276,11 +283,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getCustomRoles: {
     method: 'get',
     url: '/roleAuthentications/customRoles',
+    opsApi: 'GET:/roleAuthentications/customRoles',
     newApi: true
   },
   addCustomRole: {
     method: 'post',
     url: '/roleAuthentications/customRoles',
+    opsApi: 'POST:/roleAuthentications/customRoles',
     newApi: true
   },
   updateCustomRole: {
@@ -318,16 +327,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addPrivilegeGroup: {
     method: 'post',
     url: '/roleAuthentications/privilegeGroups',
+    opsApi: 'POST:/roleAuthentications/privilegeGroups',
     newApi: true
   },
   updatePrivilegeGroup: {
     method: 'put',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'PUT:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   deletePrivilegeGroup: {
     method: 'delete',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'DELETE:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   getNotificationSms: {
@@ -374,6 +386,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getWebhooks: {
     method: 'post',
     url: '/webhooks/query',
+    opsApi: 'POST:/webhooks/query',
     newApi: true
   },
   getWebhookEntry: {
@@ -384,16 +397,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addWebhook: {
     method: 'post',
     url: '/webhooks',
+    opsApi: 'POST:/webhooks',
     newApi: true
   },
   updateWebhook: {
     method: 'put',
     url: '/webhooks/:webhookId',
+    opsApi: 'PUT:/webhooks/{id}',
     newApi: true
   },
   deleteWebhook: {
     method: 'delete',
     url: '/webhooks/:webhookId',
+    opsApi: 'DELETE:/webhooks/{id}',
     newApi: true
   },
   webhookSendSampleEvent: {
@@ -404,11 +420,17 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getPrivacySettings: {
     method: 'get',
     url: '/tenants/privacySettings',
+    opsApi: 'GET:/tenants/privacySettings',
     newApi: true
   },
   updatePrivacySettings: {
     method: 'PATCH',
     url: '/tenants/privacySettings',
+    newApi: true
+  },
+  deleteTenant: {
+    method: 'delete',
+    url: '/nuketenant/:tenantId',
     newApi: true
   }
 }

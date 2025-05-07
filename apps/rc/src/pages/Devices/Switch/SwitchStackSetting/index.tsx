@@ -55,7 +55,8 @@ export function SwitchStackSetting (props: {
   deviceOnline?: boolean
 }) {
   const { $t } = useIntl()
-  const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
+  const { apGroupOption, readOnly, isIcx7650, disableIpSetting,
+    deviceOnline, switchDetail }= props
   const form = Form.useFormInstance()
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
@@ -315,7 +316,7 @@ export function SwitchStackSetting (props: {
               noStyle
               name='authEnable'
               valuePropName='checked'
-              children={<Switch style={{ display: 'flex' }} />}
+              children={<Switch disabled={readOnly} style={{ display: 'flex' }} />}
             />
           </Space>
           { authEnable && <>
@@ -337,7 +338,7 @@ export function SwitchStackSetting (props: {
                 }
               ]}
               children={
-                <Input />
+                <Input disabled={readOnly} />
               }
             />
             <Form.Item
@@ -372,7 +373,7 @@ export function SwitchStackSetting (props: {
                 }
               ]}
               children={
-                <Input />
+                <Input disabled={readOnly} />
               }
             />
           </>}

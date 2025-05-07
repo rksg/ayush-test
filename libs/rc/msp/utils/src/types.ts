@@ -303,6 +303,18 @@ export interface TenantDetail {
   updatedDate?: string;
   upgradeGroup?: string;
   mspEc?: TenantMspEc;
+  msp?: MspTenantData
+}
+
+export interface MspTenantData {
+  mspLabel?: string;
+  myOpenCaseUrl?: string;
+  openCaseUrl?: string;
+  contactSupportUrl?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  isDisableNotification?: boolean
 }
 
 export interface MspProfile {
@@ -484,9 +496,11 @@ export interface MspRecCustomer {
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
   email_id?: string
+  is_tenant_onboarded?: boolean
 }
 
 export enum MspEcTierEnum {
+  Core = 'Silver',
   Essentials = 'Gold',
   Professional = 'Platinum'
 }
@@ -514,7 +528,7 @@ export enum DeviceComplianceType {
   VIRTUAL_EDGE = 'VIRTUAL_EDGE',
   RWG = 'RWG',
   SLTN_ADAPT_POLICY = 'SLTN_ADAPT_POLICY',
-  SLTN_PI_NET = 'SLTN_PI_NET',
+  SLTN_PIN_FOR_IDENTITY = 'SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT = 'SLTN_PMS_INT',
   SLTN_SIS_INT = 'SLTN_SIS_INT',
   SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC'
@@ -533,8 +547,8 @@ export const DeviceComplianceTypeLabels = {
   [DeviceComplianceType.VIRTUAL_EDGE]: defineMessage({ defaultMessage: 'Virtual Edge' }),
   [DeviceComplianceType.RWG]: defineMessage({ defaultMessage: 'RWG' }),
   [DeviceComplianceType.SLTN_ADAPT_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
-  [DeviceComplianceType.SLTN_PI_NET]:
-    defineMessage({ defaultMessage: 'Personal Identity Network' }),
+  [DeviceComplianceType.SLTN_PIN_FOR_IDENTITY]:
+    defineMessage({ defaultMessage: 'PIN for RUCKUS One Identity' }),
   [DeviceComplianceType.SLTN_PMS_INT]: defineMessage({ defaultMessage: 'PMS Integration' }),
   [DeviceComplianceType.SLTN_SIS_INT]: defineMessage({ defaultMessage: 'SIS Integration' }),
   [DeviceComplianceType.SLTN_HYBRID_CLOUD_SEC]:
@@ -608,7 +622,7 @@ export enum ComplianceMspCustomersDevicesTypes {
   EDGE='EDGE',
   RWG='RWG',
   SLTN_ADAPT_POLICY='SLTN_ADAPT_POLICY',
-  SLTN_PI_NET='SLTN_PI_NET',
+  SLTN_PIN_FOR_IDENTITY='SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT='SLTN_PMS_INT',
   SLTN_SIS_INT='SLTN_SIS_INT',
   SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC'
@@ -728,7 +742,6 @@ export const AssignedEntitlementListPayload = {
   sortField: 'expirationDate',
   sortOrder: 'DESC',
   filters: {
-    licenseType: ['APSW'],
     usageType: 'ASSIGNED'
   }
 }

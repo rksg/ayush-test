@@ -20,12 +20,13 @@ import {
 import { sortProp,
   defaultSort,
   PrivilegeGroup,
-  CustomGroupType
+  CustomGroupType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantType, useTenantLink }                            from '@acx-ui/react-router-dom'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, roleStringMap, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import { TenantType, useTenantLink }                                                                  from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                  from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, roleStringMap, useUserProfileContext } from '@acx-ui/user'
+import { AccountType, getOpsApi }                                                                     from '@acx-ui/utils'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -47,6 +48,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
   const { data: userProfileData } = useUserProfileContext()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
@@ -112,12 +114,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleName',
       dataIndex: 'roleName',
+      sorter: { compare: sortProp('roleName', defaultSort) },
       filterable: customRoleOption?.map(role => ({
         key: role as string,
         value: roleStringMap[role as RolesEnum]
@@ -139,12 +143,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       title: $t({ defaultMessage: 'Group Type' }),
       key: 'type',
       dataIndex: 'type',
+      sorter: { compare: sortProp('type', defaultSort) },
       filterable: true
     },
     {
       title: $t({ defaultMessage: 'Members' }),
       key: 'memberCount',
       dataIndex: 'memberCount',
+      sorter: { compare: sortProp('memberCount', defaultSort) },
       align: 'center'
     }
   ]
@@ -152,6 +158,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const rowActions: TableProps<PrivilegeGroup>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updatePrivilegeGroup)],
       visible: (selectedRows) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
@@ -169,6 +176,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addPrivilegeGroup)],
       visible: (selectedRows) => {
         const excludedRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER]
         return (selectedRows.length === 1 &&
@@ -186,6 +194,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deletePrivilegeGroup)],
       visible: (selectedRows) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM &&
           selectedRows[0].memberCount === 0)
@@ -209,12 +218,18 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   ]
 
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.addPrivilegeGroup)])
+    : isPrimeAdminUser
+  if (hasAddPermission && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Privilege Group' }),
       onClick: handleClickAdd
     })
   }
+
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : isPrimeAdminUser
 
   return (
     <Loader states={[
@@ -226,10 +241,10 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         columns={columns}
         dataSource={privilegeGroupData}
         rowKey='name'
-        rowActions={isPrimeAdminUser
+        rowActions={hasRowPermissions
           ? filterByAccess(rowActions)
           : undefined}
-        rowSelection={isPrimeAdminUser ? {
+        rowSelection={hasRowPermissions ? {
           type: 'radio'//,
           // onSelect: handleRowSelectChange
         } : undefined}

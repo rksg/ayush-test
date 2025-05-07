@@ -8,6 +8,7 @@ import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo }        
 import { PrivilegeGroup }                                                                    from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                                                    from '@acx-ui/user'
 import { AccountType }                                                                       from '@acx-ui/utils'
 
 import { MspCustomers } from '.'
@@ -320,6 +321,10 @@ describe('MspCustomers', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
         MspUrlsInfo.getSupportMspCustomersList.url.split('?').at(0) as Path,
         (req, res, ctx) => res(ctx.json({ ...list }))
       ),
@@ -330,6 +335,14 @@ describe('MspCustomers', () => {
       rest.delete(
         MspRbacUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+      ),
+      rest.put(
+        MspRbacUrlsInfo.reactivateMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.delete(
+        MspRbacUrlsInfo.deactivateMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
       rest.post(
         MspUrlsInfo.deactivateMspEcAccount.url,
@@ -998,5 +1011,28 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
+  })
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('MSP Customers')).toBeVisible()
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
   })
 })

@@ -1,20 +1,24 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { type NetworkPath, type NodeType } from '@acx-ui/utils'
-
-import { type NetworkNode } from '../NetworkFilter/services'
+import type { NetworkPath, NodeType, NetworkNode } from '@acx-ui/utils'
 
 import { DisplayStates, Statuses, StatusReasons } from './states'
-import { type IntentWlan }                        from './utils'
+
+export type IntentWlan = {
+  name: string
+  ssid: string
+}
 
 export type Metadata = {
   appliedAt: string
   changedByName?: string
   dataEndTime: string
   failures?: (keyof typeof failureCodes)[]
+  error?: { details?: Record<string, unknown>[] }
   oneClickOptimize?: boolean
   preferences?: IntentPreferences
+  preferencesUpdatedAt?: string
   retries?: number
   scheduledAt: string
   scheduledBy?: string
@@ -81,14 +85,14 @@ export enum AiFeatures {
   RRM = 'AI-Driven RRM',
   EquiFlex = 'EquiFlex',
   AIOps = 'AI Operations',
-  EcoFlex = 'EcoFlex'
+  EcoFlex = 'Energy Saving'
 }
 
 export const aiFeaturesLabel = {
   [AiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   [AiFeatures.EquiFlex]: defineMessage({ defaultMessage: 'EquiFlex' }),
   [AiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
-  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'EcoFlex' })
+  [AiFeatures.EcoFlex]: defineMessage({ defaultMessage: 'Energy Saving' })
 }
 
 type CodeInfo = {
@@ -287,11 +291,11 @@ export const failureCodes = {
   'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
   'sufficient-aps-crrm': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
   'sufficient-aps-pf': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'sz-offboarded': defineMessage({ defaultMessage: 'SmartZone has been offboarded.' }),
   'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
   'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' })
 }
 
-//For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
     aiFeature: AiFeatures.AIOps,

@@ -40,20 +40,21 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   getUserProfile: jest.fn(),
   updateSelectedTenant: jest.fn()
 }))
-const userProfile = getUserProfile as jest.Mock
+const userProfile = jest.mocked(getUserProfile)
 
 const defaultReportsPermissions = {
   READ_DASHBOARD: false,
   READ_HEALTH: false,
   READ_REPORTS: false,
   READ_DATA_STUDIO: false,
-  READ_DATA_SUBSCRIPTIONS: false
+  READ_DATA_CONNECTOR: false,
+  READ_DATA_CONNECTOR_STORAGE: false
 }
 
 describe('AllRoutes', () => {
   const defaultUserProfile = {
     accountId: 'aid',
-    tenants: [],
+    tenants: [{ id: 'aid', permissions: { READ_ONBOARDED_SYSTEMS: true } }],
     invitations: [],
     selectedTenant: {
       id: 'aid',
@@ -104,14 +105,14 @@ describe('AllRoutes', () => {
     }, {})
   })
 
-  it('redirects to data subscriptions', async () => {
+  it('redirects to data connector', async () => {
     setRaiPermissions({
       ...defaultReportsPermissions,
-      READ_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+      READ_DATA_CONNECTOR: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
-      to: { pathname: '/ai/dataSubscriptions', search: '?selectedTenants=WyJhaWQiXQ==' }
+      to: { pathname: '/ai/dataConnector', search: '?selectedTenants=WyJhaWQiXQ==' }
     }, {})
   })
 
@@ -178,39 +179,6 @@ describe('AllRoutes', () => {
     expect(await screen.findByAltText('Logo')).toBeVisible()
     expect(await screen.findByTestId('VideoCallQoeForm')).toBeVisible()
   })
-  it('should render crrm correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm' }, wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
-  })
-  it('should render aiOps correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/aiOps' }, wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
-  })
-  it('should render crrm details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm/test-recommendation-id' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('CrrmDetails')).toBeVisible()
-  })
-  it('should render unknown details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm/unknown/*' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('UnknownDetails')).toBeVisible()
-  })
-  it('should render aiOps details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/aiOps/test-recommendation-id' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('RecommendationDetails')).toBeVisible()
-  })
   it('should render Dashboard', async () => {
     const path = '/ai/dashboard'
     render(<AllRoutes />, { route: { path } })
@@ -226,8 +194,8 @@ describe('AllRoutes', () => {
       , wrapper: Provider })
     await screen.findByTestId('reports')
   })
-  it('should render Data Subscriptions correctly', async () => {
-    render(<AllRoutes />, { route: { path: '/ai/dataSubscriptions' }
+  it('should render Data Connector correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/dataConnector' }
       , wrapper: Provider })
     await screen.findByTestId('reports')
   })

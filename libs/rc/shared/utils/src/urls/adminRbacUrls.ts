@@ -96,6 +96,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/delegations/support',
     oldUrl: '/tenants/supportDelegations',
+    opsApi: 'DELETE:/tenants/delegations/support',
     newApi: true
   },
   //   getPreferences: {
@@ -277,6 +278,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getPrivilegeGroups: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',
+    opsApi: 'GET:/roleAuthentications/privilegeGroups',
     newApi: true
   },
   addPrivilegeGroup: {

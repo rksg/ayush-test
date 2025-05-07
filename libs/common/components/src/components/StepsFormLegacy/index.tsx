@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { Steps, Space } from 'antd'
-import _                from 'lodash'
-import toArray          from 'rc-util/lib/Children/toArray'
-import { useIntl }      from 'react-intl'
+import { Steps, Space, Tooltip } from 'antd'
+import _                         from 'lodash'
+import toArray                   from 'rc-util/lib/Children/toArray'
+import { useIntl }               from 'react-intl'
 
 import { Button }                       from '../Button'
+import { CustomButtonPropsType }        from '../StepsForm/useStepsForm'
 import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
 
 import * as UI from './styledComponents'
@@ -42,6 +43,10 @@ export type StepsFormLegacyProps <FormValue = any> =
       pre?: string
       cancel?: string
     }
+
+    buttonProps?: {
+      submit?: CustomButtonPropsType
+    }
   }
 
 export type StepFormLegacyProps <FormValue> = Omit<
@@ -60,6 +65,7 @@ export function StepsFormLegacy <FormValue = any> (
     current: propCurrent,
     formRef: propFormRef,
     onCancel,
+    buttonProps = {},
     ...otherProps
   } = props
   const { $t } = useIntl()
@@ -111,7 +117,9 @@ export function StepsFormLegacy <FormValue = any> (
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
       {form}
-      <UI.ActionsContainer>
+      <UI.ActionsContainer
+        className={`action-footer${items.length === 1 ? ' single-step' : ''}`}
+      >
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
     </>
@@ -132,10 +140,11 @@ export function StepsFormLegacy <FormValue = any> (
 
         const submit = domArray.pop() as React.ReactElement<ButtonProps>
         const submitKey = stepCount - 1 === props.step ? 'submit' : 'next'
-        const submitButton = <Button
-          {...submit.props}
+        const submitButton = <SubmitButton
           key={submitKey}
-          type='primary'
+          originalProps={submit.props}
+          customProps={buttonProps.submit}
+          submitKey={submitKey}
           children={buttonLabel[submitKey]}
         />
 
@@ -169,6 +178,29 @@ export function StepsFormLegacy <FormValue = any> (
       />
     </UI.Wrapper>
   )
+}
+
+
+interface SubmitButtonProps {
+  submitKey: 'next' | 'submit'
+  originalProps: ButtonProps
+  customProps?: CustomButtonPropsType
+}
+
+function SubmitButton (props: React.PropsWithChildren<SubmitButtonProps>) {
+  const { submitKey, originalProps, customProps = {}, children } = props
+  const { tooltip, ...restCustomProps } = customProps
+
+  const submitButton = <Button
+    {...originalProps}
+    type='primary'
+    children={children}
+    {...(submitKey === 'submit' && restCustomProps)}
+  />
+
+  return submitKey === 'submit' && tooltip
+    ? <Tooltip title={tooltip}><span>{submitButton}</span></Tooltip>
+    : submitButton
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

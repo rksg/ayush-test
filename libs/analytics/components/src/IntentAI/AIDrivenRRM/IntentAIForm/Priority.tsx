@@ -17,7 +17,7 @@ const label = defineMessage({ defaultMessage: 'Intent Priority' })
 export const priorities = {
   full: {
     value: true,
-    title: <FormattedMessage defaultMessage='High number of clients in a dense network' />,
+    title: defineMessage({ defaultMessage: 'High number of clients in a dense network' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -29,7 +29,7 @@ export const priorities = {
   },
   partial: {
     value: false,
-    title: <FormattedMessage defaultMessage='High client throughput in sparse network' />,
+    title: defineMessage({ defaultMessage: 'High client throughput in sparse network' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -41,19 +41,19 @@ export const priorities = {
   }
 }
 
-const radios = Object.entries(priorities)
-  .map(([key, priority]) => ({
-    key,
-    value: priority.value,
-    children: priority.title,
-    columns: [priority.content]
-  }))
 
 export function Priority () {
   const { $t } = useIntl()
   const { intent: { sliceValue } } = useIntentContext()
+  const radios = Object.entries(priorities)
+    .map(([key, priority]) => ({
+      key,
+      value: priority.value,
+      children: $t(priority.title),
+      columns: [priority.content]
+    }))
 
-  const label = $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: sliceValue })
+  const label = $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?' }, { zone: sliceValue })
 
   return <Row gutter={20}>
     <Col span={15}>

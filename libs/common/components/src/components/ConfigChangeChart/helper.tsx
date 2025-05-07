@@ -67,22 +67,22 @@ export function getConfigChangeEntityTypeMapping (showIntentAI: boolean) : Chart
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
   const rcMap = [
-    { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) },
-    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
-    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
-    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
+    { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }), color: 0 },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }), color: 2 },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }), color: 3 },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }), color: 4 },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }), color: 5 }
   ]
   const raMap = [
-    { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
-    { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
-    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
-    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
-    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
+    { key: 'zone', label: $t({ defaultMessage: 'Zone' }), color: 0 },
+    { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }), color: 1 },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }), color: 2 },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }), color: 3 },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }), color: 4 },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }), color: 5 }
   ]
   return (get('IS_MLISA_SA') ? raMap : rcMap)
-    .slice(0).map((rec, index) => ({ ...rec, color: colors[index] }))
+    .slice(0).map(({ color, ...rec }) => ({ ...rec, color: colors[color] }))
     .reverse()
     .filter(entity => showIntentAI ? true : (entity.key !== 'intentAI') )
 }
@@ -456,7 +456,10 @@ export function useLegendTableFilter (
     const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
 
     if(isPaged){
-      setPagination?.(CONFIG_CHANGE_DEFAULT_PAGINATION)
+      setPagination?.({
+        current: CONFIG_CHANGE_DEFAULT_PAGINATION.current,
+        pageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+      })
     }
     else {
       setPagination?.({

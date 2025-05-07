@@ -11,6 +11,7 @@ import {
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
+  useGetEthernetPortProfileTemplateWithRelationsByIdQuery,
   useGetEthernetPortProfileWithRelationsByIdQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,11 +22,16 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate,
+  usePolicyListBreadcrumb,
+  useTemplateAwarePolicyAllowedOperation,
+  transformDisplayOnOff
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import { ApTable }    from './InstanceTable/ApTable'
 import { VenueTable } from './InstanceTable/VenueTable'
@@ -34,17 +40,31 @@ export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
-  const { data: ethernetPortProfileData } = useGetEthernetPortProfileWithRelationsByIdQuery({
+  const supportSwitchPortProfile = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const supportWiredClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
+  let breadcrumbWithSwitchPortProfile = [...breadcrumb]
+  if (breadcrumbWithSwitchPortProfile.length >= 3) {
+    breadcrumbWithSwitchPortProfile[2] = {
+      ...breadcrumbWithSwitchPortProfile[2],
+      link: 'policies/portProfile/wifi'
+    }
+  }
+
+  const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateWithRelationsByIdQuery,
+    enableRbac: true,
+    extraParams: { id: policyId },
     payload: {
       sortField: 'name',
       sortOrder: 'ASC',
       filters: {
         id: [policyId]
       }
-    },
-    params: {
-      id: policyId
     }
   })
 
@@ -52,7 +72,7 @@ export const EthernetPortProfileDetail = () => {
     {
       params: { policyId: ethernetPortProfileData?.authRadiusId }
     }, {
-      skip: !!!ethernetPortProfileData?.authRadiusId
+      skip: !!!ethernetPortProfileData?.authRadiusId || isTemplate
     }
   )
 
@@ -60,7 +80,7 @@ export const EthernetPortProfileDetail = () => {
     {
       params: { policyId: ethernetPortProfileData?.accountingRadiusId }
     }, {
-      skip: !!!ethernetPortProfileData?.accountingRadiusId
+      skip: !!!ethernetPortProfileData?.accountingRadiusId || isTemplate
     }
   )
 
@@ -82,7 +102,8 @@ export const EthernetPortProfileDetail = () => {
       content: () => {
         return ethernetPortProfileData?.vlanMembers
       }
-    }, {
+    },
+    ...(isTemplate? [] : [{
       title: $t({ defaultMessage: '802.1X Authentication' }),
       content: () => {
         const authTypeString = getEthernetPortAuthTypeString(ethernetPortProfileData?.authType)
@@ -123,15 +144,27 @@ export const EthernetPortProfileDetail = () => {
     }, {
       title: $t({ defaultMessage: 'MAC Auth Bypass' }),
       content: () => {
-        return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
+        return transformDisplayOnOff(!!ethernetPortProfileData?.bypassMacAddressAuthentication)
       }
-    },
-    ...(supportDynamicVLAN &&
+    }]),
+    ...(supportWiredClientVisibility ? [
+      {
+        title: $t({ defaultMessage: 'Client Visibility' }),
+        content: () => {
+          return transformDisplayOnOff(
+            ethernetPortProfileData?.authType === EthernetPortAuthType.OPEN ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.PORT_BASED ||
+            ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED
+          )
+        }
+      }
+    ] : []),
+    ...(supportDynamicVLAN && !isTemplate &&
       ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
       [{
         title: $t({ defaultMessage: 'Dynamic VLAN' }),
         content: () => {
-          return (ethernetPortProfileData?.dynamicVlanEnabled)? 'On' : 'Off'
+          return transformDisplayOnOff(!!ethernetPortProfileData?.dynamicVlanEnabled)
         }
       }] : [])
   ]
@@ -139,33 +172,22 @@ export const EthernetPortProfileDetail = () => {
   return (<>
     <PageHeader
       title={ethernetPortProfileData?.name}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },{
-          text: $t({ defaultMessage: 'Ethernet Port Profiles' }),
-          link: getPolicyRoutePath(
-            { type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST }
-          )
-        }
-      ]}
-      extra={
-        filterByAccessForServicePolicyMutation([
-          <TenantLink
-            scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
-            to={getPolicyDetailsLink({
-              type: PolicyType.ETHERNET_PORT_PROFILE,
-              oper: PolicyOperation.EDIT,
-              policyId: policyId as string
-            })}>
+      breadcrumb={supportSwitchPortProfile ? breadcrumbWithSwitchPortProfile : breadcrumb}
+      extra={filterByAccessForServicePolicyMutation([
+        <PolicyConfigTemplateLinkSwitcher
+          // eslint-disable-next-line max-len
+          rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
+          scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
+          type={PolicyType.ETHERNET_PORT_PROFILE}
+          oper={PolicyOperation.EDIT}
+          policyId={policyId!}
+          children={
             <Button key={'configure'} type={'primary'} disabled={isDefaultProfile}>
               {$t({ defaultMessage: 'Configure' })}
-            </Button></TenantLink>
-        ])
-      }
-
+            </Button>
+          }
+        />
+      ])}
     />
     <Space direction='vertical' size={30}>
       <SummaryCard data={ethernetPortProfileInfo} colPerRow={6} />

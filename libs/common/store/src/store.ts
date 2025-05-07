@@ -18,6 +18,7 @@ import {
   baseEdgeSdLanApi,
   baseEdgeMdnsProxyApi,
   baseEdgeTnmServiceApi,
+  baseIotApi as iotApi,
   baseEventAlarmApi as eventAlarmApi,
   baseFirmwareApi as firmwareApi,
   intentAIApi,
@@ -31,7 +32,6 @@ import {
   basePersonaApi as personaApi,
   basePolicyApi as policyApi,
   rbacApi,
-  recommendationApi,
   reportsApi,
   baseResidentPortalApi as residentPortalApi,
   baseRWGApi as rwgApi,
@@ -51,7 +51,9 @@ import {
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi,
   baseRuckusAiChatApi as ruckusAiChatApi,
-  baseClientIsolationApi as clientIsolationApi
+  baseClientIsolationApi as clientIsolationApi,
+  baseIpSecApi as ipSecApi,
+  baseSamlIdpProfileApi as samlIdpProfileApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
 
@@ -70,7 +72,6 @@ export const store = configureStore({
     [dataApiSearch.reducerPath]: dataApiSearch.reducer,
     [reportsApi.reducerPath]: reportsApi.reducer,
     [rbacApi.reducerPath]: rbacApi.reducer,
-    [recommendationApi.reducerPath]: recommendationApi.reducer,
     [intentAIApi.reducerPath]: intentAIApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
@@ -79,6 +80,7 @@ export const store = configureStore({
     [mspApi.reducerPath]: mspApi.reducer,
     [licenseApi.reducerPath]: licenseApi.reducer,
     [edgeApi.reducerPath]: edgeApi.reducer,
+    [iotApi.reducerPath]: iotApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
@@ -110,7 +112,9 @@ export const store = configureStore({
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
     [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
-    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
+    [ipSecApi.reducerPath]: ipSecApi.reducer,
+    [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -126,7 +130,6 @@ export const store = configureStore({
       eventAlarmApi.middleware,
       timelineApi.middleware,
       dataApi.middleware,
-      recommendationApi.middleware,
       intentAIApi.middleware,
       dataApiSearch.middleware,
       apApi.middleware,
@@ -138,6 +141,7 @@ export const store = configureStore({
       mspApi.middleware,
       licenseApi.middleware,
       edgeApi.middleware,
+      iotApi.middleware,
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
@@ -169,7 +173,9 @@ export const store = configureStore({
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
       ruckusAiChatApi.middleware,
-      clientIsolationApi.middleware
+      clientIsolationApi.middleware,
+      ipSecApi.middleware,
+      samlIdpProfileApi.middleware
     ])
   },
 

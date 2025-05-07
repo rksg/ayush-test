@@ -2,17 +2,17 @@
 import { FormInstance }                            from 'antd'
 import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import {
-  isSdLanGuestUtilizedOnDiffVenue,
+  isSdLanDmzUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal
 } from '../../../EdgeSdLan/edgeSdLanUtils'
 import { showSdLanGuestFwdConflictModal }                                                from '../../../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../../../NetworkTunnelActionModal'
 import { mergeSdLanCacheAct }                                                            from '../../../NetworkTunnelActionModal/utils'
-import { getNetworkTunnelSdLanUpdateData }                                               from '../../utils'
+import { getNetworkTunnelSdLanUpdateData }                                               from '../../edgeUtils'
 
 
 export const handleSdLanTunnelAction = async (
@@ -23,6 +23,7 @@ export const handleSdLanTunnelAction = async (
   otherData: {
     network: NetworkTunnelActionModalProps['network'],
     venueSdLan?: EdgeMvSdLanViewData,
+    isL2oGreReady?: boolean
   }
 }) => {
   const { form, modalFormValues, otherData } = props
@@ -56,18 +57,22 @@ export const handleSdLanTunnelAction = async (
         resolve()
       }, () => resolve(false))
     } else {
-
+      const isL2oGreReady = otherData.isL2oGreReady
+      const currentFwdTunnelType = modalFormValues.sdLan?.forwardingTunnelType
       const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-        && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
+        && isSdLanDmzUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId, currentFwdTunnelType)
 
       if (needSdLanConfigConflictCheck) {
+        const activatedDmz = (modalFormValues.sdLan.isGuestTunnelEnabled ||
+          currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE) ?? false
         showSdLanGuestFwdConflictModal({
           currentNetworkVenueId: network?.venueId!,
           currentNetworkId: network?.id!,
           currentNetworkName: '',
-          activatedGuest: modalFormValues.sdLan.isGuestTunnelEnabled,
+          activatedDmz: activatedDmz,
           tunneledWlans: venueSdLan!.tunneledWlans,
           tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+          isL2oGreReady: isL2oGreReady,
           onOk: async (impactVenueIds: string[]) => {
             if (impactVenueIds.length) {
               // has conflict and confirmed
@@ -139,4 +144,20 @@ export const handleSoftGreTunnelAction = (props: {
     [`${networkVenueId}`]: { ...modalFormValues.softGre }
   }
   form.setFieldValue('softGreAssociationUpdate', updateContent)
+}
+
+export const handleIpsecAction = (props: {
+  form: FormInstance,
+  networkInfo: NetworkTunnelActionModalProps['network'],
+  modalFormValues: NetworkTunnelActionForm
+}) => {
+  const { form, networkInfo, modalFormValues } = props
+  const networkVenueId = networkInfo?.venueId
+  const ipsecAssociationUpdate = form.getFieldValue('ipsecAssociationUpdate') ??
+  {} as NetworkTunnelIpsecAction
+  const updateContent = {
+    ...ipsecAssociationUpdate,
+    [`${networkVenueId}`]: { ...modalFormValues.ipsec, softGreProfileId: modalFormValues.softGre.newProfileId }
+  }
+  form.setFieldValue('ipsecAssociationUpdate', updateContent)
 }
