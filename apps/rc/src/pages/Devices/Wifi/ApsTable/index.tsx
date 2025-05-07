@@ -14,11 +14,11 @@ import {
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { COUNT_ALL_REQ_CONTENT, usePollingTableQuery, WifiRbacUrlsInfo }  from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                     from '@acx-ui/types'
-import { hasPermission }                                                  from '@acx-ui/user'
-import { getOpsApi }                                                      from '@acx-ui/utils'
+import { COUNT_ALL_REQ_CONTENT, usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                    from '@acx-ui/types'
+import { hasPermission }                                                 from '@acx-ui/user'
+import { getOpsApi }                                                     from '@acx-ui/utils'
 
 const apsCountQueryPayload = {
   fields: ['serialNumber', 'name'],
