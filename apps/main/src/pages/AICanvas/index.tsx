@@ -493,6 +493,7 @@ export default function AICanvasModal (props: {
       closable={false}
       maskClosable={false}
       showCanvas={showCanvas}
+      zIndex={1001}
       forceRender
       destroyOnClose={false}
     >
