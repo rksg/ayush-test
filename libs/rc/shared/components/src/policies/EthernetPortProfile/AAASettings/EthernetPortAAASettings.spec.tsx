@@ -52,7 +52,7 @@ describe('EthernetPortProfile AAASetting', () => {
     render(
       <Provider>
         <Form>
-          <EthernetPortAAASettings />
+          <EthernetPortAAASettings enableAuth={true}/>
         </Form>
       </Provider>
     )
@@ -112,7 +112,7 @@ describe('EthernetPortProfile RadSec AAASetting', () => {
     render(
       <Provider>
         <Form>
-          <EthernetPortAAASettings />
+          <EthernetPortAAASettings enableAuth={true}/>
         </Form>
       </Provider>
     )
