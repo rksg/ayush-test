@@ -9,7 +9,10 @@ import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 
 export function ReportList () {
   const { $t } = useIntl()
-  const { profile: userProfile, accountTier } = getUserProfile()
+  const userProfileR1 = getUserProfile()
+  const { profile: userProfile, accountTier } = userProfileR1 ?
+    userProfileR1 : { profile: {}, accountTier: undefined }
+
   const isCore = isCoreTier(accountTier)
   const isSupportUser = Boolean(userProfile?.support)
 
@@ -85,11 +88,11 @@ export function ReportList () {
       description: $t({ defaultMessage: 'Details of airtime by access points' }),
       path: 'wirelessAirtime'
     },
-    {
+    ...(!isCore ? [{
       title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
       description: $t({ defaultMessage: 'Details of traffic by applications and access points' }),
       path: 'trafficApplications'
-    }
+    }] : [])
   ]
   /* eslint-enable */
 

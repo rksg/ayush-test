@@ -1,6 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { FilterMode } from '@acx-ui/analytics/components'
+import { FilterMode }  from '@acx-ui/analytics/components'
+import { AccountTier } from '@acx-ui/utils'
 
 export enum ReportType {
   OVERVIEW = 'overview',
@@ -47,6 +48,27 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
   [ReportType.TRAFFIC_APPLICATION]:
   defineMessage({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' })
 }
+
+// add the report type if a different report/embedded dashboard template is available based on the account tier.
+export const reportAccountTierMapping: Partial<Record<AccountTier, ReportType[]>> = {
+  [AccountTier.CORE]: [
+    ReportType.AP_DETAIL,
+    ReportType.CLIENT_DETAIL
+  ]
+}
+
+export const getDataStudioReportName = (
+  reportType: ReportType, accountTier?: AccountTier): string => {
+  const reportName = reportTypeDataStudioMapping[reportType]
+  if (!accountTier || !(reportAccountTierMapping[accountTier] ?? []).includes(reportType)) {
+    return reportName // default report name i.e. Overview
+  }
+  // report with account tier as prefix
+  // e.g. Silver_Client Details, Gold_Client Details
+  // e.g. Silver_AP Details, Gold_AP Details
+  return `${accountTier}_${reportName}`
+}
+
 
 export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.OVERVIEW]: 'Overview',
