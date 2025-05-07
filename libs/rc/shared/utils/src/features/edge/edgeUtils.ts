@@ -15,6 +15,7 @@ import {
   EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNatPool,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
@@ -35,6 +36,7 @@ const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
 const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
 export const MAX_DUAL_WAN_PORT = 2
+export const MAX_NAT_POOL_TOTAL_SIZE = 128
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -296,6 +298,69 @@ export async function lanPortSubnetValidator (
     }
   }
   return Promise.resolve()
+}
+
+const ipToInt = (ip: string) => {
+  return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0)
+}
+
+export const poolRangeOverlapValidator = async (pools:
+  { startIpAddress: string, endIpAddress: string }[] | undefined
+) => {
+  if(!pools?.length) {
+    return Promise.resolve()
+  }
+
+  const { $t } = getIntl()
+
+  const rangesOverlap = (range1: Omit<EdgeNatPool, 'id'>, range2: Omit<EdgeNatPool, 'id'>) => {
+    const start1 = ipToInt(range1.startIpAddress)
+    const end1 = ipToInt(range1.endIpAddress)
+    const start2 = ipToInt(range2.startIpAddress)
+    const end2 = ipToInt(range2.endIpAddress)
+
+    return start1 <= end2 && start2 <= end1
+  }
+
+  // loop to check if range overlap
+  for(let i=0; i < pools.length; i++) {
+    for(let j=i+1; j < pools.length; j++) {
+      if(i === pools.length - 1) break
+      if(rangesOverlap(pools[i], pools[j])) {
+        // eslint-disable-next-line max-len
+        return Promise.reject($t({ defaultMessage: 'The selected NAT pool overlaps with other NAT pools.' }))
+        // return Promise.reject(validationMessages.natPoolOverlap)
+      }
+    }
+  }
+
+  return Promise.resolve()
+}
+
+
+const ipRangeSize = (start: string, end: string) => {
+  const startInt = ipToInt(start)
+  const endInt = ipToInt(end)
+  return (endInt - startInt + 1)
+}
+
+export const natPoolSizeValidator = async (pools:
+  Omit<EdgeNatPool, 'id'>[] | undefined
+) => {
+  if(!pools?.length) {
+    return Promise.resolve()
+  }
+
+  const { $t } = getIntl()
+  console.log(pools)
+  // total range cannot exceed 128 per node : MAX_NAT_POOL_TOTAL_SIZE
+  const totalRange = pools?.reduce((acc: number, item) => {
+    const range = ipRangeSize(item.startIpAddress, item.endIpAddress)
+    return acc += range
+  }, 0) ?? 0
+
+  // eslint-disable-next-line max-len
+  return totalRange <= MAX_NAT_POOL_TOTAL_SIZE ? Promise.resolve() : Promise.reject($t({ defaultMessage: 'NAT IP Address range exceeds {maxSize}' }, { maxSize: MAX_NAT_POOL_TOTAL_SIZE }))
 }
 
 export const validateSubnetIsConsistent = (

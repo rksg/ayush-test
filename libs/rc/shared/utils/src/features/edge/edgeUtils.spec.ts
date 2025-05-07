@@ -20,7 +20,9 @@ import {
   isInterfaceInVRRPSetting,
   lanPortSubnetValidator,
   MAX_DUAL_WAN_PORT,
+  natPoolSizeValidator,
   optionSorter,
+  poolRangeOverlapValidator,
   validateClusterInterface,
   validateEdgeClusterLevelGateway,
   validateEdgeGateway,
@@ -1153,5 +1155,92 @@ describe('convertEdgeSubInterfaceToApiPayload', () => {
     const formData: EdgeSubInterface | null | undefined = undefined
     const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual({})
+  })
+})
+
+describe('poolRangeOverlapValidator', () => {
+  describe('negative test cases', () => {
+    it('should return false if ranges are overlapped', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.20', endIpAddress: '1.3.1.50' }])
+      await expect(result).rejects.toEqual('The selected NAT pool overlaps with other NAT pools.')
+    })
+
+    it('should return false if ranges are overlapped - case2', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.30', endIpAddress: '1.1.1.50' }])
+      await expect(result).rejects.toEqual('The selected NAT pool overlaps with other NAT pools.')
+    })
+  })
+
+  describe('positive test cases', () => {
+    it('should return false if no ranges are provided', async () => {
+      const result = poolRangeOverlapValidator(undefined)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if ranges are empty', async () => {
+      const result = poolRangeOverlapValidator([])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if only 1 ranges are provided', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.3.1.2', endIpAddress: '1.3.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped - case2', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.2.2', endIpAddress: '1.1.2.5' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped - case3', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.31', endIpAddress: '1.1.1.40' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+  })
+})
+
+describe('natPoolSizeValidator', () => {
+  describe('negative test cases', () => {
+    it('should return false if size > 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.130' }])
+      await expect(result).rejects.toEqual('NAT IP Address range exceeds 128')
+    })
+
+    it('should return false if multiple ranges total size > 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.130' }, { startIpAddress: '1.1.1.20', endIpAddress: '1.3.1.50' }])
+      await expect(result).rejects.toEqual('NAT IP Address range exceeds 128')
+    })
+  })
+
+  describe('positive test cases', () => {
+    it('should return false if no ranges are provided', async () => {
+      const result = natPoolSizeValidator(undefined)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if ranges are empty', async () => {
+      const result = natPoolSizeValidator([])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if only 1 ranges are provided', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.3.1.2', endIpAddress: '1.3.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped = 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.2.1', endIpAddress: '1.1.2.98' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
   })
 })

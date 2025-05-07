@@ -15,7 +15,7 @@ import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../Clust
 import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
 
 const Lags = () => {
-  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  const isEdgeDualWanEnabled = false// useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const { serialNumber } = useParams()
   const {

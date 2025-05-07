@@ -35,7 +35,7 @@ const useTabs = () => {
       title: $t({ defaultMessage: 'General Settings' }),
       content: <GeneralSettings />
     },
-    ...(isEdgeConfigurable(currentEdge) &&
+    ...(/*isEdgeConfigurable(currentEdge) &&*/
       {
         'ports': {
           title: $t({ defaultMessage: 'Ports' }),

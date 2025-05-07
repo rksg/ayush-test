@@ -6,12 +6,14 @@ import { useIntl }                                                              
 
 import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
+  ClusterHighAvailabilityModeEnum,
   EdgeIpModeEnum,
   EdgeLag,
   EdgePort,
   EdgePortTypeEnum,
   edgePortIpValidator,
   getEdgePortTypeOptions,
+  getEdgeWanInterfaces,
   lanPortSubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
@@ -20,18 +22,10 @@ import {
 
 import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
 
-import * as UI from './styledComponents'
+import { EdgeNatFormItems }    from './NatFormItems'
+import * as UI                 from './styledComponents'
+import { formFieldsPropsType } from './types'
 
-interface formFieldsPropsType {
-  [key: string]: FormItemProps & {
-    title?: string
-    options?: {
-      label: string,
-      value: EdgePortTypeEnum
-    }[]
-    disabled?: boolean,
-  }
-}
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
   fieldHeadPath: string[],
@@ -43,6 +37,7 @@ export interface EdgePortCommonFormProps {
   formListItemKey: string,
   formListID?: string,
   formFieldsProps?: formFieldsPropsType
+  clusterMode?: ClusterHighAvailabilityModeEnum
 }
 
 const { useWatch } = Form
@@ -57,7 +52,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     isListForm = true,
     formListItemKey = '0',
     formListID,
-    formFieldsProps
+    formFieldsProps,
+    clusterMode
   } = props
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
@@ -98,7 +94,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //    else
   //     - only allowed 1 core port enabled
   //     - must be LAN port type
-  const hasWANPort = isWANPortExist(portsData, lagData || [])
+  const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
+
+  const isExistingWanPortInLagMember = lagData?.some(lag => lag.lagMembers
+    // eslint-disable-next-line max-len
+    ? lag.lagMembers.filter(member => wanPortsInfo.find(wan => (wan as EdgePort).id === member?.portId)).length > 0
+    : false) ?? false
+
+  const hasWANPort = wanPortsInfo.length > 0 && !isExistingWanPortInLagMember
 
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
 
@@ -242,15 +245,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           }
           { // only WAN port can configure NAT enable
             portType === EdgePortTypeEnum.WAN &&
-            <StepsFormLegacy.FieldLabel width='120px'>
-              {$t({ defaultMessage: 'Use NAT Service' })}
-              <Form.Item
-                name={getFieldPathBaseFormList('natEnabled')}
-                valuePropName='checked'
-                {..._.get(formFieldsProps, 'natEnabled')}
-                children={<Switch />}
-              />
-            </StepsFormLegacy.FieldLabel>
+            <EdgeNatFormItems
+              parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
+              getFieldFullPath={getFieldFullPath}
+              formFieldsProps={formFieldsProps}
+              clusterMode={clusterMode}
+              portsData={portsData}
+              lagData={lagData}
+            />
           }
         </>
       )
@@ -319,7 +321,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   <Checkbox
                     disabled={!corePortInfo.isExistingCorePortInLagMember
                       && (
-                        (hasWANPort && !isCurrentInterfaceCorePortEnabled)
+                        ((hasWANPort) && !isCurrentInterfaceCorePortEnabled)
                         || (isEdgeSdLanRun
                           ? hasCorePortEnabled
                           // eslint-disable-next-line max-len

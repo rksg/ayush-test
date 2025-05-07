@@ -159,6 +159,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
                 edit: [EdgeScopes.UPDATE],
                 delete: [EdgeScopes.UPDATE]
               }}
+              isClusterWizard
             />
           </>
         }

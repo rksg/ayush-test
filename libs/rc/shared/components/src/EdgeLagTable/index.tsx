@@ -39,6 +39,7 @@ interface EdgeLagTableProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
   actionScopes?: { [key in string]: ScopeKeys }
+  isClusterWizard?: boolean
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -46,12 +47,13 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
-    actionScopes
+    actionScopes,
+    isClusterWizard = false
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
-
+  console.log(lagList)
   const transToTableData = (edgeLagList?: EdgeLag[], edgeLagStatusList?: EdgeLagStatus[]) => {
     return edgeLagList?.map(item => ({
       ...item,
@@ -252,6 +254,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         vipConfig={vipConfig}
         onAdd={onAdd}
         onEdit={onEdit}
+        isClusterWizard={isClusterWizard}
       />
     </>
   )
