@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseRuckusAiChatApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'ruckusAiChatApi',
-  tagTypes: ['Chat', 'Canvas', 'Widget'],
+  tagTypes: ['Canvas', 'Chat', 'Dashboard', 'Widget'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
