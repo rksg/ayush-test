@@ -158,26 +158,24 @@ export function IdentityGroup (props: IdentityGroupProps) {
             />
           }
         />
-        <Space>
-          <Space split='|'>
-            <Button
-              type='link'
-              disabled={!formFieldIdentityGroupId}
-              onClick={() => {
-                resetAllDrawer()
-                setDetailDrawerVisible(true)
-              }}
-            >
-              {$t({ defaultMessage: 'View Details' })}
-            </Button>
-            <Button type='link'
-              onClick={() => {
-                resetAllDrawer()
-                setIdentityGroupDrawerVisible(true)
-              }}>
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
-          </Space>
+        <Space split='|'>
+          <Button
+            type='link'
+            disabled={!formFieldIdentityGroupId}
+            onClick={() => {
+              resetAllDrawer()
+              setDetailDrawerVisible(true)
+            }}
+          >
+            {$t({ defaultMessage: 'View Details' })}
+          </Button>
+          <Button type='link'
+            onClick={() => {
+              resetAllDrawer()
+              setIdentityGroupDrawerVisible(true)
+            }}>
+            {$t({ defaultMessage: 'Add' })}
+          </Button>
         </Space>
       </Space>
       {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
