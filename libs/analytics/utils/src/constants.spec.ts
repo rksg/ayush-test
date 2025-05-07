@@ -145,9 +145,9 @@ describe('constants', () => {
         [IncidentToggle.SwitchDDoSIncidents]: true,
         [IncidentToggle.SwitchLoopDetectionIncidents]: true,
         [IncidentToggle.SwitchLLDPStatusIncidents]: true,
+        [IncidentToggle.SwitchPortFlapIncidents]: true,
         [IncidentToggle.SwitchPortCongestionIncidents]: true,
-        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true,
-        [IncidentToggle.SwitchPortFlapIncidents]: true
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
