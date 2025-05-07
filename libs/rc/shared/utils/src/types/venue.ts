@@ -255,7 +255,10 @@ export type VenueApUsbStatus = {
 	usbPortEnable: boolean
 }
 
-export interface VenueApModelBandModeSettings {
+export interface VenueApModelBandModeSettings extends ApModelBandModeSettings{
+}
+
+export interface ApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
 }

@@ -42,7 +42,8 @@ import {
   CorrectRadioChannels,
   GetSupportBandwidth,
   GetSupportIndoorOutdoorBandwidth,
-  RadioLegends
+  RadioLegends,
+  BandManagement
 } from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
@@ -84,7 +85,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../venueConfigTemplateApiSwitcher'
 
-import { VenueBandManagement } from './VenueBandManagement'
 
 const RadioLable = styled.div`
   display: flex;
@@ -905,7 +905,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
                   hidden
                   children={<></>}
                 />
-                <VenueBandManagement style={{ paddingBottom: '5em' }}
+                <BandManagement style={{ paddingBottom: '5em' }}
                   disabled={!isAllowEdit}
                   triBandApModels={triBandApModels}
                   dual5gApModels={dual5gApModels}
