@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
-import { Input }              from 'antd'
-import { DefaultOptionType }  from 'antd/es/cascader'
-import { NamePath }           from 'antd/lib/form/interface'
-import { find, isNil, merge } from 'lodash'
-import { AlignType }          from 'rc-table/lib/interface'
-import { useIntl }            from 'react-intl'
+import { FormInstance, Input } from 'antd'
+import { DefaultOptionType }   from 'antd/es/cascader'
+import { NamePath }            from 'antd/lib/form/interface'
+import { find, isNil, merge }  from 'lodash'
+import { AlignType }           from 'rc-table/lib/interface'
+import { useIntl }             from 'react-intl'
 
 import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
 import { transToOptions }                                                     from '@acx-ui/edge/components'
@@ -78,6 +78,7 @@ export interface ActivatedNetworksTableProps {
   onTunnelProfileChange?: (data: Network, tunnelProfileId: string) => void
   isUpdating?: boolean
   pinNetworkIds?: string[]
+  validationFormRef?: FormInstance
 }
 
 export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
@@ -90,7 +91,8 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onActivateChange,
     onTunnelProfileChange,
     isUpdating,
-    pinNetworkIds
+    pinNetworkIds,
+    validationFormRef
   } = props
 
   const { $t } = useIntl()
@@ -185,7 +187,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   }
 
   const handleTunnelProfileChange = (row: Network, value: string, namePath: NamePath) => {
-    form.validateFields([namePath])
+    validationFormRef?.validateFields([namePath])
     onTunnelProfileChange?.(row, value)
   }
 

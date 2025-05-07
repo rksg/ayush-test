@@ -16,7 +16,7 @@ import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
 
-import { certList } from '../../policies/SamlIdp/__tests__/fixtures'
+import { certList }     from '../../policies/SamlIdp/__tests__/fixtures'
 import {
   cloudPathDataNone,
   mockAAAPolicyListResponse,
@@ -29,7 +29,9 @@ import {
   venuesResponse,
   mockSAMLIdpQuery,
   mockSamlA7,
-  mockedNetworkId
+  mockedNetworkId,
+  mockedMetadata,
+  mockSamlProfileA7Id
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -39,6 +41,7 @@ import { SAMLForm } from './SAMLForm'
 
 describe('CaptiveNetworkForm - SAML', () => {
   const SAMLQueryAPI = jest.fn()
+  const mockCreateSamlIdpProfile = jest.fn()
   beforeEach(() => {
     networkDeepResponse.name = 'SAML network test'
     SAMLQueryAPI.mockClear()
@@ -106,6 +109,17 @@ describe('CaptiveNetworkForm - SAML', () => {
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (_, res, ctx) => res(ctx.json(certList))
+      ),
+      rest.post(
+        SamlIdpProfileUrls.createSamlIdpProfile.url,
+        (_, res, ctx) => {
+          mockCreateSamlIdpProfile()
+          return res(ctx.json({
+            response: {
+              id: mockSamlProfileA7Id
+            }
+          }))
+        }
       )
     )
   })
@@ -379,15 +393,33 @@ describe('CaptiveNetworkForm - SAML', () => {
     const addButton = screen.getByTestId('saml-idp-profile-add-button')
     await userEvent.click(addButton)
 
-    // wait for "Add SAML IdP Profile" in the screen
-    const drawerTitle = await screen.findByText('Add SAML Identity Provider')
-    expect(drawerTitle).toBeInTheDocument()
-
+    // test Close button
     const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
 
+    // test Cancel button
     await userEvent.click(addButton)
     const cancelButton = (await screen.findAllByRole('button', { name: 'Cancel' }))[1]
     await userEvent.click(cancelButton)
+
+    //Test callback function
+    await userEvent.click(addButton)
+    // wait for "Add SAML IdP Profile" in the screen
+    const drawerTitle = await screen.findByText('Add SAML Identity Provider')
+    expect(drawerTitle).toBeInTheDocument()
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await userEvent.type(policyNameField, 'Test Profile Name')
+
+    // Find metadata textarea and input
+    const metadataField = screen.getByTestId('metadata-textarea')
+    await userEvent.type(metadataField, mockedMetadata)
+    // find all add button
+    const drawerAddButton = (await screen.findAllByRole('button', { name: 'Add' }))[2]
+    await userEvent.click(drawerAddButton)
+
+    await waitFor(() => expect(mockCreateSamlIdpProfile).toHaveBeenCalled())
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalledTimes(3))
+
+    expect(await screen.findByText('SAML-A7')).toBeInTheDocument()
   })
 })
