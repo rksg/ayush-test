@@ -555,7 +555,7 @@ function DashboardPageHeader (props: {
       />
 
       <AICanvasModal
-        isModalOpen={canvasModalVisible}
+        isModalOpen={canvasModalVisible && (dashboardDrawerVisible || importDashboardDrawerVisible)}
         setIsModalOpen={setCanvasModalVisible}
         editCanvasId={editCanvasId}
         openNewCanvas={editCanvasId ? !editCanvasId : true}
