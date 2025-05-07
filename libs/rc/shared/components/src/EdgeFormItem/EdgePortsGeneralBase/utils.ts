@@ -32,7 +32,8 @@ export const getEnabledCorePortInfo = (portsData: EdgePort[], lagData: EdgeLag[]
     physicalPortId: string | undefined,
     isExistingCorePortInLagMember: boolean
   } => {
-  const physicalCorePort = portsData.filter(item => item.corePortEnabled && item.enabled)
+  const physicalCorePort = portsData.filter(item =>
+    item.corePortEnabled && item.enabled && item.portType !== EdgePortTypeEnum.UNCONFIGURED)
   const lagCorePort = lagData.filter(item => item.corePortEnabled && item.lagEnabled)
   const lagCorePortEnabled = lagCorePort[0]?.id !== undefined
   const corePortKey = physicalCorePort[0]?.interfaceName || lagCorePort[0]?.id
