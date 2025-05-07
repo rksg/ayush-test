@@ -45,7 +45,7 @@ export default function ResidentPortalTable () {
       tooltip: (([selectedRow]) => (selectedRow && !selectedRow.venueCount)?
         undefined
         : intl.$t({ defaultMessage: 'Cannot delete Resident Portal while Venues'
-          + ' are using it.' })),
+intl.$t({ defaultMessage: `Cannot delete Resident Portal while <VenuePlural></VenuePlural> are using it.` })),
       scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       rbacOpsIds: getServiceAllowedOperation(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
