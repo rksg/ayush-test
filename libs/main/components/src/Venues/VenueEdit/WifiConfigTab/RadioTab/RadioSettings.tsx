@@ -910,9 +910,9 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
                   triBandApModels={triBandApModels}
                   dual5gApModels={dual5gApModels}
                   bandModeCaps={bandModeCaps}
-                  venueTriBandApModels={venueTriBandApModels}
-                  currentVenueBandModeData={currentVenueBandModeData}
-                  setCurrentVenueBandModeData={setCurrentVenueBandModeData} />
+                  existingTriBandApModels={venueTriBandApModels}
+                  currentBandModeData={currentVenueBandModeData}
+                  setCurrentBandModeData={setCurrentVenueBandModeData} />
               </>
               }
             </Col>
