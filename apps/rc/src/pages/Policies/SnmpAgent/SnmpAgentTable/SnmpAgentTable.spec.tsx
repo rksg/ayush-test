@@ -163,36 +163,4 @@ describe('SnmpAgentTable', () => {
 
     expect(screen.queryByText('Edit')).toBeNull()
   })
-
-  it('should show warning modal when deleting SNMP agent with active venues', async () => {
-    render(
-      <Provider>
-        <SnmpAgentTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      }
-    )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    // Select the SNMP agent that has active venues (SNMP-1)
-    const target = mockTableResult.data[1]
-    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
-
-    // Click delete button
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    // Verify warning modal appears
-    expect(await screen.findByText(
-      'You are unable to delete this record due to its usage in Venue'
-    )).toBeVisible()
-
-    expect(screen.getByRole('button', { name: /OK/ })).toBeVisible()
-
-    // Click OK to close modal
-    await userEvent.click(screen.getByRole('button', { name: /OK/ }))
-
-    // Verify the row is still selected and not deleted
-    expect(screen.getByRole('row', { name: new RegExp(target.name) })).toBeVisible()
-  })
 })
