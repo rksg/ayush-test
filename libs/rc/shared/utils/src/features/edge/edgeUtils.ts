@@ -436,7 +436,7 @@ export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: 
   const portWithGateway = getPhysicalPortGatewayCount(portsData)
   const lagWithGateway = getLagGatewayCount(lagData)
   const totalGateway = portWithGateway + lagWithGateway
-  console.log(totalGateway , nodeCount)
+
   if (totalGateway < nodeCount) {
     // eslint-disable-next-line max-len
     return Promise.reject($t({ defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.' }))
