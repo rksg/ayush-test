@@ -65,6 +65,21 @@ jest.mock('react-router-dom', () => ({
 }))
 const services = require('@acx-ui/rc/services')
 const utils = require('@acx-ui/utils')
+const certList = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      key: 'test',
+      id: 'test',
+      name: 'test',
+      commonName: 'test',
+      value: 'test',
+      status: ['VALID'],
+      keyUsages: []
+    }
+  ]
+}
 
 describe('Auth Server Form Item', () => {
   let params: { tenantId: string }
@@ -72,6 +87,9 @@ describe('Auth Server Form Item', () => {
   beforeEach(async () => {
     services.useGetAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
+    })
+    services.useGetServerCertificatesQuery = jest.fn().mockImplementation(() => {
+      return { data: certList }
     })
     jest.spyOn(services, 'useDeleteTenantAuthenticationsMutation')
     mockServer.use(
