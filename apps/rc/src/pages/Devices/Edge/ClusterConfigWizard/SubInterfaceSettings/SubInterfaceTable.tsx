@@ -3,10 +3,10 @@ import { Key, useContext, useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showActionModal, Table, TableProps }                   from '@acx-ui/components'
+import { showActionModal, Table, TableProps }                                                                          from '@acx-ui/components'
 import { convertEdgeSubInterfaceToApiPayload, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                           from '@acx-ui/types'
-import { filterByAccess, hasPermission }                        from '@acx-ui/user'
+import { EdgeScopes }                                                                                                  from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                               from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
