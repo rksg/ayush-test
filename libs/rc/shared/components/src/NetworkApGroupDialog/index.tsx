@@ -18,6 +18,7 @@ import {
   Modal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }      from '@acx-ui/icons'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useGetNetworkApGroupsV2Query,
@@ -42,6 +43,8 @@ import {
   validateRadioBandForDsaeNetwork
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
 
 import { ApGroupItem } from './ApGroupItem'
 import { RadioSelect } from './RadioSelect'
@@ -97,7 +100,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn && isSupport6gOWETransition
   const { isTemplate } = useConfigTemplate()
+
+  const [owe6gDrawerVisible, setOwe6gDrawerVisible] = useState(false)
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan } = network || {}
@@ -269,12 +276,33 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       {defaultVlanString.vlanText}
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
-                      label={intl.$t({ defaultMessage: 'Radio Band' })}
+                      label={<>
+                        {intl.$t({ defaultMessage: 'Radio Band' })}
+                        {isR370Unsupported6gFeatures &&
+                         networkVenue?.oweTransWlanId && <>
+                          <ApCompatibilityToolTip
+                            title={''}
+                            showDetailButton
+                            placement='bottom'
+                            onClick={() => setOwe6gDrawerVisible(true)}
+                            icon={<QuestionMarkCircleOutlined
+                              style={{ height: '16px', width: '16px', marginBottom: 0 }}
+                            />}
+                          />
+                          <ApCompatibilityDrawer
+                            visible={owe6gDrawerVisible}
+                            type={ApCompatibilityType.ALONE}
+                            networkId={network?.id}
+                            featureName={InCompatibilityFeatures.OWE_TRANSITION_6G}
+                            onClose={() => setOwe6gDrawerVisible(false)}
+                          />
+                        </>}
+                      </>}
                       rules={[{ required: true },
                         {
                           validator: (_, value) => validateRadioBandForDsaeNetwork(value, network, intl)
                         }]}
-                      labelCol={{ span: 5 }}>
+                      labelCol={isR370Unsupported6gFeatures ? { span: 6 } : { span: 5 }}>
                       <RadioSelect isSupport6G={isSupport6G}/>
                     </Form.Item>
                   </UI.FormItemRounded>}
