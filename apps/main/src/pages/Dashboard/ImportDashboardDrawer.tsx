@@ -83,7 +83,7 @@ export const ImportDashboardDrawer = (props: {
 
   const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
   const importedOwnedCanvasCount = dashboardList.filter(item => !item.author).length - 1
-  const isReachedCanvasLimit
+  const isCanvasLimitReached
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
@@ -215,7 +215,7 @@ export const ImportDashboardDrawer = (props: {
     }, {
       label: $t({ defaultMessage: 'Clone as Private Copy' }),
       key: 'clone',
-      visible: !isReachedCanvasLimit && !isEditable
+      visible: !isCanvasLimitReached && !isEditable
     }].filter(item => item.visible)
       .map(({ visible, ...rest }) => rest)
 
