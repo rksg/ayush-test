@@ -19,7 +19,8 @@ import {
   SWITCH_SERIAL_8100,
   SWITCH_SERIAL_8100X,
   SWITCH_SERIAL_7550Zippy,
-  SWITCH_SERIAL_SUFFIX
+  SWITCH_SERIAL_SUFFIX,
+  SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL
 } from '../../types'
 import { FlexibleAuthentication } from '../../types'
 
@@ -743,13 +744,19 @@ export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   return new RegExp(`^(${pattern})${SWITCH_SERIAL_SUFFIX}$`, 'i')
 }
 
+export const createSwitchSerialPatternForSpecific8100Model = () => {
+  return new RegExp(`^(${SWITCH_SERIAL_8100})${SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL}$`, 'i')
+}
+
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
   supportModels: SupportModels,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const serialNumberRegExp = createSwitchSerialPattern(supportModels)
+  const serialNumberRegExp = (supportModels.isSupport8100 && isSpecific8100Model(data?.id))
+    ? createSwitchSerialPatternForSpecific8100Model()
+    : createSwitchSerialPattern(supportModels)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
@@ -953,4 +960,11 @@ export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
     }
     return acc
   }, { permit: 0, deny: 0 })
+}
+
+export const isSpecific8100Model = (serialNumber: string) => {
+  return serialNumber && (serialNumber?.startsWith('FNX') ||
+    serialNumber?.startsWith('FNY') ||
+    serialNumber?.startsWith('FNZ') ||
+    serialNumber?.startsWith('FPA'))
 }
