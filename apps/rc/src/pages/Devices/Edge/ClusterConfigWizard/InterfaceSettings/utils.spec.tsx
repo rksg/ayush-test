@@ -248,7 +248,8 @@ const expectedFormData = {
       ],
       vip: '1.1.1.1'
     }
-  ]
+  ],
+  multiWanSettings: undefined
 }
 
 const expectedApiData = {
@@ -457,7 +458,8 @@ const expectedApiData = {
       timeoutSeconds: 3,
       virtualIp: '1.1.1.1'
     }
-  ]
+  ],
+  multiWanSettings: undefined
 }
 
 describe('Interface Compatibility Check', () => {
