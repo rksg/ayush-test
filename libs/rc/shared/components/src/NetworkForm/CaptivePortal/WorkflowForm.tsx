@@ -53,6 +53,7 @@ export function WorkflowForm () {
           <WalledGardenTextArea
             enableDefaultWalledGarden={false}
           />
+          {/*SANTODO: Add Accounting Service*/}
         </GridCol>
         {/*SANTODO: Change the image once George provide it to you.*/}
         <GridCol col={{ span: 14 }}>
