@@ -198,7 +198,7 @@ describe('Dashboard', () => {
           (req, res, ctx) => res(ctx.json(canvasData))
         ),
         rest.post(
-          RuckusAiChatUrlInfo.cloenCanvas.url,
+          RuckusAiChatUrlInfo.cloneCanvas.url,
           (req, res, ctx) => {
             mockCloneCanvas()
             return res(ctx.json({}))

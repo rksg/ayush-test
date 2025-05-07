@@ -177,10 +177,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    setCanvasId(editCanvasId || '')
-  }, [editCanvasId])
-
-  useEffect(() => {
     if(canvasList && !editCanvasId) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {

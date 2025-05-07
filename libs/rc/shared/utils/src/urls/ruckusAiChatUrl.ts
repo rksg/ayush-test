@@ -61,7 +61,7 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/canvas/query',
     newApi: true
   },
-  cloenCanvas: {
+  cloneCanvas: {
     method: 'post',
     url: '/ruckusAi/canvas/:canvasId/clone',
     newApi: true
