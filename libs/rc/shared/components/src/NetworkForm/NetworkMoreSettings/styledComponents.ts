@@ -1,5 +1,5 @@
 import { Form, Collapse, Checkbox } from 'antd'
-import _                            from 'lodash'
+import { join }                     from 'lodash'
 import styled                       from 'styled-components/macro'
 
 import { InformationSolid } from '@acx-ui/icons'
@@ -15,7 +15,7 @@ export const FieldLabelByFraction = styled.div<{ fraction: number[] }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   line-height: 32px;
-  grid-template-columns: ${props => _.join(props.fraction.map(f => `${f}fr`), ' ')};
+  grid-template-columns: ${props => join(props.fraction.map(f => `${f}fr`), ' ')};
 `
 
 export const FormItemNoLabel = styled(Form.Item)`
