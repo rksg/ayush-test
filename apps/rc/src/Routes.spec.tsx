@@ -114,7 +114,7 @@ jest.mock('./pages/Services/Portal/PortalTable', () => () => {
 })
 
 jest.mock('./pages/Services/PortalProfile/create', () => () => {
-  return <div data-testid='CreatePortProfile' />
+  return <div data-testid='CreatePortalProfile' />
 })
 
 jest.mock('./pages/Services/PortalProfile', () => () => {

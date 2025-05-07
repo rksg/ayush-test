@@ -41,7 +41,9 @@ describe('PortalProfile', () => {
       'PIN (Personal Identity Network) Portal for Switch'))
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith('services/webAuth/create')
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('services/webAuth/create', {
+      state: { from: undefined }
+    })
   })
 
   it('should navigate to select page when Cancel button is clicked', () => {

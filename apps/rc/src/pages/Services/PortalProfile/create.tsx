@@ -11,15 +11,17 @@ import {
   ServiceOperation,
   ServiceType,
   PortalProfileTabsEnum,
-  getServiceRoutePath
+  getServiceRoutePath,
+  LocationExtended
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }       from '@acx-ui/user'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                    from '@acx-ui/user'
 
 export default function CreatePortalProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
+  const fromPage = (useLocation() as LocationExtended)?.state?.from
   const servicesCreatePageLink = useTenantLink(getSelectServiceRoutePath(true))
   const createGuestPortalPath =
     useTenantLink(getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }))
@@ -34,7 +36,7 @@ export default function CreatePortalProfile () {
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('portalProfileType')
     navigate(type === PortalProfileTabsEnum.GUEST ?
-      createGuestPortalPath : createWebAuthSwitchPortalPath)
+      createGuestPortalPath : createWebAuthSwitchPortalPath, { state: { from: fromPage } })
   }
 
   const guestPortalOids =

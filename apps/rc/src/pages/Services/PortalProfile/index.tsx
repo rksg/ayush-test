@@ -14,7 +14,6 @@ import {
   PortalProfileTabsEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
 import NetworkSegAuthTable from '../NetworkSegWebAuth/NetworkSegAuthTable'
 import PortalTable         from '../Portal/PortalTable'
@@ -71,7 +70,7 @@ export default function PortalProfile () {
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add Guest Portal' })}</Button>
       </TenantLink>
-    ]) : hasCrossVenuesPermission() && filterByAccess([
+    ]) : filterByAccessForServicePolicyMutation([
       <TenantLink
         scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         rbacOpsIds={getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
