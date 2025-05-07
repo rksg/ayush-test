@@ -514,6 +514,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                           <Tooltip.Question
                             title={$t(EthernetPortProfileMessages.DYNAMIC_VLAN)}
                             placement='bottom'
+                            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                           />
                         </Space>
 
