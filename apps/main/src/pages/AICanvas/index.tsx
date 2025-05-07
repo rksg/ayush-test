@@ -145,8 +145,9 @@ const Messages = memo((props:{
 export default function AICanvasModal (props: {
   isModalOpen: boolean,
   setIsModalOpen: (p: boolean) => void
+  editCanvasId?: string
 }) {
-  const { isModalOpen, setIsModalOpen } = props
+  const { isModalOpen, setIsModalOpen, editCanvasId } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
@@ -180,10 +181,18 @@ export default function AICanvasModal (props: {
     'How many clients were connected to my network yesterday?'
   ] // Only support english default questions
 
-
-
-  const getAllChatsQuery = useGetAllChatsQuery({})
+  const getAllChatsQuery = useGetAllChatsQuery({}, {
+    skip: !isModalOpen
+  })
   const { data: historyData } = getAllChatsQuery
+
+  useEffect(()=>{
+    if (isModalOpen) {
+      getAllChatsQuery.refetch()
+    } else {
+      setSessionId('')
+    }
+  }, [isModalOpen])
 
   useEffect(()=>{
     if(page === 1 || aiBotLoading) {
@@ -202,6 +211,7 @@ export default function AICanvasModal (props: {
   }, [chats])
 
   useEffect(()=>{
+    if (!isModalOpen) return
     if(historyData?.length) {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
@@ -213,7 +223,7 @@ export default function AICanvasModal (props: {
       setHistoryVisible(false)
       onNewChat()
     }
-  }, [historyData])
+  }, [historyData, isModalOpen])
 
   const getLatestPageChats = () => {
     getSessionChats(1)
@@ -437,8 +447,10 @@ export default function AICanvasModal (props: {
       closable={false}
       maskClosable={false}
       showCanvas={showCanvas}
+      forceRender
+      destroyOnClose={false}
     >
-      <DndProvider backend={HTML5Backend}>
+      { isModalOpen && <DndProvider backend={HTML5Backend}>
         <UI.Wrapper showCanvas={showCanvas}>
           <div className='chat-wrapper'>
             {
@@ -560,10 +572,11 @@ export default function AICanvasModal (props: {
               checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
+              editCanvasId={editCanvasId}
             />
           }
         </UI.Wrapper>
-      </DndProvider>
+      </DndProvider> }
     </UI.ChatModal>
   )
 }

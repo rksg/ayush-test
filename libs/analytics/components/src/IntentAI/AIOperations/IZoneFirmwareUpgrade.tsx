@@ -11,7 +11,9 @@ import { IntroSummary }                                       from '../common/In
 import { KPIFields }                                          from '../common/KPIs'
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
+import { AiFeatures }                                         from '../config'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
+import ResourcesLinks                                         from '../ResourcesLinks'
 import { IntentKPIConfig }                                    from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
@@ -107,18 +109,12 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
   }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Introduction' }),
-  SideNote: () => <Reason
-    reasonText={useValuesText().reasonText}
-    resources={[{
-      icon: 'video' as const,
-      label: defineMessage({ defaultMessage: 'RUCKUS AI - AI Operations Demo' }),
-      link: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
-    },
-    {
-      icon: 'document' as const,
-      label: defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }),
-      link: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
-    }]} />,
+  SideNote: () => (
+    <Reason
+      reasonText={useValuesText().reasonText}
+      resources={<ResourcesLinks feature={AiFeatures.AIOps} />}
+    />
+  ),
   Content: () => (<>
     <IntroSummary />
     <StepsForm.Subtitle>
@@ -133,7 +129,7 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
+      <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular> “{zone}” ?' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>
         <TradeOff

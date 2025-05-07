@@ -874,7 +874,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   border-radius: 12px;
   padding-bottom: 0;
   overflow: hidden;
-  transition: all .4s linear;
+  transition: all .2s linear;
   height: 100%;
   max-height: 80%;
 
@@ -918,12 +918,13 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-content {
     background: transparent;
     box-shadow: none !important;
-    transition: all .4s linear;
+    transition: all .2s linear;
     padding-top: 68px;
   }
   .ant-modal-body {
     padding: 0px 0 24px;
     height: calc(80vh - 68px);
+    transition: all .2s linear;  
     overflow: auto;
   }
   .ant-modal-footer {

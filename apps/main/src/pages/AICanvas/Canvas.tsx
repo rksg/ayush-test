@@ -116,13 +116,14 @@ interface CanvasProps {
   checkChanges?: (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => void
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
+  editCanvasId?: string
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({
-  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges }, ref) => {
+  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges, editCanvasId }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
-  const [canvasId, setCanvasId] = useState('')
+  const [canvasId, setCanvasId] = useState(editCanvasId || '')
   const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
@@ -176,7 +177,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList) {
+    if(canvasList && !editCanvasId) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
