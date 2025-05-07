@@ -67,6 +67,7 @@ function useUnifiedServiceTotalCountMap (
   return {
     [PolicyType.AAA]: useGetAAAPolicyViewModelListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.AAA) }).data?.totalCount,
     [PolicyType.ACCESS_CONTROL]: useAclTotalCount(!typeSet.has(PolicyType.ACCESS_CONTROL)),
+    [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: useAclTotalCount(!typeSet.has(PolicyType.ACCESS_CONTROL_CONSOLIDATION)),
     [PolicyType.CLIENT_ISOLATION]: useGetEnhancedClientIsolationListQuery(defaultQueryArgs, { skip: !typeSet.has(PolicyType.CLIENT_ISOLATION) }).data?.totalCount,
     [PolicyType.WIFI_OPERATOR]: useGetWifiOperatorListQuery({ params, payload: defaultPayload }, { skip: !typeSet.has(PolicyType.WIFI_OPERATOR) }).data?.totalCount,
     [PolicyType.SAML_IDP]: useSamlTotalCount(params, !typeSet.has(PolicyType.SAML_IDP)),
