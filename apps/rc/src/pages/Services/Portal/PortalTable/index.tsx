@@ -160,6 +160,7 @@ export default function PortalTable () {
       render: (_, row) =>{
         return (
           <PortalPreviewModal
+            key={row.id}
             demoValue={newDemo}
             portalLang={portalLang}
             fromPortalList={true}
