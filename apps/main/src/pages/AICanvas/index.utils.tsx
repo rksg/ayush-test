@@ -79,11 +79,10 @@ export const StreamingMessages = {
 
 export const getStreamingWordingKey = (step: string): keyof typeof StreamingMessages => {
   const [stepNumber, retryNumber] = step.split('.').map(Number)
-  if (stepNumber === 4) return 'FINALIZING_RESULT'
   if (retryNumber) {
-    return (retryNumber === 1
-      ? `PROCESSING_DATA_RETRY_${stepNumber}_${retryNumber}`
-      : `PROCESSING_DATA_RETRY_${stepNumber}_2`) as keyof typeof StreamingMessages
+    const step = stepNumber > 3 ? 3 : stepNumber
+    const retries = retryNumber !== 1 ? 2 : 1
+    return (`PROCESSING_DATA_RETRY_${step}_${retries}`) as keyof typeof StreamingMessages
   } else {
     switch (stepNumber) {
       case 0:
@@ -94,6 +93,7 @@ export const getStreamingWordingKey = (step: string): keyof typeof StreamingMess
       case 3:
         return 'PROCESSING_DATA_INITIAL'
       case 4:
+      case 5:
         return 'FINALIZING_RESULT'
       default:
         return 'INITIALIZING_INTENT'

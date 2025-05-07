@@ -18,7 +18,6 @@ import {
   CanvasExpand
 }    from '@acx-ui/icons-new'
 import {
-  // useChatAiMutation,
   useStreamChatsAiMutation,
   useGetAllChatsQuery,
   useGetChatsMutation,
@@ -176,7 +175,6 @@ const Messages = memo((props:{
       // eslint-disable-next-line max-len
       <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} onUserFeedback={onUserFeedback}/>
     ))}
-    {/* {aiBotLoading && <div className='loading'><Spin /></div>} */}
   </div>})
 
 export default function AICanvasModal (props: {
@@ -188,7 +186,6 @@ export default function AICanvasModal (props: {
   const { $t } = useIntl()
   const scrollRef = useRef(null)
   const [form] = Form.useForm()
-  // const [chatAi] = useChatAiMutation()
   const [streamChatsAi] = useStreamChatsAiMutation()
 
   const [getChats] = useGetChatsMutation()
@@ -207,7 +204,6 @@ export default function AICanvasModal (props: {
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
   const [skipScrollTo, setSkipScrollTo] = useState(false)
-  // const [enablePollStreaming, setEnablePollStreaming] = useState(true)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -219,8 +215,6 @@ export default function AICanvasModal (props: {
     'Show me the trending of the network traffic for last week.',
     'How many clients were connected to my network yesterday?'
   ] // Only support english default questions
-
-
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -317,22 +311,11 @@ export default function AICanvasModal (props: {
     }
   }
 
-  // const handleStopGenerating = () => {
-  //   setEnablePollStreaming(false)
-  // }
-
   const handlePollStreaming = async (
-    sessionId: string, streamMessageIds: string[], attempt = 0 //enabledGenerating: boolean = true
+    sessionId: string, streamMessageIds: string[], attempt = 0
   ) => {
-    // if (attempt >= MAX_POLLING_TIMES) { //temp
+    // if (attempt >= MAX_POLLING_TIMES) {
     //   setAiBotLoading(false)
-    //   return
-    // }
-
-    // TODO: enhancement
-    // if (!enabledGenerating) {
-    //   setAiBotLoading(false)
-    //   setEnablePollStreaming(true)
     //   return
     // }
 
@@ -361,7 +344,7 @@ export default function AICanvasModal (props: {
               return {
                 ...msg,
                 role: MessageRole.STREAMING,
-                text: '4.5'
+                text: '5'
               }
             }
             return msg
@@ -430,42 +413,11 @@ export default function AICanvasModal (props: {
           const startStreamingIds = response?.messages
             .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
 
-          // setEnablePollStreaming(true)
           await handlePollStreaming(response.sessionId, startStreamingIds)
         }
       }
     })
 
-    // await chatAi({
-    //   customHeaders: { timezone },
-    //   payload: {
-    //     question,
-    //     pageSize: 100,
-    //     ...(sessionId && { sessionId })
-    //   }
-    // })
-    //   .then(({ data: response, error })=>{
-    //     if(error) {
-    //       getSessionChats(1)
-    //     } else {
-    //       if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-    //     || !historyData?.length){
-    //         getAllChatsQuery.refetch()
-    //       }
-    //       if(sessionId && isNewChat) {
-    //         setIsNewChat(false)
-    //       }
-    //       if(response) {
-    //         if(response.sessionId && !sessionId) {
-    //           setSessionId(response.sessionId)
-    //         }
-    //         setChats([...response.messages].reverse())
-    //         setTotalPages(response.totalPages)
-    //         setPage(1)
-    //       }
-    //     }
-    //     setAiBotLoading(false)
-    //   })
   }
 
   const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {
@@ -668,14 +620,6 @@ export default function AICanvasModal (props: {
                         }
                       </div>
                     }
-                    {/* TODO: enhancement */}
-                    {/* { aiBotLoading && <div className='button-wrapper'>
-                      <div className='buttons'>
-                        <Button className='btn-stop' type='primary' onClick={handleStopGenerating}>
-                          { $t({ defaultMessage: 'Stop generating' }) }
-                        </Button>
-                      </div>
-                    </div>} */}
                   </div>
                   <div className='input'>
                     <Form form={form} >
