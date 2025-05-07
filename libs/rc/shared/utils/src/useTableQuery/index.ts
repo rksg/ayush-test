@@ -76,6 +76,10 @@ const DEFAULT_PAGINATION = {
   total: 0
 }
 
+export const COUNT_ALL_REQ_CONTENT = {
+  pagination: { pageSize: 0 }
+}
+
 const SORTER_ABBR = {
   descend: 'DESC',
   ascend: 'ASC'
