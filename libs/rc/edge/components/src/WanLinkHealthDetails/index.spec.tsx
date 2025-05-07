@@ -1,4 +1,4 @@
-import { EdgeMultiWanConfigStatus }  from '@acx-ui/rc/utils'
+import { EdgeMultiWanConfigStats }   from '@acx-ui/rc/utils'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { EdgeWanLinkHealthDetailsDrawer } from './index'
@@ -6,7 +6,7 @@ import { EdgeWanLinkHealthDetailsDrawer } from './index'
 describe('EdgeWanLinkHealthDetailsDrawer', () => {
   const mockSetVisible = jest.fn()
 
-  const mockHealthCheckPolicy: EdgeMultiWanConfigStatus = {
+  const mockHealthCheckPolicy: EdgeMultiWanConfigStats = {
     serialNumber: 'mock-edge-node-id',
     edgeClusterId: 'mock-cluster-id',
     multiWanPolicyId: 'mock-policy-id',

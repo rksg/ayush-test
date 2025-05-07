@@ -41,7 +41,7 @@ const edgeLagStatusPayload = {
     'ip',
     'ipMode',
     'lacpTimeout',
-    'linkHealthMonitoring'
+    'multiWan'
   ],
   sortField: 'lagId',
   sortOrder: 'ASC'
@@ -63,7 +63,7 @@ const edgePortStatusPayload = {
     'sortIdx',
     'interfaceName',
     'ipMode',
-    'linkHealthMonitoring'
+    'multiWan'
   ],
   sortField: 'sortIdx',
   sortOrder: 'ASC'

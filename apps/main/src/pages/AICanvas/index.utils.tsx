@@ -12,6 +12,8 @@ const WIDGET_GRID_GAP = 60
 const COLUMN_COUNT = 4
 export const MAX_POLLING_TIMES = 100 //temp
 export const DEFAULT_DASHBOARD_ID = 'default-dashboard-id'
+export const MAXIMUM_OWNED_CANVAS = 10
+export const MAXIMUM_DASHBOARD = 10
 
 export const getMenuWidth = (menuCollapsed?: boolean) => {
   return menuCollapsed ? MENU_COLLAPSED_WIDTH : MENU_EXPANDED_WIDTH
@@ -43,7 +45,14 @@ export const getCanvasData = (canvasList: Canvas[]) => {
       ...section,
       groups: section.groups.map(group => ({
         ...group,
-        cards: compactLayout(group.cards)
+        cards: compactLayout(group.cards.map(card => {
+          const hasUpdated = canvasData.author
+            && canvasData.diffWidgetIds?.includes(card.widgetId ?? '')
+          return {
+            ...card,
+            updated: hasUpdated
+          }
+        }))
       }))
     }))
     const groups = data.flatMap(section => section.groups)
