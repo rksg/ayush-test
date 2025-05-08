@@ -2685,7 +2685,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
               v2Agents: convertToCountAndNumber(communityNames),
               v3Agents: convertToCountAndNumber(userNames),
               venues: convertToCountAndNumber(venueNames),
-              aps: convertToCountAndNumber(apNames)
+              aps: convertToCountAndNumber(apNames),
+              venueIds: venueIds
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>

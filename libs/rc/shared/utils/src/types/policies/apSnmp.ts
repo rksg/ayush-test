@@ -128,6 +128,7 @@ export type ApSnmpViewModelData = {
   venues: CountAndNames
   aps: CountAndNames
   tags?: string[]
+  venueIds?: string[]
 }
 
 export enum ApSnmpActionType {
