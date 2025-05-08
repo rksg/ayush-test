@@ -24,8 +24,7 @@ import {
   Regions,
   URLProtocolRegExp,
   AuthRadiusEnum,
-  WisprPage,
-  GuestPortal
+  WisprPage
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 

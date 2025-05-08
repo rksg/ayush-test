@@ -477,7 +477,7 @@ describe('CaptiveNetworkForm - SAML', () => {
         expect(checkbox).toBeChecked()
       })
     })
-
+    // eslint-disable-next-line max-len
     it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
       render(
         <Provider>
@@ -543,7 +543,7 @@ describe('CaptiveNetworkForm - SAML', () => {
       const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
       expect(checkbox).not.toBeChecked()
     })
-
+    // eslint-disable-next-line max-len
     it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
       render(
         <Provider>
