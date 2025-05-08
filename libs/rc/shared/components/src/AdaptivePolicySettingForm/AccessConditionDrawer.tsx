@@ -53,9 +53,9 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
 
         if (isIdentityCommonAttributesEnabled) {
           // eslint-disable-next-line max-len
-          const attrs = list.data.filter(p => p.category !== 'Identity' || p.attributeTextMatch === 'identity_name')
+          const attrs = list.data.filter(p => !p.category|| p.attributeTextMatch === 'identity_name')
           setAttributes(attrs)
-          setSubAttributes(list.data.filter(p => p.category === 'Identity'))
+          setSubAttributes(list.data.filter(p => p.category))
         } else {
           setAttributes(list.data)
         }
@@ -79,10 +79,10 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   useEffect(() => {
     if (editCondition && visible) {
       // eslint-disable-next-line max-len
-      if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category === 'identity') {
+      if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category) {
         const editData = {
           conditionId: editCondition.id,
-          templateAttributeId: attributes.find(p => p.category === 'identity')?.id,
+          templateAttributeId: attributes.find(p => p.category)?.id,
           subTemplateAttributeId: editCondition.templateAttributeId,
           name: editCondition.name ?? editCondition.templateAttribute?.name,
           ...toEvaluationRuleForm(editCondition.evaluationRule)
@@ -98,14 +98,6 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         }
         form.setFieldsValue(editData)
       }
-
-      const editData = {
-        conditionId: editCondition.id,
-        templateAttributeId: editCondition.templateAttributeId,
-        name: editCondition.name ?? editCondition.templateAttribute?.name,
-        ...toEvaluationRuleForm(editCondition.evaluationRule)
-      }
-      form.setFieldsValue(editData)
     } else {
       form.resetFields()
     }
@@ -218,7 +210,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
             onChange={(value) => {
               const attr = attributes.find((attribute) => attribute.id === value)
               if(attr) {
-                if (attr.category !== 'Identity') {
+                if (!attr.category) {
                   form.setFieldsValue({
                     templateAttributeId: attr.id,
                     name: attr.name,
