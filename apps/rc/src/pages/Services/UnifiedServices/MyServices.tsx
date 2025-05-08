@@ -1,7 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                      from '@acx-ui/components'
+import { GridCol, GridRow, Loader, PageHeader }                               from '@acx-ui/components'
 import {
   AddProfileButton, canCreateAnyUnifiedService, getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
@@ -14,7 +14,10 @@ import { useUnifiedServiceSearchFilter }       from './useUnifiedServiceSearchFi
 
 export function MyServices () {
   const { $t } = useIntl()
-  const rawUnifiedServiceList = useUnifiedServiceListWithTotalCount()
+  const {
+    unifiedServiceListWithTotalCount: rawUnifiedServiceList,
+    isFetching
+  } = useUnifiedServiceListWithTotalCount()
   const defaultSortOrder = ServiceSortOrder.ASC
 
   const {
@@ -38,17 +41,19 @@ export function MyServices () {
         defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
       />
-      <GridRow>
-        {filteredServices.map(service => (
-          <GridCol key={service.type} col={{ span: 6 }}>
-            <UnifiedServiceCard
-              key={service.type}
-              unifiedService={service}
-              type={'default'}
-            />
-          </GridCol>
-        ))}
-      </GridRow>
+      <Loader states={[{ isLoading: isFetching }]}>
+        <GridRow>
+          {filteredServices.map(service => (
+            <GridCol key={service.type} col={{ span: 6 }}>
+              <UnifiedServiceCard
+                key={service.type}
+                unifiedService={service}
+                type={'default'}
+              />
+            </GridCol>
+          ))}
+        </GridRow>
+      </Loader>
     </Space>
   </>
 }

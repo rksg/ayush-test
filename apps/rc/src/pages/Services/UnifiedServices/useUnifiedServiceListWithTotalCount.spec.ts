@@ -59,11 +59,13 @@ describe('useUnifiedServiceListWithTotalCount', () => {
       { wrapper: Provider })
 
     await waitFor(() => {
-      const aaaService = result.current.find(s => s.type === PolicyType.AAA)
+      // eslint-disable-next-line max-len
+      const aaaService = result.current.unifiedServiceListWithTotalCount.find(s => s.type === PolicyType.AAA)
       expect(aaaService?.totalCount).toBe(2)
     })
 
-    const dhcpService = result.current.find(s => s.type === ServiceType.DHCP)
+    // eslint-disable-next-line max-len
+    const dhcpService = result.current.unifiedServiceListWithTotalCount.find(s => s.type === ServiceType.DHCP)
     expect(dhcpService).toBeUndefined()
   })
 })
