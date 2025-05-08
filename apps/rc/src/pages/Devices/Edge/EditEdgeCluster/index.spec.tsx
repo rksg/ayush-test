@@ -1,11 +1,12 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { edgeApi }                                                                                       from '@acx-ui/rc/services'
-import { CommonOperation, Device, EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                           from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                                         from '@acx-ui/rc/services'
+import { CommonOperation, Device, EdgeGeneralFixtures, EdgePortTypeEnum, EdgeStatusEnum, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                             from '@acx-ui/test-utils'
 
 import EditEdgeCluster from '.'
 
@@ -24,7 +25,7 @@ jest.mock('./VirtualIp', () => ({
   VirtualIp: () => <div data-testid='virtual-ip' />
 }))
 
-const { mockEdgeClusterList, mockEdgeCluster } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockEdgeCluster, mockedHaNetworkSettings } = EdgeGeneralFixtures
 
 describe('Edit Edge Cluster', () => {
   let params: { tenantId: string, clusterId: string, activeTab: string }
@@ -43,6 +44,10 @@ describe('Edit Edge Cluster', () => {
       rest.get(
         EdgeUrlsInfo.getEdgeCluster.url,
         (req, res, ctx) => res(ctx.json(mockEdgeCluster))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,
+        (_req, res, ctx) => res(ctx.json(mockedHaNetworkSettings))
       )
     )
 
@@ -73,6 +78,46 @@ describe('Edit Edge Cluster', () => {
       })
     expect((await screen.findAllByRole('tab')).length).toBe(3)
     expect(screen.queryByTestId('network-control')).toBeNull()
+  })
+
+  // eslint-disable-next-line max-len
+  it('when networkSettings without gateway, should be disabled "Cluster Interface" tab', async () => {
+    const mockApiFn = jest.fn()
+    const mockedNetworkSettings = cloneDeep(mockedHaNetworkSettings)
+    mockedNetworkSettings.portSettings.forEach((item) => {
+      item.ports.forEach((port) => {
+        port.portType = EdgePortTypeEnum.UNCONFIGURED
+        port.enabled = true
+      })
+    })
+    mockedNetworkSettings.lagSettings = []
+
+    mockServer.use(
+      rest.get(
+        EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,
+        (req, res, ctx) => {
+          mockApiFn()
+          return res(ctx.json(mockedNetworkSettings))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <EditEdgeCluster />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    await waitFor(() => expect(mockApiFn).toBeCalledTimes(1))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Cluster Details' }).getAttribute('aria-disabled'))
+        .toBe('false'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Cluster Interface' }).getAttribute('aria-disabled'))
+        .toBe('true'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Network Control' }).getAttribute('aria-disabled'))
+        .toBe('false'))
   })
 
   it('should change tab correctly', async () => {

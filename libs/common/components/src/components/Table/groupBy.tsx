@@ -74,7 +74,10 @@ export function useGroupBy<RecordType> (
         <UI.GroupCell style={{ position: 'relative', left: '-25px' }}>
           {attributes.map(({ key, renderer }, index) => {
             // ungrouped aps no need to show the venue information
-            if (key === 'venue' && !(record as unknown as { deviceGroupName: string }).deviceGroupName) {
+            if (key === 'venue'
+              && (!(record as unknown as { deviceGroupName: string }).deviceGroupName
+                || (record as unknown as { children: [] }).children.length === 0)
+            ) {
               return null
             }
               return <div key={key} style={{ display: 'flex' }}>
