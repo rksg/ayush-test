@@ -6,9 +6,11 @@ import { render, fireEvent, screen, renderHook }                         from '@
 
 import GatewayConnectionSettings from './GatewayConnectionSettings'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+jest.mock('../../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />
+}))
+
+jest.mock('../../../ApCompatibility/ApCompatibilityDrawer', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
