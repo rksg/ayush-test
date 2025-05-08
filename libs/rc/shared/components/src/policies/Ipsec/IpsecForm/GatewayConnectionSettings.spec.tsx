@@ -6,6 +6,12 @@ import { render, fireEvent, screen, renderHook }                         from '@
 
 import GatewayConnectionSettings from './GatewayConnectionSettings'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 describe('GatewayConnectionSettings', () => {
   const renderComponent = (initialValues = {
     advancedOption: {
