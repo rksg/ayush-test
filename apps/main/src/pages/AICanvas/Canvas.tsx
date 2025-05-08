@@ -133,6 +133,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [canvasId, setCanvasId] = useState(editCanvasId || '')
   const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
+  const [previewData, setPreviewData] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
@@ -265,6 +266,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const setupCanvas = (response: CanvasType) => {
     setCurrentCanvas(response)
+    setPreviewData(response)
     setVisibilityType(response.visible ? 'public' : 'private')
     if(isEditName){
       setIsEditName(false)
@@ -376,6 +378,18 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const onCancelEditCanvasName = () => {
     setIsEditName(false)
+  }
+
+  const onPreview = () => {
+    const tmpSection = _.cloneDeep(sections)
+    tmpSection[0].groups = _.cloneDeep(groups)
+    setPreviewData(
+      {
+        ...currentCanvas,
+        content: JSON.stringify(tmpSection)
+      }
+    )
+    setPreviewModalVisible(true)
   }
 
   const onSubmit = (value: { name:string }) => {
@@ -537,7 +551,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
               />
             </>
           }
-          <Button className='black' onClick={()=>{setPreviewModalVisible(true)}}>
+          <Button className='black' onClick={onPreview}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
@@ -569,7 +583,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       }
       {
         previewModalVisible && <PreviewDashboardModal
-          data={[currentCanvas]}
+          data={[previewData]}
           visible={previewModalVisible}
           setVisible={setPreviewModalVisible}
         />

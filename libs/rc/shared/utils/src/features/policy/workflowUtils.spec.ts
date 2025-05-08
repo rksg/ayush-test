@@ -7,7 +7,7 @@ import { ActionType, WorkflowPanelMode, WorkflowStep } from '../../types'
 import {
   AupActionDefaultValue,
   composeNext,
-  findFirstStep,
+  findAllFirstSteps,
   toReactFlowData,
   toStepMap,
   useGetActionDefaultValueByType,
@@ -55,6 +55,47 @@ const mockReverseOrderSteps: WorkflowStep[] = [
   }
 ]
 
+
+const mockDisconnectedSteps: WorkflowStep[] = [
+  {
+    id: 'step-1a',
+    actionDefinitionId: 'definition-id-3',
+    enrollmentActionId: 'enrollment-id-1',
+    nextStepId: 'step-1b',
+    actionType: ActionType.DATA_PROMPT
+  },
+  {
+    id: 'step-1b',
+    actionDefinitionId: 'definition-id-2',
+    enrollmentActionId: 'enrollment-id-2',
+    priorStepId: 'step-1a',
+    actionType: ActionType.DISPLAY_MESSAGE
+  },
+  {
+    id: 'step-2a',
+    actionDefinitionId: 'definition-id-3',
+    enrollmentActionId: 'enrollment-id-1',
+    nextStepId: 'step-2b',
+    actionType: ActionType.DATA_PROMPT
+  },
+  {
+    id: 'step-2b',
+    actionDefinitionId: 'definition-id-2',
+    enrollmentActionId: 'enrollment-id-2',
+    priorStepId: 'step-2a',
+    nextStepId: 'step-2c',
+    actionType: ActionType.DISPLAY_MESSAGE
+  },
+  {
+    id: 'step-2c',
+    actionDefinitionId: 'definition-id-1',
+    enrollmentActionId: 'enrollment-id-3',
+    priorStepId: 'step-2b',
+    actionType: ActionType.AUP
+  }
+]
+
+
 describe('WorkflowUtils', () => {
   it('should handle toStepMap correctly', () => {
     // Make sure empty input with empty output
@@ -69,7 +110,7 @@ describe('WorkflowUtils', () => {
     })
   })
 
-  it('should handle findFirstStep correctly', () => {
+  it('should handle findAllFirstSteps correctly', () => {
     const mockNotCompletedSteps: WorkflowStep[] = [
       {
         id: 'step-1',
@@ -89,13 +130,21 @@ describe('WorkflowUtils', () => {
         priorStepId: 'step-4'
       }
     ]
-    expect(findFirstStep([])).toBe(undefined)
+    expect(findAllFirstSteps([])).toHaveLength(0)
 
-    const reverseResult = findFirstStep(mockReverseOrderSteps)
-    expect(reverseResult).toBe(mockReverseOrderSteps[mockReverseOrderSteps.length - 1])
+    const reverseResult = findAllFirstSteps(mockReverseOrderSteps)
+    expect(reverseResult).toHaveLength(1)
+    expect(reverseResult).toContain(mockReverseOrderSteps[mockReverseOrderSteps.length - 1])
 
-    const notCompletedResult = findFirstStep(mockNotCompletedSteps)
-    expect(notCompletedResult).toBe(undefined)
+    const notCompletedResult = findAllFirstSteps(mockNotCompletedSteps)
+    expect(notCompletedResult).toHaveLength(0)
+
+
+    const disconnectedResult = findAllFirstSteps(mockDisconnectedSteps)
+    expect(disconnectedResult).toHaveLength(2)
+    expect(disconnectedResult).toContain(mockDisconnectedSteps[0])
+    expect(disconnectedResult).toContain(mockDisconnectedSteps[2])
+
   })
 
   it('should handle useGetActionDefaultValueByType correctly', () => {
@@ -114,7 +163,7 @@ describe('WorkflowUtils', () => {
     const targetEdges: Edge[] = []
     composeNext(
       WorkflowPanelMode.Default,
-      findFirstStep(mockReverseOrderSteps)?.id!,
+      findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
       targetNodes, targetEdges, 0, 0
     )

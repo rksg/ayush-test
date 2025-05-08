@@ -42,8 +42,8 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
     }, {})
 }
 
-export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep | undefined => {
-  return steps.find(step =>
+export const findAllFirstSteps = (steps: WorkflowStep[]): WorkflowStep[] | undefined => {
+  return steps.filter(step =>
     step.priorStepId === undefined && !step.splitOptionId
   )
 }
@@ -186,6 +186,8 @@ export const composeNext = (
     deletable: false
   })
 
+  let nextY = step.type === StepType.Start ? currentY : currentY + SPACE_OF_NODES
+
   if (nextStepId) {
     edges.push({
       id: `${id} -- ${nextStepId}`,
@@ -198,7 +200,7 @@ export const composeNext = (
     })
 
     composeNext(mode, nextStepId, stepMap, nodes, edges,
-      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+      currentX, nextY, type === StepType.Start)
   }
 }
 
@@ -209,20 +211,23 @@ export function toReactFlowData (
 ): { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
-  const START_X = 100
+  let START_X = 100
   const START_Y = 0
 
   if (steps.length === 0) {
     return { nodes, edges }
   }
 
-  const firstStep = findFirstStep(steps)
+  // find all nodes with no prior node, then render each in turn spaced horizontally
+  const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
-  if (firstStep) {
+  firstSteps?.forEach((firstStep) => {
     composeNext(mode, firstStep.id, stepMap, nodes, edges,
       START_X, START_Y, firstStep.type === StepType.Start)
-  }
+
+    START_X += 250
+  })
 
   return { nodes, edges }
 }
