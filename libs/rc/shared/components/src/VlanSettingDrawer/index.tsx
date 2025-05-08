@@ -529,7 +529,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
                 <Option value={'stp'} disabled={true}>
                   <Tooltip
                     // eslint-disable-next-line max-len
-                    title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}>
+                    title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}
+                    placement='left'>
                     <span style={{ display: 'inline-block', width: '100%' }}>
                       {$t({ defaultMessage: 'STP' })}
                     </span>
