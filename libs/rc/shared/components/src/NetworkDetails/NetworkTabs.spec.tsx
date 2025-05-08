@@ -10,8 +10,8 @@ import { mockServer, render, screen, waitFor, fireEvent }                    fro
 import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 import { AccountTier }                                                       from '@acx-ui/utils'
 
-import { networkDetailHeaderData } from './__tests__/fixtures'
-import NetworkTabs                 from './NetworkTabs'
+import { networkDetailHeaderData, networkViewModelData } from './__tests__/fixtures'
+import NetworkTabs                                       from './NetworkTabs'
 
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
 const url = generatePath(CommonRbacUrlsInfo.getNetworksDetailHeader.url, params)
@@ -30,7 +30,11 @@ describe('NetworkTabs', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData)))
+      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData))),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networkViewModelData))
+      )
     )
   })
 

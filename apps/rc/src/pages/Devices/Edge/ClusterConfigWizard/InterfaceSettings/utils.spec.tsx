@@ -3,6 +3,7 @@ import _         from 'lodash'
 
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import {
+  ClusterHighAvailabilityModeEnum,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLag,
@@ -17,6 +18,7 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import {
   getTargetInterfaceFromInterfaceSettingsFormData,
+  mockClusterConfigWizardData,
   mockFailedNetworkConfig
 } from '../__tests__/fixtures'
 
@@ -27,7 +29,8 @@ import {
   interfaceCompatibilityCheck,
   interfaceNameComparator,
   lagSettingsCompatibleCheck,
-  transformFromApiToFormData } from './utils'
+  transformFromApiToFormData,
+  transformFromFormToApiData } from './utils'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
@@ -549,5 +552,65 @@ describe('interfaceNameComparator', () => {
       'port1', 'port1.1', 'port1.2', 'port1.10',
       'port2', 'port2.1'
     ])
+  })
+})
+
+describe('data transformer', () => {
+  it('should transform data from form data to API data (AA)', () => {
+    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    // eslint-disable-next-line max-len
+    mockData.portSettings[mockEdgeClusterList.data[0].edgeList[0].serialNumber]['port1'][0].corePortEnabled = true
+    const result = transformFromFormToApiData(
+      mockData as unknown as InterfaceSettingsFormType,
+      ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+    )
+
+    expect(result).toStrictEqual({
+      lagSettings: mockData.lagSettings,
+      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
+        serialNumber,
+        ports: Object.values(ports).flat().map(port =>
+          ({
+            ...port,
+            corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled
+          })
+        )
+      })),
+      multiWanSettings: undefined
+    })
+  })
+
+  it('should transform data from form data to API data (AB)', () => {
+    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    // eslint-disable-next-line max-len
+    mockData.lagSettings[0].lags[0].portType = EdgePortTypeEnum.WAN
+    mockData.lagSettings[0].lags[0].corePortEnabled = true
+    const result = transformFromFormToApiData(
+      mockData as unknown as InterfaceSettingsFormType,
+      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+    )
+
+    expect(result).toStrictEqual({
+      lagSettings: mockData.lagSettings.map(item => ({
+        ...item,
+        lags: item.lags.map(lag => ({
+          ...lag,
+          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled
+        }))
+      })),
+      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
+        serialNumber,
+        ports: Object.values(ports).flat()
+      })),
+      multiWanSettings: undefined,
+      virtualIpSettings: mockData.vipConfig?.map(item => {
+        if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
+        return {
+          virtualIp: item.vip,
+          timeoutSeconds: mockData.timeout,
+          ports: item.interfaces
+        }
+      }).filter(item => Boolean(item))
+    })
   })
 })
