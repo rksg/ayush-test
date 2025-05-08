@@ -107,6 +107,21 @@ const mockHeaderDetails = {
   }
 }
 
+const mockNetworkViewModelData = {
+  data: [{
+    name: 'network-venue-1',
+    venueApGroups: [{
+      venueId: 'venue1_id'
+    }, {
+      venueId: 'venue2_id'
+    }],
+    apCount: 2,
+    clientCount: 0
+  }],
+  totalCount: 1,
+  page: 1
+}
+
 describe.skip('NetworkVenuesTab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
@@ -183,6 +198,10 @@ describe.skip('NetworkVenuesTab', () => {
       rest.get(
         CommonRbacUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(mockHeaderDetails))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(mockNetworkViewModelData))
       )
     )
   })

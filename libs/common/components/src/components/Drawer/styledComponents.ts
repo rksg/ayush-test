@@ -101,6 +101,9 @@ export const Drawer = styled(AntDrawer)<{ width: number | string }>`
 
     ${({ width }) => getStepsFormStyle(width)}
   }
+  .ant-drawer-mask {
+    margin-top: calc(-1 * var(--acx-drawer-top-space));
+  }
 `
 
 export const BackButton = styled.button`
