@@ -63,10 +63,6 @@ export function HostApprovalForm () {
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
       setPasswordExp(data.guestPortal?.hostGuestConfig?.hostDurationChoices.toString().split(','))
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
-
       if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostDomains)) {
         setDomainOrEmail('domain')
       } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {

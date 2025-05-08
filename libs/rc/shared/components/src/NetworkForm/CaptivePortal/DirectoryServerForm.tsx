@@ -119,9 +119,6 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     }
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
     }
 
   }, [directoryServerListFromServer, data])
