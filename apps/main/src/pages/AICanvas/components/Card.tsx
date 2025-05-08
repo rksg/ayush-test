@@ -274,7 +274,7 @@ function Card (props: CardProps) {
               <div className='slider-mark'>
                 {$t({ defaultMessage: 'Small' })}
               </div>
-              <div className='slider'>
+              <div className='slider' style={{ width: card.width === 1 ? '201px' : '301px' }}>
                 <Slider
                   min={0}
                   max={sliderMax}
