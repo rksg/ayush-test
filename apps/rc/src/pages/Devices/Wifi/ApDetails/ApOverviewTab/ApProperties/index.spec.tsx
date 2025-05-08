@@ -15,7 +15,7 @@ import {
 import { Provider, store  }                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities } from '../../__tests__/fixtures'
+import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities, currentAPWithModelR650, ApCapabilitiesR650 } from '../../__tests__/fixtures'
 
 import { ApProperties } from '.'
 
@@ -178,6 +178,91 @@ const lagList = [
   }
 ]
 
+const mockedApLldpNeighbors = {
+  detectedTime: '2022-12-16T06:22:23.337+0000',
+  neighbors: [
+    {
+      neighborManaged: false,
+      neighborSerialNumber: '987654321',
+      lldpInterface: 'eth0',
+      lldpVia: 'LLDP',
+      lldpRID: '5',
+      lldpTime: '7 days, 21:03:20',
+      lldpChassisID: 'mac d8:38:fc:36:8b:c0',
+      lldpSysName: 'hank-hao-r610',
+      lldpSysDesc: 'Ruckus R610 Multimedia Hotzone Wireless AP/SW Version: 6.2.1.103.2578',
+      lldpMgmtIP: '10.206.78.111',
+      lldpCapability: 'Bridge, on;Router, off;WLAN AP, on',
+      lldpPortID: 'mac d8:38:fc:36:8b:c0',
+      lldpPortDesc: 'eth0',
+      lldpMFS: null,
+      lldpPMDAutoNeg: 'supported: yes, enabled: yes',
+      lldpAdv: '10Base-T, HD: yes, FD: yes;100Base-TX, HD: yes, FD: yes;10Base-T, HD: no, FD: yes',
+      lldpMAUOperType: '100BaseTXFD - 2 pair category 5 UTP, full duplex mode',
+      lldpMDIPower: null,
+      lldpDeviceType: null,
+      lldpPowerPairs: null,
+      lldpClass: 'class 0',
+      lldpPowerType: null,
+      lldpPowerSource: null,
+      lldpPowerPriority: null,
+      lldpPDReqPowerVal: null,
+      lldpPSEAllocPowerVal: null,
+      lldpUPOE: '0'
+    },
+    {
+      neighborManaged: true,
+      neighborSerialNumber: '123456789',
+      lldpInterface: 'eth1',
+      lldpVia: 'LLDP',
+      lldpRID: '7',
+      lldpTime: '3 days, 21:03:20',
+      lldpChassisID: 'mac d8:38:fc:36:8b:cc',
+      lldpSysName: 'Jacky-r610',
+      lldpSysDesc: 'Ruckus R610 Multimedia Hotzone Wireless AP/SW Version: 6.2.1.103.2578',
+      lldpMgmtIP: '10.206.78.222',
+      lldpCapability: 'Bridge, on;Router, off;WLAN AP, on',
+      lldpPortID: 'mac d8:38:fc:36:8b:cc',
+      lldpPortDesc: 'eth1',
+      lldpMFS: null,
+      lldpPMDAutoNeg: 'supported: yes, enabled: yes',
+      lldpAdv: '10Base-T, HD: no, FD: yes;100Base-TX, HD: yes, FD: yes;1000Base-T, HD: no, FD: yes',
+      lldpMAUOperType: '100BaseTXFD - 2 pair category 5 UTP, full duplex mode',
+      lldpMDIPower: null,
+      lldpDeviceType: null,
+      lldpPowerPairs: null,
+      lldpClass: 'class 4',
+      lldpPowerType: 2,
+      lldpPowerSource: null,
+      lldpPowerPriority: null,
+      lldpPDReqPowerVal: null,
+      lldpPSEAllocPowerVal: '24000',
+      lldpUPOE: '0'
+    }
+  ]
+}
+
+const mockedInitPokeSocketFn = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useApContext: () => params,
+  initPokeSocket: (subscriptionId: string, handler: () => void) => {
+    return mockedInitPokeSocketFn(subscriptionId, handler)
+  },
+  closePokeSocket: () => jest.fn()
+}))
+
+const mockedSocket = {
+  on: (eventName: string, handler: () => void) => {
+    if (eventName === 'connectedSocketEvent') setTimeout(handler, 0)
+  }
+}
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => ({ venueId: 'mockVenueId', serialNumber: '422039000034' })
+}))
+
 describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -243,7 +328,9 @@ describe('ApProperties', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(wifiCapabilities))
+        (_, res, ctx) => {
+          return res(ctx.json(ApCapabilitiesR650))
+        }
       ),
       rest.get(
         WifiRbacUrlsInfo.getApValidChannel.url,
@@ -276,8 +363,28 @@ describe('ApProperties', () => {
       rest.post(
         SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApNeighbors.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ ...mockedApLldpNeighbors }))
+        }
+      ),
+      rest.patch(
+        WifiRbacUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ requestId: '123456789' }))
+        }
       )
     )
+  })
+
+  beforeEach(() => {
+    mockedInitPokeSocketFn.mockImplementation(() => mockedSocket)
+  })
+
+  afterEach(() => {
+    mockedInitPokeSocketFn.mockRestore()
   })
 
   it('should render correctly', async () => {
@@ -289,6 +396,30 @@ describe('ApProperties', () => {
       /></Provider>, { route: { params } })
     expect(screen.getByText('AP Properties')).toBeVisible()
     fireEvent.click(screen.getByText('More'))
+    const button = screen.getByRole('button', { name: /close/i })
+    fireEvent.click(button)
+  })
+
+  it('should render show PoE related info correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedInitPokeSocketFn.mockImplementation((requestId: string, handler: () => void) => {
+      setTimeout(handler, 0) // Simulate receving the message from websocket
+      return mockedSocket
+    })
+    render(<Provider>
+      <ApProperties
+        currentAP={currentAPWithModelR650}
+        apDetails={apDetails}
+        isLoading={false}
+      /></Provider>, { route: { params } })
+    expect(screen.getByText('AP Properties')).toBeVisible()
+    fireEvent.click(screen.getByText('More'))
+    expect(await screen.findByText('PoE Port Speed')).toBeVisible()
+    expect(await screen.findByText('PoE Class')).toBeVisible()
+    expect(await screen.findByText('Power Consumption')).toBeVisible()
+    expect(await screen.findByText('24 mW')).toBeVisible()
+    expect(await screen.findByText('Class 4 (802.3at 30 W)')).toBeVisible()
+    expect(await screen.findByText('1000Mbps')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
   })
