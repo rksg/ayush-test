@@ -87,6 +87,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { serialNumber, venueId } = useApContext()
@@ -492,18 +493,17 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 children={switchPort}
               />
             )}
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'PoE Port Speed' })}
-              children={getPoePortSpeed()}
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'PoE Class' })}
-              children={getPoeClassDesc(poeClass)}
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Power Consumption' })}
-              children={getAllocPowerVal(powerConsumption)}
-            />
+            {
+              isDisplayMoreApPoePropertiesEnabled && (
+                <><Descriptions.Item
+                  label={$t({ defaultMessage: 'PoE Port Speed' })}
+                  children={getPoePortSpeed()} /><Descriptions.Item
+                  label={$t({ defaultMessage: 'PoE Class' })}
+                  children={getPoeClassDesc(poeClass)} /><Descriptions.Item
+                  label={$t({ defaultMessage: 'Power Consumption' })}
+                  children={getAllocPowerVal(powerConsumption)} />
+                </>
+              )}
           </Descriptions>
         </>
       }
