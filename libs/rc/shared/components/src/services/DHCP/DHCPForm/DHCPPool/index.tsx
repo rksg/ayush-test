@@ -191,16 +191,13 @@ export default function DHCPPoolTable ({
           ]}
           children={<TextArea />}
         />
-        <Form.Item
+        {dhcpMode !== DHCPConfigTypeEnum.MULTIPLE && <Form.Item
           name='allowWired'
           label={$t({ defaultMessage: 'Allow AP wired clients' })}
           valuePropName='checked'
           children={<Switch
             onChange={(checked: boolean)=>{
               if(checked){
-                if (dhcpMode === DHCPConfigTypeEnum.MULTIPLE) {
-                  form.setFieldsValue({ vlanId: initPoolData.vlanId })
-                }
                 if (dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL) {
                   form.setFieldsValue({ vlanId: 1 })
                   setVlanEnable(false)
@@ -210,7 +207,7 @@ export default function DHCPPoolTable ({
                 setVlanEnable(true)
               }
             }}/>}
-        />
+        />}
         <Form.Item
           name='subnetAddress'
           label={$t({ defaultMessage: 'Subnet Address' })}
