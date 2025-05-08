@@ -139,6 +139,7 @@ export default function Dashboard () {
   const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -263,7 +264,7 @@ export default function Dashboard () {
                     </TenantLink>
                   </UI.Wrapper>
                 }
-                tabPersistence={true}
+                tabPersistence={enabledUXOptFeature}
               />
               <Divider dashed
                 style={{

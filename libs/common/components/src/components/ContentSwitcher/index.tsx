@@ -48,7 +48,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const isDefaultOptionVisible = options.find(o => o.value === initValue)
   const defaultActiveContent = isDefaultOptionVisible ? initValue : options[0].value
   const storedTab = localStorage.getItem(`${tabId}-content-switcher`) as string
-  || defaultActiveContent
+    || defaultActiveContent
   const [activeContent, setActiveContent] = useState(tabPersistence ?
     storedTab : defaultActiveContent)
   const padding = size === 'small'
@@ -60,7 +60,9 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
       onChange(e.target.value)
     }
     setActiveContent(e.target.value)
-    localStorage.setItem(`${tabId}-content-switcher`, e.target.value)
+    if(tabId) {
+      localStorage.setItem(`${tabId}-content-switcher`, e.target.value)
+    }
   }
   return (
     <>
