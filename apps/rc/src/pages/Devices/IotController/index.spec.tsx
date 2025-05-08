@@ -10,7 +10,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import IotController from '.'
+import { IotController } from '.'
 
 const iotControllerList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
