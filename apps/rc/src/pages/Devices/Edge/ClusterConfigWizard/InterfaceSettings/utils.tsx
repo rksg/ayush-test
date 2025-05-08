@@ -10,6 +10,8 @@ import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
+  EdgeLag,
+  EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber,
   VirtualIpSetting
@@ -342,18 +344,56 @@ export const lagSettingsCompatibleCheck = (
   return getCompatibleCheckResult(checkResult)
 }
 
-export const transformFromFormToApiData = (
-  data: InterfaceSettingsFormType,
-  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
-): ClusterNetworkSettings => {
+const processLagSettings = (data: InterfaceSettingsFormType) => {
+  const processLagConfig = (lags: EdgeLag[]) => {
+    return lags.map(lag => {
+      let corePortEnabled = lag.corePortEnabled
+      if(lag.portType === EdgePortTypeEnum.WAN) {
+        corePortEnabled = false
+      }
+      return {
+        ...lag,
+        corePortEnabled
+      }
+    })
+  }
+
+  const lagSettings = []
+  for(let item of data.lagSettings) {
+    lagSettings.push({
+      serialNumber: item.serialNumber,
+      lags: processLagConfig(item.lags)
+    })
+  }
+  return lagSettings
+}
+
+const processPortSettings = (data: InterfaceSettingsFormType) => {
+  const processPortConfig = (ports: EdgePort[]) => {
+    return ports.map(port => {
+      let corePortEnabled = port.corePortEnabled
+      if(port.portType === EdgePortTypeEnum.WAN) {
+        corePortEnabled = false
+      }
+      return {
+        ...port,
+        corePortEnabled
+      }
+    })
+  }
+
   const portSettings = []
   for(let [k, v] of Object.entries(data.portSettings)) {
     portSettings.push({
       serialNumber: k,
-      ports: Object.values(v).flat()
+      ports: processPortConfig(Object.values(v).flat())
     })
   }
-  const virtualIpSettings = data.vipConfig.map(item => {
+  return portSettings
+}
+
+const processVirtualIpSettings = (data: InterfaceSettingsFormType) => {
+  return data.vipConfig.map(item => {
     if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
     return {
       virtualIp: item.vip,
@@ -361,6 +401,9 @@ export const transformFromFormToApiData = (
       ports: item.interfaces
     }
   }).filter(item => Boolean(item)) as VirtualIpSetting[]
+}
+
+const processHighAvailabilitySettings = (data: InterfaceSettingsFormType) => {
   const fallbackSettingsFormData = data.fallbackSettings
   const fallbackSettings = data.fallbackSettings && {
     ...fallbackSettingsFormData,
@@ -391,21 +434,29 @@ export const transformFromFormToApiData = (
     }
   }
 
+  return {
+    fallbackSettings,
+    loadDistribution: data.loadDistribution
+  }
+}
+
+export const transformFromFormToApiData = (
+  data: InterfaceSettingsFormType,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+): ClusterNetworkSettings => {
+  const highAvailabilitySettings = processHighAvailabilitySettings(data)
   const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
-  const shouldPatchHaSetting = fallbackSettings &&
+  const shouldPatchHaSetting = highAvailabilitySettings.fallbackSettings &&
     highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
   return {
-    lagSettings: data.lagSettings,
-    portSettings,
+    lagSettings: processLagSettings(data),
+    portSettings: processPortSettings(data),
     ...(shouldPatchVip ? {
-      virtualIpSettings
+      virtualIpSettings: processVirtualIpSettings(data)
     } : {}),
     ...(shouldPatchHaSetting ? {
-      highAvailabilitySettings: {
-        fallbackSettings,
-        loadDistribution: data.loadDistribution
-      }
+      highAvailabilitySettings
     } : {}),
     multiWanSettings: data.multiWanSettings
   }

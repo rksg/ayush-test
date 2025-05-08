@@ -79,15 +79,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const portType = useWatch(getFieldFullPath('portType'), form)
   // eslint-disable-next-line max-len
   const portEnabled = useWatch(getFieldFullPath((_.get(formFieldsProps, 'enabled')?.name as string) ?? 'enabled'), form)
-
-  const lagId = form.getFieldValue(getFieldFullPath('id'))
-  const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
+  const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
 
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
-  const isCurrentInterfaceCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
-    ? corePortInfo.key === (lagId + '')
-    : corePortInfo.key === physicalPortIfName))
 
   // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
   // 2. corePort should be grey-out when one of the following NOT matches :
@@ -129,7 +124,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
     if(
-      portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) {
+      portType === EdgePortTypeEnum.LAN && !corePortEnabled) {
       return (
         <>
           <Form.Item
@@ -165,7 +160,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     } else if (portType === EdgePortTypeEnum.WAN
       || portType === EdgePortTypeEnum.CLUSTER
       // only core port enabled LAN port can configure `ipMode`
-      || (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled)) {
+      || (portType === EdgePortTypeEnum.LAN && corePortEnabled)) {
       return (
         <>
           <Form.Item
@@ -319,11 +314,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   <Checkbox
                     disabled={!corePortInfo.isExistingCorePortInLagMember
                       && (
-                        (hasWANPort && !isCurrentInterfaceCorePortEnabled)
+                        (hasWANPort && !corePortEnabled)
                         || (isEdgeSdLanRun
                           ? hasCorePortEnabled
                           // eslint-disable-next-line max-len
-                          : ((hasCorePortEnabled && !isCurrentInterfaceCorePortEnabled) || portType !== EdgePortTypeEnum.LAN))
+                          : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
                       )
                     }
                   >
