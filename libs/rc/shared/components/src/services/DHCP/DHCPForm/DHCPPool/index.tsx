@@ -203,8 +203,8 @@ export default function DHCPPoolTable ({
                 }
                 if (dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL) {
                   form.setFieldsValue({ vlanId: 1 })
+                  setVlanEnable(false)
                 }
-                setVlanEnable(false)
               } else {
                 form.setFieldsValue({ vlanId: previousVal })
                 setVlanEnable(true)
