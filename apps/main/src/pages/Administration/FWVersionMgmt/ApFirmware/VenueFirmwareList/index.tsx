@@ -46,11 +46,12 @@ import {
   defaultSort,
   dateSort,
   EolApFirmware,
-  ABFVersion
+  ABFVersion,
+  FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }  from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
@@ -483,6 +484,7 @@ const VenueFirmwareTable = () => {
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
+          rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateUpgradePreferences)],
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferencesModelVisible(true)
         }])}
