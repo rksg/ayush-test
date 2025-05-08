@@ -6,8 +6,8 @@ import { cloneDeep, find } from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { AnchorContext, Loader }               from '@acx-ui/components'
-import { ApExtAntennaForm }                    from '@acx-ui/rc/components'
+import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
+import { ApExtAntennaForm }                       from '@acx-ui/rc/components'
 import {
   useLazyGetApExternalAntennaSettingsQuery,
   useLazyGetVenueExternalAntennaQuery,
@@ -158,16 +158,27 @@ export function ExternalAntennaSettings () {
   }
 
   const handleUpdateExtAntenna = async () => {
-    try {
-      const params = paramsRef.current
-      const payload = {
-        useVenueSettings: isUseVenueSettingsRef.current,
-        externalAntenna: cleanExtModel(form.getFieldValue('externalAntenna'))
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'External Antenna Settings Change' }),
+      content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot of this AP. Are you sure you want to continue?' }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          const params = paramsRef.current
+          const payload = {
+            useVenueSettings: isUseVenueSettingsRef.current,
+            externalAntenna: cleanExtModel(form.getFieldValue('externalAntenna'))
+          }
+          await updateApExtAntSettings({ params, payload }).unwrap()
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
       }
-      await updateApExtAntSettings({ params, payload }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    })
   }
 
   return (<Loader states={[{

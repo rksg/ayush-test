@@ -336,8 +336,9 @@ export enum Features {
   WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE = 'wifi-ap-group-more-parameter-phase1-toggle',
   SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE = 'acx-ui-support-stack-neighbor-port-toggle',
   WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE = 'wifi-open-network-integrate-identity-group-toggle',
-  WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
+  IDENTITY_COMMON_ATTRIBUTES_TOGGLE = 'acx-ui-identity-common-attributes-toggle',
   WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
+  WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle'
 }
@@ -349,6 +350,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
+  PROXY_RADSEC = 'PROXY-RADSEC',
   RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   EDGE_ADV = 'EDGE-ADV',
   EDGE_AV_REPORT = 'EDGE-AV-REPORT',
@@ -382,6 +384,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
+  { key: TierFeatures.PROXY_RADSEC, description: defineMessage({ defaultMessage: 'R1 Proxy RadSec, CoA and DM: RadSec, securely transmits RADIUS messages over TLS to protect against interception and tampering across untrusted networks. CoA, dynamically updates user session attributes in real time without requiring re-authentication or disconnection. DM, instantly terminates a user session to enforce security or policy actions with minimal delay.' }), status: true },
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
   { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
