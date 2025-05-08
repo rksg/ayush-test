@@ -685,7 +685,9 @@ export function NetworkForm (props:{
         ...saveState.wlan,
         ...data.wlan
       },
-      portalServiceProfileId: data.portalServiceProfileId
+      portalServiceProfileId: data.portalServiceProfileId,
+      samlIdpProfilesId: data.samlIdpProfilesId,
+      samlIdpProfilesName: data.samlIdpProfilesName
     }
     if(!tmpGuestPageState.portalServiceProfileId){
       delete tmpGuestPageState.portalServiceProfileId
@@ -700,6 +702,7 @@ export function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
+
     updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
@@ -1018,14 +1021,12 @@ export function NetworkForm (props:{
           afterVenueActivationRequest.push(updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues))
         }
 
-        if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
+        if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
+          // eslint-disable-next-line max-len
+          afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
+        } else if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
-
-          if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
-            // eslint-disable-next-line max-len
-            afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
-          }
         }
       }
 
@@ -1226,19 +1227,16 @@ export function NetworkForm (props:{
         )
       }
 
-      // eslint-disable-next-line max-len
-      if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
+      if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
+        afterVenueActivationRequest.push(
+          // eslint-disable-next-line max-len
+          updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
+        )
+      } else if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         afterVenueActivationRequest.push(
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
-
-        if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
-          afterVenueActivationRequest.push(
-            // eslint-disable-next-line max-len
-            updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
-          )
-        }
       }
 
       if (payload.id) {
@@ -1546,7 +1544,8 @@ function useIdentityGroupOnNetworkActivation () {
       (network.type === NetworkTypeEnum.HOTSPOT20 ||
         network.type === NetworkTypeEnum.PSK ||
         network.type === NetworkTypeEnum.AAA ||
-        network.type === NetworkTypeEnum.CAPTIVEPORTAL
+        network.type === NetworkTypeEnum.CAPTIVEPORTAL ||
+        network.type === NetworkTypeEnum.OPEN
       )
     ) {
       const identityGroupId = network?.identityGroupId

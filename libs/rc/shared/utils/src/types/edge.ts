@@ -17,7 +17,9 @@ import {
   EdgePortTypeEnum,
   EdgeServiceTypeEnum, EdgeStatusSeverityEnum,
   NodeClusterRoleEnum,
-  EdgeClusterProfileTypeEnum
+  EdgeClusterProfileTypeEnum,
+  EdgeWanLinkHealthStatusEnum,
+  EdgeWanPortRoleStatusEnum
 } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -140,6 +142,27 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
+interface EdgeMultiWanStats {
+  wanPortStatus?: EdgeWanPortRoleStatusEnum
+  wanLinkStatus?: EdgeWanLinkHealthStatusEnum    // overall link health status
+  wanLinkTargets?: { ip: string, status: EdgeWanLinkHealthStatusEnum }[] // per link target health status
+}
+
+export interface EdgeMultiWanConfigStats extends EdgeMultiWanStats{
+  serialNumber:string
+  edgeClusterId: string
+  multiWanPolicyId: string
+  portName:string
+  priority: number
+  linkHealthMonitorEnabled: boolean
+  monitorProtocol: EdgeMultiWanProtocolEnum
+  monitorTargets: string[]
+  monitorLinkDownCriteria: EdgeLinkDownCriteriaEnum
+  monitorIntervalSec: number
+  monitorMaxCountToDown: number
+  monitorMaxCountToUp:number
+}
+
 export interface EdgePortStatus {
   type: EdgePortTypeEnum
   portId: string
@@ -157,6 +180,7 @@ export interface EdgePortStatus {
   interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
+  multiWan?: EdgeMultiWanConfigStats
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -362,6 +386,7 @@ export interface EdgeLagStatus {
   ip?: string
   subnet?: string
   isCorePort: string
+  multiWan?: EdgeMultiWanConfigStats
 }
 
 export interface EdgeLag {

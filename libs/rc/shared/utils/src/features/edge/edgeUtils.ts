@@ -156,6 +156,10 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
 
+  if (payload.portType === EdgePortTypeEnum.UNCONFIGURED) {
+    payload.ipMode = EdgeIpModeEnum.DHCP
+  }
+
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
   }
@@ -307,11 +311,19 @@ export const validateSubnetIsConsistent = (
       const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
       if(first.first !== second.first || first.last !== second.last) {
         // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
+        return Promise.reject($t({ defaultMessage: 'Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.' }))
       }
     }
   }
   return Promise.resolve()
+}
+
+export const validateConfiguredSubnetIsConsistent = (
+  allIps: { ip?: string, subnet?: string }[],
+  value?: string
+) => {
+  const configuredIps = allIps.filter(ip => Boolean(ip.ip) && Boolean(ip.subnet))
+  return validateSubnetIsConsistent(configuredIps, value)
 }
 
 const isUnique = (value: string, index: number, array: string[]) => {
@@ -321,8 +333,8 @@ const isUnique = (value: string, index: number, array: string[]) => {
 export const validateUniqueIp = (ips: string[], value?: string) => {
   if(!Boolean(value)) return Promise.resolve()
   const { $t } = getIntl()
-
-  if(ips.every(isUnique)) {
+  const configuredIps = ips.filter(ip => Boolean(ip))
+  if(configuredIps.every(isUnique)) {
     return Promise.resolve()
   }
   return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
@@ -427,14 +439,15 @@ export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: 
 
   if (totalGateway < nodeCount) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
+    return Promise.reject($t({ defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.' }))
 
   } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > nodeCount) {
-    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
 
   } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways.' }, {
+    return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways on each Edge.' }, {
       maxWanPortCount: MAX_DUAL_WAN_PORT
     }))
 

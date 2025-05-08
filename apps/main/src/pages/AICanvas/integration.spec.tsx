@@ -24,6 +24,10 @@ jest.mock('./components/WidgetChart', () => ({
 
 jest.mock('./components/Card', () => () =><div>Card</div>)
 
+jest.mock('./PreviewDashboardModal', () => ({
+  PreviewDashboardModal: () => <div data-testid='PreviewDashboardModal' />
+}))
+
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
@@ -82,6 +86,7 @@ const mockedGetCanvas = jest.fn(() => ({
 }))
 const mockedCreate = jest.fn()
 const mockedUpdate = jest.fn()
+const mockedPatch = jest.fn()
 const currentCanvas = {
   id: '65bcb4d334ec4a47b21ae5e062de279f',
   name: 'Dashboard Canvas',
@@ -122,6 +127,7 @@ jest.mock('@acx-ui/rc/services', () => {
     useGetCanvasQuery: () => ({ data: [currentCanvas] }),
     useCreateCanvasMutation: () => ([ mockedCreate ]),
     useUpdateCanvasMutation: () => ([ mockedUpdate ]),
+    usePatchCanvasMutation: () => ([ mockedPatch ]),
     useLazyGetCanvasQuery: () => ([ mockedGetCanvas ]),
     useLazyGetCanvasByIdQuery: () => ([ mockedGetCanvasById ]),
     useCreateWidgetMutation: () => [

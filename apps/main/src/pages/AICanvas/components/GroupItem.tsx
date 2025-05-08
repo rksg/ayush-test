@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction, useEffect } from 'react'
 
 import { useDrop, XYCoord } from 'react-dnd'
 
+import { NoDataIcon } from '@acx-ui/components'
+
 import { CardInfo, Group, LayoutConfig } from '../Canvas'
 import utils                             from '../utils'
 
@@ -48,11 +50,21 @@ export default function GroupItem (props: GroupProps) {
     }
   }, [layout])
 
+  const hasCards = cards.length > 0
   const containerHeight = utils.getContainerMaxHeight(
     cards,
     layout.rowHeight,
     layout.margin
   )
+
+  const getContainerHeight = () => {
+    if (!hasCards && !draggable) {
+      return 'calc(80vh - 130px)'
+    } else if (containerHeight > defaultLayout.containerHeight) {
+      return containerHeight
+    }
+    return defaultLayout.containerHeight
+  }
 
   const dropCard = (dragItem: CardInfo, dropItem: GroupProps) => {
     if (dragItem.type === ItemTypes.CARD) {
@@ -101,15 +113,10 @@ export default function GroupItem (props: GroupProps) {
           id={containerId}
           className='card-container'
           // ref={sectionRef}
-          style={{
-            height:
-                containerHeight > defaultLayout.containerHeight
-                  ? containerHeight
-                  : defaultLayout.containerHeight
-          }}
+          style={{ height: getContainerHeight() }}
         >
-          {
-            cards.map((c) => <Card
+          { (hasCards || draggable)
+            ? cards.map((c) => <Card
               key={`${index}_${c.id}`}
               groupIndex={index}
               card={c}
@@ -122,8 +129,8 @@ export default function GroupItem (props: GroupProps) {
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}
               // sectionRef={sectionRef}
-            />
-            )
+            />)
+            : <NoDataIcon hideText={true} />
           }
         </section>
       </div>

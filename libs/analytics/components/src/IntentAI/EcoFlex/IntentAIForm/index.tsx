@@ -13,7 +13,7 @@ import { parseExcludedHours, buildExcludedHours }                               
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
-import { useIntentAIEcoFlexQuery }                                                          from '../ComparisonDonutChart/services'
+import { useIntentAIEcoFlexQuery }                                                          from '../services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
