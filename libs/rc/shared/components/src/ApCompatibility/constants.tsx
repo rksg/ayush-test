@@ -36,7 +36,9 @@ export enum InCompatibilityFeatures {
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  VENUE_MULTICAST_RATE_LIMIT = 'Multicast Rate Limit (Venue)'
+  VENUE_MULTICAST_RATE_LIMIT = 'Multicast Rate Limit (Venue)',
+  OWE_TRANSITION_6G = 'OWE Transition 6G',
+  MESH_5G_ONLY_6G_ONLY = 'Mesh 5G Only And 6G Only'
 }
 
 export const retrievedApCompatibilitiesOptions = (
