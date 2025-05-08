@@ -62,6 +62,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { BandManagement } from '../../BandManagement'
 import {
   RadioSettingsContents,
   RadioSettingsUtils,
@@ -1212,12 +1213,23 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
               </div>
               }
               {isWifiSwitchableRfEnabled &&
-              <Form.Item
-                name={['radioParamsDual5G', 'enabled']}
-                initialValue={true}
-                hidden
-                children={<></>}
-              />
+              <>
+                <Form.Item
+                  name={['radioParamsDual5G', 'enabled']}
+                  initialValue={true}
+                  hidden
+                  children={<></>}
+                />
+                <BandManagement
+                  style={{ paddingBottom: '5em' }}
+                  disabled={!isAllowEdit}
+                  triBandApModels={triBandApModels}
+                  dual5gApModels={dual5gApModels}
+                  bandModeCaps={bandModeCaps}
+                  existingTriBandApModels={venueTriBandApModels}
+                  currentBandModeData={currentVenueBandModeData}
+                  setCurrentBandModeData={setCurrentVenueBandModeData} />
+              </>
               }
             </Col>
           </Row>
