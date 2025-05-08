@@ -295,8 +295,8 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.LIST]: [getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery)]
   },
   [PolicyType.ADAPTIVE_POLICY]: {
-    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
-      getOpsApi(RulesManagementUrlsInfo.addConditions)],
+    [PolicyOperation.CREATE]: [[getOpsApi(RulesManagementUrlsInfo.createPolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions)]],
     [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicy),
       getOpsApi(RulesManagementUrlsInfo.addConditions),
       getOpsApi(RulesManagementUrlsInfo.deleteConditions),
