@@ -246,7 +246,7 @@ export function IotControllerForm () {
                       <Tooltip.Question
                         title={$t({ defaultMessage:
                           // eslint-disable-next-line max-len
-                          'At any time API token in vRIOT controller is regenerated it should be updated in the R1 UI for successful connection.' })}
+                          'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
                         placement='right'
                         iconStyle={{
                           width: 16,
