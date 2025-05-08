@@ -521,6 +521,22 @@ describe('ImpactedSwitchVLANsTable', () => {
     expect(exportButton).not.toBeInTheDocument()
     jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
+  it('should not render table or export button when response.data is undefined', async () => {
+    // Mock the GraphQL query to return undefined data
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: [] })
+
+    render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+    // Ensure the table body is not rendered
+    const body = screen.queryByTestId('table-body')
+    expect(body).not.toBeInTheDocument()
+
+    // Ensure the export button is not rendered
+    await waitFor(() => {
+      const exportButton = screen.queryByTestId('DownloadOutlined')
+      expect(exportButton).not.toBeInTheDocument()
+    })
+  })
 
   describe('CSV Export', () => {
     const mockDownloadSpy = jest.fn()

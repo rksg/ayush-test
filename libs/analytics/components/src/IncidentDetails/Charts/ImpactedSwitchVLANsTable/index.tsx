@@ -88,8 +88,6 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   const [selected, setSelected] = useState(0)
 
   const handleExportCSV = () => {
-    if (!response.data) return
-
     // Get column definitions
     const columnDefinitions = getColumnDefinitions($t)
 
