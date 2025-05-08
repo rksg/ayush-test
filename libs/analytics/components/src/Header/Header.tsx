@@ -14,6 +14,7 @@ const isMLISA = get('IS_MLISA_SA')
 export type UseHeaderExtraProps = {
   shouldQueryAp?: boolean,
   shouldQuerySwitch?: boolean,
+  shouldQueryEdge?: boolean,
   shouldShowOnlyDomains?: boolean,
   withIncidents?: boolean,
   excludeNetworkFilter?: boolean,
@@ -23,7 +24,7 @@ export type UseHeaderExtraProps = {
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
 export const Filter = (
-  { shouldQueryAp = true, shouldQuerySwitch, shouldShowOnlyDomains,
+  { shouldQueryAp = true, shouldQuerySwitch, shouldQueryEdge, shouldShowOnlyDomains,
     withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {
   return excludeNetworkFilter
@@ -37,6 +38,7 @@ export const Filter = (
         key={getShowWithoutRbacCheckKey('network-filter')}
         shouldQueryAp={Boolean(shouldQueryAp)}
         shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        shouldQueryEdge={Boolean(shouldQueryEdge)}
         shouldShowOnlyVenues={Boolean(shouldShowOnlyDomains)}
         withIncidents={withIncidents}
       />

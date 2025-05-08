@@ -43,7 +43,7 @@ export function BrandTable ({
   const noDataColor = 'var(--acx-primary-black)'
 
   const tableData = sliceType === 'lsp'
-    ? transformToLspView(data)
+    ? transformToLspView(data, lspLabel)
     : transformToPropertyView(data)
   const commonCols: TableProps<Common>['columns'] = [
     {
