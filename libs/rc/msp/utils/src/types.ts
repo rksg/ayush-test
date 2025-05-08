@@ -45,6 +45,8 @@ export interface DelegationEntitlementRecord {
   switchDeviceCount?: string;
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
+  virtualEdgeDeviceCount?: string;
+  iotCtrlDeviceCount?: string;
   availableLicenses?: number;
   adaptivePolicyCount?: number;
   piNetworkCount?: number;
@@ -531,7 +533,8 @@ export enum DeviceComplianceType {
   SLTN_PIN_FOR_IDENTITY = 'SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT = 'SLTN_PMS_INT',
   SLTN_SIS_INT = 'SLTN_SIS_INT',
-  SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC'
+  SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC',
+  IOT_CTRL = 'IOT_CTRL'
 }
 
 export interface SlnTableRow {
@@ -625,7 +628,8 @@ export enum ComplianceMspCustomersDevicesTypes {
   SLTN_PIN_FOR_IDENTITY='SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT='SLTN_PMS_INT',
   SLTN_SIS_INT='SLTN_SIS_INT',
-  SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC'
+  SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC',
+  IOT_CONTROLLER='IOT_CONTROLLER'
 }
 
 export interface LicenseAttentionNotes {

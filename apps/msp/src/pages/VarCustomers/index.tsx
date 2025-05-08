@@ -23,6 +23,7 @@ import {
 } from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MspRbacUrlsInfo,
   MSPUtils,
   VarCustomer
 } from '@acx-ui/msp/utils'
@@ -31,10 +32,10 @@ import {
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { isDelegationMode, noDataDisplay } from '@acx-ui/utils'
+import { Link, TenantLink, useParams }                 from '@acx-ui/react-router-dom'
+import { RolesEnum }                                   from '@acx-ui/types'
+import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi, isDelegationMode, noDataDisplay }  from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -78,12 +79,15 @@ export function VarCustomers () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+
   const { data: userProfile } = useUserProfileContext()
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
   // backend will fix this later
   const isAdmin = isRbacPhase3ToggleEnabled
-    ? hasRoles(adminRoles)
+    ? hasAllowedOperations([
+      getOpsApi(MspRbacUrlsInfo.acceptRejectInvitation)])
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
 
   const [ handleInvitation
@@ -172,7 +176,8 @@ export function VarCustomers () {
       const tableQuery = useTableQuery({
         useQuery: useInviteCustomerListQuery,
         defaultPayload: invitationPayload,
-        pagination: { settingsId }
+        pagination: { settingsId },
+        enableRbac: isRbacEnabled
       })
       useEffect(() => {
         setInviteCount(tableQuery.data?.totalCount as number)
@@ -311,7 +316,8 @@ export function VarCustomers () {
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isRbacEnabled
     })
 
     return (

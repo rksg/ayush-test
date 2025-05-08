@@ -77,7 +77,8 @@ function Layout () {
   }
   const invitationTableQuery = useTableQuery({
     useQuery: useInviteCustomerListQuery,
-    defaultPayload: invitationPayload
+    defaultPayload: invitationPayload,
+    enableRbac: isRbacEnabled
   })
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
   const nonVarDelegation = delegationCount > 0
