@@ -49,9 +49,9 @@ import {
   ABFVersion,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, getUserProfile, hasAccess } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                  from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }  from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
@@ -194,8 +194,6 @@ const VenueFirmwareTable = () => {
   const isWifiDowngradeVenueABF = useIsSplitOn(Features.WIFI_DOWNGRADE_VENUE_ABF_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
-  const { rbacOpsApiEnabled } = getUserProfile()
-
   const tableQuery = useTableQuery<FirmwareVenue>({
     useQuery: useGetVenueVersionListQuery,
     defaultPayload: {}
@@ -486,8 +484,7 @@ const VenueFirmwareTable = () => {
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
-          // eslint-disable-next-line max-len
-          ...(rbacOpsApiEnabled ? { rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateUpgradePreferences)] } : {}),
+          rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateUpgradePreferences)],
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferencesModelVisible(true)
         }])}

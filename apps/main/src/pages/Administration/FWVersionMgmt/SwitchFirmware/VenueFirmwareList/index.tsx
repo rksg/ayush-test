@@ -37,7 +37,7 @@ import {
 import { useParams }                               from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
-  filterByAccess, getUserProfile,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
@@ -294,11 +294,7 @@ export const VenueFirmwareTable = (
   })
 
   const isPreferencesVisible = rbacOpsApiEnabled
-    ? hasPermission({
-      rbacOpsIds: [
-        getOpsApi(FirmwareUrlsInfo.updateSwitchUpgradePreferences)
-      ]
-    })
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateSwitchUpgradePreferences)])
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (

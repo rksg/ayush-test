@@ -45,7 +45,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, RolesEnum } from '@acx-ui/types'
 import {
-  filterByAccess, getUserProfile,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
@@ -350,11 +350,7 @@ export function VenueFirmwareList () {
   })
 
   const isPreferencesVisible = rbacOpsApiEnabled
-    ? hasPermission({
-      rbacOpsIds: [
-        getOpsApi(FirmwareUrlsInfo.updateEdgeUpgradePreferences)
-      ]
-    })
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateEdgeUpgradePreferences)])
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
