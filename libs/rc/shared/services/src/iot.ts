@@ -11,7 +11,6 @@ import { baseIotApi }     from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
 import {
   createHttpRequest,
-  getEnabledDialogImproved,
   ignoreErrorModal
 } from '@acx-ui/utils'
 
@@ -40,11 +39,9 @@ export const iotApi = baseIotApi.injectEndpoints({
       }
     }),
     addIotController: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(IotUrlsInfo.addIotController, params, getEnabledDialogImproved() ? {} : {
-          ...ignoreErrorModal
-        })
+        const req = createHttpRequest(IotUrlsInfo.addIotController)
         return {
           ...req,
           body: payload
@@ -63,6 +60,15 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),
+    updateIotController: build.mutation<IotControllerSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.updateIotController, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
+    }),
     deleteIotController: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(IotUrlsInfo.deleteIotController, params)
@@ -71,13 +77,29 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
+    }),
+    testConnectionIotController: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(IotUrlsInfo.testConnectionIotController,
+          undefined,
+          { ...ignoreErrorModal }
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
 
 export const {
   useGetIotControllerListQuery,
+  useLazyGetIotControllerListQuery,
+  useAddIotControllerMutation,
   useGetIotControllerQuery,
   useLazyGetIotControllerQuery,
-  useDeleteIotControllerMutation
+  useUpdateIotControllerMutation,
+  useDeleteIotControllerMutation,
+  useTestConnectionIotControllerMutation
 } = iotApi
