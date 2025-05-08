@@ -17,10 +17,27 @@ const mockWidget = {
   defaultTimeRange: 'Last 7 days'
 }
 
+const mockLegacyWidget = {
+  id: 'widget-id',
+  name: 'Legacy widget',
+  chartOption: [],
+  chartType: '',
+  chatId: '',
+  sessionId: ''
+}
+
 const mockProps = {
   canvasId: 'canvas-id',
   widget: mockWidget,
   visible: true,
+  setVisible: jest.fn(),
+  changeWidgetProperty: jest.fn()
+} as unknown as CustomizeWidgetDrawerProps
+
+const mockLegacyProps = {
+  canvasId: 'canvas-id-legacy',
+  widget: mockLegacyWidget,
+  visible: false,
   setVisible: jest.fn(),
   changeWidgetProperty: jest.fn()
 } as unknown as CustomizeWidgetDrawerProps
@@ -129,6 +146,16 @@ describe('CustomizeWidgetDrawer', () => {
 
     await userEvent.click(screen.getByText('Last 30 Days'))
     expect(screen.getByText('Reset to default range')).toBeVisible()
+  })
+
+  it('render legacy widget drawer correctly if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <CustomizeWidgetDrawer {...mockLegacyProps} />
+      </Provider>
+    )
+    expect(screen.queryByText('Time Range')).not.toBeInTheDocument()
   })
 
   it('no render time range if the feature flag is off', async () => {

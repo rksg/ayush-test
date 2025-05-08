@@ -97,7 +97,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
             children={<Input/>}
           />
 
-          {isCanvasQ2Enabled && (
+          { isCanvasQ2Enabled && widget.defaultTimeRange && (
             <Form.Item>
               <Row justify='space-between' style={{ padding: '0 0 4px' }}>
                 <Col>
