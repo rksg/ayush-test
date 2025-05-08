@@ -220,7 +220,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [updateUnitMutation] = useUpdatePropertyUnitMutation()
   const [updatePersonaMutation] = useUpdatePersonaMutation()
 
-   const {
+  const {
     data: dpskData
   } = useGetDpskQuery(
     { params: { serviceId: dpskPoolId } },{ skip: !dpskPoolId })
