@@ -555,7 +555,9 @@ export const DeviceComplianceTypeLabels = {
   [DeviceComplianceType.SLTN_PMS_INT]: defineMessage({ defaultMessage: 'PMS Integration' }),
   [DeviceComplianceType.SLTN_SIS_INT]: defineMessage({ defaultMessage: 'SIS Integration' }),
   [DeviceComplianceType.SLTN_HYBRID_CLOUD_SEC]:
-    defineMessage({ defaultMessage: 'Hybrid Cloud Security' })
+    defineMessage({ defaultMessage: 'Hybrid Cloud Security' }),
+  [DeviceComplianceType.IOT_CTRL]:
+    defineMessage({ defaultMessage: 'IoT Controllers' })
 }
 
 export interface DeviceCompliance {
