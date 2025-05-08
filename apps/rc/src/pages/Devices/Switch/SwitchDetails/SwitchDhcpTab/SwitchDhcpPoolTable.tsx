@@ -10,13 +10,13 @@ import {
   useUpdateDhcpServerMutation,
   useCreateDhcpServerMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   useTableQuery,
   SwitchDhcp,
   VenueMessages,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'

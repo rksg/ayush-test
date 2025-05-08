@@ -54,6 +54,7 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
   getSwitchModel,
@@ -79,7 +80,6 @@ import {
   createSwitchSerialPatternForSpecific8100Model,
   isSpecific8100Model
 } from '@acx-ui/rc/utils'
-import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import {
   useLocation,
   useNavigate,

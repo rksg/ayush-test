@@ -9,12 +9,12 @@ import {
   useGetSwitchQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   IP_ADDRESS_TYPE,
   SwitchRbacUrlsInfo,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { isOperationalSwitch }         from '@acx-ui/rc/switch/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                          from '@acx-ui/types'
 import { hasPermission }                         from '@acx-ui/user'
