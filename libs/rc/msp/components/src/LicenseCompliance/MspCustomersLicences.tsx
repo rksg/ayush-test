@@ -1,7 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                             from '@acx-ui/components'
+import { Loader, Table, TableColumn, TableProps }                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
@@ -17,6 +17,7 @@ export default function MspCustomersLicences () {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const iotFFToggle = useIsSplitOn(Features.ENTITLEMENT_IOT_CTRL_TOGGLE)
 
   const mspEcTenantsPayload = {
     filters: {
@@ -159,8 +160,8 @@ export default function MspCustomersLicences () {
     },
     {
       title: $t({ defaultMessage: 'Configured Edge vAppliances' }),
-      dataIndex: 'edgeDeviceCount',
-      key: 'edgeDeviceCount',
+      dataIndex: 'virtualEdgeDeviceCount',
+      key: 'virtualEdgeDeviceCount',
       align: 'center',
       sorter: false,
       width: 140,
@@ -180,7 +181,18 @@ export default function MspCustomersLicences () {
         return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.RWG,
           row.entitlements)
       }
-    }
+    },
+    ...(iotFFToggle ? [{
+      title: $t({ defaultMessage: 'IoT Controllers' }),
+      dataIndex: 'iotCtrlDeviceCount',
+      key: 'iotCtrlDeviceCount',
+      sorter: false,
+      width: 140,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return mspUtils.getConfiguredDevices(ComplianceMspCustomersDevicesTypes.IOT_CONTROLLER,
+          row.entitlements)
+      }
+    }] as TableColumn<MspEc, 'text'>[] : [])
   ]
   return <Loader states={[tableQuery]}>
     <Table<MspEc>
