@@ -340,6 +340,7 @@ export const DashboardDrawer = (props: {
     width={420}
     visible={props.visible}
     onClose={props.onClose}
+    zIndex={999}
     forceRender={true}
     destroyOnClose={false}
     children={props.visible && <DndProvider backend={HTML5Backend}>
