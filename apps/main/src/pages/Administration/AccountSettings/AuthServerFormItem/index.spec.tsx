@@ -81,6 +81,10 @@ const certList = {
   ]
 }
 
+jest.mock('./SetupAzureDrawer', () => ({
+  SetupAzureDrawer: () => <div data-testid='mocked-SetupAzureDrawer'></div>
+}))
+
 describe('Auth Server Form Item', () => {
   let params: { tenantId: string }
   const unmockedFetch = global.fetch
@@ -163,7 +167,7 @@ describe('Auth Server Form Item', () => {
 
     expect(screen.getByText('Enable SSO with 3rd Party provider')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
-    expect(screen.getByText('Edit SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByTestId('mocked-SetupAzureDrawer')).toBeVisible()
   })
   it('should delete correctly', async () => {
     // Reset global.fetch otherwise will lead to 'response.clone is not a function' error
@@ -304,7 +308,7 @@ describe('Auth Server Form Item', () => {
 
     expect(screen.getByText('Enable SSO with 3rd Party provider')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Set Up' }))
-    expect(screen.getByText('Set Up SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByTestId('mocked-SetupAzureDrawer')).toBeVisible()
   })
   it('should show drawer when view xml code button is clicked', async () => {
     render(
