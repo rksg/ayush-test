@@ -325,13 +325,19 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setOpenModal(false)
   }
 
-  const stpToolTip = (condition: boolean, message: string) => {
-    if (!condition) return null
+  const getStpToolTip = () => {
+    let message = ''
+    if(isProfileLevel) {
+      // eslint-disable-next-line max-len
+      message = 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
+    } else if (disabledStp) {
+      message = 'Beginning with  FI 10.0.20a release, only RSTP is supported.'
+    }
+
+    if (!message) return null
+
     return (
-      <Tooltip
-        title={message}
-        placement='top'
-      >
+      <Tooltip title={message} placement='top'>
         <QuestionMarkCircleOutlined />
       </Tooltip>
     )
@@ -508,37 +514,28 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           name='spanningTreeProtocol'
           label={<>
             {$t({ defaultMessage: 'Spanning tree protocol' })}
-            {is10020aSwitchOnlyRstpEnabled && (
-              <>
-                {stpToolTip(!!isProfileLevel,
-                  // eslint-disable-next-line max-len
-                  'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
-                )}
-                {stpToolTip(disabledStp,
-                  'Beginning with  FI 10.0.20a release, only RSTP is supported.'
-                )}
-              </>
-            )}
+            {is10020aSwitchOnlyRstpEnabled && getStpToolTip()}
           </>}
           initialValue={'none'}
           children={
             <Select>
               <Option value={'rstp'}>
                 {$t({ defaultMessage: 'RSTP' })}</Option>
-              {!hideStp && (disabledStp ? (
-                <Option value={'stp'} disabled={true}>
-                  <Tooltip
-                    // eslint-disable-next-line max-len
-                    title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}
-                    placement='left'>
-                    <span style={{ display: 'inline-block', width: '100%' }}>
-                      {$t({ defaultMessage: 'STP' })}
-                    </span>
-                  </Tooltip>
-                </Option>)
-                : (<Option value={'stp'}>
-                  {$t({ defaultMessage: 'STP' })}
-                </Option>)
+              {!hideStp && (
+                <Option value={'stp'} disabled={disabledStp}>
+                  {disabledStp ? (
+                    <Tooltip
+                      // eslint-disable-next-line max-len
+                      title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}
+                      placement='left'>
+                      <span style={{ display: 'inline-block', width: '100%' }}>
+                        {$t({ defaultMessage: 'STP' })}
+                      </span>
+                    </Tooltip>
+                  ) : (
+                    $t({ defaultMessage: 'STP' })
+                  )}
+                </Option>
               )}
               <Option value={'none'}>
                 {$t({ defaultMessage: 'NONE' })}</Option>
