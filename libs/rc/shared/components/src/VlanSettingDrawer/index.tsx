@@ -64,7 +64,8 @@ export interface VlanSettingDrawerProps {
   portsUsedBy?: PortsUsedByProps
   stackMember?: StackMember[],
   gptObject?: GptObjectProps
-  switchFirmware?: string
+  switchFirmwares?: string[]
+  isMultiSwitchEdit?: boolean
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
@@ -72,7 +73,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
     enablePortModelConfigure = true, enableVlanRangeConfigure = false,
-    portSlotsData, portsUsedBy, stackMember, gptObject, switchFirmware } = props
+    portSlotsData, portsUsedBy, stackMember, gptObject, switchFirmwares, isMultiSwitchEdit } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -104,7 +105,8 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           portsUsedBy={portsUsedBy}
           stackMember={stackMember}
           gptObject={gptObject}
-          switchFirmware={switchFirmware}
+          switchFirmwares={switchFirmwares}
+          isMultiSwitchEdit={isMultiSwitchEdit}
         />
       }
       footer={
@@ -145,7 +147,8 @@ interface VlanSettingFormProps {
   portsUsedBy?: PortsUsedByProps
   stackMember?: StackMember[]
   gptObject?: GptObjectProps
-  switchFirmware?: string
+  switchFirmwares?: string[]
+  isMultiSwitchEdit?: boolean
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -163,7 +166,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const { form, vlan, setVlan, vlansList, isProfileLevel,
     editMode, switchFamilyModel, portSlotsData,
     enablePortModelConfigure = true, enableVlanRangeConfigure,
-    portsUsedBy, stackMember, gptObject, switchFirmware } = props
+    portsUsedBy, stackMember, gptObject, switchFirmwares, isMultiSwitchEdit } = props
 
   const defaultVlan = vlansList.find(vlan => vlan.vlanName === SWITCH_DEFAULT_VLAN_NAME)
 
@@ -172,8 +175,12 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const isSwitchLevel = !!switchFamilyModel
   const isRuckusAiMode = !_.isEmpty(gptObject)
-  const hideStp = is10020aSwitchOnlyRstpEnabled &&
-    isSwitchLevel && versionAbove10020a(switchFirmware ?? '')
+
+  const existFirmwareAbove10020a = !!switchFirmwares?.length &&
+    switchFirmwares?.some(s => versionAbove10020a(s))
+  const hideStp = is10020aSwitchOnlyRstpEnabled && !isMultiSwitchEdit && existFirmwareAbove10020a
+  const disabledStp = is10020aSwitchOnlyRstpEnabled &&
+    !!isMultiSwitchEdit && existFirmwareAbove10020a
 
   const multicastVersionEnabled = () : boolean => {
     const igmpSnooping = form.getFieldValue('igmpSnooping')
@@ -316,6 +323,18 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setRuleList(mergedRuleList)
     setSelected(undefined)
     setOpenModal(false)
+  }
+
+  const stpToolTip = (condition: boolean, message: string) => {
+    if (!condition) return null
+    return (
+      <Tooltip
+        title={message}
+        placement='top'
+      >
+        <QuestionMarkCircleOutlined />
+      </Tooltip>
+    )
   }
 
   return (
@@ -489,27 +508,37 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           name='spanningTreeProtocol'
           label={<>
             {$t({ defaultMessage: 'Spanning tree protocol' })}
-            {is10020aSwitchOnlyRstpEnabled && !isSwitchLevel &&
-              <Tooltip
-                title={$t({
+            {is10020aSwitchOnlyRstpEnabled && (
+              <>
+                {stpToolTip(!!isProfileLevel,
                   // eslint-disable-next-line max-len
-                  defaultMessage: 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
-                })}
-                placement='top'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
-            }
+                  'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
+                )}
+                {stpToolTip(disabledStp,
+                  'Beginning with  FI 10.0.20a release, only RSTP is supported.'
+                )}
+              </>
+            )}
           </>}
           initialValue={'none'}
           children={
             <Select>
               <Option value={'rstp'}>
                 {$t({ defaultMessage: 'RSTP' })}</Option>
-              {!hideStp &&
-                <Option value={'stp'}>
-                  {$t({ defaultMessage: 'STP' })}</Option>
-              }
+              {!hideStp && (disabledStp ? (
+                <Option value={'stp'} disabled={true}>
+                  <Tooltip
+                    // eslint-disable-next-line max-len
+                    title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}>
+                    <span style={{ display: 'inline-block', width: '100%' }}>
+                      {$t({ defaultMessage: 'STP' })}
+                    </span>
+                  </Tooltip>
+                </Option>)
+                : (<Option value={'stp'}>
+                  {$t({ defaultMessage: 'STP' })}
+                </Option>)
+              )}
               <Option value={'none'}>
                 {$t({ defaultMessage: 'NONE' })}</Option>
             </Select>

@@ -254,6 +254,7 @@ export function EditPortDrawer ({
 
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
+  const switchFirmwares = selectedSwitchList?.map(s => s.firmware).filter(Boolean) as string[]
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
   const isFirmwareAbove10020b = !!selectedSwitchList?.length
@@ -2746,6 +2747,7 @@ export function EditPortDrawer ({
             isSwitchLevelVlanEnabled
           )
         }
+        switchFirmwares={switchFirmwares}
       />}
 
       {lldpModalvisible && <EditLldpModal
