@@ -20,7 +20,7 @@ import { UnifiedService, UnifiedServiceSourceType } from './constants'
 
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
-type BuildUnifiedServicesIncomingType =
+export type BuildUnifiedServicesIncomingType =
   Omit<UnifiedService<MessageDescriptor>, 'label' | 'route' | 'description'>
 
 export function buildUnifiedServices (

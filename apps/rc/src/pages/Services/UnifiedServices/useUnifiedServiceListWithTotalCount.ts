@@ -42,7 +42,7 @@ export function useUnifiedServiceListWithTotalCount (): Array<ExtendedUnifiedSer
     const updatedList = availableUnifiedServiceList.map((service: UnifiedService) => ({
       ...service,
       totalCount: typeToTotalCount[service.type] ?? 0
-    })).filter(service => (service.totalCount ?? 0) > 0)
+    })).filter(service => service.totalCount > 0)
 
     if (isEqual(updatedList, result)) return
 
