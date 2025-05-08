@@ -79,7 +79,7 @@ export function VarCustomers () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
-  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
@@ -177,7 +177,7 @@ export function VarCustomers () {
         useQuery: useInviteCustomerListQuery,
         defaultPayload: invitationPayload,
         pagination: { settingsId },
-        enableRbac: isRbacEnabled
+        enableRbac: isViewmodleAPIsMigrateEnabled
       })
       useEffect(() => {
         setInviteCount(tableQuery.data?.totalCount as number)
@@ -317,7 +317,7 @@ export function VarCustomers () {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
       },
       pagination: { settingsId },
-      enableRbac: isRbacEnabled
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     return (
