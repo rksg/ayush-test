@@ -220,9 +220,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                       {$t({ defaultMessage: 'Retry Limit' })}
                     </div>
                   } />
-                {/* <Tooltip.Question
-                  title={$t(messageMapping.gateway_retry_tooltip)}
-                  placement='bottom' /> */}
                 <ApCompatibilityToolTip
                   title={$t(messageMapping.gateway_retry_tooltip)}
                   showDetailButton
@@ -383,11 +380,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={
               <>
                 {$t({ defaultMessage: 'Force NAT-T' })}
-                {/* <Tooltip
-                  title={$t(messageMapping.connection_force_nat_tooltip)}
-                  placement='bottom'>
-                  <QuestionMarkCircleOutlined />
-                </Tooltip> */}
                 <ApCompatibilityToolTip
                   title={$t(messageMapping.connection_force_nat_tooltip)}
                   showDetailButton

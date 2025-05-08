@@ -93,14 +93,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     if (!isIpSecOverNetworkEnabled) {
       return
     }
-    //eslint-disable-next-line no-console
-    console.log('portId:', portId,
-      '\tsoftGreProfileId:', softGreProfileId,
-      '\tipsecProfileId:', ipsecProfileId,
-      '\tisSoftGreTunnelToggleEnabled:', isSoftGreTunnelToggleEnabled,
-      '\tisIpsecToggleEnabled:', isIpsecToggleEnabled,
-      '\tusedProfileData: ', usedProfileData?.data,
-      '\t\toperations: ', usedProfileData?.operations)
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {
