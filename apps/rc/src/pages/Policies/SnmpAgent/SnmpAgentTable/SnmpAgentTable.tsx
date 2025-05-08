@@ -149,20 +149,12 @@ export default function SnmpAgentTable () {
 
         if ( hasSnmpActivityVenues ) {
           showActionModal({
-            type: 'confirm',
-            title: $t({ defaultMessage: 'Delete a SNMP agent that is currently in use?' }),
+            type: 'warning',
             content: $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?'
+              defaultMessage: 'You are unable to delete this record due to its usage in <VenueSingular></VenueSingular>'
             }),
-            onOk: () => {
-              deleteFn({
-                params: { tenantId, policyId: ids[0] },
-                enableRbac: isUseRbacApi
-              }).then(clearSelection)
-            },
-            onCancel: () => { clearSelection() },
-            okText: $t({ defaultMessage: 'Delete' })
+            okText: $t({ defaultMessage: 'OK' })
           })
         } else {
           deleteFn({
