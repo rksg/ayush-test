@@ -108,6 +108,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 fieldHeadPath={['portSettings', serialNumber]}
                 vipConfig={vipConfigArr}
                 isClusterWizard
+                clusterInfo={clusterInfo!}
               />
               : <div />
           }

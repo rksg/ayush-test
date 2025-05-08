@@ -8,7 +8,7 @@ import TextArea    from 'antd/lib/input/TextArea'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
@@ -21,7 +21,8 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
-  isCluster?: boolean
+  isCluster?: boolean,
+  clusterInfo: EdgeClusterStatus
 }
 
 const { useWatch, useFormInstance } = Form
@@ -35,7 +36,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     lagData,
     fieldHeadPath = [],
     isCluster,
-    formFieldsProps
+    formFieldsProps,
+    clusterInfo
   } = props
 
   const { $t } = useIntl()
@@ -109,6 +111,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 portsDataRootPath={portsDataRootPath}
                 formListID={id}
                 formFieldsProps={formFieldsProps}
+                clusterInfo={clusterInfo}
               />
             }}
           </Form.Item>

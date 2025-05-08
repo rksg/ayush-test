@@ -9,6 +9,7 @@ import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
@@ -42,6 +43,7 @@ interface LagDrawerProps {
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   isClusterWizard?: boolean
+  clusterInfo: EdgeClusterStatus
 }
 
 const defaultFormValues = {
@@ -63,7 +65,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     clusterId = '', serialNumber = '', visible, setVisible,
     data, portList, existedLagList, vipConfig = [],
     onAdd, onEdit,
-    isClusterWizard
+    isClusterWizard,
+    clusterInfo
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -317,7 +320,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     >
       {({ getFieldsValue }) => {
         const allValues = getFieldsValue(true) as EdgeLag
-        console.log(allValues)
+
         return <EdgePortCommonForm
           formRef={form}
           fieldHeadPath={[]}
@@ -327,6 +330,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
+          clusterInfo={clusterInfo}
           formFieldsProps={{
             // we should ONLY apply Edge gateway validator on node level edit LAG
             // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
@@ -341,7 +345,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
                     const idx = findIndex(dryRunPorts, { id: member.portId })
                     if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
                   })
-                  console.log(getMergedLagData(existedLagList, allValues) ?? [])
+
                   // eslint-disable-next-line max-len
                   return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
                 } }]

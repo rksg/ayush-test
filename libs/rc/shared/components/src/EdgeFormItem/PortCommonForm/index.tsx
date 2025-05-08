@@ -6,7 +6,7 @@ import { useIntl }                                                              
 
 import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
-  ClusterHighAvailabilityModeEnum,
+  EdgeClusterStatus,
   EdgeIpModeEnum,
   EdgeLag,
   EdgePort,
@@ -20,7 +20,7 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
+import { getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
 import { EdgeNatFormItems }    from './NatFormItems'
 import * as UI                 from './styledComponents'
@@ -37,7 +37,7 @@ export interface EdgePortCommonFormProps {
   formListItemKey: string,
   formListID?: string,
   formFieldsProps?: formFieldsPropsType
-  clusterMode?: ClusterHighAvailabilityModeEnum
+  clusterInfo: EdgeClusterStatus
 }
 
 const { useWatch } = Form
@@ -53,7 +53,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     formListItemKey = '0',
     formListID,
     formFieldsProps,
-    clusterMode
+    clusterInfo
   } = props
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
@@ -249,7 +249,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
               getFieldFullPath={getFieldFullPath}
               formFieldsProps={formFieldsProps}
-              clusterMode={clusterMode}
+              clusterInfo={clusterInfo}
               portsData={portsData}
               lagData={lagData}
             />
@@ -269,6 +269,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
       {..._.omit(_.get(formFieldsProps, 'portType'), 'rules')}
+      dependencies={['ipMode', 'enabled', 'corePortEnabled']}
       validateFirst
       rules={[
         { required: true },

@@ -36,7 +36,7 @@ import { EditEdgeDataContext }                                    from '../EditE
 const Ports = () => {
   const { serialNumber } = useParams()
   const { $t } = useIntl()
-  const isEdgeDualWanEnabled = false//useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
@@ -197,6 +197,7 @@ const Ports = () => {
               onTabChange={handleTabChange}
               isCluster={isCluster}
               vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
+              clusterInfo={clusterInfo!}
             />
           </StepsForm.StepForm>
         </StepsForm>

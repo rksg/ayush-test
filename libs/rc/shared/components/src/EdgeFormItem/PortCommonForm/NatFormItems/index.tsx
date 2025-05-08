@@ -6,6 +6,7 @@ import { StepsFormLegacy }                                               from '@
 import { Features }                                                      from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
+  EdgeClusterStatus,
   EdgeLag, EdgeNatPool, EdgePort,
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
 } from '@acx-ui/rc/utils'
@@ -17,7 +18,7 @@ interface NatFormItemsProps {
   parentNamePath: string[],
   getFieldFullPath: (fieldName: string) => string[],
   formFieldsProps?: formFieldsPropsType
-  clusterMode: ClusterHighAvailabilityModeEnum | undefined,
+  clusterInfo: EdgeClusterStatus,
   portsData: EdgePort[],
   lagData: EdgeLag[] | undefined,
 }
@@ -26,37 +27,13 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const {
     parentNamePath, getFieldFullPath,
     formFieldsProps,
-    clusterMode,
+    clusterInfo,
     portsData, lagData
   } = props
 
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
 
-  // TODO: validations for multi NAT IP
-  //ok - Multi NAT IP only support AB mode cluster
-  // - cannot overlap between pool ranges in a cluster node
-  // - total range cannot exceed 128 per node : MAX_NAT_POOL_TOTAL_SIZE
-
-  const getAllNatPools = () => {
-    const allPools = [] as EdgeNatPool[]
-
-    const allNatPools = portsData.reduce((acc: EdgeNatPool[], port: EdgePort) => {
-      const natPools = port.natPools?.map((natPool) => ({
-        ...natPool
-      }))
-      return acc.concat(natPools)
-    }, [])
-    const allLagNatPools = (lagData ?? []).reduce((acc: EdgeNatPool[], lag: EdgeLag) => {
-      const natPools = lag.natPools?.map((natPool) => ({
-        ...natPool
-      }))
-      return acc.concat(natPools)
-    }, [])
-
-    // filter out initial component
-    return allPools.concat(allNatPools, allLagNatPools).filter(Boolean)
-  }
-  const allNatPools = getAllNatPools()
+  const allNatPools = isMultiNatIpEnabled ? getAllNatPools(portsData, lagData) : []
 
   return <><StepsFormLegacy.FieldLabel width='120px'>
     {$t({ defaultMessage: 'Use NAT Service' })}
@@ -67,7 +44,10 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
       children={<Switch />}
     />
   </StepsFormLegacy.FieldLabel>
-  {isMultiNatIpEnabled && /*clusterMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&*/
+
+  {
+    // eslint-disable-next-line max-len
+    isMultiNatIpEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
      <Form.Item
        dependencies={[parentNamePath.concat('natEnabled')]}
      >
@@ -143,4 +123,24 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
      </Form.Item>
   }
   </>
+}
+
+const getAllNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
+  const allPools = [] as EdgeNatPool[]
+
+  const allNatPools = portsData.reduce((acc: EdgeNatPool[], port: EdgePort) => {
+    const natPools = port.natPools?.map((natPool) => ({
+      ...natPool
+    }))
+    return acc.concat(natPools)
+  }, [])
+  const allLagNatPools = (lagData ?? []).reduce((acc: EdgeNatPool[], lag: EdgeLag) => {
+    const natPools = lag.natPools?.map((natPool) => ({
+      ...natPool
+    }))
+    return acc.concat(natPools)
+  }, [])
+
+  // filter out initial component
+  return allPools.concat(allNatPools, allLagNatPools).filter(Boolean)
 }
