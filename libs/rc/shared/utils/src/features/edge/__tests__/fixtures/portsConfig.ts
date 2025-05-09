@@ -1,7 +1,7 @@
 import _, { cloneDeep } from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum }                                           from '../../../../models/EdgeEnum'
-import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus, EdgeMultiWanConfigStatus } from '../../../../types/edge'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeWanLinkHealthStatusEnum, EdgeWanPortRoleStatusEnum } from '../../../../models/EdgeEnum'
+import { EdgeMultiWanConfigStats, EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus }                from '../../../../types/edge'
 
 import { mockEdgeClusterList } from './general'
 
@@ -410,11 +410,12 @@ export const mockedDualWanLinkHealthConfigStatus = {
   monitorLinkDownCriteria: 'ALL_TARGETS_DOWN',
   monitorIntervalSec: 8,
   monitorMaxCountToDown: 8,
-  monitorMaxCountToUp: 8
-} as EdgeMultiWanConfigStatus
+  monitorMaxCountToUp: 8,
+
+  wanLinkStatus: EdgeWanLinkHealthStatusEnum.UP,
+  wanLinkTargets: [{ ip: '8.8.8.8', status: EdgeWanLinkHealthStatusEnum.UP }],
+  wanPortStatus: EdgeWanPortRoleStatusEnum.ACTIVE
+} as EdgeMultiWanConfigStats
 
 export const mockedEdgePortWithDualWan = cloneDeep(edgePortsSetting)
-mockedEdgePortWithDualWan[0].linkHealthMonitoring = mockedDualWanLinkHealthConfigStatus
-mockedEdgePortWithDualWan[0].wanLinkStatus = 'UP'
-mockedEdgePortWithDualWan[0].wanLinkTargets = [{ ip: '8.8.8.8', status: 'UP' }]
-mockedEdgePortWithDualWan[0].wanPortStatus = 'Active'
+mockedEdgePortWithDualWan[0].multiWan = mockedDualWanLinkHealthConfigStatus

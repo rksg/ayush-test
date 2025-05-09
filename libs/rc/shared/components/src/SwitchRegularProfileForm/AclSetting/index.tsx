@@ -106,7 +106,6 @@ export function AclSetting () {
     const isExist = aclsTable.filter((item: { name:string }) => item.name === oldData.name)
     if(drawerEditMode && isExist.length > 0){
       const acl = aclsTable.filter((item: { name:string }) => item.name !== oldData.name)
-      newData.id = ''
       setAclsTable([...acl, newData] as Acl[])
       form.setFieldValue('acls', [...acl, newData] as Acl[])
       setSelectedRows([])

@@ -24,9 +24,10 @@ const Message = (props:{
     sessionId:string,
     groups: Group[],
     canvasRef?: React.RefObject<CanvasRef>,
+    showCanvas: boolean,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
-  const { chat, sessionId, groups, canvasRef, onUserFeedback } = props
+  const { chat, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const messageTailRef = useRef<HTMLDivElement>(null)
   const { $t } = useIntl()
@@ -57,7 +58,7 @@ const Message = (props:{
         messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
       }
     }
-  }, [chat.text])
+  }, [chat.text, showCanvas])
 
   return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
     : <div className='message'>
@@ -116,6 +117,7 @@ const Messages = memo((props:{
   sessionId:string,
   groups: Group[],
   canvasRef: React.RefObject<CanvasRef>,
+  showCanvas: boolean,
   onUserFeedback: (feedback: string, message: ChatMessage) => void
 })=> {
   const { $t } = useIntl()
@@ -125,19 +127,21 @@ const Messages = memo((props:{
     text: $t({ defaultMessage:
       'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
   }
-  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef, onUserFeedback } = props
+  // eslint-disable-next-line max-len
+  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
         chat={welcomeMessage}
         sessionId={sessionId}
         groups={groups}
+        showCanvas={showCanvas}
         onUserFeedback={onUserFeedback} />
     }
     {moreloading && <div className='loading'><Spin /></div>}
     {chats?.map((i) => (
       // eslint-disable-next-line max-len
-      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} onUserFeedback={onUserFeedback}/>
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} showCanvas={showCanvas} onUserFeedback={onUserFeedback}/>
     ))}
     {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
@@ -145,8 +149,9 @@ const Messages = memo((props:{
 export default function AICanvasModal (props: {
   isModalOpen: boolean,
   setIsModalOpen: (p: boolean) => void
+  editCanvasId?: string
 }) {
-  const { isModalOpen, setIsModalOpen } = props
+  const { isModalOpen, setIsModalOpen, editCanvasId } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
@@ -180,10 +185,18 @@ export default function AICanvasModal (props: {
     'How many clients were connected to my network yesterday?'
   ] // Only support english default questions
 
-
-
-  const getAllChatsQuery = useGetAllChatsQuery({})
+  const getAllChatsQuery = useGetAllChatsQuery({}, {
+    skip: !isModalOpen
+  })
   const { data: historyData } = getAllChatsQuery
+
+  useEffect(()=>{
+    if (isModalOpen) {
+      getAllChatsQuery.refetch()
+    } else {
+      setSessionId('')
+    }
+  }, [isModalOpen])
 
   useEffect(()=>{
     if(page === 1 || aiBotLoading) {
@@ -202,6 +215,7 @@ export default function AICanvasModal (props: {
   }, [chats])
 
   useEffect(()=>{
+    if (!isModalOpen) return
     if(historyData?.length) {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
@@ -213,7 +227,7 @@ export default function AICanvasModal (props: {
       setHistoryVisible(false)
       onNewChat()
     }
-  }, [historyData])
+  }, [historyData, isModalOpen])
 
   const getLatestPageChats = () => {
     getSessionChats(1)
@@ -437,8 +451,10 @@ export default function AICanvasModal (props: {
       closable={false}
       maskClosable={false}
       showCanvas={showCanvas}
+      forceRender
+      destroyOnClose={false}
     >
-      <DndProvider backend={HTML5Backend}>
+      { isModalOpen && <DndProvider backend={HTML5Backend}>
         <UI.Wrapper showCanvas={showCanvas}>
           <div className='chat-wrapper'>
             {
@@ -506,6 +522,7 @@ export default function AICanvasModal (props: {
                       sessionId={sessionId}
                       canvasRef={canvasRef}
                       groups={groups}
+                      showCanvas={showCanvas}
                       onUserFeedback={cacheUserFeedback} />
                     {
                       !chats?.length && <div className='placeholder'>
@@ -560,10 +577,11 @@ export default function AICanvasModal (props: {
               checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
+              editCanvasId={editCanvasId}
             />
           }
         </UI.Wrapper>
-      </DndProvider>
+      </DndProvider> }
     </UI.ChatModal>
   )
 }

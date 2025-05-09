@@ -1,6 +1,7 @@
 
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { ComplianceData, DeviceComplianceType } from '@acx-ui/msp/utils'
 import { TrialType }                            from '@acx-ui/rc/utils'
 
@@ -16,6 +17,7 @@ export default function TabContent (props: TabContentProps
 ) {
   const { $t } = useIntl()
   const { data, isMsp, trialType } = props
+  const iotFFToggle = useIsSplitOn(Features.ENTITLEMENT_IOT_CTRL_TOGGLE)
 
   const { totalActivePaidLicenseCount,
     nextTotalPaidExpiringLicenseCount,
@@ -35,6 +37,8 @@ export default function TabContent (props: TabContentProps
     item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
   const rwgData = data.deviceCompliances.find(item =>
     item.deviceType === DeviceComplianceType.RWG)
+  const iotCtrlData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.IOT_CTRL)
 
 
   return <>
@@ -63,11 +67,19 @@ export default function TabContent (props: TabContentProps
       <label>{virtualEdgeData?.usedLicenseCount}</label>
     </UI.FieldLabelSubs>
     <UI.FieldLabelSubs width='275px'
-      style={{ paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-55)' }}>
+      style={!iotFFToggle
+        ? { paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-30)' }
+        : {}}>
       <label>{$t({ defaultMessage: 'RWGs' })}</label>
       <label>{rwgData?.installedDeviceCount}</label>
       <label>{rwgData?.usedLicenseCount}</label>
     </UI.FieldLabelSubs>
+    {iotFFToggle && <UI.FieldLabelSubs width='275px'
+      style={{ paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-30)' }}>
+      <label>{$t({ defaultMessage: 'IoT Controllers' })}</label>
+      <label>{iotCtrlData?.installedDeviceCount}</label>
+      <label>{iotCtrlData?.usedLicenseCount}</label>
+    </UI.FieldLabelSubs>}
 
     <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
       <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>

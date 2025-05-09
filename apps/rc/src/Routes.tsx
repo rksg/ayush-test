@@ -89,6 +89,8 @@ import EdgeDetails                                  from './pages/Devices/Edge/E
 import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
+import { IotController }                            from './pages/Devices/IotController'
+import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -129,6 +131,7 @@ import EditEdgeHqosBandwidth                        from './pages/Policies/HqosB
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProvider                             from './pages/Policies/IdentityProvider'
+import IdentityProviderCreate                       from './pages/Policies/IdentityProvider/IdentityProviderCreate'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
@@ -378,6 +381,14 @@ function DeviceRoutes () {
             <StackForm />
           </AuthRoute>
         } />
+
+      <Route path='devices/iotController' element={<IotController />} />
+      <Route
+        path='devices/iotController/add'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/:action'
+        element={<IotControllerForm />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
@@ -1711,10 +1722,15 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.SAML_IDP ,
-            oper: PolicyOperation.CREATE
-          })}
+          path={getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <IdentityProviderCreate/>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path={'policies/samlIdp/add'}
           element={
             <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.CREATE}>
               <AddSamlIdp/>

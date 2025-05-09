@@ -101,6 +101,8 @@ describe('AdvancedTab', () => {
       rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiRbacUrlsInfo.updateVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiRbacUrlsInfo.getVenueApIpMode.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })

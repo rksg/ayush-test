@@ -4,14 +4,14 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Select }                                                               from '@acx-ui/components'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueApAntennaTypeSettings } from '@acx-ui/rc/utils'
 
 
 export type ApAntennaTypeSelectorProps = {
   model?: string
-  selectedApAntennaType: VeuneApAntennaTypeSettings | ApAntennaTypeSettings
+  selectedApAntennaType: VenueApAntennaTypeSettings | ApAntennaTypeSettings
   readOnly?: boolean
-  onAntennaTypeChanged?: (antennaTypeModels: VeuneApAntennaTypeSettings | ApAntennaTypeEnum) => void
+  onAntennaTypeChanged?: (antennaTypeModels: VenueApAntennaTypeSettings | ApAntennaTypeEnum) => void
 }
 
 export const ApAntennaTypeSelector = (props: ApAntennaTypeSelectorProps) => {
