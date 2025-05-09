@@ -189,7 +189,7 @@ export default function AICanvasModal (props: {
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(isInitCanvasShown)
   const [skipScrollTo, setSkipScrollTo] = useState(false)
-  const [shouldInitializeNewCanvas, setShouldInitializeNewCanvas] = useState(true)
+  const [isModalOpenInitialized, setIsModalOpenInitialized] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -205,7 +205,8 @@ export default function AICanvasModal (props: {
   const getAllChatsQuery = useGetAllChatsQuery({}, { skip: !isModalOpen })
   const getCanvasQuery = useGetCanvasQuery({}, { skip: !isModalOpen })
   const { data: historyData, isLoading: isHistoryLoading } = getAllChatsQuery
-  const { data: canvasList, isLoading: isCanvasLoading } = getCanvasQuery
+  // eslint-disable-next-line max-len
+  const { data: canvasList, isLoading: isCanvasLoading, isFetching: isCanvasFetching } = getCanvasQuery
 
   const isChatHistoryLimitReached = !!historyData && historyData.length >= MAXIMUM_CHAT_HISTORY
   const isCanvasLimitReached = !!canvasList && canvasList.length >= MAXIMUM_OWNED_CANVAS
@@ -227,10 +228,10 @@ export default function AICanvasModal (props: {
   useEffect(()=>{
     if (isModalOpen) {
       getAllChatsQuery.refetch()
-      setShouldInitializeNewCanvas(openNewCanvas)
+      setIsModalOpenInitialized(!openNewCanvas)
     } else {
       setSessionId('')
-      setShouldInitializeNewCanvas(true)
+      setIsModalOpenInitialized(false)
     }
   }, [isModalOpen])
 
@@ -252,9 +253,9 @@ export default function AICanvasModal (props: {
 
   useEffect(() => {
     const isLimitNotReached = !isChatHistoryLimitReached || !isCanvasLimitReached
-    if (!isModalOpen || isHistoryLoading || isCanvasLoading) return
-    if (openNewCanvas && shouldInitializeNewCanvas && isLimitNotReached) {
-      setShouldInitializeNewCanvas(false)
+    if (!isModalOpen || isHistoryLoading || isCanvasLoading || isCanvasFetching) return
+    if (openNewCanvas && !isModalOpenInitialized && isLimitNotReached) {
+      setIsModalOpenInitialized(true)
       if (!isCanvasLimitReached) {
         canvasRef.current && canvasRef.current.createNewCanvas?.()
       }
@@ -265,13 +266,13 @@ export default function AICanvasModal (props: {
       } else {
         setHistoryData(historyData)
       }
-    } else {
+    } else if (!isModalOpenInitialized) {
       setHistoryData(historyData)
     }
-  }, [openNewCanvas, isModalOpen, isHistoryLoading, isCanvasLoading])
+  }, [openNewCanvas, isModalOpen, isHistoryLoading, isCanvasLoading, isCanvasFetching])
 
   useEffect(()=>{
-    if (!isModalOpen || isHistoryLoading || (openNewCanvas && shouldInitializeNewCanvas)) return
+    if (!isModalOpen || isHistoryLoading || (openNewCanvas && !isModalOpenInitialized)) return
     setHistoryData(historyData)
   }, [historyData, isHistoryLoading, isModalOpen])
 
@@ -497,7 +498,6 @@ export default function AICanvasModal (props: {
       closable={false}
       maskClosable={false}
       showCanvas={showCanvas}
-      zIndex={1001}
       forceRender
       destroyOnClose={false}
     >

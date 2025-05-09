@@ -316,6 +316,7 @@ export const ImportDashboardDrawer = (props: {
     onBackClick={props.onBackClick}
     visible={props.visible}
     onClose={props.onClose}
+    zIndex={999}
     forceRender={true}
     destroyOnClose={false}
     children={
