@@ -18,7 +18,7 @@ import {
   MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
+import { getUserProfile, hasAllowedOperations, isCoreTier, useUserProfileContext } from '@acx-ui/user'
 import { getOpsApi }                                   from '@acx-ui/utils'
 
 import AccountSettings                                                                      from './AccountSettings'
@@ -35,7 +35,9 @@ import R1Webhooks                                                               
 
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
 
+  const isCore = isCoreTier(accountTier)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
@@ -71,7 +73,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           component: <Administrators />
         }]
       : []),
-    ...(isMspAppMonitoringEnabled &&
+    ...(isMspAppMonitoringEnabled && !isCore &&
       hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
       ? [
         {
