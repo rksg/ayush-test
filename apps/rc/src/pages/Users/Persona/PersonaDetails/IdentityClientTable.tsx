@@ -16,7 +16,7 @@ import { IdentityDetailsContext } from './index'
 
 const defaultClientPagination = {
   page: 1,
-  pageSize: 10000
+  pageSize: 100
 }
 
 const onboardingTypesMapping: { [key: string]: string } = {
