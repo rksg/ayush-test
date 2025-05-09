@@ -54,7 +54,6 @@ const getCanvasPayload = (customPayload?: CustomPayload) => {
     searchTargetFields: [
       'name', 'author'
     ],
-    usedAsOwnDashboard: [false],
     ...customPayload,
     filters: {
       usedAsOwnDashboard: [false],
