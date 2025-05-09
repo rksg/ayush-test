@@ -1,18 +1,18 @@
 import { useContext } from 'react'
 
-import { Form }      from 'antd'
-import { useParams } from 'react-router-dom'
+import { Form }          from 'antd'
+import { defineMessage } from 'react-intl'
+import { useParams }     from 'react-router-dom'
 
 
 import { Loader }                                                                    from '@acx-ui/components'
-import { isMultiWanClusterPrerequisite }                                             from '@acx-ui/edge/components'
 import { Features }                                                                  from '@acx-ui/feature-toggle'
 import { EdgeLagTable, useIsEdgeFeatureReady }                                       from '@acx-ui/rc/components'
 import { useAddEdgeLagMutation, useDeleteEdgeLagMutation, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
 import { EdgeLag }                                                                   from '@acx-ui/rc/utils'
 
-import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
 
 const Lags = () => {
   const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
@@ -20,14 +20,11 @@ const Lags = () => {
   const { serialNumber } = useParams()
   const {
     portData, lagData, lagStatus, isFetching,
-    clusterInfo, isCluster, clusterConfig
+    clusterInfo, isClusterFormed, clusterConfig
   } = useContext(EditEdgeDataContext)
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
-
-  // eslint-disable-next-line max-len
-  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const handleAdd = async (serialNumber: string, data: EdgeLag) => {
     const requestPayload = {
@@ -66,15 +63,22 @@ const Lags = () => {
     })
   }
 
+  const disabledWholeForm = isClusterFormed || isEdgeDualWanEnabled
+
   return (
     <Loader states={[{ isLoading: false, isFetching }]}>
       {
-        isCluster && <ClusterNavigateWarning />
+        disabledWholeForm &&
+          <ClusterNavigateWarning
+            warningMsgDescriptor={isClusterFormed
+              ? undefined
+              : defineMessage({
+                defaultMessage: `Please go to “{redirectLink}” to modify the configurations
+                    for all nodes in this cluster ({clusterName})` })
+            }
+          />
       }
-      {
-        isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
-      }
-      <Form disabled={isCluster || isMutliWanClusterCondition}>
+      <Form disabled={disabledWholeForm}>
         <EdgeLagTable
           serialNumber={serialNumber}
           lagList={lagData}

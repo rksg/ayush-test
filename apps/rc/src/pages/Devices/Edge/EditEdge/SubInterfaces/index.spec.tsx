@@ -75,12 +75,12 @@ const defaultEditEdgeClusterCtxData = {
   isPortDataFetching: false,
   isPortStatusFetching: false,
   isLagStatusFetching: false,
-  isCluster: true
+  isClusterFormed: true
 } as unknown as EditEdgeDataContextType
 
 const defaultEditEdgeSingleNodeCtxData = {
   ...defaultEditEdgeClusterCtxData,
-  isCluster: false
+  isClusterFormed: false
 } as unknown as EditEdgeDataContextType
 
 describe('EditEdge ports - sub-interface', () => {
@@ -133,7 +133,7 @@ describe('EditEdge ports - sub-interface', () => {
               isPortDataFetching: false,
               isPortStatusFetching: false,
               isLagStatusFetching: false,
-              isCluster: true
+              isClusterFormed: true
             } as unknown as EditEdgeDataContextType}
           >
             <SubInterfaces />

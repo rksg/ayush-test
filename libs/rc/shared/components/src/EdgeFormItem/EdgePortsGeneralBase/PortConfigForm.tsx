@@ -21,7 +21,7 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
-  isCluster?: boolean,
+  disabled?: boolean,
   clusterInfo: EdgeClusterStatus
 }
 
@@ -35,7 +35,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     isEdgeSdLanRun,
     lagData,
     fieldHeadPath = [],
-    isCluster,
+    disabled,
     formFieldsProps,
     clusterInfo
   } = props
@@ -83,14 +83,14 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         }
       </UI.IpAndMac>
       <Row gutter={20}>
-        <Col span={6}>
+        <Col span={8}>
           <Form.Item
             name={getFieldPathBaseFormList('name')}
             label={$t({ defaultMessage: 'Description' })}
             rules={[
               { max: 63 }
             ]}
-            children={<TextArea disabled={isCluster} />}
+            children={<TextArea disabled={disabled} />}
           />
           <Form.Item
             noStyle

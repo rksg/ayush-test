@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useRef } from 'react'
+
 import { Form, Row, Col, Switch, Input } from 'antd'
-import { get }                           from 'lodash'
+import { get, set }                      from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import { StepsFormLegacy }                                               from '@acx-ui/components'
@@ -11,10 +13,11 @@ import {
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
-import { formFieldsPropsType }   from '../types'
+import { useIsEdgeFeatureReady }  from '../../../useEdgeActions'
+import { StyledNoMarginFormItem } from '../styledComponents'
+import { formFieldsPropsType }    from '../types'
 
-interface NatFormItemsProps {
+export interface NatFormItemsProps {
   parentNamePath: string[],
   getFieldFullPath: (fieldName: string) => string[],
   formFieldsProps?: formFieldsPropsType
@@ -32,8 +35,43 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   } = props
 
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
+  const form = Form.useFormInstance()
+  const lagId = form.getFieldValue(getFieldFullPath('id'))
+  const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
-  const allNatPools = isMultiNatIpEnabled ? getAllNatPools(portsData, lagData) : []
+  // this reference is to store the validation state of startIp and endIp input field,
+  // true is valid, false is invalid
+  // eslint-disable-next-line max-len
+  const rangeFieldsValidateStateRef = useRef<{ startIp: boolean, endIp: boolean }>({ startIp: false, endIp: false })
+  const natEnabled = Form.useWatch(getFieldFullPath('natEnabled'), form)
+
+  const allNatPoolsWithoutCurrent= useMemo(() => {
+    if (!isMultiNatIpEnabled) return undefined
+
+    return getAllNatPools(
+      portsData.filter(port => port.id !== lagId && port.interfaceName !== physicalPortIfName),
+      lagData?.filter(lag => lag.id !== lagId)
+    )
+  }, [portsData, lagData])
+
+  const rangeFieldsValidator = async (fieldName: string, value: string) => {
+    try {
+      await networkWifiIpRegExp(value)
+      set(rangeFieldsValidateStateRef.current, fieldName, true)
+      return Promise.resolve()
+    } catch (e) {
+      set(rangeFieldsValidateStateRef.current, fieldName, false)
+      return Promise.reject(e)
+    }
+  }
+
+  useEffect(() => {
+    const currentInterfacePools = form.getFieldValue(getFieldFullPath('natPools'))
+    if (!natEnabled || !!currentInterfacePools?.length) return
+
+    // need to have at least an empty nat pools data to display
+    form.setFieldValue(getFieldFullPath('natPools'), [null])
+  }, [natEnabled])
 
   return <><StepsFormLegacy.FieldLabel width='120px'>
     {$t({ defaultMessage: 'Use NAT Service' })}
@@ -47,79 +85,64 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
 
   {
     // eslint-disable-next-line max-len
-    isMultiNatIpEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
+    isMultiNatIpEnabled && natEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
      <Form.Item
-       dependencies={[parentNamePath.concat('natEnabled')]}
+       label={$t({ defaultMessage: 'NAT IP Addresses Range' })}
      >
-       {({ getFieldValue }) => {
-         const natEnabled = getFieldValue(getFieldFullPath('natEnabled'))
-         if (!natEnabled) {
-           return null
-         }
+       <Form.List
+         name={parentNamePath.concat('natPools')}
+         rules={[{
+           validator: async (_, value) => {
+             try {
+               const isValidInputs = rangeFieldsValidateStateRef.current.startIp
+                                    && rangeFieldsValidateStateRef.current.endIp
+               if (!isValidInputs) return Promise.resolve()
 
-         return <Form.Item
-           label={$t({ defaultMessage: 'NAT IP Addresses Range' })}
-         >
-           <Form.List
-             name={parentNamePath.concat('natPools')}
-             rules={[{
-               validator: () => {
-                 //cannot overlap between pool ranges in a cluster node
-                 const allPools = allNatPools?.filter((item: EdgeNatPool) => {
-                   return item?.startIpAddress && item?.endIpAddress
-                 })
+               const allNatPools = allNatPoolsWithoutCurrent!.concat(value)
 
-                 return poolRangeOverlapValidator(allPools)
-               }
-             }, {
-               validator: () => {
-                 //cannot overlap between pool ranges in a cluster node
-                 const allPools = allNatPools?.filter((item: EdgeNatPool) => {
-                   return item?.startIpAddress && item?.endIpAddress
-                 })
+               await natPoolSizeValidator(allNatPools)
+               await poolRangeOverlapValidator(allNatPools)
+               return Promise.resolve()
+             } catch (e) {
+               return Promise.reject(e)
+             }
+           }
+         }]}
+       >
+         {(fields, _, { errors }) => {
+           return <>
+             {fields?.map(({ key, ...field }, index) =>
+               <Row key={key} gutter={24}>
+                 <Col span={12}>
+                   <StyledNoMarginFormItem
+                     {...field}
+                     name={[index, 'startIpAddress']}
+                     label={$t({ defaultMessage: 'Start' })}
+                     rules={[{
+                       validator: async (_, value) => rangeFieldsValidator('startIp', value)
+                     }]}
+                     {...get(formFieldsProps, 'natStartIp')}
+                     children={<Input />}
+                   />
+                 </Col>
+                 <Col span={12}>
+                   <StyledNoMarginFormItem
+                     {...field}
+                     name={[index, 'endIpAddress']}
+                     label={$t({ defaultMessage: 'End' })}
+                     rules={[{
+                       validator: async (_, value) => rangeFieldsValidator('endIp', value)
+                     }]}
+                     {...get(formFieldsProps, 'natEndIp')}
+                     children={<Input />}
+                   />
+                 </Col>
+               </Row>)}
 
-                 return natPoolSizeValidator(allPools)
-               }
-             }]}
-           >
-             {(fields, { add }) => {
-               if (fields.length === 0) {
-                 add()
-                 return
-               }
-
-               return fields?.map((field, index) =>
-                 <Row gutter={8}>
-                   <Col span={12}>
-                     <Form.Item
-                       {...field}
-                       label={$t({ defaultMessage: 'Start' })}
-                       name={[index, 'startIpAddress']}
-                       rules={[{
-                         validator: (_, value) => networkWifiIpRegExp(value)
-                       }]}
-                       {...get(formFieldsProps, 'natStartIp')}
-                       children={<Input />}
-                     />
-                   </Col>
-                   <Col span={12}>
-                     <Form.Item
-                       {...field}
-                       label={$t({ defaultMessage: 'End' })}
-                       name={[index, 'endIpAddress']}
-                       rules={[{
-                         validator: (_, value) => networkWifiIpRegExp(value)
-                       }]}
-                       {...get(formFieldsProps, 'natEndIp')}
-                       children={<Input />}
-                     />
-                   </Col>
-                 </Row>
-               )
-             }}
-           </Form.List>
-         </Form.Item>
-       }}
+             <Form.ErrorList errors={errors} />
+           </>
+         }}
+       </Form.List>
      </Form.Item>
   }
   </>
@@ -142,5 +165,9 @@ const getAllNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) =
   }, [])
 
   // filter out initial component
-  return allPools.concat(allNatPools, allLagNatPools).filter(Boolean)
+  return allPools.concat(allNatPools, allLagNatPools)
+    .filter(Boolean)
+    .filter((item: EdgeNatPool) => {
+      return item?.startIpAddress && item?.endIpAddress
+    })
 }

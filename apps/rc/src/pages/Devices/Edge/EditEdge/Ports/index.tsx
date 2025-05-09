@@ -1,15 +1,14 @@
 
 import { useContext, useState } from 'react'
 
-import { Form, FormInstance }  from 'antd'
-import { StoreValue }          from 'antd/lib/form/interface'
-import { flatMap, isEqual }    from 'lodash'
-import { ValidateErrorEntity } from 'rc-field-form/es/interface'
-import { useIntl }             from 'react-intl'
+import { Form, FormInstance }     from 'antd'
+import { StoreValue }             from 'antd/lib/form/interface'
+import { flatMap, isEqual }       from 'lodash'
+import { ValidateErrorEntity }    from 'rc-field-form/es/interface'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, NoData, StepsForm }     from '@acx-ui/components'
-import { isMultiWanClusterPrerequisite } from '@acx-ui/edge/components'
-import { Features }                      from '@acx-ui/feature-toggle'
+import { Loader, NoData, StepsForm } from '@acx-ui/components'
+import { Features }                  from '@acx-ui/feature-toggle'
 import {
   EdgePortConfigFormType,
   EdgePortsGeneralBase,
@@ -30,8 +29,8 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission }                         from '@acx-ui/user'
 import { getOpsApi }                             from '@acx-ui/utils'
 
-import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
 
 const Ports = () => {
   const { serialNumber } = useParams()
@@ -45,13 +44,10 @@ const Ports = () => {
   const editEdgeContext = useContext(EdgeEditContext.EditContext)
   const {
     clusterInfo, portData, portStatus,
-    lagData, isFetching, isCluster, clusterConfig
+    lagData, isFetching, isClusterFormed, clusterConfig
   } = useContext(EditEdgeDataContext)
 
   const [updatePortConfig] = useUpdatePortConfigMutation()
-
-  // eslint-disable-next-line max-len
-  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const {
     edgeSdLanData,
@@ -166,15 +162,23 @@ const Ports = () => {
       getOpsApi(EdgeUrlsInfo.updatePortConfig)
     ] })
 
+
+  const disabledWholeForm = isClusterFormed || isEdgeDualWanEnabled
+
   return <Loader states={[{
     isLoading: isEdgeSdLanLoading,
     isFetching: isFetching || isEdgeSdLanFetching
   }]}>
     {
-      isCluster && <ClusterNavigateWarning />
-    }
-    {
-      isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
+      disabledWholeForm &&
+       <ClusterNavigateWarning
+         warningMsgDescriptor={isClusterFormed
+           ? undefined
+           : defineMessage({
+             defaultMessage: `Please go to “{redirectLink}” to modify the configurations
+                for all nodes in this cluster ({clusterName})` })
+         }
+       />
     }
     {
       portData.length > 0 ?
@@ -186,7 +190,7 @@ const Ports = () => {
           onValuesChange={handleFormChange}
           buttonLabel={{
             submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply Ports General' }) : '' }}
-          disabled={isCluster || isMutliWanClusterCondition}
+          disabled={disabledWholeForm}
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
             <EdgePortsGeneralBase
@@ -195,7 +199,7 @@ const Ports = () => {
               isEdgeSdLanRun={!!edgeSdLanData}
               activeTab={activeTab}
               onTabChange={handleTabChange}
-              isCluster={isCluster}
+              disabled={disabledWholeForm}
               vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
               clusterInfo={clusterInfo!}
             />

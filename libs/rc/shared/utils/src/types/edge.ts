@@ -97,7 +97,6 @@ export interface EdgeDetails {
 }
 
 export interface EdgeNatPool {
-  id: string
   startIpAddress: string
   endIpAddress: string
 }

@@ -35,16 +35,16 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
+  clusterInfo: EdgeClusterStatus
   statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
-  isCluster?: boolean
+  disabled?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   isClusterWizard?: boolean
-  clusterInfo: EdgeClusterStatus
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -55,7 +55,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     activeTab,
     onTabChange,
     fieldHeadPath = [],
-    isCluster,
+    disabled,
     formFieldsProps,
     vipConfig = [],
     isClusterWizard,
@@ -93,7 +93,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             isEdgeSdLanRun={isEdgeSdLanRun}
             statusData={portStatus}
             lagData={lagData}
-            isCluster={isCluster}
+            disabled={disabled}
             clusterInfo={clusterInfo}
             formFieldsProps={
               {

@@ -304,6 +304,15 @@ export async function lanPortSubnetValidator (
   return Promise.resolve()
 }
 
+const rangesOverlap = (range1: Omit<EdgeNatPool, 'id'>, range2: Omit<EdgeNatPool, 'id'>) => {
+  const start1 = convertIpToLong(range1.startIpAddress)
+  const end1 = convertIpToLong(range1.endIpAddress)
+  const start2 = convertIpToLong(range2.startIpAddress)
+  const end2 = convertIpToLong(range2.endIpAddress)
+
+  return start1 <= end2 && start2 <= end1
+}
+
 export const poolRangeOverlapValidator = async (pools:
   { startIpAddress: string, endIpAddress: string }[] | undefined
 ) => {
@@ -313,19 +322,13 @@ export const poolRangeOverlapValidator = async (pools:
 
   const { $t } = getIntl()
 
-  const rangesOverlap = (range1: Omit<EdgeNatPool, 'id'>, range2: Omit<EdgeNatPool, 'id'>) => {
-    const start1 = convertIpToLong(range1.startIpAddress)
-    const end1 = convertIpToLong(range1.endIpAddress)
-    const start2 = convertIpToLong(range2.startIpAddress)
-    const end2 = convertIpToLong(range2.endIpAddress)
-
-    return start1 <= end2 && start2 <= end1
-  }
-
   // loop to check if range overlap
   for (let i=0; i < pools.length; i++) {
+    if (!pools[i]) continue
+
     const start = convertIpToLong(pools[i].startIpAddress)
     const end = convertIpToLong(pools[i].endIpAddress)
+
     // check if the range is valid (ascending)
     if (start >= end) {
       // eslint-disable-next-line max-len
@@ -338,7 +341,7 @@ export const poolRangeOverlapValidator = async (pools:
       // check overlap
       if (rangesOverlap(pools[i], pools[j])) {
         // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'The selected NAT pool overlaps with other NAT pools.' }))
+        return Promise.reject($t({ defaultMessage: 'The selected NAT pool overlaps with other NAT pools' }))
       }
     }
   }
@@ -357,12 +360,12 @@ export const natPoolSizeValidator = async (pools:
 
   // total range cannot exceed 128 per node : MAX_NAT_POOL_TOTAL_SIZE
   const totalRange = pools?.reduce((acc: number, item) => {
-    const range = countIpSize(item.startIpAddress, item.endIpAddress)//ipRangeSize(item.startIpAddress, item.endIpAddress)
+    const range = countIpSize(item.startIpAddress, item.endIpAddress)
     return acc += range
   }, 0) ?? 0
 
   // eslint-disable-next-line max-len
-  return totalRange <= MAX_NAT_POOL_TOTAL_SIZE ? Promise.resolve() : Promise.reject($t({ defaultMessage: 'NAT IP Address range exceeds {maxSize}' }, { maxSize: MAX_NAT_POOL_TOTAL_SIZE }))
+  return totalRange <= MAX_NAT_POOL_TOTAL_SIZE ? Promise.resolve() : Promise.reject($t({ defaultMessage: 'NAT IP address range exceeds maximum size {maxSize}' }, { maxSize: MAX_NAT_POOL_TOTAL_SIZE }))
 }
 
 export const validateSubnetIsConsistent = (
