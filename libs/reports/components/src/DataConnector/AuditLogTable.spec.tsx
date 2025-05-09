@@ -21,9 +21,10 @@ import {
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
-import { mockAuditLogs }                from './__fixtures__'
-import AuditLogTable, { getRetryError } from './AuditLogTable'
-import { AuditDto, AuditStatusEnum }    from './types'
+import { mockAuditLogs, mockedDataQuotaUsage } from './__tests__/fixtures'
+import AuditLogTable, { getRetryError }        from './AuditLogTable'
+import { AuditDto, AuditStatusEnum }           from './types'
+import { data } from 'msw/lib/types/context'
 
 const mockDataConnectorId = 'mock-data-connector-id'
 const mockMoreThan3DaysBeforeNow = '2025-01-10T02:48:40.069Z'
@@ -60,6 +61,15 @@ describe('AuditLogTable', () => {
         page: 1,
         totalCount: mockAuditLogs.length
       }
+    )
+    // QuotaUsage
+    mockRestApiQuery(
+      `${notificationApiURL}/dataConnector/quota`,
+      'get',
+      {
+        data: mockedDataQuotaUsage
+      },
+      true
     )
   })
 
@@ -122,6 +132,30 @@ describe('AuditLogTable', () => {
       const retryableRowCheckbox = within(retryableRow).getByRole('radio')
 
       expect(retryableRowCheckbox).toBeEnabled()
+    }
+  )
+
+  it.each([
+    { rowIndex: 0, quota: { used: 10, allowed: 10 } },
+    { rowIndex: 1, quota: undefined }])(
+    'should render disabled enabled radio button when no quota',
+    async ({ rowIndex, quota }) => {
+      mockRestApiQuery(
+        `${notificationApiURL}/dataConnector/quota`,
+        'get',
+        {
+          data: quota
+        }
+      )
+      render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
+        wrapper: Provider
+      })
+
+      const tbody = within(await findTBody())
+      const retryableRow = (await tbody.findAllByRole('row'))[rowIndex]
+      const notRetryableRowCheckbox = within(retryableRow).getByRole('radio')
+
+      expect(notRetryableRowCheckbox).toBeDisabled()
     }
   )
 
