@@ -156,13 +156,32 @@ describe('ApEdit', () => {
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => res(ctx.json({
-          totalCount: 0, page: 1, data: []
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              name: ''
+            }
+          ]
         }))
       )
     )
   })
 
   describe('Ap Edit - General', () => {
+    mockServer.use(
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              name: ''
+            }
+          ]
+        }))
+      )
+    )
+
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
@@ -403,6 +422,17 @@ describe('ApEdit', () => {
         // rbac
         rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
           (_, res, ctx) => res(ctx.json(r650Cap))
+        ),
+        rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
         )
       )
     })
