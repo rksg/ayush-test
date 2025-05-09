@@ -45,7 +45,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, RolesEnum } from '@acx-ui/types'
 import {
-  filterByAccess,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
@@ -58,6 +58,8 @@ export function VenueFirmwareList () {
   const intl = useIntl()
   const { $t } = intl
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const isScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
@@ -347,8 +349,9 @@ export function VenueFirmwareList () {
       ]
   })
 
-  const isPreferencesVisible
-  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isPreferencesVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateEdgeUpgradePreferences)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[

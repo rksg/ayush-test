@@ -301,6 +301,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/delegations/:delegationId',
     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    opsApi: 'PUT:/tenants/delegations/{id}',
     newApi: true
   },
   getGenerateLicenseUsageRpt: {
