@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { AccessCondition, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
 import { assignConditions, attributeList } from './__test__/fixtures'
 import { AccessConditionDrawer }           from './AccessConditionDrawer'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 describe('AccessConditionDrawer', () => {
   beforeEach(async () => {
@@ -77,7 +77,8 @@ describe('AccessConditionDrawer', () => {
   })
 
   it('should cancel the drawer successfully when ff is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
     render(
       <Provider>
         <AccessConditionDrawer
@@ -101,7 +102,8 @@ describe('AccessConditionDrawer', () => {
   })
 
   it('should render drawer with the giving data when ff is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
     render(
       <Provider>
         <AccessConditionDrawer
@@ -134,6 +136,6 @@ describe('AccessConditionDrawer', () => {
     await screen.findByLabelText('Sub-type Attributes')
 
     await userEvent.click(saveButton)
-  }) 
+  })
 
 })

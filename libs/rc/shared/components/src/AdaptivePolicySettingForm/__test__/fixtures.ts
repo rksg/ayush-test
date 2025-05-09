@@ -62,7 +62,7 @@ export const assignConditions = {
       templateAttribute: {
         id: 2020,
         name: 'Radius User Name',
-        description: 'A regular expression defining the phone to limit this policy.', 
+        description: 'A regular expression defining the phone to limit this policy.',
         attributeTextMatch: 'identity_phone',
         attributeType: 'regex',
         category: 'identity'
@@ -171,7 +171,7 @@ export const attributeList = {
       attributeTextMatch: 'identity_name',
       attributeType: 'regex',
       category: 'identity'
-    },
+    }
   ]
 }
 
