@@ -152,8 +152,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   ) => {
     const sorter = Array.isArray(sorters) ? sorters[0] : sorters
 
-    if (!sorter.columnKey) return
-    if (typeof sorter.columnKey === 'string' && sorter.columnKey === 'onboardType') {
+    if (!sorter.columnKey || sorter.columnKey === 'onboardType') {
       // `onBoardType` is the data from identity not ES, so it can not be sorted
       return
     }
