@@ -200,6 +200,6 @@ describe('AddDpskPassphrasesForm', () => {
     )
 
     await userEvent.type(await screen.findByLabelText('Passphrase'), ' ')
-    expect(await screen.findByText('Passphrase must be 16 characters')).toBeVisible()
+    expect(await screen.findByText('Passphrase must be at least 16 characters')).toBeVisible()
   })
 })
