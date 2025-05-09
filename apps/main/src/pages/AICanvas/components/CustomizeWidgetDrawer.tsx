@@ -24,7 +24,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
   const { visible, setVisible, widget, canvasId, changeWidgetProperty } = props
   const [form] = Form.useForm()
   const [updateWidget] = useUpdateWidgetMutation()
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS)
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const [enabledReset, setEnabledReset] = useState(false)
   const [enabledTimeRangeOption, setEnabledTimeRangeOption] = useState(false)
 
