@@ -185,11 +185,13 @@ export default function Dashboard () {
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
-  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
   useEffect(() => {
-    if (!isCanvasQ2Enabled) {
+    if (!isDashboardCanvasEnabled) {
       setDashboardId(DEFAULT_DASHBOARD_ID)
     }
   }, [])
