@@ -215,13 +215,10 @@ describe('MyPolicies', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Add Policy or Profile' })).toHaveAttribute('href', createPageLink)
 
-    const rogueApCount = mockedRogueApPoliciesList.totalCount
-    const rogueApTitle = `Rogue AP Detection (${rogueApCount})`
-    expect(await screen.findByText(rogueApTitle)).toBeVisible()
-
     expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
     expect(screen.queryByText('Location Based Service Server')).toBeNull()
     expect(screen.queryByText('Workflow')).toBeNull()
+    expect(screen.queryByText('Rogue AP Detection')).toBeNull()
   })
 
   it('should render breadcrumb correctly', async () => {
