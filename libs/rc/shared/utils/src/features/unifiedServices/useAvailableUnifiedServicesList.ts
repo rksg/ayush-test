@@ -21,7 +21,7 @@ type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
 > & { route?: string }
 
 /*
-  Note: when adding a Service or Policy definition here, ensure you also define
+  SYNC: When adding a Service or Policy definition here, ensure you also define
   the corresponding useQuery function in the useUnifiedServiceTotalCountMap to
   fetch the totalCount for accurate data retrieval.
 */
@@ -284,7 +284,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
         disabled: !isEdgeMdnsReady,
         isBetaFeature: isEdgeMdnsBetaEnabled
-
       },
       {
         type: ServiceType.EDGE_OLT,
