@@ -58,7 +58,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-  const isPassphraseEnforcement = useIsSplitOn(Features.PASSPHRASE_ENFORCEMENT)
+  const isPassphraseEnforcement = useIsSplitOn(Features.DPSK_PASSPHRASE_LENGTH_ENFORCEMENT)
   const { data: dpskPoolData } = useGetDpskQuery(
     { params: { serviceId } },
     { skip: !isPassphraseEnforcement }

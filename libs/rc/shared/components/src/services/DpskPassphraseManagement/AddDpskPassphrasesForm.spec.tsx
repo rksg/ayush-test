@@ -182,7 +182,8 @@ describe('AddDpskPassphrasesForm', () => {
   })
 
   it('should fail validation when passphrase length does not match enforced length', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.PASSPHRASE_ENFORCEMENT)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff
+      === Features.DPSK_PASSPHRASE_LENGTH_ENFORCEMENT)
     const { result: formRef } = renderHook(() => {
       return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
     })
