@@ -96,6 +96,10 @@ jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
 jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
   ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
 }))
+jest.mock('../Charts/ImpactedSwitchesTable', () => ({
+  ImpactedSwitchesTable: () => <div data-testid='impactedSwitchesTable' />
+}))
+
 
 jest.mock('../Charts/ImpactedSwitchesDonut/byParam', () => ({
   ImpactedSwitchesByParamDonut: () => <div data-testid='ImpactedSwitchesByParamDonut' />

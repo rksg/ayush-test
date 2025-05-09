@@ -431,21 +431,49 @@ export const Canvas = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 25px;
+    .edit-canvas-name {
+      display: flex;
+      align-items: center;
+      .ant-form-item {
+        margin-bottom: 0;
+        margin-right: 10px;
+        width: 220px;
+        .ant-form-item-explain {
+          display: none;
+        }
+      }
+      .action {
+        display: flex;
+      }
+      .button {
+        cursor: pointer;
+        margin-right: 8px;
+        margin-top: 4px;
+        &.confirm {
+          color: #23AB36;
+        }
+        &.cancel {
+          color: #ED1C24;
+        }
+      }
+      .error{
+        color: var(--acx-semantics-red-60);
+        font-size: 12px;
+      }
+    }
     .title{
       display: flex;
       align-items: center;
-      padding: 10px 0;
+      padding-top: 7px;
       font-family: var(--acx-accent-brand-font);
       font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
-      span {
-        padding-right: 10px;
-      }
       svg {
         margin-right: 10px;
       }
       .name {
-        // cursor: pointer;
+        cursor: pointer;
+        padding-right: 10px;
       }
     }
     .visibility-type {
@@ -843,7 +871,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   border-radius: 12px;
   padding-bottom: 0;
   overflow: hidden;
-  transition: all .4s linear;
+  transition: all .2s linear;
   height: 100%;
   max-height: 80%;
 
@@ -887,12 +915,13 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-content {
     background: transparent;
     box-shadow: none !important;
-    transition: all .4s linear;
+    transition: all .2s linear;
     padding-top: 68px;
   }
   .ant-modal-body {
     padding: 0px 0 24px;
     height: calc(80vh - 68px);
+    transition: all .2s linear;  
     overflow: auto;
   }
   .ant-modal-footer {

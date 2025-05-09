@@ -16,6 +16,7 @@ import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
+import { DeleteAccountFormItem }         from './DeleteAccountFormItem'
 import { EnableR1Beta }                  from './EnableR1Beta'
 import { EnableR1BetaFeatures }          from './EnableR1Beta/EnableR1BetaFeatures'
 import { MapRegionFormItem }             from './MapRegionFormItem'
@@ -45,9 +46,10 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const tenantType = tenantDetailsData.data?.tenantType
   const canMSPDelegation = isDelegationMode() === false
-  const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
-  const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
+  const isNonDelegatedMspEc =
+    isMspEc && userProfileData?.varTenantId && canMSPDelegation === true
   const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
@@ -58,18 +60,24 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
   const isLoginSSoTechpartnerEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_TECHPARTNER)
   const isLoginSSoMspEcEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_MSPEC)
+  const isSoftTenantDeleteEnabled = useIsSplitOn(Features.NUKETENANT_SOFT_TENANT_DELETE_TOGGLE)
+
+  const isMsp =
+  tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const showRksSupport = isMspEc === false
+  const showRksSupport = isNonDelegatedMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && (canMSPDelegation || ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
-    || (isLoginSSoTechpartnerEnabled && isTechPartner)))
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
+    && !isDelegationMode() && (isMsp || (isLoginSSoMspEcEnabled && isMspEc)
+    || (isLoginSSoTechpartnerEnabled && isTechPartner))
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
+  const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
+   canMSPDelegation
 
   const authenticationData =
     useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
@@ -110,7 +118,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <>
               <Divider />
               <AccessSupportFormItem
-                hasMSPEcLabel={hasMSPEcLabel}
+                hasMSPEcLabel={isMspEc}
                 canMSPDelegation={canMSPDelegation}
               />
             </>
@@ -137,7 +145,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
               <MFAFormItem
                 mfaTenantDetailsData={mfaTenantDetailsData.data}
                 isPrimeAdminUser={isPrimeAdminUser}
-                isMspEc={isMspEc as boolean}
+                isMspEc={isNonDelegatedMspEc as boolean}
               />
             </>
           )}
@@ -159,6 +167,14 @@ const AccountSettings = (props : AccountSettingsProps) => {
               />
             </>
           )}
+
+          { showSoftDeleteButton && (
+            <>
+              <Divider />
+              <DeleteAccountFormItem />
+            </>
+          )}
+
         </StepsForm.TextContent>
       </Form>
     </Loader>

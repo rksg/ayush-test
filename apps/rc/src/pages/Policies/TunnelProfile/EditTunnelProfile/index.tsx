@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -5,15 +7,18 @@ import { Loader }                                         from '@acx-ui/componen
 import { Features }                                       from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useTunnelProfileActions } from '@acx-ui/rc/components'
 import {
+  useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery,
   useGetEdgeSdLanViewDataListQuery,
-  useGetTunnelProfileByIdQuery
+  useGetTunnelProfileByIdQuery,
+  useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
   getTunnelProfileFormDefaultValues,
-  TunnelProfileFormType
+  TunnelProfileFormType,
+  TunnelProfileViewData,
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -31,6 +36,18 @@ const EditTunnelProfile = () => {
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
   )
+
+
+  const { tunnelProfileViewData, isTunnelViewFetching } = useGetTunnelProfileViewDataListQuery(
+    { payload: { filters: { id: [policyId] } } },
+    {
+      selectFromResult: ({ data, isFetching }) => ({
+        tunnelProfileViewData: data?.data?.[0] || {} as TunnelProfileViewData,
+        isTunnelViewFetching: isFetching
+      })
+    }
+  )
+
   const { updateTunnelProfileOperation } = useTunnelProfileActions()
 
   const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
@@ -49,12 +66,13 @@ const EditTunnelProfile = () => {
     }
   )
 
-  const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeSdLanP2ViewDataListQuery(
+  const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
       fields: [
         'isGuestTunnelEnabled',
         'tunnelProfileId',
-        'guestTunnelProfileId'
+        'guestTunnelProfileId',
+        'tunneledWlans'
       ]
     } },
     {
@@ -63,9 +81,13 @@ const EditTunnelProfile = () => {
         isSdLanHaUsed: data?.data.some(sdlan => {
           return sdlan.tunnelProfileId === policyId
                || (sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId)
+               || sdlan.tunneledWlans?.some(wlan => wlan.forwardingTunnelProfileId === policyId)
         }),
         isDMZUsed: data?.data?.some(sdlan =>
-          sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId),
+          (sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId)
+          // eslint-disable-next-line max-len
+          || (sdlan.tunneledWlans?.some(wlan => wlan.forwardingTunnelProfileId === policyId && wlan.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE ))
+        ),
         isSdLanHaFetching: isFetching
       })
     }
@@ -89,32 +111,42 @@ const EditTunnelProfile = () => {
     }
   })
 
-  const handelOnFinish = (data: TunnelProfileFormType) =>
-    updateTunnelProfileOperation(policyId || '', data)
-
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
-  const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
-  formInitValues.disabledFields = []
-  if (pinId || isSdLanUsed){
-    formInitValues.disabledFields.push('type')
-    if (isEdgeL2greReady) {
-      formInitValues.disabledFields.push('tunnelType')
-      formInitValues.disabledFields.push('destinationIpAddress')
-      formInitValues.disabledFields.push('edgeClusterId')
+  const formInitValues = useMemo(() => {
+    const initValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
+    initValues.disabledFields = []
+    if (pinId || isSdLanUsed){
+      initValues.disabledFields.push('type')
+      if (isEdgeL2greReady) {
+        initValues.disabledFields.push('tunnelType')
+        initValues.disabledFields.push('destinationIpAddress')
+        initValues.disabledFields.push('edgeClusterId')
+      }
     }
-  }
 
+    if (isDMZUsed)
+      initValues.disabledFields.push('mtuType')
 
-  if (isDMZUsed)
-    formInitValues.disabledFields.push('mtuType')
+    if (pinId || isDMZUsed)
+      initValues.disabledFields.push('natTraversalEnabled')
 
-  if (pinId || isDMZUsed)
-    formInitValues.disabledFields.push('natTraversalEnabled')
+    if (!isTunnelViewFetching) {
+      initValues.edgeClusterId = tunnelProfileViewData.destinationEdgeClusterId
+    }
+
+    return initValues
+  }, [tunnelProfileData, tunnelProfileViewData, pinId, isSdLanUsed, isDMZUsed, isEdgeL2greReady])
+
+  const handelOnFinish = (data: TunnelProfileFormType) =>
+    updateTunnelProfileOperation(policyId || '', data, formInitValues)
+
+  // eslint-disable-next-line max-len
+  const loaderLoading = isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching || isTunnelViewFetching
 
   return (
     <Loader states={[{
-      isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching
+      isLoading: loaderLoading
     }]}>
       <TunnelProfileForm
         form={form}

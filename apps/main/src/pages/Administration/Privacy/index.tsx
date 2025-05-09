@@ -40,6 +40,8 @@ export default function Privacy () {
 
   const tenantType = tenantDetails?.tenantType
 
+  const isMsp = (tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR)
+
   const { data } = useGetPrivacySettingsQuery({ params })
 
   const payload: RequestPayload = {
@@ -48,10 +50,10 @@ export default function Privacy () {
         featureName: PrivacyFeatureName.ARC,
         status: 'disabled'
       },
-      {
+      ...(isMsp ? [{
         featureName: PrivacyFeatureName.APP_VISIBILITY,
         status: 'disabled'
-      }
+      }] as { featureName: PrivacyFeatureName, status: 'enabled' | 'disabled' }[]: [])
     ]
   }
 
@@ -117,7 +119,7 @@ export default function Privacy () {
   return (
     <>
       { isAppVisibilityEnabled
-      && (tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR)
+      && isMsp
       && <div>
         <Row gutter={24}
           style={{

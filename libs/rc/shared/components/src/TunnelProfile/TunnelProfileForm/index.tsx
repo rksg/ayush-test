@@ -150,14 +150,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
-  clusterServiceData
-    // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
-    .some(item => {
-      form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
-      return true
-    })
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
@@ -253,7 +245,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             name='type'
             label={$t({ defaultMessage: 'Network Segment Type' })}
             initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+            tooltip={$t(MessageMapping.network_segment_type_tooltip)}
             children={
               <Radio.Group disabled={isDefaultTunnelProfile
                     || !!disabledFields?.includes('type')}
@@ -291,6 +283,13 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                     </Radio>
                     <Radio value={TunnelTypeEnum.L2GRE} disabled={isVniType} >
                       {$t({ defaultMessage: 'L2GRE' })}
+                      {<ApCompatibilityToolTip
+                        title={$t(MessageMapping.tunnel_type_l2ogre_tooltip)}
+                        placement='bottom'
+                        showDetailButton
+                        // eslint-disable-next-line max-len
+                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.L2OGRE)}
+                      />}
                     </Radio>
                   </Space>
                 </Radio.Group>
