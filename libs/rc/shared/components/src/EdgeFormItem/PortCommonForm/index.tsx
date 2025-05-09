@@ -14,7 +14,7 @@ import {
   edgePortIpValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
-  lanPortSubnetValidator,
+  interfaceSubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
   validateGatewayInSubnet
@@ -107,6 +107,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getCurrentSubnetInfo = () => {
     return {
+      ipMode: form.getFieldValue(getFieldFullPath('ipMode')),
       ip: form.getFieldValue(getFieldFullPath('ip')),
       subnetMask: form.getFieldValue(getFieldFullPath('subnet'))
     }
@@ -125,6 +126,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         && !!_.get(item[1], getFieldPathBaseFormList('subnet'))
       })
       .map(item => ({
+        ipMode: _.get(item[1], getFieldPathBaseFormList('ipMode')),
         ip: _.get(item[1], getFieldPathBaseFormList('ip')),
         subnetMask: _.get(item[1], getFieldPathBaseFormList('subnet'))
       }))
@@ -146,7 +148,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               },
               {
                 validator: () =>
-                  lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
               }
             ]}
             {..._.get(formFieldsProps, 'ip')}
@@ -205,7 +207,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   },
                   {
                     validator: () =>
-                      lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                      // eslint-disable-next-line max-len
+                      interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
                   }
                 ]}
                 {..._.get(formFieldsProps, 'ip')}

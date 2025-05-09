@@ -29,6 +29,7 @@ import {
   validateSubnetIsConsistent,
   validateUniqueIp
 } from './edgeUtils'
+import { interfaceSubnetValidator } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
@@ -1242,5 +1243,37 @@ describe('natPoolSizeValidator', () => {
       const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.2.1', endIpAddress: '1.1.2.98' }])
       await expect(result).resolves.toEqual(undefined)
     })
+  })
+})
+
+describe('interfaceSubnetValidator', () => {
+  it('should resolve when current IP mode is not STATIC', async () => {
+    const current = { ipMode: EdgeIpModeEnum.DHCP, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = []
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when current IP mode is STATIC and allWithoutCurrent is empty', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = []
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when current IP mode is STATIC and allWithoutCurrent has non-STATIC IP mode', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.DHCP, ip: '2.2.2.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when no overlapped', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.STATIC, ip: '2.2.2.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should reject when having overlapped', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).rejects.toEqual('The ports have overlapping subnets')
   })
 })
