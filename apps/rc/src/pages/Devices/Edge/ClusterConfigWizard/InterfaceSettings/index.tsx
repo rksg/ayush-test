@@ -377,7 +377,11 @@ export const InterfaceSettings = () => {
                 venueId: clusterInfo?.venueId,
                 clusterId
               },
-              payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
+              payload: transformFromFormToApiData(
+                value,
+                clusterInfo?.highAvailabilityMode,
+                isEdgeCoreAccessSeparationReady
+              )
             }).unwrap()
             callback()
           }
@@ -388,7 +392,11 @@ export const InterfaceSettings = () => {
             venueId: clusterInfo?.venueId,
             clusterId
           },
-          payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
+          payload: transformFromFormToApiData(
+            value,
+            clusterInfo?.highAvailabilityMode,
+            isEdgeCoreAccessSeparationReady
+          )
         }).unwrap()
         callback()
       }

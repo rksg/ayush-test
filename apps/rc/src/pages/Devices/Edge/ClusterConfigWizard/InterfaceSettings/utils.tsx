@@ -459,16 +459,7 @@ const processHighAvailabilitySettings = (data: InterfaceSettingsFormType) => {
   }
 }
 
-export const transformFromFormToApiData = (
-  data: InterfaceSettingsFormType,
-  highAvailabilityMode?: ClusterHighAvailabilityModeEnum,
-  isEdgeCoreAccessSeparationReady?: boolean
-): ClusterNetworkSettings => {
-  const highAvailabilitySettings = processHighAvailabilitySettings(data)
-  const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
-  const shouldPatchHaSetting = highAvailabilitySettings.fallbackSettings &&
-    highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
-
+const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
   const subInterfaceSettings = [] as NodeSubInterfaces[]
   Object.entries(data.lagSubInterfaces ?? []).forEach(([serialNumber, lagSubInterfaces = {}]) => {
     subInterfaceSettings.push({
@@ -498,6 +489,18 @@ export const transformFromFormToApiData = (
       } as NodeSubInterfaces)
     }
   })
+  return subInterfaceSettings
+}
+
+export const transformFromFormToApiData = (
+  data: InterfaceSettingsFormType,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum,
+  isEdgeCoreAccessSeparationReady?: boolean
+): ClusterNetworkSettings => {
+  const highAvailabilitySettings = processHighAvailabilitySettings(data)
+  const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const shouldPatchHaSetting = highAvailabilitySettings.fallbackSettings &&
+    highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
   return {
     lagSettings: processLagSettings(data),
@@ -509,7 +512,7 @@ export const transformFromFormToApiData = (
       highAvailabilitySettings
     } : {}),
     ...(isEdgeCoreAccessSeparationReady ?
-      { subInterfaceSettings } :
+      { subInterfaceSettings: processSubInterfaceSettings(data) } :
       {}),
     multiWanSettings: data.multiWanSettings
   }
