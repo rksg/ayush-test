@@ -334,7 +334,6 @@ function CertsAuth () {
         </GridCol>
         { hasPolicyPermission({
           type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
-          hasAllowedOperations([getOpsApi(CertificateUrls.addCertificateTemplate)]) &&
           <Button
             type='link'
             style={{ top: '28px' }}
