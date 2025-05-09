@@ -131,6 +131,7 @@ describe('AccessConditionDrawer', () => {
     expect(inputs[1]).toHaveValue(condition.templateAttribute.name)
     expect(inputs[2]).toHaveValue('STRING')
     expect(inputs[5]).toHaveValue(condition.evaluationRule.regexStringCriteria)
+    await screen.findByLabelText('Sub-type Attributes')
 
     await userEvent.click(saveButton)
   }) 
