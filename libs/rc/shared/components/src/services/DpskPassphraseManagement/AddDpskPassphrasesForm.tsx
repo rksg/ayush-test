@@ -253,7 +253,8 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                   return Promise.resolve()
                 }
                 if (isPassphraseEnforcement) {
-                  if (value.length < dpskPoolData?.passphraseLength) {
+                  if (dpskPoolData?.passphraseLength &&
+                    value.length < dpskPoolData?.passphraseLength) {
                     throw new Error(
                       // eslint-disable-next-line max-len
                       $t({ defaultMessage: 'Passphrase must be at least {length} characters' }, { length: dpskPoolData?.passphraseLength })
