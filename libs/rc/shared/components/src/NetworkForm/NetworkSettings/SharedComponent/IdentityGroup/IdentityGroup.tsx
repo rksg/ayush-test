@@ -42,7 +42,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
   const [associationBlockVisible, setAssociationBlockVisible] = useState(false)
   const [detailDrawerVisible, setDetailDrawerVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
-  const [identityGroupDrawerVisible, setidentityGroupDrawerVisible] = useState(false)
+  const [identityGroupDrawerVisible, setIdentityGroupDrawerVisible] = useState(false)
   const [identityGroups, setIdentityGroups] = useState<PersonaGroup[]>([])
   const [selectedIdentityGroup, setSelectedIdentityGroup] = useState<PersonaGroup>()
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
@@ -50,7 +50,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
   const resetAllDrawer = () => {
     setDetailDrawerVisible(false)
     setIdentitySelectorDrawerVisible(false)
-    setidentityGroupDrawerVisible(false)
+    setIdentityGroupDrawerVisible(false)
   }
 
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
@@ -158,35 +158,35 @@ export function IdentityGroup (props: IdentityGroupProps) {
             />
           }
         />
-        <Space>
-          <Space split='|'>
-            <Button
-              type='link'
-              disabled={!formFieldIdentityGroupId}
-              onClick={() => {
-                resetAllDrawer()
-                setDetailDrawerVisible(true)
-              }}
-            >
-              {$t({ defaultMessage: 'View Details' })}
-            </Button>
-            <Button type='link'
-              onClick={() => {
-                resetAllDrawer()
-                setidentityGroupDrawerVisible(true)
-              }}>
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
-          </Space>
+        <Space split='|'>
+          <Button
+            type='link'
+            disabled={!formFieldIdentityGroupId}
+            onClick={() => {
+              resetAllDrawer()
+              setDetailDrawerVisible(true)
+            }}
+          >
+            {$t({ defaultMessage: 'View Details' })}
+          </Button>
+          <Button type='link'
+            onClick={() => {
+              resetAllDrawer()
+              setIdentityGroupDrawerVisible(true)
+            }}>
+            {$t({ defaultMessage: 'Add' })}
+          </Button>
         </Space>
       </Space>
       {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
-          <UI.FieldLabel width={'400px'}>
-            {$t({
-              defaultMessage:
+          <UI.FieldLabelByFraction fraction={[9,1]}>
+            <div>
+              {$t({
+                defaultMessage:
                 'Use single identity association to all onboarded devices'
-            })}
+              })}
+            </div>
             <Form.Item
               name={['enableIdentityAssociation']}
               data-testid={'identity-associate-switch'}
@@ -194,18 +194,18 @@ export function IdentityGroup (props: IdentityGroupProps) {
               initialValue={false}
               children={<Switch onChange={onAssociationChange} />}
             />
-          </UI.FieldLabel>
+          </UI.FieldLabelByFraction>
           <div style={{
             marginBottom: '20px',
             ...(associationBlockVisible? { display: 'block' } : { display: 'none' })
           }}>
-            <UI.FieldLabel width={comboWidth}>
+            <UI.FieldLabelByFraction fraction={[10]}>
               <p style={{ marginBottom: '0px' }}>
                 {$t({ defaultMessage: 'Identity' })}
               </p>
-            </UI.FieldLabel>
+            </UI.FieldLabelByFraction>
             {selectedIdentity ? (
-              <UI.FieldLabel width={comboWidth}>
+              <UI.FieldLabelByFraction fraction={[8.5,1.5]}>
                 <p style={{ marginBottom: '0px' }}>{selectedIdentity.name}</p>
                 <Form.Item
                   style={{ marginBottom: '0px' }}
@@ -224,7 +224,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
                     </Button>
                   }
                 />
-              </UI.FieldLabel>
+              </UI.FieldLabelByFraction>
             ) : (
               <Button
                 type='link'

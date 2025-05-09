@@ -267,9 +267,10 @@ function useCardData (): PolicyCardData[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useEnhancedRoguePoliciesQuery({
         params, payload: defaultPayload, enableRbac
-      }).data?.totalCount,
+      }, { skip: isCore }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })),
+      disabled: isCore
     },
     {
       type: PolicyType.SYSLOG,

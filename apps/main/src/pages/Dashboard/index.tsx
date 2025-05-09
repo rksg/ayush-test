@@ -140,6 +140,7 @@ export default function Dashboard () {
   const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -252,6 +253,7 @@ export default function Dashboard () {
                   borderColor: 'var(--acx-neutrals-30)',
                   margin: '20px 0px 5px 0px' }}/>
               <ContentSwitcher
+                tabId={'dashboard-devices'}
                 tabDetails={tabDetails}
                 size='large'
                 defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
@@ -263,6 +265,7 @@ export default function Dashboard () {
                     </TenantLink>
                   </UI.Wrapper>
                 }
+                tabPersistence={enabledUXOptFeature}
               />
               <Divider dashed
                 style={{

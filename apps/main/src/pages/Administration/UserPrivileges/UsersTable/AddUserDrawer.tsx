@@ -15,13 +15,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  sfdcEmailRegExp,
   TenantAuthenticationType,
   TenantAuthentications,
   getRoles,
   PrivilegeGroup,
   CustomGroupType,
-  generalPhoneRegExp
+  generalPhoneRegExp,
+  emailRegExp
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import { CatchErrorDetails } from '@acx-ui/utils'
@@ -226,7 +226,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
               message: $t({ defaultMessage: 'Please enter email' })
             },
             { max: 255 },
-            { validator: (_, value) => sfdcEmailRegExp(value) }
+            { validator: (_, value) => emailRegExp(value) }
           ]}>
           <Input
             placeholder={$t({ defaultMessage: 'Enter email address' })}
