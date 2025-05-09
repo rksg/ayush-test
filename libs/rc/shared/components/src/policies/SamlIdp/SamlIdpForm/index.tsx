@@ -298,7 +298,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                       options={signingCertificateOptions}
                     />
                   }
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a signing certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
@@ -340,7 +345,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   children={<Select
                     options={encryptionCertificateOptions}
                   />}
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select an encryption certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
