@@ -29,7 +29,7 @@ export const mockClusterConfigWizardData = {
       return result
     }, {} as InterfaceSettingsFormType['portSettings']),
   lagSettings: mockedHaNetworkSettings.lagSettings,
-  vipConfig: mockedHaNetworkSettings.virtualIpSettings.map(item => {
+  vipConfig: mockedHaNetworkSettings.virtualIpSettings?.map(item => {
     return {
       interfaces: item.ports,
       vip: item.virtualIp

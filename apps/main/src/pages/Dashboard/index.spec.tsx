@@ -83,7 +83,7 @@ describe('Dashboard', () => {
   it('switches between tabs', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS_Q2)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
-    expect(localStorage.getItem('dashboard-tab')).toBe(undefined)
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe(undefined)
 
     const wifiWidgets = [
       'TrafficByVolume',
@@ -93,7 +93,7 @@ describe('Dashboard', () => {
     wifiWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
     fireEvent.click(screen.getByRole('radio', { name: 'Switch' }))
-    expect(localStorage.getItem('dashboard-tab')).toBe('switch')
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe('switch')
 
     const switchWidgets = [
       'SwitchesTrafficByVolume',
@@ -105,7 +105,7 @@ describe('Dashboard', () => {
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
     fireEvent.click(screen.getByRole('radio', { name: 'RUCKUS Edge' }))
-    expect(localStorage.getItem('dashboard-tab')).toBe('edge')
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe('edge')
 
     const edgeWidgets = [
       'TopEdgesByTraffic',
