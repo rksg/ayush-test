@@ -211,7 +211,7 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
+    if (isDashboardCanvasEnabled) {
       setLayout({
         ...layout,
         calWidth: getCalculatedColumnWidth(menuCollapsed)
@@ -220,7 +220,7 @@ export default function Dashboard () {
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
       const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
       if (selectedDashboard) {
         const { canvasId, sections, groups } = getCanvasData(
@@ -244,7 +244,7 @@ export default function Dashboard () {
         getDashboardsQuery={getDashboardsQuery}
       />
       {
-        <Loader states={[{ isLoading: isCanvasQ2Enabled ? dashboardsLoading : false }]}>{
+        <Loader states={[{ isLoading: isDashboardCanvasEnabled ? dashboardsLoading : false }]}>{
 
           dashboardId === DEFAULT_DASHBOARD_ID
             ? <>
@@ -316,6 +316,9 @@ function DashboardPageHeader (props: {
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
@@ -507,7 +510,7 @@ function DashboardPageHeader (props: {
       ]}
     />
 
-    { isCanvasQ2Enabled && <>
+    { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
