@@ -618,13 +618,12 @@ overflow: auto;
     background: var(--acx-primary-black);
     color: var(--acx-primary-white);
     border-radius: 0 0 4px 4px;
-    opacity: 0.7;
+    opacity: 0.9;
     pointer-events: none;
-    padding: 0 24px;
+    padding: 0 5%;
     .slider{
       cursor: pointer;
-      width: inherit;
-      margin: 0 24px;
+      margin: 0 min(6%, 24px);
       .ant-slider-with-marks {
         pointer-events: auto;
         margin: 16px 0 20px 0;
@@ -647,8 +646,6 @@ overflow: auto;
   }
   &:hover .card-resizer{
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 .rglb_group-item .group-item-container .card-container .card .card-footer {
