@@ -25,13 +25,12 @@ import {
 } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 
-import Canvas, { CanvasRef, Group }          from './Canvas'
-import { DraggableChart }                    from './components/WidgetChart'
-import HistoryDrawer                         from './HistoryDrawer'
+import Canvas, { CanvasRef, Group } from './Canvas'
+import { DraggableChart }           from './components/WidgetChart'
+import HistoryDrawer                from './HistoryDrawer'
 import {
   getStreamingWordingKey,
   StreamingMessages
-  // MAX_POLLING_TIMES
 } from './index.utils'
 import * as UI from './styledComponents'
 
@@ -323,14 +322,7 @@ export default function AICanvasModal (props: {
     }
   }
 
-  const handlePollStreaming = async (
-    sessionId: string, streamMessageIds: string[], attempt = 0
-  ) => {
-    // if (attempt >= MAX_POLLING_TIMES) {
-    //   setAiBotLoading(false)
-    //   return
-    // }
-
+  const handlePollStreaming = async (sessionId: string, streamMessageIds: string[]) => {
     try {
       const streamingResponse = await getChats({
         params: { sessionId },
@@ -348,7 +340,7 @@ export default function AICanvasModal (props: {
       if (!!streamingMessageIds.length) {
         await new Promise(res => setTimeout(res, 300))
         setChats([...streamingResponse.data].reverse())
-        await handlePollStreaming(sessionId, streamMessageIds, attempt + 1)
+        await handlePollStreaming(sessionId, streamMessageIds)
       } else {
         if(streamingResponse) {
           const tempChats = streamingResponse.data.map(msg => {
@@ -391,7 +383,7 @@ export default function AICanvasModal (props: {
       id: uuidv4(),
       created: '-',
       role: MessageRole.STREAMING,
-      text: ''
+      text: '0'
     }
     setChats([...chats, newMessage, fakeInitStreamingMessage])
     setAiBotLoading(true)

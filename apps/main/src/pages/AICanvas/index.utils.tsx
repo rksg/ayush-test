@@ -10,7 +10,6 @@ const MENU_EXPANDED_WIDTH = 216
 const SIDE_PADDING = 72
 const WIDGET_GRID_GAP = 60
 const COLUMN_COUNT = 4
-export const MAX_POLLING_TIMES = 100 //temp
 export const DEFAULT_DASHBOARD_ID = 'default-dashboard-id'
 export const MAXIMUM_OWNED_CANVAS = 10
 export const MAXIMUM_DASHBOARD = 10
