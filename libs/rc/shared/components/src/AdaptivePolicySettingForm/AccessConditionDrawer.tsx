@@ -78,26 +78,26 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
 
   useEffect(() => {
     if (editCondition && visible) {
+      let editData = {}
       // eslint-disable-next-line max-len
       if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category) {
-        const editData = {
+        editData = {
           conditionId: editCondition.id,
           templateAttributeId: attributes.find(p => p.category)?.id,
           subTemplateAttributeId: editCondition.templateAttributeId,
           name: editCondition.name ?? editCondition.templateAttribute?.name,
           ...toEvaluationRuleForm(editCondition.evaluationRule)
         }
-        form.setFieldsValue(editData)
         setShowSubType(true)
       } else {
-        const editData = {
+        editData = {
           conditionId: editCondition.id,
           templateAttributeId: editCondition.templateAttributeId,
           name: editCondition.name ?? editCondition.templateAttribute?.name,
           ...toEvaluationRuleForm(editCondition.evaluationRule)
         }
-        form.setFieldsValue(editData)
       }
+      form.setFieldsValue(editData)
     } else {
       form.resetFields()
     }
