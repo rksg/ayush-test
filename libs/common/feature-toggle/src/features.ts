@@ -314,6 +314,7 @@ export enum Features {
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
@@ -340,7 +341,8 @@ export enum Features {
   IDENTITY_COMMON_ATTRIBUTES_TOGGLE = 'acx-ui-identity-common-attributes-toggle',
   WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
   WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
-  WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle'
+  WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
+  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

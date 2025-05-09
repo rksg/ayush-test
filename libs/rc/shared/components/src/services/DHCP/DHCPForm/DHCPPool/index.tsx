@@ -5,7 +5,10 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                 from '@acx-ui/components'
+import {
+  Drawer,
+  Tooltip
+} from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   DHCPPool,
@@ -243,7 +246,20 @@ export default function DHCPPoolTable ({
         />
         <Form.Item
           name='endIpAddress'
-          label={$t({ defaultMessage: 'End Host Address' })}
+          label={<>{$t({ defaultMessage: 'End Host Address' })}
+            {showWarning && dhcpMode === DHCPConfigTypeEnum.MULTIPLE &&
+            <Tooltip.Question
+              title={$t({ defaultMessage:
+                // eslint-disable-next-line max-len
+                'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' })}
+              placement='right'
+              overlayStyle={{ maxWidth: '400px' }}
+              iconStyle={{
+                width: 16,
+                height: 16
+              }}
+            />}
+          </>}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },

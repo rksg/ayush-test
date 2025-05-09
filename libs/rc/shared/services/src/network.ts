@@ -692,14 +692,55 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
-      query: ({ params }) => {
-        const networkDetailReq = createHttpRequest(
-          CommonRbacUrlsInfo.getNetworksDetailHeader,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1))
-        return {
-          ...networkDetailReq
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (enableRbac) {
+          const networkId = params?.networkId
+          const { isTemplate } = (payload ?? {}) as { isTemplate: boolean }
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const networkListQueryPayload = {
+            fields: ['name', 'venueApGroups', 'apCount', 'clientCount'],
+            page: 1,
+            pageSize: 10
+          }
+
+          const apiInfo = (isTemplate)
+            ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac
+            : CommonRbacUrlsInfo.getWifiNetworksList
+
+          const NetworkListReq = {
+            ...createHttpRequest(apiInfo, undefined, customHeaders),
+            body: JSON.stringify({
+              ...networkListQueryPayload,
+              filters: {
+                id: [networkId]
+              }
+            })
+          }
+          const networkListQuery = await fetchWithBQ(NetworkListReq)
+          const networkList = networkListQuery.data as TableResult<WifiNetwork>
+          const currentNetwork = networkList?.data?.[0]
+          const { name, venueApGroups=[], apCount=0, clientCount=0 } = currentNetwork || {}
+
+          const networkDetailHeader = {
+            activeVenueCount: venueApGroups.length,
+            aps: { totalApCount: apCount },
+            network: { name, id: networkId, clients: clientCount }
+          } as NetworkDetailHeader
+
+          return { data: networkDetailHeader }
+
+        } else {
+          const networkDetailHeaderReq = createHttpRequest(
+            CommonRbacUrlsInfo.getNetworksDetailHeader,
+            params)
+
+          const networkDetailHeaderQuery = await fetchWithBQ(networkDetailHeaderReq)
+
+          return networkDetailHeaderQuery as QueryReturnValue<NetworkDetailHeader,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
         }
+
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {

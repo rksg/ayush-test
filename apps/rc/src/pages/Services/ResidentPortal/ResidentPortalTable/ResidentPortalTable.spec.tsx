@@ -195,7 +195,7 @@ describe('ResidentPortalTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
   })
 
   it('should navigate to the Edit view', async () => {
