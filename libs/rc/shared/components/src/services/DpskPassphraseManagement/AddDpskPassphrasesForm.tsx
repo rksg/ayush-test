@@ -256,7 +256,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                   if (value.length !== dpskPoolData?.passphraseLength) {
                     throw new Error(
                       // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'Passphrase must be {length} characters' }, { length: dpskPoolData?.passphraseLength })
+                      $t({ defaultMessage: 'Passphrase must be at least {length} characters' }, { length: dpskPoolData?.passphraseLength })
                     )
                   }
                 } else if (value.length < 8 || value.length > 63) {
