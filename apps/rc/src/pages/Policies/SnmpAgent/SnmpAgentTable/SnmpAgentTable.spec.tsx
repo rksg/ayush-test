@@ -24,14 +24,16 @@ const mockTableResult = {
     name: 'Joe-snmp',
     v2Agents: { count: 1, names: ['joeV2xxx'] },
     v3Agents: { count: 1, names: ['joeV3'] },
-    venues: { count: 0 }
+    venues: { count: 0 },
+    venueIds: []
   }, {
     aps: { count: 1, names: ['R550_Fake'] },
     id: 'SNMP-1-id',
     name: 'SNMP-1',
     v2Agents: { count: 1, names: ['testV2User'] },
     v3Agents: { count: 1, names: ['testV3User'] },
-    venues: { count: 1, names: ['My-Venue123'] }
+    venues: { count: 1, names: ['My-Venue123'] },
+    venueIds: ['venue1']
   }]
 }
 
@@ -194,5 +196,126 @@ describe('SnmpAgentTable', () => {
 
     // Verify the row is still selected and not deleted
     expect(screen.getByRole('row', { name: new RegExp(target.name) })).toBeVisible()
+  })
+
+  describe('Delete functionality', () => {
+    // eslint-disable-next-line max-len
+    it('should show error message when trying to delete SNMP agent with active venues', async () => {
+      render(
+        <Provider>
+          <SnmpAgentTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+      // Select the SNMP agent that has active venues (SNMP-1)
+      const target = mockTableResult.data[1]
+      const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+      await userEvent.click(within(row).getByRole('radio'))
+
+      // Click delete button
+      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+      // Verify error message appears
+      expect(await screen.findByText(
+        'You are unable to delete this record due to its usage in venues'
+      )).toBeVisible()
+
+      // Verify OK button is present
+      expect(screen.getByRole('button', { name: /OK/ })).toBeVisible()
+
+      // Click OK to close modal
+      await userEvent.click(screen.getByRole('button', { name: /OK/ }))
+
+      // Verify the row is still selected and not deleted
+      expect(screen.getByRole('row', { name: new RegExp(target.name) })).toBeVisible()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should show confirmation dialog when deleting SNMP agent without active venues', async () => {
+      const deleteFn = jest.fn()
+      mockServer.use(
+        rest.delete(
+          ApSnmpUrls.deleteApSnmpPolicy.url,
+          (req, res, ctx) => {
+            deleteFn(req.body)
+            return res(ctx.json({ requestId: '12345' }))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <SnmpAgentTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+      // Select the SNMP agent that has no active venues (Joe-snmp)
+      const target = mockTableResult.data[0]
+      const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+      await userEvent.click(within(row).getByRole('radio'))
+
+      // Click delete button
+      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+      // Verify confirmation dialog appears
+      expect(await screen.findByText(
+        'Are you sure you want to delete this SNMP Agent?'
+      )).toBeVisible()
+
+      // Verify Delete and Cancel buttons are present
+      expect(screen.getByRole('button', { name: /Delete/ })).toBeVisible()
+      expect(screen.getByRole('button', { name: /Cancel/ })).toBeVisible()
+
+      // Click Delete to confirm
+      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+      // Verify delete API was called
+      expect(deleteFn).toHaveBeenCalled()
+    })
+
+    it('should cancel deletion when clicking Cancel button', async () => {
+      const deleteFn = jest.fn()
+      mockServer.use(
+        rest.delete(
+          ApSnmpUrls.deleteApSnmpPolicy.url,
+          (req, res, ctx) => {
+            deleteFn(req.body)
+            return res(ctx.json({ requestId: '12345' }))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <SnmpAgentTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+      // Select the SNMP agent that has no active venues (Joe-snmp)
+      const target = mockTableResult.data[0]
+      const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+      await userEvent.click(within(row).getByRole('radio'))
+
+      // Click delete button
+      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+      // Click Cancel button
+      await userEvent.click(screen.getByRole('button', { name: /Cancel/ }))
+
+      // Verify delete API was not called
+      expect(deleteFn).not.toHaveBeenCalled()
+
+      // Verify the row is still visible
+      expect(screen.getByRole('row', { name: new RegExp(target.name) })).toBeVisible()
+    })
   })
 })
