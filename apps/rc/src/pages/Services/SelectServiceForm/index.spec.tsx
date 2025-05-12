@@ -33,7 +33,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))
