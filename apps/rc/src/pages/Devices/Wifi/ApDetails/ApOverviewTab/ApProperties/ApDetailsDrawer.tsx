@@ -278,10 +278,15 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const getPoeClassDesc = (lldpClass: string | null | undefined): string => {
     if (!lldpClass) return '--'
-    const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
-    const mappedValue = poeClassDisplayMap[lldpClass as keyof typeof poeClassDisplayMap] || lldpClass
-    const lldpClassCapitalized = capitalizeFirstLetter(lldpClass)
-    return mappedValue ? `${lldpClassCapitalized} (${mappedValue})` : lldpClass
+
+    const displayText = poeClassDisplayMap[lldpClass as keyof typeof poeClassDisplayMap]
+    const formattedClass = lldpClass.charAt(0).toUpperCase() + lldpClass.slice(1)
+
+    if (displayText) {
+      return `${formattedClass} (${displayText})`
+    }
+
+    return formattedClass
   }
 
   const getAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
