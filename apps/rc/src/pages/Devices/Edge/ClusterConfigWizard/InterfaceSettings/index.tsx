@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
-  convertEdgePortsConfigToApiPayload,
+  convertEdgeNetworkIfConfigToApiPayload,
   EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortTypeEnum, EdgeSerialNumber, EdgeUrlsInfo,
   getEdgeWanInterfaceCount
 } from '@acx-ui/rc/utils'
@@ -261,7 +261,7 @@ export const InterfaceSettings = () => {
           for (let portIfName in allValues[nodeSN]) {
             allValues[nodeSN][portIfName].forEach((item, idx) => {
               // eslint-disable-next-line max-len
-              allValues[nodeSN][portIfName][idx] = convertEdgePortsConfigToApiPayload(item) as EdgePort
+              allValues[nodeSN][portIfName][idx] = convertEdgeNetworkIfConfigToApiPayload(item) as EdgePort
             })
           }
         }

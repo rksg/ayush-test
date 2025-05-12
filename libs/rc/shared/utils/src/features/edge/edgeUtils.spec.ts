@@ -9,7 +9,7 @@ import { mockEdgePortConfig }                     from './__tests__/fixtures/por
 import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
-  convertEdgePortsConfigToApiPayload,
+  convertEdgeNetworkIfConfigToApiPayload,
   convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
@@ -24,6 +24,7 @@ import {
   optionSorter,
   poolRangeOverlapValidator,
   validateClusterInterface,
+  validateConfiguredSubnetIsConsistent,
   validateEdgeClusterLevelGateway,
   validateEdgeGateway,
   validateSubnetIsConsistent,
@@ -205,11 +206,42 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')
+  })
+
+  it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
+    const allIps = [
+      {
+        ip: '',
+        subnet: ''
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateConfiguredSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).not.toBeCalled()
   })
 
   it('Test validateUniqueIp success', async () => {
     const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp success for excluded empty ip', async () => {
+    const allIps = ['1.1.1.1', '', '']
     const mockErrorFn = jest.fn()
     try {
       await validateUniqueIp(allIps, 'true')
@@ -994,7 +1026,7 @@ describe('isAllPortsLagMember', () => {
   })
 })
 
-describe('convertEdgePortsConfigToApiPayload', () => {
+describe('convertEdgeNetworkIfConfigToApiPayload', () => {
   it('should set gateway to empty string if port type is CLUSTER', () => {
     const edgePort = {
       id: '',
@@ -1009,7 +1041,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.STATIC,
       portType: EdgePortTypeEnum.CLUSTER
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
     expect(result.gateway).toBe('')
   })
 
@@ -1027,7 +1059,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.DHCP,
       portType: EdgePortTypeEnum.WAN
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
   })
@@ -1039,7 +1071,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ip: '2.2.2.2',
       subnet: '255.255.255.0'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.gateway).toBe('')
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
@@ -1050,7 +1082,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.CLUSTER,
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.gateway).toBe('')
   })
 
@@ -1068,7 +1100,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.STATIC,
       portType: EdgePortTypeEnum.UNCONFIGURED
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
     expect(result.ipMode).toBe(EdgeIpModeEnum.DHCP)
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
@@ -1080,7 +1112,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.LAN,
       natEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natEnabled).toBe(false)
   })
 
@@ -1090,7 +1122,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       corePortEnabled: false,
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.gateway).toBe('')
   })
 
@@ -1101,7 +1133,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       corePortEnabled: false,
       ipMode: EdgeIpModeEnum.DHCP
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.ipMode).toBe(EdgeIpModeEnum.STATIC)
   })
 
@@ -1110,7 +1142,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.WAN,
       natEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natEnabled).toBe(true)
   })
 
@@ -1120,7 +1152,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       natEnabled: false,
       natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natPools).toEqual([])
   })
 
@@ -1130,7 +1162,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       natEnabled: true,
       natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natEnabled).toEqual(false)
     expect(result.natPools).toEqual([])
   })
@@ -1140,13 +1172,13 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.WAN,
       corePortEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
-    expect(result.corePortEnabled).toBe(true)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.corePortEnabled).toBe(false)
   })
 
   it('should return empty formData', () => {
     const formData = {} as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result).toStrictEqual({
       natEnabled: false,
       natPools: []

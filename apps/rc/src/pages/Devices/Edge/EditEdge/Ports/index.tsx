@@ -18,13 +18,13 @@ import {
   useGetEdgeSdLanByEdgeOrClusterId,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
-import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import { useUpdatePortConfigMutation }     from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
   EdgePortTypeEnum,
   EdgePortWithStatus,
   EdgeUrlsInfo,
-  convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
+  convertEdgeNetworkIfConfigToApiPayload } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission }                         from '@acx-ui/user'
 import { getOpsApi }                             from '@acx-ui/utils'
@@ -127,7 +127,7 @@ const Ports = () => {
   const handleFinish = async () => {
     const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
     formData.forEach((item, idx) => {
-      formData[idx] = convertEdgePortsConfigToApiPayload(item) as EdgePortWithStatus
+      formData[idx] = convertEdgeNetworkIfConfigToApiPayload(item) as EdgePortWithStatus
     })
 
     try {

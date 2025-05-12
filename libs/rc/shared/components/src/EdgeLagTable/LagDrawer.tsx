@@ -18,7 +18,7 @@ import {
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber,
-  convertEdgePortsConfigToApiPayload,
+  convertEdgeNetworkIfConfigToApiPayload,
   getEdgePortTypeOptions,
   isInterfaceInVRRPSetting,
   validateEdgeGateway
@@ -161,7 +161,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     try {
       const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
-      const payload = convertEdgePortsConfigToApiPayload(formData) as EdgeLag
+      const payload = convertEdgeNetworkIfConfigToApiPayload(formData) as EdgeLag
 
       if(data) {
         await onEdit(serialNumber, payload)

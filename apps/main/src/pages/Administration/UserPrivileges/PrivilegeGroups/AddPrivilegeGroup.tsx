@@ -162,7 +162,7 @@ export function AddPrivilegeGroup () {
             ec.allVenues = true
           }
           const venueIds = ec.allVenues ? []
-            : ec.children.filter(v => v.selected).map(venue => venue.id)
+            : ec.children?.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -213,7 +213,7 @@ export function AddPrivilegeGroup () {
         {firstCustomer.name} ({firstCustomer.allVenues ?
           intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
           intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-            { count: firstCustomer.children.filter(v => v.selected).length })})
+            { count: firstCustomer.children?.filter(v => v.selected).length })})
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -225,7 +225,7 @@ export function AddPrivilegeGroup () {
           {ec.name} ({ec.allVenues ?
             intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
             intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-              { count: ec.children.filter(v => v.selected).length })})
+              { count: ec.children?.filter(v => v.selected).length })})
         </UI.VenueList>
       )}</div>
   }

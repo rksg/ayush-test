@@ -10,11 +10,12 @@ export interface IotControllerStatus {
 }
 
 export interface IotControllerSetting {
-  serialNumber: string
+  id?: string
   name: string
-  fqdn: string
-  publicFqdn?: string
+  inboundAddress: string
+  publicAddress?: string
   publicPort?: number
-  publicApiKey?: string
+  apiKey?: string
+  iotSerialNumber: string
 }
 
