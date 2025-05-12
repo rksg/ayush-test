@@ -1380,7 +1380,12 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
               />
             </div>
-            <VenueRadioContext.Provider value={{ venue: venueData, venueRadio: venueRadioData }}>
+            <VenueRadioContext.Provider
+              value={{
+                venue: venueData,
+                venueRadio: apGroupData ? apGroupRadioData : venueRadioData
+              }}
+            >
               <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnable6g}
