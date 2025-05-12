@@ -554,6 +554,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
   stackingNeighborPort?: string
+  lagForceUpPort?: boolean
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {

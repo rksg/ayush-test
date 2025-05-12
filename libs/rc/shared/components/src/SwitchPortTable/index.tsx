@@ -58,6 +58,7 @@ export function SwitchPortTable (props: {
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -333,7 +334,14 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'LAG Name' }),
     dataIndex: 'lagName',
     sorter: true,
-    show: false
+    show: false,
+    render: (_, row) => {
+      let lagName = row.lagName
+      if(isSwitchLagForceUpEnabled && row?.lagForceUpPort){
+        lagName += $t({ defaultMessage: ' (Force-up)' })
+      }
+      return lagName
+    }
   }, {
     key: 'neighborName',
     title: $t({ defaultMessage: 'Neighbor Name' }),
