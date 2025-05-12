@@ -51,6 +51,9 @@ describe('CreatePortProfile', () => {
   })
 
   it('renders breadcrumb correctly', () => {
+    (featureToggle.useIsSplitOn as jest.Mock).mockImplementation((feature) =>
+      feature !== featureToggle.Features.NEW_SERVICE_CATALOG
+    )
     renderComponent()
     expect(screen.getByText('Network Control')).toBeInTheDocument()
     expect(screen.getByText('Policies & Profiles')).toBeInTheDocument()

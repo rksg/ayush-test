@@ -171,7 +171,7 @@ describe('MacRegistrationListDetails', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'MAC Registration Lists'
+      name: 'MAC Registration List'
     })).toBeVisible()
   })
 
