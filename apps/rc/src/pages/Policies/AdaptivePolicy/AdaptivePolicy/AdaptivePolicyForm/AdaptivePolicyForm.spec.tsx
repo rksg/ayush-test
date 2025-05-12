@@ -152,8 +152,8 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.click(await screen.findByRole('combobox', { name: 'Condition Type' }))
     await userEvent.click(await screen.findByText('NAS Identifier (Regex)'))
     const inputs = await screen.findAllByRole('textbox')
-    expect(inputs).toHaveLength(5)
-    await userEvent.type(inputs[4], 'testValue')
+    expect(inputs).toHaveLength(7)
+    await userEvent.type(inputs[6], 'testValue')
 
     const addBtns = await screen.findAllByText('Add')
     await userEvent.click(addBtns[1])
@@ -242,8 +242,8 @@ describe('AdaptivePolicyForm', () => {
 
     await screen.findByText('Edit Access Condition')
     let inputs = await screen.findAllByRole('textbox')
-    expect(inputs).toHaveLength(5)
-    await userEvent.type(inputs[4], 'testValueChange')
+    expect(inputs).toHaveLength(7)
+    await userEvent.type(inputs[6], 'testValueChange')
     await userEvent.click(screen.getByText('Done'))
 
     // eslint-disable-next-line max-len
