@@ -958,6 +958,7 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+  forceUpPort?: string
 }
 
 export interface AclStandardRule {
