@@ -91,6 +91,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
         if (Array.isArray(data)) {
           return <Tooltip
             placement='bottom'
+            dottedUnderline
             title={row.ports.map(p => {
               return (<span>{p}<br /></span>)
             })} >
