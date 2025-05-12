@@ -139,6 +139,7 @@ export default function Dashboard () {
   const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -184,11 +185,13 @@ export default function Dashboard () {
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
-  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
   useEffect(() => {
-    if (!isCanvasQ2Enabled) {
+    if (!isDashboardCanvasEnabled) {
       setDashboardId(DEFAULT_DASHBOARD_ID)
     }
   }, [])
@@ -208,7 +211,7 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
+    if (isDashboardCanvasEnabled) {
       setLayout({
         ...layout,
         calWidth: getCalculatedColumnWidth(menuCollapsed)
@@ -217,7 +220,7 @@ export default function Dashboard () {
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
       const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
       if (selectedDashboard) {
         const { canvasId, sections, groups } = getCanvasData(
@@ -241,7 +244,7 @@ export default function Dashboard () {
         getDashboardsQuery={getDashboardsQuery}
       />
       {
-        <Loader states={[{ isLoading: isCanvasQ2Enabled ? dashboardsLoading : false }]}>{
+        <Loader states={[{ isLoading: isDashboardCanvasEnabled ? dashboardsLoading : false }]}>{
 
           dashboardId === DEFAULT_DASHBOARD_ID
             ? <>
@@ -251,6 +254,7 @@ export default function Dashboard () {
                   borderColor: 'var(--acx-neutrals-30)',
                   margin: '20px 0px 5px 0px' }}/>
               <ContentSwitcher
+                tabId={'dashboard-devices'}
                 tabDetails={tabDetails}
                 size='large'
                 defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
@@ -262,6 +266,7 @@ export default function Dashboard () {
                     </TenantLink>
                   </UI.Wrapper>
                 }
+                tabPersistence={enabledUXOptFeature}
               />
               <Divider dashed
                 style={{
@@ -311,6 +316,9 @@ function DashboardPageHeader (props: {
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
@@ -502,7 +510,7 @@ function DashboardPageHeader (props: {
       ]}
     />
 
-    { isCanvasQ2Enabled && <>
+    { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}

@@ -299,7 +299,12 @@ describe('ApProperties', () => {
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => res(ctx.json({
-          totalCount: 0, page: 1, data: []
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              name: ''
+            }
+          ]
         }))
       ),
       rest.get(

@@ -289,7 +289,7 @@ export function AccessSwitchDrawer (props: {
             <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}></Checkbox>}
           <span>{$t({ defaultMessage: 'VLAN ID' })}</span>
           <Tooltip
-            title={$t({ defaultMessage: 'The VLAN for Personal Identity Network Auth Page' })}
+            title={$t({ defaultMessage: 'The VLAN for PIN Portal for Switch' })}
             placement='right'><QuestionMarkCircleOutlined />
           </Tooltip>
         </>}
@@ -313,11 +313,11 @@ export function AccessSwitchDrawer (props: {
               <Form.Item>
                 <Checkbox onChange={(e)=>setWebAuthPageOverwrite(e.target.checked)}>
                   <Subtitle level={4}>
-                    {$t({ defaultMessage: 'Personal Identity Network Auth Page' })}</Subtitle>
+                    {$t({ defaultMessage: 'PIN Portal for Switch Profile' })}</Subtitle>
                 </Checkbox>
               </Form.Item>:
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Personal Identity Network Auth Page' })}
+                {$t({ defaultMessage: 'PIN Portal for Switch Profile' })}
               </Subtitle>
             }
           </Col>

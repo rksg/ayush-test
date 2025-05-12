@@ -20,7 +20,7 @@ import {
   getServiceRoutePath,
   isDefaultWebAuth
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -73,7 +73,6 @@ type WebAuthSwitchType = {
 export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const location = useLocation()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data } = useGetWebAuthTemplateQuery({
@@ -118,20 +117,14 @@ export default function NetworkSegAuthDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
-            link: getServiceRoutePath({
-              type: ServiceType.WEBAUTH_SWITCH,
-              oper: ServiceOperation.LIST
-            })
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'PIN Portal for Switch' }), link: getServiceRoutePath(
+            { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
           }
         ]}
         extra={filterByAccessForServicePolicyMutation([
-          <Button disabled>
-            {$t({ defaultMessage: 'Preview' })}
-          </Button>,
-          <TenantLink state={{ from: location }}
+          <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.EDIT,
