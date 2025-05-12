@@ -68,6 +68,7 @@ export const canvasList = {
       widgetCount: 0,
       visible: true,
       author: 'dogdog dog',
+      authorId: 'author-id-1',
       usedAsOwnDashboard: false,
       owned: false
     },
@@ -78,6 +79,7 @@ export const canvasList = {
       widgetCount: 0,
       visible: true,
       author: 'dogdog dog2',
+      authorId: 'author-id-2',
       usedAsOwnDashboard: false,
       owned: false
     },

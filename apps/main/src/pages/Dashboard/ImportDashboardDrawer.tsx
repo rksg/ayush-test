@@ -21,6 +21,7 @@ import {
   useLazyGetCanvasByIdQuery
 } from '@acx-ui/rc/services'
 import { Canvas, CanvasInfo, DashboardInfo } from '@acx-ui/rc/utils'
+import { noDataDisplay }                     from '@acx-ui/utils'
 
 import {
   MAXIMUM_OWNED_CANVAS,
@@ -81,7 +82,7 @@ export const ImportDashboardDrawer = (props: {
   const [searchText, setSearchText] = useState('')
 
   const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
-  const importedOwnedCanvasCount = dashboardList.filter(item => !item.author).length - 1
+  const importedOwnedCanvasCount = dashboardList.filter(item => !item.authorId).length - 1
   const isCanvasLimitReached
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
 
@@ -240,6 +241,7 @@ export const ImportDashboardDrawer = (props: {
         itemLayout='vertical'
         size='small'
         renderItem={(item) => {
+          const authorName = item.author || noDataDisplay
           return <UI.CanvasListItem>
             <Checkbox
               checked={selectedCanvases.includes(item.id)}
@@ -261,9 +263,9 @@ export const ImportDashboardDrawer = (props: {
                   { item?.updatedDate && <span className='date'>{
                     moment(item.updatedDate).format('YYYY/MM/DD')
                   }</span> }
-                  { item?.author && <span className='author'>
+                  { !item?.owned && <span className='author'>
                     <AccountCircleSolid size='sm' />
-                    <span className='name' title={item.author}>{ item.author }</span>
+                    <span className='name' title={authorName}>{ authorName }</span>
                   </span>
                   }
                 </div>

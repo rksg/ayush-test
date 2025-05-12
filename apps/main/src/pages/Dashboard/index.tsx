@@ -432,7 +432,7 @@ function DashboardPageHeader (props: {
     const currentDashboard = dashboardList.find(item => item.id === dashboardId)
     const newDashboard = dashboardList.find(item => item.id === value)
     const hasDiff = (dashboard?: DashboardInfo) =>
-      !!dashboard?.author && !!dashboard?.diffWidgetIds?.length
+      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
 
     if (currentDashboard && hasDiff(currentDashboard)) {
       handleClearNotifications(currentDashboard.id)
@@ -468,7 +468,7 @@ function DashboardPageHeader (props: {
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
-            const hasUpdated = item.author && item.diffWidgetIds && item.diffWidgetIds.length > 0
+            const hasUpdated = !!item.authorId && !!item.diffWidgetIds?.length
             const icon = item.visible || isDefault
               ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
 

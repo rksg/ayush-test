@@ -19,6 +19,7 @@ import {
   useRemoveDashboardsMutation
 } from '@acx-ui/rc/services'
 import { DashboardInfo } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
@@ -103,8 +104,8 @@ const getActionMenu = (
   handleMenuClick: MenuProps['onClick'],
   $t: IntlShape['$t']
 ) => {
-  const { id, canvasId, author, isLanding, isDefault } = data
-  const isEditable = !author
+  const { id, canvasId, authorId, isLanding, isDefault } = data
+  const isEditable = !authorId
   const getKey = (type: string) => `${type}_${id}_${canvasId}`
   const menuItems = [{
     label: $t({ defaultMessage: 'Set as Landing Page' }),
@@ -141,6 +142,7 @@ const getItemInfo = (props: {
   const hasDropdownMenu = dropdownMenu.props.items.length > 0
   const dashboardName = item.isDefault
     ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : item.name
+  const authorName = item.author || noDataDisplay
 
   return <>
     <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
@@ -166,9 +168,9 @@ const getItemInfo = (props: {
         { item.updatedDate && <span className='date'>{
           moment(item.updatedDate).format('YYYY/MM/DD')
         }</span> }
-        { item.author && <span className='author'>
+        { item.authorId && <span className='author'>
           <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name' title={item.author}>{ item.author }</span>
+          <span className='name' title={authorName}>{ authorName }</span>
         </span>
         }
       </div>}
