@@ -329,9 +329,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     let message = ''
     if(isProfileLevel) {
       // eslint-disable-next-line max-len
-      message = 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
+      message = $t({ defaultMessage: 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.' })
     } else if (disabledStp) {
-      message = 'Beginning with  FI 10.0.20a release, only RSTP is supported.'
+      // eslint-disable-next-line max-len
+      message = $t({ defaultMessage: 'Beginning with FI 10.0.20a release, only RSTP is supported.' })
     }
 
     if (!message) return null
@@ -526,7 +527,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
                   {disabledStp ? (
                     <Tooltip
                       // eslint-disable-next-line max-len
-                      title={'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.'}
+                      title={$t({ defaultMessage: 'Some of the selected ports belong to switches running FI 10.0.20a or later which only support RSTP.' })}
                       placement='left'>
                       <span style={{ display: 'inline-block', width: '100%' }}>
                         {$t({ defaultMessage: 'STP' })}
