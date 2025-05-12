@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState, useRef } from 'react'
 
 import { Divider, Menu, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -324,6 +324,7 @@ function DashboardPageHeader (props: {
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
   const [patchDashboard] = usePatchDashboardMutation()
+  const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -404,24 +405,36 @@ function DashboardPageHeader (props: {
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters, true)
+    return () => {
+      if (isCanvasQ2Enabled && shouldCleanupDashboardIdRef.current) {
+        handleClearNotifications(shouldCleanupDashboardIdRef.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  const handleDashboardChange = async (value: string) => {
-    const [current] = dashboardList.filter(item => item.id === dashboardId)
-    const shouldClearNotifications = !!current.author
-      && current.diffWidgetIds && current.diffWidgetIds?.length > 0
+  const handleClearNotifications = async (value: string) => {
+    await patchDashboard({
+      params: { dashboardId: value }
+    })
+    shouldCleanupDashboardIdRef.current = undefined
+  }
 
-    if (shouldClearNotifications) {
-      await patchDashboard({
-        params: { dashboardId: current.id },
-        payload: {}
-      })
+  const handleChangeDashboard = async (value: string) => {
+    const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+    const newDashboard = dashboardList.find(item => item.id === value)
+    const hasDiff = (dashboard?: DashboardInfo) =>
+      !!dashboard?.author && !!dashboard?.diffWidgetIds?.length
+
+    if (currentDashboard && hasDiff(currentDashboard)) {
+      handleClearNotifications(currentDashboard.id)
     }
-
+    if (newDashboard && hasDiff(newDashboard)) {
+      shouldCleanupDashboardIdRef.current = value
+    }
     setDashboardId(value)
   }
 
@@ -446,7 +459,7 @@ function DashboardPageHeader (props: {
         dropdownMatchSelectWidth={false}
         dropdownClassName='dashboard-select-dropdown'
         optionLabelProp='label'
-        onChange={handleDashboardChange}
+        onChange={handleChangeDashboard}
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID

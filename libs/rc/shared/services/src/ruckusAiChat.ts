@@ -229,11 +229,10 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     }),
     patchDashboard: build.mutation<DashboardInfo, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.patchDashboard, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
