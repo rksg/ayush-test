@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { DefaultOptionType }                    from 'antd/lib/select'
 import _, { difference, flatMap, isNil, sumBy } from 'lodash'
 import { IntlShape }                            from 'react-intl'
@@ -465,14 +466,22 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
   }
 }
 
+export const isLagCorePort = (data: EdgeLag) => {
+  return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN
+    && data.lagEnabled
+    && data.lagMembers.some(member => member.portEnabled)
+}
+
+export const isPhysicalCorePort = (data: EdgePort) => {
+  return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
+}
+
 const hasCorePhysicalPort = (portsData: EdgePort[]) => {
-  return portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
+  return portsData.some(isPhysicalCorePort)
 }
 
 const hasCoreLag = (lagData: EdgeLag[]) => {
-  return lagData.some(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  return lagData.some(isLagCorePort)
 }
 
 const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {

@@ -55,7 +55,7 @@ jest.mock('antd', () => {
 })
 
 describe('Interface Compatibility Check', () => {
-  it('when node is missing in port setting', async () => {
+  it('when node is missing from port setting', async () => {
     const mockData = _.cloneDeep(mockNoLagData)
     const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
@@ -69,8 +69,8 @@ describe('Interface Compatibility Check', () => {
     n2p1!.portType = EdgePortTypeEnum.CLUSTER
     n2p1!.ipMode = EdgeIpModeEnum.DHCP
     const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-      nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
-    n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+    n2p2!.portType = EdgePortTypeEnum.LAN
     n2p2!.corePortEnabled = true
 
     const result = interfaceCompatibilityCheck(
@@ -98,7 +98,8 @@ describe('Interface Compatibility Check', () => {
       n2p1!.portType = EdgePortTypeEnum.CLUSTER
       n2p1!.ipMode = EdgeIpModeEnum.DHCP
       const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+        nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n2p2!.portType = EdgePortTypeEnum.LAN
       n2p2!.ipMode = EdgeIpModeEnum.DHCP
       n2p2!.corePortEnabled = true
 
@@ -314,6 +315,34 @@ describe('Interface Compatibility Check', () => {
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN].value).toBe(1)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(1)
+    })
+
+    it('when first node core port, second node core port setting is invalid', async () => {
+      const mockData = _.cloneDeep(mockNoLagData)
+      const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n1p1!.portType = EdgePortTypeEnum.LAN
+      n1p1!.corePortEnabled = true
+      const n1p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n1p2!.portType = EdgePortTypeEnum.CLUSTER
+      const n2p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p1!.portType = EdgePortTypeEnum.CLUSTER
+      n2p1!.ipMode = EdgeIpModeEnum.DHCP
+      const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      n2p2!.corePortEnabled = true
+
+      const result = interfaceCompatibilityCheck(
+        mockData.portSettings, mockData.lagSettings, nodeList)
+
+      expect(result.isError).toBe(true)
+      expect(result.portTypes).toBe(true)
+      expect(result.corePorts).toBe(false)
+      expect(result.ports).toBe(true)
+
     })
   })
 })

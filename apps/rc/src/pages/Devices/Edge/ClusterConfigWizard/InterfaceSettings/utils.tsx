@@ -290,7 +290,9 @@ export const interfaceCompatibilityCheck = (
       if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
-      if (port.corePortEnabled) result.errors.corePorts.value++
+      if (port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[port.portType]) {
         result.errors.portTypes[port.portType] = {
           isError: false, value: 1
@@ -329,7 +331,9 @@ export const lagSettingsCompatibleCheck = (
       // if (!lag.lagEnabled) return
 
       result.errors.ports.value++
-      if (lag.corePortEnabled) result.errors.corePorts.value++
+      if (lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[lag.portType]) {
         result.errors.portTypes[lag.portType] = {
           isError: false, value: 1
