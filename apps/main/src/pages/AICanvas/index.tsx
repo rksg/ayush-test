@@ -21,6 +21,7 @@ import {
   useStreamChatsAiMutation,
   useGetAllChatsQuery,
   useGetChatsMutation,
+  useStopChatMutation,
   useSendFeedbackMutation
 } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
@@ -192,6 +193,7 @@ export default function AICanvasModal (props: {
   const [streamChatsAi] = useStreamChatsAiMutation()
 
   const [getChats] = useGetChatsMutation()
+  const [stopChat] = useStopChatMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
@@ -207,6 +209,7 @@ export default function AICanvasModal (props: {
   const [groups, setGroups] = useState([] as Group[])
   const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
   const [skipScrollTo, setSkipScrollTo] = useState(false)
+  const [streamingMessageIds, setStreamingMessageIds] = useState<string[] | []>([])
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -420,11 +423,32 @@ export default function AICanvasModal (props: {
           const startStreamingIds = response?.messages
             .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
 
+          setStreamingMessageIds(startStreamingIds)
           await handlePollStreaming(response.sessionId, startStreamingIds)
         }
       }
     })
 
+  }
+
+  const handleStop = async () => {
+    const [messageId] = streamingMessageIds
+    try {
+      await stopChat({
+        params: { sessionId, messageId },
+        payload: {
+          page: 1,
+          pageSize: 100,
+          sortOrder: 'DESC'
+        }
+      }).unwrap()
+      // setAiBotLoading(false)
+      // getSessionChats(1, sessionId)
+    } catch (error) {
+      // console.error(error) // eslint-disable-line no-console
+      setAiBotLoading(false)
+      getSessionChats(1, sessionId)
+    }
   }
 
   const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {
@@ -652,9 +676,9 @@ export default function AICanvasModal (props: {
                     }
                     <Button
                       data-testid='search-button'
-                      icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading || searchText.length <= 1}
-                      onClick={()=> { handleSearch() }}
+                      icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageOutlined />}
+                      // disabled={aiBotLoading || searchText.length <= 1}
+                      onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
                     />
                   </div>
                 </Loader>

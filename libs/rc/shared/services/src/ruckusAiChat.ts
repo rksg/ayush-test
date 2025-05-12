@@ -59,6 +59,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
+    stopChat: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.stopChat, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
+    }),
     getCanvas: build.query<Canvas[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvas)
@@ -259,6 +268,7 @@ export const {
   useStreamChatsAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
+  useStopChatMutation,
   useChatChartQuery,
   useGetWidgetQuery,
   useCreateWidgetMutation,

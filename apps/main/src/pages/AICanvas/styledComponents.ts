@@ -895,6 +895,7 @@ export const EditCanvasModal = styled(Modal)`
     }
   }
 `
+
 export const PreviewModal = styled(Modal)<{ $type?: string }>`
   background: var(--acx-neutrals-10);
   border-radius: 12px;
@@ -971,6 +972,14 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     }
   }
 
+`
+
+export const StopIcon = styled.div`
+  display: inline-block;
+  background: var(--acx-primary-white);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 `
 
 const thumbStyles = `
