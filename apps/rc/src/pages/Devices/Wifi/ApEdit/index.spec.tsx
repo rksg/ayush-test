@@ -154,7 +154,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(r650Cap))
       ),
       rest.post(
-        WifiRbacUrlsInfo.getApGroupsList.url,
+        WifiUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => res(ctx.json({
           totalCount: 0, page: 1, data: []
         }))
@@ -403,6 +403,17 @@ describe('ApEdit', () => {
         // rbac
         rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
           (_, res, ctx) => res(ctx.json(r650Cap))
+        ),
+        rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
         )
       )
     })
