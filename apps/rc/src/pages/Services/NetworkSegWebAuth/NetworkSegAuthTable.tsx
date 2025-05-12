@@ -127,12 +127,13 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (<>
     { props.hideHeader !== true && <PageHeader
       title={$t({ defaultMessage: 'PIN Portal for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={useServicesBreadcrumb()}
+      breadcrumb={breadcrumb}
       extra={filterByAccessForServicePolicyMutation([
         <TenantLink state={{ from: location }}
           to={getServiceRoutePath({
