@@ -29,6 +29,7 @@ import { getIntl, noDataDisplay } from '@acx-ui/utils'
 import { getDisplayWanRole }              from '../utils/dualWanUtils'
 import { EdgeWanLinkHealthDetailsDrawer } from '../WanLinkHealthDetails'
 import { EdgeWanLinkHealthStatusLight }   from '../WanLinkHealthStatusLight'
+import { useIsEdgeFeatureReady } from 'libs/rc/shared/components/src/useEdgeActions'
 
 interface EdgeOverviewLagTableProps {
   data: EdgeLagStatus[]
@@ -56,7 +57,7 @@ export const EdgeOverviewLagTable = (props: EdgeOverviewLagTableProps) => {
     edgeNodes
   } = props
   const { $t } = useIntl()
-  const isEdgeDualWanEnabled = useIsSplitOn(Features.EDGE_DUAL_WAN_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   // eslint-disable-next-line max-len
   const [linkHealthDetailIfName, setLinkHealthDetailIfName]= useState<string | undefined>(undefined)
