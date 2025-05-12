@@ -36,16 +36,16 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = jest.mocked(get)
 jest.mock('moment', () => {
   const moment = jest.requireActual('moment')
-  const m = jest.fn((...args) => {
-    if (args.length === 0) {
-      // Return the fixed date-time for moment()
-      return moment('2025-01-20T02:48:40.069Z')
-    }
-    // Use the original moment function for moment(params)
-    return moment(...args)
-  })
-  m.utc = m
-  return m
+  const mockedMoment = (...args: unknown[]) => {
+    return args.length === 0
+    // Return the fixed date-time for moment()
+      ? moment('2025-01-20T02:48:40.069Z')
+      // Use the original moment function for moment(params)
+      : moment(...args)
+  }
+  // Attach moment's static methods (e.g., utc) to the mock
+  mockedMoment.utc = mockedMoment
+  return mockedMoment
 })
 
 describe('AuditLogTable', () => {
