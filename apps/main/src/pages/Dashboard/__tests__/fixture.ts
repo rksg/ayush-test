@@ -63,7 +63,7 @@ export const canvasList = {
   data: [
     {
       id: '59105be60b01441f98b3126d4ca41968',
-      name: 'Dashboard Canvas',
+      name: 'Dashboard Canvas 1',
       updatedDate: '2025-04-17T09:38:31.718+00:00',
       widgetCount: 0,
       visible: true,
@@ -77,7 +77,7 @@ export const canvasList = {
       updatedDate: '2025-04-17T09:38:31.718+00:00',
       widgetCount: 0,
       visible: true,
-      author: 'dogdog dog',
+      author: 'dogdog dog2',
       usedAsOwnDashboard: false,
       owned: false
     },
