@@ -88,10 +88,24 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
   },
   [ServiceType.WEBAUTH_SWITCH]: {
-    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
-    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
-    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
-    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+    [ServiceOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+  },
+  [ServiceType.PORTAL_PROFILE]: { // include PORTAL & WEBAUTH_SWITCH
+    [ServiceOperation.CREATE]: [
+      'POST:/portalServiceProfiles',
+      getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [ServiceOperation.EDIT]: [
+      'PUT:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [ServiceOperation.DELETE]: [
+      'DELETE:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [ServiceOperation.LIST]: [
+      'POST:/portalServiceProfiles/query',
+      getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   },
   [ServiceType.RESIDENT_PORTAL]: {
     [ServiceOperation.CREATE]: [getOpsApi(PropertyUrlsInfo.addResidentPortal)],
