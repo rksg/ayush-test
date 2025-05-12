@@ -22,7 +22,7 @@ export interface ApBandManagementPorps {
   apGroupBandMode: BandModeEnum
   currentApBandModeData: ApBandModeSettingsV1Dot1
   setCurrentApBandModeData: (data: ApBandModeSettingsV1Dot1) => void,
-  venueOrApGroupDisplayName: string,
+  apGroupData: string,
   disabled?: boolean
 }
 
@@ -31,8 +31,7 @@ const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
   [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
 }
 
-export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, currentApBandModeData, setCurrentApBandModeData,
-  venueOrApGroupDisplayName, disabled }: ApBandManagementPorps) => {
+export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, currentApBandModeData, setCurrentApBandModeData, apGroupData, disabled }: ApBandManagementPorps) => {
 
   const { $t } = useIntl()
 
@@ -41,8 +40,8 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
   const [bandCombinationOptions, setBandCombinationOptions] = useState<SelectItemOption[]>([])
 
   const getCurrentBandMode = useCallback(() => {
-    return (currentApBandModeData?.useVenueOrApGroupSettings ? (venueOrApGroupDisplayName ? venueBandMode : apGroupBandMode) : currentApBandModeData?.bandMode)
-  }, [currentApBandModeData, venueBandMode, apGroupBandMode, venueOrApGroupDisplayName])
+    return (currentApBandModeData?.useVenueOrApGroupSettings ? (apGroupData ? venueBandMode : apGroupBandMode) : currentApBandModeData?.bandMode)
+  }, [currentApBandModeData, venueBandMode, apGroupBandMode, apGroupData])
 
   const onChangeBandCombination = (value: BandModeEnum) => {
     console.info('[RadioSettings][ApBandManagement] onChangeBandCombination, value = ', value) // eslint-disable-line no-console
@@ -92,7 +91,7 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
                     defaultMessage={'Use inherited settings from <venueOrApGroupName></venueOrApGroupName>'}
                     values={{
                       venueOrApGroupName: () => {
-                        return venueOrApGroupDisplayName ? 'AP Group' : 'Venue'
+                        return apGroupData ? 'AP Group' : 'Venue'
                       }
                     }}
                   />

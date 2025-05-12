@@ -1954,6 +1954,7 @@ export const {
   useDeleteApPhotoMutation,
   useGetApRadioCustomizationQuery,
   useGetApGroupRadioCustomizationQuery,
+  useLazyGetApGroupRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
   useGetApRadioCustomizationV1Dot1Query,
   useUpdateApRadioCustomizationV1Dot1Mutation,
