@@ -24,7 +24,6 @@ import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { mockAuditLogs, mockedDataQuotaUsage } from './__tests__/fixtures'
 import AuditLogTable, { getRetryError }        from './AuditLogTable'
 import { AuditDto, AuditStatusEnum }           from './types'
-import { data } from 'msw/lib/types/context'
 
 const mockDataConnectorId = 'mock-data-connector-id'
 const mockMoreThan3DaysBeforeNow = '2025-01-10T02:48:40.069Z'
