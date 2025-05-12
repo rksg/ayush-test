@@ -334,14 +334,22 @@ function AaaService () {
   }
 
   useEffect(() => {
+    // This workaround is due to the other network type will set form fields and cause the proxy mode default value be effected
+    if(data) {
+      form.setFieldValue('enableAuthProxy', data.enableAuthProxy)
+      form.setFieldValue('enableAccountingProxy', data.enableAccountingProxy)
+    }
+  },[data])
+
+  useEffect(() => {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAuthProxy', true)
+      setData && setData({ ...data, enableAuthProxy: true })
     }
   }, [selectedAuthRadius])
 
   useEffect(() => {
     if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAccountingProxy', true)
+      setData && setData({ ...data, enableAccountingProxy: true })
     }
   }, [selectedAcctRadius])
 
