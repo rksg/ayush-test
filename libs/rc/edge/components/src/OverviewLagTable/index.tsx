@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Col }                         from 'antd'
 import { ExpandableConfig, SortOrder } from 'antd/lib/table/interface'
 import { capitalize }                  from 'lodash'
-import { useIntl }                     from 'react-intl'
+import { useIntl    }                  from 'react-intl'
 
 import {
   Button, GridRow, Loader,
@@ -11,7 +11,7 @@ import {
   Table, TableProps,
   ColumnType
 }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features }         from '@acx-ui/feature-toggle'
 import {
   EdgeLagMemberStatus, EdgeLagStatus,
   EdgeLagTimeoutEnum,
@@ -26,10 +26,10 @@ import {
 import { TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
+import { useIsEdgeFeatureReady }          from '../hooks/useIsEdgeFeatureReady'
 import { getDisplayWanRole }              from '../utils/dualWanUtils'
 import { EdgeWanLinkHealthDetailsDrawer } from '../WanLinkHealthDetails'
 import { EdgeWanLinkHealthStatusLight }   from '../WanLinkHealthStatusLight'
-import { useIsEdgeFeatureReady } from 'libs/rc/shared/components/src/useEdgeActions'
 
 interface EdgeOverviewLagTableProps {
   data: EdgeLagStatus[]

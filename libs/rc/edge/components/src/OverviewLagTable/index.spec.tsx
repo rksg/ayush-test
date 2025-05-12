@@ -2,9 +2,11 @@ import userEvent                   from '@testing-library/user-event'
 import { cloneDeep }               from 'lodash'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { Features }                                          from '@acx-ui/feature-toggle'
 import { EdgeLagStatus, EdgeStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
 import { render, screen, within }                            from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../hooks/useIsEdgeFeatureReady'
 
 import { EdgeOverviewLagTable } from './index'
 
@@ -14,6 +16,11 @@ const mockNavigator = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigator
+}))
+
+jest.mock('../hooks/useIsEdgeFeatureReady', () => ({
+  ...jest.requireActual('../hooks/useIsEdgeFeatureReady'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 jest.mock('../WanLinkHealthStatusLight', () => ({
@@ -56,7 +63,8 @@ describe('EdgeOverviewLagTable', () => {
 
   describe('Dual WAN enabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
     })
 
     it('renders loading icon when isLoading is true', async () => {
@@ -225,7 +233,8 @@ describe('EdgeOverviewLagTable', () => {
 
   describe('Dual WAN disabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
     })
 
     it('renders the table with data', () => {

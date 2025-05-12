@@ -360,8 +360,6 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_MULTI_WAN = 'EDGE-MULTI-WAN',
-  
-  
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
