@@ -11,15 +11,19 @@ import {
 
 import ServiceCatalog from '.'
 
+const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={props.onClick}/>,
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
       {props.featureName}
     </div>,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  EdgeCompatibilityType: {
+    ALONE: 'ALONE'
+  },
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -35,6 +39,10 @@ describe('ServiceCatalog', () => {
   }
 
   const path = '/t/:tenantId'
+
+  beforeEach(() => {
+    mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+  })
 
   it('should render service catalog', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)

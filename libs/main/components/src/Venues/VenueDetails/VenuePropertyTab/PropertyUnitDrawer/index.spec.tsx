@@ -7,6 +7,7 @@ import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   ConnectionMeteringUrls,
+  DpskUrls,
   Persona,
   PersonaUrls,
   PropertyUrlsInfo,
@@ -62,6 +63,15 @@ const mockPersona: Persona = {
   expirationDate: moment().toISOString()
 }
 
+export const mockedDpsk = {
+  id: '123456789',
+  name: 'Fake DPSK',
+  passphraseLength: 16,
+  passphraseFormat: 'NUMBERS_ONLY',
+  expirationType: 'HOURS_AFTER_TIME',
+  expirationOffset: 1
+}
+
 const userProfile = {
   initials: 'FL',
   fullName: 'First Last',
@@ -111,6 +121,10 @@ describe('Property Unit Drawer', () => {
       rest.get(
         PropertyUrlsInfo.getUnitById.url,
         (_, res, ctx) => res(ctx.json(mockPropertyUnit))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (_, res, ctx) => res(ctx.json(mockedDpsk))
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus, WIFICALLING_LIMIT_NUMBER } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
@@ -51,7 +51,6 @@ export default function WifiCallingTable () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
-  const WIFICALLING_LIMIT_NUMBER = 5
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])

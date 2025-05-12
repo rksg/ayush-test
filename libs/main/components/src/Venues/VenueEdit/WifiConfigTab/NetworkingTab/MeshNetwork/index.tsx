@@ -5,8 +5,9 @@ import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'ant
 import { useIntl }                                                     from 'react-intl'
 import { useParams }                                                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -56,32 +57,93 @@ const MeshInfoIcon = () => {
   />
 }
 
-const Mesh6GhzInfoIcon = () => {
-  const { $t } = useIntl()
-
-  return <Tooltip.Info iconStyle={{
-    position: 'absolute',
-    bottom: '0px'
-  }}
-  isFilled
-  title={
-    $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
-  }
-  />
+export type MeshCompatibilityProps = {
+  compatibilityEnabled: boolean,
+  venueId: string
 }
 
-const Mesh5GhzInfoIcon = () => {
+const Mesh6GhzInfoIcon = (props: MeshCompatibilityProps) => {
   const { $t } = useIntl()
+  const { compatibilityEnabled, venueId } = props
+  const [mesh5g6gOnlyDrawerVisible, setMesh5g6gOnlyDrawerVisible] = useState(false)
 
-  return <Tooltip.Info iconStyle={{
-    position: 'absolute',
-    bottom: '0px'
-  }}
-  isFilled
-  title={
-    $t({ defaultMessage: 'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 6GHz band.' })
-  }
-  />
+  const mesh6GhzTitle = $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
+
+  return compatibilityEnabled ?
+    <>
+      <ApCompatibilityToolTip
+        title={mesh6GhzTitle}
+        showDetailButton
+        placement='top'
+        onClick={() => setMesh5g6gOnlyDrawerVisible(true)}
+        icon={<Tooltip.Info iconStyle={{
+          position: 'absolute',
+          marginLeft: '2px',
+          bottom: '1px'
+        }}
+        isFilled />}
+      />
+      <ApCompatibilityDrawer
+        visible={mesh5g6gOnlyDrawerVisible}
+        type={ApCompatibilityType.VENUE}
+        venueId={venueId}
+        featureName={InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY}
+        onClose={() => setMesh5g6gOnlyDrawerVisible(false)}
+      />
+    </>
+    :
+    <Tooltip.Info iconStyle={{
+      position: 'absolute',
+      marginLeft: '2px',
+      bottom: '1px'
+    }}
+    isFilled
+    title={
+      mesh6GhzTitle
+    }
+    />
+}
+
+const Mesh5GhzInfoIcon = (props: MeshCompatibilityProps) => {
+  const { $t } = useIntl()
+  const { compatibilityEnabled, venueId } = props
+  const [mesh5g6gOnlyDrawerVisible, setMesh5g6gOnlyDrawerVisible] = useState(false)
+
+  const mesh5GhzTitle = $t({ defaultMessage: 'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 6GHz band.' })
+
+  return compatibilityEnabled ?
+    <>
+      <ApCompatibilityToolTip
+        title={mesh5GhzTitle}
+        showDetailButton
+        placement='top'
+        onClick={() => setMesh5g6gOnlyDrawerVisible(true)}
+        icon={<Tooltip.Info iconStyle={{
+          position: 'absolute',
+          marginLeft: '2px',
+          bottom: '1px'
+        }}
+        isFilled />}
+      />
+      <ApCompatibilityDrawer
+        visible={mesh5g6gOnlyDrawerVisible}
+        type={ApCompatibilityType.VENUE}
+        venueId={venueId}
+        featureName={InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY}
+        onClose={() => setMesh5g6gOnlyDrawerVisible(false)}
+      />
+    </>
+    :
+    <Tooltip.Info iconStyle={{
+      position: 'absolute',
+      marginLeft: '2px',
+      bottom: '1px'
+    }}
+    isFilled
+    title={
+      mesh5GhzTitle
+    }
+    />
 }
 
 const useVenueWifiSettings = (venueId: string | undefined): VenueSettings | undefined => {
@@ -140,6 +202,7 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
+  const isR370ToggleEnable = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const {
     editContextData,
     setEditContextData,
@@ -421,7 +484,7 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
       {$t({ defaultMessage: 'Mesh Network' })}
       {(hasMeshAPs && meshEnabled)?
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
-          <div>{$t({ defaultMessage: 'ON' })}</div>
+          <div>{$t({ defaultMessage: 'On' })}</div>
           <div>{
             $t({ defaultMessage: 'Since there are active mesh links in this <venueSingular></venueSingular>, in order prevent networking issues, you cannot turn mesh networking off' })}
           </div>
@@ -466,7 +529,11 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
         }
         />
         { !isSsidEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handleSsidEdit}>
+          <Button type='link'
+            disabled={!isAllowEdit || isReadOnly}
+            onClick={handleSsidEdit}
+            style={{ marginTop: '4px' }}
+          >
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -500,7 +567,10 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
           />}
         />
         { !isPassphraseEditMode ? <>
-          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handlePassphraseEdit}>
+          <Button type='link'
+            disabled={!isAllowEdit || isReadOnly}
+            onClick={handlePassphraseEdit}
+            style={{ marginTop: '4px' }}>
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -538,12 +608,19 @@ export function MeshNetwork (props: VenueWifiConfigItemProps) {
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
                 <Radio value='5-GHz' data-testid='radio5'>
-                  {$t({ defaultMessage: '5 GHz' })}<Mesh5GhzInfoIcon/>
+                  {$t({ defaultMessage: '5 GHz' })}
+                  <Mesh5GhzInfoIcon
+                    compatibilityEnabled={isR370ToggleEnable}
+                    venueId={params.venueId!}/>
                 </Radio>
                 {
                   isSupport6GRadio ? (
                     <Radio value='6-GHz' data-testid='radio6'>
-                      {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
+                      {$t({ defaultMessage: '6 GHz' })}
+                      <Mesh6GhzInfoIcon
+                        compatibilityEnabled={isR370ToggleEnable}
+                        venueId={params.venueId!}
+                      />
                     </Radio>
                   ) : (
                     <Tooltip

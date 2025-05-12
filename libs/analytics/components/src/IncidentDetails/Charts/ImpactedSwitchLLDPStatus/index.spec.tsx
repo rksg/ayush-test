@@ -1,6 +1,6 @@
-import { fakeIncidentDDoS, overlapsRollup }     from '@acx-ui/analytics/utils'
-import { get }                                  from '@acx-ui/config'
-import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
+import { fakeIncidentLLDPStatus, overlapsRollup } from '@acx-ui/analytics/utils'
+import { get }                                    from '@acx-ui/config'
+import { dataApi, dataApiURL, Provider, store }   from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render,
   within, screen, fireEvent } from '@acx-ui/test-utils'
 
@@ -69,7 +69,7 @@ describe('ImpactedSwitchLLDP',()=>{
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
-          <ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} />
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
         </Provider>, {
           route: {
             path: '/tenantId/t/analytics/incidents',
@@ -91,7 +91,7 @@ describe('ImpactedSwitchLLDP',()=>{
         }
       })
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
-      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} /></Provider>, {
+      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
@@ -110,7 +110,7 @@ describe('ImpactedSwitchLLDP',()=>{
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
-          <ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} />
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
         </Provider>, {
           route: {
             path: '/tenantId/t/analytics/incidents',
@@ -128,7 +128,7 @@ describe('ImpactedSwitchLLDP',()=>{
     it('should hide table when under druidRollup', async () => {
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
-      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} /></Provider>, {
+      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
