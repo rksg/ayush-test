@@ -9,8 +9,11 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
+
+import { getStreamingWordingKey } from './index.utils'
 
 import AICanvas from '.'
 
@@ -45,7 +48,6 @@ const currentCanvas = {
       }
     ]`
 }
-
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
@@ -150,6 +152,18 @@ jest.mock('@acx-ui/rc/services', () => {
               role: 'SYSTEM',
               text: 'Some older messages have been removed due to the 30-day retention policy',
               created: '2025-02-06T02:10:46.264+00:00'
+            },
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'AI',
+              text: 'Hello! I can help you!',
+              created: '2025-01-20T09:56:11.265+00:00'
             }
           ] })
       }))
@@ -185,6 +199,29 @@ jest.mock('@acx-ui/rc/services', () => {
         content: ''
       }
     ] }),
+    useStreamChatsAiMutation: () => [
+      jest.fn().mockResolvedValue({
+        data: {
+          sessionId: 'b2c7f415-4306-4ecf-a001-dd7288eca7f8',
+          title: 'New Chat',
+          updatedDate: '2025-01-20T09:56:05.006+00:00',
+          messages: [
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'STATUS',
+              text: '0',
+              created: '2025-01-20T09:56:11.265+00:00'
+            }
+          ],
+          totalCount: 2
+        } })
+    ],
     useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })
@@ -341,6 +378,7 @@ describe('AICanvas', () => {
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
     const searchBtn = await screen.findByTestId('search-button')
+    await waitFor(() => expect(searchBtn).not.toBeDisabled())
     fireEvent.click(searchBtn)
     expect(await screen.findByText('hello')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
@@ -362,12 +400,12 @@ describe('AICanvas', () => {
     expect(feedbackSection).not.toBeVisible()
 
     const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
-    expect(thumbsUpButtons).toHaveLength(2)
-    await userEvent.click(thumbsUpButtons[0])
+    expect(thumbsUpButtons).toHaveLength(3)
+    await userEvent.click(thumbsUpButtons[1])
     expect(mockedSendFeedback).toBeCalledTimes(0)
     const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
-    expect(thumbsDownButtons).toHaveLength(2)
-    await userEvent.click(thumbsDownButtons[0])
+    expect(thumbsDownButtons).toHaveLength(3)
+    await userEvent.click(thumbsDownButtons[1])
     expect(mockedSendFeedback).toHaveBeenCalledWith({
       params: expect.objectContaining({
         sessionId: expect.any(String),
@@ -387,5 +425,27 @@ describe('AICanvas', () => {
     const computedStyle = window.getComputedStyle(fixedElements[0])
     const widthInPixels = parseFloat(computedStyle.width)
     expect(widthInPixels).toBe(300)
+  })
+})
+
+describe('Test utils', () => {
+  it('Test getStreamingWordingKey', async () => {
+    expect(getStreamingWordingKey('0')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('1')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('2')).toBe('SELECTING_DATA_SOURCES')
+    expect(getStreamingWordingKey('3')).toBe('PROCESSING_DATA_INITIAL')
+    expect(getStreamingWordingKey('1.1')).toBe('PROCESSING_DATA_RETRY_1_1')
+    expect(getStreamingWordingKey('2.1')).toBe('PROCESSING_DATA_RETRY_2_1')
+    expect(getStreamingWordingKey('3.1')).toBe('PROCESSING_DATA_RETRY_3_1')
+    expect(getStreamingWordingKey('1.2')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.2')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('3.2')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('1.3')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.3')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('2.5')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('3.5')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('4.3')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('4')).toBe('FINALIZING_RESULT')
+    expect(getStreamingWordingKey('5')).toBe('FINALIZING_RESULT')
   })
 })
