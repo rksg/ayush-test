@@ -1,16 +1,18 @@
 import { forwardRef, ReactElement, useEffect, useImperativeHandle, useState } from 'react'
 
-import { Menu, MenuProps } from 'antd'
-import _                   from 'lodash'
-import { useIntl }         from 'react-intl'
+import { Form, Input, Menu, MenuProps } from 'antd'
+import _                                from 'lodash'
+import { useIntl }                      from 'react-intl'
 
-import { Button, Dropdown, Tooltip }                                                                      from '@acx-ui/components'
-import { ArrowExpand, LockOutlined, GlobeOutlined }                                                       from '@acx-ui/icons-new'
-import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation, useLazyGetCanvasByIdQuery } from '@acx-ui/rc/services'
-import { Canvas as CanvasType }                                                                           from '@acx-ui/rc/utils'
+import { Button, Dropdown, Tooltip }                              from '@acx-ui/components'
+import { ArrowExpand, LockOutlined, GlobeOutlined, Check, Close } from '@acx-ui/icons-new'
+import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation,
+  useLazyGetCanvasByIdQuery, usePatchCanvasMutation } from '@acx-ui/rc/services'
+import { Canvas as CanvasType, trailingNorLeadingSpaces, validateDuplicateName } from '@acx-ui/rc/utils'
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
+import { PreviewDashboardModal }                  from './PreviewDashboardModal'
 import * as UI                                    from './styledComponents'
 import utils                                      from './utils'
 import { compactLayout, compactLayoutHorizontal } from './utils/compact'
@@ -76,7 +78,7 @@ export const layoutConfig:LayoutConfig = {
   containerPadding: [0, 0] // deprecated
 }
 
-const DEFAULT_CANVAS = [
+export const DEFAULT_CANVAS = [
   {
     id: 'default_section',
     type: 'section',
@@ -113,23 +115,31 @@ interface CanvasProps {
   checkChanges?: (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => void
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
+  editCanvasId?: string
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({
-  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges }, ref) => {
+  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges, editCanvasId }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
-  const [canvasId, setCanvasId] = useState('')
+  const [canvasId, setCanvasId] = useState(editCanvasId || '')
   const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
+  const [previewData, setPreviewData] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
+  const [previewModalVisible, setPreviewModalVisible] = useState(false)
+  const [isEditName, setIsEditName] = useState(false)
+  const [visibilityType, setVisibilityType] = useState('')
+  const [nameFieldError, setNameFieldError] = useState('')
 
   const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
+  const [patchCanvas] = usePatchCanvasMutation()
   const { data: canvasList } = useGetCanvasQuery({})
+  const [form] = Form.useForm()
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -167,7 +177,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList) {
+    if(canvasList && !editCanvasId) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
@@ -216,6 +226,30 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     }
   }
 
+  const patchCurrentCanvas = async (payload: { [key:string]: string|boolean }) => {
+    await patchCanvas({
+      params: { canvasId },
+      payload
+    })
+  }
+
+  const handleVisibilityMenuClick: MenuProps['onClick'] = (e) => {
+    if(visibilityType !== e.key) {
+      setVisibilityType(e.key)
+      if(checkChanges) {
+        const payload:{ [key:string]: boolean } = {
+          visible: e.key == 'public'
+        }
+        checkChanges(!!canvasHasChanges, () => {
+          patchCurrentCanvas(payload)
+        }, ()=>{
+          onSave(()=>{patchCurrentCanvas(payload)})
+        })
+      }
+    }
+  }
+
+
   const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
@@ -224,6 +258,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const setupCanvas = (response: CanvasType) => {
     setCurrentCanvas(response)
+    setPreviewData(response)
+    setVisibilityType(response.visible ? 'public' : 'private')
+    if(isEditName){
+      setIsEditName(false)
+    }
     if(response.content) {
       let data = JSON.parse(response.content) as Section[]
       data = data.map(section => ({
@@ -322,100 +361,188 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
     }
   }
 
-  const visibilityMenu = (
-    <Menu
-      onClick={()=>{}}
-      selectable
-      defaultSelectedKeys={['private']}
-      items={[
-        {
-          key: 'private',
-          icon: visibilityMap['private'].icon,
-          label: visibilityMap['private'].label
-        },
-        {
-          key: 'public',
-          icon: visibilityMap['public'].icon,
-          label: visibilityMap['public'].label
-        }
-      ]
-      }/>
-  )
+  const onEditCanvasName = () => {
+    form.setFieldValue('name', currentCanvas.name)
+    setNameFieldError('')
+    setIsEditName(true)
+  }
+
+  const onCancelEditCanvasName = () => {
+    setIsEditName(false)
+  }
+
+  const onPreview = () => {
+    const tmpSection = _.cloneDeep(sections)
+    tmpSection[0].groups = _.cloneDeep(groups)
+    setPreviewData(
+      {
+        ...currentCanvas,
+        content: JSON.stringify(tmpSection)
+      }
+    )
+    setPreviewModalVisible(true)
+  }
+
+  const onSubmit = (value: { name:string }) => {
+    if(checkChanges) {
+      const payload:{ [key:string]: string } = {
+        name: value.name
+      }
+      checkChanges(!!canvasHasChanges, () => {
+        patchCurrentCanvas(payload)
+      }, ()=>{
+        onSave(()=>{patchCurrentCanvas(payload)})
+      })
+    }
+  }
+
+  const editCanvasName = () => canvasList &&
+  <div className='edit-canvas-name'>
+    <div className='edit-input'>
+      <Form.Item
+        name='name'
+        data-testid='canvas-name'
+        rules={[
+          { required: true },
+          { max: 64 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) },
+          { validator: (_, value) => validateDuplicateName({
+            name: value,
+            id: currentCanvas.id
+          }, canvasList.map(i => ({ id: i.id, name: i.name })))
+          }
+        ]}
+        children={<Input />}
+      />
+    </div>
+    <div className='action button-group'>
+      <div className='button confirm'
+        data-testid='confirm'
+        onClick={() => form.submit()}>
+        <Check size='sm'/>
+      </div>
+      <div className='button cancel'
+        data-testid='cancel'
+        onClick={() => {
+          onCancelEditCanvasName()
+        }}>
+        <Close size='sm'/>
+      </div>
+    </div>
+    <div className='error'>
+      {nameFieldError}
+    </div>
+  </div>
+
+  const onFieldsChange = () => {
+    setNameFieldError(form.getFieldError('name')[0])
+  }
 
   return (
     <UI.Canvas>
       <div className='header'>
-
-        {
-          currentCanvas.name && canvasList ? <div className='title'>
-            <span className='name'>
-              {currentCanvas.name}
-            </span>
-            <Dropdown overlay={<Menu
-              onClick={handleMenuClick}
-              defaultSelectedKeys={[canvasId]}
-              items={[
-                ...canvasList.map(c => ({
-                  icon: c.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
-                  key: c.id,
-                  label: c.name,
-                  itemIcon: c.dashboardIds && <div
-                    style={{ marginLeft: '10px', height: '20px' }}><DashboardIcon /></div>
-                })),
-                {
-                  type: 'divider'
-                },
-                {
-                  key: 'New_Canvas',
-                  label: $t({ defaultMessage: 'New Canvas' }),
-                  disabled: canvasList.length >= 10
-                },
-                {
-                  key: 'Manage_Canvases',
-                  label: $t({ defaultMessage: 'Manage My Canvases' })
-                }
-              ]}/>
-            }
-            placement='bottom'>{() =>
-                <ArrowExpand size='sm' data-testid='canvas-list' />
+        <Form form={form} onFinish={onSubmit} onFieldsChange={onFieldsChange}>
+          {
+            currentCanvas.name && canvasList ? <>
+              {
+                isEditName ? editCanvasName() :
+                  <div className='title'>
+                    <div className='name' onClick={onEditCanvasName}>
+                      {currentCanvas.name}
+                    </div>
+                    <Dropdown overlay={<Menu
+                      onClick={handleMenuClick}
+                      defaultSelectedKeys={[canvasId]}
+                      items={[
+                        ...canvasList.map(c => ({
+                          icon: c.visible ?
+                            <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />,
+                          key: c.id,
+                          label: c.name,
+                          itemIcon: c.dashboardIds && <div
+                            style={{ marginLeft: '10px', height: '20px' }}><DashboardIcon /></div>
+                        })),
+                        {
+                          type: 'divider'
+                        },
+                        {
+                          key: 'New_Canvas',
+                          label: $t({ defaultMessage: 'New Canvas' }),
+                          disabled: canvasList.length >= 10
+                        },
+                        {
+                          key: 'Manage_Canvases',
+                          label: $t({ defaultMessage: 'Manage My Canvases' })
+                        }
+                      ]}/>
+                    }
+                    placement='bottom'>{() =>
+                        <ArrowExpand size='sm' data-testid='canvas-list' />
+                      }
+                    </Dropdown>
+                    {currentCanvas.dashboardIds && <DashboardIcon/> }
+                  </div>
               }
-            </Dropdown>
-            {currentCanvas.dashboardIds && <DashboardIcon/> }
-          </div> : <div/>
-        }
+            </> : <div/>
+          }
+        </Form>
         <div className='actions'>
-          <Dropdown overlay={visibilityMenu}>{(selectedKeys) =>
-            <div className='visibility-type'>
-              {selectedKeys && <div className='label'>
-                {visibilityMap[selectedKeys].icon}
-                {visibilityMap[selectedKeys].label}
-              </div>}
-              <ArrowExpand size='sm' />
-            </div>
-          }</Dropdown>
-          <Tooltip.Question
-            iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
-            overlayStyle={{ maxWidth: '270px' }}
-            title={<UI.Visibility>
-              <div className='type'>
-                <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
-                <div>
-                  {$t({ defaultMessage: `Hide this canvas from the public. 
-                     The canvas will be visible to the owner only.` })}
-                </div>
-              </div>
-              <div className='type'>
-                <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
-                <div>
-                  {$t({
-                    defaultMessage: 'Publish this canvas for all administrators in this tenant.'
-                  })}
-                </div>
-              </div>
-            </UI.Visibility>}
-            placement='bottom'
-          />
-          <Button className='black' onClick={()=>{}}>
+          {
+            visibilityType && <>
+              <Dropdown
+                placement='bottomRight'
+                overlay={
+                  <Menu
+                    onClick={handleVisibilityMenuClick}
+                    selectable
+                    selectedKeys={[visibilityType]}
+                    items={[
+                      {
+                        key: 'private',
+                        icon: visibilityMap['private'].icon,
+                        label: visibilityMap['private'].label
+                      },
+                      {
+                        key: 'public',
+                        icon: visibilityMap['public'].icon,
+                        label: visibilityMap['public'].label
+                      }
+                    ]}/>
+                }>{() =>
+                  <div className='visibility-type' data-testid='visibility-type'>
+                    <div className='label'>
+                      {visibilityMap[visibilityType].icon}
+                      {visibilityMap[visibilityType].label}
+                    </div>
+                    <ArrowExpand size='sm' />
+                  </div>
+                }
+              </Dropdown>
+              <Tooltip.Question
+                iconStyle={{ width: '16px', margin: '0px 10px 0px 5px' }}
+                overlayStyle={{ maxWidth: '270px' }}
+                placement='bottom'
+                title={<UI.Visibility>
+                  <div className='type'>
+                    <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
+                    <div>
+                      {$t({ defaultMessage: `Hide this canvas from the public. 
+                          The canvas will be visible to the owner only.` })}
+                    </div>
+                  </div>
+                  <div className='type'>
+                    <span className='title'>{$t({ defaultMessage: 'Public mode' })}</span>
+                    <div>
+                      {$t({
+                        defaultMessage: 'Publish this canvas for all administrators in this tenant.'
+                      })}
+                    </div>
+                  </div>
+                </UI.Visibility>}
+              />
+            </>
+          }
+          <Button className='black' onClick={onPreview}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
@@ -443,6 +570,13 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
           visible={manageCanvasVisible}
           onClose={()=>{setManageCanvasVisible(false)}}
           canvasList={canvasList as CanvasType[]}
+        />
+      }
+      {
+        previewModalVisible && <PreviewDashboardModal
+          data={[previewData]}
+          visible={previewModalVisible}
+          setVisible={setPreviewModalVisible}
         />
       }
     </UI.Canvas>

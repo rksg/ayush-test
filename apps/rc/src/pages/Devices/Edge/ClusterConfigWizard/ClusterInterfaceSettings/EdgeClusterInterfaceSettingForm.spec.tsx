@@ -154,7 +154,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     await userEvent.clear(ipField)
     await userEvent.type(ipField, '192.168.13.136')
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('The ip setting is not in the same subnet as other nodes.')).toBeVisible()
+    expect(await screen.findByText('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')).toBeVisible()
   })
 
   it('Should block by the same ip', async () => {

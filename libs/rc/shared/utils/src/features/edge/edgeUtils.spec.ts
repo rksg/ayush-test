@@ -2,14 +2,15 @@
 import _ from 'lodash'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeSubInterface, EdgePortWithStatus }                                    from '../../types'
-import { EdgePort, EdgeLag, EdgeStatus }                                           from '../../types'
+import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
+  convertEdgePortsConfigToApiPayload,
+  convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
   getEdgeServiceHealth,
@@ -18,15 +19,14 @@ import {
   isAllPortsLagMember,
   isInterfaceInVRRPSetting,
   lanPortSubnetValidator,
+  MAX_DUAL_WAN_PORT,
   optionSorter,
   validateClusterInterface,
+  validateConfiguredSubnetIsConsistent,
+  validateEdgeClusterLevelGateway,
   validateEdgeGateway,
   validateSubnetIsConsistent,
-  validateUniqueIp,
-  convertEdgePortsConfigToApiPayload,
-  convertEdgeSubInterfaceToApiPayload,
-  MAX_DUAL_WAN_PORT,
-  validateEdgeClusterLevelGateway
+  validateUniqueIp
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -203,11 +203,42 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')
+  })
+
+  it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
+    const allIps = [
+      {
+        ip: '',
+        subnet: ''
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateConfiguredSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).not.toBeCalled()
   })
 
   it('Test validateUniqueIp success', async () => {
     const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp success for excluded empty ip', async () => {
+    const allIps = ['1.1.1.1', '', '']
     const mockErrorFn = jest.fn()
     try {
       await validateUniqueIp(allIps, 'true')
@@ -1049,6 +1080,27 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
     const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+  })
+
+  it('should set ip mode to DHCP if port type is UNCONFIGURED', () => {
+    const edgePort = {
+      id: '',
+      name: '',
+      statusIp: '192.168.10.11',
+      mac: '',
+      ip: '192.168.10.11',
+      subnet: '255.255.255.0',
+      gateway: '192.168.1.1',
+      natEnabled: false,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      portType: EdgePortTypeEnum.UNCONFIGURED
+    } as EdgePortWithStatus
+    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    expect(result.ipMode).toBe(EdgeIpModeEnum.DHCP)
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
     expect(result.gateway).toBe('')
   })
 

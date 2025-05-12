@@ -126,7 +126,8 @@ export enum ServiceType {
   EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
   EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
   EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management',
-  EDGE_OLT = 'Nokia GPON'
+  EDGE_OLT = 'Nokia GPON',
+  PORTAL_PROFILE = 'PORTAL_PROFILE'
 }
 
 export enum ServiceOperation {
@@ -1231,6 +1232,7 @@ export enum PowerSavingStatusEnum {
 
 export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
+export const DHCP_RESERVED_IPS = 10
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
 export const CLIENT_ISOLATION_LIMIT_NUMBER = 64

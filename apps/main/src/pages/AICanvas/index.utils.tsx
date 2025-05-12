@@ -1,7 +1,7 @@
 import { Canvas } from '@acx-ui/rc/utils'
 
-import { Section }       from './Canvas'
-import { compactLayout } from './utils/compact'
+import { Group, Section, DEFAULT_CANVAS } from './Canvas'
+import { compactLayout }                  from './utils/compact'
 
 const MENU_COLLAPSED_WIDTH = 60
 const MENU_EXPANDED_WIDTH = 216
@@ -9,6 +9,8 @@ const SIDE_PADDING = 72
 const WIDGET_GRID_GAP = 60
 const COLUMN_COUNT = 4
 export const DEFAULT_DASHBOARD_ID = 'default-dashboard-id'
+export const MAXIMUM_OWNED_CANVAS = 10
+export const MAXIMUM_DASHBOARD = 10
 
 export const getMenuWidth = (menuCollapsed?: boolean) => {
   return menuCollapsed ? MENU_COLLAPSED_WIDTH : MENU_EXPANDED_WIDTH
@@ -40,7 +42,14 @@ export const getCanvasData = (canvasList: Canvas[]) => {
       ...section,
       groups: section.groups.map(group => ({
         ...group,
-        cards: compactLayout(group.cards)
+        cards: compactLayout(group.cards.map(card => {
+          const hasUpdated = canvasData.author
+            && canvasData.diffWidgetIds?.includes(card.widgetId ?? '')
+          return {
+            ...card,
+            updated: hasUpdated
+          }
+        }))
       }))
     }))
     const groups = data.flatMap(section => section.groups)
@@ -49,7 +58,11 @@ export const getCanvasData = (canvasList: Canvas[]) => {
     }
   } else {
     if (canvasList?.length && canvasData.id) {
-      return { canvasId: canvasData.id }
+      return {
+        canvasId: canvasData.id,
+        sections: DEFAULT_CANVAS,
+        groups: DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], [])
+      }
     }
   }
   return {}

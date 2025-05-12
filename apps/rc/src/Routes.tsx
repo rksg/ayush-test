@@ -89,6 +89,8 @@ import EdgeDetails                                  from './pages/Devices/Edge/E
 import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
+import { IotController }                            from './pages/Devices/IotController'
+import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -129,6 +131,7 @@ import EditEdgeHqosBandwidth                        from './pages/Policies/HqosB
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProvider                             from './pages/Policies/IdentityProvider'
+import IdentityProviderCreate                       from './pages/Policies/IdentityProvider/IdentityProviderCreate'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
@@ -200,6 +203,8 @@ import PersonalIdentityNetworkTable          from './pages/Services/PersonalIden
 import PersonalIdentityNetworkTableEnhanced  from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                   from './pages/Services/Portal/PortalDetail'
 import PortalTable                           from './pages/Services/Portal/PortalTable'
+import PortalProfile                         from './pages/Services/PortalProfile'
+import CreatePortalProfile                   from './pages/Services/PortalProfile/create'
 import ResidentPortalDetail                  from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                     from './pages/Services/SelectServiceForm'
@@ -377,6 +382,14 @@ function DeviceRoutes () {
             <StackForm />
           </AuthRoute>
         } />
+
+      <Route path='devices/iotController' element={<IotController />} />
+      <Route
+        path='devices/iotController/add'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/:action'
+        element={<IotControllerForm />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
@@ -664,6 +677,7 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
 
   return rootRoutes(
@@ -781,6 +795,26 @@ function ServiceRoutes () {
 
       {(isEdgePinReady) && pinRoutes}
 
+      {isPortalProfileEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
+          element={<CreatePortalProfile />}
+        />
+        <Route
+          path='services/portalProfile/:activeTab'
+          element={<PortalProfile />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/pin' />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/guest' />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
@@ -1710,10 +1744,15 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.SAML_IDP ,
-            oper: PolicyOperation.CREATE
-          })}
+          path={getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <IdentityProviderCreate/>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path={'policies/samlIdp/add'}
           element={
             <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.CREATE}>
               <AddSamlIdp/>

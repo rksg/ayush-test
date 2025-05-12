@@ -128,6 +128,10 @@ const DEFAULT_CANVAS = [
                 height: 6
               },
               {
+                width: 3,
+                height: 7
+              },
+              {
                 width: 4,
                 height: 8
               }
@@ -170,8 +174,12 @@ const DEFAULT_CANVAS = [
                 height: 8
               },
               {
-                width: 4,
+                width: 3,
                 height: 12
+              },
+              {
+                width: 4,
+                height: 16
               }
             ],
             gridx: 0,
@@ -316,6 +324,10 @@ const DEFAULT_CANVAS = [
               {
                 width: 2,
                 height: 6
+              },
+              {
+                width: 3,
+                height: 7
               },
               {
                 width: 4,
@@ -541,11 +553,9 @@ describe('Layout', () => {
       </Provider>
     )
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
-    const increaseCard = await screen.findByTestId('increaseCard')
-    await userEvent.click(increaseCard)
-    expect(mockedSetGroups).toBeCalled()
-    const decreaseCard = await screen.findByTestId('decreaseCard')
-    await userEvent.click(decreaseCard)
+    const slider = await screen.findByRole('slider')
+    slider.focus()
+    await userEvent.click(await screen.findByText('2x'))
     expect(mockedSetGroups).toBeCalled()
     const deleteCard = await screen.findByTestId('deleteCard')
     await userEvent.click(deleteCard)

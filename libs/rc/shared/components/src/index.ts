@@ -14,6 +14,7 @@ export { groupedFields } from './ApTable/config'
 export { newDefaultApPayload } from'./ApTable/NewApTable'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
 export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
+export { ApExtAntennaForm } from './ApExtAntennaForm'
 export { ApGroupTable  } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ApGroupEdit } from './ApGroupEdit'
@@ -205,6 +206,7 @@ export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsPr
 export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
+export { useIotControllerActions } from './useIotControllerActions'
 export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
 export {
   useRegisterMessageTemplates,

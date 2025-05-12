@@ -39,7 +39,8 @@ function ApEditPageHeader () {
       filters: { venueId: [venueData?.id] },
       pageSize: 10000
     },
-    skip: !venueData?.id && !isApGroupMoreParameterPhase1Enabled
+    skip: !venueData?.id && !isApGroupMoreParameterPhase1Enabled,
+    enableRbac: true
   })
 
   const {

@@ -28,6 +28,9 @@ export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
     }, {
       featureName: 'PIN',
       requiredFw: '2.2.0.1'
+    }, {
+      featureName: 'L2oGRE',
+      requiredFw: '2.4.0.1'
     }
   ]
 }

@@ -24,3 +24,4 @@ export * from './DirectoryServer'
 export * from './Ipsec'
 
 export { MacRegistrationsTable } from './MacRegistrationsTable'
+export * from './WorkflowCanvas/WorkflowPanel/PublishedTooltipContent'

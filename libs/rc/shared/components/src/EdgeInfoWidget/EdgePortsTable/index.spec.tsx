@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { EdgeLagFixtures, EdgeLagStatus, EdgePortConfigFixtures, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
 import { Provider }                                                                    from '@acx-ui/store'
-import { render, screen }                                                              from '@acx-ui/test-utils'
+import { render, screen, within }                                                      from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -102,17 +102,36 @@ describe('Edge Ports Table', () => {
         />
       </Provider>, { route: { params } })
 
-      // Check if dual WAN columns are rendered
-      expect(screen.getByText('Link Health Monitoring')).toBeInTheDocument()
+      // Check if default dual WAN columns are rendered
+      // optional columns should not visible
+      expect(screen.queryByText('Link Health Monitoring')).not.toBeInTheDocument()
+      expect(screen.queryByText('WAN Role')).not.toBeInTheDocument()
       expect(screen.getByText('Link Health Status')).toBeInTheDocument()
-      expect(screen.getByText('WAN Role')).toBeInTheDocument()
       expect(screen.getByText('WAN Status')).toBeInTheDocument()
 
       // Check if data is rendered correctly
-      expect(screen.getByText('On')).toBeInTheDocument()
+      // optional columns should not visible
+      expect(screen.queryByText('On')).not.toBeInTheDocument()
+      expect(screen.queryByText('Primary')).not.toBeInTheDocument()
       expect(screen.getAllByText('Up')).toHaveLength(2)
-      expect(screen.getByText('Primary')).toBeInTheDocument()
       expect(screen.getByText('Active')).toBeInTheDocument()
+    })
+
+    it('should not render deprecated columns when isEdgeDualWanEnabled is true', () => {
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      const row = screen.getByRole('row', { name: /Port2/ })
+      expect(screen.queryByRole('columnheader', { name: 'Description' })).toBeNull()
+      expect(within(row).queryByText('Description 1')).not.toBeInTheDocument()
+      expect(screen.queryByRole('columnheader', { name: 'IP Type' })).toBeNull()
+      expect(within(row).queryByText('Static')).not.toBeInTheDocument()
     })
 
     it('should not render dual WAN columns when isEdgeDualWanEnabled is false', () => {
@@ -144,12 +163,37 @@ describe('Edge Ports Table', () => {
         />
       </Provider>, { route: { params } })
 
+      await showLinkHealthMonitoringColumn()
+
       // Click the Link Health Monitoring button
       const button = screen.getByRole('button', { name: 'On' })
       await userEvent.click(button)
 
       // Wait for the drawer to open
       expect(await screen.findByText('Port1: Link Health Monitoring')).toBeInTheDocument()
+    })
+
+    it('should display text - off when link health check is off', async () => {
+      const mockData = cloneDeep(clusterPortsWithSerialNumber)
+      mockData[0].multiWan = {
+        linkHealthMonitorEnabled: false
+      }
+
+      render(<Provider>
+        <EdgePortsTable
+          portData={mockData}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={true}
+        />
+      </Provider>, { route: { params } })
+
+      await showLinkHealthMonitoringColumn()
+
+      const button = screen.queryByRole('button', { name: 'Off' })
+      expect(button).toBeNull()
+      const port1Row = screen.getByRole('row', { name: /Port1/ })
+      expect(within(port1Row).queryByText('Off')).toBeVisible()
     })
 
     it('should display correct WAN Link Status data', () => {
@@ -186,3 +230,16 @@ describe('Edge Ports Table', () => {
     })
   })
 })
+
+const showLinkHealthMonitoringColumn = async () => {
+  // click table column show/hide setting icon
+  const tableColSettingIcon = screen.getByTestId('SettingsOutlined')
+  await userEvent.click(tableColSettingIcon)
+
+  await screen.findByText('Select Columns')
+  // select to display Link Health Monitoring column
+  const targetColCheckbox = await screen.findByText('Link Health Monitoring')
+  await userEvent.click(targetColCheckbox)
+
+  await screen.findByRole('columnheader', { name: 'Link Health Monitoring' })
+}

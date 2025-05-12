@@ -1,18 +1,24 @@
-import { EdgeWanLinkHealthCheckPolicy } from '@acx-ui/rc/utils'
-import { render, screen, fireEvent }    from '@acx-ui/test-utils'
+import { EdgeMultiWanConfigStats }   from '@acx-ui/rc/utils'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { EdgeWanLinkHealthDetailsDrawer } from './index'
 
 describe('EdgeWanLinkHealthDetailsDrawer', () => {
   const mockSetVisible = jest.fn()
 
-  const mockHealthCheckPolicy: EdgeWanLinkHealthCheckPolicy = {
-    protocol: 'ICMP',
-    targetIpAddresses: ['192.168.1.1', '192.168.1.2'],
-    linkDownCriteria: 'Packet Loss',
-    intervalSeconds: 5,
-    maxCountToDown: 3,
-    maxCountToUp: 2
+  const mockHealthCheckPolicy: EdgeMultiWanConfigStats = {
+    serialNumber: 'mock-edge-node-id',
+    edgeClusterId: 'mock-cluster-id',
+    multiWanPolicyId: 'mock-policy-id',
+    portName: 'port1',
+    priority: 2,
+    linkHealthMonitorEnabled: true,
+    monitorProtocol: 'PING',
+    monitorTargets: ['192.168.1.1', '192.168.1.2'],
+    monitorLinkDownCriteria: 'ALL_TARGETS_DOWN',
+    monitorIntervalSec: 5,
+    monitorMaxCountToDown: 3,
+    monitorMaxCountToUp: 2
   }
 
   it('renders with all health check policy details', () => {
@@ -21,18 +27,18 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
         visible={true}
         setVisible={mockSetVisible}
         portName='port1'
-        healthCheckPolicy={mockHealthCheckPolicy}
+        data={mockHealthCheckPolicy}
       />
     )
 
     expect(screen.getByText('Port1: Link Health Monitoring')).toBeInTheDocument()
     expect(screen.getByText('Protocol')).toBeInTheDocument()
-    expect(screen.getByText('ICMP')).toBeInTheDocument()
+    expect(screen.getByText('Ping')).toBeInTheDocument()
     expect(screen.getByText('Target IP Addresses')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.2')).toBeInTheDocument()
     expect(screen.getByText('Test Failure Condition')).toBeInTheDocument()
-    expect(screen.getByText('Packet Loss')).toBeInTheDocument()
+    expect(screen.getByText('All targets were unreachable')).toBeInTheDocument()
     expect(screen.getByText('Check Interval')).toBeInTheDocument()
     expect(screen.getByText('5 Seconds')).toBeInTheDocument()
     expect(screen.getByText('Mark Link as DOWN after...')).toBeInTheDocument()
@@ -47,17 +53,17 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
         visible={true}
         setVisible={mockSetVisible}
         portName='Port2'
-        healthCheckPolicy={undefined}
+        data={undefined}
       />
     )
 
     expect(screen.getByText('Port2: Link Health Monitoring')).toBeInTheDocument()
     expect(screen.getByText('Protocol')).toBeInTheDocument()
-    expect(screen.queryByText('ICMP')).not.toBeInTheDocument()
+    expect(screen.queryByText('Ping')).not.toBeInTheDocument()
     expect(screen.getByText('Target IP Addresses')).toBeInTheDocument()
     expect(screen.queryByText('192.168.1.1')).not.toBeInTheDocument()
     expect(screen.getByText('Test Failure Condition')).toBeInTheDocument()
-    expect(screen.queryByText('Packet Loss')).not.toBeInTheDocument()
+    expect(screen.queryByText('All targets were unreachable')).not.toBeInTheDocument()
     expect(screen.getByText('Check Interval')).toBeInTheDocument()
     expect(screen.queryByText('5 Seconds')).not.toBeInTheDocument()
     expect(screen.getByText('Mark Link as DOWN after...')).toBeInTheDocument()
@@ -72,7 +78,7 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
         visible={true}
         setVisible={mockSetVisible}
         portName='Port3'
-        healthCheckPolicy={mockHealthCheckPolicy}
+        data={mockHealthCheckPolicy}
       />
     )
 
@@ -88,7 +94,7 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
         visible={false}
         setVisible={mockSetVisible}
         portName='Port4'
-        healthCheckPolicy={mockHealthCheckPolicy}
+        data={mockHealthCheckPolicy}
       />
     )
 

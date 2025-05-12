@@ -5,7 +5,7 @@ import { useIntl }                                                          from
 import { useParams }                                                        from 'react-router-dom'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput, Tooltip, Select } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
 import { useGetCertificateAuthoritiesQuery,
   useGetCertificateAuthorityOnRadiusQuery,
   useGetCertificateListQuery,
@@ -58,9 +58,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const form = Form.useFormInstance()
   const params = useParams()
   const { useWatch } = Form
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled]
     = [useWatch('enableSecondaryServer'),
       useWatch('type'),
