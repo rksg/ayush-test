@@ -2,7 +2,7 @@ import userEvent        from '@testing-library/user-event'
 import { Form }         from 'antd'
 import _, { cloneDeep } from 'lodash'
 
-import { Features }        from '@acx-ui/feature-toggle'
+import { Features }   from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
@@ -10,7 +10,9 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting,
-  getEdgePortDisplayName
+  getEdgePortDisplayName,
+  EdgeGeneralFixtures,
+  EdgeClusterStatus
 } from '@acx-ui/rc/utils'
 import {
   render,
@@ -66,10 +68,12 @@ const formEdgePortConfig = transformApiDataToFormListData(mockEdgePortConfig.por
 // eslint-disable-next-line max-len
 const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData(mockEdgePortConfigWithStatusIpWithoutCorePort.ports)
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 const mockedOnTabChange = jest.fn()
 
 const mockedProps = {
-  // clusterInfo: EdgeClusterStatus
+  clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   statusData: mockPortInfo as EdgePortInfo[],
   isEdgeSdLanRun: false,
   activeTab: '',

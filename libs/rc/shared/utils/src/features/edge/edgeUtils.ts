@@ -164,11 +164,6 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
 
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
-    // LAN port is not allowed to configure NAT enable
-    if (payload.natEnabled) {
-      payload.natEnabled = false
-    }
-
     // normal(non-corePort) LAN port
     if (payload.corePortEnabled === false) {
 
@@ -195,8 +190,13 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
     if (payload.subnet) payload.subnet = ''
   }
 
+  // disable NAT if port type is not WAN
+  if (payload.portType !== EdgePortTypeEnum.WAN) {
+    payload.natEnabled = false
+  }
+
   // clear NAT pools if NAT is disabled
-  if (payload.natEnabled === false) {
+  if (payload.natEnabled === false || payload.portType !== EdgePortTypeEnum.WAN) {
     payload.natPools = []
   }
 

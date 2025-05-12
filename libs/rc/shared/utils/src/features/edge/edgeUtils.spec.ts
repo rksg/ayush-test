@@ -1114,6 +1114,27 @@ describe('convertEdgePortsConfigToApiPayload', () => {
     expect(result.natEnabled).toBe(true)
   })
 
+  it('should clear NAT pool when NAT is not enabled', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+    } as EdgePortWithStatus
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.natPools).toEqual([])
+  })
+
+  it('should clear NAT settings when port type is not WAN', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: true,
+      natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+    } as EdgePortWithStatus
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.natEnabled).toEqual(false)
+    expect(result.natPools).toEqual([])
+  })
+
   it('should not set corePortEnabled for non-LAN port type', () => {
     const formData = {
       portType: EdgePortTypeEnum.WAN,
@@ -1126,7 +1147,10 @@ describe('convertEdgePortsConfigToApiPayload', () => {
   it('should return empty formData', () => {
     const formData = {} as EdgePortWithStatus
     const result = convertEdgePortsConfigToApiPayload(formData)
-    expect(result).toEqual({})
+    expect(result).toStrictEqual({
+      natEnabled: false,
+      natPools: []
+    })
   })
 })
 
