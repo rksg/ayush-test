@@ -82,11 +82,11 @@ const { useIntentAIEcoKpiQuery, useApPowerSaveDistributionQuery } = intentAIApi.
         const { data, compareData } = kpi
         return {
           data: {
-            timestamp: data.timestamp,
+            timestamp: data?.timestamp,
             data: parseKpiData(data?.result)
           },
           compareData: {
-            timestamp: compareData.timestamp,
+            timestamp: compareData?.timestamp,
             data: parseKpiData(compareData?.result)
           }
         }
