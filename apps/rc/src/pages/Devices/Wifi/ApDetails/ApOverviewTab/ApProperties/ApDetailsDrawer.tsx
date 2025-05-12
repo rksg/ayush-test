@@ -485,13 +485,16 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             )}
             {
               isDisplayMoreApPoePropertiesEnabled && (
-                <><Descriptions.Item
-                  label={$t({ defaultMessage: 'PoE Port Speed' })}
-                  children={getPoePortSpeed()} /><Descriptions.Item
-                  label={$t({ defaultMessage: 'PoE Class' })}
-                  children={getPoeClassDesc(poeClass)} /><Descriptions.Item
-                  label={$t({ defaultMessage: 'Power Consumption' })}
-                  children={getAllocPowerVal(powerConsumption)} />
+                <>
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'PoE Port Speed' })}
+                    children={getPoePortSpeed()} />
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'PoE Class' })}
+                    children={getPoeClassDesc(poeClass)} />
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'Power Consumption' })}
+                    children={getAllocPowerVal(powerConsumption)} />
                 </>
               )}
           </Descriptions>
