@@ -26,16 +26,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonResult,
-  LocationExtended,
+  ServiceOperation,
   ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
-  getServiceListRoutePath,
+  getServiceRoutePath,
   getWebAuthLabelValidator,
   redirectPreviousPage,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -46,8 +47,13 @@ export default function NetworkSegAuthForm (
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const { pathname: previousPath } =
+    useServicePreviousPath(ServiceType.WEBAUTH_SWITCH, ServiceOperation.LIST)
+  const linkToTableView = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WEBAUTH_SWITCH,
+    oper: ServiceOperation.LIST
+  }))
+
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
@@ -58,12 +64,10 @@ export default function NetworkSegAuthForm (
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
 
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-
   const finishHandler = (response?: WebAuthTemplate)=>{
     formRef.current?.resetFields()
     if (modalMode) modalCallBack(response?.id)
-    else redirectPreviousPage(navigate, previousPath, linkToServices)
+    else redirectPreviousPage(navigate, previousPath, linkToTableView)
   }
 
   useEffect(() => {
@@ -122,8 +126,8 @@ export default function NetworkSegAuthForm (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
-          $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
+          $t({ defaultMessage: 'Edit PIN Portal for Switch' }) :
+          $t({ defaultMessage: 'Add PIN Portal for Switch' })}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<WebAuthTemplate>

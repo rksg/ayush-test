@@ -31,7 +31,7 @@ const getNetworkSegAuthPayload = {
   sortOrder: 'ASC'
 }
 
-export default function NetworkSegAuthTable () {
+export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -82,18 +82,6 @@ export default function NetworkSegAuthTable () {
       render: (_, { venueCount }) => {
         return venueCount || 0
       }
-    }, {
-      title: $t({ defaultMessage: 'Update Available' }),
-      key: 'updateAvailable',
-      dataIndex: 'updateAvailable'
-    }, {
-      title: $t({ defaultMessage: 'Service Version' }),
-      key: 'version',
-      dataIndex: 'version'
-    // }, {  // TODO: Waiting for TAG feature support
-    //   title: $t({ defaultMessage: 'Tags' }),
-    //   key: 'tag',
-    //   dataIndex: 'tag'
     }
   ]
 
@@ -123,7 +111,7 @@ export default function NetworkSegAuthTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
+            entityName: $t({ defaultMessage: 'PIN Portal for Switch' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -135,32 +123,14 @@ export default function NetworkSegAuthTable () {
           }
         })
       }
-    }, {
-      scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
-      rbacOpsIds: getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Update Now' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t({ defaultMessage: 'Service Update' }),
-          content: $t({ defaultMessage:
-            'Are you sure you want to update these services to the latest version immediately?' }),
-          okText: $t({ defaultMessage: 'Update' }),
-          onOk: () => {
-            // TODO
-            clearSelection()
-          }
-        })
-      }
     }
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (<>
-    <PageHeader
-      title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
+    { props.hideHeader !== true && <PageHeader
+      title={$t({ defaultMessage: 'PIN Portal for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
       breadcrumb={useServicesBreadcrumb()}
       extra={filterByAccessForServicePolicyMutation([
@@ -172,9 +142,9 @@ export default function NetworkSegAuthTable () {
           rbacOpsIds={
             getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
+          <Button type='primary'>{$t({ defaultMessage: 'Add PIN Portal for Switch' })}</Button>
         </TenantLink>
-      ])} />
+      ])} />}
     <Loader states={[tableQuery]}>
       <Table
         columns={columns}
