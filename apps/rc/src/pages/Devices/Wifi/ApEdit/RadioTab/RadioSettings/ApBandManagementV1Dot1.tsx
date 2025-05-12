@@ -1,33 +1,28 @@
 /* eslint-disable max-len */
 import { useCallback, useContext, useEffect, useState } from 'react'
 
-import { Col, Row, Select }                          from 'antd'
-import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+import { Col, Row, Select, Space, Radio }                              from 'antd'
+import { MessageDescriptor, defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import {
-  Button,
   cssStr
 } from '@acx-ui/components'
 import {
   SelectItemOption
 } from '@acx-ui/rc/components'
 import {
-  ApBandModeSettings,
-  BandModeEnum,
-  VenueExtended
+  ApBandModeSettingsV1Dot1,
+  BandModeEnum
 } from '@acx-ui/rc/utils'
 
 import { ApDataContext } from '../..'
 
-import { VenueNameDisplay } from './RadioSettings'
-
 export interface ApBandManagementPorps {
-  venue: VenueExtended | undefined
   venueBandMode: BandModeEnum
-  isSupportDual5GAp: boolean
-  isSupportTriBandRadioAp: boolean
-  currentApBandModeData: ApBandModeSettings
-  setCurrentApBandModeData: (data: ApBandModeSettings) => void,
+  apGroupBandMode: BandModeEnum
+  currentApBandModeData: ApBandModeSettingsV1Dot1
+  setCurrentApBandModeData: (data: ApBandModeSettingsV1Dot1) => void,
+  venueOrApGroupDisplayName: string,
   disabled?: boolean
 }
 
@@ -36,8 +31,8 @@ const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
   [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
 }
 
-export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSupportTriBandRadioAp,
-  currentApBandModeData, setCurrentApBandModeData, disabled }: ApBandManagementPorps) => {
+export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, currentApBandModeData, setCurrentApBandModeData,
+  venueOrApGroupDisplayName, disabled }: ApBandManagementPorps) => {
 
   const { $t } = useIntl()
 
@@ -46,13 +41,8 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
   const [bandCombinationOptions, setBandCombinationOptions] = useState<SelectItemOption[]>([])
 
   const getCurrentBandMode = useCallback(() => {
-    return (currentApBandModeData?.useVenueSettings ? venueBandMode : currentApBandModeData?.bandMode)
-  }, [currentApBandModeData, venueBandMode])
-
-  const onClickUseVenueSettings = () => {
-    setCurrentApBandModeData({ ...currentApBandModeData,
-      useVenueSettings: !currentApBandModeData.useVenueSettings })
-  }
+    return (currentApBandModeData?.useVenueOrApGroupSettings ? (venueOrApGroupDisplayName ? venueBandMode : apGroupBandMode) : currentApBandModeData?.bandMode)
+  }, [currentApBandModeData, venueBandMode, apGroupBandMode, venueOrApGroupDisplayName])
 
   const onChangeBandCombination = (value: BandModeEnum) => {
     console.info('[RadioSettings][ApBandManagement] onChangeBandCombination, value = ', value) // eslint-disable-line no-console
@@ -71,42 +61,79 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
 
   return (<div style={{ marginTop: '1em' }}>
     <Row gutter={0}>
-      <Col span={4}>
-        Band Management
+      <Col span={4} style={{ fontWeight: '600', paddingLeft: '2px' }}>
+          Band Management:
       </Col>
-      { currentApBandModeData.useVenueSettings && <Col span={4}>
-        {$t({ defaultMessage: '(as <venueSingular></venueSingular>: <venuelink></venuelink>)' }, {
-          venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
-        })}
-      </Col> }
     </Row>
-    <Row gutter={20} style={{ alignItems: 'center', padding: '5px 0' }}>
-      <Col span={8}>
-        <Select
-          style={{ width: '100%' }}
-          defaultValue={getCurrentBandMode()}
-          value={getCurrentBandMode()}
-          disabled={disabled || currentApBandModeData?.useVenueSettings}
-          options={bandCombinationOptions}
-          onChange={onChangeBandCombination}
-        />
-      </Col>
-      <Col span={3} style={{ paddingLeft: '8px' }}>
-        <Button type='link' disabled={disabled} onClick={onClickUseVenueSettings}>
-          { currentApBandModeData.useVenueSettings ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' }) }
-        </Button>
+    <Row gutter={20}>
+      <Col span={12}>
+        <Space style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '14px',
+          paddingTop: '20px',
+          paddingLeft: '5px',
+          paddingBottom: '20px' }}
+        >
+          {
+            <Radio.Group
+              data-testid='ap-bandManagement'
+              value={currentApBandModeData?.useVenueOrApGroupSettings}
+              onChange={(e) => {
+                setCurrentApBandModeData({
+                  ...currentApBandModeData,
+                  useVenueOrApGroupSettings: e.target.value
+                })
+              }}
+            >
+              <Space direction='vertical'>
+                <Radio value={true} data-testid='ap-bandManagement-useVenueOrApGroupSettings'>
+                  <FormattedMessage
+                    defaultMessage={'Use inherited settings from <venueOrApGroupName></venueOrApGroupName>'}
+                    values={{
+                      venueOrApGroupName: () => {
+                        return venueOrApGroupDisplayName ? 'AP Group' : 'Venue'
+                      }
+                    }}
+                  />
+                </Radio>
+                <Radio value={false} data-testid='ap-bandManagement-customize'>
+                  {$t({ defaultMessage: 'Customize settings' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          }
+        </Space>
       </Col>
     </Row>
     <Row gutter={20}>
       <Col span={14}>
-        <div style={{ color: cssStr('--acx-neutrals-50'), paddingLeft: '5px', marginBottom: '24px' }}>
-          {
-            $t(
-              { defaultMessage: 'Operating bands: {context}' },
-              { context: '2.4 GHz, ' + ((!isSupportDual5GAp || getCurrentBandMode() === BandModeEnum.TRIPLE) ? '5 GHz' : 'Lower/Upper 5 GHz') + ((isSupportTriBandRadioAp && getCurrentBandMode() === BandModeEnum.TRIPLE) ? ', and 6 GHz' : '') }
-            )
-          }
+        <div style={{ color: cssStr('--acx-neutrals-60'), paddingLeft: '5px' }}>
+          {$t({ defaultMessage: 'Band Operation Mode' })}
         </div>
+      </Col>
+    </Row>
+    <Row gutter={20} style={{ alignItems: 'center', padding: '5px 0', paddingLeft: '5px' }}>
+      <Col span={8}>
+        {
+          disabled || currentApBandModeData?.useVenueOrApGroupSettings ? (
+            <div>
+              {
+                bandCombinationOptions.find(
+                  (option) => option.value === getCurrentBandMode()
+                )?.label
+              }
+            </div>
+          ) : (
+            <Select
+              style={{ width: '100%' }}
+              defaultValue={getCurrentBandMode()}
+              value={getCurrentBandMode()}
+              options={bandCombinationOptions}
+              onChange={onChangeBandCombination}
+            />
+          )
+        }
       </Col>
     </Row>
   </div>)

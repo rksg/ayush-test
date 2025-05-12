@@ -41,7 +41,10 @@ import {
   useUpdateApRadioCustomizationMutation,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useGetApBandModeSettingsQuery,
-  useUpdateApBandModeSettingsMutation
+  useUpdateApBandModeSettingsMutation,
+  useApGroupsListQuery,
+  useGetApGroupsTemplateListQuery,
+  useGetApOperationalQuery
 } from '@acx-ui/rc/services'
 import {
   ApRadioCustomization,
@@ -52,13 +55,13 @@ import {
   BandModeEnum,
   ApBandModeSettings
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-
+import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
-import { ApBandManagement }      from './ApBandManagement'
-import { ApSingleRadioSettings } from './ApSingleRadioSettings'
+import { ApBandManagementV1Dot1 } from './ApBandManagementV1Dot1'
+import { ApSingleRadioSettings }  from './ApSingleRadioSettings'
 
 export const isUseVenueSettings = (settings: ApRadioCustomization, radioType: RadioType): boolean => {
   const state = {
@@ -223,7 +226,7 @@ export function VenueNameDisplay ({ venue }: { venue: VenueExtended | undefined 
 
 export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const { serialNumber, tenantId } = useParams()
   const { isAllowEdit=true } = props
 
   const {
@@ -308,6 +311,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [isApDataLoaded, setIsApDataLoaded] = useState(false)
 
   const [stateOfUseVenueEnabled, setStateOfUseVenueEnabled] = useState<boolean>()
+  const [venueOrApGroupDisplayName, setVenueOrApGroupDisplayName] = useState('')
 
   const { data: apRadioSavedData } =
     useGetApRadioCustomizationQuery({ params, enableRbac: isUseRbacApi }, { skip: !venueId })
@@ -1065,6 +1069,34 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
     updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
+  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+    useQueryFn: useApGroupsListQuery,
+    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
+    payload: {
+      searchString: '',
+      fields: [ 'id', 'venueId', 'name'],
+      filters: { venueId: [venueData?.id] },
+      pageSize: 10000
+    },
+    skip: !venueData?.id
+  })
+
+  const {
+    data: apDetails
+  } = useGetApOperationalQuery({
+    params: {
+      tenantId,
+      serialNumber: serialNumber ? serialNumber : '',
+      venueId: venueData ? venueData.id : ''
+    }
+  })
+
+  useEffect(() => {
+    if (apGroupInfo?.data && apDetails) {
+      setVenueOrApGroupDisplayName(apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)[0].name)
+    }
+  }, [apGroupInfo, apDetails])
+
   const displayVenueSettingAndCustomize = () => {
     return (
       <Row gutter={20}>
@@ -1076,34 +1108,35 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             paddingBottom: '20px' }}
           >
             {
-              isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab) ?
-                <span>
-                  <FormattedMessage
-                    defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
-                    values={{
-                      radioTypeName: () => getRadioTypeDisplayName(currentTab),
-                      venuelink: () => venueData ? <VenueNameDisplay venue={venueData} /> : ''
-                    }}
-                  />
-                </span>
-                :
-                <span>
-                  <FormattedMessage
-                    defaultMessage={'Custom <radioTypeName></radioTypeName> settings'}
-                    values={{
-                      radioTypeName: () => getRadioTypeDisplayName(currentTab)
-                    }}
-                  />
-                </span>
+              <Radio.Group
+                data-testid='ap-radiosettings'
+                value={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab)}
+                onChange={handleStateOfIsUseVenueSettingsChange}
+              >
+                <Space direction='vertical'>
+                  <Radio value={true} data-testid='ap-radiosettings-useVenueOrApGroupSettings'>
+                    <FormattedMessage
+                      defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from <venueOrApGroupName></venueOrApGroupName>'}
+                      values={{
+                        venueOrApGroupName: () => {
+                          return venueOrApGroupDisplayName ? 'AP Group' : 'Venue'
+                        },
+                        radioTypeName: () => getRadioTypeDisplayName(currentTab)
+                      }}
+                    />
+                  </Radio>
+                  <Radio value={false} data-testid='ap-radiosettings-customize'>
+                    <FormattedMessage
+                      defaultMessage={'Custom <radioTypeName></radioTypeName> settings'}
+                      values={{
+                        radioTypeName: () => getRadioTypeDisplayName(currentTab)
+                      }}
+                    />
+                  </Radio>
+                </Space>
+              </Radio.Group>
             }
           </Space>
-        </Col>
-        <Col span={8}>
-          <Button type='link' disabled={!isAllowEdit} onClick={handleStateOfIsUseVenueSettingsChange}>
-            {isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab) ?
-              $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
-            }
-          </Button>
         </Col>
       </Row>
     )
@@ -1176,13 +1209,11 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
               />
             </>
             }
-            <ApBandManagement
-              venue={venueData}
+            <ApBandManagementV1Dot1
               venueBandMode={venueBandMode}
-              isSupportDual5GAp={isSupportDual5GAp}
-              isSupportTriBandRadioAp={isSupportTriBandRadioAp}
               currentApBandModeData={currentApBandModeData}
-              setCurrentApBandModeData={setCurrentApBandModeData} />
+              setCurrentApBandModeData={setCurrentApBandModeData}
+              venueOrApGroupDisplayName={venueOrApGroupDisplayName} />
           </>
           }
           <Tabs onChange={onTabChange}
