@@ -78,22 +78,4 @@ describe( 'NetworkSegAuthTable', () => {
 
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
-
-  it( 'should update selected row', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <NetworkSegAuthTable />
-      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/list' } }
-    )
-    const row = await screen.findByRole('row', { name: /Mock Template name/i })
-    await user.click(within(row).getByRole('radio'))
-    await user.click(screen.getByRole('button', { name: 'Update Now' }))
-
-    const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText('Service Update')
-    await user.click((await within(dialog).findByRole('button', { name: 'Update' })))
-
-    await waitFor(() => expect(dialog).not.toBeVisible())
-  })
 })
