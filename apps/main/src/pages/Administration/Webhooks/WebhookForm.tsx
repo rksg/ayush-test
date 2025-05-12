@@ -16,6 +16,7 @@ import {
   WebhookIncidentEnum,
   WebhookPayloadEnum
 } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import SettingsTab                                            from './SettingsTab'
 import * as UI                                                from './styledComponents'
@@ -38,6 +39,7 @@ export function WebhookForm (props: {
   webhookData?: Webhook[]
 }) {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
   const [form] = Form.useForm<Webhook>()
   const [currentTab, setCurrentTab] = useState('settings')
   const [settings, setSettings] = useState<Webhook>()
@@ -49,6 +51,7 @@ export function WebhookForm (props: {
   const webhook = props.selected ?? undefined
   const [addWebhook] = useAddWebhookMutation()
   const [updateWebhook] = useUpdateWebhookMutation()
+  const isCore = isCoreTier(accountTier)
 
   const setWebhookEditValues = (data: Webhook) => {
     setSettings({
@@ -143,7 +146,8 @@ export function WebhookForm (props: {
         selected={props.selected}
       />
     },
-    {
+
+    ...(isCore ? []: [{
       key: 'incidents',
       title: $t({ defaultMessage: 'Incidents' }),
       component: <WebhookFormTab
@@ -151,7 +155,7 @@ export function WebhookForm (props: {
         checked={incidents}
         updateChecked={(checked) => setIncidents(checked as string[])}
       />
-    },
+    }]),
     {
       key: 'activities',
       title: $t({ defaultMessage: 'Activities' }),
@@ -221,7 +225,9 @@ export function WebhookForm (props: {
           style={{ position: 'absolute', bottom: '72px' }}
           hidden={!(touched && enabled &&
             incidents.length === 0 && activities.length === 0 && events.length === 0)}>
-          {$t({ defaultMessage: 'Please select at least one Incident, Activity, or Event' })}
+          {isCore ?
+            $t({ defaultMessage: 'Please select at least one Activity, or Event' })
+            : $t({ defaultMessage: 'Please select at least one Incident, Activity, or Event' })}
         </div>
       </Form>
     </UI.WebhookFormWrapper>
