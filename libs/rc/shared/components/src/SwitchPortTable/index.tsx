@@ -338,7 +338,7 @@ export function SwitchPortTable (props: {
     render: (_, row) => {
       let lagName = row.lagName
       if(isSwitchLagForceUpEnabled && row?.lagForceUpPort){
-        lagName += $t({ defaultMessage: ' (Force-up)' })
+        lagName = `${lagName} ${$t({ defaultMessage: '(Force-up)' })}`
       }
       return lagName
     }
