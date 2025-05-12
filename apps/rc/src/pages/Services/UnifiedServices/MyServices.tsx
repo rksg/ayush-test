@@ -1,7 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, Loader, PageHeader }                               from '@acx-ui/components'
+import { GridCol, GridRow, Loader, PageHeader }                              from '@acx-ui/components'
 import {
   AddProfileButton, canCreateAnyUnifiedService, getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
