@@ -175,8 +175,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     useTemplateQueryFn: useGetApGroupsTemplateListQuery,
     payload: {
       searchString: '',
+      fields: [ 'id', 'venueId'],
       pageSize: 10000
-    }
+    },
+    enableRbac: true
   })
 
   const tableQuery = props.tableQuery || apListTableQuery
