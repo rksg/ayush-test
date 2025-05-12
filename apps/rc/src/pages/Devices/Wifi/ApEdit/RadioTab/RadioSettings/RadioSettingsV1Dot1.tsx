@@ -40,8 +40,9 @@ import {
   useLazyGetVenueRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
   useLazyGetVenueApModelBandModeSettingsQuery,
-  useGetApBandModeSettingsQuery,
-  useUpdateApBandModeSettingsMutation,
+  // TODO useLazyGetApGroupApModelBandModeSettingsQuery
+  useGetApBandModeSettingsV1Dot1Query,
+  useUpdateApBandModeSettingsV1Dot1Mutation,
   useApGroupsListQuery,
   useGetApGroupsTemplateListQuery,
   useGetApOperationalQuery
@@ -53,7 +54,7 @@ import {
   VenueExtended,
   VenueRadioCustomization,
   BandModeEnum,
-  ApBandModeSettings
+  ApBandModeSettingsV1Dot1
 } from '@acx-ui/rc/utils'
 import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
@@ -297,6 +298,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [isEnableLower5g, setIsEnableLower5g] = useState(true)
   const [isEnableUpper5g, setIsEnableUpper5g] = useState(true)
   const [venueBandMode, setVenueBandMode] = useState(BandModeEnum.DUAL)
+  const [apGroupBandMode, setApGroupBandMode] = useState(BandModeEnum.DUAL)
   const [venueRadioData, setVenueRadioData] = useState({} as VenueRadioCustomization)
 
   const [isDual5gMode, setIsDual5gMode] = useState(false)
@@ -304,8 +306,8 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [initApRadioData, setInitApRadioData] = useState({} as ApRadioCustomization)
   const [isApRadioDataInitializing, setIsApRadioDataInitializing] = useState(true)
 
-  const [currentApBandModeData, setCurrentApBandModeData] = useState({} as ApBandModeSettings)
-  const [initApBandModeData, setInitApBandModeData] = useState({} as ApBandModeSettings)
+  const [currentApBandModeData, setCurrentApBandModeData] = useState({} as ApBandModeSettingsV1Dot1)
+  const [initApBandModeData, setInitApBandModeData] = useState({} as ApBandModeSettingsV1Dot1)
   const [isApBandModeDataInitializing, setIsApBandModeDataInitializing] = useState(true)
 
   const [isApDataLoaded, setIsApDataLoaded] = useState(false)
@@ -319,15 +321,17 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [ updateApRadio, { isLoading: isUpdatingApRadio } ] =
     useUpdateApRadioCustomizationMutation()
 
-  const [ updateApBandMode, { isLoading: isUpdatingApBandMode } ] =
-    useUpdateApBandModeSettingsMutation()
+  const [ updateApBandMode, { isLoading: isUpdatingApBandMode } ] = useUpdateApBandModeSettingsV1Dot1Mutation()
 
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
   const [getVenueApModelBandModeSettings] = useLazyGetVenueApModelBandModeSettingsQuery()
+  // const [getApGroupApModelBandModeSettings] = useLazyGetApGroupApModelBandModeSettingsQuery()
 
   const getCurrentBandMode: (() => BandModeEnum) = useCallback(() => {
-    return (currentApBandModeData?.useVenueSettings ?? true) ? venueBandMode : currentApBandModeData?.bandMode
-  }, [currentApBandModeData, venueBandMode])
+    return (currentApBandModeData?.useVenueOrApGroupSettings ?? true)
+      ? (venueOrApGroupDisplayName ? venueBandMode : apGroupBandMode)
+      : currentApBandModeData?.bandMode
+  }, [currentApBandModeData, apGroupBandMode, venueBandMode, venueOrApGroupDisplayName])
 
 
   const { apModelType, supportRadioChannels, supportRadioDfsChannels, bandwidthRadioOptions } = useMemo(() => {
@@ -438,7 +442,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   }, [bandCombinationCapabilities, isWifiSwitchableRfEnabled, supportBandCombination, supportDual5gMode, supportTriRadio, isDual5gMode, getCurrentBandMode])
 
   const { data: apBandModeSavedData } =
-  useGetApBandModeSettingsQuery({ params, enableRbac: isUseRbacApi },
+  useGetApBandModeSettingsV1Dot1Query({ params },
     { skip: !venueId || isSupportDual5GAp || !isSupportBandManagementAp })
 
   const isSupportDual5G = (isSupportDual5GAp &&
@@ -452,8 +456,12 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         if (isSupportBandManagementAp && !isSupportDual5GAp) {
           const venueApModelBandModeSettings = (await getVenueApModelBandModeSettings({
             params: { venueId } }, true).unwrap())
-
           setVenueBandMode(venueApModelBandModeSettings?.find(apModelBandMode => apModelBandMode.model === apData?.model)?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum)
+
+          // TODO
+          // const apGroupApModelBandModeSettings = (await getApGroupApModelBandModeSettings({
+          //   params: { venueId, apGroupId } }, true).unwrap())
+          // setApGroupBandMode(apGroupApModelBandModeSettings?.find(apModelBandMode => apModelBandMode.model === apData?.model)?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum)
         }
 
         setIsApDataLoaded(true)
@@ -550,6 +558,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       if (isSupportBandManagementAp && isSupportDual5GAp) {
         setVenueBandMode(apVenueData.apRadioParamsDual5G?.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE)
+        // setApGroupBandMode(apVenueData.apRadioParamsDual5G?.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE)
       }
     }
 
@@ -652,9 +661,9 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       setIsApRadioDataInitializing(false)
 
       if (isSupportBandManagementAp && isSupportDual5GAp) {
-        setInitApBandModeData({ useVenueSettings: apRadioParamsDual5G?.useVenueEnabled ?? true,
+        setInitApBandModeData({ useVenueOrApGroupSettings: apRadioParamsDual5G?.useVenueEnabled ?? true,
           bandMode: apRadioParamsDual5G?.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })
-        setCurrentApBandModeData({ useVenueSettings: apRadioParamsDual5G?.useVenueEnabled ?? true,
+        setCurrentApBandModeData({ useVenueOrApGroupSettings: apRadioParamsDual5G?.useVenueEnabled ?? true,
           bandMode: apRadioParamsDual5G?.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })
         setIsApBandModeDataInitializing(false)
       }
@@ -665,15 +674,15 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   useEffect(() => {
     if (apBandModeSavedData) {
-      const initApBandModeData: ApBandModeSettings = {
-        useVenueSettings: apBandModeSavedData.useVenueSettings ?? true,
-        bandMode: apBandModeSavedData.bandMode ?? venueBandMode
+      const initApBandModeData: ApBandModeSettingsV1Dot1 = {
+        useVenueOrApGroupSettings: apBandModeSavedData.useVenueOrApGroupSettings ?? true,
+        bandMode: apBandModeSavedData.bandMode ?? (venueOrApGroupDisplayName ? venueBandMode : apGroupBandMode)
       }
-      setInitApBandModeData({ ...initApBandModeData } as ApBandModeSettings)
-      setCurrentApBandModeData({ ...initApBandModeData } as ApBandModeSettings)
+      setInitApBandModeData({ ...initApBandModeData } as ApBandModeSettingsV1Dot1)
+      setCurrentApBandModeData({ ...initApBandModeData } as ApBandModeSettingsV1Dot1)
       setIsApBandModeDataInitializing(false)
     }
-  }, [apBandModeSavedData, venueBandMode])
+  }, [apBandModeSavedData, venueBandMode, apGroupBandMode, venueOrApGroupDisplayName])
 
   useEffect(() => {
     if (!isSupportBandManagementAp) {
@@ -689,7 +698,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       if (isSupportDual5GAp) { // ex: R760
         setIsDual5gMode(isDual5gEnabled)
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
-        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueSettings)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueOrApGroupSettings)
 
         if (prevoiusBendModeRef.current) {
           formRef.current?.setFieldValue(['apRadioParamsDual5G', 'lower5gEnabled'], isDual5gEnabled)
@@ -974,8 +983,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         await updateApBandMode({
           params,
-          payload: currentApBandModeData,
-          enableRbac: isUseRbacApi
+          payload: currentApBandModeData
         }).unwrap()
       }
 
@@ -1062,7 +1070,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       extractStateOfIsUseVenueSettings(initApRadioData))
     setStateOfIsUseVenueSettings(state)
     formRef?.current?.setFieldsValue(initApRadioData)
-    setCurrentApBandModeData({ ...initApBandModeData } as ApBandModeSettings)
+    setCurrentApBandModeData({ ...initApBandModeData } as ApBandModeSettingsV1Dot1)
   }
 
   const handleChange = async () => {
@@ -1211,6 +1219,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             }
             <ApBandManagementV1Dot1
               venueBandMode={venueBandMode}
+              apGroupBandMode={apGroupBandMode}
               currentApBandModeData={currentApBandModeData}
               setCurrentApBandModeData={setCurrentApBandModeData}
               venueOrApGroupDisplayName={venueOrApGroupDisplayName} />
