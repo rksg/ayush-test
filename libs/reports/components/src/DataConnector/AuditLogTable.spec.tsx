@@ -141,6 +141,19 @@ describe('AuditLogTable', () => {
     }
   )
 
+  it('handle error tooptip when failed', async () => {
+    render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
+      wrapper: Provider
+    })
+    const tbody = within(await findTBody())
+    const notRetryableRow = (await tbody.findAllByRole('row'))[5]
+    const statusCell = await within(notRetryableRow).findByText('Failure')
+    await userEvent.hover(statusCell)
+    expect(
+      await screen.findByRole('tooltip')
+    ).toHaveTextContent(/Quota exceeded/)
+  })
+
   it('handle retry, should show success toast when successful', async () => {
     const postFn = jest.fn()
 
