@@ -17,9 +17,9 @@ import {
   hasAdministratorTab,
   MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
 import { getUserProfile, hasAllowedOperations, isCoreTier, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi }                                   from '@acx-ui/utils'
+import { getOpsApi }                                                               from '@acx-ui/utils'
 
 import AccountSettings                                                                      from './AccountSettings'
 import Administrators                                                                       from './Administrators'
