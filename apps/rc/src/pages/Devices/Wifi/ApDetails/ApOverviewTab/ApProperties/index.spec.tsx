@@ -375,6 +375,12 @@ describe('ApProperties', () => {
         (req, res, ctx) => {
           return res(ctx.json({ requestId: '123456789' }))
         }
+      ),
+      rest.patch(
+        WifiUrlsInfo.detectApNeighbors.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ requestId: '123456789' }))
+        }
       )
     )
   })
@@ -397,7 +403,7 @@ describe('ApProperties', () => {
     expect(screen.getByText('AP Properties')).toBeVisible()
     fireEvent.click(screen.getByText('More'))
     const button = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(button)
+    await userEvent.click(button)
   })
 
   it('should render show PoE related info correctly', async () => {
@@ -422,6 +428,7 @@ describe('ApProperties', () => {
     expect(await screen.findByText('1000Mbps')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
+    expect(screen.queryByText('PoE Port Speed')).not.toBeInTheDocument()
   })
 
   it('should render edit port drawer correctly', async () => {
