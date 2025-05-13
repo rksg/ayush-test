@@ -96,4 +96,21 @@ export interface Canvas {
   visible?: boolean
   dashboardIds?: string[]
   widgetIds?: string[]
+  diffWidgetIds?: string[]
+  author?: string
+  authorId?: string
 }
+
+export interface DashboardInfo extends Canvas {
+  index: number
+  canvasId: string
+  isLanding?: boolean
+  isDefault?: boolean
+}
+
+export interface CanvasInfo extends Canvas {
+  owned: boolean
+  widgetCount: number
+  usedAsOwnDashboard: boolean
+}
+

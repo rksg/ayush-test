@@ -28,6 +28,7 @@ import {
   useGetApOperationalQuery,
   useGetFlexAuthenticationProfilesQuery
 } from '@acx-ui/rc/services'
+import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -40,16 +41,23 @@ import {
   SwitchPortViewModelQueryFields,
   SwitchPortViewModel,
   SwitchPortStatus,
-  SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+  SwitchRbacUrlsInfo,
+  useApContext,
+  ApLldpNeighbor,
+  ApRfNeighbor } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                from '@acx-ui/react-router-dom'
 import { SwitchScopes }                         from '@acx-ui/types'
 import { useUserProfileContext, hasPermission } from '@acx-ui/user'
-import { getOpsApi }                            from '@acx-ui/utils'
+import { getOpsApi, CatchErrorResponse }        from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../../../hooks'
+import { NewApNeighborTypes }   from '../../ApNeighbors/constants'
+import { useApNeighbors }       from '../../ApNeighbors/useApNeighbors'
 
 import { ApCellularProperties } from './ApCellularProperties'
+import { poeClassDisplayMap }   from './constants'
 import * as UI                  from './styledComponents'
+
 
 interface ApDetailsDrawerProps {
   visible: boolean
@@ -81,7 +89,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isDisplayMoreApPoePropertiesEnabled = useIsSplitOn(Features.WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
+
+  const { serialNumber, venueId } = useApContext()
 
   const { $t } = useIntl()
   const routeParams = useParams()
@@ -128,6 +139,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       authenticationProfiles: data?.data
     })
   })
+
+  const apNeighborQuery = isUseRbacApi ?
+    useLazyGetApNeighborsQuery :
+    useLazyGetApLldpNeighborsQuery
+  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
+  const { handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
 
   const { data: switchList } = useSwitchListQuery({
     params: { tenantId: routeParams.tenantId },
@@ -240,6 +257,56 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
 
     return null
+  }
+
+  const currentAPNeighbor = getApNeighborsStates.data?.neighbors?.find(
+    (n: ApLldpNeighbor | ApRfNeighbor) => 'lldpPowerType' in n && n.lldpPowerType != null
+  ) as ApLldpNeighbor
+  const poeClass = currentAPNeighbor?.lldpClass
+  const powerConsumption = currentAPNeighbor?.lldpPSEAllocPowerVal
+
+  const getPoePortSpeed = (): string | undefined => {
+    const poePortId = apCapabilities?.lanPorts
+      ?.find(port => port.isPoePort)?.id
+
+    const phyLink = (currentAP as ApViewModel).apStatusData?.lanPortStatus
+      ?.find(item =>
+        (parseInt(item.port, 10) + 1) === parseInt(poePortId as string, 10)
+      )?.phyLink?.split(' ')[1]
+    return phyLink
+  }
+
+  const getPoeClassDesc = (lldpClass: string | null | undefined): string => {
+    if (!lldpClass) return '--'
+
+    const displayText = poeClassDisplayMap[lldpClass as keyof typeof poeClassDisplayMap]
+    const formattedClass = lldpClass.charAt(0).toUpperCase() + lldpClass.slice(1)
+
+    if (displayText) {
+      return `${formattedClass} (${displayText})`
+    }
+
+    return formattedClass
+  }
+
+  const getAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
+    if (!lldpPSEAllocPowerVal) return '--'
+    return `${Number(lldpPSEAllocPowerVal) / 1000} mW`
+  }
+
+  async function socketHandler () {
+    try {
+      await getApNeighbors({
+        params: { serialNumber, venueId },
+        payload: {
+          filters: [{ type: NewApNeighborTypes.LLDP_NEIGHBOR }],
+          page: 1,
+          pageSize: 10000
+        }
+      }).unwrap()
+    } catch (error) {
+      handleApiError(error as CatchErrorResponse)
+    }
   }
 
   const PropertiesTab = () => {
@@ -412,14 +479,29 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         )
       }
       {
-        isSwitchAPPortLinkEnabled && switchPort &&
         <>
           <Divider/>
           <Descriptions labelWidthPercent={50}>
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Switch Port' })}
-              children={switchPort}
-            />
+            { isSwitchAPPortLinkEnabled && switchPort && (
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Switch Port' })}
+                children={switchPort}
+              />
+            )}
+            {
+              isDisplayMoreApPoePropertiesEnabled && (
+                <>
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'PoE Port Speed' })}
+                    children={getPoePortSpeed()} />
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'PoE Class' })}
+                    children={getPoeClassDesc(poeClass)} />
+                  <Descriptions.Item
+                    label={$t({ defaultMessage: 'Power Consumption' })}
+                    children={getAllocPowerVal(powerConsumption)} />
+                </>
+              )}
           </Descriptions>
         </>
       }

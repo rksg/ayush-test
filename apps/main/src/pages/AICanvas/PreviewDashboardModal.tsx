@@ -14,10 +14,8 @@ import {
 } from '@acx-ui/icons-new'
 import { Canvas } from '@acx-ui/rc/utils'
 
-
-import { Section, Group }         from './Canvas'
-import { CardInfo, layoutConfig } from './Canvas'
-import Layout                     from './components/Layout'
+import { CardInfo, layoutConfig, Section, Group } from './Canvas'
+import Layout                                     from './components/Layout'
 import {
   getCalculatedColumnWidth,
   getCanvasData,
@@ -51,23 +49,32 @@ export const PreviewDashboardModal = (props: {
   useEffect(() => {
     const menuWidth = getMenuWidth(menuCollapsed)
     const modalWidth = getPreviewModalWidth(menuWidth, isFullmode)
+    setTimeout(()=>{
+      setLayout({
+        ...layout,
+        containerWidth: modalWidth,
+        calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
+      })
+    }, 180)
     setModalWidth(modalWidth)
-    setLayout({
-      ...layout,
-      containerWidth: modalWidth,
-      calWidth: getCalculatedColumnWidth(menuCollapsed, modalWidth)
-    })
   }, [menuCollapsed, isFullmode])
 
   useEffect(() => {
     if (visible) {
-      //TODO: scroll to top when opened
       const { canvasId, sections, groups } = getCanvasData(data)
       if (canvasId && sections) {
         setCanvasId(canvasId)
         setSections(sections)
         setGroups(groups)
+        setTimeout(() => {
+          const modalBody = document.querySelector('.ant-modal-body')
+          if (modalBody) {
+            modalBody.scrollTop = 0
+          }
+        }, 50)
       }
+    } else {
+      setCanvasId('')
     }
   }, [visible])
 
@@ -80,51 +87,55 @@ export const PreviewDashboardModal = (props: {
     visible={visible && !!canvasId}
     width={modalWidth}
     className={isFullmode ? 'fullmode' : ''}
+    forceRender
+    destroyOnClose={false}
   >
-    <div className='header'>
-      <div className='title'>{ data[0]?.name }</div>
-      <div className='action'>
-        {isFullmode
-          ? <Button
-            data-testid='collapsed-button'
-            ghost={true}
-            icon={<ArrowsIn size='md' />}
-            onClick={()=> setIsFullmode(false)}
-          />
-          : <>
-            <Button
-              data-testid='expanded-button'
+    { visible && !!canvasId && <>
+      <div className='header'>
+        <div className='title'>{ data[0]?.name }</div>
+        <div className='action'>
+          {isFullmode
+            ? <Button
+              data-testid='collapsed-button'
               ghost={true}
-              icon={<ArrowsOut size='md' />}
-              onClick={()=> setIsFullmode(true)}
+              icon={<ArrowsIn size='md' />}
+              onClick={()=> setIsFullmode(false)}
             />
-            <Button
-              data-testid='close-button'
-              ghost={true}
-              icon={<Close size='md' />}
-              onClick={()=> setVisible(false)}
+            : <>
+              <Button
+                data-testid='expanded-button'
+                ghost={true}
+                icon={<ArrowsOut size='md' />}
+                onClick={()=> setIsFullmode(true)}
+              />
+              <Button
+                data-testid='close-button'
+                ghost={true}
+                icon={<Close size='md' />}
+                onClick={()=> setVisible(false)}
+              />
+            </>}
+        </div>
+      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className='grid'>
+          <UI.Grid $type='pageview'>
+            <Layout
+              readOnly={true}
+              sections={sections}
+              groups={groups}
+              setGroups={setGroups}
+              compactType={'horizontal'}
+              layout={layout}
+              setLayout={setLayout}
+              canvasId={canvasId}
+              shadowCard={shadowCard}
+              setShadowCard={setShadowCard}
+              containerId='preview-container'
             />
-          </>}
-      </div>
-    </div>
-    <DndProvider backend={HTML5Backend}>
-      <div className='grid'>
-        <UI.Grid $type='pageview'>
-          <Layout
-            readOnly={true}
-            sections={sections}
-            groups={groups}
-            setGroups={setGroups}
-            compactType={'horizontal'}
-            layout={layout}
-            setLayout={setLayout}
-            canvasId={canvasId}
-            shadowCard={shadowCard}
-            setShadowCard={setShadowCard}
-            containerId='preview-container'
-          />
-        </UI.Grid>
-      </div>
-    </DndProvider>
+          </UI.Grid>
+        </div>
+      </DndProvider>
+    </>}
   </UI.PreviewModal>
 }
