@@ -226,7 +226,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         form.setFieldsValue({
           ...editData[0],
           portsType,
-          ...(isSwitchLagForceUpEnabled && { forceUp: editData[0].forceUpPort !== '' })
+          ...(isSwitchLagForceUpEnabled &&
+            { forceUp: editData[0].forceUpPort && editData[0].forceUpPort !== '' })
         })
       }
     }
