@@ -8,11 +8,13 @@ import { Tabs, Tooltip } from '@acx-ui/components'
 import { Features }      from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeLag, EdgePort,
   EdgePortInfo,
   EdgePortWithStatus,
   getEdgePortDisplayName,
   isInterfaceInVRRPSetting,
+  SubInterface,
   validateEdgeGateway
 } from '@acx-ui/rc/utils'
 
@@ -34,14 +36,16 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
+  clusterInfo: EdgeClusterStatus
   statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
-  isCluster?: boolean
+  disabled?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
 }
 
@@ -53,10 +57,12 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     activeTab,
     onTabChange,
     fieldHeadPath = [],
-    isCluster,
+    disabled,
     formFieldsProps,
     vipConfig = [],
-    isClusterWizard
+    subInterfaceList = [],
+    isClusterWizard,
+    clusterInfo
   } = props
   const { $t } = useIntl()
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
@@ -90,7 +96,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             isEdgeSdLanRun={isEdgeSdLanRun}
             statusData={portStatus}
             lagData={lagData}
-            isCluster={isCluster}
+            disabled={disabled}
+            clusterInfo={clusterInfo}
             formFieldsProps={
               {
                 ...formFieldsProps,
@@ -104,6 +111,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
                 }
               }
             }
+            subInterfaceList={subInterfaceList}
           />
         )}
       </Form.List>,
