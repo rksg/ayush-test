@@ -428,7 +428,7 @@ describe('ApProperties', () => {
     expect(await screen.findByText('PoE Port Speed')).toBeVisible()
     expect(await screen.findByText('PoE Class')).toBeVisible()
     expect(await screen.findByText('Power Consumption')).toBeVisible()
-    expect(await screen.findByText('24 mW')).toBeVisible()
+    expect(await screen.findByText('24 W')).toBeVisible()
     expect(await screen.findByText('Class 4 (802.3at 30 W)')).toBeVisible()
     expect(await screen.findByText('1000Mbps')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })

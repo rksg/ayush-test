@@ -291,7 +291,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const getAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
     if (!lldpPSEAllocPowerVal) return '--'
-    return `${Number(lldpPSEAllocPowerVal) / 1000} mW`
+    return `${Number(lldpPSEAllocPowerVal) / 1000} W`
   }
 
   async function socketHandler () {
