@@ -6,9 +6,14 @@ import { useIntl }                      from 'react-intl'
 
 import { Button, Dropdown, Tooltip }                              from '@acx-ui/components'
 import { ArrowExpand, LockOutlined, GlobeOutlined, Check, Close } from '@acx-ui/icons-new'
-import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation,
-  useLazyGetCanvasByIdQuery, usePatchCanvasMutation } from '@acx-ui/rc/services'
+import {
+  useCreateCanvasMutation,
+  useUpdateCanvasMutation,
+  useLazyGetCanvasByIdQuery,
+  usePatchCanvasMutation
+} from '@acx-ui/rc/services'
 import { Canvas as CanvasType, trailingNorLeadingSpaces, validateDuplicateName } from '@acx-ui/rc/utils'
+import { UseQueryResult }                                                        from '@acx-ui/types'
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
@@ -96,6 +101,7 @@ export const DEFAULT_CANVAS = [
 export interface CanvasRef {
   save: () => Promise<void>
   removeShadowCard: () => void
+  createNewCanvas: () => void
   currentCanvas: CanvasType
 }
 
@@ -117,10 +123,12 @@ interface CanvasProps {
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
   editCanvasId?: string
+  getCanvasQuery: UseQueryResult<CanvasType[]>
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({
-  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges, editCanvasId }, ref) => {
+  getCanvasQuery, onCanvasChange, groups, setGroups,
+  checkChanges, canvasHasChanges, editCanvasId }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState(editCanvasId || '')
@@ -139,8 +147,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
-  const { data: canvasList } = useGetCanvasQuery({})
   const [form] = Form.useForm()
+  const { data: canvasList, isFetching: isCanvasFetching } = getCanvasQuery
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -178,7 +186,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList && !editCanvasId) {
+    if(canvasList && !editCanvasId && !isCanvasFetching) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
@@ -317,6 +325,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   useImperativeHandle(ref, () => ({
     save: onSave,
     removeShadowCard: removeShadowCard,
+    createNewCanvas: onNewCanvas,
     currentCanvas: currentCanvas
   }))
 
