@@ -4,7 +4,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import {
-  useDeleteIotControllerMutation
+  useDeleteIotControllerMutation, useRefreshIotControllerMutation
 } from '@acx-ui/rc/services'
 import {
   IotControllerStatus
@@ -13,6 +13,7 @@ import {
 export function useIotControllerActions () {
   const { $t } = useIntl()
   const [ invokeDeleteIotController ] = useDeleteIotControllerMutation()
+  const [refreshIotControllerMutation] = useRefreshIotControllerMutation()
 
   // eslint-disable-next-line max-len
   const deleteIotController = async ( rows: IotControllerStatus[], tenantId?: string, callBack?: ()=>void ) => {
@@ -34,7 +35,12 @@ export function useIotControllerActions () {
     })
   }
 
+  const refreshIotController = async () => {
+    refreshIotControllerMutation()
+  }
+
   return {
-    deleteIotController
+    deleteIotController,
+    refreshIotController
   }
 }

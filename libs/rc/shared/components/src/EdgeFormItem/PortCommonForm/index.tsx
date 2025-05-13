@@ -43,6 +43,7 @@ export interface EdgePortCommonFormProps {
   formListItemKey: string,
   formListID?: string,
   formFieldsProps?: formFieldsPropsType
+  subnetInfoForValidation?: { ip: string, subnetMask: string } []
 }
 
 const { useWatch } = Form
@@ -57,7 +58,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     isListForm = true,
     formListItemKey = '0',
     formListID,
-    formFieldsProps
+    formFieldsProps,
+    subnetInfoForValidation = []
   } = props
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
@@ -138,7 +140,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               },
               {
                 validator: () =>
-                  lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  lanPortSubnetValidator(
+                    getCurrentSubnetInfo(),
+                    [...getSubnetInfoWithoutCurrent(), ...subnetInfoForValidation]
+                  )
               }
             ]}
             {..._.get(formFieldsProps, 'ip')}
@@ -197,7 +202,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   },
                   {
                     validator: () =>
-                      lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                      lanPortSubnetValidator(
+                        getCurrentSubnetInfo(),
+                        [...getSubnetInfoWithoutCurrent(), ...subnetInfoForValidation]
+                      )
                   }
                 ]}
                 {..._.get(formFieldsProps, 'ip')}
