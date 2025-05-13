@@ -479,6 +479,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         )
       }
       {
+        ((isSwitchAPPortLinkEnabled && switchPort) || isDisplayMoreApPoePropertiesEnabled) &&
         <>
           <Divider/>
           <Descriptions labelWidthPercent={50}>
