@@ -9,6 +9,10 @@ import { QuestionMarkCircleOutlined }          from '@acx-ui/icons'
 import { Ipsec, IpSecAdvancedOptionEnum }      from '@acx-ui/rc/utils'
 import { validationMessages }                  from '@acx-ui/utils'
 
+import { ApCompatibilityDrawer }                        from '../../../ApCompatibility/ApCompatibilityDrawer'
+import { ApCompatibilityToolTip }                       from '../../../ApCompatibility/ApCompatibilityToolTip'
+import { ApCompatibilityType, InCompatibilityFeatures } from '../../../ApCompatibility/constants'
+
 import { messageMapping } from './messageMapping'
 
 
@@ -22,6 +26,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
   const { $t } = useIntl()
   const { initIpSecData, loadGwSettings, setLoadGwSettings } = props
   const form = Form.useFormInstance()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [retryLimitEnabled, setRetryLimitEnabled] = useState(false)
   const [espReplayWindowEnabled, setEspReplayWindowEnabled] = useState(false)
   const [deadPeerDetectionDelayEnabled, setDeadPeerDetectionDelayEnabled] = useState(false)
@@ -215,9 +220,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                       {$t({ defaultMessage: 'Retry Limit' })}
                     </div>
                   } />
-                <Tooltip.Question
+                <ApCompatibilityToolTip
                   title={$t(messageMapping.gateway_retry_tooltip)}
-                  placement='bottom' />
+                  showDetailButton
+                  placement='bottom'
+                  onClick={() => setDrawerVisible(true)}
+                />
               </>
             }
           />
@@ -372,11 +380,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={
               <>
                 {$t({ defaultMessage: 'Force NAT-T' })}
-                <Tooltip
+                <ApCompatibilityToolTip
                   title={$t(messageMapping.connection_force_nat_tooltip)}
-                  placement='bottom'>
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                  showDetailButton
+                  placement='bottom'
+                  onClick={() => setDrawerVisible(true)}
+                />
               </>
             }
             initialValue={false}
@@ -438,6 +447,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             />}
         </GridCol>
       </GridRow>
+      <ApCompatibilityDrawer
+        visible={drawerVisible}
+        type={ApCompatibilityType.ALONE}
+        featureName={InCompatibilityFeatures.IPSEC_NEW_CONFIGURABLE}
+        onClose={() => setDrawerVisible(false)}
+      />
     </>
   )
 }

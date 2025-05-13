@@ -37,6 +37,7 @@ export interface EdgePortCommonFormProps {
   formListItemKey: string,
   formListID?: string,
   formFieldsProps?: formFieldsPropsType
+  subnetInfoForValidation?: { ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
 }
 
@@ -53,6 +54,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     formListItemKey = '0',
     formListID,
     formFieldsProps,
+    subnetInfoForValidation = [],
     clusterInfo
   } = props
   const { $t } = useIntl()
@@ -143,7 +145,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               },
               {
                 validator: () =>
-                  interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  interfaceSubnetValidator(
+                    getCurrentSubnetInfo(),
+                    // eslint-disable-next-line max-len
+                    [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
+                  )
               }
             ]}
             {..._.get(formFieldsProps, 'ip')}
@@ -203,7 +209,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   {
                     validator: () =>
                       // eslint-disable-next-line max-len
-                      interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                      interfaceSubnetValidator(
+                        getCurrentSubnetInfo(),
+                        // eslint-disable-next-line max-len
+                        [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
+                      )
                   }
                 ]}
                 {..._.get(formFieldsProps, 'ip')}

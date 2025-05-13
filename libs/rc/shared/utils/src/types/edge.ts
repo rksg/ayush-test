@@ -596,7 +596,8 @@ export interface ClusterNetworkSettings {
       }
     }
     loadDistribution: ClusterHaLoadDistributionEnum
-  },
+  }
+  subInterfaceSettings?: NodeSubInterfaces[]
   multiWanSettings?: ClusterNetworkMultiWanSettings
 }
 

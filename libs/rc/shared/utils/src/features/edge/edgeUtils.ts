@@ -300,14 +300,14 @@ export const optionSorter = (
 
 export async function interfaceSubnetValidator (
   current: { ipMode: EdgeIpModeEnum, ip: string, subnetMask: string },
-  allWithoutCurrent: { ipMode: EdgeIpModeEnum, ip: string, subnetMask: string } []
+  allWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
   if (current.ipMode !== EdgeIpModeEnum.STATIC) {
     return Promise.resolve()
   }
 
   // eslint-disable-next-line max-len
-  return lanPortSubnetValidator(current, allWithoutCurrent.filter(item => item.ipMode === EdgeIpModeEnum.STATIC))
+  return lanPortSubnetValidator(current, allWithoutCurrent)
 }
 
 export async function lanPortSubnetValidator (
