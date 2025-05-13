@@ -12,7 +12,7 @@ import {
   PortalProfileTabsEnum,
   getServiceRoutePath,
   LocationExtended,
-  useServicesBreadcrumb
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }                    from '@acx-ui/user'
@@ -53,14 +53,7 @@ export default function CreatePortalProfile () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Portal' })}
-        breadcrumb={[
-          ...useServicesBreadcrumb(),
-          {
-            text: $t({ defaultMessage: 'Portal Profiles' }),
-            link: getServiceRoutePath({
-              type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PORTAL_PROFILE)}
       />
       <StepsForm
         form={form}
