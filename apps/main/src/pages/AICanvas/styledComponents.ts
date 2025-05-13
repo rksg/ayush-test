@@ -49,6 +49,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  padding-bottom: 60px;
   .hint{
     font-style: italic;
     color: var(--acx-neutrals-60);
@@ -161,6 +162,7 @@ display: flex;
 .chat-wrapper {
   overflow: hidden;
   position: relative;
+  border-radius: 24px 0 0 24px;
 }
 .chat {
   border-top-left-radius: 24px;

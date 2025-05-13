@@ -20,15 +20,17 @@ import {
 import {
   useStreamChatsAiMutation,
   useGetAllChatsQuery,
+  useGetCanvasQuery,
   useGetChatsMutation,
   useStopChatMutation,
   useSendFeedbackMutation
 } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 
-import Canvas, { CanvasRef, Group } from './Canvas'
-import { DraggableChart }           from './components/WidgetChart'
-import HistoryDrawer                from './HistoryDrawer'
+import Canvas, { CanvasRef, Group }                   from './Canvas'
+import { DraggableChart }                             from './components/WidgetChart'
+import HistoryDrawer                                  from './HistoryDrawer'
+import { MAXIMUM_CHAT_HISTORY, MAXIMUM_OWNED_CANVAS } from './index.utils'
 import {
   getStreamingWordingKey,
   StreamingMessages
@@ -184,8 +186,11 @@ export default function AICanvasModal (props: {
   isModalOpen: boolean,
   setIsModalOpen: (p: boolean) => void
   editCanvasId?: string
+  openNewCanvas?: boolean
 }) {
-  const { isModalOpen, setIsModalOpen, editCanvasId } = props
+  const { isModalOpen, setIsModalOpen, editCanvasId, openNewCanvas = false } = props
+  // eslint-disable-next-line max-len
+  const isInitCanvasShown = !!editCanvasId || openNewCanvas || localStorage.getItem('show-canvas') == 'true'
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
@@ -207,9 +212,10 @@ export default function AICanvasModal (props: {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
-  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
+  const [showCanvas, setShowCanvas] = useState(isInitCanvasShown)
   const [skipScrollTo, setSkipScrollTo] = useState(false)
   const [streamingMessageIds, setStreamingMessageIds] = useState<string[] | []>([])
+  const [isModalOpenInitialized, setIsModalOpenInitialized] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -222,16 +228,36 @@ export default function AICanvasModal (props: {
     'How many clients were connected to my network yesterday?'
   ] // Only support english default questions
 
-  const getAllChatsQuery = useGetAllChatsQuery({}, {
-    skip: !isModalOpen
-  })
-  const { data: historyData } = getAllChatsQuery
+  const getAllChatsQuery = useGetAllChatsQuery({}, { skip: !isModalOpen })
+  const getCanvasQuery = useGetCanvasQuery({}, { skip: !isModalOpen })
+  const { data: historyData, isLoading: isHistoryLoading } = getAllChatsQuery
+  // eslint-disable-next-line max-len
+  const { data: canvasList, isLoading: isCanvasLoading, isFetching: isCanvasFetching } = getCanvasQuery
+
+  const isChatHistoryLimitReached = !!historyData && historyData.length >= MAXIMUM_CHAT_HISTORY
+  const isCanvasLimitReached = !!canvasList && canvasList.length >= MAXIMUM_OWNED_CANVAS
+
+  const setHistoryData = (data?: ChatHistory[]) => {
+    if(data?.length) {
+      const latestId = data[data.length - 1].id
+      if(sessionId !== latestId) {
+        setSessionId(latestId)
+        setReload(true)
+      }
+    } else if(data?.length === 0) {
+      setIsChatsLoading(false)
+      setHistoryVisible(false)
+      onNewChat()
+    }
+  }
 
   useEffect(()=>{
     if (isModalOpen) {
       getAllChatsQuery.refetch()
+      setIsModalOpenInitialized(!openNewCanvas)
     } else {
       setSessionId('')
+      setIsModalOpenInitialized(false)
     }
   }, [isModalOpen])
 
@@ -251,20 +277,30 @@ export default function AICanvasModal (props: {
     }
   }, [chats])
 
-  useEffect(()=>{
-    if (!isModalOpen) return
-    if(historyData?.length) {
-      const latestId = historyData[historyData.length - 1].id
-      if(sessionId !== latestId) {
-        setSessionId(latestId)
-        setReload(true)
+  useEffect(() => {
+    const isLimitNotReached = !isChatHistoryLimitReached || !isCanvasLimitReached
+    if (!isModalOpen || isHistoryLoading || isCanvasLoading || isCanvasFetching) return
+    if (openNewCanvas && !isModalOpenInitialized && isLimitNotReached) {
+      setIsModalOpenInitialized(true)
+      if (!isCanvasLimitReached) {
+        canvasRef.current && canvasRef.current.createNewCanvas?.()
       }
-    } else if(historyData?.length === 0) {
-      setIsChatsLoading(false)
-      setHistoryVisible(false)
-      onNewChat()
+      if (!isChatHistoryLimitReached) {
+        setIsChatsLoading(false)
+        setHistoryVisible(false)
+        onNewChat()
+      } else {
+        setHistoryData(historyData)
+      }
+    } else if (!isModalOpenInitialized) {
+      setHistoryData(historyData)
     }
-  }, [historyData, isModalOpen])
+  }, [openNewCanvas, isModalOpen, isHistoryLoading, isCanvasLoading, isCanvasFetching])
+
+  useEffect(()=>{
+    if (!isModalOpen || isHistoryLoading || (openNewCanvas && !isModalOpenInitialized)) return
+    setHistoryData(historyData)
+  }, [historyData, isHistoryLoading, isModalOpen])
 
   const getLatestPageChats = () => {
     getSessionChats(1)
@@ -521,7 +557,7 @@ export default function AICanvasModal (props: {
   }
 
   const onNewChat = () => {
-    if(historyData && historyData.length >= 10){
+    if(isChatHistoryLimitReached){
       return
     }
     setIsNewChat(true)
@@ -590,7 +626,7 @@ export default function AICanvasModal (props: {
                       <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
                       <Tooltip
                         placement='right'
-                        title={historyData && historyData.length >= 10
+                        title={isChatHistoryLimitReached
                           ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
                           : ''}
@@ -598,8 +634,7 @@ export default function AICanvasModal (props: {
                         <Plus
                           data-testid='newChatIcon'
                           className={
-                            'newChat' + (historyData && historyData.length >= 10 ?
-                              ' disabled' : '')
+                            'newChat' + (isChatHistoryLimitReached ? ' disabled' : '')
                           }
                           onClick={onNewChat}
                         />
@@ -688,6 +723,7 @@ export default function AICanvasModal (props: {
           {
             showCanvas && <Canvas
               ref={canvasRef}
+              getCanvasQuery={getCanvasQuery}
               canvasHasChanges={canvasHasChanges}
               onCanvasChange={handleCanvasChange}
               checkChanges={checkChanges}
