@@ -65,6 +65,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isMsp =
   tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR
 
+  const isRec = tenantType === AccountType.REC
+
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const showRksSupport = isNonDelegatedMspEc === false
@@ -73,7 +75,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && !isDelegationMode() && (isMsp || (isLoginSSoMspEcEnabled && isMspEc)
-    || (isLoginSSoTechpartnerEnabled && isTechPartner))
+    || (isLoginSSoTechpartnerEnabled && isTechPartner) || isRec)
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
   const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
