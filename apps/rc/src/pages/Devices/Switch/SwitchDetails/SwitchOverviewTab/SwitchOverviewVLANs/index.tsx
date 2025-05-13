@@ -504,7 +504,7 @@ export function SwitchOverviewVLANs (props: {
           untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
         stackMember={stackMember?.data ?? undefined}
-        switchFirmware={switchFirmware}
+        switchFirmwares={[switchFirmware]}
       />}
 
       { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer

@@ -36,7 +36,7 @@ const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
 const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
 const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
-export default function PortalTable () {
+export default function PortalTable (props: { hideHeader?: boolean }) {
   const intl = useIntl()
   const navigate = useNavigate()
   const params = useParams()
@@ -209,7 +209,7 @@ export default function PortalTable () {
 
   return (
     <>
-      <PageHeader
+      { props.hideHeader !== true && <PageHeader
         title={
           // eslint-disable-next-line max-len
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
@@ -234,7 +234,7 @@ export default function PortalTable () {
                 : false} >{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
       <Loader states={[tableQuery]}>
         <Table<Portal>
           columns={columns}
