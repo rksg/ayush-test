@@ -234,7 +234,7 @@ describe('EdgeOverviewLagTable', () => {
   describe('Dual WAN disabled', () => {
     beforeEach(() => {
       // eslint-disable-next-line max-len
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     })
 
     it('renders the table with data', () => {
