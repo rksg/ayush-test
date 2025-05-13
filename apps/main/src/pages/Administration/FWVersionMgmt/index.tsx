@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/services'
 import { compareSwitchVersion, SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }                                              from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -36,6 +37,7 @@ import SwitchFirmwareV1002 from './SwitchFirmwareV1002'
 
 const FWVersionMgmt = () => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
@@ -44,6 +46,8 @@ const FWVersionMgmt = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
+  const isCore = isCoreTier(accountTier)
 
 
   const { data: latestSwitchReleaseVersions } =
@@ -76,7 +80,8 @@ const FWVersionMgmt = () => {
 
   const { isAPPLibraryAvailable } = useGetSigPackQuery({
     params: { changesIncluded: 'false' },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: isWifiRbacEnabled,
+    skip: isCore
   }, {
     selectFromResult: ({ data }) => ({
       isAPPLibraryAvailable: data?.currentVersion !== data?.latestVersion
@@ -184,7 +189,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
       content: <ApplicationPolicyMgmt />,
-      visible: true
+      visible: !isCore
     }
   }
 

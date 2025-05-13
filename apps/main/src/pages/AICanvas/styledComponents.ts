@@ -11,13 +11,13 @@ import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.1s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.1s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -49,6 +49,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  padding-bottom: 60px;
   .hint{
     font-style: italic;
     color: var(--acx-neutrals-60);
@@ -161,6 +162,7 @@ display: flex;
 .chat-wrapper {
   overflow: hidden;
   position: relative;
+  border-radius: 24px 0 0 24px;
 }
 .chat {
   border-top-left-radius: 24px;
@@ -364,6 +366,35 @@ display: flex;
       }
       .chat-bubble {
         align-self: flex-start;
+        &.loading {
+          position: relative;
+          font-style: italic;
+          overflow: hidden;
+          justify-content: flex-start;
+          background: transparent;
+          color: var(--acx-neutrals-70);
+          font-weight: 400;
+        }
+        .loader {
+          display: inline-block;
+          width: 24px;
+          max-height: 16px;
+          aspect-ratio: 3;
+          --_g: no-repeat radial-gradient(circle closest-side,var(--acx-neutrals-70) 90%,#0000);
+          background: 
+            var(--_g) 0%   50%,
+            var(--_g) 50%  50%,
+            var(--_g) 100% 50%;
+          background-size: calc(100%/5) 50%;
+          animation: l3 1s infinite linear;
+          margin-right: 9px;
+        }
+        @keyframes l3 {
+            20%{background-position:0%   0%, 50%  50%,100%  50%}
+            40%{background-position:0% 100%, 50%   0%,100%  50%}
+            60%{background-position:0%  50%, 50% 100%,100%   0%}
+            80%{background-position:0%  50%, 50%  50%,100% 100%}
+        }
       }
       .ai-message-tail {
         display: grid;
@@ -538,7 +569,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000 //transparent;
+  background: #000; //transparent;
   padding-bottom: 10px;
 }
 
@@ -606,6 +637,46 @@ overflow: auto;
     width: 20px;
     border-right: 2px solid #888;
     border-bottom: 2px solid #888;
+  }
+  .card-resizer{
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: inherit;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    background: var(--acx-primary-black);
+    color: var(--acx-primary-white);
+    border-radius: 0 0 4px 4px;
+    opacity: 0.9;
+    pointer-events: none;
+    padding: 0 5%;
+    .slider{
+      cursor: pointer;
+      margin: 0 min(6%, 24px);
+      .ant-slider-with-marks {
+        pointer-events: auto;
+        margin: 16px 0 20px 0;
+      }
+      .ant-slider-mark-text {
+        display: none;
+      }
+      .ant-slider-handle::before {
+        display: none !important;
+      }
+      .ant-slider-dot {
+        display: block;
+      }
+      .ant-slider-dot-active {
+        display: block;
+        background-color: var(--acx-accents-blue-50);
+        border-color: var(--acx-accents-blue-50);
+      }
+    }
+  }
+  &:hover .card-resizer{
+    display: flex;
   }
 }
 .rglb_group-item .group-item-container .card-container .card .card-footer {
@@ -757,7 +828,7 @@ export const CanvasListItem = styled(AntList.Item)`
     line-height: var(--acx-subtitle-4-line-height);
     font-weight: var(--acx-subtitle-4-font-weight);
     color: var(--acx-neutrals-100);
-    margin-bottom: 4px;    
+    margin-bottom: 4px;
     align-items: center;
     svg {
       margin-left: 8px;
@@ -821,7 +892,7 @@ export const EditCanvasModal = styled(Modal)`
       }
       .desp {
         padding: 8px 0px;
-        color: var(--acx-neutrals-60);     
+        color: var(--acx-neutrals-60);
       }
     }
   }

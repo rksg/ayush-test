@@ -98,6 +98,7 @@ export interface Canvas {
   widgetIds?: string[]
   diffWidgetIds?: string[]
   author?: string
+  authorId?: string
 }
 
 export interface DashboardInfo extends Canvas {

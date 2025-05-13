@@ -171,8 +171,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     varCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const varCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const varCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...varCustomerListReq,
           body: payload
@@ -192,8 +193,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const inviteCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const inviteCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...inviteCustomerListReq,
           body: payload
