@@ -22,7 +22,6 @@ export enum GuestNetworkTypeEnum {
   Cloudpath = 'Cloudpath',
   Directory = 'Directory',
   SAML = 'SAML',
-  // SANTODO: Confirm this with backend
   Workflow = 'Workflow'
 }
 
