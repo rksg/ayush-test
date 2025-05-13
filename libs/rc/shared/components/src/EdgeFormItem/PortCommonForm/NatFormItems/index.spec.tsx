@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Button }                                                            from '@acx-ui/components'
-import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, screen, waitFor }                                           from '@acx-ui/test-utils'
+import { Button }                                                                                     from '@acx-ui/components'
+import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { render, screen, waitFor }                                                                    from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
@@ -12,6 +12,21 @@ const { mockEdgePortConfig } = EdgePortConfigFixtures
 
 jest.mock('../../../useEdgeActions', () => ({
   useIsEdgeFeatureReady: jest.fn()
+}))
+jest.mock('../../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: (props: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip'>
+      <button onClick={props.onClick}>See compatibility</button>
+    </div>
+}))
+
+jest.mock('../../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../../Compatibility/Edge/EdgeCompatibilityDrawer'),
+  EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
+    <div data-testid='EdgeCompatibilityDrawer'>
+      <span>Feature:{props.featureName}</span>
+      <button onClick={props.onClose}>Close</button>
+    </div>
 }))
 
 const defaultProps = {
@@ -69,9 +84,7 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('should correctly submit when both of start and end IP are well formatted', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
       await natPoolTestPreparation()
       const startIp = screen.getByRole('textbox', { name: 'Start' })
@@ -89,14 +102,10 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('does not render NAT IP Addresses Range if HA mode is not ACTIVE_STANDBY', async () => {
-      render(
-        <Form>
-          <EdgeNatFormItems
-            {...defaultProps}
-            clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE }}
-          />
-        </Form>
-      )
+      render(<MockComponent
+        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE }}
+      />)
+
       expect(screen.getByText('Use NAT Service')).toBeInTheDocument()
       // Simulate enabling NAT
       const natSwitch = screen.getByRole('switch')
@@ -108,9 +117,7 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('correctly block when pool range is invalid', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
       await natPoolTestPreparation()
       const startIp = screen.getByRole('textbox', { name: 'Start' })
@@ -125,9 +132,7 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('correctly block when pool range size > over maximum', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
       await natPoolTestPreparation()
       const startIp = screen.getByRole('textbox', { name: 'Start' })
@@ -150,7 +155,6 @@ describe('EdgeNatFormItems', () => {
           natPools: [
             { startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }
           ] }]}
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
       />)
 
       await natPoolTestPreparation()
@@ -168,7 +172,6 @@ describe('EdgeNatFormItems', () => {
 
     it('should block when one of start and end IP is empty', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -193,7 +196,6 @@ describe('EdgeNatFormItems', () => {
 
     it('should be ok when both of start and end IP is empty', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -224,7 +226,6 @@ describe('EdgeNatFormItems', () => {
 
     it('should be ok when both of start and end IP is empty - no origin pool data', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true
         }}
@@ -246,7 +247,6 @@ describe('EdgeNatFormItems', () => {
 
     it('should block when IP format is invalid', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -274,12 +274,8 @@ describe('EdgeNatFormItems', () => {
     it('correctly handles undefined lagData', async () => {
       render(<Form>
         <EdgeNatFormItems
-          parentNamePath={[]}
-          getFieldFullPath={(name: string) => [name]}
-          formFieldsProps={{}}
-          portsData={[]}
+          {...defaultProps}
           lagData={undefined}
-          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         />
         <Button htmlType='submit'>Submit</Button>
       </Form>)
@@ -296,10 +292,22 @@ describe('EdgeNatFormItems', () => {
       expect(alertMsg.textContent).toEqual('NAT IP address range exceeds maximum size 128')
     })
 
+    it('should show "Multi NAT IP" compatibility component', async () => {
+      render(<MockComponent />)
+
+      await natPoolTestPreparation()
+      const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(compatibilityToolTips.length).toBe(1)
+      compatibilityToolTips.forEach(t => expect(t).toBeVisible())
+      await userEvent.click(compatibilityToolTips[0])
+      const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
+      expect(compatibilityDrawer).toBeVisible()
+      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.MULTI_NAT_IP)
+    })
+
     describe('LAG has existing NAT pool', () => {
       it('should be blocked when overlapped with existing LAG NAT pool', async () => {
         render(<MockComponent
-          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
           lagData={[{ natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }] }]}
         />)
 
