@@ -141,9 +141,11 @@ export function DonutChart ({
 }: DonutChartProps) {
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
 
-  const sum = data.reduce((acc, cur) => acc + cur.value, 0)
-  const colors = data.map(series => series.color) as ZRColor[]
-  const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
+  const chartData = data.length !== 1 ? data.filter(item => item.value) : data
+  const sum = chartData.reduce((acc, cur) => acc + cur.value, 0)
+  const colors = chartData.map(series => series.color) as ZRColor[]
+  const isEmpty = chartData.length === 0
+    || (chartData.length === 1 && chartData[0].name === '')
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
   const isWhiteTitle = props.titleColor === 'white'
@@ -297,7 +299,7 @@ export function DonutChart ({
         borderWidth: 0
       },
       formatter: name => {
-        const value = find(data, (pie) => pie.name === name)?.value
+        const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
@@ -311,7 +313,7 @@ export function DonutChart ({
     series: [
       {
         animation: false,
-        data: data.length === 0 ? buildEmptyData() : data,
+        data: chartData.length === 0 ? buildEmptyData() : chartData,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
