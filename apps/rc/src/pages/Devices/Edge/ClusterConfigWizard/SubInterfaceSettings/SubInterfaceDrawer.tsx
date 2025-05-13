@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
@@ -15,8 +15,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
-
 import { SubInterfaceSettingsFormType } from './types'
 import {
   extractSubnetFromEdgePortInfo,
@@ -28,9 +26,10 @@ interface SubInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: SubInterface
-  handleAdd: (data: SubInterface) => Promise<unknown>
-  handleUpdate: (data: SubInterface) => Promise<unknown>
+  handleAdd: (data: SubInterface) => void
+  handleUpdate: (data: SubInterface) => void
   allSubInterfaceVlans: { id: String, vlan: number }[]
+  allInterface?: EdgePortInfo[]
 }
 
 const getPortTypeOptions = () => {
@@ -51,15 +50,9 @@ const getIpModeOptions = () => {
 const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, data, handleAdd, handleUpdate } = props
+  const { visible, setVisible, data, handleAdd, handleUpdate, allInterface = [] } = props
   const [formRef] = Form.useForm()
   const { form: stepFormRef } = useStepFormContext<SubInterfaceSettingsFormType>()
-  const { portsStatus, lagsStatus } = useContext(ClusterConfigWizardContext)
-
-  const allEdgePortInfo = [
-    ...(portsStatus?.[props.serialNumber] || []),
-    ...(lagsStatus?.[props.serialNumber] || [])
-  ] as EdgePortInfo[]
 
   useEffect(() => {
     if(visible) {
@@ -96,9 +89,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
     try {
       if(data) {
-        await handleUpdate(payload)
+        handleUpdate(payload)
       } else {
-        await handleAdd(payload)
+        handleAdd(payload)
       }
     } catch (error) {
       // TODO error message not be defined
@@ -124,9 +117,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const getSubnetInfoWithoutCurrent = () => {
     const currentSubInterfaceId = formRef.getFieldValue('id') || ''
 
-    const allPhysicalInterfaceSubnets = allEdgePortInfo
-      .map(item => extractSubnetFromEdgePortInfo(item))
-      .filter(Boolean) as { id?: string, ip: string, subnetMask: string }[]
+    const allPhysicalInterfaceSubnets = (allInterface
+      ?.map(item => extractSubnetFromEdgePortInfo(item))
+      .filter(Boolean) as { id?: string, ip: string, subnetMask: string }[]) ?? []
 
     const allSubInterfaceSubnets = getAllSubInterfacesFromForm()
       .filter(item => item.id !== currentSubInterfaceId)

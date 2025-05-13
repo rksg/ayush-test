@@ -409,7 +409,7 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck &&
+            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck && !isCore &&
               hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
               ? [
                 {
