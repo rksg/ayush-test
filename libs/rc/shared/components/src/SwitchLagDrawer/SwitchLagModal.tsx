@@ -482,6 +482,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    setForceUpPort(targetSelectedKeys.includes(forceUpPort) ? forceUpPort : '')
     setSelectedPorts(targetSelectedKeys)
   }
 
