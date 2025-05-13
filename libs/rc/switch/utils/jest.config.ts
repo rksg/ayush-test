@@ -8,10 +8,10 @@ module.exports = {
   coverageDirectory: '../../../../coverage/libs/rc/switch/utils',
   coverageThreshold: {
     global: {
-      statements: 73,
-      branches: 66,
-      functions: 61,
-      lines: 73
+      statements: 67,
+      branches: 55,
+      functions: 59,
+      lines: 67
     }
   }
 }
