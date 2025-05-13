@@ -47,10 +47,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const subnetInfoForValidation = useMemo(() => {
     return [
-      ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet))
+      // eslint-disable-next-line max-len
+      ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
         .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
       // eslint-disable-next-line max-len
-      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet))
+      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
           ip: subInterface.ip ?? '',
           subnetMask: subInterface.subnet ?? ''

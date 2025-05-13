@@ -88,12 +88,14 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const subnetInfoForValidation = useMemo(() => {
     return [
-      ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet))
+      // eslint-disable-next-line max-len
+      ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
         .map(port => ({ ip: port.ip, subnetMask: port.subnet })),
-      ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet))
+      // eslint-disable-next-line max-len
+      ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
         .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
       // eslint-disable-next-line max-len
-      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet))
+      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
           ip: subInterface.ip ?? '',
           subnetMask: subInterface.subnet ?? ''
