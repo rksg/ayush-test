@@ -40,7 +40,8 @@ const rbacSnmpFields = [
   'userNames',
   'apSerialNumbers',
   'apNames',
-  'venueIds'
+  'venueIds',
+  'apActivations'
 ]
 
 export default function SnmpAgentTable () {
@@ -148,6 +149,10 @@ export default function SnmpAgentTable () {
           [{
             fieldName: 'venueIds',
             fieldText: $t({ defaultMessage: '<venuePlural></venuePlural>' })
+          },
+          {
+            fieldName: 'apActivations',
+            fieldText: $t({ defaultMessage: 'aps' })
           }],
           async () => {
             const ids = selectedRows.map(row => row.id)
