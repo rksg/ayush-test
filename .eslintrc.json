@@ -65,12 +65,12 @@
         "@nrwl/nx/enforce-module-boundaries": [
           "error",
           {
-            "enforceBuildableLibDependency": true,
+          "enforceBuildableLibDependency": true,
             "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "no-deps",
-                "onlyDependOnLibsWithTags": []
+                "sourceTag": "no-acx-lib-deps",
+                "notDependOnLibsWithTags": ["acx-lib"]
               },
               {
                 "sourceTag": "*",
