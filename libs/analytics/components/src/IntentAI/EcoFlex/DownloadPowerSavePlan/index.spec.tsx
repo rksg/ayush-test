@@ -1,5 +1,8 @@
-import { Provider, intentAIUrl }            from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { Provider, intentAIUrl }                     from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
+import { handleBlobDownloadFile }                    from '@acx-ui/utils'
 
 import { mockIntentContext }                                from '../../__tests__/fixtures'
 import { mockedIntentEcoFlex, mockedIntentAIPowerSavePlan } from '../__tests__/fixtures'
@@ -17,6 +20,12 @@ jest.mock('@acx-ui/components', () => ({
     </div>
   )
 }))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+const mockedDownload = jest.mocked(handleBlobDownloadFile)
 
 describe('DownloadPowerSavePlan', () => {
   const intent = mockedIntentEcoFlex
@@ -36,11 +45,18 @@ describe('DownloadPowerSavePlan', () => {
     })
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('renders download button', async () => {
     render(<DownloadPowerSavePlan />, { wrapper: Provider, route: { params } })
     expect(await screen.findByText('Download PowerSave Plan')).toBeVisible()
     expect(await screen.findByText(
       'The CSV is generated based on the last execution of the \'Energy Saving\' model.'
     )).toBeVisible()
+    await screen.findByRole('button', { name: 'Download PowerSave Plan' })
+    await userEvent.click(await screen.findByText('Download PowerSave Plan'))
+    await waitFor(() => expect(mockedDownload).toBeCalled())
   })
 })

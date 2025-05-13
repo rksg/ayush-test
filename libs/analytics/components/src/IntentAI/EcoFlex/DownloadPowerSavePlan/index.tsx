@@ -1,59 +1,61 @@
+import { useState } from 'react'
+
 import { kebabCase } from 'lodash'
 import { useIntl }   from 'react-intl'
 import sanitize      from 'sanitize-filename'
 
 import {
   Button,
-  Loader,
-  SuspenseBoundary,
   Tooltip
 } from '@acx-ui/components'
-import { DownloadOutlined } from '@acx-ui/icons'
+import { DownloadOutlined }       from '@acx-ui/icons'
+import { handleBlobDownloadFile } from '@acx-ui/utils'
 
-import { useIntentContext }              from '../../IntentContext'
-import { DownloadWrapper }               from '../../styledComponents'
-import { IntentDetail, useDownloadUrl }  from '../../useIntentDetailsQuery'
-import { useIntentAIPowerSavePlanQuery } from '../services'
-
-const { DefaultFallback: Spinner } = SuspenseBoundary
+import { useIntentContext }                    from '../../IntentContext'
+import { DownloadWrapper }                     from '../../styledComponents'
+import { useIntentParams }                     from '../../useIntentDetailsQuery'
+import { useLazyApPowerSaveDistributionQuery } from '../services'
 
 export function DownloadPowerSavePlan () {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  const queryResult = useIntentAIPowerSavePlanQuery()
-  const { url, filename } = useDownloadData(intent, queryResult)
+  const params = useIntentParams()
+  const [getApPowerSaveDistribution] = useLazyApPowerSaveDistributionQuery()
 
-  return <DownloadWrapper>
-    <Loader states={[queryResult]} fallback={<Spinner size='default' />}>
-      <Tooltip
-        placement='top'
-        title={$t({ defaultMessage:
-          'The CSV is generated based on the last execution of the \'Energy Saving\' model.'
-        })}
-      >
-        <Button
-          size='middle'
-          icon={<DownloadOutlined/>}
-          download={filename}
-          href={url}
-          type={'primary'}
-        >{$t({ defaultMessage: 'Download PowerSave Plan' })}</Button>
-      </Tooltip>
-    </Loader>
-  </DownloadWrapper>
-}
-
-export const useDownloadData = (
-  intent: IntentDetail, dataQuery: ReturnType<typeof useIntentAIPowerSavePlanQuery>
-) => {
-  const url = useDownloadUrl(dataQuery.data?.csv, 'text/csv')
+  const [isLoading, setIsLoading] = useState(false)
   const filename = sanitize([
-    kebabCase(intent.sliceValue),
-    'day-to-day'
+    'PowerSavePlan',
+    kebabCase(intent.sliceValue)
   ].join('-') + '.csv')
 
-  return {
-    url,
-    filename
+  const handleDownload = async () => {
+    setIsLoading(true)
+    try {
+      const result = await getApPowerSaveDistribution(params).unwrap()
+      if (result.csv) {
+        const blob = new Blob([result.csv], { type: 'text/csv' })
+        handleBlobDownloadFile(blob, filename)
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  return <DownloadWrapper>
+    <Tooltip
+      placement='top'
+      title={$t({ defaultMessage:
+          'The CSV is generated based on the last execution of the \'Energy Saving\' model.'
+      })}
+    >
+      <Button
+        size='middle'
+        icon={<DownloadOutlined/>}
+        onClick={handleDownload}
+        loading={isLoading}
+        disabled={isLoading}
+        type={'primary'}
+      >{$t({ defaultMessage: 'Download PowerSave Plan' })}</Button>
+    </Tooltip>
+  </DownloadWrapper>
 }

@@ -40,7 +40,10 @@ const emptyKpiResult: KpiData = {
   data: { timestamp: '', data: {} }, compareData: { timestamp: '', data: {} }
 }
 
-const { useIntentAIEcoKpiQuery, useApPowerSaveDistributionQuery } = intentAIApi.injectEndpoints({
+const {
+  useIntentAIEcoKpiQuery,
+  useLazyApPowerSaveDistributionQuery
+} = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIEcoKpi: build.query<KpiData,
     { root: string, sliceId: string, code: string }>({
@@ -122,7 +125,7 @@ const { useIntentAIEcoKpiQuery, useApPowerSaveDistributionQuery } = intentAIApi.
         ) => {
           return {
             data: response.intent.apPowerSaveDistribution,
-            csv: stringify(response.intent.apPowerSaveDistribution, {
+            csv: stringify(response.intent.apPowerSaveDistribution ?? [], {
               header: true,
               columns: [
                 { key: 'date', header: getIntl().$t({ defaultMessage: 'Date' }) },
@@ -145,7 +148,6 @@ export function useIntentAIEcoFlexQuery () {
   return useIntentAIEcoKpiQuery(params)
 }
 
-export function useIntentAIPowerSavePlanQuery () {
-  const params = useIntentParams()
-  return useApPowerSaveDistributionQuery(params)
+export {
+  useLazyApPowerSaveDistributionQuery
 }
