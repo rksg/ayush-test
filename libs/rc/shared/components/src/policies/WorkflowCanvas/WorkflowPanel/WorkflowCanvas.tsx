@@ -18,6 +18,7 @@ import ReactFlow, {
   NodeDimensionChange
 } from 'reactflow'
 
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { ActionType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 import {
@@ -60,6 +61,9 @@ export default function WorkflowCanvas (props: WorkflowProps) {
   const { $t } = useIntl()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+  const workflowValidationEnhancementFFToggle =
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
 
   const fitFirstView = () => {
     if (!initialNodes) return
@@ -169,7 +173,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeDrag={onCustomNodeDrag}
-      nodesDraggable={true}
+      nodesDraggable={workflowValidationEnhancementFFToggle ? true : false}
       nodesConnectable={false}
       minZoom={0.1}
       attributionPosition={'bottom-left'}
