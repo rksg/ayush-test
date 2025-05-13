@@ -222,6 +222,7 @@ jest.mock('@acx-ui/rc/services', () => {
           totalCount: 2
         } })
     ],
+    useStopChatMutation: jest.fn(() => [jest.fn()]),
     useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })

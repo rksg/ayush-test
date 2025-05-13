@@ -400,13 +400,15 @@ export default function AICanvasModal (props: {
             setChats([...streamingResponse.data].reverse())
             setTotalPages(streamingResponse.totalPages)
             setPage(1)
-          }, 1500)
+          }, 500)
         }
         setAiBotLoading(false)
+        setStreamingMessageIds([])
       }
     } catch (error) {
       console.error(error) // eslint-disable-line no-console
       setAiBotLoading(false)
+      setStreamingMessageIds([])
       getSessionChats(1, sessionId)
     }
   }
@@ -469,21 +471,19 @@ export default function AICanvasModal (props: {
 
   const handleStop = async () => {
     const [messageId] = streamingMessageIds
-    try {
-      await stopChat({
-        params: { sessionId, messageId },
-        payload: {
-          page: 1,
-          pageSize: 100,
-          sortOrder: 'DESC'
-        }
-      }).unwrap()
-      // setAiBotLoading(false)
-      // getSessionChats(1, sessionId)
-    } catch (error) {
-      // console.error(error) // eslint-disable-line no-console
-      setAiBotLoading(false)
-      getSessionChats(1, sessionId)
+    if (messageId) {
+      try {
+        await stopChat({
+          params: { sessionId, messageId },
+          payload: {
+            page: 1,
+            pageSize: 100,
+            sortOrder: 'DESC'
+          }
+        }).unwrap()
+      } catch (error) {
+        // console.error(error) // eslint-disable-line no-console
+      }
     }
   }
 
@@ -712,7 +712,7 @@ export default function AICanvasModal (props: {
                     <Button
                       data-testid='search-button'
                       icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageOutlined />}
-                      // disabled={aiBotLoading || searchText.length <= 1}
+                      disabled={aiBotLoading ? !streamingMessageIds.length : searchText.length <= 1}
                       onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
                     />
                   </div>
