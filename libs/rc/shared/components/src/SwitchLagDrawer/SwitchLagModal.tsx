@@ -345,6 +345,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk: async () => {
           form.setFieldValue('ports', undefined)
+          form.setFieldValue('forceUp', false)
+          setForceUpPort('')
+          setSelectedPorts([])
           changePortType(value)},
         onCancel: async () => {form.setFieldValue('portsType', currentPortType)}
       })
@@ -430,6 +433,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           $t({ defaultMessage: 'The maximum number of ports is {count}.' }, { count }))
       }
     }
+    setForceUpPort(form.getFieldValue('ports').includes(forceUpPort) ? forceUpPort : '')
     form.getFieldValue('ports')
     return Promise.resolve()
   }
@@ -482,7 +486,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
-    setForceUpPort(targetSelectedKeys.includes(forceUpPort) ? forceUpPort : '')
+    form.setFieldValue('forceUp', targetSelectedKeys[0] === forceUpPort)
     setSelectedPorts(targetSelectedKeys)
   }
 
