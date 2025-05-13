@@ -308,7 +308,7 @@ export async function lanPortSubnetValidator (
   allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
   if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
-    return
+    return Promise.resolve()
   }
 
   for(let item of allSubnetWithoutCurrent) {

@@ -196,8 +196,8 @@ export const InterfaceSettings = () => {
     }
 
     configWizardForm.validateFields()
-      .then(() => doCompatibleCheck(typeKey))
       .catch(() => {/* do nothing */})
+      .finally(() => doCompatibleCheck(typeKey))
   }, 1000), [configWizardForm])
 
   const haSettingHeader = <Typography.Title level={2}>

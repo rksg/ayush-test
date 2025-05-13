@@ -144,6 +144,34 @@ describe('Edge utils', () => {
     expect(mockErrorFn).not.toBeCalled()
   })
 
+  it('Test lanPortSubnetValidator with empty IP/subnet', async () => {
+    const currentSubnetInfo = {
+      ip: '1.1.1.1',
+      subnetMask: '255.255.255.0'
+    }
+    const allSubnetWithoutCurrent = [
+      {
+        ip: '',
+        subnetMask: '255.255.255.0'
+      },
+      {
+        ip: '3.3.3.3',
+        subnetMask: ''
+      },
+      {
+        ip: '',
+        subnetMask: ''
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
   it('Test lanPortSubnetValidator failed', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
