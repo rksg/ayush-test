@@ -62,7 +62,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const ipsecFieldName = ['lan', index, 'ipsecEnabled']
   const form = Form.useFormInstance()
   const isSoftGreTunnelToggleEnabled = useWatch<boolean>(softgreTunnelFieldName, form)
-  const isIpsecToggleEnabled = useWatch<boolean>(ipsecFieldName, form)
   const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
   const ipsecProfileId = useWatch<string>(['lan', index, 'ipsecProfileId'], form)
   const [isSoftGreProfileDisabled, setSoftGreProfileDisabled] = useState(false)
@@ -93,14 +92,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     if (!isIpSecOverNetworkEnabled) {
       return
     }
-    //eslint-disable-next-line no-console
-    console.log('portId:', portId,
-      '\tsoftGreProfileId:', softGreProfileId,
-      '\tipsecProfileId:', ipsecProfileId,
-      '\tisSoftGreTunnelToggleEnabled:', isSoftGreTunnelToggleEnabled,
-      '\tisIpsecToggleEnabled:', isIpsecToggleEnabled,
-      '\tusedProfileData: ', usedProfileData?.data,
-      '\t\toperations: ', usedProfileData?.operations)
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {

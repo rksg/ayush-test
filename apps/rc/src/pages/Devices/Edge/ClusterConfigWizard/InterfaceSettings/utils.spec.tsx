@@ -30,7 +30,8 @@ import {
   interfaceNameComparator,
   lagSettingsCompatibleCheck,
   transformFromApiToFormData,
-  transformFromFormToApiData } from './utils'
+  transformFromFormToApiData
+} from './utils'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
@@ -52,6 +53,140 @@ jest.mock('antd', () => {
   )
   return { ...antdComponents }
 })
+
+const mockSubInterfaceFormData = {
+  lagSubInterfaces: {
+    'serialNumber-1': {
+      0: [
+        {
+          id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+          ip: '1.1.3.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    },
+    'serialNumber-2': {
+      1: [
+        {
+          id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+          ip: '',
+          ipMode: 'DHCP',
+          portType: 'LAN',
+          subnet: '',
+          vlan: 3
+        }
+      ]
+    }
+  },
+  portSubInterfaces: {
+    'serialNumber-1': {
+      port_id_0: [
+        {
+          id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+          ip: '1.1.5.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 123
+        }
+      ],
+      port_id_1: []
+    },
+    'serialNumber-2': {
+      port_id_0: [],
+      port_id_1: [
+        {
+          id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+          ip: '1.1.2.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    }
+  }
+}
+
+const expectedSubInterfaceData = [
+  {
+    lags: [
+      {
+        lagId: 0,
+        subInterfaces: [
+          {
+            id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+            ip: '1.1.3.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1
+          }
+        ]
+      }
+    ],
+    ports: [
+      {
+        portId: 'port_id_0',
+        subInterfaces: [
+          {
+            id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+            ip: '1.1.5.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 123
+          }
+        ]
+      },
+      {
+        portId: 'port_id_1',
+        subInterfaces: []
+      }
+    ],
+    serialNumber: 'serialNumber-1'
+  },
+  {
+    lags: [
+      {
+        lagId: 1,
+        subInterfaces: [
+          {
+            id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+            ip: '',
+            ipMode: 'DHCP',
+            portType: 'LAN',
+            subnet: '',
+            vlan: 3
+          }
+        ]
+      }
+    ],
+    ports: [
+      {
+        portId: 'port_id_0',
+        subInterfaces: []
+      },
+      {
+        portId: 'port_id_1',
+        subInterfaces: [
+          {
+            id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+            ip: '1.1.2.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1
+          }
+        ]
+      }
+    ],
+    serialNumber: 'serialNumber-2'
+  }
+]
 
 describe('Interface Compatibility Check', () => {
   it('when node is missing in port setting', async () => {
@@ -452,7 +587,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -506,7 +641,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -585,9 +720,12 @@ describe('data transformer', () => {
     // eslint-disable-next-line max-len
     mockData.lagSettings[0].lags[0].portType = EdgePortTypeEnum.WAN
     mockData.lagSettings[0].lags[0].corePortEnabled = true
+    mockData.portSubInterfaces = mockSubInterfaceFormData.portSubInterfaces
+    mockData.lagSubInterfaces = mockSubInterfaceFormData.lagSubInterfaces
     const result = transformFromFormToApiData(
       mockData as unknown as InterfaceSettingsFormType,
-      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      true
     )
 
     expect(result).toStrictEqual({
@@ -610,7 +748,8 @@ describe('data transformer', () => {
           timeoutSeconds: mockData.timeout,
           ports: item.interfaces
         }
-      }).filter(item => Boolean(item))
+      }).filter(item => Boolean(item)),
+      subInterfaceSettings: expectedSubInterfaceData
     })
   })
 })

@@ -27,7 +27,7 @@ const apViewModelRbacPayloadFields = [
   'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
   'meshEnabled', 'lastUpdatedTime', 'deviceModelType', 'meshStatus',
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus',
-  'switchId', 'switchPort']
+  'switchId', 'switchPort', 'poePort']
 
 const apViewModelPayloadFields = [
   'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
