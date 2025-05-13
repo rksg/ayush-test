@@ -8,7 +8,7 @@ import TextArea    from 'antd/lib/input/TextArea'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { EdgeClusterStatus, EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeIpModeEnum, EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
