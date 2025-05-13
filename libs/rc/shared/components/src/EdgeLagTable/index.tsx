@@ -12,6 +12,7 @@ import {
   EdgePort,
   EdgeSerialNumber,
   EdgeUrlsInfo,
+  SubInterface,
   defaultSort,
   getEdgePortDisplayName,
   getEdgePortIpModeString,
@@ -39,6 +40,7 @@ interface EdgeLagTableProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
   actionScopes?: { [key in string]: ScopeKeys }
+  subInterfaceList?: SubInterface[]
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -46,7 +48,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
-    actionScopes
+    actionScopes, subInterfaceList
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -252,6 +254,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         vipConfig={vipConfig}
         onAdd={onAdd}
         onEdit={onEdit}
+        subInterfaceList={subInterfaceList}
       />
     </>
   )

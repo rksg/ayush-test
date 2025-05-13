@@ -6,7 +6,7 @@ import _                       from 'lodash'
 import { rest }                from 'msw'
 
 import { Features, useIsSplitOn }                                                                                                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityNodeError, CompatibilityStatusEnum }                                                                                                        from '@acx-ui/rc/components'
+import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                 from '@acx-ui/rc/components'
 import { edgeApi }                                                                                                                                                from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                                        from '@acx-ui/store'
@@ -14,8 +14,7 @@ import { mockServer, render, screen, waitFor, within }                          
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import * as LagForm       from './LagForm'
-import * as PortForm      from './PortForm'
+import { PortForm }       from './PortForm'
 import * as VirtualIpForm from './VirtualIpForm'
 
 import { InterfaceSettings } from '.'
@@ -34,15 +33,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('./LagForm', () => ({
-  ...jest.requireActual('./LagForm'),
-  LagForm: () => <div data-testid='rc-LagForm' />
+  LagForm: () => <div data-testid='rc-LagForm'></div>
+}))
+jest.mock('./SubInterfaceForm', () => ({
+  SubInterfaceForm: () => <div data-testid='rc-SubInterfaceForm' />
 }))
 jest.mock('./PortForm', () => ({
-  ...jest.requireActual('./PortForm'),
-  PortForm: () => <div data-testid='rc-PortForm' />
+  PortForm: jest.fn()
+}))
+jest.mock('./HaSettingForm', () => ({
+  HaSettingForm: () => <div data-testid='rc-HaSettingForm' />
 }))
 jest.mock('./Summary', () => ({
-  ...jest.requireActual('./Summary'),
   Summary: () => <div data-testid='rc-Summary' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
@@ -60,7 +62,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         </div>))
       }
     </div>,
-  EdgeHaSettingsForm: () => <div data-testid='rc-HaSettingForm' />
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const { mockLanInterfaces } = EdgePortConfigFixtures
@@ -168,7 +170,36 @@ describe('InterfaceSettings', () => {
     await within(stepsForm).findByTestId('rc-Summary')
   })
 
+  it('should show Sub-Interface setting step when the Core Access FF is ON', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_AA_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    render(<Provider>
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <InterfaceSettings />
+      </ClusterConfigWizardContext.Provider>
+    </Provider>,
+    {
+      route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+    })
+
+    const stepsForm = await screen.findByTestId('steps-form')
+    const nextBtn = screen.getByRole('button', { name: 'Next' })
+    within(stepsForm).getByTestId('rc-LagForm')
+    await userEvent.click(nextBtn)
+    within(stepsForm).getByTestId('rc-PortForm')
+    await userEvent.click(nextBtn)
+    within(stepsForm).getByTestId('rc-SubInterfaceForm')
+    await userEvent.click(nextBtn)
+    await within(stepsForm).findByTestId('rc-HaSettingForm')
+    await userEvent.click(nextBtn)
+
+    await within(stepsForm).findByTestId('rc-Summary')
+  })
+
   it('should redirect to cluster list page', async () => {
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff !== Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
     jest.spyOn(VirtualIpForm, 'VirtualIpForm')
       .mockImplementationOnce(() => <div data-testid='rc-VirtualIpForm'/>)
 
@@ -252,7 +283,7 @@ describe('InterfaceSettings', () => {
   })
 
   it('should change ipMode into STATIC when port type changed to LAN', async () => {
-    jest.spyOn(PortForm, 'PortForm')
+    jest.mocked(PortForm)
       .mockImplementation(() => <MockedPortForm portIfName='port1'/>)
 
     render(<Provider>
@@ -283,7 +314,7 @@ describe('InterfaceSettings', () => {
   })
 
   it('should change nat into true when port type changed to WAN', async () => {
-    jest.spyOn(PortForm, 'PortForm')
+    jest.mocked(PortForm)
       .mockImplementation(() => <MockedPortForm portIfName='port2'>
         <Form.Item name={[0, 'natEnabled']} valuePropName='checked'>
           <Switch data-testid='natEnabled' />
@@ -316,7 +347,7 @@ describe('InterfaceSettings', () => {
   })
 
   it('should correctly handle corePortEnabled change', async () => {
-    jest.spyOn(PortForm, 'PortForm')
+    jest.mocked(PortForm)
       .mockImplementation(() => <MockedPortForm portIfName='port2'/>)
 
     render(<Provider>
@@ -377,7 +408,7 @@ describe('InterfaceSettings', () => {
   })
 
   it('should do compatibility check on PortForm', async () => {
-    jest.spyOn(PortForm, 'PortForm')
+    jest.mocked(PortForm)
       .mockImplementation(() => <MockedPortForm portIfName='port2'/>)
 
     render(<Provider>
@@ -404,9 +435,6 @@ describe('InterfaceSettings', () => {
   })
 
   it('should do compatibility check on LagForm', async () => {
-    jest.spyOn(LagForm, 'LagForm')
-      .mockImplementation(() => <div data-testid='rc-LagForm'></div>)
-
     render(<Provider>
       <ClusterConfigWizardContext.Provider value={defaultCxtData}>
         <InterfaceSettings />
