@@ -709,7 +709,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onClose={onClose}
-            width={isSwitchLagForceUpEnabled ? 900 : 644}
+            width={isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC ? 900 : 644}
             footer={footerForDrawer}
             children={lagForm}
           />
@@ -717,7 +717,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onCancel={onClose}
-            width={isSwitchLagForceUpEnabled ? 900 : 644}
+            width={isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC ? 900 : 644}
             footer={footer}
             destroyOnClose={true}
             children={lagForm}
