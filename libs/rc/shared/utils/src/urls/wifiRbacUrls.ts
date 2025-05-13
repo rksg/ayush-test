@@ -485,6 +485,15 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  bindingWorkflowOnNetwork: {
+    method: 'PUT',
+    url: '	/wifiNetworks/:networkId/workflows/:workflowId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getVenueApIpMode: {
     method: 'GET',
     url: '/venues/:venueId/apIpModeSettings',
