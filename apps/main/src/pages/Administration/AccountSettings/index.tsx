@@ -74,8 +74,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && !isDelegationMode() && (isMsp || (isLoginSSoMspEcEnabled && isMspEc)
-    || (isLoginSSoTechpartnerEnabled && isTechPartner) || isRec)
+    && !isDelegationMode() && (isMsp || isRec || (isLoginSSoMspEcEnabled && isMspEc)
+    || (isLoginSSoTechpartnerEnabled && isTechPartner))
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
   const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
