@@ -362,7 +362,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const getCurrentBandMode: (() => BandModeEnum) = useCallback(() => {
     return (currentApBandModeData?.useVenueOrApGroupSettings ?? true)
-      ? (apGroupData ? venueBandMode : apGroupBandMode)
+      ? (apGroupData ? apGroupBandMode : venueBandMode)
       : currentApBandModeData?.bandMode
   }, [currentApBandModeData, apGroupBandMode, venueBandMode, apGroupData])
 
@@ -802,7 +802,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
     if (apBandModeSavedData) {
       const initApBandModeData: ApBandModeSettingsV1Dot1 = {
         useVenueOrApGroupSettings: apBandModeSavedData.useVenueOrApGroupSettings ?? true,
-        bandMode: apBandModeSavedData.bandMode ?? (apGroupData ? venueBandMode : apGroupBandMode)
+        bandMode: apBandModeSavedData.bandMode ?? (apGroupData ? apGroupBandMode : venueBandMode )
       }
       setInitApBandModeData({ ...initApBandModeData } as ApBandModeSettingsV1Dot1)
       setCurrentApBandModeData({ ...initApBandModeData } as ApBandModeSettingsV1Dot1)
@@ -1173,7 +1173,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab)
     }
     // 3. update data
-    const useSettings = isUseVenue ? (apGroupData ? venueRef.current : apGroupRef.current) : cachedDataRef.current
+    const useSettings = isUseVenue ? (apGroupData ? apGroupRef.current : venueRef.current) : cachedDataRef.current
     const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab) : undefined
     if (updatedSettings) {
       updateFormData(applyState(updatedState, updatedSettings))

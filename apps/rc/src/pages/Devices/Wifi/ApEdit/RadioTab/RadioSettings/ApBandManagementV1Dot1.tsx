@@ -40,7 +40,7 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
   const [bandCombinationOptions, setBandCombinationOptions] = useState<SelectItemOption[]>([])
 
   const getCurrentBandMode = useCallback(() => {
-    return (currentApBandModeData?.useVenueOrApGroupSettings ? (apGroupData ? venueBandMode : apGroupBandMode) : currentApBandModeData?.bandMode)
+    return (currentApBandModeData?.useVenueOrApGroupSettings ? (apGroupData ? apGroupBandMode : venueBandMode) : currentApBandModeData?.bandMode)
   }, [currentApBandModeData, venueBandMode, apGroupBandMode, apGroupData])
 
   const onChangeBandCombination = (value: BandModeEnum) => {
@@ -76,7 +76,6 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
         >
           {
             <Radio.Group
-              data-testid='ap-bandManagement'
               value={currentApBandModeData?.useVenueOrApGroupSettings}
               onChange={(e) => {
                 setCurrentApBandModeData({
@@ -86,7 +85,7 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
               }}
             >
               <Space direction='vertical'>
-                <Radio value={true} data-testid='ap-bandManagement-useVenueOrApGroupSettings'>
+                <Radio value={true}>
                   <FormattedMessage
                     defaultMessage={'Use inherited settings from <venueOrApGroupName></venueOrApGroupName>'}
                     values={{
@@ -96,7 +95,7 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
                     }}
                   />
                 </Radio>
-                <Radio value={false} data-testid='ap-bandManagement-customize'>
+                <Radio value={false}>
                   {$t({ defaultMessage: 'Customize settings' })}
                 </Radio>
               </Space>
