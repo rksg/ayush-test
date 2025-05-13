@@ -472,8 +472,10 @@ export default function AICanvasModal (props: {
         content: <div>
           {$t({ defaultMessage: 'Do you want to save your changes to Canvas:' })}
           <span style={{ padding: ' 0 1px 0 3px', fontWeight: '700' }}>
-            {canvasRef?.current?.currentCanvas?.name}</span>?
-          <div>{$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}</div>
+            {canvasRef?.current?.currentCanvas?.name}</span>? 
+          <span style={{ paddingLeft: '3px' }}>
+            {$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}
+          </span>
         </div>,
         customContent: {
           action: 'CUSTOM_BUTTONS',
