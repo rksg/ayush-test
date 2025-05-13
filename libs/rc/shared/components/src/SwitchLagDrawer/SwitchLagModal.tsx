@@ -220,14 +220,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               return p.key ? getSameTypePortList(portsType).includes(p.key) : false
             }))
         }
+        let forceUpPortVal = editData[0]?.forceUpPort || ''
         if(isSwitchLagForceUpEnabled){
-          setForceUpPort(editData[0].forceUpPort || '')
+          setForceUpPort(forceUpPortVal)
         }
         form.setFieldsValue({
           ...editData[0],
           portsType,
           ...(isSwitchLagForceUpEnabled &&
-            { forceUp: editData[0].forceUpPort && editData[0].forceUpPort !== '' })
+            { forceUp: forceUpPortVal !== '' })
         })
       }
     }
