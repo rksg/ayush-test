@@ -11,6 +11,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/chats',
     newApi: true
   },
+  streamChats: {
+    method: 'post',
+    url: '/ruckusAi/chats?stream=true',
+    newApi: true
+  },
   getChat: {
     method: 'get',
     url: '/ruckusAi/chats/:sessionId',
@@ -109,6 +114,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
   removeDashboards: {
     method: 'delete',
     url: '/ruckusAi/dashboards',
+    newApi: true
+  },
+  patchDashboard: {
+    method: 'PATCH',
+    url: '/ruckusAi/dashboards/:dashboardId',
     newApi: true
   },
   sendFeedback: {
