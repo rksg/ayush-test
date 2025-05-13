@@ -123,13 +123,13 @@ describe('SnmpAgentTable', () => {
     let target = mockTableResult.data[0]
     let row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
 
     target = mockTableResult.data[1]
     row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
     /*
     expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
@@ -182,11 +182,11 @@ describe('SnmpAgentTable', () => {
     await userEvent.click(within(row).getByRole('radio'))
 
     // Click delete button
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
     // Verify warning modal appears
     expect(await screen.findByText(
-      'You are unable to delete this record due to its usage in Venue'
+      'You are unable to delete this record due to its usage in venues'
     )).toBeVisible()
 
     expect(screen.getByRole('button', { name: /OK/ })).toBeVisible()
@@ -216,7 +216,7 @@ describe('SnmpAgentTable', () => {
       await userEvent.click(within(row).getByRole('radio'))
 
       // Click delete button
-      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+      await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
       // Verify error message appears
       expect(await screen.findByText(
@@ -261,7 +261,7 @@ describe('SnmpAgentTable', () => {
       await userEvent.click(within(row).getByRole('radio'))
 
       // Click delete button
-      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+      await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
       // Verify confirmation dialog appears
       expect(await screen.findByText(
@@ -269,11 +269,11 @@ describe('SnmpAgentTable', () => {
       )).toBeVisible()
 
       // Verify Delete and Cancel buttons are present
-      expect(screen.getByRole('button', { name: /Delete/ })).toBeVisible()
+      expect(screen.getByRole('button', { name: /Delete SNMP Agent/ })).toBeVisible()
       expect(screen.getByRole('button', { name: /Cancel/ })).toBeVisible()
 
       // Click Delete to confirm
-      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+      await userEvent.click(screen.getByRole('button', { name: /Delete SNMP Agent/ }))
 
       // Verify delete API was called
       expect(deleteFn).toHaveBeenCalled()
@@ -306,7 +306,7 @@ describe('SnmpAgentTable', () => {
       await userEvent.click(within(row).getByRole('radio'))
 
       // Click delete button
-      await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+      await userEvent.click(screen.getByRole('button', { name: /^Delete$/ }))
 
       // Click Cancel button
       await userEvent.click(screen.getByRole('button', { name: /Cancel/ }))
