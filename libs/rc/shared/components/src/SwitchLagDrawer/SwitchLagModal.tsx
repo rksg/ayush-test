@@ -593,7 +593,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             showSearch
             showSelectAll={false}
             dataSource={[...finalAvailablePorts]}
-            render={item => (
+            render={(item: TransferItem) => (
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                 <span>{item.name}</span>
                 {item.name === forceUpPort &&

@@ -72,7 +72,8 @@ export const SwitchPortViewModelQueryFields = [
   'stickyMacAclAllowList',
   'stickyMacAclAllowCount',
   'switchMacAcl',
-  'stackingNeighborPort'
+  'stackingNeighborPort',
+  'lagForceUpPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
