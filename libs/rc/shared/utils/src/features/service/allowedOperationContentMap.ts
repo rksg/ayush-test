@@ -20,6 +20,7 @@ import {
   PropertyUrlsInfo,
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo,
+  SamlIdpProfileUrls,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -301,6 +302,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
+  },
+  [PolicyType.SAML_IDP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SamlIdpProfileUrls.createSamlIdpProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SamlIdpProfileUrls.updateSamlIdpProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SamlIdpProfileUrls.deleteSamlIdpProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SamlIdpProfileUrls.getSamlIdpProfileViewDataList)]
   },
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
