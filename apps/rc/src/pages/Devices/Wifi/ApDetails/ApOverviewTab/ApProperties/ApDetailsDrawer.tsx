@@ -45,10 +45,10 @@ import {
   useApContext,
   ApLldpNeighbor,
   ApRfNeighbor } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                from '@acx-ui/react-router-dom'
-import { SwitchScopes }                         from '@acx-ui/types'
-import { useUserProfileContext, hasPermission } from '@acx-ui/user'
-import { getOpsApi, CatchErrorResponse, noDataDisplay }        from '@acx-ui/utils'
+import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { useUserProfileContext, hasPermission }         from '@acx-ui/user'
+import { getOpsApi, CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../../../hooks'
 import { NewApNeighborTypes }   from '../../ApNeighbors/constants'
