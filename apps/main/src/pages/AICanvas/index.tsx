@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Divider, Form, Spin }  from 'antd'
-import { debounce, difference } from 'lodash'
-import moment                   from 'moment'
-import { DndProvider }          from 'react-dnd'
-import { HTML5Backend }         from 'react-dnd-html5-backend'
-import { useIntl }              from 'react-intl'
-import { v4 as uuidv4 }         from 'uuid'
+import { Divider, Form, InputRef, Spin } from 'antd'
+import { debounce, difference }          from 'lodash'
+import moment                            from 'moment'
+import { DndProvider }                   from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { v4 as uuidv4 }                  from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import {
@@ -192,8 +192,10 @@ export default function AICanvasModal (props: {
   // eslint-disable-next-line max-len
   const isInitCanvasShown = !!editCanvasId || openNewCanvas || localStorage.getItem('show-canvas') == 'true'
   const canvasRef = useRef<CanvasRef>(null)
-  const { $t } = useIntl()
   const scrollRef = useRef(null)
+  const searchInputRef = useRef<InputRef>(null)
+
+  const { $t } = useIntl()
   const [form] = Form.useForm()
   const [streamChatsAi] = useStreamChatsAiMutation()
 
@@ -481,6 +483,7 @@ export default function AICanvasModal (props: {
             sortOrder: 'DESC'
           }
         }).unwrap()
+        searchInputRef.current?.focus()
       } catch (error) {
         // console.error(error) // eslint-disable-line no-console
       }
@@ -593,6 +596,8 @@ export default function AICanvasModal (props: {
     localStorage.setItem('show-canvas', value.toString())
   }
 
+  const isStopAllowed = aiBotLoading && !!streamingMessageIds.length
+
   return (
     <UI.ChatModal
       visible={isModalOpen}
@@ -695,6 +700,7 @@ export default function AICanvasModal (props: {
                       <Form.Item
                         name='searchInput'
                         children={<UI.Input
+                          ref={searchInputRef}
                           autoFocus
                           maxLength={maxSearchTextNumber}
                           data-testid='search-input'
@@ -709,12 +715,14 @@ export default function AICanvasModal (props: {
                       searchText.length > 0 && <div className='text-counter'>
                         {searchText.length + '/' + maxSearchTextNumber}</div>
                     }
-                    <Button
-                      data-testid='search-button'
-                      icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageOutlined />}
-                      disabled={aiBotLoading ? !streamingMessageIds.length : searchText.length <= 1}
-                      onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
-                    />
+                    <Tooltip title={isStopAllowed ? $t({ defaultMessage: 'Stop generating' }) : ''}>
+                      <Button
+                        data-testid='search-button'
+                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageOutlined />}
+                        disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
+                        onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
+                      />
+                    </Tooltip>
                   </div>
                 </Loader>
               </div>
