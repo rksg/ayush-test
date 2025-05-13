@@ -213,12 +213,14 @@ export function ApProperties (props:{
           </Descriptions>
         </UI.Container>
       </Card>
-      <ApDetailsDrawer
-        visible={visible}
-        setVisible={setVisible}
-        currentAP={currentAP as ApViewModel}
-        apDetails={apDetails as ApDetails}
-      />
+      {
+        visible && (<ApDetailsDrawer
+          visible={visible}
+          setVisible={setVisible}
+          currentAP={currentAP as ApViewModel}
+          apDetails={apDetails as ApDetails}
+        />)
+      }
     </Loader>
   )
 }

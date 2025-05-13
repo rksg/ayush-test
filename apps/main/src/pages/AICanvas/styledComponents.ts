@@ -49,6 +49,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  padding-bottom: 60px;
   .hint{
     font-style: italic;
     color: var(--acx-neutrals-60);
@@ -161,6 +162,7 @@ display: flex;
 .chat-wrapper {
   overflow: hidden;
   position: relative;
+  border-radius: 24px 0 0 24px;
 }
 .chat {
   border-top-left-radius: 24px;
@@ -364,6 +366,35 @@ display: flex;
       }
       .chat-bubble {
         align-self: flex-start;
+        &.loading {
+          position: relative;
+          font-style: italic;
+          overflow: hidden;
+          justify-content: flex-start;
+          background: transparent;
+          color: var(--acx-neutrals-70);
+          font-weight: 400;
+        }
+        .loader {
+          display: inline-block;
+          width: 24px;
+          max-height: 16px;
+          aspect-ratio: 3;
+          --_g: no-repeat radial-gradient(circle closest-side,var(--acx-neutrals-70) 90%,#0000);
+          background: 
+            var(--_g) 0%   50%,
+            var(--_g) 50%  50%,
+            var(--_g) 100% 50%;
+          background-size: calc(100%/5) 50%;
+          animation: l3 1s infinite linear;
+          margin-right: 9px;
+        }
+        @keyframes l3 {
+            20%{background-position:0%   0%, 50%  50%,100%  50%}
+            40%{background-position:0% 100%, 50%   0%,100%  50%}
+            60%{background-position:0%  50%, 50% 100%,100%   0%}
+            80%{background-position:0%  50%, 50%  50%,100% 100%}
+        }
       }
       .ai-message-tail {
         display: grid;
