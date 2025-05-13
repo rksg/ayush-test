@@ -106,9 +106,14 @@ export default function SelectPolicyForm () {
 
   const sets = [
     {
-      type: isSwitchMacAclEnabled ? PolicyType.SWITCH_ACCESS_CONTROL : PolicyType.ACCESS_CONTROL,
-      categories: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]:
-        [RadioCardCategory.WIFI]
+      type: PolicyType.ACCESS_CONTROL,
+      categories: [RadioCardCategory.WIFI],
+      disabled: isSwitchMacAclEnabled
+    },
+    {
+      type: PolicyType.ACCESS_CONTROL_CONSOLIDATION,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      disabled: !isSwitchMacAclEnabled
     },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },

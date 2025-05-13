@@ -159,6 +159,15 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: ['DELETE:/switchAccessControlProfiles/{id}'],
     [PolicyOperation.LIST]: ['POST:/switchAccessControlProfiles/query']
   },
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: {
+    [PolicyOperation.CREATE]: ['POST:/accessControlProfiles', 'POST:/switchAccessControlProfiles'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.EDIT]: ['PUT:/accessControlProfiles/{id}', 'PUT:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.DELETE]: ['DELETE:/accessControlProfiles/{id}', 'DELETE:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.LIST]: ['POST:/accessControlProfiles/query', 'POST:/switchAccessControlProfiles/query']
+  },
   [PolicyType.LAYER_2_POLICY]: {
     [PolicyOperation.CREATE]: ['POST:/l2AclPolicies'],
     [PolicyOperation.EDIT]: ['PUT:/l2AclPolicies/{id}'],
