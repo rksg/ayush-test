@@ -9,6 +9,7 @@ import {
   ClusterHaLoadDistributionEnum,
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  convertEdgeNetworkIfConfigToApiPayload,
   EdgeClusterStatus,
   EdgePortInfo,
   EdgeLag,
@@ -308,7 +309,9 @@ export const interfaceCompatibilityCheck = (
       if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
-      if (port.corePortEnabled) result.errors.corePorts.value++
+      if (port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[port.portType]) {
         result.errors.portTypes[port.portType] = {
           isError: false, value: 1
@@ -347,7 +350,9 @@ export const lagSettingsCompatibleCheck = (
       // if (!lag.lagEnabled) return
 
       result.errors.ports.value++
-      if (lag.corePortEnabled) result.errors.corePorts.value++
+      if (lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[lag.portType]) {
         result.errors.portTypes[lag.portType] = {
           isError: false, value: 1
@@ -365,16 +370,7 @@ export const lagSettingsCompatibleCheck = (
 
 const processLagSettings = (data: InterfaceSettingsFormType) => {
   const processLagConfig = (lags: EdgeLag[]) => {
-    return lags.map(lag => {
-      let corePortEnabled = lag.corePortEnabled
-      if(lag.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...lag,
-        corePortEnabled
-      }
-    })
+    return lags.map(lag => convertEdgeNetworkIfConfigToApiPayload(lag)) as EdgeLag[]
   }
 
   const lagSettings = []
@@ -389,16 +385,7 @@ const processLagSettings = (data: InterfaceSettingsFormType) => {
 
 const processPortSettings = (data: InterfaceSettingsFormType) => {
   const processPortConfig = (ports: EdgePort[]) => {
-    return ports.map(port => {
-      let corePortEnabled = port.corePortEnabled
-      if(port.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...port,
-        corePortEnabled
-      }
-    })
+    return ports.map(port => convertEdgeNetworkIfConfigToApiPayload(port)) as EdgePort[]
   }
 
   const portSettings = []
