@@ -142,7 +142,7 @@ export default function ServiceCatalog () {
         ...(isPortalProfileEnabled ? [
           {
             type: ServiceType.PORTAL_PROFILE,
-            categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
           }
         ] : [
           { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
