@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState, useRef } from 'react'
 
 import { Divider, Menu, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -53,6 +53,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useGetDashboardsQuery,
+  usePatchDashboardMutation,
   useUpdateDashboardsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -139,6 +140,7 @@ export default function Dashboard () {
   const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -184,11 +186,13 @@ export default function Dashboard () {
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
-  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
   useEffect(() => {
-    if (!isCanvasQ2Enabled) {
+    if (!isDashboardCanvasEnabled) {
       setDashboardId(DEFAULT_DASHBOARD_ID)
     }
   }, [])
@@ -208,7 +212,7 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
+    if (isDashboardCanvasEnabled) {
       setLayout({
         ...layout,
         calWidth: getCalculatedColumnWidth(menuCollapsed)
@@ -217,7 +221,7 @@ export default function Dashboard () {
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
       const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
       if (selectedDashboard) {
         const { canvasId, sections, groups } = getCanvasData(
@@ -241,7 +245,7 @@ export default function Dashboard () {
         getDashboardsQuery={getDashboardsQuery}
       />
       {
-        <Loader states={[{ isLoading: isCanvasQ2Enabled ? dashboardsLoading : false }]}>{
+        <Loader states={[{ isLoading: isDashboardCanvasEnabled ? dashboardsLoading : false }]}>{
 
           dashboardId === DEFAULT_DASHBOARD_ID
             ? <>
@@ -251,6 +255,7 @@ export default function Dashboard () {
                   borderColor: 'var(--acx-neutrals-30)',
                   margin: '20px 0px 5px 0px' }}/>
               <ContentSwitcher
+                tabId={'dashboard-devices'}
                 tabDetails={tabDetails}
                 size='large'
                 defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
@@ -262,6 +267,7 @@ export default function Dashboard () {
                     </TenantLink>
                   </UI.Wrapper>
                 }
+                tabPersistence={enabledUXOptFeature}
               />
               <Divider dashed
                 style={{
@@ -312,6 +318,9 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
   const [previewData, setPreviewData] = useState([] as Canvas[])
@@ -319,6 +328,8 @@ function DashboardPageHeader (props: {
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
+  const [patchDashboard] = usePatchDashboardMutation()
+  const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -399,14 +410,36 @@ function DashboardPageHeader (props: {
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters, true)
+    return () => {
+      if (isCanvasQ2Enabled && shouldCleanupDashboardIdRef.current) {
+        handleClearNotifications(shouldCleanupDashboardIdRef.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  const handleDashboardChange = (value: string) => {
-    //TODO: patch API to clear notifications
+  const handleClearNotifications = async (value: string) => {
+    await patchDashboard({
+      params: { dashboardId: value }
+    })
+    shouldCleanupDashboardIdRef.current = undefined
+  }
+
+  const handleChangeDashboard = async (value: string) => {
+    const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+    const newDashboard = dashboardList.find(item => item.id === value)
+    const hasDiff = (dashboard?: DashboardInfo) =>
+      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
+
+    if (currentDashboard && hasDiff(currentDashboard)) {
+      handleClearNotifications(currentDashboard.id)
+    }
+    if (newDashboard && hasDiff(newDashboard)) {
+      shouldCleanupDashboardIdRef.current = value
+    }
     setDashboardId(value)
   }
 
@@ -431,11 +464,11 @@ function DashboardPageHeader (props: {
         dropdownMatchSelectWidth={false}
         dropdownClassName='dashboard-select-dropdown'
         optionLabelProp='label'
-        onChange={handleDashboardChange}
+        onChange={handleChangeDashboard}
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
-            const hasUpdated = item.author && item.diffWidgetIds && item.diffWidgetIds.length > 0
+            const hasUpdated = !!item.authorId && !!item.diffWidgetIds?.length
             const icon = item.visible || isDefault
               ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
 
@@ -502,7 +535,7 @@ function DashboardPageHeader (props: {
       ]}
     />
 
-    { isCanvasQ2Enabled && <>
+    { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
@@ -536,17 +569,18 @@ function DashboardPageHeader (props: {
         onClose={() => setImportDashboardDrawerVisible(false)}
       />
 
-      { <PreviewDashboardModal
+      <PreviewDashboardModal
         data={previewData}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
-      />}
+      />
 
-      { <AICanvasModal
+      <AICanvasModal
         isModalOpen={canvasModalVisible}
         setIsModalOpen={setCanvasModalVisible}
         editCanvasId={editCanvasId}
-      />}
+        openNewCanvas={editCanvasId ? !editCanvasId : true}
+      />
 
     </>}
 

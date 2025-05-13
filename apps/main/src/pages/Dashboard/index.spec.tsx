@@ -83,7 +83,7 @@ describe('Dashboard', () => {
   it('switches between tabs', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS_Q2)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
-    expect(localStorage.getItem('dashboard-tab')).toBe(undefined)
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe(undefined)
 
     const wifiWidgets = [
       'TrafficByVolume',
@@ -93,7 +93,7 @@ describe('Dashboard', () => {
     wifiWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
     fireEvent.click(screen.getByRole('radio', { name: 'Switch' }))
-    expect(localStorage.getItem('dashboard-tab')).toBe('switch')
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe('switch')
 
     const switchWidgets = [
       'SwitchesTrafficByVolume',
@@ -105,7 +105,7 @@ describe('Dashboard', () => {
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
     fireEvent.click(screen.getByRole('radio', { name: 'RUCKUS Edge' }))
-    expect(localStorage.getItem('dashboard-tab')).toBe('edge')
+    expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe('edge')
 
     const edgeWidgets = [
       'TopEdgesByTraffic',
@@ -171,6 +171,7 @@ describe('Dashboard', () => {
   describe('Dashboard canvas', () => {
     const mockCloneCanvas = jest.fn()
     const mockDeleteCanvas = jest.fn()
+    const mockUpdateDashboard = jest.fn()
     jest.mocked(useGetCanvasesQuery).mockImplementation(() => ({
       data: canvasList,
       refetch: jest.fn()
@@ -192,6 +193,13 @@ describe('Dashboard', () => {
         rest.delete(
           RuckusAiChatUrlInfo.removeDashboards.url,
           (req, res, ctx) => res(ctx.json({}))
+        ),
+        rest.post(
+          RuckusAiChatUrlInfo.updateDashboards.url,
+          (req, res, ctx) => {
+            mockUpdateDashboard()
+            return res(ctx.json({}))
+          }
         ),
         rest.get(
           RuckusAiChatUrlInfo.getCanvasById.url,
@@ -216,6 +224,8 @@ describe('Dashboard', () => {
     afterEach(async () => {
       mockCloneCanvas.mockClear()
       mockDeleteCanvas.mockClear()
+      mockUpdateDashboard.mockClear()
+      mockLazyGetCanvasesUnwrap.mockClear()
       Modal.destroyAll()
     })
 
@@ -526,5 +536,73 @@ describe('Dashboard', () => {
       })
     })
 
+    it('should search public canvas correctly', async () => {
+      mockLazyGetCanvasesUnwrap
+        .mockResolvedValueOnce(canvasList)
+        .mockResolvedValue({
+          data: canvasList.data.filter(item => item.author?.includes('dog2'))
+        })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Dashboard')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
+      await userEvent.click(await screen.findByText(/Public Canvases/))
+
+      const tabPanel = screen.getByRole('tabpanel', { hidden: false })
+      expect(await screen.findByText('Dashboard Canvas 2')).toBeVisible()
+
+      const searchInput = await within(tabPanel).findByTestId('search-input')
+      await userEvent.type(searchInput, 'dog2')
+      await waitFor(async ()=> {
+        expect(mockLazyGetCanvasesUnwrap).toHaveBeenCalledTimes(2)
+      })
+      await waitFor(async ()=>{
+        expect(screen.queryByText('Dashboard Canvas 1')).toBeNull()
+      })
+      expect(await screen.findByText('Dashboard Canvas 2')).toBeVisible()
+    })
+
+    it('should import canvas correctly', async () => {
+      mockLazyGetCanvasesUnwrap
+        .mockResolvedValueOnce(canvasList)
+        .mockResolvedValue({
+          data: canvasList.data.filter((item, index) => index !== 1)
+        })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Dashboard')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
+      expect(await screen.findByRole('button', { name: 'Import (0)' })).toBeDisabled()
+
+      const checkbox = await screen.findAllByRole('checkbox')
+      await userEvent.click(checkbox[1])
+
+      const importBtn = await screen.findByRole('button', { name: 'Import (1)' })
+      expect(importBtn).toBeVisible()
+      await userEvent.click(importBtn)
+      expect(mockUpdateDashboard).toBeCalled()
+    })
   })
 })

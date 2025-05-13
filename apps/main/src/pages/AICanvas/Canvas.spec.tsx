@@ -129,6 +129,17 @@ const groupsData = [
   }
 ]
 
+const getCanvasQuery = {
+  data: [
+    currentCanvas,
+    {
+      id: '002',
+      name: 'Second Canvas',
+      content: ''
+    }
+  ]
+}
+
 describe('Canvas', () => {
   afterEach(() => {
     jest.clearAllMocks()
@@ -142,6 +153,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />
@@ -162,6 +174,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />
@@ -182,6 +195,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -208,6 +222,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -241,6 +256,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -267,6 +283,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -301,6 +318,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />
