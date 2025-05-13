@@ -4,9 +4,9 @@ import userEvent     from '@testing-library/user-event'
 import { UserEvent } from '@testing-library/user-event/dist/types/setup/setup'
 import { Form }      from 'antd'
 
-import { StepsForm }                              from '@acx-ui/components'
-import { EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { StepsForm }                                            from '@acx-ui/components'
+import { EdgePortInfo, EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
+import { Provider }                                             from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -153,6 +153,36 @@ describe('EditEdge ports - sub-interface', () => {
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
     await user.click(await screen.findByText('Static IP'))
     inputStaticIp(user, '1.1.5.2', '255.255.255.0')
+
+    await waitFor(() => {
+      expect(screen.getByText('The ports have overlapping subnets')).toBeInTheDocument()
+    })
+  })
+
+  it('Add a STATIC sub-interface with duplicate subnet range with physical port', async () => {
+    render(
+      <StepsForm initialValues={mockSubInterfaceSettingsFormType}>
+        <StepsForm.StepForm>
+          <SubInterfaceDrawer
+            serialNumber='96000076DCCAA42E87785B549A64997E72'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+            allInterface={[{
+              ip: '2.3.4.5',
+              subnet: '255.255.255.0'
+            }] as unknown as EdgePortInfo[]}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>)
+
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
+    await user.click(await screen.findByText('Static IP'))
+    inputStaticIp(user, '2.3.4.5', '255.255.255.0')
 
     await waitFor(() => {
       expect(screen.getByText('The ports have overlapping subnets')).toBeInTheDocument()
