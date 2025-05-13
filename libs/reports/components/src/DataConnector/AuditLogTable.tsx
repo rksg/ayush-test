@@ -198,6 +198,11 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
             const retryError = getRetryError(record)
             if (retryError) {
               return <Tooltip title={retryError}>{node}</Tooltip>
+            } else if (!isEnoughQuota) {
+              return (<Tooltip
+                title={$t({ defaultMessage: 'Quota exceeded' })}>
+                {node}
+              </Tooltip>)
             }
             return node
           }

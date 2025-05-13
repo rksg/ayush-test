@@ -137,7 +137,7 @@ describe('AuditLogTable', () => {
   it.each([
     { rowIndex: 0, quota: { used: 10, allowed: 10 } },
     { rowIndex: 1, quota: undefined }])(
-    'should render disabled enabled radio button when no quota',
+    'should render disabled enabled radio button when quota exceeded',
     async ({ rowIndex, quota }) => {
       mockRestApiQuery(
         `${notificationApiURL}/dataConnector/quota`,
@@ -151,8 +151,8 @@ describe('AuditLogTable', () => {
       })
 
       const tbody = within(await findTBody())
-      const retryableRow = (await tbody.findAllByRole('row'))[rowIndex]
-      const notRetryableRowCheckbox = within(retryableRow).getByRole('radio')
+      const notRetryableRow = (await tbody.findAllByRole('row'))[rowIndex]
+      const notRetryableRowCheckbox = within(notRetryableRow).getByRole('radio')
 
       expect(notRetryableRowCheckbox).toBeDisabled()
     }
