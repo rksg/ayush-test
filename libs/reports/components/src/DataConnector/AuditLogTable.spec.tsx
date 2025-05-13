@@ -146,8 +146,10 @@ describe('AuditLogTable', () => {
       wrapper: Provider
     })
     const tbody = within(await findTBody())
-    const notRetryableRow = (await tbody.findAllByRole('row'))[5]
-    const statusCell = await within(notRetryableRow).findByText('Failure')
+    const retryableRow = (await tbody.findAllByRole('row'))[6]
+    const retryableRowCheckbox = within(retryableRow).getByRole('radio')
+    expect(retryableRowCheckbox).toBeEnabled()
+    const statusCell = await within(retryableRow).findByText('Failure')
     await userEvent.hover(statusCell)
     expect(
       await screen.findByRole('tooltip')
