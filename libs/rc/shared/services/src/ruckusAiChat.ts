@@ -144,6 +144,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       }
     }),
+    streamChatsAi: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ payload, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.streamChats, undefined, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     chatChart: build.query<WidgetListData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chart, params)
@@ -227,6 +236,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
+    }),
+    patchDashboard: build.mutation<DashboardInfo, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.patchDashboard, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     })
   })
 })
@@ -247,6 +265,7 @@ export const {
   usePatchCanvasMutation,
   useCreateCanvasMutation,
   useChatAiMutation,
+  useStreamChatsAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
   useChatChartQuery,
@@ -257,5 +276,6 @@ export const {
   useUpdateDashboardsMutation,
   useReorderDashboardsMutation,
   useRemoveDashboardsMutation,
+  usePatchDashboardMutation,
   useSendFeedbackMutation
 } = ruckusAiChatApi
