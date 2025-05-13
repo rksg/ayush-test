@@ -206,6 +206,7 @@ export default function PortalTable (props: { hideHeader?: boolean }) {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
@@ -214,7 +215,7 @@ export default function PortalTable (props: { hideHeader?: boolean }) {
           // eslint-disable-next-line max-len
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
