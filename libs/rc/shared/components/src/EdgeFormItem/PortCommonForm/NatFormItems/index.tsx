@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Form, Row, Col, Switch, Input } from 'antd'
-import { get, set }                      from 'lodash'
+import { get }                           from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import { StepsFormLegacy }                                               from '@acx-ui/components'
@@ -39,10 +39,6 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
-  // this reference is to store the validation state of startIp and endIp input field,
-  // true is valid, false is invalid
-  // eslint-disable-next-line max-len
-  const rangeFieldsValidateStateRef = useRef<{ startIp: boolean, endIp: boolean }>({ startIp: false, endIp: false })
   const natEnabled = Form.useWatch(getFieldFullPath('natEnabled'), form)
 
   const allNatPoolsWithoutCurrent= useMemo(() => {
@@ -54,13 +50,18 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     )
   }, [portsData, lagData])
 
-  const rangeFieldsValidator = async (fieldName: string, value: string) => {
+  const rangeFieldsValidator = async (value: EdgeNatPool[]) => {
     try {
-      await networkWifiIpRegExp(value)
-      set(rangeFieldsValidateStateRef.current, fieldName, true)
+      await networkWifiIpRegExp(value?.[0].startIpAddress)
+      await networkWifiIpRegExp(value?.[0].endIpAddress)
+
+      // eslint-disable-next-line max-len
+      if (!value?.[0].startIpAddress || !value?.[0].endIpAddress) {
+        return Promise.reject($t({ defaultMessage: 'Invalid NAT pool start IP and end IP' }))
+      }
+
       return Promise.resolve()
     } catch (e) {
-      set(rangeFieldsValidateStateRef.current, fieldName, false)
       return Promise.reject(e)
     }
   }
@@ -91,23 +92,27 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
      >
        <Form.List
          name={parentNamePath.concat('natPools')}
-         rules={[{
-           validator: async (_, value) => {
-             try {
-               const isValidInputs = rangeFieldsValidateStateRef.current.startIp
-                                    && rangeFieldsValidateStateRef.current.endIp
-               if (!isValidInputs) return Promise.resolve()
+         rules={[
+           {
+             validator: async (_, value) => {
+               try {
+                 // skip empty pool
+                 if (!value?.[0]?.startIpAddress && !value?.[0]?.endIpAddress) {
+                   return Promise.resolve()
+                 }
 
-               const allNatPools = allNatPoolsWithoutCurrent!.concat(value)
+                 await rangeFieldsValidator(value)
 
-               await natPoolSizeValidator(allNatPools)
-               await poolRangeOverlapValidator(allNatPools)
-               return Promise.resolve()
-             } catch (e) {
-               return Promise.reject(e)
+                 const allNatPools = allNatPoolsWithoutCurrent!.concat(value)
+
+                 await natPoolSizeValidator(allNatPools)
+                 await poolRangeOverlapValidator(allNatPools)
+                 return Promise.resolve()
+               } catch (e) {
+                 return Promise.reject(e)
+               }
              }
-           }
-         }]}
+           }]}
        >
          {(fields, _, { errors }) => {
            return <>
@@ -118,9 +123,6 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
                      {...field}
                      name={[index, 'startIpAddress']}
                      label={$t({ defaultMessage: 'Start' })}
-                     rules={[{
-                       validator: async (_, value) => rangeFieldsValidator('startIp', value)
-                     }]}
                      {...get(formFieldsProps, 'natStartIp')}
                      children={<Input />}
                    />
@@ -130,14 +132,12 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
                      {...field}
                      name={[index, 'endIpAddress']}
                      label={$t({ defaultMessage: 'End' })}
-                     rules={[{
-                       validator: async (_, value) => rangeFieldsValidator('endIp', value)
-                     }]}
                      {...get(formFieldsProps, 'natEndIp')}
                      children={<Input />}
                    />
                  </Col>
-               </Row>)}
+               </Row>
+             )}
 
              <Form.ErrorList errors={errors} />
            </>

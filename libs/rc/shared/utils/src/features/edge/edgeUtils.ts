@@ -201,9 +201,16 @@ export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithSta
     payload.natEnabled = false
   }
 
-  // clear NAT pools if NAT is disabled
+  // clear NAT pools if NAT is disabled or port type is not WAN
   if (payload.natEnabled === false || payload.portType !== EdgePortTypeEnum.WAN) {
     payload.natPools = []
+  } else {
+    if (payload.natPools?.length) {
+      payload.natPools = payload.natPools.filter((natPool) => {
+        // would be null when no existing NAT pool
+        return natPool?.startIpAddress && natPool?.endIpAddress
+      })
+    }
   }
 
   return payload
@@ -378,6 +385,9 @@ export const natPoolSizeValidator = async (pools:
 
   // total range cannot exceed 128 per node : MAX_NAT_POOL_TOTAL_SIZE
   const totalRange = pools?.reduce((acc: number, item) => {
+    if (!item?.startIpAddress || !item?.endIpAddress) {
+      return acc
+    }
     const range = countIpSize(item.startIpAddress, item.endIpAddress)
     return acc += range
   }, 0) ?? 0
