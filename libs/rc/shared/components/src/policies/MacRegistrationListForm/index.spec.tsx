@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -259,6 +259,8 @@ describe('MacRegistrationListForm', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
+
     render(
       <Provider>
         <MacRegistrationListForm />
@@ -274,7 +276,7 @@ describe('MacRegistrationListForm', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'MAC Registration Lists'
+      name: 'MAC Registration List'
     })).toBeVisible()
   })
 
