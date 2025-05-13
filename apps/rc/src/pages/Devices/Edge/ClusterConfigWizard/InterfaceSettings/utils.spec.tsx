@@ -701,13 +701,22 @@ describe('data transformer', () => {
     )
 
     expect(result).toStrictEqual({
-      lagSettings: mockData.lagSettings,
+      lagSettings: mockData.lagSettings.map(item => ({
+        ...item,
+        lags: item.lags.map(lag => ({
+          ...lag,
+          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled,
+          accessPortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.accessPortEnabled
+        }))
+      })),
       portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
         serialNumber,
         ports: Object.values(ports).flat().map(port =>
           ({
             ...port,
-            corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled
+            corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled,
+            // eslint-disable-next-line max-len
+            accessPortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.accessPortEnabled
           })
         )
       })),
@@ -733,12 +742,17 @@ describe('data transformer', () => {
         ...item,
         lags: item.lags.map(lag => ({
           ...lag,
-          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled
+          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled,
+          accessPortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.accessPortEnabled
         }))
       })),
       portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
         serialNumber,
-        ports: Object.values(ports).flat()
+        ports: Object.values(ports).flat().map(port => ({
+          ...port,
+          corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled,
+          accessPortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.accessPortEnabled
+        }))
       })),
       multiWanSettings: undefined,
       virtualIpSettings: mockData.vipConfig?.map(item => {

@@ -5,6 +5,7 @@ import _                                                                        
 import { useIntl }                                                                          from 'react-intl'
 
 import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features }                 from '@acx-ui/feature-toggle'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -18,6 +19,7 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
+import { useIsEdgeFeatureReady }                  from '../../useEdgeActions'
 import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
 
 import * as UI from './styledComponents'
@@ -61,6 +63,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     formFieldsProps,
     subnetInfoForValidation = []
   } = props
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
 
@@ -313,39 +317,65 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           _portType === EdgePortTypeEnum.CLUSTER
         ) ? (
             <>
-              {_portType === EdgePortTypeEnum.LAN &&
-                <Form.Item
-                  name={getFieldPathBaseFormList('corePortEnabled')}
-                  valuePropName='checked'
-                  {..._.get(formFieldsProps, 'corePortEnabled')}
-                >
-                  <Checkbox
-                    disabled={!corePortInfo.isExistingCorePortInLagMember
-                      && (
-                        (hasWANPort && !corePortEnabled)
-                        || (isEdgeSdLanRun
-                          ? hasCorePortEnabled
-                          // eslint-disable-next-line max-len
-                          : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
-                      )
+              {
+                _portType === EdgePortTypeEnum.LAN && isEdgeCoreAccessSeparationReady ?
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Use port as…' })}
+                    children={
+                      <Space direction='vertical'>
+                        <Form.Item
+                          name={getFieldPathBaseFormList('corePortEnabled')}
+                          valuePropName='checked'
+                          noStyle
+                        >
+                          <Checkbox
+                            children={$t({ defaultMessage: 'Core port' })}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={getFieldPathBaseFormList('accessPortEnabled')}
+                          valuePropName='checked'
+                          noStyle
+                        >
+                          <Checkbox
+                            children={$t({ defaultMessage: 'Access port' })}
+                          />
+                        </Form.Item>
+                      </Space>
                     }
+                  /> :
+                  <Form.Item
+                    name={getFieldPathBaseFormList('corePortEnabled')}
+                    valuePropName='checked'
+                    {..._.get(formFieldsProps, 'corePortEnabled')}
                   >
-                    {
-                      // eslint-disable-next-line max-len
-                      _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
-                    }
-
-                    <Tooltip
-                      placement='topRight'
-                      title={
-                        // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this RUCKUS Edge establishes tunnels for directing data traffic effectively' })
+                    <Checkbox
+                      disabled={!corePortInfo.isExistingCorePortInLagMember
+                        && (
+                          (hasWANPort && !corePortEnabled)
+                          || (isEdgeSdLanRun
+                            ? hasCorePortEnabled
+                            // eslint-disable-next-line max-len
+                            : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
+                        )
                       }
                     >
-                      <UI.StyledQuestionIcon />
-                    </Tooltip>
-                  </Checkbox>
-                </Form.Item>
+                      {
+                        // eslint-disable-next-line max-len
+                        _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
+                      }
+
+                      <Tooltip
+                        placement='topRight'
+                        title={
+                          // eslint-disable-next-line max-len
+                          $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this RUCKUS Edge establishes tunnels for directing data traffic effectively' })
+                        }
+                      >
+                        <UI.StyledQuestionIcon />
+                      </Tooltip>
+                    </Checkbox>
+                  </Form.Item>
               }
               <StepsFormLegacy.FieldLabel width='120px'>
                 {

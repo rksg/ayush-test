@@ -53,6 +53,12 @@ jest.mock('../ClusterNavigateWarning', () => ({
   ClusterNavigateWarning: () => <div data-testid='ClusterNavigateWarning' />
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  // eslint-disable-next-line max-len
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+}))
+
 const defaultContextData = {
   activeSubTab: {
     key: 'sub-interface',
@@ -362,5 +368,28 @@ describe('EditEdge ports - sub-interface', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+  })
+
+  describe('Core Access', () => {
+    it('should show core port and access port column when FF is on', async () => {
+      render(
+        <Provider>
+          <EdgeEditContext.EditContext.Provider
+            value={defaultContextData}
+          >
+            <EditEdgeDataContext.Provider
+              value={defaultEditEdgeSingleNodeCtxData}
+            >
+              <SubInterfaces />
+            </EditEdgeDataContext.Provider>
+          </EdgeEditContext.EditContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+        })
+
+      await screen.findAllByRole('row')
+      expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
   })
 })
