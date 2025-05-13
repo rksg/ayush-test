@@ -298,7 +298,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                       options={signingCertificateOptions}
                     />
                   }
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a signing certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
@@ -340,7 +345,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   children={<Select
                     options={encryptionCertificateOptions}
                   />}
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select an encryption certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
@@ -377,7 +387,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   </>
                 }
                 initialValue={$t({ defaultMessage: 'displayName' })}
-                rules={[{ max: 256 }]}
+                rules={[{ max: 255 }]}
               >
                 <Input />
               </Form.Item>
@@ -385,7 +395,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 name='identityEmail'
                 label={$t({ defaultMessage: 'Identity Email' })}
                 initialValue={$t({ defaultMessage: 'email' })}
-                rules={[{ max: 256 }]}
+                rules={[{ max: 255 }]}
               >
                 <Input />
               </Form.Item>
@@ -393,7 +403,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 name='identityPhone'
                 label={$t({ defaultMessage: 'Identity Phone' })}
                 initialValue={$t({ defaultMessage: 'phone' })}
-                rules={[{ max: 256 }]}
+                rules={[{ max: 255 }]}
               >
                 <Input />
               </Form.Item>
@@ -449,7 +459,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                               {...field}
                               name={[index, 'mappedByName']}
                               label={$t({ defaultMessage: 'Claim Name' })}
-                              rules={[{ required: true }]}
+                              rules={[{ required: true }, { min: 1, max: 255 }]}
                             >
                               <Input />
                             </Form.Item>
@@ -507,10 +517,14 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
 
   //Add three identity attributes to attributeMappings
   const identityMappings = [
-    { name: SamlIdpAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName ?? '' },
-    { name: SamlIdpAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail ?? '' },
-    { name: SamlIdpAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone ?? '' }
-  ]
+    // eslint-disable-next-line max-len
+    result.identityName && { name: SamlIdpAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
+    // eslint-disable-next-line max-len
+    result.identityEmail && { name: SamlIdpAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
+    // eslint-disable-next-line max-len
+    result.identityPhone && { name: SamlIdpAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
+  ].filter(Boolean) as AttributeMapping[]
+
   result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
   delete result.identityName
   delete result.identityEmail
