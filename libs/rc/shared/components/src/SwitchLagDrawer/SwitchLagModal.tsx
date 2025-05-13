@@ -605,7 +605,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           />
         </Form.Item>
       </Col>
-      { isSwitchLagForceUpEnabled &&
+      { isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
         <Col span={10} flex='300px' offset={5} style={{ padding: '16px', marginTop: '6px' }}>
           <Card
             title={$t({ defaultMessage: 'Force-Up Interface' })}
