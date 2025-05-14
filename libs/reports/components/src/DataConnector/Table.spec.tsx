@@ -11,7 +11,7 @@ import {
   hasRoles, RaiPermissions, setRaiPermissions, setUserProfile
 } from '@acx-ui/user'
 
-import { mockedConnectors, mockedUserId } from './__fixtures__'
+import { mockedConnectors, mockedUserId } from './__tests__/fixtures'
 import { DataConnectorTable }             from './Table'
 import { DataConnector }                  from './types'
 
