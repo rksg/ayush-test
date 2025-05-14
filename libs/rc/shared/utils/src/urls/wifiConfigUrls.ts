@@ -69,6 +69,15 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getApGroupDefaultRegulatoryChannels: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/wifiAvailableChannels',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getApRadioCustomization: {
     method: 'get',
     //url: '/venues/aps/:serialNumber/radioSettings',

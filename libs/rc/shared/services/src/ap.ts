@@ -97,7 +97,8 @@ import {
   IpsecUrls,
   IpsecViewData,
   ApGroupRadioCustomization,
-  ApGroupQueryRadioCustomization
+  ApGroupQueryRadioCustomization,
+  ApGroupDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -785,14 +786,14 @@ export const apApi = baseApApi.injectEndpoints({
           return { error: response.error }
         }
 
-        const responseData = response.data as ApGroupQueryRadioCustomization
+        const responseData = response.data as ApGroupRadioCustomization
 
         return {
           data: {
-            radioParams24G: responseData.apGroupRadioParams24G,
-            radioParams50G: responseData.apGroupRadioParams50G,
-            radioParams60G: responseData.apGroupRadioParams6G,
-            radioParamsDual5G: responseData.apGroupRadioParamsDual5G
+            radioParams24G: responseData.radioParams24G,
+            radioParams50G: responseData.radioParams50G,
+            radioParams60G: responseData.radioParams6G,
+            radioParamsDual5G: responseData.radioParamsDual5G
           } as ApGroupRadioCustomization
         }
       },
@@ -830,6 +831,23 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'RADIO' }]
+    }),
+    getApGroupDefaultRegulatoryChannels: build.query<ApGroupDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApGroupDefaultRegulatoryChannels, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getApGroupApCapabilities: build.query<Capabilities, RequestPayload>({
+      query: ({ params }) => {
+        console.log(params)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApGroupApCapabilities, params)
+        return {
+          ...req
+        }
+      }
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => { // non RBAC API
@@ -1938,6 +1956,8 @@ export const {
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,
   useLazyGetOldApCapabilitiesByModelQuery,
+  useGetApGroupDefaultRegulatoryChannelsQuery,
+  useGetApGroupApCapabilitiesQuery,
   useGetApCapabilitiesByModelQuery,
   useLazyGetApCapabilitiesByModelQuery,
   useGetApValidChannelQuery,

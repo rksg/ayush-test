@@ -26,24 +26,23 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                    from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                           from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import {
   useLazyApListQuery,
-  useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
   useGetVenueTemplateTripleBandRadioSettingsQuery,
   useGetVenueTripleBandRadioSettingsQuery,
-  useGetVenueTemplateDefaultRegulatoryChannelsQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateTripleBandRadioSettingsMutation,
   useGetVenueTemplateApModelBandModeSettingsQuery,
   useUpdateVenueTemplateApModelBandModeSettingsMutation,
   useLazyGetVenueRadioCustomizationQuery,
-  useGetApGroupRadioCustomizationQuery, useUpdateApGroupRadioCustomizationMutation
+  useGetApGroupRadioCustomizationQuery,
+  useUpdateApGroupRadioCustomizationMutation, useGetApGroupDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -52,7 +51,6 @@ import {
   BandModeEnum,
   VenueApModelBandModeSettings,
   TriBandSettings,
-  VenueDefaultRegulatoryChannels,
   useConfigTemplate,
   ScanMethodEnum,
   ApGroupApModelBandModeSettings,
@@ -222,7 +220,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     setEditRadioContextData,
     venueId,
     venueData,
-    venueApCaps
+    apGroupApCaps
   } = useContext(ApGroupEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
@@ -262,14 +260,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   // available channels from this venue country code
   const { data: supportChannelsData, isLoading: isLoadingSupportChannelsData } =
-    useApGroupConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
-      useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
-      useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
-      enableRbac: isUseRbacApi,
-      extraParams: { venueId },
-      extraQueryArgs: {
-        enableSeparation: is6gChannelSeparation
-      }
+    useApGroupConfigTemplateQueryFnSwitcher<ApGroupDefaultRegulatoryChannels>({
+      useQueryFn: useGetApGroupDefaultRegulatoryChannelsQuery,
+      useTemplateQueryFn: useGetApGroupDefaultRegulatoryChannelsQuery,
+      extraParams: { venueId }
     })
 
   // Custom radio data
@@ -459,8 +453,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { triBandApModels, dual5gApModels, bandModeCaps } = useMemo(() => {
-    if (venueApCaps) {
-      const apModels = venueApCaps.apModels
+    if (apGroupApCaps) {
+      const apModels = apGroupApCaps.apModels
       const triBandApModels = apModels
         .filter(apCapability => apCapability.supportTriRadio === true)
         .map(triBandApCapability => triBandApCapability.model) as string[]
@@ -486,7 +480,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       bandModeCaps: []
     }
 
-  }, [venueApCaps])
+  }, [apGroupApCaps])
 
   useEffect(() => {
     const triBandApModelNames = isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
@@ -998,7 +992,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         params: { venueId, apGroupId },
         payload: {
           // TODO: When the API is ready, include additional fields in the payload as required.
-          apGroupRadioParams24G: {
+          radioParams24G: {
             ...defaultRadioSettings?.radioParams24G,
             ...data.radioParams24G
           }

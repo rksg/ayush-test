@@ -5,7 +5,7 @@ import {
   AFCStatus,
   ApViewModel,
   NetworkTypeEnum,
-  RadioEnum, RadioTypeEnum, WlanSecurityEnum
+  RadioEnum, RadioTypeEnum, WlanSecurityEnum, ApModelFamily, ApModelFamilyType
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -17,14 +17,20 @@ export const venuelist = {
   page: 1,
   data: [
     {
-      country: 'United States',
-      dhcp: { enabled: false, mode: 'DHCPMODE_EACH_AP' },
-      enabled: false,
-      mode: 'DHCPMODE_EACH_AP',
-      id: '908c47ee1cd445838c3bf71d4addccdf',
-      latitude: '37.4112751',
-      longitude: '-122.0191908',
-      name: 'Test-Venue'
+      id: '5e75f787e010471984b18ad0eb156487',
+      name: 'My-Venue',
+      description: 'My-Venue',
+      address: {
+        country: 'United States',
+        countryCode: 'US',
+        city: 'New York',
+        addressLine: '86 Main St,New York,United States',
+        latitude: 40.70962,
+        longitude: -73.8187822,
+        timezone: 'America/New_York'
+      },
+      isTemplate: false,
+      isEnforced: false
     },
     {
       country: 'United States',
@@ -387,6 +393,42 @@ export const venueCaps = {
   ],
   version: '6.0.0.x.xxx'
 }
+export const apGroupApCaps = venueCaps
+
+export const mockApModelFamilies: ApModelFamily[] = [{
+  name: ApModelFamilyType.WIFI_11AC_1,
+  displayName: '11ac wave 1',
+  apModels: [
+    'R730', 'R310', 'T300', 'T301N',
+    'T300E', 'R500', 'R600', 'T301S'
+  ]
+}, {
+  name: ApModelFamilyType.WIFI_11AC_2,
+  displayName: '11ac wave 2',
+  apModels: [
+    'H510', 'R510', 'M510', 'T710',
+    'T310S', 'T610', 'T310N', 'T710S',
+    'R710', 'R320', 'T310C', 'R720',
+    'T610S', 'T310D', 'E510', 'H320',
+    'R610'
+  ]
+}, {
+  name: ApModelFamilyType.WIFI_6,
+  displayName: 'Wi-Fi 6',
+  apModels: [
+    'R750', 'R850', 'T750SE', 'T350SE',
+    'T750', 'R350:R350E', 'T350C', 'T350D',
+    'R350', 'R650', 'R550', 'H350', 'H550'
+  ]
+}, {
+  name: ApModelFamilyType.WIFI_6E,
+  displayName: 'Wi-Fi 6E',
+  apModels: [ 'R760', 'R560' ]
+}, {
+  name: ApModelFamilyType.WIFI_7,
+  displayName: 'Wi-Fi 7',
+  apModels: [ 'R770', 'H670', 'T670SN', 'T670', 'R670']
+}]
 
 export const apCaps = {
   apModels: [
@@ -2981,6 +3023,22 @@ export const venueRadioCustomization = {
   }
 }
 
+export const apGroupRadioCustomization = {
+  radioParams24G: {
+    allowedChannels: [
+      '1',
+      '2'
+    ],
+    channelBandwidth: 'AUTO',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33,
+    scanInterval: 20,
+    txPower: 'MAX',
+    useVenueSettings: false,
+    enabled: true
+  }
+}
+
 export const deviceAps = {
   fields: [
     'isMeshEnable',
@@ -3945,4 +4003,125 @@ export const apGroupdeviceAps = {
       deviceModelType: 'Indoor'
     }
   ]
+}
+
+export const tripleBandMode = {
+  bandMode: 'TRIPLE',
+  useVenueSettings: true
+}
+
+export const radioData = {
+  radioParamsDual5G: {
+    enabled: false,
+    inheritParamsLower5G: true,
+    radioParamsLower5G: {
+      method: 'CHANNELFLY',
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      allowedIndoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      allowedOutdoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ]
+    },
+    inheritParamsUpper5G: true,
+    radioParamsUpper5G: {
+      method: 'CHANNELFLY',
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      allowedIndoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      allowedOutdoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ]
+    }
+  },
+  radioParams24G: {
+    useVenueSettings: true,
+    method: 'CHANNELFLY',
+    changeInterval: 33,
+    channelBandwidth: 'AUTO',
+    txPower: 'MAX',
+    allowedChannels: [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11'
+    ]
+  },
+  radioParams50G: {},
+  radioParams6G: {
+    enableAfc: false
+  }
 }

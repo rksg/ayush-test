@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 
 import { CustomButtonProps, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { goToNotFound }                       from '@acx-ui/user'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -15,14 +16,18 @@ export type ApGroupRadioConfigItemProps = {
   isAllowEdit?: boolean
 }
 
-const tabs = {
-  general: ApGroupGeneralTab,
-  radio: ApGroupRadioTab,
-  vlanRadio: ApGroupVlanRadioTab
-}
-
 export function ApGroupEdit () {
   const { activeTab = 'general' } = useParams()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const tabs = {
+    general: ApGroupGeneralTab,
+    ...(isApGroupMoreParameterPhase1Enabled
+      ? { radio: ApGroupRadioTab }
+      : { vlanRadio: ApGroupVlanRadioTab }
+    )
+  }
+
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return (

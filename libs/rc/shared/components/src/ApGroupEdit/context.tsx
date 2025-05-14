@@ -1,10 +1,11 @@
 import { createContext, useState } from 'react'
 
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useApGroupsListQuery,
+  useGetApGroupApCapabilitiesQuery,
   useGetApGroupsTemplateListQuery,
-  useGetVenueApCapabilitiesQuery, useGetVenueQuery
+  useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   ApGroupRadioCustomization,
@@ -48,7 +49,7 @@ export const ApGroupEditContext = createContext({} as {
   setPreviousPath: (data: string) => void,
   venueId?: string,
   venueData?: VenueExtended,
-  venueApCaps: Capabilities | undefined,
+  apGroupApCaps: Capabilities | undefined,
 })
 
 export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
@@ -79,8 +80,8 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
 
   const venueId = apGroupInfo?.data?.data?.[0]?.venueId
 
-  const { data: venueApCaps } = useGetVenueApCapabilitiesQuery({
-    params: { venueId }
+  const { data: apGroupApCaps } = useGetApGroupApCapabilitiesQuery({
+    params: { venueId, apGroupId }
   }, { skip: !venueId })
 
   const { data: venueData } = useGetVenueQuery({
@@ -97,7 +98,7 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
       editRadioContextData, setEditRadioContextData,
       venueId: apGroupInfo?.data?.data?.[0]?.venueId,
       venueData,
-      venueApCaps
+      apGroupApCaps
     }} >
       {props.children}
     </ApGroupEditContext.Provider>

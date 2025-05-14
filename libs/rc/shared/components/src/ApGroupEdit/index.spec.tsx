@@ -1,10 +1,10 @@
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { WifiRbacUrlsInfo, APGroupFixtures, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }             from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { WifiRbacUrlsInfo, APGroupFixtures, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }                           from '@acx-ui/test-utils'
 
 import { venuelist } from './__tests__/fixtures'
 
@@ -20,18 +20,28 @@ jest.mock('./ApGroupGeneralTab', () => ({
   ApGroupGeneralTab: () => <div data-testid={'generalTab'}></div>
 }))
 
+jest.mock('./ApGroupRadioTab', () => ({
+  ApGroupRadioTab: () => <div data-testid={'radioTab'}></div>
+}))
+
 jest.mock('./ApGroupVlanRadioTab', () => ({
   ApGroupVlanRadioTab: () => <div data-testid={'vlanRadioTab'}></div>
 }))
 
 describe('AP Group Edit', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockedUsedNavigate.mockClear()
 
     mockServer.use(
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockAPGroupList))
+        }
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => {
           return res(ctx.json(mockAPGroupList))
         }
@@ -81,10 +91,33 @@ describe('AP Group Edit', () => {
 
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
+    expect(await screen.findByTestId('vlanRadioTab')).toBeVisible()
+  })
+
+  it('should radio tab render correctly - Edit AP Group', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id',
+      apGroupId: 'apgroup-id',
+      action: 'edit',
+      activeTab: 'radio'
+    }
+
+    render(
+      <Provider>
+        <ApGroupEdit />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+
+    const title = await screen.findByText('Edit AP Group')
+    expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
     expect(tabs).toHaveLength(2)
 
-    expect(await screen.findByTestId('vlanRadioTab')).toBeVisible()
+    expect(await screen.findByTestId('radioTab')).toBeVisible()
     fireEvent.click(await screen.findByRole('tab', { name: 'General' }))
 
     expect(mockedUsedNavigate).toBeCalledWith({
