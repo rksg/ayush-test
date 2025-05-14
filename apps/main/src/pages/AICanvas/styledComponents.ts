@@ -1,7 +1,7 @@
 import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
 import styled, { css }                                                  from 'styled-components/macro'
 
-import { Card }            from '@acx-ui/components'
+import { Button, Card }    from '@acx-ui/components'
 import { ThumbsDown as UIThumbsDown,
   ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 import { Dashboard } from '@acx-ui/icons-new'
@@ -974,6 +974,19 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     }
   }
 
+`
+
+export const SearchButton = styled(Button)`
+  color: var(--acx-primary-white) !important;
+  &[disabled] {
+    svg path{
+      color: currentColor !important;
+    }
+  }
+  svg path {
+    color: currentColor;
+    stroke: currentColor !important;
+  }
 `
 
 export const StopIcon = styled.div`

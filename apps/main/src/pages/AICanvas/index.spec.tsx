@@ -64,7 +64,7 @@ const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
-  const Button = jest.requireActual('@acx-ui/components').Button
+  const Button = jest.requireActual('antd').Button
   const Card = jest.requireActual('@acx-ui/components').Card
   return {
     Card,

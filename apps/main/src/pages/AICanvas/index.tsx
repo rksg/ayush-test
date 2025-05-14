@@ -8,9 +8,9 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { v4 as uuidv4 }                  from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import {
-  SendMessageOutlined,
+  SendMessageSolid,
   HistoricalOutlined,
   Plus,
   Close,
@@ -716,9 +716,9 @@ export default function AICanvasModal (props: {
                         {searchText.length + '/' + maxSearchTextNumber}</div>
                     }
                     <Tooltip title={isStopAllowed ? $t({ defaultMessage: 'Stop generating' }) : ''}>
-                      <Button
+                      <UI.SearchButton
                         data-testid='search-button'
-                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageOutlined />}
+                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageSolid />}
                         disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
                         onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
                       />
