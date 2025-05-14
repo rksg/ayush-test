@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }                  from '@acx-ui/components'
+import { Filter }                    from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -99,7 +99,6 @@ import {
   IpsecUrls,
   IpsecViewData,
   ApGroupRadioCustomization,
-  ApGroupQueryRadioCustomization,
   ApGroupApModelBandModeSettings,
   ApGroupDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
