@@ -660,7 +660,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           ...bendModelWithDual5gAps.map(bandModel => ({ model: bandModel.model, bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })) ]
         setInitApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: initApGroupBandModeData })
         setCurrentApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: [ ...initApGroupBandModeData ] })
-
+        setInitVenueBandModeData([ ...venueBandModeSavedData ])
         return
       }
     }
@@ -1075,8 +1075,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
             paddingBottom: '20px' }}
           >
             <Form.Item
-              name={['useVenueSettings']}
-              initialValue={true}
+              name={['useVenueSettingsBandManagement']}
+              initialValue={currentApGroupBandModeData.useVenueSettings}
               valuePropName='value'
               style={{ marginBottom: '35px', width: '300px' }}
               children={
