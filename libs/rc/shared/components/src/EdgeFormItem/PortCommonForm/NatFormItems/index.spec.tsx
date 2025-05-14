@@ -3,6 +3,7 @@ import { Form }  from 'antd'
 
 import { Button }                                                                                     from '@acx-ui/components'
 import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                   from '@acx-ui/store'
 import { render, screen, waitFor }                                                                    from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
@@ -44,10 +45,12 @@ const currentPort = mockEdgePortConfig.ports[0] as EdgePort
 const MockComponent = (props: Partial<NatFormItemsProps> & { initialValues?: Partial<EdgePort> }) => {
   const { initialValues, ...otherProps } = props
 
-  return <Form initialValues={{ ...currentPort, ...initialValues }} onFinish={mockOnFinish}>
-    <EdgeNatFormItems {...defaultProps} {...otherProps}/>
-    <Button htmlType='submit'>Submit</Button>
-  </Form>
+  return <Provider>
+    <Form initialValues={{ ...currentPort, ...initialValues }} onFinish={mockOnFinish}>
+      <EdgeNatFormItems {...defaultProps} {...otherProps}/>
+      <Button htmlType='submit'>Submit</Button>
+    </Form>
+  </Provider>
 }
 
 describe('EdgeNatFormItems', () => {
