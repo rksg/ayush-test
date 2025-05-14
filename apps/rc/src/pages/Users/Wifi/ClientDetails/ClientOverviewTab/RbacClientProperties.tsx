@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
-import { parseInt }             from 'lodash'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
@@ -33,7 +32,8 @@ import {
   EXPIRATION_TIME_FORMAT,
   ClientInfo,
   transformQosPriorityType,
-  QosPriorityEnum
+  QosPriorityEnum,
+  transformByte
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
@@ -418,9 +418,9 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
         children={clientInfo?.trafficStatus?.trafficFromClient ? <Tooltip
           placement='bottom'
-          title={`${numberFormatter(parseInt(clientInfo?.trafficStatus?.trafficFromClient))} B`}
+          title={`${numberFormatter(clientInfo.trafficStatus.trafficFromClient)} Bytes`}
         >
-          {bytesFormatter(parseInt(clientInfo?.trafficStatus?.trafficFromClient))}
+          {transformByte(clientInfo.trafficStatus.trafficFromClient)}
         </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
@@ -432,8 +432,9 @@ function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
         children={clientInfo?.trafficStatus?.trafficToClient ? <Tooltip
           placement='bottom'
-          title={`${numberFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))} B`}
-        >{bytesFormatter(parseInt(clientInfo?.trafficStatus?.trafficToClient))}
+          title={`${numberFormatter(clientInfo.trafficStatus.trafficToClient)} Bytes`}
+        >
+          {transformByte(clientInfo.trafficStatus.trafficToClient)}
         </Tooltip> : noDataDisplay}
       />
       <Descriptions.Item
