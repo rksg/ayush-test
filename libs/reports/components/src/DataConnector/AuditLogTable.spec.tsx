@@ -141,7 +141,7 @@ describe('AuditLogTable', () => {
     }
   )
 
-  it('handle error tooltip when failed with qupta exceeded', async () => {
+  it('handle error tooltip when failed with quota exceeded', async () => {
     render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
       wrapper: Provider
     })
