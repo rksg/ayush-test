@@ -45,10 +45,10 @@ import {
   useApContext,
   ApLldpNeighbor,
   ApRfNeighbor } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                from '@acx-ui/react-router-dom'
-import { SwitchScopes }                         from '@acx-ui/types'
-import { useUserProfileContext, hasPermission } from '@acx-ui/user'
-import { getOpsApi, CatchErrorResponse }        from '@acx-ui/utils'
+import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { useUserProfileContext, hasPermission }         from '@acx-ui/user'
+import { getOpsApi, CatchErrorResponse, noDataDisplay } from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../../../hooks'
 import { NewApNeighborTypes }   from '../../ApNeighbors/constants'
@@ -277,7 +277,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   const getPoeClassDesc = (lldpClass: string | null | undefined): string => {
-    if (!lldpClass) return '--'
+    if (!lldpClass) return noDataDisplay
 
     const displayText = poeClassDisplayMap[lldpClass as keyof typeof poeClassDisplayMap]
     const formattedClass = lldpClass.charAt(0).toUpperCase() + lldpClass.slice(1)
@@ -290,8 +290,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   const getAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
-    if (!lldpPSEAllocPowerVal) return '--'
-    return `${Number(lldpPSEAllocPowerVal) / 1000} mW`
+    if (!lldpPSEAllocPowerVal) return noDataDisplay
+    const powerConsumption = Number(lldpPSEAllocPowerVal) / 1000
+    if(Number.isInteger(powerConsumption)) {
+      return `${powerConsumption} W`
+    }
+    return `${powerConsumption.toFixed(2)} W`
   }
 
   async function socketHandler () {
@@ -479,6 +483,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         )
       }
       {
+        ((isSwitchAPPortLinkEnabled && switchPort) || isDisplayMoreApPoePropertiesEnabled) &&
         <>
           <Divider/>
           <Descriptions labelWidthPercent={50}>
