@@ -19,9 +19,9 @@ import { noDataDisplay }                                                        
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
 
-import { WidgetProperty }    from './Card'
-import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
-import { ItemTypes }         from './GroupItem'
+import { WidgetProperty }                      from './Card'
+import CustomizeWidgetDrawer, { timeRangeMap } from './CustomizeWidgetDrawer'
+import { ItemTypes }                           from './GroupItem'
 
 
 interface WidgetListProps {
@@ -210,6 +210,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
 
 export const WidgetChart: React.FC<WidgetListProps> = (
   { data, visible, setVisible, changeWidgetProperty }) => {
+  const { $t } = useIntl()
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const queryResults = useGetWidgetQuery({
     customHeaders: { timezone },
@@ -303,10 +304,12 @@ export const WidgetChart: React.FC<WidgetListProps> = (
   }
 
 
-  const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
+  const getChart = (
+    type: string, width:number, height:number, chartData:WidgetListData, isCard: boolean) => {
+    const heightDiff = isCard ? 20 : 5
     if(type === 'pie') {
       return <DonutChart
-        style={{ width: width-5, height: height-5 }}
+        style={{ width: width-5, height: height-heightDiff }}
         size={'medium'}
         data={chartData?.chartOption || []}
         animation={true}
@@ -314,7 +317,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
       />
     } else if(type === 'line') {
       return <StackedAreaChart
-        style={{ width: width-5, height: height-5 }}
+        style={{ width: width-5, height: height-heightDiff }}
         data={chartData?.chartOption || []}
         xAxisType={chartData?.axisType}
       />
@@ -323,7 +326,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         return <NoDataIcon hideText={true} />
       } else {
         return <BarChart
-          style={{ width: width-30, height: height-5 }}
+          style={{ width: width-30, height: height-heightDiff }}
           grid={{
             right: '10px',
             top: chartData?.multiseries ? '15%': '0'
@@ -398,21 +401,27 @@ export const WidgetChart: React.FC<WidgetListProps> = (
   //   ]
   //   }
   // }
-  const chartData = data.type === 'card' ? queryResults.data : data
+  const isCard = data.type === 'card'
+  const chartData = isCard ? queryResults.data : data
   const widgetTitle = chartData?.name && data?.updated
     ? { title: chartData?.name, icon: <span className='update-indicator' /> }
     : chartData?.name
-
+  const widgetTimeRange = chartData?.timeRange
+    ? $t(timeRangeMap[chartData.timeRange])
+    : (chartData?.defaultTimeRange || '')
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? widgetTitle : ''}
+        title={isCard ? widgetTitle : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
+        {
+          isCard && <div className='sub-title'>{widgetTimeRange}</div>
+        }
         <AutoSizer>
           {({ height, width }) => <div className='chart'>{getChart(
-            data.chartType, width, height, chartData as WidgetListData)}</div>}
+            data.chartType, width, height, chartData as WidgetListData, isCard)}</div>}
         </AutoSizer>
       </UI.Widget>
       {

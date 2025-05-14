@@ -170,7 +170,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       providesTags: [{ type: 'Widget', id: 'DATA' }]
     }),
-    createWidget: build.mutation<{ id: string, name: string }, RequestPayload>({
+    createWidget: build.mutation<
+    { id: string, name: string, defaultTimeRange: string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
         return {
