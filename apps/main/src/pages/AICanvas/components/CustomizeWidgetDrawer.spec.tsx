@@ -154,7 +154,7 @@ describe('CustomizeWidgetDrawer', () => {
   it('render specific time range if the feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const props = {
-      ...mockProps, 
+      ...mockProps,
       widget: {
         ...mockWidget,
         timeRange: 'HOUR8'
