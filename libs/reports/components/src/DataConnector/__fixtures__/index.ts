@@ -74,7 +74,7 @@ export const mockAuditLogs: AuditDto[] = [
     end: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
-  // Failure, not retryable (Quota exceeded)
+  // Failure, not retryable (start > 3 days ago)
   {
     id: 'id-5',
     status: AuditStatusEnum.Failure,
