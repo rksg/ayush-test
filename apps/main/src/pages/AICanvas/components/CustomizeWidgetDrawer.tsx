@@ -1,9 +1,13 @@
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import React, { useEffect, useState } from 'react'
 
-import { Drawer }                  from '@acx-ui/components'
+import { Col, Form, Input, Row, Space } from 'antd'
+import { useIntl }                      from 'react-intl'
+
+import { Button, Drawer, Select }  from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useUpdateWidgetMutation } from '@acx-ui/rc/services'
 import { WidgetListData }          from '@acx-ui/rc/utils'
+import { DateRange, dateRangeMap } from '@acx-ui/utils'
 
 import { WidgetProperty } from './Card'
 
@@ -20,6 +24,9 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
   const { visible, setVisible, widget, canvasId, changeWidgetProperty } = props
   const [form] = Form.useForm()
   const [updateWidget] = useUpdateWidgetMutation()
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const [enabledReset, setEnabledReset] = useState(false)
+  const [enabledTimeRangeOption, setEnabledTimeRangeOption] = useState(false)
 
   const onClose = () => {
     setVisible(false)
@@ -30,16 +37,38 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
     await updateWidget({
       params: { canvasId, widgetId: widget.id },
       payload: {
+        timeRange: formValues.timeRange,
         name: formValues.name
       }
     }).unwrap().then(()=> {
       changeWidgetProperty({
-        // TODO: time range
+        timeRange: formValues.timeRange,
         name: formValues.name
       })
     })
     onClose()
   }
+
+  const timeRangeOptions = [{
+    label: $t(dateRangeMap[DateRange.last8Hours]),
+    value: 'HOUR8'
+  }, {
+    label: $t(dateRangeMap[DateRange.last24Hours]),
+    value: 'DAY1'
+  }, {
+    label: $t(dateRangeMap[DateRange.last7Days]),
+    value: 'DAY7'
+  }, {
+    label: $t(dateRangeMap[DateRange.last30Days]),
+    value: 'DAY30'
+  }]
+
+  useEffect(()=> {
+    if (widget.timeRange) {
+      setEnabledReset(true)
+      setEnabledTimeRangeOption(true)
+    }
+  }, [form, widget])
 
   return (
     <Drawer
@@ -67,6 +96,52 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
             ]}
             children={<Input/>}
           />
+
+          { isCanvasQ2Enabled && widget.defaultTimeRange && (
+            <Form.Item>
+              <Row justify='space-between' style={{ padding: '0 0 4px' }}>
+                <Col>
+                  <label style={{ color: 'var(--acx-neutrals-60)' }}>
+                    {$t({ defaultMessage: 'Time Range' })}
+                  </label>
+                </Col>
+                <Col>
+                  <Button type='link'
+                    hidden={!enabledReset}
+                    onClick={() => {
+                      setEnabledReset(false)
+                      setEnabledTimeRangeOption(false)
+                      form.setFieldsValue({ timeRange: null })
+                    }}>
+                    {$t({ defaultMessage: 'Reset to default range' })}
+                  </Button>
+                </Col>
+              </Row>
+              <Space style={{ display: 'flex', justifyContent: 'space-between' }}
+                hidden={enabledTimeRangeOption}>
+                <Space>{widget.defaultTimeRange}</Space>
+                <Button type='link'
+                  onClick={()=>{
+                    setEnabledReset(false)
+                    setEnabledTimeRangeOption(true)
+                  }}>
+                  {$t({ defaultMessage: 'Change' })}
+                </Button>
+              </Space>
+              <Form.Item
+                name='timeRange'
+                initialValue={widget?.timeRange}
+                hidden={!enabledTimeRangeOption}
+                children={<Select
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  options={timeRangeOptions}
+                  onChange={() => {
+                    setEnabledReset(true)
+                  }}
+                />}
+              />
+            </Form.Item>
+          )}
         </Form>
       }
       footer={

@@ -37,7 +37,7 @@ export interface EditEdgeDataContextType {
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
-  isCluster: boolean
+  isClusterFormed: boolean
   isGeneralSettingsLoading: boolean
   isGeneralSettingsFetching: boolean
   isClusterInfoLoading: boolean
@@ -241,7 +241,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     params: { venueId: clusterInfo?.venueId, clusterId: clusterInfo?.clusterId }
   }, { skip: !Boolean(clusterInfo?.clusterId) || !Boolean(clusterInfo?.venueId) })
 
-  const isCluster = !!clusterInfo?.edgeList &&
+  const isClusterFormed = !!clusterInfo?.edgeList &&
     clusterInfo.edgeList.filter(item =>
       item.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 1
 
@@ -262,7 +262,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     dnsServersData,
     staticRouteData,
     clusterConfig,
-    isCluster,
+    isClusterFormed,
     isGeneralSettingsLoading,
     isGeneralSettingsFetching,
     isClusterInfoLoading,

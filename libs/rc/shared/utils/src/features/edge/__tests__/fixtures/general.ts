@@ -490,7 +490,8 @@ export const mockedHaNetworkSettings = {
       gateway: '',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -508,7 +509,8 @@ export const mockedHaNetworkSettings = {
       gateway: '127.1.1.0',
       corePortEnabled: false,
       natEnabled: false,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }],
   portSettings: [{
@@ -526,7 +528,8 @@ export const mockedHaNetworkSettings = {
       gateway: '1.1.1.1',
       corePortEnabled: false,
       interfaceName: 'port1',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -541,7 +544,8 @@ export const mockedHaNetworkSettings = {
       gateway: '2.2.2.1',
       corePortEnabled: true,
       interfaceName: 'port2',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -557,7 +561,8 @@ export const mockedHaNetworkSettings = {
       subnet: '',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -571,7 +576,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      natPools: []
     }]
   }],
   virtualIpSettings: [{
