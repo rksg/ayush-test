@@ -55,6 +55,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const params = useParams()
   const form = Form.useFormInstance()
   const mtuType = Form.useWatch('mtuType')
+  const fallbackEnable = Form.useWatch('fallbackEnable')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
 
@@ -183,6 +184,75 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }
           />
         </Col>
+        <Col span={isDrawerMode ? 16 : 11} >
+          <UI.StyledSpace style={{
+            display: readMode ? 'block' : 'flex',
+            justifyContent: readMode ? 'initial' : 'space-between'
+          }}>
+            <UI.FormItemWrapper>
+              <Form.Item
+                label={$t({ defaultMessage: 'Fallback to Primary Gateway' })}
+                tooltip={readMode ? null : $t(messageMapping.fallback_tooltip)}
+              />
+            </UI.FormItemWrapper>
+            <Form.Item
+              {...(readMode? undefined : { name: 'fallbackEnabled' })}
+              initialValue={false}
+              valuePropName='checked'
+              children={
+                readMode
+                  ? softGreData?.fallbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
+                  : <Switch />
+              }
+            />
+          </UI.StyledSpace>
+        </Col>
+        {readMode && fallbackEnable && (
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Primary Availability Check Interval' })}
+              children={$t({ defaultMessage: '{minutes} minutes' },
+                { minutes: softGreData?.primaryAvailabilityCheckInterval || noDataDisplay })}
+            />
+          </Col>
+        )}
+        {!readMode && fallbackEnable && (
+          <Col span={24}>
+            <Form.Item
+              label={<>
+                { $t({ defaultMessage: 'Primary Availability Check Interval' }) }
+                {readMode ? null
+                  : <Tooltip.Question
+                    title={$t(messageMapping.primary_availability_check_tooltip)}
+                    placement='bottom'/>}
+              </>}
+              required={!readMode}
+            >
+              <Space>
+                <Form.Item
+                  name='primaryAvailabilityCheckInterval'
+                  initialValue={60}
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter Primary Availability Check Interval' })
+                    },
+                    {
+                      type: 'number', min: 60, max: 1440,
+                      message: $t({
+                        defaultMessage: 'Primary Availability Check Interval must be between 60 and 1440'
+                      })
+                    }
+                  ]}
+                  validateFirst
+                  noStyle
+                  children={<InputNumber style={{ width: '60px' }}/>}
+                />
+                <div>{$t({ defaultMessage: 'minutes' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
+        )}
         <Col span={24}>
           <Form.Item
             {...(readMode? undefined : { name: 'mtuType' })}
