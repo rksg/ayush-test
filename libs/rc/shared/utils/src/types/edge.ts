@@ -98,6 +98,11 @@ export interface EdgeDetails {
   updatedDate: string
 }
 
+export interface EdgeNatPool {
+  startIpAddress: string
+  endIpAddress: string
+}
+
 export interface EdgePort {
   id: string
   portType: EdgePortTypeEnum
@@ -109,6 +114,7 @@ export interface EdgePort {
   subnet: string
   gateway: string
   natEnabled: boolean
+  natPools: EdgeNatPool[]
   corePortEnabled: boolean
   interfaceName?: string
   maxSpeedCapa: number
@@ -408,6 +414,7 @@ export interface EdgeLag {
     corePortEnabled: boolean
     accessPortEnabled?: boolean
     natEnabled: boolean
+    natPools: EdgeNatPool[]
     lagEnabled: boolean
 }
 

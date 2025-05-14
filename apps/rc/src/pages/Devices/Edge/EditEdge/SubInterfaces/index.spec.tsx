@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { EdgeEditContext } from '@acx-ui/rc/components'
-import { edgeApi }         from '@acx-ui/rc/services'
+import { Features }                               from '@acx-ui/feature-toggle'
+import { EdgeEditContext, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { edgeApi }                                from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
   EdgeLagFixtures,
@@ -53,11 +53,17 @@ jest.mock('../ClusterNavigateWarning', () => ({
   ClusterNavigateWarning: () => <div data-testid='ClusterNavigateWarning' />
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  // eslint-disable-next-line max-len
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const original = jest.requireActual('@acx-ui/rc/components')
+  return {
+    EdgeEditContext: original.EdgeEditContext,
+    CsvSize: original.CsvSize,
+    ImportFileDrawer: original.ImportFileDrawer,
+    ImportFileDrawerType: original.ImportFileDrawerType,
+
+    useIsEdgeFeatureReady: jest.fn()
+  }
+})
 
 const defaultContextData = {
   activeSubTab: {
@@ -81,12 +87,12 @@ const defaultEditEdgeClusterCtxData = {
   isPortDataFetching: false,
   isPortStatusFetching: false,
   isLagStatusFetching: false,
-  isCluster: true
+  isClusterFormed: true
 } as unknown as EditEdgeDataContextType
 
 const defaultEditEdgeSingleNodeCtxData = {
   ...defaultEditEdgeClusterCtxData,
-  isCluster: false
+  isClusterFormed: false
 } as unknown as EditEdgeDataContextType
 
 describe('EditEdge ports - sub-interface', () => {
@@ -94,7 +100,9 @@ describe('EditEdge ports - sub-interface', () => {
   beforeEach(() => {
     store.dispatch(edgeApi.util.resetApiState())
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff !== Features.EDGE_DUAL_WAN_TOGGLE)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000'
@@ -139,7 +147,7 @@ describe('EditEdge ports - sub-interface', () => {
               isPortDataFetching: false,
               isPortStatusFetching: false,
               isLagStatusFetching: false,
-              isCluster: true
+              isClusterFormed: true
             } as unknown as EditEdgeDataContextType}
           >
             <SubInterfaces />
@@ -261,7 +269,7 @@ describe('EditEdge ports - sub-interface', () => {
   })
 
   it('should not display import from file when FF is disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(
       <Provider>
@@ -368,6 +376,31 @@ describe('EditEdge ports - sub-interface', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+  })
+
+  it('should be greyout when dual WAN FF is enabled', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={defaultEditEdgeSingleNodeCtxData}
+          >
+            <SubInterfaces />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+      })
+
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
+    await userEvent.click(lagTab)
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('radio')).toBeDisabled()
   })
 
   describe('Core Access', () => {

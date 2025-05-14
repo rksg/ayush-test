@@ -9,6 +9,7 @@ import { Features }                                    from '@acx-ui/feature-tog
 import { CheckMark }                                   from '@acx-ui/icons'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeLag,
   EdgeLagStatus,
   EdgePort,
@@ -45,6 +46,8 @@ interface EdgeLagTableProps {
   onDelete: (serialNumber: string, id: string) => Promise<void>
   actionScopes?: { [key in string]: ScopeKeys }
   subInterfaceList?: SubInterface[]
+  isClusterWizard?: boolean
+  clusterInfo: EdgeClusterStatus
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -52,7 +55,9 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
-    actionScopes, subInterfaceList
+    actionScopes, subInterfaceList,
+    isClusterWizard = false,
+    clusterInfo
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -285,6 +290,8 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         onAdd={onAdd}
         onEdit={onEdit}
         subInterfaceList={subInterfaceList}
+        isClusterWizard={isClusterWizard}
+        clusterInfo={clusterInfo}
       />
     </>
   )

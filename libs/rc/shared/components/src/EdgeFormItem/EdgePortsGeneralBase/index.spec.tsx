@@ -1,10 +1,13 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import _         from 'lodash'
+import userEvent        from '@testing-library/user-event'
+import { Form }         from 'antd'
+import _, { cloneDeep } from 'lodash'
 
 import { Features }        from '@acx-ui/feature-toggle'
 import {
+  ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  EdgeClusterStatus,
+  EdgeGeneralFixtures,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgePortTypeEnum,
@@ -52,7 +55,7 @@ jest.mock('antd', () => {
 })
 
 jest.mock('../../useEdgeActions', () => ({
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const {
@@ -65,9 +68,12 @@ const formEdgePortConfig = transformApiDataToFormListData(mockEdgePortConfig.por
 // eslint-disable-next-line max-len
 const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData(mockEdgePortConfigWithStatusIpWithoutCorePort.ports)
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 const mockedOnTabChange = jest.fn()
 
 const mockedProps = {
+  clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   statusData: mockPortInfo as EdgePortInfo[],
   isEdgeSdLanRun: false,
   activeTab: '',
@@ -546,5 +552,117 @@ describe('EditEdge ports', () => {
     // try to enable WAN port again
     await userEvent.click(await screen.findByRole('tab', { name: 'Port1' }))
     expect(await screen.findByRole('switch', { name: 'Port Enabled' })).toBeDisabled()
+  })
+})
+
+describe('EditEdge ports - ports general - multi NAT pools', () => {
+  const mockNatWanPortsData = cloneDeep(mockEdgePortConfig.ports)
+  mockNatWanPortsData.forEach((p) => {
+    p.corePortEnabled = false
+  })
+  const mockNatFormEdgePortConfig = transformApiDataToFormListData(mockNatWanPortsData)
+
+  const formOnFinish = jest.fn()
+
+  const MockedComponentTestNatPool = ({ initVals, otherProps }:
+    { initVals?: unknown, otherProps?:unknown })=> {
+
+    return <Form
+      initialValues={initVals ?? mockNatFormEdgePortConfig}
+      onFinish={formOnFinish}
+    >
+      <EdgePortsGeneralBase
+        {...mockedProps}
+        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
+        {...(otherProps ?? {})}
+      />
+      <button data-testid='rc-submit'>Submit</button>
+    </Form>
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+  })
+
+  const natPoolTestPreparation = async () => {
+    await screen.findByText(/00:0c:29:b6:ad:04/i)
+
+    expect(screen.getByText('Use NAT Service')).toBeInTheDocument()
+    // Simulate enabling NAT
+    const natSwitch = screen.getByRole('switch', { name: 'Use NAT Service' })
+    await userEvent.click(natSwitch)
+    expect(natSwitch).toBeChecked()
+    await screen.findByText('NAT IP Addresses Range')
+  }
+
+  it('should correctly renders NAT IP Addresses Range when multi NAT IP enable', async () => {
+    render(<MockedComponentTestNatPool />)
+
+    await natPoolTestPreparation()
+    const startIp = screen.getByRole('textbox', { name: 'Start' })
+    const endIp = screen.getByRole('textbox', { name: 'End' })
+
+    await userEvent.type(startIp, '1.1.1.10')
+    await userEvent.type(endIp, '1.1.1.30')
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    expect(formOnFinish).toBeCalled()
+    expect(screen.queryAllByRole('alert').length).toEqual(0)
+  })
+
+  it('correctly block when pool range is invalid', async () => {
+    render(<MockedComponentTestNatPool />)
+
+    await natPoolTestPreparation()
+    const startIp = screen.getByRole('textbox', { name: 'Start' })
+    const endIp = screen.getByRole('textbox', { name: 'End' })
+
+    await userEvent.type(startIp, '1.1.1.100')
+    await userEvent.type(endIp, '1.1.1.1')
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    const alertMsg = await screen.findByRole('alert')
+    expect(alertMsg).toBeInTheDocument()
+    expect(alertMsg.textContent).toEqual('Invalid NAT pool start IP and end IP')
+  })
+
+  it('correctly block when pool range size > over maximum', async () => {
+    render(<MockedComponentTestNatPool />)
+
+    await natPoolTestPreparation()
+    const startIp = screen.getByRole('textbox', { name: 'Start' })
+    const endIp = screen.getByRole('textbox', { name: 'End' })
+
+    await userEvent.type(startIp, '1.1.1.5')
+    await userEvent.type(endIp, '1.1.1.200')
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    const alertMsg = await screen.findByRole('alert')
+    expect(alertMsg).toBeInTheDocument()
+    expect(alertMsg.textContent).toEqual('NAT IP address range exceeds maximum size 128')
+  })
+
+  it('correctly block when pool ranges are overlapped', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) =>
+      ff === Features.EDGE_MULTI_NAT_IP_TOGGLE || ff === Features.EDGE_DUAL_WAN_TOGGLE)
+
+    const mock2WanPorts = cloneDeep(mockNatFormEdgePortConfig)
+    mock2WanPorts.port5[0].portType = EdgePortTypeEnum.WAN
+    mock2WanPorts.port5[0].natPools = [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
+
+    render(<MockedComponentTestNatPool
+      initVals={mock2WanPorts}
+    />)
+
+    await natPoolTestPreparation()
+    const startIp = screen.getByRole('textbox', { name: 'Start' })
+    const endIp = screen.getByRole('textbox', { name: 'End' })
+
+    await userEvent.type(startIp, '1.1.1.10')
+    await userEvent.type(endIp, '1.1.1.20')
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    const alertMsg = await screen.findByRole('alert')
+    expect(alertMsg).toBeInTheDocument()
+    expect(alertMsg.textContent).toEqual('The selected NAT pool overlaps with other NAT pools')
+    jest.resetAllMocks()
   })
 })
