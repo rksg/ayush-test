@@ -166,26 +166,20 @@ export interface ClientInfo {
 }
 
 export type WiredClientInfo = {
-  apIp: string
+  apId: string
+  apMacAddress: string
   apName: string
-  apMac: string
-  serialNumber: string
-  apEthId: number // portNumber
-  ethProfileId: number
-  clientMac: string
-  deviceTypeStr: string
-  osType: string
-  ipAddress: string
   hostname: string
-  modelName: string
+  ipAddress: string
+  macAddress: string
+  portNumber: number
   venueId: string
   venueName: string
-  vlan: number
+  vlanId: number
+
+  deviceTypeStr: string
+  osType: string
   status: number
-  useName: string
-  connectSince: string
-  connectedTimeString: string // form GUI
-  connectedTimeParsed: boolean // form GUI
 }
 
 type VenueInformation = {

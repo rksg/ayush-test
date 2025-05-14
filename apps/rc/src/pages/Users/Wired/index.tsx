@@ -66,7 +66,7 @@ const useTabs = () : WiredTabsInfo => {
     defaultPayload: {
       searchString: '',
       filters: {},
-      fields: [ 'clientMac']
+      fields: [ 'macAddress']
     }
   })
 
@@ -96,7 +96,7 @@ const useTabs = () : WiredTabsInfo => {
   const apClientsTab = {
     key: WiredTabsEnum.AP_CLIENTS,
     title: $t({ defaultMessage: 'AP Clients ({apWiredCount})' }, { apWiredCount }),
-    component: <ApWiredClientTable />,
+    component: <ApWiredClientTable searchable={true} />,
     headerExtra: []
   }
 

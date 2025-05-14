@@ -1793,7 +1793,7 @@ function UserRoutes () {
           <Route path='users/switch/clients/:clientId'
             element={<SwitchClientDetailsPage />} />
         </> : <>
-          <Route path='users/wired' element={<TenantNavigate replace to='/users/wired/switch/clients' />} />
+          <Route path='users/wired/switch' element={<TenantNavigate replace to='/users/wired/switch/clients' />} />
           <Route path='users/wired/switch/clients'
             element={<WiredClientList tab={WiredTabsEnum.SWITCH_CLIENTS}/>} />
           <Route path='users/wired/switch/clients/:clientId'

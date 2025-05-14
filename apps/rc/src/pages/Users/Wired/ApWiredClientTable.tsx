@@ -4,10 +4,8 @@ import { useParams } from 'react-router-dom'
 import { ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
 import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
 import {
-  defaultSort,
   getDeviceTypeIcon,
   getOsTypeIcon,
-  sortProp,
   TableQuery,
   usePollingTableQuery,
   WiredClientInfo
@@ -20,14 +18,14 @@ import * as UI from './styledComponents'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac','ipAddress','hostname','apMac'],
+  searchTargetFields: ['macAddress','ipAddress','hostname','apMac'],
   filters: {},
   fields: [
-    'hostname', 'username', 'clientMac', 'ipAddress',
-    'deviceTypeStr', 'osType', 'modelName',
-    'venueName', 'venueId', 'apName', 'apIp', 'apMac',
-    'connectSince', 'apEthId', 'ethProfileId',
-    'portNumber', 'vlan', 'status', 'connectSince'
+    'hostname', 'macAddress', 'ipAddress',
+    'deviceTypeStr', 'osType', 'status',
+    'venueName', 'venueId',
+    'apId', 'apMacAddress', 'apName',
+    'portNumber', 'vlanId'
   ]
 }
 
@@ -100,12 +98,13 @@ export const ApWiredClientTable = (props: {
   function getCols (intl: ReturnType<typeof useIntl>) {
     const { $t } = intl
     const columns: TableProps<WiredClientInfo>['columns'] = [{
-      key: 'hostName',
+      key: 'hostname',
       title: $t({ defaultMessage: 'Hostname' }),
-      dataIndex: 'hostName',
+      dataIndex: 'hostname',
       defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
+      searchable: searchable,
       render: (_, { hostname }, __, highlightFn) => {
         const host = searchable ? highlightFn(hostname) : hostname
         return host ?? noDataDisplay
@@ -116,7 +115,7 @@ export const ApWiredClientTable = (props: {
       title: intl.$t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       align: 'center',
-      sorter: { compare: sortProp('osType', defaultSort) },
+      sorter: true,
       render: (_, { osType }) => {
         return <UI.IconContainer>
           <Tooltip title={osType}>
@@ -125,13 +124,13 @@ export const ApWiredClientTable = (props: {
         </UI.IconContainer>
       }
     }, {
-      key: 'clientMac',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'clientMac',
+      dataIndex: 'macAddress',
       sorter: true,
       searchable: searchable,
-      render: (_, { clientMac }, __, highlightFn) => {
-        const mac = searchable ? highlightFn(clientMac) : clientMac
+      render: (_, { macAddress }, __, highlightFn) => {
+        const mac = searchable ? highlightFn(macAddress) : macAddress
         return mac ?? noDataDisplay
       }
     }, {
@@ -139,10 +138,10 @@ export const ApWiredClientTable = (props: {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       sorter: true,
-      render: (_, { ipAddress }) => {
-        return <Tooltip title={ipAddress}>
-          {ipAddress || noDataDisplay}
-        </Tooltip>
+      searchable: searchable,
+      render: (_, { ipAddress }, __, highlightFn) => {
+        const ipAddr = searchable ? highlightFn(ipAddress) : ipAddress
+        return ipAddr ?? noDataDisplay
       }
     },
 
@@ -150,7 +149,7 @@ export const ApWiredClientTable = (props: {
       key: 'venueName',
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
-      //sorter: true,
+      sorter: true,
       //searchable: searchable,
       filterKey: 'venueId',
       filterMultiple: false,
@@ -169,47 +168,48 @@ export const ApWiredClientTable = (props: {
       key: 'apName',
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: 'apName',
-      //sorter: true,
+      sorter: true,
       //searchable: searchable,
-      filterKey: 'serialNumber',
+      filterKey: 'apId',
       filterMultiple: false,
       filterSearchable: true,
       filterable: params.serialNumber ? false : GetApFilterOptions(params.venueId),
       render: (_: React.ReactNode, row: WiredClientInfo) => {
-        const { serialNumber, apName } = row
+        const { apId, apName } = row
         const displayApName = apName ?? noDataDisplay
-        const link = `/devices/wifi/${serialNumber}/details/overview`
-        return (serialNumber && apName) ?
+        const link = `/devices/wifi/${apId}/details/overview`
+        return (apId && apName) ?
           <TenantLink to={link}>{displayApName}</TenantLink> :
           <span>{displayApName}</span>
       }
     }, {
-      key: 'apMac',
+      key: 'apMacAddress',
       title: $t({ defaultMessage: 'AP MAC' }),
-      dataIndex: 'apMac',
+      dataIndex: 'apMacAddress',
       sorter: true,
+      searchable: searchable,
       render: (
         _: React.ReactNode, row: WiredClientInfo, __: number, highlightFn: TableHighlightFnArgs
       ) => {
-        const { apMac } = row
-        const displayApName = apMac?
-          (searchable ? highlightFn(apMac) : apMac) :
+        const { apMacAddress } = row
+        const displayApName = apMacAddress?
+          (searchable ? highlightFn(apMacAddress) : apMacAddress) :
           noDataDisplay
         return displayApName
       }
     }]),
     {
-      key: 'apEthId',
+      key: 'portNumber',
       title: intl.$t({ defaultMessage: 'LAN Port' }),
-      dataIndex: 'apEthId',
+      dataIndex: 'portNumber',
       sorter: true,
-      render: (_, { apEthId }) => {
-        return apEthId ? `LAN ${apEthId}` : noDataDisplay
+      render: (_, { portNumber }) => {
+        return portNumber ? `LAN ${portNumber}` : noDataDisplay
       }
     }, {
-      key: 'vlan',
+      key: 'vlanId',
       title: intl.$t({ defaultMessage: 'VLAN' }),
-      dataIndex: 'vlan',
+      dataIndex: 'vlanId',
       sorter: true,
       align: 'center'
     }, {
