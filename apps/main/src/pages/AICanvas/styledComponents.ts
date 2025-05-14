@@ -763,6 +763,9 @@ export const Widget = styled(Card)`
       border-top: 1px solid var(--acx-primary-white);
     }
   }
+  &.table .chart {
+    margin-top: 10px;
+  }
   .chart {
     margin: 5px;
   }
@@ -780,6 +783,13 @@ export const Widget = styled(Card)`
         max-width: auto;
       }
     }
+  }
+  .ant-card-head {
+    margin-bottom: 3px;
+  }
+  .sub-title {
+    font-size: 10px;
+    margin-left: 1px;
   }
   .update-indicator {
     display: inline-block;
