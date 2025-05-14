@@ -13,7 +13,7 @@ import {
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import { Select, showToast, Loader, Tooltip } from '@acx-ui/components'
 import * as config                            from '@acx-ui/config'
-import { hasRaiPermission }                   from '@acx-ui/user'
+import { hasRaiPermission, isCoreTier }       from '@acx-ui/user'
 
 const getApplyMsg = (success?: boolean) => {
   return success
@@ -79,7 +79,8 @@ export const NotificationSettings = ({ tenantId, apply }: {
   const query = useGetPreferencesQuery({ tenantId })
   const [preferences, setState] = useState<AnalyticsPreferences>({})
   const [updatePrefrences] = useSetNotificationMutation()
-  const { email } = getUserProfile()
+  const { email, accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const showIntentAI = hasRaiPermission('READ_INTENT_AI')
   useEffect(() => { setState(query.data!) }, [query.data])
   apply.current = async (): Promise<boolean | void> => {
@@ -102,12 +103,12 @@ export const NotificationSettings = ({ tenantId, apply }: {
       })
   }
   return <Loader states={[query]}>
-    {hasRaiPermission('READ_INCIDENTS') &&
+    {hasRaiPermission('READ_INCIDENTS') && !isCore &&
       <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
         <OptionsList preferences={preferences} setState={setState} type='incident' />
       </Form.Item>
     }
-    {showIntentAI && <Form.Item
+    {showIntentAI && !isCore && <Form.Item
       label={<>
         {$t({ defaultMessage: 'IntentAI' })}
         <Tooltip.Question
