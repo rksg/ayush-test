@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }                    from '@acx-ui/components'
+import { Filter }             from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -874,7 +874,6 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApGroupApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
-        console.log(params)
         const req = createHttpRequest(WifiRbacUrlsInfo.getApGroupApCapabilities, params)
         return {
           ...req
