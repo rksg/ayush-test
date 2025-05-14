@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, PersonaUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen }                                             from '@acx-ui/test-utils'
 
 import {
   mockAAAPolicyListResponse,
@@ -66,7 +66,11 @@ describe('OpenNetwork form', () => {
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
       rest.post(AaaUrls.queryAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
 
   })
