@@ -569,7 +569,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000; //transparent;
+  background: transparent;
   padding-bottom: 10px;
 }
 
