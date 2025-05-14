@@ -83,7 +83,7 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     await waitFor(() => expect(result.current.dnsServersData?.primary).toBe('1.1.1.1'))
     await waitFor(() => expect(result.current.dnsServersData?.secondary).toBe('2.2.2.2'))
     await waitFor(() => expect(result.current.staticRouteData?.routes.length).toBe(2))
-    await waitFor(() => expect(result.current.isCluster).toBeTruthy())
+    await waitFor(() => expect(result.current.isClusterFormed).toBeTruthy())
     await waitFor(() => expect(result.current.clusterConfig?.id).toBe('clusterId_1'))
   })
 })

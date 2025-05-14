@@ -4,6 +4,7 @@ import _         from 'lodash'
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import {
   ClusterHighAvailabilityModeEnum,
+  ClusterNetworkSettings,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLag,
@@ -189,7 +190,7 @@ const expectedSubInterfaceData = [
 ]
 
 describe('Interface Compatibility Check', () => {
-  it('when node is missing in port setting', async () => {
+  it('when node is missing from port setting', async () => {
     const mockData = _.cloneDeep(mockNoLagData)
     const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
@@ -203,8 +204,8 @@ describe('Interface Compatibility Check', () => {
     n2p1!.portType = EdgePortTypeEnum.CLUSTER
     n2p1!.ipMode = EdgeIpModeEnum.DHCP
     const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-      nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
-    n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+    n2p2!.portType = EdgePortTypeEnum.LAN
     n2p2!.corePortEnabled = true
 
     const result = interfaceCompatibilityCheck(
@@ -232,7 +233,8 @@ describe('Interface Compatibility Check', () => {
       n2p1!.portType = EdgePortTypeEnum.CLUSTER
       n2p1!.ipMode = EdgeIpModeEnum.DHCP
       const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+        nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n2p2!.portType = EdgePortTypeEnum.LAN
       n2p2!.ipMode = EdgeIpModeEnum.DHCP
       n2p2!.corePortEnabled = true
 
@@ -448,6 +450,34 @@ describe('Interface Compatibility Check', () => {
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN].value).toBe(1)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(1)
+    })
+
+    it('when first node core port, second node core port setting is invalid', async () => {
+      const mockData = _.cloneDeep(mockNoLagData)
+      const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n1p1!.portType = EdgePortTypeEnum.LAN
+      n1p1!.corePortEnabled = true
+      const n1p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n1p2!.portType = EdgePortTypeEnum.CLUSTER
+      const n2p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p1!.portType = EdgePortTypeEnum.CLUSTER
+      n2p1!.ipMode = EdgeIpModeEnum.DHCP
+      const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      n2p2!.corePortEnabled = true
+
+      const result = interfaceCompatibilityCheck(
+        mockData.portSettings, mockData.lagSettings, nodeList)
+
+      expect(result.isError).toBe(true)
+      expect(result.portTypes).toBe(true)
+      expect(result.corePorts).toBe(false)
+      expect(result.ports).toBe(true)
+
     })
   })
 })
@@ -691,8 +721,25 @@ describe('interfaceNameComparator', () => {
 })
 
 describe('data transformer', () => {
+  const mockGivenData = _.cloneDeep(mockClusterConfigWizardData)
+
+  // eslint-disable-next-line max-len
+  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings']) =>
+    _.cloneDeep(lagSettings)
+      .map(item => ({
+        ...item,
+        lags: item.lags.map(lag => ({
+          ...lag,
+          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled,
+          natEnabled: lag.portType === EdgePortTypeEnum.WAN ? lag.natEnabled : false,
+          ipMode: lag.portType === EdgePortTypeEnum.WAN ? lag.ipMode : EdgeIpModeEnum.STATIC,
+          gateway: !lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN ? '' : lag.gateway
+        }))
+      }))
+
   it('should transform data from form data to API data (AA)', () => {
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const mockData = _.cloneDeep(mockGivenData)
+
     // eslint-disable-next-line max-len
     mockData.portSettings[mockEdgeClusterList.data[0].edgeList[0].serialNumber]['port1'][0].corePortEnabled = true
     const result = transformFromFormToApiData(
@@ -700,8 +747,10 @@ describe('data transformer', () => {
       ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
     )
 
+    const expectLags = getExpectLags(mockData.lagSettings)
+
     expect(result).toStrictEqual({
-      lagSettings: mockData.lagSettings,
+      lagSettings: expectLags,
       portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
         serialNumber,
         ports: Object.values(ports).flat().map(port =>
@@ -716,7 +765,8 @@ describe('data transformer', () => {
   })
 
   it('should transform data from form data to API data (AB)', () => {
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const mockData = _.cloneDeep(mockGivenData)
+
     // eslint-disable-next-line max-len
     mockData.lagSettings[0].lags[0].portType = EdgePortTypeEnum.WAN
     mockData.lagSettings[0].lags[0].corePortEnabled = true
@@ -728,14 +778,10 @@ describe('data transformer', () => {
       true
     )
 
+    const expectLags = getExpectLags(mockData.lagSettings)
+
     expect(result).toStrictEqual({
-      lagSettings: mockData.lagSettings.map(item => ({
-        ...item,
-        lags: item.lags.map(lag => ({
-          ...lag,
-          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled
-        }))
-      })),
+      lagSettings: expectLags,
       portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
         serialNumber,
         ports: Object.values(ports).flat()

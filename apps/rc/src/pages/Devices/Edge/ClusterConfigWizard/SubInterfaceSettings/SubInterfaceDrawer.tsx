@@ -11,7 +11,7 @@ import {
   SubInterface,
   edgePortIpValidator,
   generalSubnetMskRegExp,
-  lanPortSubnetValidator
+  interfaceSubnetValidator
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -110,8 +110,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   }
 
   const getCurrentSubnetInfo = () => {
-    const { ip, subnet } = formRef.getFieldsValue(true)
-    return { ip, subnetMask: subnet }
+    const { ipMode, ip, subnet } = formRef.getFieldsValue(true)
+    return { ipMode, ip, subnetMask: subnet }
   }
 
   const getSubnetInfoWithoutCurrent = () => {
@@ -119,12 +119,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
     const allPhysicalInterfaceSubnets = (allInterface
       ?.map(item => extractSubnetFromEdgePortInfo(item))
-      .filter(Boolean) as { id?: string, ip: string, subnetMask: string }[]) ?? []
+      // eslint-disable-next-line max-len
+      .filter(Boolean) as { id?: string, ipMode: EdgeIpModeEnum, ip: string, subnetMask: string }[]) ?? []
 
     const allSubInterfaceSubnets = getAllSubInterfacesFromForm()
       .filter(item => item.id !== currentSubInterfaceId)
       .map(item => extractSubnetFromSubInterface(item))
-      .filter(Boolean) as { ip: string, subnetMask: string }[]
+      .filter(Boolean) as { ipMode: EdgeIpModeEnum, ip: string, subnetMask: string }[]
 
     return [...allPhysicalInterfaceSubnets, ...allSubInterfaceSubnets]
   }
@@ -184,7 +185,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) },
                 {
                   validator: () =>
-                    lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                    // eslint-disable-next-line max-len
+                    interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC))
                 }
               ]}
               children={<Input />}
