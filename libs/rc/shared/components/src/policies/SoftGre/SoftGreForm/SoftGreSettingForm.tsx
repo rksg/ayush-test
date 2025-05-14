@@ -201,7 +201,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               valuePropName='checked'
               children={
                 readMode
-                  ? softGreData?.fallbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
+                  ? softGreData?.gatewayFailbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
                   : <Switch />
               }
             />
@@ -212,7 +212,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'Primary Availability Check Interval' })}
               children={$t({ defaultMessage: '{minutes} minutes' },
-                { minutes: softGreData?.primaryAvailabilityCheckInterval || noDataDisplay })}
+                { minutes: softGreData?.gatewaySecondaryToPrimaryTimer || noDataDisplay })}
             />
           </Col>
         )}
