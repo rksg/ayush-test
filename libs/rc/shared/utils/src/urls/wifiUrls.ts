@@ -351,6 +351,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
+  getApGroupBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateApGroupBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
   getApAntennaTypeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',

@@ -54,7 +54,16 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-
+  getApGroupBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateApGroupBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
   getVenueRadioCustomization: {
     method: 'get',
     url: '/venues/:venueId/apRadioSettings',

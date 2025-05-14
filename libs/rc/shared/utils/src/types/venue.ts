@@ -263,6 +263,11 @@ export interface ApModelBandModeSettings {
 	bandMode: BandModeEnum
 }
 
+export interface ApGroupApModelBandModeSettings {
+	useVenueSettings: boolean,
+	apModelBandModeSettings: ApModelBandModeSettings[]
+}
+
 export type VeuneApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum

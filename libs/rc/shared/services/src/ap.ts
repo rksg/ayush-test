@@ -99,7 +99,8 @@ import {
   IpsecUrls,
   IpsecViewData,
   ApGroupRadioCustomization,
-  ApGroupQueryRadioCustomization
+  ApGroupQueryRadioCustomization,
+  ApGroupApModelBandModeSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -869,6 +870,25 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApGroupApModelBandModeSettings: build.query<ApGroupApModelBandModeSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        return createHttpRequest(WifiRbacUrlsInfo.getApGroupBandModeSettings, params, apiCustomHeader)
+      },
+      providesTags: [{ type: 'ApGroup', id: 'BandModeSettings' }]
+    }),
+    updateApGroupApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<ApGroupApModelBandModeSettings>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApGroupBandModeSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'BandModeSettings' }]
     }),
     getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
@@ -1978,6 +1998,9 @@ export const {
   useUpdateApBandModeSettingsMutation,
   useGetApBandModeSettingsV1Dot1Query,
   useUpdateApBandModeSettingsV1Dot1Mutation,
+  useGetApGroupApModelBandModeSettingsQuery,
+  useLazyGetApGroupApModelBandModeSettingsQuery,
+  useUpdateApGroupApModelBandModeSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,
