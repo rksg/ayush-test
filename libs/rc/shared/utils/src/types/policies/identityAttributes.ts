@@ -1,4 +1,4 @@
-export enum SamlIdpAttributeMappingNameType {
+export enum IdentityAttributeMappingNameType {
     DISPLAY_NAME = 'displayName',
     FIRST_NAME = 'firstName',
     LAST_NAME = 'lastName',
@@ -6,4 +6,9 @@ export enum SamlIdpAttributeMappingNameType {
     ROLES = 'roles',
     GROUPS = 'groups',
     PHONE_NUMBER = 'phoneNumber'
+}
+
+export interface AttributeMapping {
+    name: string
+    mappedByName: string
 }
