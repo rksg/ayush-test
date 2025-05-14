@@ -1,0 +1,971 @@
+/* eslint-disable max-len */
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  AFCPowerMode,
+  AFCStatus,
+  ApRadioCustomizationV1Dot1,
+  ApRadioParams24GV1Dot1,
+  ApRadioParams50GV1Dot1,
+  ApRadioParams6GV1Dot1,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
+
+import '@testing-library/jest-dom'
+
+
+import { ApDataContext, ApEditContext } from '../..'
+import {
+  apDeviceRadio,
+  apR760DeviceRadio,
+  apT670DeviceRadio,
+  r560Ap,
+  r760Ap,
+  t670Ap,
+  triBandApCap,
+  tripleBandMode,
+  validRadioChannels,
+  venuelist,
+  venueRadioCustomization,
+  venueRadioDetail
+} from '../../../../__tests__/fixtures'
+
+import {
+  applySettings,
+  createCacheSettings,
+  isUseVenueSettings,
+  RadioSettingsV1Dot1
+} from './RadioSettingsV1Dot1'
+
+const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
+
+const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
+const r560Cap = triBandApCap.apModels.find(cap => cap.model === 'R560')
+const t670Cap = triBandApCap.apModels.find(cap => cap.model === 'T670')
+
+export enum RadioType {
+  Normal24GHz = 'Normal24GHz',
+  Normal5GHz= 'Normal5GHz',
+  Normal6GHz= 'Normal6GHz',
+  Lower5GHz = 'Lower5GHz',
+  Upper5GHz= 'Upper5GHz'
+}
+
+const defaultApEditCxtData = {
+  editContextData: {
+    tabTitle: '',
+    isDirty: false,
+    updateChanges: jest.fn(),
+    discardChanges: jest.fn()
+  },
+  setEditContextData: jest.fn()
+}
+
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
+
+const venueData = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  floorPlans: [],
+  id: '908c47ee1cd445838c3bf71d4addccdf',
+  name: 'Test-Venue'
+}
+
+describe('RadioSettingsTab', ()=> {
+  describe('RadioSettingsTab with R560 AP', () => {
+    const defaultR560ApDataCxtData = {
+      apData: r560Ap,
+      apCapabilities: r560Cap,
+      venueData: venueRadioDetail
+    }
+
+    beforeEach(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockServer.use(
+        rest.get(
+          CommonUrlsInfo.getVenuesList.url,
+          (_, res, ctx) => res(ctx.json(venuelist))),
+        rest.get(
+          WifiUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
+        rest.get(
+          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.post(
+          FirmwareUrlsInfo.getApModelFamilies.url,
+          (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueData))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // v1.1
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json({})))
+      )
+    })
+
+    afterEach(() => cleanup())
+
+    xit('should render correctly', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+      await userEvent.click(transmitSelect)
+      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+      //await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    })
+
+    xit('should render correctly with Auto bandwidth', async () => {
+      apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+      await userEvent.click(transmitSelect)
+      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+    })
+
+    xit('should render correctly with 40Mhz bandwidth', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+
+      const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
+      await userEvent.click(bandwidthSelect)
+      expect((await screen.findByTitle('40 MHz'))).toBeDefined()
+      await userEvent.click((await screen.findByTitle('40 MHz')))
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+
+      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+      await userEvent.click(transmitSelect)
+      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+    })
+
+    xit('should render correctly with 80Mhz bandwidth', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+
+      const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
+      await userEvent.click(bandwidthSelect)
+      expect((await screen.findByTitle('80 MHz'))).toBeDefined()
+      await userEvent.click((await screen.findByTitle('80 MHz')))
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+      await userEvent.click(transmitSelect)
+      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+    })
+
+    xit('should render 2.4GHz channels correctly with MANUAL method', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '2.4 GHz' }))
+      const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+      expect(channelSelect).not.toHaveAttribute('disabled')
+      await userEvent.click(channelSelect)
+      expect(await screen.findByTitle('Manual channel selection')).toBeDefined()
+      await userEvent.click((await screen.findByTitle('Manual channel selection')))
+      await userEvent.click(await screen.findByText('1'))
+    })
+
+    xit('should render 5GHz channels correctly with MANUAL method', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+
+      const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+      expect(channelSelect).not.toHaveAttribute('disabled')
+      await userEvent.click(channelSelect)
+      expect(await screen.findByTitle('Manual channel selection')).toBeDefined()
+      await userEvent.click((await screen.findByTitle('Manual channel selection')))
+
+      await userEvent.click(await screen.findByText('36'))
+    })
+
+    xit('should render 6GHz channels correctly with MANUAL method', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '6 GHz' }))
+      // turn On 6G radio
+      const enable6GBtn = await screen.findByRole('switch')
+      await userEvent.click(enable6GBtn)
+
+      const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+      expect(channelSelect).not.toHaveAttribute('disabled')
+      await userEvent.click(channelSelect)
+      expect(await screen.findByTitle('Manual channel selection')).toBeDefined()
+      await userEvent.click((await screen.findByTitle('Manual channel selection')))
+
+      await userEvent.click(await screen.findByText('21'))
+    })
+
+    xit('should render correctly with disable 2.4G', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '2.4 GHz' }))
+
+      const enable24GBtn = await screen.findByRole('switch')
+      await userEvent.click(enable24GBtn)
+
+      await screen.findByText('2.4 GHz Radio is disabled')
+    })
+
+    xit('should render correctly with disable 5G', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+
+      const enable5GBtn = await screen.findByRole('switch')
+      await userEvent.click(enable5GBtn)
+
+      await screen.findByText('5 GHz Radio is disabled')
+    })
+
+    xit('should render correctly with disable 6G', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '6 GHz' }))
+
+      await screen.findByText('6 GHz Radio is disabled')
+
+      const enable6GBtn = await screen.findByRole('switch')
+      await userEvent.click(enable6GBtn)
+    })
+
+    xit('should render correctly with Customize or Use Venue Settings', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+
+      await screen.findByRole('button', { name: 'Use Venue Settings' })
+    })
+
+    it('should render correctly with cancel action', async () => {
+      apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    })
+
+  })
+
+  describe('RadioSettingsTab with R760 AP', () => {
+    const defaultR760ApDataCxtData = {
+      apData: r760Ap,
+      apCapabilities: r760Cap,
+      venueData: venueRadioDetail
+    }
+
+    beforeEach(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockServer.use(
+        rest.get(
+          CommonUrlsInfo.getVenuesList.url,
+          (_, res, ctx) => res(ctx.json(venuelist))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueRadioDetail))),
+        rest.get(
+          WifiUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
+        rest.get(
+          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.post(
+          FirmwareUrlsInfo.getApModelFamilies.url,
+          (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // v1.1
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json({})))
+      )
+    })
+
+    afterEach(() => cleanup())
+
+    xit('should render correctly', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+      await userEvent.click(transmitSelect)
+      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+    })
+
+    it('should render correctly when tri-band type is dual5G mode', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_SWITCHABLE_RF_TOGGLE)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await screen.findByRole('tab', { name: '2.4 GHz' })
+
+      const dual5GBtn = await screen.findByRole('radio',
+        { name: /Split 5GHz into lower and upper bands/ })
+      await userEvent.click(dual5GBtn)
+
+      const low5gTab = await screen.findByRole('tab', { name: 'Lower 5 GHz' })
+      await userEvent.click(low5gTab)
+
+      const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
+      await userEvent.click(up5gTab)
+    })
+
+    xit('should render correctly with disable lower 5G', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      const dual5GBtn = await screen.findByRole('radio',
+        { name: /Split 5GHz into lower and upper bands/ })
+      await userEvent.click(dual5GBtn)
+
+      const low5gTab = await screen.findByRole('tab', { name: 'Lower 5 GHz' })
+      await userEvent.click(low5gTab)
+
+      const enableLower5GBtn = await screen.findByRole('switch')
+      await userEvent.click(enableLower5GBtn)
+
+      await screen.findByText('Lower 5 GHz Radio is disabled')
+    })
+
+    xit('should render correctly with disable upper 5G', async () => {
+      render(
+        <Provider>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      const dual5GBtn = await screen.findByRole('radio',
+        { name: /Split 5GHz into lower and upper bands/ })
+      await userEvent.click(dual5GBtn)
+
+      const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
+      await userEvent.click(up5gTab)
+
+      const enableUpper5GBtn = await screen.findByRole('switch')
+      await userEvent.click(enableUpper5GBtn)
+
+      await screen.findByText('Upper 5 GHz Radio is disabled')
+    })
+  })
+
+  describe('RadioSettingsTab with T670 AP', () => {
+    const defaultT670ApDataCxtData = {
+      apData: t670Ap,
+      apCapabilities: t670Cap,
+      venueData: venueRadioDetail
+    }
+
+    beforeEach(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockServer.use(
+        rest.get(
+          CommonUrlsInfo.getVenuesList.url,
+          (_, res, ctx) => res(ctx.json(venuelist))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueRadioDetail))),
+        rest.get(
+          WifiUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+        rest.get(
+          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.put(
+          CommonRbacUrlsInfo.getVenueApModelBandModeSettings.url,
+          (_, res, ctx) => res(ctx.json(tripleBandMode))),
+        // v1.1
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomizationV1Dot1.url,
+          (_, res, ctx) => res(ctx.json({})))
+      )
+    })
+
+    afterEach(() => cleanup())
+
+    it('should render 6G channels correctly for T670 when separation FF is on', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultT670ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await screen.findByRole('tab', { name: '6 GHz' })
+
+      const r6gTab = await screen.findByRole('tab', { name: '6 GHz' })
+      await userEvent.click(r6gTab)
+      const outdoorChannel = await screen.findByText('93')
+      expect(outdoorChannel).toBeInTheDocument()
+      expect(screen.queryAllByText('97').length).toBe(0)
+      expect(screen.queryAllByText('101').length).toBe(0)
+      expect(screen.queryAllByText('105').length).toBe(0)
+      expect(screen.queryAllByText('109').length).toBe(0)
+      expect(screen.queryAllByText('113').length).toBe(0)
+      expect(screen.queryAllByText('185').length).toBe(0)
+      expect(screen.queryAllByText('189').length).toBe(0)
+      expect(screen.queryAllByText('193').length).toBe(0)
+      expect(screen.queryAllByText('197').length).toBe(0)
+      expect(screen.queryAllByText('221').length).toBe(0)
+    })
+
+    it('should render 6G channels correctly for T670 when separation FF is off', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultT670ApDataCxtData}>
+              <RadioSettingsV1Dot1 />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await screen.findByRole('tab', { name: '6 GHz' })
+
+      const r6gTab = await screen.findByRole('tab', { name: '6 GHz' })
+      await userEvent.click(r6gTab)
+      const outdoorChannel = await screen.findByText('93')
+      expect(outdoorChannel).toBeInTheDocument()
+      expect(screen.queryAllByText('97').length).toBe(1)
+      expect(screen.queryAllByText('101').length).toBe(1)
+      expect(screen.queryAllByText('105').length).toBe(1)
+      expect(screen.queryAllByText('109').length).toBe(1)
+      expect(screen.queryAllByText('113').length).toBe(1)
+      expect(screen.queryAllByText('185').length).toBe(1)
+      expect(screen.queryAllByText('189').length).toBe(1)
+      expect(screen.queryAllByText('193').length).toBe(1)
+      expect(screen.queryAllByText('197').length).toBe(1)
+      expect(screen.queryAllByText('221').length).toBe(1)
+    })
+  })
+})
+
+describe('test isUseVenueSettings func', () => {
+  it('should return correctly', function () {
+    const settings: ApRadioCustomizationV1Dot1 = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    const actualA = isUseVenueSettings(settings, RadioType.Normal24GHz)
+    const actualB = isUseVenueSettings(settings, RadioType.Normal5GHz)
+    const actualC = isUseVenueSettings(settings, RadioType.Normal6GHz)
+    const actualD = isUseVenueSettings(settings, RadioType.Lower5GHz)
+    const actualE = isUseVenueSettings(settings, RadioType.Upper5GHz)
+
+    expect(actualA).toEqual(settings.apRadioParams24G.useVenueOrApGroupSettings)
+    expect(actualB).toEqual(settings.apRadioParams50G?.useVenueOrApGroupSettings)
+    expect(actualC).toEqual(settings.apRadioParams6G?.useVenueOrApGroupSettings)
+    expect(actualD).toEqual(settings.apRadioParamsDual5G?.radioParamsLower5G?.useVenueOrApGroupSettings)
+    expect(actualE).toEqual(settings.apRadioParamsDual5G?.radioParamsUpper5G?.useVenueOrApGroupSettings)
+  })
+})
+
+describe('test createCacheSettings func', () => {
+  it('should return correctly', function () {
+    const currentSettings: ApRadioCustomizationV1Dot1 = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+    const cacheSettings: ApRadioCustomizationV1Dot1 = {
+      enable24G: false,
+      enable50G: false,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: undefined,
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const actualA = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal24GHz)
+    const actualB = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal5GHz)
+    const actualC = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal6GHz)
+    const actualD = createCacheSettings(currentSettings, cacheSettings, RadioType.Lower5GHz)
+    const actualE = createCacheSettings(currentSettings, cacheSettings, RadioType.Upper5GHz)
+
+    const expectedA = {
+      enable24G: true,
+      enable50G: false,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: undefined,
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const expectedB = {
+      enable24G: false,
+      enable50G: true,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const expectedC = {
+      enable24G: false,
+      enable50G: false,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: undefined,
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const expectedD = {
+      enable24G: false,
+      enable50G: false,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: undefined,
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: true, upper5gEnabled: false,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const expectedE = {
+      enable24G: false,
+      enable50G: false,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: undefined,
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: true,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    expect(actualA).toEqual(expectedA)
+    expect(actualB).toEqual(expectedB)
+    expect(actualC).toEqual(expectedC)
+    expect(actualD).toEqual(expectedD)
+    expect(actualE).toEqual(expectedE)
+  })
+})
+
+describe('test applySettings func', () => {
+  it('should return correctly', function () {
+    const currentSettings: ApRadioCustomizationV1Dot1 = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+    const updateSettings: ApRadioCustomizationV1Dot1 = {
+      enable24G: false,
+      enable50G: false,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: undefined,
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    const actualA = applySettings(currentSettings, updateSettings, RadioType.Normal24GHz)
+    const actualB = applySettings(currentSettings, updateSettings, RadioType.Normal5GHz)
+    const actualC = applySettings(currentSettings, updateSettings, RadioType.Normal6GHz)
+    const actualD = applySettings(currentSettings, updateSettings, RadioType.Lower5GHz)
+    const actualE = applySettings(currentSettings, updateSettings, RadioType.Upper5GHz)
+
+    const expectedA = {
+      enable24G: false,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: false },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    const expectedB = {
+      enable24G: true,
+      enable50G: false,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: undefined,
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    const expectedC = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: false,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: undefined,
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    const expectedD = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: false, upper5gEnabled: true,
+        radioParamsLower5G: undefined,
+        radioParamsUpper5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true }
+      }
+    }
+
+    const expectedE = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6GV1Dot1(), useVenueOrApGroupSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: false,
+        radioParamsLower5G: { ...new ApRadioParams50GV1Dot1(), useVenueOrApGroupSettings: true },
+        radioParamsUpper5G: undefined
+      }
+    }
+
+    expect(actualA).toEqual(expectedA)
+    expect(actualB).toEqual(expectedB)
+    expect(actualC).toEqual(expectedC)
+    expect(actualD).toEqual(expectedD)
+    expect(actualE).toEqual(expectedE)
+  })
+})
