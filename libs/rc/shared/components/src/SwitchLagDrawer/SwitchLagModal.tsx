@@ -50,7 +50,8 @@ import {
   LAG_TYPE,
   sortPortFunction,
   VenueMessages,
-  VlanModalType
+  VlanModalType,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
 } from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
@@ -611,11 +612,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         </Form.Item>
       </Col>
       { isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
+        isFirmwareVersionAbove10010gCd1Or10020bCd1(switchDetailHeader?.firmware) &&
         <Col span={10} flex='300px' offset={5} style={{ padding: '16px', marginTop: '6px' }}>
           <Card
             title={$t({ defaultMessage: 'Force-Up Interface' })}
             action={{
-              actionName: 'Reset',
+              actionName: $t({ defaultMessage: 'Reset' }),
               onActionClick: resetForceUp
             }}
           >
