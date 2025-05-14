@@ -119,6 +119,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 vipConfig={vipConfigArr}
                 subInterfaceList={allSubInterface}
                 isClusterWizard
+                clusterInfo={clusterInfo!}
               />
               : <div />
           }
