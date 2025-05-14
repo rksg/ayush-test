@@ -38,7 +38,9 @@ const defaultFields = [
   'keepAliveInterval',
   'keepAliveRetryTimes',
   'disassociateClientEnabled',
-  'activations'
+  'activations',
+  'gatewayFailbackEnabled',
+  'gatewaySecondaryToPrimaryTimer'
 ]
 
 const gatewayIpFields = [
