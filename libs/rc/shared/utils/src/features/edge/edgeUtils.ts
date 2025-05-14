@@ -162,7 +162,9 @@ export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithSta
   switch (payload.portType) {
     case EdgePortTypeEnum.WAN:
       payload.corePortEnabled = false
-      payload.accessPortEnabled = false
+      if(payload.accessPortEnabled !== undefined) {
+        payload.accessPortEnabled = false
+      }
       break
     case EdgePortTypeEnum.LAN:
       // normal(non-corePort) LAN port
