@@ -402,4 +402,27 @@ describe('EditEdge ports - sub-interface', () => {
     const rows = await screen.findAllByRole('row')
     expect(within(rows[1]).getByRole('radio')).toBeDisabled()
   })
+
+  describe('Core Access', () => {
+    it('should show core port and access port column when FF is on', async () => {
+      render(
+        <Provider>
+          <EdgeEditContext.EditContext.Provider
+            value={defaultContextData}
+          >
+            <EditEdgeDataContext.Provider
+              value={defaultEditEdgeSingleNodeCtxData}
+            >
+              <SubInterfaces />
+            </EditEdgeDataContext.Provider>
+          </EdgeEditContext.EditContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+        })
+
+      await screen.findAllByRole('row')
+      expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
+  })
 })
