@@ -8,9 +8,9 @@ import { useParams }                    from 'react-router-dom'
 import { showToast }                                                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { useGetPrivacySettingsQuery, useGetTenantDetailsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
-import { PrivacyFeatureName }                                                                     from '@acx-ui/rc/utils'
-import { useUserProfileContext }                                                                  from '@acx-ui/user'
-import { AccountType }                                                                            from '@acx-ui/utils'
+import { AdministrationUrlsInfo, PrivacyFeatureName }                                             from '@acx-ui/rc/utils'
+import { hasAllowedOperations, useUserProfileContext }                                            from '@acx-ui/user'
+import { AccountType, getOpsApi }                                                                 from '@acx-ui/utils'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -26,7 +26,8 @@ export default function Privacy () {
   const { $t } = useIntl()
   const params = useParams()
   const {
-    isPrimeAdmin
+    isPrimeAdmin,
+    rbacOpsApiEnabled
   } = useUserProfileContext()
   const isPrimeAdminUser = isPrimeAdmin()
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
@@ -82,21 +83,25 @@ export default function Privacy () {
 
   async function onPrivacySettingsToggle (privacyFeatureName: PrivacyFeatureName,
     isChecked: boolean) {
-    payload.privacyFeatures.map(item => {
-      if (item.featureName === privacyFeatureName)
-        item.status = isChecked ? 'enabled' : 'disabled'
-      return item
-    })
+    let resultingPayload: RequestPayload = {} as RequestPayload
 
-    if (privacyFeatureName === PrivacyFeatureName.ARC)
+    if (privacyFeatureName === PrivacyFeatureName.ARC) {
+      resultingPayload.privacyFeatures = payload.privacyFeatures
+        .filter(_privacy => _privacy.featureName === PrivacyFeatureName.ARC)
+      resultingPayload.privacyFeatures[0].status = isChecked ? 'enabled' : 'disabled'
       setIsPrivacyMonitoringSettingsEnabled(isChecked)
+    }
 
-    if (privacyFeatureName === PrivacyFeatureName.APP_VISIBILITY)
+    if (privacyFeatureName === PrivacyFeatureName.APP_VISIBILITY) {
+      resultingPayload.privacyFeatures = payload.privacyFeatures
+        .filter(_privacy => _privacy.featureName === PrivacyFeatureName.APP_VISIBILITY)
+      resultingPayload.privacyFeatures[0].status = isChecked ? 'enabled' : 'disabled'
       setIsAppVisibilitySettingsEnabled(isChecked)
+    }
 
     await updatePrivacySettings({
       params,
-      payload
+      payload: resultingPayload
     }).unwrap()
       .then(() => {
         showToast({
@@ -125,15 +130,17 @@ export default function Privacy () {
           style={{
             marginBottom: '6px'
           }}>
-          { isPrimeAdminUser ? <Col span={9}>
-            <Typography.Text>
-              { $t(MessageMapping.app_visibility_privacy_settings_label) }
-            </Typography.Text>
-            <Switch
-              style={{ marginLeft: '24px' }}
-              checked={isAppVisibilitySettingsEnabled}
-              onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.APP_VISIBILITY, ev)}/>
-          </Col>
+          { !!(rbacOpsApiEnabled
+            ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.updatePrivacySettings)])
+            : isPrimeAdminUser) ? <Col span={9}>
+              <Typography.Text>
+                { $t(MessageMapping.app_visibility_privacy_settings_label) }
+              </Typography.Text>
+              <Switch
+                style={{ marginLeft: '24px' }}
+                checked={isAppVisibilitySettingsEnabled}
+                onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.APP_VISIBILITY, ev)}/>
+            </Col>
             : <Col span={8}>
               <Typography.Text>
                 {
@@ -169,7 +176,9 @@ export default function Privacy () {
           style={{
             marginBottom: '6px'
           }}>
-          { isPrimeAdminUser ?
+          { !!(rbacOpsApiEnabled
+            ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.updatePrivacySettings)])
+            : isPrimeAdminUser) ?
             <Col span={7}>
               <Typography.Text>
                 { $t(MessageMapping.arc_privacy_settings_label) }

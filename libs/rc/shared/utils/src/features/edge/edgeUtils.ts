@@ -754,3 +754,14 @@ export const getEdgeWanInterfaceCount = (portsData: EdgePort[] | undefined, lagD
   const wans = getEdgeWanInterfaces(portsData, lagData)
   return wans.length
 }
+
+export const getEdgeModelDisplayText = (model?: string) => {
+  const { $t } = getIntl()
+
+  switch (model) {
+    case 'vRUCKUS Edge':
+      return $t({ defaultMessage: 'Virtual RUCKUS Edge' })
+    default:
+      return model?.startsWith('E') ? model.replace('E', 'RUCKUS Edge ') : (model ?? '')
+  }
+}
