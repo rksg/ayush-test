@@ -16,7 +16,8 @@ import {
   getKPIData,
   IntentDetail,
   intentState,
-  useIntentParams
+  useIntentParams,
+  useDownloadUrl
 }                   from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
@@ -217,6 +218,45 @@ describe('useIntentParams', () => {
     expect(result.current).toEqual({ root: 'tenantId', sliceId: 'sliceId', code: 'code' })
   })
 })
+
+describe('useDownloadUrl', () => {
+  beforeEach(() => {
+    global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
+    global.URL.revokeObjectURL = jest.fn()
+  })
+  it('should return undefined if no data is provided', () => {
+    const { result } = renderHook(() => useDownloadUrl(undefined, 'text/plain'))
+    expect(result.current).toBeUndefined()
+  })
+
+  it('should create and revoke object URL when data is provided', () => {
+    const blobData = new Blob(['test content'], { type: 'text/plain' })
+    const createObjectURLSpy = jest.spyOn(global.URL, 'createObjectURL')
+    const revokeObjectURLSpy = jest.spyOn(global.URL, 'revokeObjectURL')
+
+    let hookResult: ReturnType<typeof useDownloadUrl>
+    const { result, rerender, unmount } = renderHook(
+      ({ data, type }) => useDownloadUrl(data, type),
+      { initialProps: { data: blobData, type: 'text/plain' } }
+    )
+
+    hookResult = result.current
+    expect(createObjectURLSpy).toHaveBeenCalledTimes(1)
+    expect(typeof hookResult).toBe('string')
+
+    // Change data, should not create new URL
+    rerender({ data: undefined as unknown as Blob, type: 'text/plain' })
+    expect(createObjectURLSpy).toHaveBeenCalledTimes(1)
+
+    // Unmount should revoke the URL
+    unmount()
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith(hookResult)
+
+    createObjectURLSpy.mockRestore()
+    revokeObjectURLSpy.mockRestore()
+  })
+})
+
 
 describe('intentState', () => {
   it('returns correct state', () => {
