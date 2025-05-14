@@ -16,9 +16,9 @@ import {
   serviceTypeLabelMapping,
   serviceTypeDescMapping
 } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
-import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 
 import * as UI from './styledComponents'

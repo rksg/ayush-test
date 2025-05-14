@@ -27,10 +27,10 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
-import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']

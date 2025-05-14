@@ -19,9 +19,9 @@ import {
   isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
-import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
