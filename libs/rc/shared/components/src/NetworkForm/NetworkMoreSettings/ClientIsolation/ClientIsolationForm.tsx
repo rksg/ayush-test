@@ -35,7 +35,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
         (data?.venues?.some(v => v.clientIsolationAllowlistId)))
     }
   }, [data])
-  // const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
+
   const { enableVxLan } = useNetworkVxLanTunnelProfileInfo(data)
 
   const onClientIsolationEnabledChanged = (checked: boolean) => {
