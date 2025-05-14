@@ -1072,13 +1072,13 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
             display: 'flex',
             justifyContent: 'space-between',
             fontSize: '14px',
-            paddingBottom: '20px' }}
+            paddingBottom: '5px' }}
           >
             <Form.Item
               name={['useVenueSettingsBandManagement']}
               initialValue={currentApGroupBandModeData.useVenueSettings}
               valuePropName='value'
-              style={{ marginBottom: '35px', width: '300px' }}
+              style={{ marginBottom: '10px', width: '300px' }}
               children={
                 <Radio.Group
                   onChange={() => setCurrentApGroupBandModeData( {
@@ -1262,8 +1262,14 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   hidden
                   children={<></>}
                 />
+                <Row gutter={0} style={{ height: '40px' }}>
+                  <Col span={8}>
+                    {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+                  </Col>
+                </Row>
                 {displayVenueSettingOrApGroupAndCustomizeForBandManagement()}
                 <BandManagement
+                  showTitle={false}
                   style={{ paddingBottom: '5em' }}
                   disabled={!isAllowEdit || currentApGroupBandModeData.useVenueSettings}
                   dual5gApModels={dual5gApModels}
