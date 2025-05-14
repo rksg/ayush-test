@@ -410,7 +410,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
   ]
 
   return <Loader states={[
-    tableQuery,{ isLoading: true,
+    tableQuery,{ isLoading: false,
       isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning || isAllAlarmsCleaning) }
   ]}>
     <UI.TableWrapper>
