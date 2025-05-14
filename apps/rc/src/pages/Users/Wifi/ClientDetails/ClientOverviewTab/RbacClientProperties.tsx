@@ -398,7 +398,6 @@ function Connection ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
 
 function OperationalData ({ clientInfo }: { clientInfo: ClientInfoExtended }) {
   const intl = useIntl()
-  const bytesFormatter = formatter('bytesFormat')
   const numberFormatter = formatter('numberWithCommas')
 
   return <>
