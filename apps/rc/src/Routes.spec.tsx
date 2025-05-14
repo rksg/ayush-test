@@ -197,6 +197,14 @@ jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
 }))
 
+jest.mock('./pages/Devices/IotController/IotControllerDetails', () => ({
+  IotControllerDetails: () => <div data-testid='IotControllerDetails' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerForm', () => ({
+  IotControllerForm: () => <div data-testid='IotControllerForm' />
+}))
+
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })

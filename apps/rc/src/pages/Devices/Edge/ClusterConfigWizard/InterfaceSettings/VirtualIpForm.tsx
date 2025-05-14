@@ -3,8 +3,9 @@ import { useContext } from 'react'
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { useStepFormContext }                        from '@acx-ui/components'
-import { EdgeClusterVirtualIpSettingForm, TypeForm } from '@acx-ui/rc/components'
+import { useStepFormContext }                                               from '@acx-ui/components'
+import { Features }                                                         from '@acx-ui/feature-toggle'
+import { EdgeClusterVirtualIpSettingForm, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { transformFromApiToFormData } from '../SubInterfaceSettings/utils'
@@ -14,9 +15,14 @@ import { getAvailableVipInterfaces } from './utils'
 export const VirtualIpForm = () => {
   const { $t } = useIntl()
   const { clusterInfo, clusterSubInterfaceSettings } = useContext(ClusterConfigWizardContext)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { form } = useStepFormContext()
 
-  const subInterfaceSettingsFormData = transformFromApiToFormData(clusterSubInterfaceSettings)
+  const subInterfaceSettingsFormData = isEdgeCoreAccessSeparationReady ? {
+    portSubInterfaces: form.getFieldValue('portSubInterfaces'),
+    lagSubInterfaces: form.getFieldValue('lagSubInterfaces')
+  } : transformFromApiToFormData(clusterSubInterfaceSettings)
   const lanInterfaces = getAvailableVipInterfaces(
     form.getFieldValue('lagSettings'),
     form.getFieldValue('portSettings'),

@@ -425,8 +425,10 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck && !isCore &&
-              hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+            ...(isMspAppMonitoringEnabled && !isCore &&
+              (rbacOpsApiEnabled ?
+                hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+                : !isCustomRole)
               ? [
                 {
                   uri: '/administration/privacy',
