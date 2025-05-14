@@ -21,7 +21,7 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }                  from '../../useEdgeActions'
+import { useIsEdgeFeatureReady }  from '../../useEdgeActions'
 import { getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
 import { EdgeNatFormItems }    from './NatFormItems'
@@ -326,7 +326,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         ) ? (
             <>
               {
-                _portType === EdgePortTypeEnum.LAN && isEdgeCoreAccessSeparationReady ?
+                _portType === EdgePortTypeEnum.LAN && (isEdgeCoreAccessSeparationReady ?
                   <Form.Item
                     label={$t({ defaultMessage: 'Use port as…' })}
                     children={
@@ -383,7 +383,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                         <UI.StyledQuestionIcon />
                       </Tooltip>
                     </Checkbox>
-                  </Form.Item>
+                  </Form.Item>)
               }
               <StepsFormLegacy.FieldLabel width='120px'>
                 {
