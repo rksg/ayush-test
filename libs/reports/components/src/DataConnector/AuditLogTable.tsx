@@ -41,21 +41,27 @@ const statusColorMapping = (status: AuditDto['status']) => {
 export const renderStatusWithBadge = (
   status: AuditDto['status'],
   error?: string
-) => (
-  <Badge
+) => {
+  const { $t } = getIntl()
+  let errorMsg = error
+  if (status === AuditStatusEnum.Failure && error && error.includes('quota')) {
+    errorMsg = $t({ defaultMessage: 'Quota exceeded' })
+  }
+
+  return (<Badge
     color={statusColorMapping(status)}
     text={
       <Tooltip
         popupVisible={Boolean(error)}
         placement='top'
-        title={error}
+        title={errorMsg}
         dottedUnderline={Boolean(error)}
       >
         {getAuditStatusLabel(status)}
       </Tooltip>
     }
-  />
-)
+  />)
+}
 
 const getAuditStatusLabel = (status: AuditDto['status']) => {
   const { $t } = getIntl()
