@@ -1081,11 +1081,11 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
               style={{ marginBottom: '10px', width: '300px' }}
               children={
                 <Radio.Group
-                  onChange={() => setCurrentApGroupBandModeData( {
-                    useVenueSettings: !currentApGroupBandModeData.useVenueSettings,
-                    apModelBandModeSettings: currentApGroupBandModeData.apModelBandModeSettings
-                  } )}
-                >
+                  onChange={(e) => {
+                    setCurrentApGroupBandModeData( {
+                      useVenueSettings: e.target.value,
+                      apModelBandModeSettings: currentApGroupBandModeData.apModelBandModeSettings
+                    } )}} >
                   <Space direction='vertical'>
                     <Radio value={true}>
                       <FormattedMessage defaultMessage={'Use inherited settings from Venue'} />
