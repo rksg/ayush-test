@@ -82,6 +82,16 @@ export const mockAuditLogs: AuditDto[] = [
     start: '2025-01-10T02:48:40.069Z',
     end: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  // Failure, not retryable (Quota exceeded)
+  {
+    id: 'id-6',
+    status: AuditStatusEnum.Failure,
+    error: 'Used (528190878) is >= quota (524288000)',
+    size: 0,
+    start: new Date().toISOString(),
+    end: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ]
 

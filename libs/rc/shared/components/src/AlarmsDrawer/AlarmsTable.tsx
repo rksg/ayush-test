@@ -15,10 +15,12 @@ import {
   Alarm,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  defaultSort,
   EventSeverityEnum,
   EventTypeEnum,
   FILTER,
   SEARCH,
+  sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
@@ -219,7 +221,8 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Generated on' }),
       key: 'startTime',
       dataIndex: 'startTime',
-      sorter: true,
+      sorter: { compare: sortProp('startTime', defaultSort) },
+      defaultSortOrder: 'descend',
       width: 140,
       render: function (_, row) {
         return (<UI.ListItem>

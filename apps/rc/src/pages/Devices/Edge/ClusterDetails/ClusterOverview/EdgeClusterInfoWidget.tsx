@@ -1,12 +1,15 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Button, GridCol, GridRow, Card }                           from '@acx-ui/components'
 import { EdgeAlarmWidget, EdgeClusterNodesWidget, EdgePortsWidget } from '@acx-ui/edge/components'
 import {
   EdgeClusterStatus,
-  EdgePortStatus
+  EdgePortStatus,
+  EdgeStatus,
+  getEdgeModelDisplayText
 } from '@acx-ui/rc/utils'
 
 import { EdgeClusterDetailsDrawer } from './ClusterDetailsDrawer'
@@ -34,11 +37,20 @@ export const EdgeClusterInfoWidget = (props: EdgeClusterInfoWidgetProps) => {
     setVisible(true)
   }
 
+  const getClusterEdgeModel = (edgeList?: EdgeStatus[]) => {
+    if (edgeList?.length) {
+      return edgeList[0]?.model
+    }
+    return ''
+  }
+
   return (
     <Card type='solid-bg' >
       <GridRow style={{ height: 152 }}>
         <GridCol col={{ span: 4 }}>
-          {currentCluster?.name}
+          <Typography.Title level={4} style={{ fontWeight: 800 }}>
+            {getEdgeModelDisplayText(getClusterEdgeModel(currentCluster?.edgeList))}
+          </Typography.Title>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <EdgeAlarmWidget
