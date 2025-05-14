@@ -145,7 +145,28 @@ describe('CustomizeWidgetDrawer', () => {
     expect(screen.getByText('Last 30 Days')).toBeInTheDocument()
 
     await userEvent.click(screen.getByText('Last 30 Days'))
-    expect(screen.getByText('Reset to default range')).toBeVisible()
+    const resetBtn = await screen.findByText('Reset to default range')
+    expect(resetBtn).toBeVisible()
+    fireEvent.click(resetBtn)
+    expect(await screen.findByText('Last 7 days')).toBeVisible()
+  })
+
+  it('render specific time range if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const props = {
+      ...mockProps, 
+      widget: {
+        ...mockWidget,
+        timeRange: 'HOUR8'
+      }
+    } as unknown as CustomizeWidgetDrawerProps
+    render(
+      <Provider>
+        <CustomizeWidgetDrawer {...props}/>
+      </Provider>
+    )
+    expect(screen.getByText('Time Range')).toBeVisible()
+    expect(screen.getByText('Last 8 Hours')).toBeVisible()
   })
 
   it('render legacy widget drawer correctly if the feature flag is on', async () => {
