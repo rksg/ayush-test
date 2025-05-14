@@ -304,7 +304,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: ServiceType.EDGE_TNM_SERVICE,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        category: UnifiedServiceCategory.NETWORK_SERVICES,
         disabled: !isEdgeTnmServiceReady
       },
       {
