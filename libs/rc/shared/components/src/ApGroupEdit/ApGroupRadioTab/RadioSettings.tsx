@@ -26,8 +26,8 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }                           from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 import {
   useLazyApListQuery,
   useGetVenueRadioCustomizationQuery,
@@ -1265,7 +1265,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 {displayVenueSettingOrApGroupAndCustomizeForBandManagement()}
                 <BandManagement
                   style={{ paddingBottom: '5em' }}
-                  disabled={!isAllowEdit || !currentApGroupBandModeData.useVenueSettings}
+                  disabled={!isAllowEdit || currentApGroupBandModeData.useVenueSettings}
                   dual5gApModels={dual5gApModels}
                   triBandApModels={triBandApModels}
                   bandModeCaps={bandModeCaps}
