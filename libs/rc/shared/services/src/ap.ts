@@ -15,6 +15,7 @@ import {
   AddApGroup,
   ApAntennaTypeSettings,
   ApBandModeSettings,
+  ApBandModeSettingsV1Dot1,
   ApBssColoringSettings,
   ApSmartMonitor,
   ApIot,
@@ -34,6 +35,7 @@ import {
   ApNeighborsResponse,
   ApPosition,
   ApRadioCustomization,
+  ApRadioCustomizationV1Dot1,
   ApRfNeighborsResponse,
   ApViewModel,
   ApiVersionEnum,
@@ -98,6 +100,7 @@ import {
   IpsecViewData,
   ApGroupRadioCustomization,
   ApGroupQueryRadioCustomization,
+  ApGroupApModelBandModeSettings,
   ApGroupDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
@@ -821,6 +824,35 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
+    getApRadioCustomizationV1Dot1: build.query<ApRadioCustomizationV1Dot1, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioSettingsV1_1'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
+          })
+        })
+      }
+    }),
+    updateApRadioCustomizationV1Dot1: build.mutation<ApRadioCustomizationV1Dot1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApRadioCustomizationV1Dot1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
+    }),
     updateApGroupRadioCustomization: build.mutation<ApGroupRadioCustomization, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -856,6 +888,25 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApGroupApModelBandModeSettings: build.query<ApGroupApModelBandModeSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        return createHttpRequest(WifiRbacUrlsInfo.getApGroupBandModeSettings, params, apiCustomHeader)
+      },
+      providesTags: [{ type: 'ApGroup', id: 'BandModeSettings' }]
+    }),
+    updateApGroupApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<ApGroupApModelBandModeSettings>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApGroupBandModeSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'ApGroup', id: 'BandModeSettings' }]
     }),
     getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
@@ -1364,6 +1415,25 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateApBandModeSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    getApBandModeSettingsV1Dot1: build.query<ApBandModeSettingsV1Dot1, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApBandModeSettingsV1Dot1, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    }),
+    updateApBandModeSettingsV1Dot1: build.mutation<CommonResult, RequestPayload<ApBandModeSettingsV1Dot1>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApBandModeSettingsV1Dot1, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1922,7 +1992,10 @@ export const {
   useDeleteApPhotoMutation,
   useGetApRadioCustomizationQuery,
   useGetApGroupRadioCustomizationQuery,
+  useLazyGetApGroupRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
+  useGetApRadioCustomizationV1Dot1Query,
+  useUpdateApRadioCustomizationV1Dot1Mutation,
   useUpdateApGroupRadioCustomizationMutation,
   useGetPacketCaptureStateQuery,
   useStopPacketCaptureMutation,
@@ -1941,6 +2014,11 @@ export const {
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
+  useGetApBandModeSettingsV1Dot1Query,
+  useUpdateApBandModeSettingsV1Dot1Mutation,
+  useGetApGroupApModelBandModeSettingsQuery,
+  useLazyGetApGroupApModelBandModeSettingsQuery,
+  useUpdateApGroupApModelBandModeSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,

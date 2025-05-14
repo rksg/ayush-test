@@ -1,9 +1,3 @@
-import { BandModeEnum } from '../models'
-
-export interface ApGroupApModelBandModeSettings {
-  model: string,
-  bandMode: BandModeEnum
-}
 
 export interface ApGroupDefaultRegulatoryChannels {
   '2.4GChannels': {

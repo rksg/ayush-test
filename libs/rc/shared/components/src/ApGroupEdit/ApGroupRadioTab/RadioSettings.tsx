@@ -33,16 +33,17 @@ import {
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueApModelBandModeSettingsQuery,
-  useUpdateVenueApModelBandModeSettingsMutation,
   useGetVenueTemplateTripleBandRadioSettingsQuery,
   useGetVenueTripleBandRadioSettingsQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateTripleBandRadioSettingsMutation,
   useGetVenueTemplateApModelBandModeSettingsQuery,
-  useUpdateVenueTemplateApModelBandModeSettingsMutation,
   useLazyGetVenueRadioCustomizationQuery,
   useGetApGroupRadioCustomizationQuery,
-  useUpdateApGroupRadioCustomizationMutation, useGetApGroupDefaultRegulatoryChannelsQuery
+  useUpdateApGroupRadioCustomizationMutation,
+  useGetApGroupDefaultRegulatoryChannelsQuery,
+  useGetApGroupApModelBandModeSettingsQuery,
+  useUpdateApGroupApModelBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -60,6 +61,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { BandManagement } from '../../BandManagement'
 import {
   RadioSettingsContents,
   RadioSettingsUtils,
@@ -244,8 +246,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   const [venueTriBandApModels, setVenueTriBandApModels] = useState<string[]>([])
 
-  const [currentVenueBandModeData, setCurrentVenueBandModeData] = useState([] as ApGroupApModelBandModeSettings[])
-  const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as ApGroupApModelBandModeSettings[])
+  const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
+
+  const [currentApGroupBandModeData, setCurrentApGroupBandModeData] = useState<ApGroupApModelBandModeSettings>({} as ApGroupApModelBandModeSettings)
+  const [initApGroupBandModeData, setInitApGroupBandModeData] = useState<ApGroupApModelBandModeSettings>({} as ApGroupApModelBandModeSettings)
 
   const [defaultRadioSettings, setDefaultRadioSettings] = useState<ApGroupRadioCustomization | undefined>(undefined)
 
@@ -304,12 +308,15 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       extraParams: { venueId }
     })
 
+  const { data: apGroupBandModeSavedData, isLoading: isLoadingApGroupBandModeData } =
+    useGetApGroupApModelBandModeSettingsQuery({ params: { venueId, apGroupId }, enableRbac: isUseRbacApi })
+
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
     useApGroupConfigTemplateMutationFnSwitcher(
-      useUpdateVenueApModelBandModeSettingsMutation,
-      useUpdateVenueTemplateApModelBandModeSettingsMutation
+      useUpdateApGroupApModelBandModeSettingsMutation,
+      useUpdateApGroupApModelBandModeSettingsMutation
     )
 
   const [ apList ] = useLazyApListQuery()
@@ -639,34 +646,37 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   }, [isLoadingVenueData, venueSavedChannelsData, apGroupRadioData, formRef?.current, supportRadioChannels])
 
   useEffect(() => {
-    if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData || !venueSavedChannelsData) {
+    if (!isWifiSwitchableRfEnabled || !apGroupBandModeSavedData || !venueBandModeSavedData || !venueSavedChannelsData) {
       return
     }
+
     // special case
     if (dual5gApModels.length > 0) {
       const dual5GData = venueSavedChannelsData.radioParamsDual5G
-      const bendModelWithDual5gAps = venueBandModeSavedData.filter(vbm => dual5gApModels.includes(vbm.model))
-      const bendModelWithoutDual5gAps = venueBandModeSavedData.filter(vbm => !dual5gApModels.includes(vbm.model))
+      const bendModelWithDual5gAps = apGroupBandModeSavedData?.apModelBandModeSettings?.filter(vbm => dual5gApModels.includes(vbm.model))
+      const bendModelWithoutDual5gAps = apGroupBandModeSavedData?.apModelBandModeSettings?.filter(vbm => !dual5gApModels.includes(vbm.model))
       if (dual5GData && bendModelWithDual5gAps) {
-        const initVenueBandModeData = [ ...bendModelWithoutDual5gAps,
+        const initApGroupBandModeData = [ ...bendModelWithoutDual5gAps,
           ...bendModelWithDual5gAps.map(bandModel => ({ model: bandModel.model, bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })) ]
-        setInitVenueBandModeData(initVenueBandModeData)
-        setCurrentVenueBandModeData([ ...initVenueBandModeData ])
+        setInitApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: initApGroupBandModeData })
+        setCurrentApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: [ ...initApGroupBandModeData ] })
 
         return
       }
     }
-
     setInitVenueBandModeData([ ...venueBandModeSavedData ])
-    setCurrentVenueBandModeData([ ...venueBandModeSavedData ])
-  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, venueTriBandApModels])
+    setInitApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: [ ...(apGroupBandModeSavedData.apModelBandModeSettings ?? []) ] })
+    setCurrentApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+      apModelBandModeSettings: [ ...(apGroupBandModeSavedData.apModelBandModeSettings ?? []) ] })
+  }, [isWifiSwitchableRfEnabled, apGroupBandModeSavedData, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, venueTriBandApModels])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled) {
       return
     }
 
-    const isTriBandRadio = currentVenueBandModeData.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
+    const isTriBandRadio = currentApGroupBandModeData.apModelBandModeSettings?.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
     if (!isTriBandRadio && currentTab === 'Normal6GHz') {
@@ -674,7 +684,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     if (dual5gApModels.length > 0) {
-      const isDual5GEnabled = currentVenueBandModeData.filter(data => dual5gApModels.includes(data.model))
+      const isDual5GEnabled = currentApGroupBandModeData.apModelBandModeSettings?.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
       setIsDual5gMode(isDual5GEnabled)
       formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
@@ -682,10 +692,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         onTabChange(isTriBandRadio ? 'Normal6GHz' : 'Normal5GHz')
       }
     }
-    if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
+    if (!isEqual(currentApGroupBandModeData, initApGroupBandModeData)) {
       handleChange()
     }
-  }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
+  }, [isWifiSwitchableRfEnabled, currentApGroupBandModeData, initApGroupBandModeData, dual5gApModels])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
   const onTabChange = (tab: string) => {
@@ -948,7 +958,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
-      const hasDual5GBandMode = currentVenueBandModeData.filter(data => dual5gApModels.includes(data.model))
+      const hasDual5GBandMode = currentApGroupBandModeData.apModelBandModeSettings
+        .filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
       if (hasDual5GBandMode) {
         updateDual5gData(data)
@@ -973,10 +984,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     try {
-      if (isWifiSwitchableRfEnabled && !isEqual(currentVenueBandModeData, initVenueBandModeData)) {
+      if (isWifiSwitchableRfEnabled && !isEqual(currentApGroupBandModeData, initApGroupBandModeData)) {
         await updateVenueBandMode({
-          params: { venueId },
-          payload: currentVenueBandModeData
+          params: { venueId, apGroupId },
+          payload: currentApGroupBandModeData
         }).unwrap()
 
       }
@@ -1005,7 +1016,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   }
 
   const handleDiscard = () => {
-    setCurrentVenueBandModeData([ ...initVenueBandModeData ])
+    setCurrentApGroupBandModeData(initApGroupBandModeData)
   }
 
   const handleEnableChanged = (value: boolean, radioType: ApRadioTypeEnum) => {
@@ -1051,6 +1062,45 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     isTriBandRadioRef.current = checked
     onTabChange('Normal24GHz')
     handleChange()
+  }
+
+  const displayVenueSettingOrApGroupAndCustomizeForBandManagement = () => {
+    return (
+      <Row gutter={20}>
+        <Col span={12}>
+          <Space style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '14px',
+            paddingBottom: '20px' }}
+          >
+            <Form.Item
+              name={['useVenueSettings']}
+              initialValue={true}
+              valuePropName='value'
+              style={{ marginBottom: '35px', width: '300px' }}
+              children={
+                <Radio.Group
+                  onChange={() => setCurrentApGroupBandModeData( {
+                    useVenueSettings: !currentApGroupBandModeData.useVenueSettings,
+                    apModelBandModeSettings: currentApGroupBandModeData.apModelBandModeSettings
+                  } )}
+                >
+                  <Space direction='vertical'>
+                    <Radio value={true}>
+                      <FormattedMessage defaultMessage={'Use inherited settings from Venue'} />
+                    </Radio>
+                    <Radio value={false}>
+                      <FormattedMessage defaultMessage={'Customize settings'} />
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              }
+            />
+          </Space>
+        </Col>
+      </Row>
+    )
   }
 
   const displayVenueSettingOrApGroupAndCustomize = () => {
@@ -1099,7 +1149,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
         </Col>
       </Row>
     )
-
   }
 
   const updateFormData = (data: ApGroupRadioCustomization) => {
@@ -1156,7 +1205,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupData)),
+      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingSupportChannelsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData || isLoadingApGroupBandModeData || isLoadingApGroupData)),
       isFetching: isUpdatingApGroupRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy
@@ -1206,12 +1255,24 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
               </div>
               }
               {isWifiSwitchableRfEnabled &&
-              <Form.Item
-                name={['radioParamsDual5G', 'enabled']}
-                initialValue={true}
-                hidden
-                children={<></>}
-              />
+              <>
+                <Form.Item
+                  name={['radioParamsDual5G', 'enabled']}
+                  initialValue={true}
+                  hidden
+                  children={<></>}
+                />
+                {displayVenueSettingOrApGroupAndCustomizeForBandManagement()}
+                <BandManagement
+                  style={{ paddingBottom: '5em' }}
+                  disabled={!isAllowEdit || !currentApGroupBandModeData.useVenueSettings}
+                  dual5gApModels={dual5gApModels}
+                  triBandApModels={triBandApModels}
+                  bandModeCaps={bandModeCaps}
+                  existingTriBandApModels={venueTriBandApModels}
+                  currentBandModeData={(currentApGroupBandModeData.useVenueSettings)? initVenueBandModeData:currentApGroupBandModeData.apModelBandModeSettings ?? []}
+                  setCurrentBandModeData={(currentBandData) => setCurrentApGroupBandModeData({ useVenueSettings: currentApGroupBandModeData.useVenueSettings, apModelBandModeSettings: currentBandData })} />
+              </>
               }
             </Col>
           </Row>
