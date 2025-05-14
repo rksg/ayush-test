@@ -1,9 +1,12 @@
-import { Key, useContext, useEffect, useState } from 'react'
+import { Key, ReactNode, useContext, useEffect, useState } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { showActionModal, Table, TableProps }                                                                          from '@acx-ui/components'
+import { Features }                                                                                                    from '@acx-ui/feature-toggle'
+import { CheckMark }                                                                                                   from '@acx-ui/icons'
+import { useIsEdgeFeatureReady }                                                                                       from '@acx-ui/rc/components'
 import { convertEdgeSubInterfaceToApiPayload, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                                                                  from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                               from '@acx-ui/user'
@@ -33,6 +36,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<SubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const { clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const vipSettings = clusterNetworkSettings?.virtualIpSettings
@@ -82,7 +87,31 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: $t({ defaultMessage: 'VLAN' }),
       key: 'vlan',
       dataIndex: 'vlan'
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
   const isAllowedToDelete = (subInterfaces: SubInterface[]) => {
@@ -181,7 +210,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={12}>
+        <Col span={18}>
           <SubInterfaceDrawer
             serialNumber={props.serialNumber}
             visible={drawerVisible}

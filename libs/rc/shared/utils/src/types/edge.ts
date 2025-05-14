@@ -118,6 +118,7 @@ export interface EdgePort {
   corePortEnabled: boolean
   interfaceName?: string
   maxSpeedCapa: number
+  accessPortEnabled?: boolean
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -411,6 +412,7 @@ export interface EdgeLag {
     subnet?: string
     gateway?: string
     corePortEnabled: boolean
+    accessPortEnabled?: boolean
     natEnabled: boolean
     natPools: EdgeNatPool[]
     lagEnabled: boolean
@@ -655,6 +657,8 @@ export interface SubInterface {
   ip?: string
   subnet?: string
   interfaceName?: string
+  corePortEnabled?: boolean
+  accessPortEnabled?: boolean
 }
 
 export interface ClusterArpTerminationSettings {
