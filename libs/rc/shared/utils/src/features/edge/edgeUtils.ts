@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { DefaultOptionType }                    from 'antd/lib/select'
 import _, { difference, flatMap, isNil, sumBy } from 'lodash'
 import { IntlShape }                            from 'react-intl'
@@ -15,6 +16,7 @@ import {
   EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNatPool,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
@@ -29,12 +31,13 @@ import {
   EntityCompatibilityV1_1,
   VenueSdLanApCompatibility
 } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
+import { convertIpToLong, countIpSize, isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
 const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
 export const MAX_DUAL_WAN_PORT = 2
+export const MAX_NAT_POOL_TOTAL_SIZE = 128
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -153,11 +156,34 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 }
 
 // eslint-disable-next-line max-len
-export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
+export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
 
-  if (payload.portType === EdgePortTypeEnum.UNCONFIGURED) {
-    payload.ipMode = EdgeIpModeEnum.DHCP
+  switch (payload.portType) {
+    case EdgePortTypeEnum.WAN:
+      payload.corePortEnabled = false
+      break
+    case EdgePortTypeEnum.LAN:
+      // normal(non-corePort) LAN port
+      if (payload.corePortEnabled === false) {
+
+        // should clear all non core port LAN port's gateway.
+        if (payload.gateway) {
+          payload.gateway = ''
+        }
+
+        // prevent LAN port from using DHCP
+        // when it had been core port before but not a core port now.
+        if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+          payload.ipMode = EdgeIpModeEnum.STATIC
+        }
+      }
+      break
+    case EdgePortTypeEnum.UNCONFIGURED:
+      payload.ipMode = EdgeIpModeEnum.DHCP
+      break
+    default:
+      break
   }
 
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
@@ -170,27 +196,20 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
     if (payload.subnet) payload.subnet = ''
   }
 
+  // disable NAT if port type is not WAN
+  if (payload.portType !== EdgePortTypeEnum.WAN) {
+    payload.natEnabled = false
+  }
 
-  if (payload.portType === EdgePortTypeEnum.LAN) {
-
-    // LAN port is not allowed to configure NAT enable
-    if (payload.natEnabled) {
-      payload.natEnabled = false
-    }
-
-    // normal(non-corePort) LAN port
-    if (payload.corePortEnabled === false) {
-
-      // should clear all non core port LAN port's gateway.
-      if (payload.gateway) {
-        payload.gateway = ''
-      }
-
-      // prevent LAN port from using DHCP
-      // when it had been core port before but not a core port now.
-      if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-        payload.ipMode = EdgeIpModeEnum.STATIC
-      }
+  // clear NAT pools if NAT is disabled or port type is not WAN
+  if (payload.natEnabled === false || payload.portType !== EdgePortTypeEnum.WAN) {
+    payload.natPools = []
+  } else {
+    if (payload.natPools?.length) {
+      payload.natPools = payload.natPools.filter((natPool) => {
+        // would be null when no existing NAT pool
+        return natPool?.startIpAddress && natPool?.endIpAddress
+      })
     }
   }
 
@@ -279,12 +298,24 @@ export const optionSorter = (
   return 0
 }
 
+export async function interfaceSubnetValidator (
+  current: { ipMode: EdgeIpModeEnum, ip: string, subnetMask: string },
+  allWithoutCurrent: { ip: string, subnetMask: string } []
+) {
+  if (current.ipMode !== EdgeIpModeEnum.STATIC) {
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line max-len
+  return lanPortSubnetValidator(current, allWithoutCurrent)
+}
+
 export async function lanPortSubnetValidator (
   currentSubnet: { ip: string, subnetMask: string },
   allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
   if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
-    return
+    return Promise.resolve()
   }
 
   for(let item of allSubnetWithoutCurrent) {
@@ -296,6 +327,73 @@ export async function lanPortSubnetValidator (
     }
   }
   return Promise.resolve()
+}
+
+const rangesOverlap = (range1: Omit<EdgeNatPool, 'id'>, range2: Omit<EdgeNatPool, 'id'>) => {
+  const start1 = convertIpToLong(range1.startIpAddress)
+  const end1 = convertIpToLong(range1.endIpAddress)
+  const start2 = convertIpToLong(range2.startIpAddress)
+  const end2 = convertIpToLong(range2.endIpAddress)
+
+  return start1 <= end2 && start2 <= end1
+}
+
+export const poolRangeOverlapValidator = async (pools:
+  { startIpAddress: string, endIpAddress: string }[] | undefined
+) => {
+  if (!pools?.length) {
+    return Promise.resolve()
+  }
+
+  const { $t } = getIntl()
+
+  // loop to check if range overlap
+  for (let i=0; i < pools.length; i++) {
+    if (!pools[i]) continue
+
+    const start = convertIpToLong(pools[i].startIpAddress)
+    const end = convertIpToLong(pools[i].endIpAddress)
+
+    // check if the range is valid (ascending)
+    if (start >= end) {
+      // eslint-disable-next-line max-len
+      return Promise.reject($t({ defaultMessage: 'Invalid NAT pool start IP and end IP' }))
+    }
+
+    for (let j=i+1; j < pools.length; j++) {
+      if (i === pools.length - 1) break
+
+      // check overlap
+      if (rangesOverlap(pools[i], pools[j])) {
+        // eslint-disable-next-line max-len
+        return Promise.reject($t({ defaultMessage: 'The selected NAT pool overlaps with other NAT pools' }))
+      }
+    }
+  }
+
+  return Promise.resolve()
+}
+
+export const natPoolSizeValidator = async (pools:
+  Omit<EdgeNatPool, 'id'>[] | undefined
+) => {
+  if (!pools?.length) {
+    return Promise.resolve()
+  }
+
+  const { $t } = getIntl()
+
+  // total range cannot exceed 128 per node : MAX_NAT_POOL_TOTAL_SIZE
+  const totalRange = pools?.reduce((acc: number, item) => {
+    if (!item?.startIpAddress || !item?.endIpAddress) {
+      return acc
+    }
+    const range = countIpSize(item.startIpAddress, item.endIpAddress)
+    return acc += range
+  }, 0) ?? 0
+
+  // eslint-disable-next-line max-len
+  return totalRange <= MAX_NAT_POOL_TOTAL_SIZE ? Promise.resolve() : Promise.reject($t({ defaultMessage: 'NAT IP address range exceeds maximum size {maxSize}' }, { maxSize: MAX_NAT_POOL_TOTAL_SIZE }))
 }
 
 export const validateSubnetIsConsistent = (
@@ -378,14 +476,22 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
   }
 }
 
+export const isLagCorePort = (data: EdgeLag) => {
+  return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN
+    && data.lagEnabled
+    && data.lagMembers.some(member => member.portEnabled)
+}
+
+export const isPhysicalCorePort = (data: EdgePort) => {
+  return data.corePortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
+}
+
 const hasCorePhysicalPort = (portsData: EdgePort[]) => {
-  return portsData.some(port => port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled)
+  return portsData.some(isPhysicalCorePort)
 }
 
 const hasCoreLag = (lagData: EdgeLag[]) => {
-  return lagData.some(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  return lagData.some(isLagCorePort)
 }
 
 const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {

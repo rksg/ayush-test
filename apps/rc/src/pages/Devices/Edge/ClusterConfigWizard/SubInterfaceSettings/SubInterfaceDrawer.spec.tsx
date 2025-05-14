@@ -172,6 +172,7 @@ describe('EditEdge ports - sub-interface', () => {
             handleUpdate={mockedHandleUpdateFn}
             allSubInterfaceVlans={[]}
             allInterface={[{
+              ipMode: 'STATIC',
               ip: '2.3.4.5',
               subnet: '255.255.255.0'
             }] as unknown as EdgePortInfo[]}
