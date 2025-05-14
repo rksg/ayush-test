@@ -21,9 +21,9 @@ import {
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
-import { mockAuditLogs }                from './__fixtures__'
-import AuditLogTable, { getRetryError } from './AuditLogTable'
-import { AuditDto, AuditStatusEnum }    from './types'
+import { mockAuditLogs, mockedDataQuotaUsage } from './__tests__/fixtures'
+import AuditLogTable, { getRetryError }        from './AuditLogTable'
+import { AuditDto, AuditStatusEnum }           from './types'
 
 const mockDataConnectorId = 'mock-data-connector-id'
 const mockMoreThan3DaysBeforeNow = '2025-01-10T02:48:40.069Z'
@@ -36,16 +36,16 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = jest.mocked(get)
 jest.mock('moment', () => {
   const moment = jest.requireActual('moment')
-  const m = jest.fn((...args) => {
-    if (args.length === 0) {
-      // Return the fixed date-time for moment()
-      return moment('2025-01-20T02:48:40.069Z')
-    }
-    // Use the original moment function for moment(params)
-    return moment(...args)
-  })
-  m.utc = m
-  return m
+  const mockedMoment = (...args: unknown[]) => {
+    return args.length === 0
+    // Return the fixed date-time for moment()
+      ? moment('2025-01-20T02:48:40.069Z')
+      // Use the original moment function for moment(params)
+      : moment(...args)
+  }
+  // Attach moment's static methods (e.g., utc) to the mock
+  mockedMoment.utc = mockedMoment
+  return mockedMoment
 })
 
 describe('AuditLogTable', () => {
@@ -60,6 +60,15 @@ describe('AuditLogTable', () => {
         page: 1,
         totalCount: mockAuditLogs.length
       }
+    )
+    // QuotaUsage
+    mockRestApiQuery(
+      `${notificationApiURL}/dataConnector/quota`,
+      'get',
+      {
+        data: mockedDataQuotaUsage
+      },
+      true
     )
   })
 
@@ -122,6 +131,30 @@ describe('AuditLogTable', () => {
       const retryableRowCheckbox = within(retryableRow).getByRole('radio')
 
       expect(retryableRowCheckbox).toBeEnabled()
+    }
+  )
+
+  it.each([
+    { rowIndex: 0, quota: { used: 10, allowed: 10 } },
+    { rowIndex: 1, quota: undefined }])(
+    'should render disabled enabled radio button when quota exceeded',
+    async ({ rowIndex, quota }) => {
+      mockRestApiQuery(
+        `${notificationApiURL}/dataConnector/quota`,
+        'get',
+        {
+          data: quota
+        }
+      )
+      render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
+        wrapper: Provider
+      })
+
+      const tbody = within(await findTBody())
+      const notRetryableRow = (await tbody.findAllByRole('row'))[rowIndex]
+      const notRetryableRowCheckbox = within(notRetryableRow).getByRole('radio')
+
+      expect(notRetryableRowCheckbox).toBeDisabled()
     }
   )
 
