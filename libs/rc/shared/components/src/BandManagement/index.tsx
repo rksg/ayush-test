@@ -43,9 +43,10 @@ export interface BandManagementPorps {
   currentBandModeData: ApModelBandModeSettings[]
   setCurrentBandModeData: (data: ApModelBandModeSettings[]) => void,
   disabled?: boolean
+  showTitle?: boolean
 }
 
-export const BandManagement = ({ style, disabled,
+export const BandManagement = ({ style, disabled, showTitle = true,
   triBandApModels, dual5gApModels, bandModeCaps, existingTriBandApModels,
   currentBandModeData, setCurrentBandModeData }: BandManagementPorps) => {
 
@@ -142,7 +143,7 @@ export const BandManagement = ({ style, disabled,
     <Row gutter={0}>
       <Col span={18}>
         <Space>
-          {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+          {showTitle && $t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={''}
             showDetailButton
