@@ -162,6 +162,9 @@ export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithSta
   switch (payload.portType) {
     case EdgePortTypeEnum.WAN:
       payload.corePortEnabled = false
+      if(payload.accessPortEnabled !== undefined) {
+        payload.accessPortEnabled = false
+      }
       break
     case EdgePortTypeEnum.LAN:
       // normal(non-corePort) LAN port
@@ -750,4 +753,15 @@ export const getEdgeWanInterfaces = (portsData: EdgePort[] | undefined, lagData:
 export const getEdgeWanInterfaceCount = (portsData: EdgePort[] | undefined, lagData: EdgeLag[] | undefined) => {
   const wans = getEdgeWanInterfaces(portsData, lagData)
   return wans.length
+}
+
+export const getEdgeModelDisplayText = (model?: string) => {
+  const { $t } = getIntl()
+
+  switch (model) {
+    case 'vRUCKUS Edge':
+      return $t({ defaultMessage: 'Virtual RUCKUS Edge' })
+    default:
+      return model?.startsWith('E') ? model.replace('E', 'RUCKUS Edge ') : (model ?? '')
+  }
 }

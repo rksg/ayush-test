@@ -345,6 +345,8 @@ export const DashboardDrawer = (props: {
     zIndex={999}
     forceRender={true}
     destroyOnClose={false}
+    mask={true}
+    maskClosable={true}
     children={props.visible && <DndProvider backend={HTML5Backend}>
       <FallbackDropZone />
       <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>

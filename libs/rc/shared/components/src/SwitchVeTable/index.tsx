@@ -18,8 +18,8 @@ import {
   useSwitchDetailHeaderQuery,
   useVenueSwitchSettingQuery
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
-  isOperationalSwitch,
   VenueMessages,
   useTableQuery,
   VeViewModel,

@@ -1,9 +1,12 @@
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 
+import { Features }                                                  from '@acx-ui/feature-toggle'
 import { EdgeLagFixtures, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
 import { render, screen, within }                                    from '@acx-ui/test-utils'
 import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                            from '@acx-ui/user'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeLagTable } from '.'
 
@@ -13,6 +16,10 @@ const { mockEdgePortConfig } = EdgePortConfigFixtures
 jest.mock('./LagDrawer', () => ({
   ...jest.requireActual('./LagDrawer'),
   LagDrawer: () => <div data-testid='LagDrawer' />
+}))
+
+jest.mock('../useEdgeActions', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('EdgeLagTable', () => {
@@ -129,6 +136,33 @@ describe('EdgeLagTable', () => {
       const row = await screen.findByRole('row', { name: /LAG 1/i })
       expect(screen.queryByRole('button', { name: 'Add LAG' })).toBeNull()
       expect(within(row).queryByRole('radio')).toBeNull()
+    })
+  })
+
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show core port and access port column when FF is on', async () => {
+      render(
+        <EdgeLagTable
+          lagList={mockedEdgeLagList.content}
+          lagStatusList={mockEdgeLagStatusList.data}
+          portList={mockEdgePortConfig.ports}
+          onAdd={async () => {}}
+          onEdit={async () => {}}
+          onDelete={async () => {}}
+        />
+      )
+
+      expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
     })
   })
 })
