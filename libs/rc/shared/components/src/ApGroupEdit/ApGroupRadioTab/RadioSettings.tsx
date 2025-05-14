@@ -676,7 +676,11 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       return
     }
 
-    const isTriBandRadio = currentApGroupBandModeData.apModelBandModeSettings?.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
+    let useVenueSettings = currentApGroupBandModeData.useVenueSettings
+    formRef.current?.setFieldValue(['useVenueSettingsBandManagement'], useVenueSettings)
+    const bandModeData = (useVenueSettings ? venueBandModeSavedData : currentApGroupBandModeData.apModelBandModeSettings) ?? []
+
+    const isTriBandRadio = bandModeData.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE) || false
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
     if (!isTriBandRadio && currentTab === 'Normal6GHz') {
@@ -684,7 +688,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     }
 
     if (dual5gApModels.length > 0) {
-      const isDual5GEnabled = currentApGroupBandModeData.apModelBandModeSettings?.filter(data => dual5gApModels.includes(data.model))
+      const isDual5GEnabled = bandModeData.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
       setIsDual5gMode(isDual5GEnabled)
       formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
@@ -695,7 +699,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     if (!isEqual(currentApGroupBandModeData, initApGroupBandModeData)) {
       handleChange()
     }
-  }, [isWifiSwitchableRfEnabled, currentApGroupBandModeData, initApGroupBandModeData, dual5gApModels])
+  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, currentApGroupBandModeData, initApGroupBandModeData, dual5gApModels])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
   const onTabChange = (tab: string) => {
