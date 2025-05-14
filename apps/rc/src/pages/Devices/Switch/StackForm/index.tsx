@@ -54,12 +54,12 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
   getSwitchModel,
   SwitchTable,
   SwitchStatusEnum,
-  isOperationalSwitch,
   SwitchViewModel,
   redirectPreviousPage,
   LocationExtended,

@@ -10,10 +10,10 @@ import {
   useUpdateDhcpServerMutation,
   useCreateDhcpServerMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   useTableQuery,
   SwitchDhcp,
-  isOperationalSwitch,
   VenueMessages,
   SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
