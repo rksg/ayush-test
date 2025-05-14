@@ -52,3 +52,7 @@ export const FeatureTooltip = styled.div`
     margin-bottom: 0.5em;
   }
 `
+
+export const DownloadWrapper = styled.div`
+  width: fit-content;
+`

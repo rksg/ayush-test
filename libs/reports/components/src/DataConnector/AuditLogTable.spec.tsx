@@ -174,6 +174,21 @@ describe('AuditLogTable', () => {
     }
   )
 
+  it('handle error tooltip when failed with quota exceeded', async () => {
+    render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
+      wrapper: Provider
+    })
+    const tbody = within(await findTBody())
+    const retryableRow = (await tbody.findAllByRole('row'))[6]
+    const retryableRowCheckbox = within(retryableRow).getByRole('radio')
+    expect(retryableRowCheckbox).toBeEnabled()
+    const statusCell = await within(retryableRow).findByText('Failure')
+    await userEvent.hover(statusCell)
+    expect(
+      await screen.findByRole('tooltip')
+    ).toHaveTextContent(/Quota exceeded/)
+  })
+
   it('handle retry, should show success toast when successful', async () => {
     const postFn = jest.fn()
 
