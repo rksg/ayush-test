@@ -41,7 +41,7 @@ import {
   useLazyGetApGroupRadioCustomizationQuery,
   useUpdateApRadioCustomizationV1Dot1Mutation,
   useLazyGetVenueApModelBandModeSettingsQuery,
-  // TODO useLazyGetApGroupApModelBandModeSettingsQuery
+  useLazyGetApGroupApModelBandModeSettingsQuery,
   useGetApBandModeSettingsV1Dot1Query,
   useUpdateApBandModeSettingsV1Dot1Mutation,
   useApGroupsListQuery,
@@ -330,7 +330,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
   const [getApGroupCustomization] = useLazyGetApGroupRadioCustomizationQuery()
   const [getVenueApModelBandModeSettings] = useLazyGetVenueApModelBandModeSettingsQuery()
-  // const [getApGroupApModelBandModeSettings] = useLazyGetApGroupApModelBandModeSettingsQuery()
+  const [getApGroupApModelBandModeSettings] = useLazyGetApGroupApModelBandModeSettingsQuery()
 
   const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
     useQueryFn: useApGroupsListQuery,
@@ -491,10 +491,16 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             params: { venueId } }, true).unwrap())
           setVenueBandMode(venueApModelBandModeSettings?.find(apModelBandMode => apModelBandMode.model === apData?.model)?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum)
 
-          // TODO
-          // const apGroupApModelBandModeSettings = (await getApGroupApModelBandModeSettings({
-          //   params: { venueId, apGroupId } }, true).unwrap())
-          // setApGroupBandMode(apGroupApModelBandModeSettings?.find(apModelBandMode => apModelBandMode.model === apData?.model)?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum)
+          if (apGroupData) {
+            const apGroupId = apDetails?.apGroupId
+            const apGroupApModelBandModeSettings = (await getApGroupApModelBandModeSettings({
+              params: { venueId, apGroupId } }, true).unwrap())
+            setApGroupBandMode(
+              apGroupApModelBandModeSettings.apModelBandModeSettings?.find(
+                apModelBandMode => apModelBandMode.model === apData?.model
+              )?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum
+            )
+          }
         }
 
         setIsApDataLoaded(true)
@@ -502,7 +508,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       setData()
     }
-  }, [apData, getApAvailableChannels, isApDataLoaded, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination, venueId])
+  }, [apData, getApAvailableChannels, isApDataLoaded, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination, venueId, getApGroupApModelBandModeSettings, apGroupData, apDetails])
 
   useEffect(() => {
     if (isEmpty(venueData)) {
