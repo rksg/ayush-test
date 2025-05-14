@@ -69,7 +69,7 @@ describe('OpenNetwork form', () => {
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        (req, res, ctx) => res(ctx.json({ content: [] }))
       )
     )
 
