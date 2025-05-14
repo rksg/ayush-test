@@ -18,6 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 
 import * as UI from './styledComponents'
@@ -36,6 +37,9 @@ interface ServiceCardItem {
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -152,11 +156,11 @@ export default function ServiceCatalog () {
             disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
           }
         ]),
-        {
+        ...(isCore ? [] : [{
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],
           disabled: !propertyManagementEnabled
-        }
+        }])
       ]
     }
   ] as ServiceCardItem []
