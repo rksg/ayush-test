@@ -113,6 +113,7 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.WIFI_CALLING]: useGetEnhancedWifiCallingServiceListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.WIFI_CALLING) }),
     [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.PORTAL) }),
     [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
+    [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
     [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) })
   }
 
@@ -189,5 +190,30 @@ function useGetEdgeTnmServiceTotalCount (isDisabled?: boolean): TotalCountQueryR
   return {
     data: { totalCount: data?.length },
     isFetching
+  }
+}
+
+
+function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean) {
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+
+  const { data: guestPortal, isFetching: guestPortalIsFetching } =
+    useGetEnhancedPortalProfileListQuery(
+      { params, payload: { filters: {} }, enableRbac: isEnabledRbacService },
+      { skip: isDisabled }
+    )
+
+  const { data: pinPortal, isFetching: pinPortalIsFetching } =
+    useWebAuthTemplateListQuery(
+      { params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled },
+      { skip: isDisabled || !isEdgePinReady || !networkSegmentationSwitchEnabled }
+    )
+
+  return {
+    data: { totalCount: Number(guestPortal?.totalCount ?? 0) + Number(pinPortal?.totalCount ?? 0) },
+    isFetching: guestPortalIsFetching || pinPortalIsFetching
   }
 }

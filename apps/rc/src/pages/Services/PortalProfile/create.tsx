@@ -6,13 +6,13 @@ import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import {
   getServiceAllowedOperation,
-  getServiceListRoutePath,
   getSelectServiceRoutePath,
   ServiceOperation,
   ServiceType,
   PortalProfileTabsEnum,
   getServiceRoutePath,
-  LocationExtended
+  LocationExtended,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }                    from '@acx-ui/user'
@@ -53,13 +53,7 @@ export default function CreatePortalProfile () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Portal' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PORTAL_PROFILE)}
       />
       <StepsForm
         form={form}
