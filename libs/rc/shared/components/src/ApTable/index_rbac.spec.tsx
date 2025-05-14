@@ -125,6 +125,17 @@ describe('Aps', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json({ ...mockVenueOptions }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              name: ''
+            }
+          ]
+        }))
       )
     )
   })

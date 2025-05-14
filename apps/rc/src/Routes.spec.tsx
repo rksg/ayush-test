@@ -113,6 +113,14 @@ jest.mock('./pages/Services/Portal/PortalTable', () => () => {
   return <div data-testid='PortalTable' />
 })
 
+jest.mock('./pages/Services/PortalProfile/create', () => () => {
+  return <div data-testid='CreatePortalProfile' />
+})
+
+jest.mock('./pages/Services/PortalProfile', () => () => {
+  return <div data-testid='PortalProfile' />
+})
+
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
   return <div data-testid='NetworkSegAuthTable' />
 })
@@ -166,7 +174,7 @@ jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
   return <div data-testid='AddEdge' />
 })
 
-jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
+jest.mock('./pages/Devices/Edge/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
@@ -178,6 +186,18 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   ...jest.requireActual('./pages/Devices/Edge/Olt/OltTable'),
   __esModule: true,
   default: jest.fn().mockReturnValue(undefined)
+}))
+
+jest.mock('./pages/Devices/IotController', () => ({
+  IotController: () => <div data-testid='IotController' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerDetails', () => ({
+  IotControllerDetails: () => <div data-testid='IotControllerDetails' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerForm', () => ({
+  IotControllerForm: () => <div data-testid='IotControllerForm' />
 }))
 
 jest.mock('./pages/Timeline', () => () => {
@@ -392,6 +412,19 @@ jest.mock('./pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy', () => () => {
   return <div data-testid='EditEdgeMdnsProxy' />
 })
 
+jest.mock('./pages/Devices/Edge/EditEdgeCluster', () => () => {
+  return <div data-testid='EditEdgeCluster' />
+})
+jest.mock('./pages/Devices/Edge/AddEdgeCluster', () => () => {
+  return <div data-testid='AddEdgeCluster' />
+})
+jest.mock('./pages/Devices/Edge/ClusterConfigWizard', () => () => {
+  return <div data-testid='ClusterConfigWizard' />
+})
+jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
+  return <div data-testid='ClusterDetails' />
+})
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   test('should redirect devices to devices/wifi', async () => {
@@ -434,34 +467,94 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('SwitchesTable')).toBeVisible()
   })
 
-  test('should navigate to devices AddEdge', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/add',
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Devices > Edge Node', () => {
+
+    test('should navigate to devices AddEdge', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdge')).toBeVisible()
     })
-    expect(screen.getByTestId('AddEdge')).toBeVisible()
+
+    test('should navigate to devices EditEdge', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdge')).toBeVisible()
+    })
+
+    test('should navigate to devices EditEdge with subTab', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab/activeSubTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdge')).toBeVisible()
+    })
   })
 
-  test('should navigate to devices EditEdge', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab',
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Devices > Edge Cluster', () => {
+    beforeEach(() => {
+      jest.mocked(mockUseIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true) // Enable Edge Cluster feature
     })
-    expect(screen.getByTestId('EditEdge')).toBeVisible()
-  })
 
-  test('should navigate to devices EditEdge with subTab', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab/activeSubTab',
-        wrapRoutes: false
-      }
+    test('should navigate to AddEdgeCluster page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeCluster')).toBeVisible()
     })
-    expect(screen.getByTestId('EditEdge')).toBeVisible()
+
+    test('should navigate to EditEdgeCluster page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeCluster')).toBeVisible()
+    })
+
+    test('should navigate to EditEdgeCluster with subTab', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeCluster')).toBeVisible()
+    })
+
+    test('should navigate to EdgeCluster config wizard', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/configure',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ClusterConfigWizard')).toBeVisible()
+    })
+
+    test('should navigate to EdgeCluster details tab page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/details/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ClusterDetails')).toBeVisible()
+    })
   })
 
   describe('RcRoutes: Devices > Edge Optical', () => {

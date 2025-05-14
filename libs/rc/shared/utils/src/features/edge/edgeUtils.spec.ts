@@ -2,32 +2,36 @@
 import _ from 'lodash'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
-import { EdgeSubInterface, EdgePortWithStatus }                                    from '../../types'
-import { EdgePort, EdgeLag, EdgeStatus }                                           from '../../types'
+import { EdgeLag, EdgePort, EdgePortWithStatus, EdgeStatus, EdgeSubInterface }     from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootShutdownForStatus,
   allowResetForStatus,
+  convertEdgeNetworkIfConfigToApiPayload,
+  convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
+  getEdgeModelDisplayText,
   getEdgeServiceHealth,
   getIpWithBitMask,
   getSuggestedIpRange,
   isAllPortsLagMember,
   isInterfaceInVRRPSetting,
   lanPortSubnetValidator,
+  MAX_DUAL_WAN_PORT,
+  natPoolSizeValidator,
   optionSorter,
+  poolRangeOverlapValidator,
   validateClusterInterface,
+  validateConfiguredSubnetIsConsistent,
+  validateEdgeClusterLevelGateway,
   validateEdgeGateway,
   validateSubnetIsConsistent,
-  validateUniqueIp,
-  convertEdgePortsConfigToApiPayload,
-  convertEdgeSubInterfaceToApiPayload,
-  MAX_DUAL_WAN_PORT,
-  validateEdgeClusterLevelGateway
+  validateUniqueIp
 } from './edgeUtils'
+import { interfaceSubnetValidator } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
@@ -141,6 +145,34 @@ describe('Edge utils', () => {
     expect(mockErrorFn).not.toBeCalled()
   })
 
+  it('Test lanPortSubnetValidator with empty IP/subnet', async () => {
+    const currentSubnetInfo = {
+      ip: '1.1.1.1',
+      subnetMask: '255.255.255.0'
+    }
+    const allSubnetWithoutCurrent = [
+      {
+        ip: '',
+        subnetMask: '255.255.255.0'
+      },
+      {
+        ip: '3.3.3.3',
+        subnetMask: ''
+      },
+      {
+        ip: '',
+        subnetMask: ''
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
   it('Test lanPortSubnetValidator failed', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
@@ -203,11 +235,42 @@ describe('Edge utils', () => {
       mockErrorFn(ex)
     }
     // eslint-disable-next-line max-len
-    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+    expect(mockErrorFn).toBeCalledWith('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.')
+  })
+
+  it('Test empty ip and subnet validateConfiguredSubnetIsConsistent successful', async () => {
+    const allIps = [
+      {
+        ip: '',
+        subnet: ''
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateConfiguredSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).not.toBeCalled()
   })
 
   it('Test validateUniqueIp success', async () => {
     const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp success for excluded empty ip', async () => {
+    const allIps = ['1.1.1.1', '', '']
     const mockErrorFn = jest.fn()
     try {
       await validateUniqueIp(allIps, 'true')
@@ -992,7 +1055,7 @@ describe('isAllPortsLagMember', () => {
   })
 })
 
-describe('convertEdgePortsConfigToApiPayload', () => {
+describe('convertEdgeNetworkIfConfigToApiPayload', () => {
   it('should set gateway to empty string if port type is CLUSTER', () => {
     const edgePort = {
       id: '',
@@ -1007,7 +1070,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.STATIC,
       portType: EdgePortTypeEnum.CLUSTER
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
     expect(result.gateway).toBe('')
   })
 
@@ -1025,7 +1088,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.DHCP,
       portType: EdgePortTypeEnum.WAN
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
   })
@@ -1037,7 +1100,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       ip: '2.2.2.2',
       subnet: '255.255.255.0'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.gateway).toBe('')
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
@@ -1048,7 +1111,28 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.CLUSTER,
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+  })
+
+  it('should set ip mode to DHCP if port type is UNCONFIGURED', () => {
+    const edgePort = {
+      id: '',
+      name: '',
+      statusIp: '192.168.10.11',
+      mac: '',
+      ip: '192.168.10.11',
+      subnet: '255.255.255.0',
+      gateway: '192.168.1.1',
+      natEnabled: false,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      portType: EdgePortTypeEnum.UNCONFIGURED
+    } as EdgePortWithStatus
+    const result = convertEdgeNetworkIfConfigToApiPayload(edgePort)
+    expect(result.ipMode).toBe(EdgeIpModeEnum.DHCP)
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
     expect(result.gateway).toBe('')
   })
 
@@ -1057,7 +1141,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.LAN,
       natEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natEnabled).toBe(false)
   })
 
@@ -1067,7 +1151,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       corePortEnabled: false,
       gateway: '1.1.1.1'
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.gateway).toBe('')
   })
 
@@ -1078,7 +1162,7 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       corePortEnabled: false,
       ipMode: EdgeIpModeEnum.DHCP
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.ipMode).toBe(EdgeIpModeEnum.STATIC)
   })
 
@@ -1087,8 +1171,29 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.WAN,
       natEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
     expect(result.natEnabled).toBe(true)
+  })
+
+  it('should clear NAT pool when NAT is not enabled', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+    } as EdgePortWithStatus
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.natPools).toEqual([])
+  })
+
+  it('should clear NAT settings when port type is not WAN', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: true,
+      natPools: [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+    } as EdgePortWithStatus
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.natEnabled).toEqual(false)
+    expect(result.natPools).toEqual([])
   })
 
   it('should not set corePortEnabled for non-LAN port type', () => {
@@ -1096,14 +1201,17 @@ describe('convertEdgePortsConfigToApiPayload', () => {
       portType: EdgePortTypeEnum.WAN,
       corePortEnabled: true
     } as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
-    expect(result.corePortEnabled).toBe(true)
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.corePortEnabled).toBe(false)
   })
 
   it('should return empty formData', () => {
     const formData = {} as EdgePortWithStatus
-    const result = convertEdgePortsConfigToApiPayload(formData)
-    expect(result).toEqual({})
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result).toStrictEqual({
+      natEnabled: false,
+      natPools: []
+    })
   })
 })
 
@@ -1133,5 +1241,159 @@ describe('convertEdgeSubInterfaceToApiPayload', () => {
     const formData: EdgeSubInterface | null | undefined = undefined
     const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual({})
+  })
+})
+
+describe('poolRangeOverlapValidator', () => {
+  describe('negative test cases', () => {
+    it('should return false if ranges are overlapped', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.20', endIpAddress: '1.3.1.50' }])
+      await expect(result).rejects.toEqual('The selected NAT pool overlaps with other NAT pools')
+    })
+
+    it('should return false if ranges are overlapped - case2', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.30', endIpAddress: '1.1.1.50' }])
+      await expect(result).rejects.toEqual('The selected NAT pool overlaps with other NAT pools')
+    })
+  })
+
+  describe('positive test cases', () => {
+    it('should return false if no ranges are provided', async () => {
+      const result = poolRangeOverlapValidator(undefined)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if ranges are empty', async () => {
+      const result = poolRangeOverlapValidator([])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if only 1 ranges are provided', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.3.1.2', endIpAddress: '1.3.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped - case2', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.2.2', endIpAddress: '1.1.2.5' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped - case3', async () => {
+      const result = poolRangeOverlapValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.1.31', endIpAddress: '1.1.1.40' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+  })
+})
+
+describe('natPoolSizeValidator', () => {
+  describe('negative test cases', () => {
+    it('should return false if size > 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.130' }])
+      await expect(result).rejects.toEqual('NAT IP address range exceeds maximum size 128')
+    })
+
+    it('should return false if multiple ranges total size > 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.130' }, { startIpAddress: '1.1.1.20', endIpAddress: '1.3.1.50' }])
+      await expect(result).rejects.toEqual('NAT IP address range exceeds maximum size 128')
+    })
+  })
+
+  describe('positive test cases', () => {
+    it('should return false if no ranges are provided', async () => {
+      const result = natPoolSizeValidator(undefined)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if ranges are empty', async () => {
+      const result = natPoolSizeValidator([])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if only 1 ranges are provided', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.3.1.2', endIpAddress: '1.3.1.30' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped = 128', async () => {
+      const result = natPoolSizeValidator([{ startIpAddress: '1.1.1.1', endIpAddress: '1.1.1.30' }, { startIpAddress: '1.1.2.1', endIpAddress: '1.1.2.98' }])
+      await expect(result).resolves.toEqual(undefined)
+    })
+  })
+})
+
+describe('interfaceSubnetValidator', () => {
+  it('should resolve when current IP mode is not STATIC', async () => {
+    const current = { ipMode: EdgeIpModeEnum.DHCP, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = []
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when current IP mode is STATIC and allWithoutCurrent is empty', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = []
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when current IP mode is STATIC and allWithoutCurrent has non-STATIC IP mode', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.DHCP, ip: '2.2.2.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should resolve when no overlapped', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.STATIC, ip: '2.2.2.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).resolves.toEqual(undefined)
+  })
+
+  it('should reject when having overlapped', async () => {
+    const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
+    const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.2', subnetMask: '255.255.255.0' }]
+    await expect(interfaceSubnetValidator(current, allWithoutCurrent)).rejects.toEqual('The ports have overlapping subnets')
+  })
+})
+
+describe('getEdgeModelDisplayText', () => {
+
+  it('should return "Virtual RUCKUS Edge" for "vRUCKUS Edge" model', () => {
+    const result = getEdgeModelDisplayText('vRUCKUS Edge')
+    expect(result).toBe('Virtual RUCKUS Edge')
+  })
+
+  it('should return "RUCKUS Edge <model>" for model starting with "E"', () => {
+    const model = 'E123'
+    const result = getEdgeModelDisplayText(model)
+    expect(result).toBe(`RUCKUS Edge ${model.replace('E', '')}`)
+  })
+
+  it('should return original model for model not starting with "E"', () => {
+    const model = 'ABC123'
+    const result = getEdgeModelDisplayText(model)
+    expect(result).toBe(model)
+  })
+
+  it('should return empty string for undefined model', () => {
+    const result = getEdgeModelDisplayText(undefined)
+    expect(result).toBe('')
+  })
+
+  it('should return empty string for null model', () => {
+    const result = getEdgeModelDisplayText(null)
+    expect(result).toBe('')
+  })
+
+  it('should return empty string for empty string model', () => {
+    const result = getEdgeModelDisplayText('')
+    expect(result).toBe('')
   })
 })

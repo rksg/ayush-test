@@ -4,6 +4,8 @@ import {
   WidgetListData,
   ChatHistory,
   Canvas,
+  CanvasInfo,
+  DashboardInfo,
   RuckusAiChats
 } from '@acx-ui/rc/utils'
 import { baseRuckusAiChatApi } from '@acx-ui/store'
@@ -84,6 +86,16 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
+    patchCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.patchCanvas, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
     deleteCanvas: build.mutation<Canvas, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.deleteCanvas, params)
@@ -103,9 +115,38 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
     }),
+    getCanvases: build.query<{ data: CanvasInfo[] }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvases, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
+    cloneCanvas: build.mutation<{ data: Canvas }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.cloneCanvas, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Canvas', id: 'LIST' }]
+    }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload, customHeaders }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chats, undefined, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    streamChatsAi: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ payload, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.streamChats, undefined, customHeaders)
         return {
           ...req,
           body: payload
@@ -156,6 +197,54 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getDashboards: build.query<DashboardInfo[], RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getDashboards, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Dashboard', id: 'LIST' }, { type: 'Canvas', id: 'LIST' }]
+    }),
+    updateDashboards: build.mutation<DashboardInfo[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateDashboards, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
+    }),
+    reorderDashboards: build.mutation<DashboardInfo[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.reorderDashboards, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
+    }),
+    removeDashboards: build.mutation<DashboardInfo[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.removeDashboards, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
+    }),
+    patchDashboard: build.mutation<DashboardInfo, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.patchDashboard, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     })
   })
 })
@@ -167,16 +256,26 @@ export const {
   useGetChatsMutation,
   useGetCanvasQuery,
   useLazyGetCanvasQuery,
-  useLazyGetCanvasByIdQuery,
+  useGetCanvasesQuery,
+  useLazyGetCanvasesQuery,
   useUpdateCanvasMutation,
+  useCloneCanvasMutation,
   useDeleteCanvasMutation,
+  useLazyGetCanvasByIdQuery,
+  usePatchCanvasMutation,
   useCreateCanvasMutation,
   useChatAiMutation,
+  useStreamChatsAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
   useChatChartQuery,
   useGetWidgetQuery,
   useCreateWidgetMutation,
   useUpdateWidgetMutation,
+  useGetDashboardsQuery,
+  useUpdateDashboardsMutation,
+  useReorderDashboardsMutation,
+  useRemoveDashboardsMutation,
+  usePatchDashboardMutation,
   useSendFeedbackMutation
 } = ruckusAiChatApi

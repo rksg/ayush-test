@@ -1973,6 +1973,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
               searchString: tableChangePayload.searchVenueNameString,
               searchTargetFields: ['name', 'addressLine', 'tagList']
             } : {}),
+            ...(tableChangePayload.sortField ? {
+              sortField: tableChangePayload.sortField === 'venueName' ? 'name' : tableChangePayload.sortField,
+              sortOrder: tableChangePayload.sortOrder
+            } : {}),
             page: 1,
             pageSize: 10000
           }
@@ -2094,16 +2098,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
             }
           })
 
-          venueData.data.forEach(venue => {
-            if (venuesMap[venue.id]) {
-              venuesMap[venue.id].venueName = venue.name
-              venuesMap[venue.id].address = venue.addressLine
-              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
-              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
-            }
-          })
+          // ACX-85105: Preserve the original data order from venueData to support sorting behavior in venues query
+          const resolvedData: VenueUsageByClientIsolation[] = venueData.data.map(venue => {
+            if (!venuesMap[venue.id]) return null
 
-          const result = { data: Object.values(venuesMap), page: 1, totalCount: Object.values(venuesMap).length }
+            return {
+              ...venuesMap[venue.id],
+              venueName: venue.name,
+              address: venue.addressLine,
+              apCount: apsGroupByVenueData[venue.id]?.size || 0,
+              apNames: Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
+            }
+          }).filter((venue): venue is VenueUsageByClientIsolation => venue !== null)
+
+          const result = { data: resolvedData, page: 1, totalCount: Object.values(venuesMap).length }
           return { data: result as unknown as TableResult<VenueUsageByClientIsolation> }
         } else {
           const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
@@ -2803,7 +2811,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           return { data: result }
         }
       },
-      providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+      providesTags: [{ type: 'SnmpAgent', id: 'AP' }, { type: 'SnmpAgent', id: 'LIST' }]
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
@@ -2825,18 +2833,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const payload = JSON.stringify({ useVenueSettings: true })
         const req = createHttpRequest(urlsInfo.resetApSnmpSettings, params, apiCustomHeader)
         return {
           ...req,
           // eslint-disable-next-line max-len
-          ...(enableRbac ? { body: payload } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]

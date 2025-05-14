@@ -459,7 +459,15 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall' || !!enablePagination) {
     pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
-    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
+    const defaultPageSize = pagination.defaultPageSize!
+    const currentPageSize = (props.pagination && props.pagination.pageSize) || defaultPageSize
+    const totalItems = pagination.total ?? dataSource?.length ?? 0
+
+    const isCurrentPageSizeLessThanDefault = currentPageSize < defaultPageSize
+    const isTotalItemsLessThanOrEqualToDefault = totalItems <= defaultPageSize
+
+    // Disable pagination if total is small and user didn't select a smaller page size
+    if (isTotalItemsLessThanOrEqualToDefault && !isCurrentPageSizeLessThanDefault) {
       pagination = false
     }
   }

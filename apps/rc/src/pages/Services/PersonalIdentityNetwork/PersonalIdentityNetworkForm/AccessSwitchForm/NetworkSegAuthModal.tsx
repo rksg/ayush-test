@@ -21,7 +21,7 @@ export const NetworkSegAuthModal = (props: {
       {$t({ defaultMessage: 'Add' })}
     </Button>
     <Modal
-      title={$t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
+      title={$t({ defaultMessage: 'Add PIN Portal for Switch' })}
       visible={visible}
       destroyOnClose={true}
       type={ModalType.ModalStepsForm}

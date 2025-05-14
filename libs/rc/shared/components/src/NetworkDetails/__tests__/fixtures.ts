@@ -221,3 +221,16 @@ export const networkDetailHeaderData = {
     clients: 1
   }
 }
+
+export const networkViewModelData = {
+  data: [{
+    name: 'network01',
+    venueApGroups: [{
+      venueId: 'venue1_id'
+    }],
+    apCount: 1,
+    clientCount: 1
+  }],
+  page: 1,
+  totalCount: 1
+}

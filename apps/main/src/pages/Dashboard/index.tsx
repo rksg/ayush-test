@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState, useRef } from 'react'
 
 import { Divider, Menu, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -30,6 +30,7 @@ import {
   Dropdown,
   GridCol,
   GridRow,
+  Loader,
   PageHeader,
   RangePicker,
   Select,
@@ -51,13 +52,21 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
+  useGetDashboardsQuery,
+  usePatchDashboardMutation,
+  useUpdateDashboardsMutation
+} from '@acx-ui/rc/services'
+import {
   Canvas,
+  CanvasInfo,
   CommonUrlsInfo,
+  DashboardInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { UseQueryResult } from '@acx-ui/types'
 import {
   EdgeScopes,
   RolesEnum,
@@ -85,18 +94,17 @@ import {
   useDashboardFilter
 } from '@acx-ui/utils'
 
-import { Section, Group }                                                from '../AICanvas/Canvas'
-import { CardInfo, layoutConfig }                                        from '../AICanvas/Canvas'
+import AICanvasModal                                                     from '../AICanvas'
+import { CardInfo, layoutConfig, Section, Group }                        from '../AICanvas/Canvas'
 import Layout                                                            from '../AICanvas/components/Layout'
 import { DEFAULT_DASHBOARD_ID, getCalculatedColumnWidth, getCanvasData } from '../AICanvas/index.utils'
 import { PreviewDashboardModal }                                         from '../AICanvas/PreviewDashboardModal'
 import * as CanvasUI                                                     from '../AICanvas/styledComponents'
 
-import { DashboardDrawer }               from './DashboardDrawer'
-import { ImportDashboardDrawer }         from './ImportDashboardDrawer'
-import { DashboardInfo }                 from './index.utils'
-import { mockDashboardList, mockCanvas } from './mockData'
-import * as UI                           from './styledComponents'
+import { DashboardDrawer }       from './DashboardDrawer'
+import { ImportDashboardDrawer } from './ImportDashboardDrawer'
+import { formatDashboardList }   from './index.utils'
+import * as UI                   from './styledComponents'
 
 interface DashboardFilterContextProps {
   dashboardFilters: AnalyticsFilter;
@@ -132,6 +140,7 @@ export default function Dashboard () {
   const { accountTier } = getUserProfile()
   const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isCore = isCoreTier(accountTier)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -168,7 +177,8 @@ export default function Dashboard () {
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
-  const [dashboardId, setDashboardId] = useState(DEFAULT_DASHBOARD_ID)
+  const [dashboardId, setDashboardId] = useState('')
+  const [initDashboardId, setInitDashboardId] = useState(false)
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
   const [layout, setLayout] = useState({
     ...layoutConfig,
@@ -176,15 +186,33 @@ export default function Dashboard () {
   })
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
-  //TODO
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
+  const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
+
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
-      setDashboardList(getDashboardList())
+    if (!isDashboardCanvasEnabled) {
+      setDashboardId(DEFAULT_DASHBOARD_ID)
     }
   }, [])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
+    if (isCanvasQ2Enabled && dashboards?.length) {
+      const updatedDashboards = formatDashboardList(dashboards)
+      const dashboardIds = updatedDashboards.map(item => item.id)
+      if (!initDashboardId) {
+        setInitDashboardId(true)
+        setDashboardId(dashboardIds[0])
+      } else if (!dashboardIds.includes(dashboardId)) {
+        setDashboardId(dashboardIds[0])
+      }
+      setDashboardList(updatedDashboards)
+    }
+  }, [dashboards])
+
+  useEffect(() => {
+    if (isDashboardCanvasEnabled) {
       setLayout({
         ...layout,
         calWidth: getCalculatedColumnWidth(menuCollapsed)
@@ -193,28 +221,20 @@ export default function Dashboard () {
   }, [menuCollapsed])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      //TODO
-      const { canvasId, sections, groups } = getCanvasData(mockCanvas)
-      if (canvasId && sections) {
-        setCanvasId(canvasId)
-        setSections(sections)
-        setGroups(groups)
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
+      const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
+      if (selectedDashboard) {
+        const { canvasId, sections, groups } = getCanvasData(
+          selectedDashboard as unknown as Canvas[]
+        )
+        if (canvasId && sections) {
+          setCanvasId(canvasId)
+          setSections(sections)
+          setGroups(groups)
+        }
       }
     }
-  }, [dashboardId])
-
-  const getDashboardList = () => {
-    return mockDashboardList.map((item, index) => {
-      return {
-        ...item,
-        key: item.id,
-        index,
-        isLanding: index === 0,
-        isDefault: item.id === DEFAULT_DASHBOARD_ID
-      }
-    })
-  }
+  }, [dashboardId, dashboardList])
 
   return (
     <DashboardFilterProvider>
@@ -222,53 +242,60 @@ export default function Dashboard () {
         dashboardId={dashboardId}
         setDashboardId={setDashboardId}
         dashboardList={dashboardList}
+        getDashboardsQuery={getDashboardsQuery}
       />
       {
-        dashboardId === DEFAULT_DASHBOARD_ID
-          ? <>
-            {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
-            <Divider dashed
-              style={{
-                borderColor: 'var(--acx-neutrals-30)',
-                margin: '20px 0px 5px 0px' }}/>
-            <ContentSwitcher
-              tabDetails={tabDetails}
-              size='large'
-              defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-              onChange={onTabChange}
-              extra={
-                <UI.Wrapper>
-                  <TenantLink to={'/reports'}>
-                    {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-                  </TenantLink>
-                </UI.Wrapper>
-              }
-            />
-            <Divider dashed
-              style={{
-                borderColor: 'var(--acx-neutrals-30)',
-                margin: '20px 0px' }}/>
-            <DashboardMapWidget />
-          </>
-          : <DndProvider backend={HTML5Backend}>
-            <div className='grid'>
-              <CanvasUI.Grid $type='pageview'>
-                <Layout
-                  readOnly={true}
-                  sections={sections}
-                  groups={groups}
-                  setGroups={setGroups}
-                  compactType={'horizontal'}
-                  layout={layout}
-                  setLayout={setLayout}
-                  canvasId={canvasId}
-                  shadowCard={shadowCard}
-                  setShadowCard={setShadowCard}
-                  containerId='dashboard-canvas-container'
-                />
-              </CanvasUI.Grid>
-            </div>
-          </DndProvider>
+        <Loader states={[{ isLoading: isDashboardCanvasEnabled ? dashboardsLoading : false }]}>{
+
+          dashboardId === DEFAULT_DASHBOARD_ID
+            ? <>
+              {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
+              <Divider dashed
+                style={{
+                  borderColor: 'var(--acx-neutrals-30)',
+                  margin: '20px 0px 5px 0px' }}/>
+              <ContentSwitcher
+                tabId={'dashboard-devices'}
+                tabDetails={tabDetails}
+                size='large'
+                defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+                onChange={onTabChange}
+                extra={
+                  <UI.Wrapper>
+                    <TenantLink to={'/reports'}>
+                      {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+                    </TenantLink>
+                  </UI.Wrapper>
+                }
+                tabPersistence={enabledUXOptFeature}
+              />
+              <Divider dashed
+                style={{
+                  borderColor: 'var(--acx-neutrals-30)',
+                  margin: '20px 0px' }}/>
+              <DashboardMapWidget />
+            </>
+            : <DndProvider backend={HTML5Backend}>
+              <div className='grid'>
+                <CanvasUI.Grid $type='pageview'>
+                  <Layout
+                    readOnly={true}
+                    sections={sections}
+                    groups={groups}
+                    setGroups={setGroups}
+                    compactType={'horizontal'}
+                    layout={layout}
+                    setLayout={setLayout}
+                    canvasId={canvasId}
+                    shadowCard={shadowCard}
+                    setShadowCard={setShadowCard}
+                    containerId='dashboard-canvas-container'
+                  />
+                </CanvasUI.Grid>
+              </div>
+            </DndProvider>
+
+        }</Loader>
       }
     </DashboardFilterProvider>
   )
@@ -278,6 +305,7 @@ function DashboardPageHeader (props: {
   dashboardId: string,
   setDashboardId: (id: string) => void
   dashboardList: DashboardInfo[]
+  getDashboardsQuery: UseQueryResult<DashboardInfo[]>
 }) {
   const { dashboardId, setDashboardId, dashboardList } = props
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
@@ -290,10 +318,18 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+
+  const [canvasModalVisible, setCanvasModalVisible] = useState(false)
+  const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
+  const [updateDashboards] = useUpdateDashboardsMutation()
+  const [patchDashboard] = usePatchDashboardMutation()
+  const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -374,21 +410,49 @@ function DashboardPageHeader (props: {
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters, true)
+    return () => {
+      if (isCanvasQ2Enabled && shouldCleanupDashboardIdRef.current) {
+        handleClearNotifications(shouldCleanupDashboardIdRef.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  const handleDashboardChange = (value: string) => {
+  const handleClearNotifications = async (value: string) => {
+    await patchDashboard({
+      params: { dashboardId: value }
+    })
+    shouldCleanupDashboardIdRef.current = undefined
+  }
+
+  const handleChangeDashboard = async (value: string) => {
+    const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+    const newDashboard = dashboardList.find(item => item.id === value)
+    const hasDiff = (dashboard?: DashboardInfo) =>
+      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
+
+    if (currentDashboard && hasDiff(currentDashboard)) {
+      handleClearNotifications(currentDashboard.id)
+    }
+    if (newDashboard && hasDiff(newDashboard)) {
+      shouldCleanupDashboardIdRef.current = value
+    }
     setDashboardId(value)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePreview = async (id: string) => {
-    //TODO: get data by id
-    setPreviewData(mockCanvas)
-    setPreviewModalVisible(true)
+  const handleOpenPreview = async (data: Canvas[] | DashboardInfo[] | CanvasInfo[]) => {
+    if (data) {
+      setPreviewData(data as unknown as Canvas[])
+      setPreviewModalVisible(true)
+    }
+  }
+
+  const handleOpenCanvas = async (id?: string) => {
+    setEditCanvasId(id ?? undefined)
+    setCanvasModalVisible(true)
   }
 
   const DashboardSelector = () => {
@@ -400,19 +464,21 @@ function DashboardPageHeader (props: {
         dropdownMatchSelectWidth={false}
         dropdownClassName='dashboard-select-dropdown'
         optionLabelProp='label'
-        onChange={handleDashboardChange}
+        onChange={handleChangeDashboard}
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
-            const hasUpdated = item.diffWidgetIds && item.diffWidgetIds.length > 0
-            const icon = item.author ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+            const hasUpdated = !!item.authorId && !!item.diffWidgetIds?.length
+            const icon = item.visible || isDefault
+              ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
+
             return <Select.Option
               key={item.id}
               value={item.id}
               label={item.name}
               className={isDefault ? 'default' : (hasUpdated ? 'hasUpdated' : '')}
             >
-              { !isDefault && icon }{ item.name }
+              { icon }{ item.name }
             </Select.Option>
           })
         }</UI.DashboardSelector>
@@ -422,7 +488,7 @@ function DashboardPageHeader (props: {
   return (<>
     <PageHeader
       title={''}
-      titleExtra={isCanvasQ2Enabled &&
+      titleExtra={isCanvasQ2Enabled && dashboardList?.length &&
       <Space size={7} style={{ alignItems: 'center', lineHeight: 1 }}>
         <DashboardSelector />
         <Button
@@ -469,11 +535,12 @@ function DashboardPageHeader (props: {
       ]}
     />
 
-    { isCanvasQ2Enabled && <>
+    { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
-        handlePreview={handlePreview}
+        handleOpenPreview={handleOpenPreview}
+        handleOpenCanvas={handleOpenCanvas}
         onClose={() => {
           setDashboardDrawerVisible(false)
         }}
@@ -485,14 +552,19 @@ function DashboardPageHeader (props: {
       <ImportDashboardDrawer
         visible={importDashboardDrawerVisible}
         dashboardList={dashboardList}
-        handlePreview={handlePreview}
+        handleOpenPreview={handleOpenPreview}
+        handleOpenCanvas={handleOpenCanvas}
         onBackClick={() => {
           setDashboardDrawerVisible(true)
           setImportDashboardDrawerVisible(false)
         }}
-        onApplyClick={(keys) => {
-          //TODO
-          console.log(keys) // eslint-disable-line no-console
+        onImportClick={async (keys) => {
+          await updateDashboards({
+            payload: keys
+          }).then(() => {
+            props.getDashboardsQuery.refetch()
+            setImportDashboardDrawerVisible(false)
+          })
         }}
         onClose={() => setImportDashboardDrawerVisible(false)}
       />
@@ -502,6 +574,14 @@ function DashboardPageHeader (props: {
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
       />
+
+      <AICanvasModal
+        isModalOpen={canvasModalVisible}
+        setIsModalOpen={setCanvasModalVisible}
+        editCanvasId={editCanvasId}
+        openNewCanvas={editCanvasId ? !editCanvasId : true}
+      />
+
     </>}
 
   </>

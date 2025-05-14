@@ -1,7 +1,7 @@
-import _ from 'lodash'
+import _, { cloneDeep } from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum }                 from '../../../../models/EdgeEnum'
-import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus } from '../../../../types/edge'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeWanLinkHealthStatusEnum, EdgeWanPortRoleStatusEnum } from '../../../../models/EdgeEnum'
+import { EdgeMultiWanConfigStats, EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus }                from '../../../../types/edge'
 
 import { mockEdgeClusterList } from './general'
 
@@ -14,6 +14,7 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.WAN,
       natEnabled: false,
+      natPools: [],
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '1.1.1.1',
       subnet: '255.255.255.0',
@@ -29,6 +30,7 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
+      natPools: [],
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
@@ -44,6 +46,7 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
+      natPools: [],
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '3.3.3.3',
       subnet: '255.255.255.0',
@@ -59,6 +62,7 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
+      natPools: [],
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '4.4.4.4',
       subnet: '255.255.255.0',
@@ -74,6 +78,7 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: true,
+      natPools: [],
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '5.5.5.5',
       subnet: '255.255.255.0',
@@ -393,3 +398,29 @@ export const mockClusterInterfaceOptionData = {
     }
   ]
 }
+
+export const mockedDualWanLinkHealthConfigStatus = {
+  tenantId: '0a38bee60d11436fa86e89bec56d31fd',
+  serialNumber: '9681F063FD151C11F0A524000C29B087E4',
+  edgeClusterId: 'bce32f26-9807-4888-bfd1-13a56d857a3c',
+  multiWanPolicyId: '0472cb3e-fddd-4b87-bf63-b5879cbb82ca',
+  portName: 'port1',
+  priority: 2,
+  linkHealthMonitorEnabled: true,
+  monitorProtocol: 'PING',
+  monitorTargets: [
+    '8.8.8.8',
+    '7.7.8.8'
+  ],
+  monitorLinkDownCriteria: 'ALL_TARGETS_DOWN',
+  monitorIntervalSec: 8,
+  monitorMaxCountToDown: 8,
+  monitorMaxCountToUp: 8,
+
+  wanLinkStatus: EdgeWanLinkHealthStatusEnum.UP,
+  wanLinkTargets: [{ ip: '8.8.8.8', status: EdgeWanLinkHealthStatusEnum.UP }],
+  wanPortStatus: EdgeWanPortRoleStatusEnum.ACTIVE
+} as EdgeMultiWanConfigStats
+
+export const mockedEdgePortWithDualWan = cloneDeep(edgePortsSetting)
+mockedEdgePortWithDualWan[0].multiWan = mockedDualWanLinkHealthConfigStatus

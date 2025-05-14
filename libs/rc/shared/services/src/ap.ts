@@ -100,7 +100,8 @@ import {
   IpsecViewData,
   ApGroupRadioCustomization,
   ApGroupApModelBandModeSettings,
-  ApGroupDefaultRegulatoryChannels
+  ApGroupDefaultRegulatoryChannels,
+  ApExternalAntennaSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -1440,6 +1441,27 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
+    getApExternalAntennaSettings: build.query<ApExternalAntennaSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApExternalAntennaSettings, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
+    }),
+    updateApExternalAntennaSettings: build.mutation<CommonResult, RequestPayload<ApExternalAntennaSettings>>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApExternalAntennaSettings, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'EXT_ANTENNA' }]
+    }),
     getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -2018,6 +2040,8 @@ export const {
   useGetApGroupApModelBandModeSettingsQuery,
   useLazyGetApGroupApModelBandModeSettingsQuery,
   useUpdateApGroupApModelBandModeSettingsMutation,
+  useLazyGetApExternalAntennaSettingsQuery,
+  useUpdateApExternalAntennaSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,

@@ -21,9 +21,9 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { InformationSolid }                from '@acx-ui/icons'
-import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import { useGetCertificateTemplatesQuery }                        from '@acx-ui/rc/services'
 import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
@@ -70,10 +70,11 @@ export function AaaSettingsForm () {
   const form = Form.useFormInstance()
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [hasSetRuckusAiFields, setRuckusAiFields] = useState(false)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
@@ -305,8 +306,10 @@ function AaaService () {
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
 
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+    && isRadSecFeatureTierAllowed
 
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
@@ -334,16 +337,24 @@ function AaaService () {
   }
 
   useEffect(() => {
-    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAuthProxy', true)
+    // This workaround is due to the other network type will set form fields and cause the proxy mode default value be effected
+    if(data) {
+      form.setFieldValue('enableAuthProxy', data.enableAuthProxy)
+      form.setFieldValue('enableAccountingProxy', data.enableAccountingProxy)
     }
-  }, [selectedAuthRadius])
+  },[data])
+
+  useEffect(() => {
+    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+      setData && setData({ ...data, enableAuthProxy: true })
+    }
+  }, [supportRadsec, selectedAuthRadius])
 
   useEffect(() => {
     if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAccountingProxy', true)
+      setData && setData({ ...data, enableAccountingProxy: true })
     }
-  }, [selectedAcctRadius])
+  }, [supportRadsec, selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'

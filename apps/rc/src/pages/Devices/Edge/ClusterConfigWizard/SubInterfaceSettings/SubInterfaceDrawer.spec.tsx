@@ -4,9 +4,11 @@ import userEvent     from '@testing-library/user-event'
 import { UserEvent } from '@testing-library/user-event/dist/types/setup/setup'
 import { Form }      from 'antd'
 
-import { StepsForm }                              from '@acx-ui/components'
-import { EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { StepsForm }                                            from '@acx-ui/components'
+import { Features }                                             from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                from '@acx-ui/rc/components'
+import { EdgePortInfo, EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
+import { Provider }                                             from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -33,6 +35,11 @@ jest.mock('@acx-ui/utils', () => {
     getIntl: () => intl
   }
 })
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 const mockedData = mockEdgeSubInterfaces.content[0] as SubInterface
 const mockedHandleAddFn = jest.fn()
@@ -159,6 +166,37 @@ describe('EditEdge ports - sub-interface', () => {
     })
   })
 
+  it('Add a STATIC sub-interface with duplicate subnet range with physical port', async () => {
+    render(
+      <StepsForm initialValues={mockSubInterfaceSettingsFormType}>
+        <StepsForm.StepForm>
+          <SubInterfaceDrawer
+            serialNumber='96000076DCCAA42E87785B549A64997E72'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+            allInterface={[{
+              ipMode: 'STATIC',
+              ip: '2.3.4.5',
+              subnet: '255.255.255.0'
+            }] as unknown as EdgePortInfo[]}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>)
+
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
+    await user.click(await screen.findByText('Static IP'))
+    inputStaticIp(user, '2.3.4.5', '255.255.255.0')
+
+    await waitFor(() => {
+      expect(screen.getByText('The ports have overlapping subnets')).toBeInTheDocument()
+    })
+  })
+
   it('Edit a STATIC sub-interface with duplicate subnet range', async () => {
     const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
     const editEdgeId = '96000076DCCAA42E87785B549A64997E72'
@@ -274,10 +312,40 @@ describe('EditEdge ports - sub-interface', () => {
     expect(screen.queryByRole('spinbutton', { name: 'VLAN' })).toHaveAttribute('value', '')
   })
 
-  const inputStaticIp = async (user: UserEvent, ip: string, mask: string) => {
-    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: ip } })
-    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: mask } })
-  }
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show core port and access port fields when FF is on', async () => {
+      render(
+        <Provider>
+          <SubInterfaceDrawer
+            serialNumber='edge-id'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+          />
+        </Provider>
+      )
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+    })
+  })
 })
+
+const inputStaticIp = async (user: UserEvent, ip: string, mask: string) => {
+  const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+  fireEvent.change(ipInput, { target: { value: ip } })
+  const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+  fireEvent.change(subnetInput, { target: { value: mask } })
+}
