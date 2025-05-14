@@ -7,11 +7,13 @@ import { useIntl }             from 'react-intl'
 import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeLag,
   EdgeLagStatus,
   EdgePort,
   EdgeSerialNumber,
   EdgeUrlsInfo,
+  SubInterface,
   defaultSort,
   getEdgePortDisplayName,
   getEdgePortIpModeString,
@@ -39,6 +41,9 @@ interface EdgeLagTableProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
   actionScopes?: { [key in string]: ScopeKeys }
+  subInterfaceList?: SubInterface[]
+  isClusterWizard?: boolean
+  clusterInfo: EdgeClusterStatus
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -46,7 +51,9 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
-    actionScopes
+    actionScopes, subInterfaceList,
+    isClusterWizard = false,
+    clusterInfo
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -252,6 +259,9 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         vipConfig={vipConfig}
         onAdd={onAdd}
         onEdit={onEdit}
+        subInterfaceList={subInterfaceList}
+        isClusterWizard={isClusterWizard}
+        clusterInfo={clusterInfo}
       />
     </>
   )

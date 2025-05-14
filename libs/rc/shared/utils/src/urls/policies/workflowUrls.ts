@@ -25,7 +25,7 @@ type WorkflowActionUrlType = 'createAction' | 'patchAction'
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
   | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
   | 'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep'
-  | 'getWorkflowStepsById' | 'getWorkflowStepById'
+  | 'deleteWorkflowStepAndDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
 
 type WorkflowActionDefinitionUrlType = 'getWorkflowActionDefinitions'
   | 'getWorkflowActionDefinitionById' | 'getWorkflowActionRequiredDefinitions'
@@ -183,6 +183,16 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'DELETE:/workflows/{id}/steps/{id}'
+  },
+  deleteWorkflowStepAndDescendants: {
+    method: 'delete',
+    url: `${WorkflowStepBaseUrl}/:stepId/descendantSteps`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'DELETE:/workflows/{id}/steps/{id}/descendantSteps'
   },
   getWorkflowStepsById: {
     method: 'get',

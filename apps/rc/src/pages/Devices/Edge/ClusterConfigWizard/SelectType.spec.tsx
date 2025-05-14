@@ -302,6 +302,30 @@ describe('SelectType', () => {
       await screen.findByRole('tooltip')
     ).toHaveTextContent('Please complete the LAG, Port & Virtual IP Settings first')
   })
+
+  it('sub-interface card should be hidden when core access FF is ON', async () => {
+    const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
+    mockedOneNodeData.data[0].edgeList.splice(1, 1)
+
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+
+    render(
+      <Provider>
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedOneNodeData.data[0] as EdgeClusterStatus,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <SelectType />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    expect(screen.queryByText('Sub-interface Settings')).toBeNull()
+    expect(screen.getByText('LAG, Port, Sub-Interface & HA Settings')).toBeVisible()
+  })
 })
 
 const checkDataRendered = async () => {
