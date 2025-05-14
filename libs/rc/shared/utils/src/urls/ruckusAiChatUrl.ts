@@ -36,6 +36,11 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/chats/:sessionId',
     newApi: true
   },
+  stopChat: {
+    method: 'PATCH',
+    url: '/ruckusAi/chats/:sessionId/:messageId',
+    newApi: true
+  },
   chart: {
     method: 'get',
     url: '/ruckusAi/chats/:sessionId/charts/:chatId',

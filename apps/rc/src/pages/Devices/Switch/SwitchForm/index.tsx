@@ -32,6 +32,7 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
   Switch,
@@ -40,7 +41,6 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isOperationalSwitch,
   isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
