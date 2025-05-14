@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
@@ -29,6 +29,13 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
+  useEffect(() => {
+    if (data) {
+      form.setFieldValue(['wlan','advancedCustomization','clientIsolationAllowlistEnabled'],
+        (data?.venues?.some(v => v.clientIsolationAllowlistId)))
+    }
+  }, [data])
+  // const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
   const { enableVxLan } = useNetworkVxLanTunnelProfileInfo(data)
 
   const onClientIsolationEnabledChanged = (checked: boolean) => {
