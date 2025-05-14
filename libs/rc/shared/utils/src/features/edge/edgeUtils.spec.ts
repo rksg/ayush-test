@@ -13,6 +13,7 @@ import {
   convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
+  getEdgeModelDisplayText,
   getEdgeServiceHealth,
   getIpWithBitMask,
   getSuggestedIpRange,
@@ -1359,5 +1360,40 @@ describe('interfaceSubnetValidator', () => {
     const current = { ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.1', subnetMask: '255.255.255.0' }
     const allWithoutCurrent = [{ ipMode: EdgeIpModeEnum.STATIC, ip: '1.1.1.2', subnetMask: '255.255.255.0' }]
     await expect(interfaceSubnetValidator(current, allWithoutCurrent)).rejects.toEqual('The ports have overlapping subnets')
+  })
+})
+
+describe('getEdgeModelDisplayText', () => {
+
+  it('should return "Virtual RUCKUS Edge" for "vRUCKUS Edge" model', () => {
+    const result = getEdgeModelDisplayText('vRUCKUS Edge')
+    expect(result).toBe('Virtual RUCKUS Edge')
+  })
+
+  it('should return "RUCKUS Edge <model>" for model starting with "E"', () => {
+    const model = 'E123'
+    const result = getEdgeModelDisplayText(model)
+    expect(result).toBe(`RUCKUS Edge ${model.replace('E', '')}`)
+  })
+
+  it('should return original model for model not starting with "E"', () => {
+    const model = 'ABC123'
+    const result = getEdgeModelDisplayText(model)
+    expect(result).toBe(model)
+  })
+
+  it('should return empty string for undefined model', () => {
+    const result = getEdgeModelDisplayText(undefined)
+    expect(result).toBe('')
+  })
+
+  it('should return empty string for null model', () => {
+    const result = getEdgeModelDisplayText(null)
+    expect(result).toBe('')
+  })
+
+  it('should return empty string for empty string model', () => {
+    const result = getEdgeModelDisplayText('')
+    expect(result).toBe('')
   })
 })
