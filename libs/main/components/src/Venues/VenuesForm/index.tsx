@@ -160,6 +160,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isTagsEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
+  const isSeychellesCountryCodeToggle = useIsSplitOn(Features.ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE)
 
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
@@ -213,10 +214,16 @@ export function VenuesForm (props: VenuesFormProps) {
     }
   },[venueTagList.data])
 
+  const _wifiCountryCodes = wifiCountryCodes.filter(countryCode => {
+    return isSeychellesCountryCodeToggle
+      ? countryCode
+      : countryCode.value !== 'SC'
+  })
+
   useEffect(() => {
     if (data) {
       const defaultCountryCode = data.address?.countryCode
-      ?? wifiCountryCodes.find(code => code.label === data.address.country)?.value
+      ?? _wifiCountryCodes.find(code => code.label === data.address.country)?.value
       ?? ''
       setCountryCode(defaultCountryCode)
 
@@ -542,7 +549,7 @@ export function VenuesForm (props: VenuesFormProps) {
                     name={['address', 'countryCode']}
                   >
                     <Select
-                      options={wifiCountryCodes}
+                      options={_wifiCountryCodes}
                       onChange={(countryCode: string) => setCountryCode(countryCode)}
                       showSearch
                       allowClear
