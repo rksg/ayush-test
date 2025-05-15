@@ -58,9 +58,14 @@ export const reportAccountTierMapping: Partial<Record<AccountTier, ReportType[]>
 }
 
 export const getDataStudioReportName = (
-  reportType: ReportType, accountTier?: AccountTier): string => {
+  reportType: ReportType, accountTier: AccountTier, reportsFoundationTierToggle: boolean
+): string => {
   const reportName = reportTypeDataStudioMapping[reportType]
-  if (!accountTier || !(reportAccountTierMapping[accountTier] ?? []).includes(reportType)) {
+  if (
+    !reportsFoundationTierToggle ||
+    !accountTier ||
+    !(reportAccountTierMapping[accountTier] ?? []).includes(reportType)
+  ) {
     return reportName // default report name i.e. Overview
   }
   // report with account tier as prefix

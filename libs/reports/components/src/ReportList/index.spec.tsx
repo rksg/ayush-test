@@ -119,14 +119,20 @@ describe('ReportList', () => {
     expect(screen.queryByText('Wireless : Traffic by Applications and Access Points')).toBeNull()
   })
 
-  it('should generate correct embedDashboardName for Core tier', () => {
-    expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.CORE))
+  it('should return correct embedDashboardName for Core tier', () => {
+    expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.CORE, true))
       .toBe('Silver_AP Details')
-    expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.CORE)).toBe('Access Points')
+    expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.CORE, true))
+      .toBe('Access Points')
   })
-  it('should generate correct embedDashboardName for non-Core tier', () => {
-    expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.GOLD)).toBe('AP Details')
-    expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.GOLD)).toBe('Access Points')
+  it('should return correct embedDashboardName for non-Core tier', () => {
+    expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.GOLD, true)).toBe('AP Details')
+    expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.GOLD,true))
+      .toBe('Access Points')
 
+  })
+  it('should return correct embedDashboardName where FF toggle is disabled', () => {
+    expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.CORE, false))
+      .toBe('AP Details')
   })
 })
