@@ -5,7 +5,7 @@ import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/u
 import { Provider, store }                                    from '@acx-ui/store'
 import { mockServer, render, screen }                         from '@acx-ui/test-utils'
 
-import { ApWiredClientTable } from './ApWiredClientTable'
+import { ApWiredClientTable } from '.'
 
 const ApWiredClientData = [{
   apId: 'ap_serial_01',

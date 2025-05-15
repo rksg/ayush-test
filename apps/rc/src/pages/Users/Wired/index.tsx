@@ -13,8 +13,7 @@ import {
 import { usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useTenantLink }        from '@acx-ui/react-router-dom'
 import { filterByAccess }       from '@acx-ui/user'
-
-import { ApWiredClientTable } from './ApWiredClientTable'
+import { ApWiredClientTable }   from '@acx-ui/wifi/components'
 
 
 
