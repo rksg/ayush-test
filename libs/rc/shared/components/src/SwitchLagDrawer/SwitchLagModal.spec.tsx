@@ -425,6 +425,14 @@ describe('SwitchLagModal', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
     mockServerQuery()
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          firmware: 'RDR10020b_cd2_2164'
+        }))
+      )
+    )
     render(
       <Provider>
         <SwitchLagModal
@@ -447,7 +455,7 @@ describe('SwitchLagModal', () => {
     })
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
-    expect(await screen.findByText('Force-Up Interface')).toBeInTheDocument()
+    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
@@ -466,10 +474,20 @@ describe('SwitchLagModal', () => {
     expect(await screen.findByText('Force Up')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
+
   it('should reset force up when LAG type changes', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
     mockServerQuery()
+
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          firmware: 'RDR10020b_cd2_2164'
+        }))
+      )
+    )
     render(
       <Provider>
         <SwitchLagModal
@@ -492,7 +510,7 @@ describe('SwitchLagModal', () => {
     })
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
-    expect(await screen.findByText('Force-Up Interface')).toBeInTheDocument()
+    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
@@ -511,5 +529,65 @@ describe('SwitchLagModal', () => {
     expect(await screen.findByText('Force Up')).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Static' }))
+    expect(screen.queryByTestId('force-up-interface')).not.toBeInTheDocument()
+  })
+
+  it('should reset force up when reset action is clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
+    mockServerQuery()
+
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          firmware: 'RDR10020b_cd2_2164'
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <SwitchLagModal
+          visible={true}
+          isEditMode={false}
+          editData={[]}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber' }
+      }
+    )
+
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+
+    await waitFor(async () => {
+      expect(await screen.findByText('Add LAG')).toBeInTheDocument()
+    })
+
+    await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
+    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
+
+    const selector = await screen.findByRole('combobox')
+    await userEvent.click(selector)
+    await userEvent.selectOptions(selector, '1 Gbits per second copper')
+
+    expect(await screen.findByText('1/1/3')).toBeVisible()
+    await userEvent.click(await screen.findByText('1/1/3'))
+
+    const transfer = await screen.findByTestId('targetKeysFormItem')
+    await userEvent.click(await within(transfer).findByRole('button', { name: /Add/i }))
+
+    await userEvent.click(await screen.findByText('1/1/3'))
+    expect(await screen.findByRole('switch')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('switch'))
+
+    expect(await screen.findByText('Force Up')).toBeInTheDocument()
+
+    const resetBtn = await screen.findByRole('button', { name: 'Reset' })
+    await userEvent.click(resetBtn)
+    expect(screen.queryByText('Force Up')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('force-up-port')).toHaveTextContent('--')
   })
 })

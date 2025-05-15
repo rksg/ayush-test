@@ -631,7 +631,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       </Col>
       { isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
         isFirmwareVersionAbove10010gCd1Or10020bCd1(switchDetailHeader?.firmware) &&
-        <Col span={10} flex='300px' offset={5} style={{ padding: '16px', marginTop: '6px' }}>
+        <Col
+          span={10}
+          flex='300px'
+          offset={5}
+          style={{ padding: '16px', marginTop: '6px' }}
+          data-testid='force-up-interface'>
           <Card
             title={$t({ defaultMessage: 'Force-Up Interface' })}
             action={{
@@ -641,7 +646,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           >
             <GridRow style={{ flexFlow: '2' }}>
               <GridCol col={{ span: 24 }}>
-                {forceUpPort !== '' ? forceUpPort : noDataDisplay}
+                <span data-testid='force-up-port'>
+                  {forceUpPort !== '' ? forceUpPort : noDataDisplay}</span>
               </GridCol>
             </GridRow>
             <GridRow>
