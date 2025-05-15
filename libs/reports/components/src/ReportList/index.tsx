@@ -85,11 +85,11 @@ export function ReportList () {
       description: $t({ defaultMessage: 'Details of airtime by access points' }),
       path: 'wirelessAirtime'
     },
-    {
+    ...(!isCore ? [{
       title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
       description: $t({ defaultMessage: 'Details of traffic by applications and access points' }),
       path: 'trafficApplications'
-    }
+    }] : [])
   ]
   /* eslint-enable */
 
