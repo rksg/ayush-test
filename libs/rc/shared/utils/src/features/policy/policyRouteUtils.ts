@@ -35,6 +35,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.SWITCH_ACCESS_CONTROL]: 'accessControls',
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: 'accessControlConsolidation',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
   [PolicyType.WIFI_OPERATOR]: 'wifiOperator',
   [PolicyType.IDENTITY_PROVIDER]: 'identityProvider',

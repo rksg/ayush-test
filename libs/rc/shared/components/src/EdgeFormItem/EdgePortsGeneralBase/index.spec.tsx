@@ -2,17 +2,17 @@ import userEvent        from '@testing-library/user-event'
 import { Form }         from 'antd'
 import _, { cloneDeep } from 'lodash'
 
-import { Features }   from '@acx-ui/feature-toggle'
+import { Features }        from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  EdgeClusterStatus,
+  EdgeGeneralFixtures,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting,
-  getEdgePortDisplayName,
-  EdgeGeneralFixtures,
-  EdgeClusterStatus
+  getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -378,6 +378,30 @@ describe('EditEdge ports - ports general', () => {
       await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
       expect(await screen.findByRole('combobox', { name: 'Port Type' })).toBeDisabled()
     })
+
+    describe('Core Access', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line max-len
+        jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      })
+
+      afterEach(() => {
+        jest.mocked(useIsEdgeFeatureReady).mockReset()
+      })
+
+      it('should show core port and access port fields when FF is on', async () => {
+        render(<MockedComponent />)
+
+        await screen.findByText(/00:0c:29:b6:ad:04/i)
+        // disabled WAN port
+        await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+
+        await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+
+        expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
+        expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+      })
+    })
   })
 })
 
@@ -390,6 +414,15 @@ describe('EditEdge ports', () => {
       <button data-testid='rc-submit'>Submit</button>
     </Form>
   }
+
+  beforeEach(() => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
+  })
 
   it('should correctly display core port info', async () => {
     render(<MockedComponentTestSDLAN />)

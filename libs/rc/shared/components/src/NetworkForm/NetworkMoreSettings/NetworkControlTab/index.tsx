@@ -15,6 +15,7 @@ import {
   WifiCallingSettingContextType,
   ConfigTemplateType,
   PrivacyFeatureName } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import NetworkFormContext                            from '../../NetworkFormContext'
 import { useServicePolicyEnabledWithConfigTemplate } from '../../utils'
@@ -38,11 +39,13 @@ export function NetworkControlTab () {
   const { $t } = useIntl()
   const params = useParams()
   const { data, cloneMode, editMode } = useContext(NetworkFormContext)
+  const { accountTier } = getUserProfile()
 
+  const isCore = isCoreTier(accountTier)
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
-  const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
+  const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL) && !isCore
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })

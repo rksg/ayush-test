@@ -29,15 +29,15 @@ describe('PortalProfile', () => {
   it('renders the component correctly', () => {
     render(<CreatePortalProfile />, { route: { params } })
 
-    expect(screen.getByLabelText('Guest Portal')).toBeInTheDocument()
-    expect(screen.getByLabelText(
+    expect(screen.getByText('Guest Portal')).toBeInTheDocument()
+    expect(screen.getByText(
       'PIN (Personal Identity Network) Portal for Switch')).toBeInTheDocument()
   })
 
   it('should navigate to create page when Next button is clicked', () => {
     render(<CreatePortalProfile />, { route: { params } })
 
-    fireEvent.click(screen.getByLabelText(
+    fireEvent.click(screen.getByText(
       'PIN (Personal Identity Network) Portal for Switch'))
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }))
