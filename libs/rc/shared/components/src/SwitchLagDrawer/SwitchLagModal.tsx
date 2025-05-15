@@ -347,13 +347,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk: async () => {
           form.setFieldValue('ports', undefined)
-
-          if(isSwitchLagForceUpEnabled){
-            form.setFieldValue('forceUp', false)
-            setForceUpPort('')
-            setSelectedPorts([])
-          }
-
           changePortType(value)},
         onCancel: async () => {form.setFieldValue('portsType', currentPortType)}
       })
