@@ -1,7 +1,7 @@
-import { Space, Typography } from 'antd'
-import _, { cloneDeep }      from 'lodash'
-import moment                from 'moment-timezone'
-import { defineMessage }     from 'react-intl'
+import { FormInstance, Space, Typography } from 'antd'
+import _, { cloneDeep }                    from 'lodash'
+import moment                              from 'moment-timezone'
+import { defineMessage }                   from 'react-intl'
 
 import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
@@ -9,12 +9,16 @@ import {
   ClusterHaLoadDistributionEnum,
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  convertEdgeNetworkIfConfigToApiPayload,
   EdgeClusterStatus,
+  EdgePortInfo,
   EdgeLag,
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber,
-  VirtualIpSetting
+  NodeSubInterfaces,
+  VirtualIpSetting,
+  SubInterface
 } from '@acx-ui/rc/utils'
 
 import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
@@ -55,6 +59,21 @@ export const transformFromApiToFormData =
      fallbackSettings.schedule.time = moment(time, 'HH:mm:ss')
    }
 
+   const portSubInterfaces = {} as InterfaceSettingsFormType['portSubInterfaces']
+   const lagSubInterfaces = {} as InterfaceSettingsFormType['lagSubInterfaces']
+
+   apiData?.subInterfaceSettings?.forEach(item => {
+     // eslint-disable-next-line max-len
+     portSubInterfaces[item.serialNumber] = _.reduce(item.ports ?? [], (result, portSubInterface) => {
+       result[portSubInterface.portId] = portSubInterface.subInterfaces
+       return result
+     }, {} as InterfaceSettingsFormType['portSubInterfaces'][EdgeSerialNumber])
+     lagSubInterfaces[item.serialNumber] = _.reduce(item.lags ?? [], (result, lagSubInterface) => {
+       result[lagSubInterface.lagId] = lagSubInterface.subInterfaces
+       return result
+     }, {} as InterfaceSettingsFormType['lagSubInterfaces'][EdgeSerialNumber])
+   })
+
 
    return {
      portSettings,
@@ -63,6 +82,8 @@ export const transformFromApiToFormData =
      vipConfig,
      fallbackSettings: fallbackSettings,
      loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution,
+     portSubInterfaces,
+     lagSubInterfaces,
      multiWanSettings: apiData?.multiWanSettings
    } as InterfaceSettingsFormType
  }
@@ -289,7 +310,9 @@ export const interfaceCompatibilityCheck = (
       if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
-      if (port.corePortEnabled) result.errors.corePorts.value++
+      if (port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[port.portType]) {
         result.errors.portTypes[port.portType] = {
           isError: false, value: 1
@@ -328,7 +351,9 @@ export const lagSettingsCompatibleCheck = (
       // if (!lag.lagEnabled) return
 
       result.errors.ports.value++
-      if (lag.corePortEnabled) result.errors.corePorts.value++
+      if (lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[lag.portType]) {
         result.errors.portTypes[lag.portType] = {
           isError: false, value: 1
@@ -346,16 +371,7 @@ export const lagSettingsCompatibleCheck = (
 
 const processLagSettings = (data: InterfaceSettingsFormType) => {
   const processLagConfig = (lags: EdgeLag[]) => {
-    return lags.map(lag => {
-      let corePortEnabled = lag.corePortEnabled
-      if(lag.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...lag,
-        corePortEnabled
-      }
-    })
+    return lags.map(lag => convertEdgeNetworkIfConfigToApiPayload(lag)) as EdgeLag[]
   }
 
   const lagSettings = []
@@ -370,16 +386,7 @@ const processLagSettings = (data: InterfaceSettingsFormType) => {
 
 const processPortSettings = (data: InterfaceSettingsFormType) => {
   const processPortConfig = (ports: EdgePort[]) => {
-    return ports.map(port => {
-      let corePortEnabled = port.corePortEnabled
-      if(port.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...port,
-        corePortEnabled
-      }
-    })
+    return ports.map(port => convertEdgeNetworkIfConfigToApiPayload(port)) as EdgePort[]
   }
 
   const portSettings = []
@@ -440,9 +447,58 @@ const processHighAvailabilitySettings = (data: InterfaceSettingsFormType) => {
   }
 }
 
+const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
+  return settings.map(subInterface => {
+    if(subInterface.id?.startsWith('new_')) {
+      delete subInterface.id
+    }
+    return subInterface
+  })
+}
+
+const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
+  const subInterfaceSettings = [] as NodeSubInterfaces[]
+  const nodeLagIdsMap = _.reduce(data.lagSettings, (result, lagSetting) => {
+    result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
+    return result
+  }, {} as { [serialNumber: string]: number[] })
+  Object.entries(data.lagSubInterfaces ?? {}).forEach(([serialNumber, lagSubInterfaces = {}]) => {
+    subInterfaceSettings.push({
+      serialNumber,
+      lags: Object.entries(lagSubInterfaces).filter(([lagId]) =>
+        nodeLagIdsMap[serialNumber].includes(Number(lagId)))
+        .map(([lagId, subInterfaces]) => ({
+          lagId: Number(lagId),
+          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        }))
+    } as NodeSubInterfaces)
+  })
+  Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
+    // eslint-disable-next-line max-len
+    const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
+    if(currentSubInterfaceItem) {
+      // eslint-disable-next-line max-len
+      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
+        portId: portId,
+        subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+      }))
+    } else {
+      subInterfaceSettings.push({
+        serialNumber,
+        ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
+          portId: portId,
+          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        }))
+      } as NodeSubInterfaces)
+    }
+  })
+  return subInterfaceSettings
+}
+
 export const transformFromFormToApiData = (
   data: InterfaceSettingsFormType,
-  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum,
+  isEdgeCoreAccessSeparationReady?: boolean
 ): ClusterNetworkSettings => {
   const highAvailabilitySettings = processHighAvailabilitySettings(data)
   const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
@@ -458,6 +514,9 @@ export const transformFromFormToApiData = (
     ...(shouldPatchHaSetting ? {
       highAvailabilitySettings
     } : {}),
+    ...(isEdgeCoreAccessSeparationReady ?
+      { subInterfaceSettings: processSubInterfaceSettings(data) } :
+      {}),
     multiWanSettings: data.multiWanSettings
   }
 }
@@ -503,4 +562,50 @@ export const interfaceNameComparator =
     }
   }
   return 0
+}
+
+// eslint-disable-next-line max-len
+export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<EdgeSerialNumber, EdgePortInfo[]> => {
+  // eslint-disable-next-line max-len
+  const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings'] ?? []
+  // eslint-disable-next-line max-len
+  const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings'] ?? []
+
+  const result =_.reduce(Object.keys(portSettings), (acc, serialNumber) => {
+    const currentLagSettings = lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+    // eslint-disable-next-line max-len
+    const currentLagMembers = currentLagSettings?.flatMap(item => item.lagMembers.map(member => member.portId))
+    const currentPortInfo = Object.values(portSettings[serialNumber]).map(item => ({
+      serialNumber,
+      id: item[0].id,
+      portName: item[0].interfaceName,
+      ipMode: item[0].ipMode,
+      ip: item[0].ip,
+      mac: item[0].mac,
+      subnet: item[0].subnet,
+      portType: item[0].portType,
+      isCorePort: item[0].corePortEnabled,
+      isLag: false,
+      isLagMember: currentLagMembers?.includes(item[0].id) ?? false,
+      portEnabled: item[0].enabled
+    })) as EdgePortInfo[]
+    const currentLagInfo = (currentLagSettings?.map(item => ({
+      serialNumber,
+      id: item.id + '',
+      portName: `Lag${item.id}`,
+      ipMode: item.ipMode,
+      ip: item.ip,
+      mac: '',
+      subnet: item.subnet,
+      portType: item.portType,
+      isCorePort: item.corePortEnabled,
+      isLag: true,
+      isLagMember: false,
+      portEnabled: item.lagEnabled
+    })) ?? []) as EdgePortInfo[]
+    acc[serialNumber] = [...currentPortInfo, ...currentLagInfo]
+    return acc
+  }, {} as Record<EdgeSerialNumber, EdgePortInfo[]>)
+
+  return result
 }

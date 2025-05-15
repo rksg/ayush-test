@@ -26,9 +26,6 @@ jest.mock('@acx-ui/user', () => ({
   hasRoles: jest.fn()
 }))
 const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
 describe('administrators delegation list', () => {
   let params: { tenantId: string }
 

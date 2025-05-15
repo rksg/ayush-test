@@ -4,6 +4,7 @@ import _         from 'lodash'
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import {
   ClusterHighAvailabilityModeEnum,
+  ClusterNetworkSettings,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLag,
@@ -30,7 +31,8 @@ import {
   interfaceNameComparator,
   lagSettingsCompatibleCheck,
   transformFromApiToFormData,
-  transformFromFormToApiData } from './utils'
+  transformFromFormToApiData
+} from './utils'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
@@ -53,8 +55,142 @@ jest.mock('antd', () => {
   return { ...antdComponents }
 })
 
+const mockSubInterfaceFormData = {
+  lagSubInterfaces: {
+    'serialNumber-1': {
+      0: [
+        {
+          id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+          ip: '1.1.3.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    },
+    'serialNumber-2': {
+      1: [
+        {
+          id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+          ip: '',
+          ipMode: 'DHCP',
+          portType: 'LAN',
+          subnet: '',
+          vlan: 3
+        }
+      ]
+    }
+  },
+  portSubInterfaces: {
+    'serialNumber-1': {
+      port_id_0: [
+        {
+          id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+          ip: '1.1.5.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 123
+        }
+      ],
+      port_id_1: []
+    },
+    'serialNumber-2': {
+      port_id_0: [],
+      port_id_1: [
+        {
+          id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+          ip: '1.1.2.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    }
+  }
+}
+
+const expectedSubInterfaceData = [
+  {
+    lags: [
+      {
+        lagId: 0,
+        subInterfaces: [
+          {
+            id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+            ip: '1.1.3.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1
+          }
+        ]
+      }
+    ],
+    ports: [
+      {
+        portId: 'port_id_0',
+        subInterfaces: [
+          {
+            id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+            ip: '1.1.5.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 123
+          }
+        ]
+      },
+      {
+        portId: 'port_id_1',
+        subInterfaces: []
+      }
+    ],
+    serialNumber: 'serialNumber-1'
+  },
+  {
+    lags: [
+      {
+        lagId: 1,
+        subInterfaces: [
+          {
+            id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+            ip: '',
+            ipMode: 'DHCP',
+            portType: 'LAN',
+            subnet: '',
+            vlan: 3
+          }
+        ]
+      }
+    ],
+    ports: [
+      {
+        portId: 'port_id_0',
+        subInterfaces: []
+      },
+      {
+        portId: 'port_id_1',
+        subInterfaces: [
+          {
+            id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+            ip: '1.1.2.1',
+            ipMode: 'STATIC',
+            portType: 'LAN',
+            subnet: '255.255.255.0',
+            vlan: 1
+          }
+        ]
+      }
+    ],
+    serialNumber: 'serialNumber-2'
+  }
+]
+
 describe('Interface Compatibility Check', () => {
-  it('when node is missing in port setting', async () => {
+  it('when node is missing from port setting', async () => {
     const mockData = _.cloneDeep(mockNoLagData)
     const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
       nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
@@ -68,8 +204,8 @@ describe('Interface Compatibility Check', () => {
     n2p1!.portType = EdgePortTypeEnum.CLUSTER
     n2p1!.ipMode = EdgeIpModeEnum.DHCP
     const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-      nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
-    n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+    n2p2!.portType = EdgePortTypeEnum.LAN
     n2p2!.corePortEnabled = true
 
     const result = interfaceCompatibilityCheck(
@@ -97,7 +233,8 @@ describe('Interface Compatibility Check', () => {
       n2p1!.portType = EdgePortTypeEnum.CLUSTER
       n2p1!.ipMode = EdgeIpModeEnum.DHCP
       const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+        nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n2p2!.portType = EdgePortTypeEnum.LAN
       n2p2!.ipMode = EdgeIpModeEnum.DHCP
       n2p2!.corePortEnabled = true
 
@@ -314,6 +451,34 @@ describe('Interface Compatibility Check', () => {
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(1)
     })
+
+    it('when first node core port, second node core port setting is invalid', async () => {
+      const mockData = _.cloneDeep(mockNoLagData)
+      const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n1p1!.portType = EdgePortTypeEnum.LAN
+      n1p1!.corePortEnabled = true
+      const n1p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+      n1p2!.portType = EdgePortTypeEnum.CLUSTER
+      const n2p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p1!.portType = EdgePortTypeEnum.CLUSTER
+      n2p1!.ipMode = EdgeIpModeEnum.DHCP
+      const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p2!.ipMode = EdgeIpModeEnum.DHCP
+      n2p2!.corePortEnabled = true
+
+      const result = interfaceCompatibilityCheck(
+        mockData.portSettings, mockData.lagSettings, nodeList)
+
+      expect(result.isError).toBe(true)
+      expect(result.portTypes).toBe(true)
+      expect(result.corePorts).toBe(false)
+      expect(result.ports).toBe(true)
+
+    })
   })
 })
 
@@ -452,7 +617,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -506,7 +671,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -556,8 +721,53 @@ describe('interfaceNameComparator', () => {
 })
 
 describe('data transformer', () => {
+  const mockGivenData = _.cloneDeep(mockClusterConfigWizardData)
+
+  // eslint-disable-next-line max-len
+  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings']) =>
+    _.cloneDeep(lagSettings)
+      .map(item => ({
+        ...item,
+        lags: item.lags.map(lag => ({
+          ...lag,
+          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled,
+          ...(
+            lag.accessPortEnabled !== undefined ?
+              {
+                accessPortEnabled: lag.portType === EdgePortTypeEnum.WAN ?
+                  false :
+                  lag.accessPortEnabled
+              } : {}
+          ),
+          natEnabled: lag.portType === EdgePortTypeEnum.WAN ? lag.natEnabled : false,
+          ipMode: lag.portType === EdgePortTypeEnum.WAN ? lag.ipMode : EdgeIpModeEnum.STATIC,
+          gateway: !lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN ? '' : lag.gateway
+        }))
+      }))
+
+  const getExpectedPorts = (portSettings: InterfaceSettingsFormType['portSettings']) => {
+    return Object.entries(portSettings).map(([serialNumber, ports]) => ({
+      serialNumber,
+      ports: Object.values(ports).flat().map(port =>
+        ({
+          ...port,
+          corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled,
+          ...(
+            port.accessPortEnabled !== undefined ?
+              {
+                accessPortEnabled: port.portType === EdgePortTypeEnum.WAN ?
+                  false :
+                  port.accessPortEnabled
+              } : {}
+          )
+        })
+      )
+    }))
+  }
+
   it('should transform data from form data to API data (AA)', () => {
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const mockData = _.cloneDeep(mockGivenData)
+
     // eslint-disable-next-line max-len
     mockData.portSettings[mockEdgeClusterList.data[0].edgeList[0].serialNumber]['port1'][0].corePortEnabled = true
     const result = transformFromFormToApiData(
@@ -565,43 +775,36 @@ describe('data transformer', () => {
       ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
     )
 
+    const expectLags = getExpectLags(mockData.lagSettings)
+    const expectPorts = getExpectedPorts(mockData.portSettings)
+
     expect(result).toStrictEqual({
-      lagSettings: mockData.lagSettings,
-      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
-        serialNumber,
-        ports: Object.values(ports).flat().map(port =>
-          ({
-            ...port,
-            corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled
-          })
-        )
-      })),
+      lagSettings: expectLags,
+      portSettings: expectPorts,
       multiWanSettings: undefined
     })
   })
 
   it('should transform data from form data to API data (AB)', () => {
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const mockData = _.cloneDeep(mockGivenData)
+
     // eslint-disable-next-line max-len
     mockData.lagSettings[0].lags[0].portType = EdgePortTypeEnum.WAN
     mockData.lagSettings[0].lags[0].corePortEnabled = true
+    mockData.portSubInterfaces = mockSubInterfaceFormData.portSubInterfaces
+    mockData.lagSubInterfaces = mockSubInterfaceFormData.lagSubInterfaces
     const result = transformFromFormToApiData(
       mockData as unknown as InterfaceSettingsFormType,
-      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      true
     )
 
+    const expectLags = getExpectLags(mockData.lagSettings)
+    const expectPorts = getExpectedPorts(mockData.portSettings)
+
     expect(result).toStrictEqual({
-      lagSettings: mockData.lagSettings.map(item => ({
-        ...item,
-        lags: item.lags.map(lag => ({
-          ...lag,
-          corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled
-        }))
-      })),
-      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
-        serialNumber,
-        ports: Object.values(ports).flat()
-      })),
+      lagSettings: expectLags,
+      portSettings: expectPorts,
       multiWanSettings: undefined,
       virtualIpSettings: mockData.vipConfig?.map(item => {
         if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
@@ -610,7 +813,8 @@ describe('data transformer', () => {
           timeoutSeconds: mockData.timeout,
           ports: item.interfaces
         }
-      }).filter(item => Boolean(item))
+      }).filter(item => Boolean(item)),
+      subInterfaceSettings: expectedSubInterfaceData
     })
   })
 })

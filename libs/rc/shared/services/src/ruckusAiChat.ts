@@ -59,6 +59,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
+    stopChat: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.stopChat, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
+    }),
     getCanvas: build.query<Canvas[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvas)
@@ -144,6 +153,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       }
     }),
+    streamChatsAi: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ payload, customHeaders }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.streamChats, undefined, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     chatChart: build.query<WidgetListData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chart, params)
@@ -161,7 +179,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       providesTags: [{ type: 'Widget', id: 'DATA' }]
     }),
-    createWidget: build.mutation<{ id: string, name: string }, RequestPayload>({
+    createWidget: build.mutation<
+    { id: string, name: string, defaultTimeRange: string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
         return {
@@ -227,6 +246,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
+    }),
+    patchDashboard: build.mutation<DashboardInfo, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.patchDashboard, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Dashboard', id: 'LIST' }]
     })
   })
 })
@@ -247,8 +275,10 @@ export const {
   usePatchCanvasMutation,
   useCreateCanvasMutation,
   useChatAiMutation,
+  useStreamChatsAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
+  useStopChatMutation,
   useChatChartQuery,
   useGetWidgetQuery,
   useCreateWidgetMutation,
@@ -257,5 +287,6 @@ export const {
   useUpdateDashboardsMutation,
   useReorderDashboardsMutation,
   useRemoveDashboardsMutation,
+  usePatchDashboardMutation,
   useSendFeedbackMutation
 } = ruckusAiChatApi

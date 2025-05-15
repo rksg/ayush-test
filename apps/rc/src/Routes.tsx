@@ -90,6 +90,7 @@ import EditEdge                                     from './pages/Devices/Edge/E
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import { IotController }                            from './pages/Devices/IotController'
+import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
 import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
@@ -390,6 +391,9 @@ function DeviceRoutes () {
       <Route
         path='devices/iotController/:iotId/:action'
         element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/details/:activeTab'
+        element={<IotControllerDetails />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
@@ -1115,6 +1119,15 @@ function PolicyRoutes () {
         element={<AccessControlTable />}
       />
       {isSwitchMacAclEnabled && <>
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, SwitchScopes.CREATE]}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
         <Route
           path='policies/accessControls/create'
           element={

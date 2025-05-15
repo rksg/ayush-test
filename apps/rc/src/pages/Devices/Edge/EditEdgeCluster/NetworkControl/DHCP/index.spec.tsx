@@ -1,14 +1,15 @@
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { Store } from 'antd/es/form/interface'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { Store }     from 'antd/es/form/interface'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { Button, StepsForm }                                            from '@acx-ui/components'
-import { useIsEdgeFeatureReady }                                        from '@acx-ui/rc/components'
-import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                          from '@acx-ui/test-utils'
+import { Button, StepsForm }                                                                              from '@acx-ui/components'
+import { useIsEdgeFeatureReady }                                                                          from '@acx-ui/rc/components'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgePinFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                            from '@acx-ui/test-utils'
 
 import { DhcpFormItem, useHandleApplyDhcp } from '.'
 
@@ -25,6 +26,7 @@ const mockedDeactivateDhcpApi = jest.fn()
 
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 const { mockPinStatsList } = EdgePinFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const MockComponentForHookTest = ({ formValues }: { formValues: Store }) => {
   const [form] = Form.useForm()
@@ -135,6 +137,46 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockPinStatsList))
+      )
+    )
+
+    const props = {
+      currentClusterStatus: {
+        clusterId: 'mockClusterId',
+        venueId: 'mockVenueId'
+      },
+      setEdgeFeatureName: jest.fn()
+    }
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <DhcpFormItem {...props}/>
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
+    const toggleBtn = screen.getByRole('switch', { name: 'DHCP Service' })
+    await waitFor(() => expect(toggleBtn).toBeDisabled())
+  })
+
+  it('switch should be disabled when there is Sdlan configured', async () => {
+    const mockedSdlanData = cloneDeep(mockedMvSdLanDataList[0])
+    mockedSdlanData.edgeClusterId = 'mockClusterId'
+
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [mockedSdlanData] }))
       )
     )
 
