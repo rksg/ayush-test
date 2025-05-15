@@ -36,5 +36,11 @@ export const IotUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/iots/diagnosisCommands',
     newApi: true,
     opsApi: 'PATCH:/iots/diagnosisCommands'
+  },
+  getIotControllerDashboard: {
+    method: 'get',
+    url: '/iotControllers/:iotId/dashboard',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
   }
 }

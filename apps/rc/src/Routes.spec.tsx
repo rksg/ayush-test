@@ -114,6 +114,14 @@ jest.mock('./pages/Services/Portal/PortalTable', () => () => {
   return <div data-testid='PortalTable' />
 })
 
+jest.mock('./pages/Services/PortalProfile/create', () => () => {
+  return <div data-testid='CreatePortalProfile' />
+})
+
+jest.mock('./pages/Services/PortalProfile', () => () => {
+  return <div data-testid='PortalProfile' />
+})
+
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
   return <div data-testid='NetworkSegAuthTable' />
 })
@@ -188,6 +196,14 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
 
 jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerDetails', () => ({
+  IotControllerDetails: () => <div data-testid='IotControllerDetails' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerForm', () => ({
+  IotControllerForm: () => <div data-testid='IotControllerForm' />
 }))
 
 jest.mock('./pages/Timeline', () => () => {

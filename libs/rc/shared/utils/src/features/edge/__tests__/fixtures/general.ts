@@ -239,7 +239,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 1',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-1',
           ip: '0.0.0.0',
           ports: '3',
@@ -258,7 +258,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 2',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 2',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
           ports: '3',
@@ -290,7 +290,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 4',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
           ports: '80',
@@ -305,7 +305,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 5',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-5',
           ip: '0.0.0.0',
           ports: '80',
@@ -330,7 +330,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 4',
           deviceStatus: '1_01_NeverContactedCloud',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
           ports: '2',
@@ -355,7 +355,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 6',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-6',
           ip: '0.0.0.0',
           ports: '80',
@@ -369,7 +369,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 7',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-7',
           ip: '0.0.0.0',
           ports: '80',
@@ -395,7 +395,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 8',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-8',
           ip: '0.0.0.0',
           ports: '80',
@@ -410,7 +410,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 9',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-9',
           ip: '0.0.0.0',
           ports: '80',
@@ -490,7 +490,8 @@ export const mockedHaNetworkSettings = {
       gateway: '',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -508,7 +509,8 @@ export const mockedHaNetworkSettings = {
       gateway: '127.1.1.0',
       corePortEnabled: false,
       natEnabled: false,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }],
   portSettings: [{
@@ -526,7 +528,8 @@ export const mockedHaNetworkSettings = {
       gateway: '1.1.1.1',
       corePortEnabled: false,
       interfaceName: 'port1',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -541,7 +544,8 @@ export const mockedHaNetworkSettings = {
       gateway: '2.2.2.1',
       corePortEnabled: true,
       interfaceName: 'port2',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -557,7 +561,8 @@ export const mockedHaNetworkSettings = {
       subnet: '',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -571,7 +576,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      natPools: []
     }]
   }],
   virtualIpSettings: [{
@@ -594,5 +600,85 @@ export const mockedHaNetworkSettings = {
       }
     },
     loadDistribution: ClusterHaLoadDistributionEnum.AP_GROUP
-  }
-} as ClusterNetworkSettings
+  },
+  subInterfaceSettings: [
+    {
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      ports: [
+        {
+          portId: 'port_id_0',
+          interfaceName: 'port1',
+          subInterfaces: [
+            {
+              id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+              vlan: 123,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.5.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        },
+        {
+          portId: 'port_id_1',
+          interfaceName: 'port2',
+          subInterfaces: []
+        }
+      ],
+      lags: [
+        {
+          lagId: 0,
+          subInterfaces: [
+            {
+              id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+              vlan: 1,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.3.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+      ports: [
+        {
+          portId: 'port_id_0',
+          interfaceName: 'port1',
+          subInterfaces: []
+        },
+        {
+          portId: 'port_id_1',
+          interfaceName: 'port2',
+          subInterfaces: [
+            {
+              id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+              vlan: 1,
+              portType: 'LAN',
+              ipMode: 'STATIC',
+              ip: '1.1.2.1',
+              subnet: '255.255.255.0'
+            }
+          ]
+        }
+      ],
+      lags: [
+        {
+          lagId: 1,
+          subInterfaces: [
+            {
+              id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+              vlan: 3,
+              portType: 'LAN',
+              ipMode: 'DHCP',
+              ip: '',
+              subnet: ''
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} as unknown as ClusterNetworkSettings

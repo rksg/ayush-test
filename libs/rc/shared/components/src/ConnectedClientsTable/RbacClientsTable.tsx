@@ -25,8 +25,7 @@ import {
   ClientInfo,
   getClientHealthClass,
   ClientUrlsInfo,
-  sortProp,
-  defaultSort
+  transformByte
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
@@ -136,7 +135,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'hostname',
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
-      sorter: { compare: sortProp('hostname', defaultSort) },
+      sorter: true,
       fixed: 'left',
       defaultSortOrder: 'ascend',
       render: (_, row) => {
@@ -154,7 +153,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       title: intl.$t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       align: 'center',
-      sorter: { compare: sortProp('osType', defaultSort) },
+      sorter: true,
       render: (_, { osType }) => {
         return <UI.IconContainer>
           <Tooltip title={osType}>
@@ -169,7 +168,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'signalStatus.health',
       align: 'center',
-      sorter: { compare: sortProp('signalStatus.health', defaultSort) },
+      sorter: true,
       filterMultiple: false,
       filterValueNullable: false,
       filterable: statusFilterOptions,
@@ -190,7 +189,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'macAddress',
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'macAddress',
-      sorter: { compare: sortProp('macAddress', defaultSort) },
+      sorter: true,
       disable: true,
       render: (_, { macAddress }) => {
         const mac = macAddress || undefined
@@ -203,7 +202,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'mldMacAddress',
       title: intl.$t({ defaultMessage: 'MLD MAC Address' }),
       dataIndex: 'mldMacAddress',
-      sorter: { compare: sortProp('mldMacAddress', defaultSort) },
+      sorter: true,
       disable: false,
       show: false,
       render: (_: React.ReactNode, row: ClientInfo) => {
@@ -219,7 +218,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'ipAddress',
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
-      sorter: { compare: sortProp('ipAddress', defaultSort) },
+      sorter: true,
       render: (_, { ipAddress }) => {
         return <Tooltip title={ipAddress}>
           {ipAddress || noDataDisplay}
@@ -230,7 +229,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'username',
       title: intl.$t({ defaultMessage: 'Username' }),
       dataIndex: 'username',
-      sorter: { compare: sortProp('username', defaultSort) },
+      sorter: true,
       render: (_, row) => {
         return AsyncLoadingInColumn(row, () => {
           return <Tooltip title={row.username}>
@@ -243,7 +242,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'identityId',
       title: intl.$t({ defaultMessage: 'Identity' }),
       dataIndex: 'identityId',
-      sorter: { compare: sortProp('identityId', defaultSort) },
+      sorter: true,
       render: (_: React.ReactNode, row: ClientInfo) => {
         return <IdentityDetailsLink
           personaId={row.identityId}
@@ -256,7 +255,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'venueInformation.id',
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueInformation.name',
-      sorter: { compare: sortProp('venueInformation.id', defaultSort) },
+      sorter: true,
       filterKey: 'venueInformation.id',
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
       render: (_: React.ReactNode, row: ClientInfo) => {
@@ -275,7 +274,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'apInformation.serialNumber',
       title: intl.$t({ defaultMessage: 'AP' }),
       dataIndex: 'apInformation.name',
-      sorter: { compare: sortProp('apInformation.serialNumber', defaultSort) },
+      sorter: true,
       filterKey: 'apInformation.serialNumber',
       filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
       render: (_, row) => {
@@ -316,7 +315,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.ssid',
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'networkInformation.ssid',
-      sorter: { compare: sortProp('networkInformation.ssid', defaultSort) },
+      sorter: true,
       filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
       render: (_: React.ReactNode, row: ClientInfo) => {
         return AsyncLoadingInColumn(row, () => {
@@ -337,7 +336,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.type',
       title: intl.$t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkInformation.type',
-      sorter: { compare: sortProp('networkInformation.type', defaultSort) },
+      sorter: true,
       filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: intl.$t(value) }}),
       render: (_: React.ReactNode, row: ClientInfo) => {
         return AsyncLoadingInColumn(row, () => {
@@ -349,7 +348,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'connectedTime',
       title: intl.$t({ defaultMessage: 'Time Connected' }),
       dataIndex: 'connectedTime',
-      sorter: { compare: sortProp('connectedTime', defaultSort) },
+      sorter: true,
       render: (_, row) => {
         return row.connectedTimeString
       }
@@ -358,7 +357,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'networkInformation.vlan',
-      sorter: { compare: sortProp('networkInformation.vlan', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, { networkInformation }) => networkInformation?.vlan || noDataDisplay
@@ -367,7 +366,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.vni',
       title: intl.$t({ defaultMessage: 'VNI' }),
       dataIndex: 'networkInformation.vni',
-      sorter: { compare: sortProp('networkInformation.vni', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {
@@ -380,7 +379,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'deviceType',
       title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
-      sorter: { compare: sortProp('deviceType', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {
@@ -397,7 +396,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'modelName',
       title: intl.$t({ defaultMessage: 'Model Name' }),
       dataIndex: 'modelName',
-      sorter: { compare: sortProp('modelName', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, { modelName }) => modelName || noDataDisplay
     },
@@ -405,11 +404,13 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'trafficStatus.totalTraffic',
       title: intl.$t({ defaultMessage: 'Traffic (Session)' }),
       dataIndex: 'trafficStatus.totalTraffic',
-      sorter: { compare: sortProp('trafficStatus.totalTraffic', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, row) => {
         return AsyncLoadingInColumn(row, () => {
-          return row.trafficStatus?.totalTraffic || noDataDisplay
+          return row.trafficStatus?.totalTraffic
+            ? transformByte(row.trafficStatus.totalTraffic)
+            : noDataDisplay
         })
       }
     },
@@ -417,23 +418,27 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'trafficStatus.trafficToClient',
       title: intl.$t({ defaultMessage: 'Traffic To Client' }),
       dataIndex: 'trafficStatus.trafficToClient',
-      sorter: { compare: sortProp('trafficStatus.trafficToClient', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
-      render: (_, { trafficStatus }) => trafficStatus?.trafficToClient || noDataDisplay
+      render: (_, { trafficStatus }) => trafficStatus?.trafficToClient
+        ? transformByte(trafficStatus.trafficToClient)
+        : noDataDisplay
     },
     {
       key: 'trafficStatus.trafficFromClient',
       title: intl.$t({ defaultMessage: 'Traffic From Client' }),
       dataIndex: 'trafficStatus.trafficFromClient',
-      sorter: { compare: sortProp('trafficStatus.trafficFromClient', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
-      render: (_, { trafficStatus }) => trafficStatus?.trafficFromClient || noDataDisplay
+      render: (_, { trafficStatus }) => trafficStatus?.trafficFromClient
+        ? transformByte(trafficStatus?.trafficFromClient)
+        : noDataDisplay
     },
     {
       key: 'signalStatus.rssi',
       title: intl.$t({ defaultMessage: 'RSSI' }),
       dataIndex: 'signalStatus.rssi',
-      sorter: { compare: sortProp('signalStatus.rssi', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {
@@ -446,7 +451,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'signalStatus.snr',
       title: intl.$t({ defaultMessage: 'SNR' }),
       dataIndex: 'signalStatus.snr',
-      sorter: { compare: sortProp('signalStatus.snr', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {
@@ -459,7 +464,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'radioStatus.type',
       title: intl.$t({ defaultMessage: 'Radio Type' }),
       dataIndex: 'radioStatus.type',
-      sorter: { compare: sortProp('radioStatus.type', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, row) => {
         return AsyncLoadingInColumn(row, () => {
@@ -471,7 +476,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'cpeMacAddress',
       title: intl.$t({ defaultMessage: 'CPE MAC Address' }),
       dataIndex: 'cpeMacAddress',
-      sorter: { compare: sortProp('cpeMacAddress', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, row) => {
         return AsyncLoadingInColumn(row, () => {
@@ -483,7 +488,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.authenticationMethod',
       title: intl.$t({ defaultMessage: 'Auth Method' }),
       dataIndex: 'networkInformation.authenticationMethod',
-      sorter: { compare: sortProp('networkInformation.authenticationMethod', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, { networkInformation }) => networkInformation?.authenticationMethod || noDataDisplay
     },
@@ -491,7 +496,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'authenticationStatus',
       title: intl.$t({ defaultMessage: 'Auth Status' }),
       dataIndex: 'authenticationStatus',
-      sorter: { compare: sortProp('authenticationStatus', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, { authenticationStatus }) => {
         let statusText = noDataDisplay as string
@@ -509,7 +514,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'networkInformation.encryptionMethod',
       title: intl.$t({ defaultMessage: 'Encryption' }),
       dataIndex: 'networkInformation.encryptionMethod',
-      sorter: { compare: sortProp('networkInformation.encryptionMethod', defaultSort) },
+      sorter: true,
       show: !!showAllColumns,
       render: (_, { networkInformation }) => networkInformation?.encryptionMethod || noDataDisplay
     },
@@ -517,7 +522,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'trafficStatus.packetsToClient',
       title: intl.$t({ defaultMessage: 'Packets To Client' }),
       dataIndex: 'trafficStatus.packetsToClient',
-      sorter: { compare: sortProp('trafficStatus.packetsToClient', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, { trafficStatus }) => trafficStatus?.packetsToClient || noDataDisplay
@@ -526,7 +531,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'trafficStatus.packetsFromClient',
       title: intl.$t({ defaultMessage: 'Packets From Client' }),
       dataIndex: 'trafficStatus.packetsFromClient',
-      sorter: { compare: sortProp('trafficStatus.packetsFromClient', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, { trafficStatus }) => trafficStatus?.packetsFromClient || noDataDisplay
@@ -535,7 +540,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'trafficStatus.framesDropped',
       title: intl.$t({ defaultMessage: 'Packets Dropped' }),
       dataIndex: 'trafficStatus.framesDropped',
-      sorter: { compare: sortProp('trafficStatus.framesDropped', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {
@@ -548,7 +553,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       key: 'radioStatus.channel',
       title: intl.$t({ defaultMessage: 'RF Channel' }),
       dataIndex: 'radioStatus.channel',
-      sorter: { compare: sortProp('radioStatus.channel', defaultSort) },
+      sorter: true,
       align: 'center',
       show: !!showAllColumns,
       render: (_, row) => {

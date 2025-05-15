@@ -13,9 +13,9 @@ import {
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
-  isOperationalSwitch,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,

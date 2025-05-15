@@ -13,13 +13,15 @@ import ServiceCatalog from '.'
 
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={props.onClick}/>,
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
       {props.featureName}
     </div>,
+  EdgeCompatibilityType: {
+    ALONE: 'ALONE'
+  },
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))

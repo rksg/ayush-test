@@ -19,6 +19,7 @@ import {
   isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -26,11 +27,14 @@ import * as UI from './styledComponents'
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
@@ -119,17 +123,24 @@ export default function SelectServiceForm () {
     {
       title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
-        {
-          type: ServiceType.WEBAUTH_SWITCH,
-          categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
-        },
-        {
+        ...(isPortalProfileEnabled ? [
+          {
+            type: ServiceType.PORTAL_PROFILE,
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
+          }
+        ] : [
+          { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+          {
+            type: ServiceType.WEBAUTH_SWITCH,
+            categories: [RadioCardCategory.SWITCH],
+            disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
+          }
+        ]),
+        ...(isCore ? [] : [{
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],
           disabled: !propertyManagementEnabled
-        }
+        }])
       ]
     }
   ]
