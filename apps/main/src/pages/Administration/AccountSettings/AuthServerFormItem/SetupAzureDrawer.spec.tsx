@@ -28,9 +28,6 @@ const tenantAuthenticationData =
 const metadataText = '<note><to>Me</to><from>You</from><heading>Reminder</heading><body></body></note>'
 
 const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
 
 describe('Setup Azure Drawer', () => {
   const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }

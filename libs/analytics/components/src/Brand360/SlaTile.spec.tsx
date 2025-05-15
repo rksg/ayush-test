@@ -1,6 +1,8 @@
-import { Settings }                  from '@acx-ui/analytics/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { Settings }                              from '@acx-ui/analytics/utils'
+import { Provider,rbacApiURL }                   from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
 import '@testing-library/jest-dom'
 import {
   getUserProfile,
@@ -36,6 +38,14 @@ jest.mock('./Chart', () => ({
 }))
 
 describe('SlaTile', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.json(
+        [{ key: 'brand-name', value: 'testBrand' }]
+      )))
+    )
+  })
+
   const chartKeys = [
     'incident' as const,
     'compliance' as const,
