@@ -27,7 +27,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -37,6 +38,8 @@ const defaultPayload = {
 
 export default function MyServices () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
@@ -173,9 +176,9 @@ export default function MyServices () {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
-        skip: !propertyManagementEnabled
+        skip: !propertyManagementEnabled || isCore
       }).data?.totalCount,
-      disabled: !propertyManagementEnabled
+      disabled: !propertyManagementEnabled || isCore
     }
   ]
 
