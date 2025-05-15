@@ -3,10 +3,10 @@ import { useRef } from 'react'
 import { Form }                   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { NotificationSettings }   from '@acx-ui/analytics/components'
-import { Drawer, Button }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { getUserProfile }         from '@acx-ui/user'
+import { NotificationSettings }       from '@acx-ui/analytics/components'
+import { Drawer, Button }             from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { R1NotificationSettings } from './R1NotificationSettings'
 import * as UI                    from './styledComponents'
@@ -33,6 +33,7 @@ export const AINotificationDrawer = ({
 }) => {
   const { $t } = useIntl()
   const user = getUserProfile()
+  const isCore = isCoreTier(user.accountTier)
   const close = () => setShowDrawer(false)
   const apply = useRef(close)
   const applyR1 = useRef(close)
@@ -74,10 +75,11 @@ export const AINotificationDrawer = ({
           tenantId={user.profile.tenantId}
           apply={applyR1}
         />}
-        <NotificationSettings
+        { !isCore && <NotificationSettings
           tenantId={user.profile.tenantId}
           apply={apply}
         />
+        }
       </Form>
     </UI.IncidentNotificationWrapper>
   </Drawer>

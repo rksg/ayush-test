@@ -14,9 +14,9 @@ Object {
 exports[`CloudStorageForm should save on apply click for edit 1`] = `
 Object {
   "azureAccountName": "some name",
-  "azureConnectionType": "azureFiles",
-  "azureShareName": "share name",
-  "azureStoragePath": "storage/path",
+  "azureConnectionType": "azureBlob",
+  "azureContainerName": "name",
+  "azureStoragePath": "some/path",
   "connectionType": "azure",
   "id": "id",
 }

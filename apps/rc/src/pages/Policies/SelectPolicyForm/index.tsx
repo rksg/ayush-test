@@ -33,10 +33,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes, WifiScopes }                    from '@acx-ui/types'
-import { hasPermission }                               from '@acx-ui/user'
+import { getUserProfile, hasPermission, isCoreTier }   from '@acx-ui/user'
 
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const params = useParams()
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
@@ -46,7 +48,7 @@ export default function SelectPolicyForm () {
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
-  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -55,7 +57,7 @@ export default function SelectPolicyForm () {
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
+  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -106,12 +108,17 @@ export default function SelectPolicyForm () {
 
   const sets = [
     {
-      type: isSwitchMacAclEnabled ? PolicyType.SWITCH_ACCESS_CONTROL : PolicyType.ACCESS_CONTROL,
-      categories: isSwitchMacAclEnabled ? [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]:
-        [RadioCardCategory.WIFI]
+      type: PolicyType.ACCESS_CONTROL,
+      categories: [RadioCardCategory.WIFI],
+      disabled: isSwitchMacAclEnabled
+    },
+    {
+      type: PolicyType.ACCESS_CONTROL_CONSOLIDATION,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      disabled: !isSwitchMacAclEnabled
     },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI], disabled: isCore },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
