@@ -1155,6 +1155,16 @@ describe('convertEdgeNetworkIfConfigToApiPayload', () => {
     expect(result.gateway).toBe('')
   })
 
+  it('should clear gateway for LAN port type with accessPortEnabled false when core access FF is on', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.LAN,
+      accessPortEnabled: false,
+      gateway: '1.1.1.1'
+    } as EdgePortWithStatus
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData, true)
+    expect(result.gateway).toBe('')
+  })
+
   // eslint-disable-next-line max-len
   it('should change IP mode to STATIC for LAN port type with corePortEnabled false and DHCP mode', () => {
     const formData = {
@@ -1163,6 +1173,17 @@ describe('convertEdgeNetworkIfConfigToApiPayload', () => {
       ipMode: EdgeIpModeEnum.DHCP
     } as EdgePortWithStatus
     const result = convertEdgeNetworkIfConfigToApiPayload(formData)
+    expect(result.ipMode).toBe(EdgeIpModeEnum.STATIC)
+  })
+
+  it('should change IP mode to STATIC for LAN port type with both corePortEnabled and accessPortEnabled are false and DHCP mode', () => {
+    const formData = {
+      portType: EdgePortTypeEnum.LAN,
+      corePortEnabled: false,
+      accessPortEnabled: false,
+      ipMode: EdgeIpModeEnum.DHCP
+    } as EdgePortWithStatus
+    const result = convertEdgeNetworkIfConfigToApiPayload(formData, true)
     expect(result.ipMode).toBe(EdgeIpModeEnum.STATIC)
   })
 
