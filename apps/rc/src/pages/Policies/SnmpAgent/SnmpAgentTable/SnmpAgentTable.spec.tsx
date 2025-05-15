@@ -1,7 +1,8 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
 import { cleanup } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
+import { Path }    from 'react-router-dom'
+
 import { policyApi }                                                   from '@acx-ui/rc/services'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider, store }                                             from '@acx-ui/store'
@@ -171,21 +172,21 @@ describe('SnmpAgentTable', () => {
   })
 
   it('should show warning modal when deleting SNMP agent with active venues', async () => {
-      const mockDataWithOnlyVenueIds = {
-        ...mockTableResult,
-        data: [{
-          ...mockTableResult.data[0],
-          venues: { count: 0, names: [] },
-          venueIds: ['venue1']
-        }]
-      }
+    const mockDataWithOnlyVenueIds = {
+      ...mockTableResult,
+      data: [{
+        ...mockTableResult.data[0],
+        venues: { count: 0, names: [] },
+        venueIds: ['venue1']
+      }]
+    }
 
-      mockServer.use(
-        rest.post(
-          ApSnmpUrls.getApSnmpFromViewModel.url,
-          (req, res, ctx) => res(ctx.json(mockDataWithOnlyVenueIds))
-        )
+    mockServer.use(
+      rest.post(
+        ApSnmpUrls.getApSnmpFromViewModel.url,
+        (req, res, ctx) => res(ctx.json(mockDataWithOnlyVenueIds))
       )
+    )
 
     render(
       <Provider>
