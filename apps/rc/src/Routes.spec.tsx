@@ -1336,11 +1336,11 @@ describe('RcRoutes: Devices', () => {
     })
 
     /* Wired Client */
-    test('should redirect users/wired to users/wired/switch/clients', async () => {
+    test('should redirect users/wired/switch to users/wired/switch/clients', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
-          path: '/tenantId/t/users/wired',
+          path: '/tenantId/t/users/wired/switch',
           wrapRoutes: false
         }
       })
