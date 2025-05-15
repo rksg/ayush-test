@@ -6,7 +6,6 @@ import {
   Input,
   InputNumber,
   Row,
-  Space,
   Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
@@ -95,6 +94,10 @@ export function IotControllerForm () {
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
+  }
+
+  const handleChange = () => {
+    setTestConnectionStatus(undefined)
   }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
@@ -212,65 +215,75 @@ export function IotControllerForm () {
               <>
                 <Row gutter={20}>
                   <Col span={8}>
-                    <Form.Item>
-                      <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Form.Item
-                          name='publicAddress'
-                          initialValue={data?.publicAddress}
-                          label={$t({ defaultMessage: 'FQDN / IP' })}
-                          rules={[
-                            { validator: (_, value) => domainNameRegExp(value) }
-                          ]}
-                          children={<Input />}
-                        />
-                        <Form.Item
-                          name='publicPort'
-                          initialValue={data?.publicPort}
-                          label={$t({ defaultMessage: 'Port' })}
-                          rules={[
-                            { type: 'number', min: 1 },
-                            { type: 'number', max: 65535 }
-                          ]}
-                          children={<InputNumber
-                            min={1}
-                            max={65535}/>}
-                        />
-                      </Space>
-                    </Form.Item>
+                    <UI.SpaceWrapper>
+                      <Form.Item
+                        style={{ width: '100%' }}
+                        name='publicAddress'
+                        initialValue={data?.publicAddress}
+                        label={$t({ defaultMessage: 'FQDN / IP' })}
+                        rules={[
+                          { validator: (_, value) => domainNameRegExp(value) }
+                        ]}
+                        children={<Input onChange={handleChange} />}
+                      />
+                      <Form.Item
+                        name='publicPort'
+                        initialValue={data?.publicPort}
+                        label={$t({ defaultMessage: 'Port' })}
+                        rules={[
+                          { type: 'number', min: 1 },
+                          { type: 'number', max: 65535 }
+                        ]}
+                        children={<InputNumber
+                          onChange={handleChange}
+                          min={1}
+                          max={65535}/>}
+                      />
+                    </UI.SpaceWrapper>
                   </Col>
-                  <Col span={1}>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'green'
+                    }}
+                    span={1}
+                  >
                     {// eslint-disable-next-line max-len
                       testConnectionStatus === TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
                   </Col>
                 </Row>
                 <Row gutter={20}>
                   <Col span={8}>
-                    <Form.Item>
-                      <Space>
-                        <Form.Item
-                          name='apiToken'
-                          initialValue={data?.apiToken}
-                          label={<>{$t({ defaultMessage: 'API Token' })}
-                            <Tooltip.Question
-                              title={$t({ defaultMessage:
-                                // eslint-disable-next-line max-len
-                                'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
-                              placement='right'
-                              iconStyle={{
-                                width: 16,
-                                height: 16
-                              }}
-                            />
-                          </>}
-                          rules={[
-                            { validator: (_, value) => excludeSpaceRegExp(value) }
-                          ]}
-                          children={<PasswordInput />}
+                    <Form.Item
+                      name='apiToken'
+                      initialValue={data?.apiToken}
+                      label={<>{$t({ defaultMessage: 'API Token' })}
+                        <Tooltip.Question
+                          title={$t({ defaultMessage:
+                            // eslint-disable-next-line max-len
+                            'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
+                          placement='right'
+                          iconStyle={{
+                            width: 16,
+                            height: 16
+                          }}
                         />
-                      </Space>
-                    </Form.Item>
+                      </>}
+                      rules={[
+                        { validator: (_, value) => excludeSpaceRegExp(value) }
+                      ]}
+                      children={<PasswordInput onChange={handleChange} />}
+                    />
                   </Col>
-                  <Col span={1}>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'green'
+                    }}
+                    span={1}
+                  >
                     {// eslint-disable-next-line max-len
                       testConnectionStatus === TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
                   </Col>
@@ -279,12 +292,6 @@ export function IotControllerForm () {
                   <Col span={8}>
                     <div style={{ textAlign: 'right' }}>
                       <Button
-                        style={{
-                          background: 'var(--acx-primary-black)',
-                          color: 'var(--acx-primary-white)',
-                          borderColor: 'var(--acx-primary-black)'
-                        }}
-                        type='primary'
                         htmlType='submit'
                         disabled={isTesting}
                         loading={isTesting}
