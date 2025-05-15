@@ -1799,7 +1799,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1821,7 +1821,7 @@ function UserRoutes () {
         <Route path=':activeTab' element={<WifiClientDetails />} />
         <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
       </Route>
-      {(!isSupportWifiWireClient)
+      {(!isSupportWifiWiredClient)
         ? <>
           <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
           <Route path='users/switch/clients'

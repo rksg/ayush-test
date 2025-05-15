@@ -88,7 +88,7 @@ export function ClientsWidgetV2 () {
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
 
@@ -119,7 +119,7 @@ export function ClientsWidgetV2 () {
     isEnabled: isMonitoringPageEnabled
   })
 
-  const switchClientsPath = isSupportWifiWireClient
+  const switchClientsPath = isSupportWifiWiredClient
     ? '/users/wired/switch/clients'
     : '/users/switch/clients'
 

@@ -10,8 +10,8 @@ import { TenantLink }             from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
 
 const useLinkData = () => {
-  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
-  const switchClientUrl = isSupportWifiWireClient
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const switchClientUrl = isSupportWifiWiredClient
     ? '/users/wired/switch/clients'
     : '/users/switch/clients'
 

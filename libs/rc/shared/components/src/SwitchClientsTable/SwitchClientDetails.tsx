@@ -27,7 +27,7 @@ export function SwitchClientDetails () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
-  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { data, isLoading } = useGetSwitchClientDetailsQuery({
     params,
@@ -209,7 +209,7 @@ export function SwitchClientDetails () {
     }
   ]
 
-  const breadcrumbLink = isSupportWifiWireClient? '/users/wired/switch' : '/users/switch'
+  const breadcrumbLink = isSupportWifiWiredClient? '/users/wired/switch' : '/users/switch'
 
   return (
     <Loader states={[{ isLoading }]}>

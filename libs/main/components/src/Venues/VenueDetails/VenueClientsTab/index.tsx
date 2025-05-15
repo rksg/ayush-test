@@ -27,7 +27,7 @@ export function VenueClientsTab () {
   const { venueId, activeSubTab, categoryTab } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isSupportWifiWireClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { propertyConfig } = useGetQueriablePropertyConfigsQuery(
     { payload: { ...venueOptionsDefaultPayload, filters: { venueId } } },
@@ -84,7 +84,7 @@ export function VenueClientsTab () {
         </Tabs.TabPane>
       </IconThirdTab>
     },
-    ...(isSupportWifiWireClient? [{
+    ...(isSupportWifiWiredClient? [{
       label: $t({ defaultMessage: 'AP Wired' }),
       value: 'apWired',
       children: <ApWiredClientTable searchable={true} />
