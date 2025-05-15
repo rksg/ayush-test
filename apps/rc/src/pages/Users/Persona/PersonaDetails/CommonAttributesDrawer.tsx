@@ -57,10 +57,10 @@ export function CommonAttributesDrawer (props:{
           key={'groups'}
           label={$t({ defaultMessage: 'Groups' })}
           children={
-            externalData.groups?.length ? 
+            externalData.groups?.length ?
               <div>{
-               externalData.groups?.map((group, i) =>
-                <p key={'group' + i}>{group}</p>)}
+                externalData.groups?.map((group, i) =>
+                  <p key={'group' + i}>{group}</p>)}
               </div> : noDataDisplay
           }
         />
@@ -68,7 +68,7 @@ export function CommonAttributesDrawer (props:{
           key={'role'}
           label={$t({ defaultMessage: 'Role' })}
           children={
-            externalData.roles?.length ? 
+            externalData.roles?.length ?
               <div>{
                 externalData.roles?.map((role, i) =>
                   <p key={'role' + i}>{role}</p>)
