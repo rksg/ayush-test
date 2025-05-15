@@ -13,7 +13,9 @@ import {
   SubInterface,
   edgePortIpValidator,
   generalSubnetMskRegExp,
-  interfaceSubnetValidator
+  interfaceSubnetValidator,
+  serverIpAddressRegExp,
+  validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -202,7 +204,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
     }
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode}
+      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode
+        || prev.accessPortEnabled !== cur.accessPortEnabled
+      }
     >
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.STATIC ? (
@@ -232,6 +236,25 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
               ]}
               children={<Input />}
             />
+            {
+              (isEdgeCoreAccessSeparationReady && getFieldValue('accessPortEnabled')) ?
+                <Form.Item
+                  name='gateway'
+                  label={$t({ defaultMessage: 'Gateway' })}
+                  validateFirst
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => serverIpAddressRegExp(value) },
+                    {
+                      validator: (_, value) => {
+                        let subnet = getCurrentSubnetInfo()
+                        return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                      }
+                    }
+                  ]}
+                  children={<Input />}
+                /> : null
+            }
           </>
         ) : null
       }
