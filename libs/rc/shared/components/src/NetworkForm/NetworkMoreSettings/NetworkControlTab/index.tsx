@@ -97,6 +97,17 @@ export function NetworkControlTab () {
     }
   }, [privacySettingsData])
 
+  useEffect(() => {
+    if (form && enableAntiSpoofing) {
+      const forceDhcpFieldName = ['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']
+      const forceDhcp = form.getFieldValue(forceDhcpFieldName)
+      if (forceDhcp === false) {
+        form.setFieldValue(forceDhcpFieldName, enableAntiSpoofing)
+      }
+    }
+
+  }, [enableAntiSpoofing, form])
+
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
   const setEnableDnsProxy = (enable: boolean) => {
     form.setFieldValue(['wlan', 'advancedCustomization', 'dnsProxyEnabled'], enable)
