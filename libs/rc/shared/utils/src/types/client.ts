@@ -165,7 +165,7 @@ export interface ClientInfo {
   connectedTimeParssed: boolean // form GUI
 }
 
-export type WiredClientInfo = {
+export type ApWiredClientInfo = {
   apId: string
   apMacAddress: string
   apName: string
