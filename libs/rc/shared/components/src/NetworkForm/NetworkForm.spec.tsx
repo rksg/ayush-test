@@ -21,7 +21,8 @@ import {
   NewDpskBaseUrl,
   AaaUrls,
   IpsecUrls,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -53,7 +54,7 @@ import {
   mockIpSecTable,
   mockAAAPolicyListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import { NetworkForm, getFieldsToRemoveFromWlan } from './NetworkForm'
 
 jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
@@ -407,4 +408,48 @@ describe('NetworkForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Add'))
   }, 20000)
+})
+
+describe('getFieldsToRemoveFromWlan', () => {
+  it('should remove passphrase and saePassphrase for OWE security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.OWE)
+    expect(result).toEqual(['passphrase', 'saePassphrase'])
+  })
+
+  it('should remove all security fields for None security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.None)
+    expect(result).toEqual(['managementFrameProtection', 'passphrase', 'saePassphrase'])
+  })
+
+  it('should remove managementFrameProtection and passphrase for WPA3 security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPA3)
+    expect(result).toEqual(['managementFrameProtection', 'passphrase'])
+  })
+
+  it('should only remove managementFrameProtection for WPA23Mixed security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPA23Mixed)
+    expect(result).toEqual(['managementFrameProtection'])
+  })
+
+  // WPA2Personal should has managementFrameProtection
+  it('should remove managementFrameProtection and saePassphrase for WPA2Personal security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPA2Personal)
+    expect(result).toEqual(['saePassphrase'])
+  })
+  // WPA2Enterprise should has managementFrameProtection
+  // eslint-disable-next-line max-len
+  it('should remove managementFrameProtection and saePassphrase for WPA2Enterprise security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPA2Enterprise)
+    expect(result).toEqual(['saePassphrase'])
+  })
+
+  it('should remove managementFrameProtection and saePassphrase for WPAEnterprise security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPAEnterprise)
+    expect(result).toEqual(['saePassphrase'])
+  })
+
+  it('should remove managementFrameProtection and saePassphrase for WPAPersonal security', () => {
+    const result = getFieldsToRemoveFromWlan(WlanSecurityEnum.WPAPersonal)
+    expect(result).toEqual(['saePassphrase'])
+  })
 })

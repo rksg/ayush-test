@@ -200,6 +200,29 @@ const mergeSocialEmails = (newEmails?: string[]): Processor<NetworkSaveData> => 
   }
 }
 
+/**
+ * Determines which WLAN fields should be removed based on the security type
+ * @param wlanSecurity The WLAN security type
+ * @returns Array of field names to remove from WLAN configuration
+ */
+export function getFieldsToRemoveFromWlan (wlanSecurity: WlanSecurityEnum): string[] {
+  const toRemoveFromWlan: string[] = []
+
+  if([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3, WlanSecurityEnum.None].includes(wlanSecurity)) {
+    toRemoveFromWlan.push('managementFrameProtection')
+  }
+
+  if([WlanSecurityEnum.OWE, WlanSecurityEnum.None, WlanSecurityEnum.WPA3].includes(wlanSecurity)) {
+    toRemoveFromWlan.push('passphrase')
+  }
+  const isSupportSaePhrase = [WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed].includes(wlanSecurity)
+  if(!isSupportSaePhrase) {
+    toRemoveFromWlan.push('saePassphrase')
+  }
+
+  return toRemoveFromWlan
+}
+
 
 export function NetworkForm (props:{
   modalMode?: boolean,
@@ -1110,20 +1133,7 @@ export function NetworkForm (props:{
       }
     }
     if (editMode && data.wlan?.wlanSecurity) {
-      const toRemoveFromWlan: string[] = []
-
-      if([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3, WlanSecurityEnum.None].includes(data.wlan.wlanSecurity)) {
-        toRemoveFromWlan.push('managementFrameProtection')
-      }
-
-      if([WlanSecurityEnum.OWE, WlanSecurityEnum.None, WlanSecurityEnum.WPA3].includes(data.wlan.wlanSecurity)) {
-        toRemoveFromWlan.push('passphrase')
-      }
-      const isSupportSaePhrase = [WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed].includes(data.wlan.wlanSecurity)
-      if(!isSupportSaePhrase) {
-        toRemoveFromWlan.push('saePassphrase')
-      }
-
+      const toRemoveFromWlan = getFieldsToRemoveFromWlan(data.wlan.wlanSecurity)
       saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
         toRemoveFromWlan
       )
