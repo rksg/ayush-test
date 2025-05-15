@@ -369,9 +369,15 @@ export const lagSettingsCompatibleCheck = (
   return getCompatibleCheckResult(checkResult)
 }
 
-const processLagSettings = (data: InterfaceSettingsFormType) => {
+const processLagSettings = (
+  data: InterfaceSettingsFormType,
+  isEdgeCoreAccessSeparationReady?: boolean
+) => {
   const processLagConfig = (lags: EdgeLag[]) => {
-    return lags.map(lag => convertEdgeNetworkIfConfigToApiPayload(lag)) as EdgeLag[]
+    return lags.map(lag => convertEdgeNetworkIfConfigToApiPayload(
+      lag,
+      isEdgeCoreAccessSeparationReady
+    )) as EdgeLag[]
   }
 
   const lagSettings = []
@@ -384,9 +390,15 @@ const processLagSettings = (data: InterfaceSettingsFormType) => {
   return lagSettings
 }
 
-const processPortSettings = (data: InterfaceSettingsFormType) => {
+const processPortSettings = (
+  data: InterfaceSettingsFormType,
+  isEdgeCoreAccessSeparationReady?: boolean
+) => {
   const processPortConfig = (ports: EdgePort[]) => {
-    return ports.map(port => convertEdgeNetworkIfConfigToApiPayload(port)) as EdgePort[]
+    return ports.map(port => convertEdgeNetworkIfConfigToApiPayload(
+      port,
+      isEdgeCoreAccessSeparationReady
+    )) as EdgePort[]
   }
 
   const portSettings = []
@@ -506,8 +518,8 @@ export const transformFromFormToApiData = (
     highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
   return {
-    lagSettings: processLagSettings(data),
-    portSettings: processPortSettings(data),
+    lagSettings: processLagSettings(data, isEdgeCoreAccessSeparationReady),
+    portSettings: processPortSettings(data, isEdgeCoreAccessSeparationReady),
     ...(shouldPatchVip ? {
       virtualIpSettings: processVirtualIpSettings(data)
     } : {}),
