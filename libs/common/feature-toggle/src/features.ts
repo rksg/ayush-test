@@ -76,6 +76,7 @@ export enum Features {
   EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   EDGE_L2OGRE_TOGGLE = 'edge-l2ogre-toggle',
   EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
+  EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -343,7 +344,8 @@ export enum Features {
   WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
   WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
-  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle'
+  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
+  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -362,6 +364,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
+  EDGE_MULTI_NAT_IP = 'EDGE-MULTI-NAT-IP',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',

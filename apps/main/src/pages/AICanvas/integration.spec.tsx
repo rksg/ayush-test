@@ -38,7 +38,7 @@ const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
-  const Button = jest.requireActual('@acx-ui/components').Button
+  const Button = jest.requireActual('antd').Button
   const Card = jest.requireActual('@acx-ui/components').Card
   const Dropdown = jest.requireActual('@acx-ui/components').Dropdown
   return {
@@ -229,6 +229,7 @@ jest.mock('@acx-ui/rc/services', () => {
           totalCount: 2
         } })
     ],
+    useStopChatMutation: jest.fn(() => [jest.fn()]),
     useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })

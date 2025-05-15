@@ -8,7 +8,7 @@ import TextArea    from 'antd/lib/input/TextArea'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeIpModeEnum, EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
@@ -21,7 +21,8 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
-  isCluster?: boolean
+  disabled?: boolean,
+  clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]
 }
 
@@ -35,9 +36,10 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     isEdgeSdLanRun,
     lagData = [],
     fieldHeadPath = [],
-    isCluster,
+    disabled,
     formFieldsProps,
-    subInterfaceList = []
+    subInterfaceList = [],
+    clusterInfo
   } = props
 
   const { $t } = useIntl()
@@ -45,10 +47,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const subnetInfoForValidation = useMemo(() => {
     return [
-      ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet))
+      // eslint-disable-next-line max-len
+      ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
         .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
       // eslint-disable-next-line max-len
-      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet))
+      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
           ip: subInterface.ip ?? '',
           subnetMask: subInterface.subnet ?? ''
@@ -96,14 +99,14 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         }
       </UI.IpAndMac>
       <Row gutter={20}>
-        <Col span={6}>
+        <Col span={8}>
           <Form.Item
             name={getFieldPathBaseFormList('name')}
             label={$t({ defaultMessage: 'Description' })}
             rules={[
               { max: 63 }
             ]}
-            children={<TextArea disabled={isCluster} />}
+            children={<TextArea disabled={disabled} />}
           />
           <Form.Item
             noStyle
@@ -125,6 +128,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 formListID={id}
                 formFieldsProps={formFieldsProps}
                 subnetInfoForValidation={subnetInfoForValidation}
+                clusterInfo={clusterInfo}
               />
             }}
           </Form.Item>
