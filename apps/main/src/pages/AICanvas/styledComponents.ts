@@ -1,7 +1,7 @@
 import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
 import styled, { css }                                                  from 'styled-components/macro'
 
-import { Card }            from '@acx-ui/components'
+import { Button, Card }    from '@acx-ui/components'
 import { ThumbsDown as UIThumbsDown,
   ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 import { Dashboard } from '@acx-ui/icons-new'
@@ -569,7 +569,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000; //transparent;
+  background: transparent;
   padding-bottom: 10px;
 }
 
@@ -907,6 +907,7 @@ export const EditCanvasModal = styled(Modal)`
     }
   }
 `
+
 export const PreviewModal = styled(Modal)<{ $type?: string }>`
   background: var(--acx-neutrals-10);
   border-radius: 12px;
@@ -983,6 +984,27 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     }
   }
 
+`
+
+export const SearchButton = styled(Button)`
+  color: var(--acx-primary-white) !important;
+  &[disabled] {
+    svg path{
+      color: currentColor !important;
+    }
+  }
+  svg path {
+    color: currentColor;
+    stroke: currentColor !important;
+  }
+`
+
+export const StopIcon = styled.div`
+  display: inline-block;
+  background: var(--acx-primary-white);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 `
 
 const thumbStyles = `
