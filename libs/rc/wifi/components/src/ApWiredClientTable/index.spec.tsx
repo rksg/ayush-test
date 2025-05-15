@@ -10,16 +10,35 @@ import { ApWiredClientTable } from '.'
 const ApWiredClientData = [{
   apId: 'ap_serial_01',
   apName: 'ap_01',
-  apMac: 'aa:11:11:11:11:11',
+  apMacAddress: 'aa:11:11:11:11:11',
   portNumber: 2,
   macAddress: '11:ff:11:11:11:11',
-  deviceType: 'laptop',
+  deviceTypeStr: 'laptop',
   ipAddress: '192.168.0.10',
   hostname: 'wiredDevice1',
   venueId: 'venue_id_1',
   venueName: 'venue_01',
   vlanId: 10,
-  authStatus: 'Authorized'
+  status: 1,
+  osType: 'MacOS'
+},{
+  apId: 'ap_serial_01',
+  apName: 'ap_01',
+  apMacAddress: 'aa:11:11:11:11:11',
+  portNumber: 1,
+  macAddress: '22:ff:11:11:11:11',
+  deviceTypeStr: 'phone',
+  ipAddress: '192.168.0.12',
+  hostname: 'wiredDevice2',
+  venueId: 'venue_id_1',
+  venueName: 'venue_01',
+  vlanId: 1,
+  status: 0,
+  osType: 'Linux'
+},{
+  macAddress: '22:ff:11:11:11:11',
+  hostname: 'wiredDevice2',
+  status: -1
 }]
 
 describe('ApWiredClientTable', () => {
@@ -42,6 +61,15 @@ describe('ApWiredClientTable', () => {
   it('Should render correctly', async () => {
     render(<Provider>
       <ApWiredClientTable />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('Hostname')).toBeInTheDocument()
+    expect(await screen.findByText('OS')).toBeInTheDocument()
+  })
+
+  it('Should render correctly with searchable config', async () => {
+    render(<Provider>
+      <ApWiredClientTable searchable={true}/>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText('wiredDevice1')).toBeInTheDocument()
