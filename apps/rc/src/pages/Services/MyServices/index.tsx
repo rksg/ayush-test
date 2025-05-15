@@ -144,7 +144,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.PORTAL_PROFILE,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: (useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
       }).data?.totalCount ?? 0) + (useWebAuthTemplateListQuery({
@@ -164,7 +164,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
-      categories: [RadioCardCategory.SWITCH],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {

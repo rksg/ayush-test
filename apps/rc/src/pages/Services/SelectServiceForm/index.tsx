@@ -126,13 +126,13 @@ export default function SelectServiceForm () {
         ...(isPortalProfileEnabled ? [
           {
             type: ServiceType.PORTAL_PROFILE,
-            categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
           }
         ] : [
           { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
           {
             type: ServiceType.WEBAUTH_SWITCH,
-            categories: [RadioCardCategory.SWITCH],
+            categories: [RadioCardCategory.EDGE],
             disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
           }
         ]),
