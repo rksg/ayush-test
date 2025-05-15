@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row, Space } from 'antd'
-import { useIntl }                      from 'react-intl'
+import { MessageDescriptor, useIntl }   from 'react-intl'
 
 import { Button, Drawer, Select }  from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
@@ -17,6 +17,13 @@ export interface CustomizeWidgetDrawerProps {
   visible: boolean
   setVisible: (v: boolean) => void
   changeWidgetProperty: (data: WidgetProperty)=> void
+}
+
+export const timeRangeMap: Record<string, MessageDescriptor> = {
+  HOUR8: dateRangeMap[DateRange.last8Hours],
+  DAY1: dateRangeMap[DateRange.last24Hours],
+  DAY7: dateRangeMap[DateRange.last7Days],
+  DAY30: dateRangeMap[DateRange.last30Days]
 }
 
 export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps) {
@@ -41,8 +48,9 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
         name: formValues.name
       }
     }).unwrap().then(()=> {
+      // For diff checking
       changeWidgetProperty({
-        timeRange: formValues.timeRange,
+        timeRange: formValues.timeRange || widget.defaultTimeRange,
         name: formValues.name
       })
     })
