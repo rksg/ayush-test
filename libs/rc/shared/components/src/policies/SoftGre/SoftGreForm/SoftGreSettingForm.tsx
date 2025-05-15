@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
@@ -57,9 +57,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const params = useParams()
   const form = Form.useFormInstance()
   const mtuType = Form.useWatch('mtuType')
-  const fallbackEnable = Form.useWatch('fallbackEnable')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
+  const [ fallbackEnable, setFallbackEnable ] = useState<boolean>(false)
 
   const { softGreData, isLoading } = useGetSoftGreViewDataListQuery(
     { params, payload: {
@@ -120,6 +120,10 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     return (value && primaryGatewayAddress && primaryGatewayAddress === value) ?
       Promise.reject($t( { defaultMessage: 'Primary and secondary gateways must be different. Please enter a new gateway IP address or FQDN.' })) :
       Promise.resolve()
+  }
+
+  const toggleFallbackEnable = (checked: boolean) => {
+    setFallbackEnable(checked)
   }
 
   return (
@@ -204,7 +208,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               children={
                 readMode
                   ? softGreData?.gatewayFailbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
-                  : <Switch />
+                  : <Switch onClick={toggleFallbackEnable} />
               }
             />
           </UI.StyledSpace>
