@@ -637,7 +637,10 @@ export function NetworkForm (props:{
 
   const handleWlanIdentityGroup = (data: NetworkSaveData, identityGroupFlag: boolean) => {
     if (
-      (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
+      ( data.type === NetworkTypeEnum.PSK ||
+        data.type === NetworkTypeEnum.AAA ||
+        data.type === NetworkTypeEnum.HOTSPOT20 ||
+        data.type === NetworkTypeEnum.CAPTIVEPORTAL )
       && identityGroupFlag
     ) {
       return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
