@@ -55,6 +55,7 @@ const getReportType = (reportName: ReportType) => {
   return {
     isApReport: ['ap', 'both'].includes(mode),
     isSwitchReport: ['switch', 'both'].includes(mode),
+    isEdgeReport: ['edge'].includes(mode),
     isRadioBandDisabled: bandDisabledReports.includes(reportName),
     isNetworkFilterDisabled: networkFilterDisabledReports.includes(reportName)
   }
@@ -67,6 +68,7 @@ export const getSupersetRlsClause = (
 ) => {
   const { isApReport,
     isSwitchReport,
+    isEdgeReport,
     isRadioBandDisabled,
     isNetworkFilterDisabled } = getReportType(reportName)
   const clause = {
@@ -89,6 +91,7 @@ export const getSupersetRlsClause = (
     const switchGroupIds: string[] = []
     const apMacs: string[] = []
     const switchMacs: string[] = []
+    const edgeIds: string[] = []
 
     paths.forEach((path) => {
       switch (path.length) {
@@ -104,6 +107,8 @@ export const getSupersetRlsClause = (
             apMacs.push(`'${path[2].name}'`)
           } else if (path[2].type === 'switch') {
             switchMacs.push(`'${path[2].name}'`)
+          } else if (path[2].type === 'edge') {
+            edgeIds.push(`'${path[2].name}'`)
           }
           break
       }
@@ -122,6 +127,14 @@ export const getSupersetRlsClause = (
       }
       if (switchMacs.length) {
         clause.networkClause += `"switchId" in (${switchMacs.join(', ')}) OR `
+      }
+    }
+    if (isEdgeReport) {
+      if (zoneIds.length) {
+        clause.networkClause += `"zoneName" in (${zoneIds.join(', ')}) OR `
+      }
+      if (edgeIds.length) {
+        clause.networkClause += `"edgeId" in (${edgeIds.join(', ')}) OR `
       }
     }
     clause.networkClause = clause.networkClause.slice(0, -4)
