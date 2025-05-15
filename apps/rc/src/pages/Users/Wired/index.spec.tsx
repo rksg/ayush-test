@@ -19,7 +19,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   SwitchClientsTable: () => <div data-testid='SwitchClientsTable' />
 }))
 
-jest.mock('./ApWiredClientTable', () => ({
+jest.mock('@acx-ui/wifi/components', () => ({
   //...jest.requireActual('./ApWiredClientTable'),
   ApWiredClientTable: () => <div data-testid='ApWiredClientTable' />
 }))
