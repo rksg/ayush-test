@@ -5,7 +5,6 @@ metadata:
 data:
   google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   split.io.key: "mlbj64qb8lgfji5upnedt4lo7h5c4ik65m95"
-  disable.pendo: "true"
   captive.portal.domain.name: "stage.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"

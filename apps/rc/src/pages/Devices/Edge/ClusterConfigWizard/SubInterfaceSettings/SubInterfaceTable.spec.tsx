@@ -1,26 +1,16 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
+import userEvent              from '@testing-library/user-event'
+import { Form, FormInstance } from 'antd'
 
-import { EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { render, screen, waitFor, within }        from '@acx-ui/test-utils'
+import { Features }                                    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                       from '@acx-ui/rc/components'
+import { EdgeSubInterfaceFixtures, SubInterface }      from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { defaultCxtData }                                             from '../__tests__/fixtures'
 import { ClusterConfigWizardContext, ClusterConfigWizardContextType } from '../ClusterConfigWizardDataProvider'
 
 import { SubInterfaceTable, SubInterfaceTableProps } from './SubInterfaceTable'
-
-const mockedSetFieldValue = jest.fn()
-const mockedGetFieldValue = jest.fn()
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  useStepFormContext: () => ({
-    form: {
-      getFieldValue: mockedGetFieldValue,
-      setFieldValue: mockedSetFieldValue
-    }
-  })
-}))
 
 jest.mock('./SubInterfaceDrawer', () => (
   ({ visible, data, handleAdd, handleUpdate }: {
@@ -49,6 +39,11 @@ jest.mock('./SubInterfaceDrawer', () => (
     </div>
 ))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 
 describe('SubInterfaceTable', () => {
@@ -56,12 +51,7 @@ describe('SubInterfaceTable', () => {
     serialNumber: '962604D7DCEEE011ED9715000C2949F53E',
     currentTab: 'tab1',
     ip: '192.168.1.1',
-    mac: '00:1A:2B:3C:4D:5E',
-    namePath: [
-      'portSubInterfaces',
-      '962604D7DCEEE011ED9715000C2949F53E',
-      '4f40f9cd-54fe-49bc-aade-bbc25ee2b6a7'
-    ]
+    mac: '00:1A:2B:3C:4D:5E'
   }
 
   const context: ClusterConfigWizardContextType = {
@@ -84,12 +74,6 @@ describe('SubInterfaceTable', () => {
     }
   }
 
-  beforeEach(() => {
-    mockedGetFieldValue.mockReset()
-    mockedSetFieldValue.mockReset()
-    mockedGetFieldValue.mockReturnValue([])
-  })
-
   it('should display port ip and mac correctly', async () => {
     renderTable(mockProps)
 
@@ -99,11 +83,15 @@ describe('SubInterfaceTable', () => {
   })
 
   it('should display sub-interface row correctly', async () => {
-    const mockSubInterface0 = mockEdgeSubInterfaces.content[0] as SubInterface
-    const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
-    mockedGetFieldValue.mockReturnValue([mockSubInterface0, mockSubInterface4])
+    const { result: formRef } = renderHook(() => {
+      const mockSubInterface0 = mockEdgeSubInterfaces.content[0] as SubInterface
+      const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', [mockSubInterface0, mockSubInterface4])
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     expect(screen.getByText('#')).toBeInTheDocument()
     expect(screen.getByText('IP Type')).toBeInTheDocument()
@@ -125,54 +113,65 @@ describe('SubInterfaceTable', () => {
   })
 
   it('Add a sub-interface', async () => {
-    const mockSubInterface = mockEdgeSubInterfaces.content[4] as SubInterface
-    mockedGetFieldValue.mockReturnValue([mockSubInterface])
+    const { result: formRef } = renderHook(() => {
+      const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', [mockSubInterface4])
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     const user = userEvent.setup()
     await user.click(await screen.findByText('Add Sub-interface'))
     expect(await screen.findByText('visible')).toBeInTheDocument()
     await user.click(await screen.findByText('Add'))
 
-    expect(mockedSetFieldValue).toHaveBeenCalledWith(mockProps.namePath, [
-      mockSubInterface,
-      {
-        id: 'new_id',
-        ipMode: 'DHCP',
-        portType: 'LAN',
-        vlan: 4095
-      }
-    ])
+    const rows = await screen.findAllByRole('row')
+    expect(rows.length).toBe(3)
+    expect(within(rows[1]).getByText('STATIC')).toBeInTheDocument()
+    expect(within(rows[1]).getByText('LAN')).toBeInTheDocument()
+    expect(within(rows[1]).getByText('4.4.4.4')).toBeInTheDocument()
+    expect(within(rows[1]).getByText('255.255.255.0')).toBeInTheDocument()
+    expect(within(rows[1]).getByText('88')).toBeInTheDocument()
+    expect(within(rows[2]).getByText('DHCP')).toBeInTheDocument()
+    expect(within(rows[2]).getByText('LAN')).toBeInTheDocument()
+    expect(within(rows[2]).getByText('4095')).toBeInTheDocument()
   })
 
   it('Delete a sub-interface', async () => {
-    const mockSubInterface = mockEdgeSubInterfaces.content[4] as SubInterface
-    mockedGetFieldValue.mockReturnValue([mockSubInterface])
+    const { result: formRef } = renderHook(() => {
+      const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', [mockSubInterface4])
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     const user = userEvent.setup()
-    const rows = await screen.findAllByRole('row')
-    await user.click(within(rows[1]).getByRole('radio'))
+    const row = await screen.findByRole('row', { name: '1 LAN STATIC 4.4.4.4 255.255.255.0 88' })
+    await user.click(within(row).getByRole('radio'))
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "88"?')
     const confirmDialog = await screen.findByRole('dialog')
     await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
-
-    expect(mockedSetFieldValue).toHaveBeenCalledWith(mockProps.namePath, [])
+    expect(row).not.toBeInTheDocument()
   })
 
   it('Sub-interface as virtual ip interface cannot be deleted', async () => {
-    const mockSubInterface = {
-      ...mockEdgeSubInterfaces.content[3],
-      vlan: 1024,
-      interfaceName: 'port3.1024'
-    } as SubInterface
-    mockedGetFieldValue.mockReturnValue([mockSubInterface])
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', [{
+        ...mockEdgeSubInterfaces.content[3],
+        vlan: 1024,
+        interfaceName: 'port3.1024'
+      }])
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     const user = userEvent.setup()
     const rows = await screen.findAllByRole('row')
@@ -183,25 +182,32 @@ describe('SubInterfaceTable', () => {
   })
 
   it('Add sub-interface button should be disabled when reach maximum limit', async () => {
-    const mockSubInterfaces = Array.from({ length: 16 }, (_, i) => ({
-      ...mockEdgeSubInterfaces.content[3],
-      vlan: i + 1,
-      interfaceName: `port3.${i + 1}`,
-      id: 'random-id-' + i
-    }))
-    mockedGetFieldValue.mockReturnValue(mockSubInterfaces)
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', Array.from({ length: 16 }, (_, i) => ({
+        ...mockEdgeSubInterfaces.content[3],
+        vlan: i + 1,
+        interfaceName: `port3.${i + 1}`,
+        id: 'random-id-' + i
+      })))
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     const addButton = await screen.findByRole('button', { name: 'Add Sub-interface' })
     expect(addButton).toBeDisabled()
   })
 
   it('should have edit dialog show up', async () => {
-    const mockSubInterface = mockEdgeSubInterfaces.content[4] as SubInterface
-    mockedGetFieldValue.mockReturnValue([mockSubInterface])
+    const { result: formRef } = renderHook(() => {
+      const mockSubInterface4 = mockEdgeSubInterfaces.content[4] as SubInterface
+      const [form] = Form.useForm()
+      form.setFieldValue('subInterfaces', [mockSubInterface4])
+      return form
+    })
 
-    renderTable(mockProps)
+    renderTable(mockProps, formRef.current)
 
     const user = userEvent.setup()
     await screen.findAllByRole('columnheader')
@@ -213,21 +219,39 @@ describe('SubInterfaceTable', () => {
     expect(within(dialog).queryByText('88')).toBeValid()
 
     await user.click(await screen.findByText('Apply'))
-    expect(mockedSetFieldValue).toHaveBeenCalledWith(mockProps.namePath, [{
-      ...mockSubInterface,
-      vlan: 4095
-    }])
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: '1 LAN STATIC 4.4.4.4 255.255.255.0 4095' })).toBeVisible()
   })
 
-  const renderTable = (props: SubInterfaceTableProps) => {
+  const renderTable = (props: SubInterfaceTableProps, formRef?: FormInstance) => {
     return render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={context}>
-          <Form>
-            <SubInterfaceTable {...props} />
+          <Form form={formRef}>
+            <Form.Item name='subInterfaces'>
+              <SubInterfaceTable {...props} />
+            </Form.Item>
           </Form>
         </ClusterConfigWizardContext.Provider>
       </Provider>
     )
   }
+
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show core port and access port column when FF is on', async () => {
+      renderTable(mockProps)
+
+      expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
+  })
 })

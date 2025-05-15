@@ -598,17 +598,9 @@ export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>
     const apMac = client.apInformation?.macAddress ?? ''
     const switchInformation = apSwitchInfoMap.get(apMac)
 
-    const trafficStatus = client.trafficStatus? {
-      ...client.trafficStatus,
-      totalTraffic: transformByte(client.trafficStatus.totalTraffic),
-      trafficToClient: transformByte(client.trafficStatus.trafficToClient),
-      trafficFromClient: transformByte(client.trafficStatus.trafficFromClient)
-    } : undefined
-
     const tmp = {
       ...client,
       switchInformation: cloneDeep(switchInformation),
-      ...(trafficStatus && { trafficStatus: trafficStatus }),
       macAddress: client.macAddress.toLowerCase()
     }
 

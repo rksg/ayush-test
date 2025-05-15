@@ -54,8 +54,30 @@ describe('ImpactedSwitchLLDP',()=>{
   }
   ]
 
+  const sample2:ImpactedSwitch[] = [{
+    name: 'ICX7150-C12 Router',
+    mac: '58:FB:96:0B:12:CA',
+    serial: 'FEK3215S0H7',
+    reasonCodes: 'LLDP Disabled',
+    ports: [
+      {
+        portNumber: ''
+      }
+    ]
+  }
+  ]
+
   const response = (data: ImpactedSwitch[] = [
     ...sample1
+  ]) => ({
+    incident: {
+      impactedSwitches: data,
+      switchCount: 5
+    }
+  })
+
+  const response2 = (data: ImpactedSwitch[] = [
+    ...sample2
   ]) => ({
     incident: {
       impactedSwitches: data,
@@ -136,6 +158,24 @@ describe('ImpactedSwitchLLDP',()=>{
       })
       await screen.findByText('Data granularity at this level is not available')
       jest.mocked(mockOverlapsRollup).mockReturnValue(false)
+    })
+
+    it('should return an empty string if portNumbers is not a string', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response2() })
+
+      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} /></Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+      const body = within(await findTBody())
+      const rows = await body.findAllByRole('row')
+
+      // Check that the portNumbers column renders an empty string
+      const portNumbersCell = within(rows[0]).getAllByRole('cell')[4]
+      expect(portNumbersCell.textContent).toBe('  ')
     })
   })
 })

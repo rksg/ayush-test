@@ -2,11 +2,14 @@ import userEvent                        from '@testing-library/user-event'
 import { rest }                         from 'msw'
 import { NodeProps, ReactFlowProvider } from 'reactflow'
 
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { ActionType, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }    from '@acx-ui/test-utils'
 
-import { WorkflowContext, WorkflowContextProps, WorkflowContextProvider } from '../WorkflowContextProvider'
+import { WorkflowContext,
+  WorkflowContextProps,
+  WorkflowContextProvider } from '../WorkflowContextProvider'
 
 import BaseStepNode from './BaseStepNode'
 
@@ -39,15 +42,30 @@ jest.mock('../../../../WorkflowActionPreviewModal', () => ({
 
 describe('BaseStepNode', () => {
   const spyDeleteStepFn = jest.fn()
+  const spyDeleteIndividualStepFn = jest.fn()
+  const spyDeleteStepAndChildrenFn = jest.fn()
 
   beforeEach(() => {
     spyDeleteStepFn.mockClear()
+    spyDeleteIndividualStepFn.mockClear()
+    spyDeleteStepAndChildrenFn.mockClear()
 
     mockServer.use(
       rest.delete(
         WorkflowUrls.deleteWorkflowStep.url,
+        (req, res, ctx) => {
+          if(req.headers.get('accept') === 'application/vnd.ruckus.v2+json') {
+            spyDeleteIndividualStepFn()
+          } else {
+            spyDeleteStepFn()
+          }
+          return res(ctx.json({}))
+        }
+      ),
+      rest.delete(
+        WorkflowUrls.deleteWorkflowStepAndDescendants.url,
         (_, res, ctx) => {
-          spyDeleteStepFn()
+          spyDeleteStepAndChildrenFn()
           return res(ctx.json({}))
         }
       )
@@ -132,6 +150,62 @@ describe('BaseStepNode', () => {
     await waitFor(() => expect(spyDeleteStepFn).toHaveBeenCalled())
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: /delete step/i })).toBeNull()
+    })
+  })
+
+  it('should delete individual step correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <WorkflowContextProvider workflowId={'mock-workflow-id'}>
+            <BaseStepNode
+              {...mockNodeProps}
+              children={child}
+              selected={true}
+            />
+          </WorkflowContextProvider>
+        </ReactFlowProvider>
+      </Provider>,
+      { route: { params: { policyId: 'mock-workflow-id' } } }
+    )
+
+    await userEvent.hover(screen.getByTestId('MoreVertical'))
+    await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete step only/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+
+    await waitFor(() => expect(spyDeleteIndividualStepFn).toHaveBeenCalled())
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
+    })
+  })
+
+  it('should delete step and children correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <WorkflowContextProvider workflowId={'mock-workflow-id'}>
+            <BaseStepNode
+              {...mockNodeProps}
+              children={child}
+              selected={true}
+            />
+          </WorkflowContextProvider>
+        </ReactFlowProvider>
+      </Provider>,
+      { route: { params: { policyId: 'mock-workflow-id' } } }
+    )
+
+    await userEvent.hover(screen.getByTestId('MoreVertical'))
+    await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete step and children/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+
+    await waitFor(() => expect(spyDeleteStepAndChildrenFn).toHaveBeenCalled())
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
     })
   })
 

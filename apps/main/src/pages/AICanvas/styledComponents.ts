@@ -1,7 +1,7 @@
 import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
 import styled, { css }                                                  from 'styled-components/macro'
 
-import { Card }            from '@acx-ui/components'
+import { Button, Card }    from '@acx-ui/components'
 import { ThumbsDown as UIThumbsDown,
   ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 import { Dashboard } from '@acx-ui/icons-new'
@@ -49,6 +49,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  padding-bottom: 60px;
   .hint{
     font-style: italic;
     color: var(--acx-neutrals-60);
@@ -161,6 +162,7 @@ display: flex;
 .chat-wrapper {
   overflow: hidden;
   position: relative;
+  border-radius: 24px 0 0 24px;
 }
 .chat {
   border-top-left-radius: 24px;
@@ -364,6 +366,35 @@ display: flex;
       }
       .chat-bubble {
         align-self: flex-start;
+        &.loading {
+          position: relative;
+          font-style: italic;
+          overflow: hidden;
+          justify-content: flex-start;
+          background: transparent;
+          color: var(--acx-neutrals-70);
+          font-weight: 400;
+        }
+        .loader {
+          display: inline-block;
+          width: 24px;
+          max-height: 16px;
+          aspect-ratio: 3;
+          --_g: no-repeat radial-gradient(circle closest-side,var(--acx-neutrals-70) 90%,#0000);
+          background: 
+            var(--_g) 0%   50%,
+            var(--_g) 50%  50%,
+            var(--_g) 100% 50%;
+          background-size: calc(100%/5) 50%;
+          animation: l3 1s infinite linear;
+          margin-right: 9px;
+        }
+        @keyframes l3 {
+            20%{background-position:0%   0%, 50%  50%,100%  50%}
+            40%{background-position:0% 100%, 50%   0%,100%  50%}
+            60%{background-position:0%  50%, 50% 100%,100%   0%}
+            80%{background-position:0%  50%, 50%  50%,100% 100%}
+        }
       }
       .ai-message-tail {
         display: grid;
@@ -538,7 +569,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000; //transparent;
+  background: transparent;
   padding-bottom: 10px;
 }
 
@@ -732,6 +763,9 @@ export const Widget = styled(Card)`
       border-top: 1px solid var(--acx-primary-white);
     }
   }
+  &.table .chart {
+    margin-top: 10px;
+  }
   .chart {
     margin: 5px;
   }
@@ -749,6 +783,13 @@ export const Widget = styled(Card)`
         max-width: auto;
       }
     }
+  }
+  .ant-card-head {
+    margin-bottom: 3px;
+  }
+  .sub-title {
+    font-size: 10px;
+    margin-left: 1px;
   }
   .update-indicator {
     display: inline-block;
@@ -866,6 +907,7 @@ export const EditCanvasModal = styled(Modal)`
     }
   }
 `
+
 export const PreviewModal = styled(Modal)<{ $type?: string }>`
   background: var(--acx-neutrals-10);
   border-radius: 12px;
@@ -942,6 +984,27 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     }
   }
 
+`
+
+export const SearchButton = styled(Button)`
+  color: var(--acx-primary-white) !important;
+  &[disabled] {
+    svg path{
+      color: currentColor !important;
+    }
+  }
+  svg path {
+    color: currentColor;
+    stroke: currentColor !important;
+  }
+`
+
+export const StopIcon = styled.div`
+  display: inline-block;
+  background: var(--acx-primary-white);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 `
 
 const thumbStyles = `

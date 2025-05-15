@@ -785,6 +785,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 isSwitchLevelVlanEnabled
               )
             }
+            switchFirmwares={switchDetailHeader?.firmware ? [switchDetailHeader.firmware] : []}
           />
       }
     </>
