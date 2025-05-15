@@ -114,6 +114,10 @@ describe('AP Group Edit Radio', () => {
       rest.get(
         CommonRbacUrlsInfo.getVenueApModelBandModeSettings.url,
         (_, res, ctx) => res(ctx.json([tripleBandMode]))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupBandModeSettings.url,
+        (_, res, ctx) => res(ctx.json([tripleBandMode]))
       )
     )
   })

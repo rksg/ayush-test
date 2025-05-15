@@ -1,16 +1,18 @@
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { WifiRbacUrlsInfo, APGroupFixtures, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                        from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen }                           from '@acx-ui/test-utils'
 
-import { venuelist } from './__tests__/fixtures'
+import { venuelist }          from './__tests__/fixtures'
+import { ApGroupEditContext } from './context'
 
 import { ApGroupEdit } from './index'
 const { mockAPGroupList } = APGroupFixtures
 const mockedUsedNavigate = jest.fn()
+const mockedApGroupListReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -30,6 +32,7 @@ jest.mock('./ApGroupVlanRadioTab', () => ({
 
 describe('AP Group Edit', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockedUsedNavigate.mockClear()
 
@@ -37,6 +40,7 @@ describe('AP Group Edit', () => {
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => {
+          mockedApGroupListReq()
           return res(ctx.json(mockAPGroupList))
         }
       ),
@@ -73,7 +77,30 @@ describe('AP Group Edit', () => {
     expect(await screen.findByTestId('generalTab')).toBeVisible()
   })
 
+  it('should render correctly - default Edit ApGroup', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      apGroupId: 'apgroup-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ApGroupEdit />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/' }
+      }
+    )
+    const title = await screen.findByText('Edit AP Group')
+    expect(title).toBeVisible()
+    const tabs = screen.queryAllByRole('tab')
+    expect(tabs).toHaveLength(0)
+    expect(await screen.findByTestId('generalTab')).toBeVisible()
+  })
+
   it('should render correctly - Edit AP Group', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
     const params = {
       tenantId: 'tenant-id',
       apGroupId: 'apgroup-id',
@@ -83,7 +110,11 @@ describe('AP Group Edit', () => {
 
     render(
       <Provider>
-        <ApGroupEdit />
+        <ApGroupEditContext.Provider value={{
+          isEditMode: true, isApGroupTableFlag: true, venueId: venuelist.data[0].id
+        }}>
+          <ApGroupEdit />
+        </ApGroupEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
       }
@@ -91,11 +122,21 @@ describe('AP Group Edit', () => {
 
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
+    const tabs = screen.queryAllByRole('tab')
+    expect(tabs).toHaveLength(2)
+
     expect(await screen.findByTestId('vlanRadioTab')).toBeVisible()
+    fireEvent.click(await screen.findByRole('tab', { name: 'General' }))
+
+    expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/devices/apgroups/apgroup-id/edit/general',
+      search: ''
+    })
+
   })
 
   it('should radio tab render correctly - Edit AP Group', async () => {
-    // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'tenant-id',
@@ -126,5 +167,28 @@ describe('AP Group Edit', () => {
       search: ''
     })
 
+  })
+
+  it('should render correctly - not found', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      apGroupId: 'apgroup-id',
+      action: 'edit',
+      activeTab: 'found'
+    }
+
+    render(
+      <Provider>
+        <ApGroupEdit />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+
+    const title = await screen.findByText('Edit AP Group')
+    expect(title).toBeVisible()
+
+    const tabs = screen.queryAllByRole('tab')
+    expect(tabs).toHaveLength(0)
   })
 })
