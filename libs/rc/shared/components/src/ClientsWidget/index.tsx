@@ -120,7 +120,7 @@ export function ClientsWidgetV2 () {
   })
 
   const switchClientsPath = isSupportWifiWireClient
-    ? 'users/wired/switch/clients'
+    ? '/users/wired/switch/clients'
     : '/users/switch/clients'
 
   return (
