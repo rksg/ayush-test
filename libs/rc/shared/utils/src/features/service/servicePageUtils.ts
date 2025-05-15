@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles }                               from '@acx-ui/user'
@@ -36,7 +36,7 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
 // eslint-disable-next-line max-len
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const from = (useLocation() as LocationExtended)?.state?.from
 
   // If the user is in the template context, use the config template breadcrumb.
@@ -47,7 +47,7 @@ export function useServiceListBreadcrumb (type: ServiceType): { text: string, li
 }
 
 export function useServicesBreadcrumb (): { text: string, link?: string }[] {
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return generateServicesBreadcrumb(isNewServiceCatalogEnabled, from)

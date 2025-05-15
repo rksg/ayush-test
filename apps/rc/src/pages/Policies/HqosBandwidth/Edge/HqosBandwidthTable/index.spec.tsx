@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
-import { edgeApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                        from '@acx-ui/rc/components'
+import { edgeApi, edgeHqosProfilesApi }                 from '@acx-ui/rc/services'
 import {
   EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
@@ -72,7 +72,9 @@ describe('HqosBandwidthTable', () => {
     oper: PolicyOperation.LIST
   })
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

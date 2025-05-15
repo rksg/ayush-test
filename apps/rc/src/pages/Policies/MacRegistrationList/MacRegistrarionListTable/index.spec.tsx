@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
@@ -166,7 +166,9 @@ export const mockedVenueData = {
 
 describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],

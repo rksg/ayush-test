@@ -1,6 +1,6 @@
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                        from '@acx-ui/types'
 import { hasRoles }                         from '@acx-ui/user'
@@ -35,7 +35,7 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
  */
 export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link?: string }[] {
   const { isTemplate } = useConfigTemplate()
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return isTemplate
@@ -49,7 +49,7 @@ export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link
  * @returns The breadcrumb for the policies page.
  */
 export function usePoliciesBreadcrumb (): { text: string, link?: string }[] {
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled, from)

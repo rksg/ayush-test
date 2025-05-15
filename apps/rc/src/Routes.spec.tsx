@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -431,7 +431,10 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
 })
 
 describe('RcRoutes: Devices', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+  })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -662,10 +665,6 @@ describe('RcRoutes: Devices', () => {
 
   describe('RcRoutes: Services', () => {
     describe('My Services and Service Catalog', () => {
-      beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
-      })
-
       test('should navigate to service list', async () => {
         render(<Provider><RcRoutes /></Provider>, {
           route: {
@@ -699,7 +698,7 @@ describe('RcRoutes: Devices', () => {
 
     describe('New - My Services and Service Catalog', () => {
       beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NEW_SERVICE_CATALOG)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
       })
 
       test('should navigate to service list', async () => {
@@ -1015,8 +1014,6 @@ describe('RcRoutes: Devices', () => {
 
   describe('RcRoutes: Policies', () => {
     test('should navigate to My Policies', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NEW_SERVICE_CATALOG)
-
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getPolicyListRoutePath(),

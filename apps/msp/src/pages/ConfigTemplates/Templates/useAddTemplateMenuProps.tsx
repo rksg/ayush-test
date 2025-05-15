@@ -2,7 +2,7 @@ import { MenuProps } from 'antd'
 import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateLink,
@@ -25,7 +25,7 @@ import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null {
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const policyMenuItems = usePolicyMenuItems()
   const serviceMenuItems = useServiceMenuItems()
   const servicePolicyMenuItems = isNewServiceCatalogEnabled

@@ -362,7 +362,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
   return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
