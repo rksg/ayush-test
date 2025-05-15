@@ -198,7 +198,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
-      sorter: true,
+      sorter: false,
       render: (__, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds

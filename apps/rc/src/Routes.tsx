@@ -1121,6 +1121,15 @@ function PolicyRoutes () {
       />
       {isSwitchMacAclEnabled && <>
         <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, SwitchScopes.CREATE]}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
           path='policies/accessControls/create'
           element={
             // eslint-disable-next-line max-len
