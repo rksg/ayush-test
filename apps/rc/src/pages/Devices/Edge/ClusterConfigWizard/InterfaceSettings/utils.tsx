@@ -9,6 +9,7 @@ import {
   ClusterHaLoadDistributionEnum,
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  convertEdgeNetworkIfConfigToApiPayload,
   EdgeClusterStatus,
   EdgePortInfo,
   EdgeLag,
@@ -16,7 +17,8 @@ import {
   EdgePortTypeEnum,
   EdgeSerialNumber,
   NodeSubInterfaces,
-  VirtualIpSetting
+  VirtualIpSetting,
+  SubInterface
 } from '@acx-ui/rc/utils'
 
 import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
@@ -308,7 +310,9 @@ export const interfaceCompatibilityCheck = (
       if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
-      if (port.corePortEnabled) result.errors.corePorts.value++
+      if (port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[port.portType]) {
         result.errors.portTypes[port.portType] = {
           isError: false, value: 1
@@ -347,7 +351,9 @@ export const lagSettingsCompatibleCheck = (
       // if (!lag.lagEnabled) return
 
       result.errors.ports.value++
-      if (lag.corePortEnabled) result.errors.corePorts.value++
+      if (lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) {
+        result.errors.corePorts.value++
+      }
       if (!result.errors.portTypes[lag.portType]) {
         result.errors.portTypes[lag.portType] = {
           isError: false, value: 1
@@ -365,16 +371,7 @@ export const lagSettingsCompatibleCheck = (
 
 const processLagSettings = (data: InterfaceSettingsFormType) => {
   const processLagConfig = (lags: EdgeLag[]) => {
-    return lags.map(lag => {
-      let corePortEnabled = lag.corePortEnabled
-      if(lag.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...lag,
-        corePortEnabled
-      }
-    })
+    return lags.map(lag => convertEdgeNetworkIfConfigToApiPayload(lag)) as EdgeLag[]
   }
 
   const lagSettings = []
@@ -389,16 +386,7 @@ const processLagSettings = (data: InterfaceSettingsFormType) => {
 
 const processPortSettings = (data: InterfaceSettingsFormType) => {
   const processPortConfig = (ports: EdgePort[]) => {
-    return ports.map(port => {
-      let corePortEnabled = port.corePortEnabled
-      if(port.portType === EdgePortTypeEnum.WAN) {
-        corePortEnabled = false
-      }
-      return {
-        ...port,
-        corePortEnabled
-      }
-    })
+    return ports.map(port => convertEdgeNetworkIfConfigToApiPayload(port)) as EdgePort[]
   }
 
   const portSettings = []
@@ -459,15 +447,30 @@ const processHighAvailabilitySettings = (data: InterfaceSettingsFormType) => {
   }
 }
 
+const preProcessSubInterfaceSetting = (settings: SubInterface[]) => {
+  return settings.map(subInterface => {
+    if(subInterface.id?.startsWith('new_')) {
+      delete subInterface.id
+    }
+    return subInterface
+  })
+}
+
 const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
   const subInterfaceSettings = [] as NodeSubInterfaces[]
-  Object.entries(data.lagSubInterfaces ?? []).forEach(([serialNumber, lagSubInterfaces = {}]) => {
+  const nodeLagIdsMap = _.reduce(data.lagSettings, (result, lagSetting) => {
+    result[lagSetting.serialNumber] = lagSetting?.lags?.map(lag => lag.id) ?? []
+    return result
+  }, {} as { [serialNumber: string]: number[] })
+  Object.entries(data.lagSubInterfaces ?? {}).forEach(([serialNumber, lagSubInterfaces = {}]) => {
     subInterfaceSettings.push({
       serialNumber,
-      lags: Object.entries(lagSubInterfaces).map(([lagId, subInterfaces]) => ({
-        lagId: Number(lagId),
-        subInterfaces
-      }))
+      lags: Object.entries(lagSubInterfaces).filter(([lagId]) =>
+        nodeLagIdsMap[serialNumber].includes(Number(lagId)))
+        .map(([lagId, subInterfaces]) => ({
+          lagId: Number(lagId),
+          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        }))
     } as NodeSubInterfaces)
   })
   Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
@@ -477,14 +480,14 @@ const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
       // eslint-disable-next-line max-len
       currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
         portId: portId,
-        subInterfaces
+        subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
       }))
     } else {
       subInterfaceSettings.push({
         serialNumber,
         ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
           portId: portId,
-          subInterfaces
+          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
         }))
       } as NodeSubInterfaces)
     }

@@ -239,7 +239,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 1',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-1',
           ip: '0.0.0.0',
           ports: '3',
@@ -258,7 +258,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 2',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 2',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
           ports: '3',
@@ -290,7 +290,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 4',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
           ports: '80',
@@ -305,7 +305,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 5',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-5',
           ip: '0.0.0.0',
           ports: '80',
@@ -330,7 +330,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 4',
           deviceStatus: '1_01_NeverContactedCloud',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
           ports: '2',
@@ -355,7 +355,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 6',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-6',
           ip: '0.0.0.0',
           ports: '80',
@@ -369,7 +369,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 7',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-7',
           ip: '0.0.0.0',
           ports: '80',
@@ -395,7 +395,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 8',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-8',
           ip: '0.0.0.0',
           ports: '80',
@@ -410,7 +410,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 9',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'vRUCKUS Edge',
           serialNumber: 'serialNumber-9',
           ip: '0.0.0.0',
           ports: '80',
@@ -490,7 +490,8 @@ export const mockedHaNetworkSettings = {
       gateway: '',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -508,7 +509,8 @@ export const mockedHaNetworkSettings = {
       gateway: '127.1.1.0',
       corePortEnabled: false,
       natEnabled: false,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }]
   }],
   portSettings: [{
@@ -526,7 +528,8 @@ export const mockedHaNetworkSettings = {
       gateway: '1.1.1.1',
       corePortEnabled: false,
       interfaceName: 'port1',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -541,7 +544,8 @@ export const mockedHaNetworkSettings = {
       gateway: '2.2.2.1',
       corePortEnabled: true,
       interfaceName: 'port2',
-      maxSpeedCapa: 0.0
+      maxSpeedCapa: 0.0,
+      natPools: []
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -557,7 +561,8 @@ export const mockedHaNetworkSettings = {
       subnet: '',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      natPools: []
     },
     {
       id: 'port_id_1',
@@ -571,7 +576,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      natPools: []
     }]
   }],
   virtualIpSettings: [{
