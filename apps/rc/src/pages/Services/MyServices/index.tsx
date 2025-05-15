@@ -164,7 +164,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
-      categories: [RadioCardCategory.SWITCH],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {

@@ -152,7 +152,7 @@ export default function ServiceCatalog () {
           { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
           {
             type: ServiceType.WEBAUTH_SWITCH,
-            categories: [RadioCardCategory.SWITCH],
+            categories: [RadioCardCategory.EDGE],
             disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
           }
         ]),

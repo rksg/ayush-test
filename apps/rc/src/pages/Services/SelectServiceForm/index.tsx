@@ -132,7 +132,7 @@ export default function SelectServiceForm () {
           { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
           {
             type: ServiceType.WEBAUTH_SWITCH,
-            categories: [RadioCardCategory.SWITCH],
+            categories: [RadioCardCategory.EDGE],
             disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
           }
         ]),
