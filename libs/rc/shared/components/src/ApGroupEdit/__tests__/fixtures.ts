@@ -205,6 +205,114 @@ export const venueDefaultApGroup = [
 export const venueCaps = {
   apModels: [
     {
+      model: 'R760',
+      version: '7.1.1.520.544',
+      lanPorts: [
+        {
+          id: '1',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: true,
+          isPoePort: false,
+          isPoeOutPort: false
+        },
+        {
+          id: '2',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: false,
+          isPoePort: true,
+          isPoeOutPort: false
+        }
+      ],
+      allowDfsCountry: [
+        'US',
+        'SG'
+      ],
+      allowCbandCountry: [
+        'EG',
+        'GB',
+        'DE',
+        'AT',
+        'BE',
+        'BG',
+        'HR',
+        'CY',
+        'CZ',
+        'DK',
+        'EE',
+        'FI',
+        'FR',
+        'GR',
+        'HU',
+        'IT',
+        'LV',
+        'LU',
+        'MT',
+        'NL',
+        'NO',
+        'PL',
+        'PT',
+        'RO',
+        'SK',
+        'SI',
+        'ES',
+        'SE',
+        'LT',
+        'IE',
+        'ME',
+        'CH',
+        'IS'
+      ],
+      lldpEnable: true,
+      lldpAdInterval: 30,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      ledOn: true,
+      isOutdoor: false,
+      has160MHzChannelBandwidth: true,
+      canSupportPoeOut: false,
+      canSupportPoeMode: true,
+      canSupportLacp: true,
+      requireOneEnabledTrunkPort: true,
+      poeModeCapabilities: [
+        'Auto',
+        '802.3at',
+        '802.3bt-Class_5'
+      ],
+      lanPortPictureDownloadUrl: 'https://storage.googleapis.com/',
+      pictureDownloadUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/',
+      canSupportCellular: false,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      capabilityScore: 288,
+      supportTriRadio: true,
+      supportDual5gMode: true,
+      supportChannel144: true,
+      support11AX: true,
+      support11BE: false,
+      maxChannelization24G: 40,
+      maxChannelization5G: 160,
+      maxChannelization6G: 160,
+      supportMesh: true,
+      supportBandCombination: false,
+      supportAntennaType: false,
+      supportApStickyClientSteering: true,
+      supportAutoCellSizing: true,
+      supportAggressiveTxPower: true,
+      supportMesh5GOnly6GOnly: true,
+      supportSmartMonitor: true,
+      supportSoftGre: true,
+      usbPowerEnable: true,
+      supportIoT: true
+    },
+    {
       ledOn: true,
       model: 'E510'
     },
@@ -4007,6 +4115,11 @@ export const apGroupdeviceAps = {
 
 export const tripleBandMode = {
   bandMode: 'TRIPLE',
+  useVenueSettings: true
+}
+
+export const apGroupTripleBandMode = {
+  apModelBandModeSettings: [{ model: 'R760', bandMode: 'TRIPLE' }],
   useVenueSettings: true
 }
 

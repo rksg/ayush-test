@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
 import {
-  ApGroupRadioCustomization,
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
@@ -62,8 +61,7 @@ export function ApGroupRadioTab () {
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      await editRadioContextData.updateWifiRadio?.
-      (editRadioContextData.radioData as ApGroupRadioCustomization)
+      await editRadioContextData.updateWifiRadio?.()
 
       resetEditContextData()
 

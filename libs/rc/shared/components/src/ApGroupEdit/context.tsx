@@ -27,7 +27,7 @@ export type ApGroupEditContextType = {
 
 export interface ApGroupRadioContext {
   radioData?: ApGroupRadioCustomization,
-  updateWifiRadio?: ((data: ApGroupRadioCustomization) => void)
+  updateWifiRadio?: (() => void)
   discardWifiRadioChanges?: (data?: unknown) => void | Promise<void>
 
   isLoadBalancingDataChanged?: boolean,

@@ -880,7 +880,7 @@ export function RadioSettings (props: ApEditItemProps) {
     return true
   }
 
-  const handleUpdateRadioSettings = async (form: StepsFormLegacyInstance) => {
+  const handleUpdateRadioSettings = async () => {
 
     const updateRadioParams = (radioParams: any, supportCh: any) => {
       if (!radioParams) {
@@ -907,7 +907,7 @@ export function RadioSettings (props: ApEditItemProps) {
         isDirty: false
       })
 
-      const payload = { ...form.getFieldsValue() }
+      const payload = { ...formRef.current?.getFieldsValue() } as ApRadioCustomization
       const {
         apRadioParamsDual5G
       } = payload
@@ -937,7 +937,7 @@ export function RadioSettings (props: ApEditItemProps) {
           const validationResult = await validateEnableAFCField()
           if(!validationResult) return
         } else {
-          payload.apRadioParams6G.enableAfc = false
+          payload.apRadioParams6G!.enableAfc = false
         }
       } else {
         delete payload.apRadioParams6G
@@ -963,6 +963,7 @@ export function RadioSettings (props: ApEditItemProps) {
       }
 
       if (hasRadio6G && !afcProps.isAFCEnabled) {
+        // @ts-ignore
         delete payload.apRadioParams6G.enableAfc
       }
 
@@ -1036,19 +1037,19 @@ export function RadioSettings (props: ApEditItemProps) {
     // 4. set IsDual5gMode
     setIsDual5gMode((isSupportDual5G && updatedSettings?.apRadioParamsDual5G?.enabled) || false)
     // 5. update EditContext
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+    updateEditContext()
   }
 
-  const updateEditContext = (form: StepsFormLegacyInstance, isDirty: boolean) => {
+  const updateEditContext = () => {
     setEditContextData?.({
       ...editContextData,
       unsavedTabKey: 'radio',
       tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: isDirty
+      isDirty: true
     })
     setEditRadioContextData?.({
       ...editRadioContextData,
-      updateWifiRadio: () => handleUpdateRadioSettings(form),
+      updateWifiRadio: () => handleUpdateRadioSettings(),
       discardWifiRadioChanges: () => handleDiscard()
     })
   }
@@ -1062,7 +1063,7 @@ export function RadioSettings (props: ApEditItemProps) {
   }
 
   const handleChange = async () => {
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+    updateEditContext()
   }
 
   const displayVenueSettingAndCustomize = () => {

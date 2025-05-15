@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -17,7 +18,9 @@ import {
   validRadioChannels,
   apGroupApCaps,
   venuelist,
-  venueRadioCustomization, mockApModelFamilies
+  venueRadioCustomization,
+  mockApModelFamilies,
+  apGroupTripleBandMode
 } from '../__tests__/fixtures'
 import { ApGroupEditContext } from '../context'
 
@@ -117,12 +120,12 @@ describe('AP Group Edit Radio', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.getApGroupBandModeSettings.url,
-        (_, res, ctx) => res(ctx.json([tripleBandMode]))
+        (_, res, ctx) => res(ctx.json(apGroupTripleBandMode))
       )
     )
   })
 
-  it('should render correctly', async () => {
+  it('should render correctly with different band mode', async () => {
     render(
       <Provider>
         <ApGroupEditContext.Provider value={{
@@ -147,5 +150,20 @@ describe('AP Group Edit Radio', () => {
 
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
+
+    const customizeBandMode = screen.getByText(/customize settings/i)
+    userEvent.click(customizeBandMode)
+
+    expect(await screen.findByText(/r760/i)).toBeVisible()
+    expect(screen.getByRole('tab', { name: '6 GHz' })).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('tab', { name: /2.4 GHz/ }))
+    expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('tab', { name: /5 GHz/ }))
+    expect(await screen.findByText(/use inherited 5 ghz settings from venue/i)).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('tab', { name: /6 GHz/ }))
+    expect(await screen.findByText(/use inherited 6 ghz settings from venue/i)).toBeVisible()
   })
 })

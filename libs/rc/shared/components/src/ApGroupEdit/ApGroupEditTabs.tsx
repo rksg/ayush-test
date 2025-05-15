@@ -28,7 +28,8 @@ export function ApGroupEditTabs () {
   // eslint-disable-next-line max-len
   const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
-  const { editContextData, setEditContextData, setPreviousPath } = useContext(ApGroupEditContext)
+  // eslint-disable-next-line max-len
+  const { editContextData, setEditContextData, editRadioContextData, setEditRadioContextData, setPreviousPath } = useContext(ApGroupEditContext)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -85,6 +86,8 @@ export function ApGroupEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
+          editRadioContextData,
+          setEditRadioContextData,
           tx.retry
         )
       })

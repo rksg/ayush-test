@@ -641,6 +641,15 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       setRadioFormData(mergedData)
       if (!defaultRadioSettings) setDefaultRadioSettings(mergedData)
 
+      setStateOfIsUseVenueSettings({
+        ...stateOfIsUseVenueSettings,
+        isUseVenueSettings24G: !!apGroupRadioData.radioParams24G?.useVenueSettings,
+        isUseVenueSettings5G: !!apGroupRadioData.radioParams50G?.useVenueSettings,
+        isUseVenueSettingsLower5G: !!apGroupRadioData.radioParamsDual5G?.radioParamsLower5G?.useVenueSettings,
+        isUseVenueSettingsUpper5G: !!apGroupRadioData.radioParamsDual5G?.radioParamsUpper5G?.useVenueSettings,
+        isUseVenueSettings6G: !!apGroupRadioData.radioParams6G?.useVenueSettings
+      })
+
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
   }, [isLoadingVenueData, venueSavedChannelsData, apGroupRadioData, formRef?.current, supportRadioChannels])
@@ -936,9 +945,9 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     return await formRef?.current?.validateFields()
   }
 
-  const handleUpdateRadioSettings = async (formData: ApGroupRadioCustomization) => {
-    const d = formRef?.current?.getFieldsValue() || formData
-    const data = { ...d }
+  const handleUpdateRadioSettings = async () => {
+    const d = formRef?.current?.getFieldsValue()
+    const data = { ...d } as ApGroupRadioCustomization
 
     try {
       await validationFields() as any
