@@ -143,6 +143,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const {
     untaggedVlan,
     taggedVlans,
+    ports,
     type
   } = (useWatch([], form) ?? {})
 
@@ -346,9 +347,13 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk: async () => {
           form.setFieldValue('ports', undefined)
-          form.setFieldValue('forceUp', false)
-          setForceUpPort('')
-          setSelectedPorts([])
+
+          if(isSwitchLagForceUpEnabled){
+            form.setFieldValue('forceUp', false)
+            setForceUpPort('')
+            setSelectedPorts([])
+          }
+
           changePortType(value)},
         onCancel: async () => {form.setFieldValue('portsType', currentPortType)}
       })
@@ -376,9 +381,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         })
     }
     setFinalAvailablePorts(finalAvailablePorts)
-    form.setFieldValue('forceUp', false)
-    setForceUpPort('')
-    setSelectedPorts([])
+
+    if(isSwitchLagForceUpEnabled){
+      form.setFieldValue('forceUp', false)
+      setForceUpPort('')
+      setSelectedPorts([])
+    }
   }
 
   // TODO:
@@ -437,7 +445,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           $t({ defaultMessage: 'The maximum number of ports is {count}.' }, { count }))
       }
     }
-    setForceUpPort(form.getFieldValue('ports').includes(forceUpPort) ? forceUpPort : '')
+
+    if(isSwitchLagForceUpEnabled){
+      setForceUpPort(ports.includes(forceUpPort) ? forceUpPort : '')
+    }
+
     form.getFieldValue('ports')
     return Promise.resolve()
   }
@@ -485,18 +497,22 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const resetForceUp = () => {
-    setForceUpPort('')
-    form.setFieldValue('forceUp', false)
+    if(isSwitchLagForceUpEnabled){
+      setForceUpPort('')
+      form.setFieldValue('forceUp', false)
+    }
   }
 
-  const onSelectChange = (selectedPort: string) => {
-    if(selectedPorts.includes(selectedPort)){
-      setSelectedPorts([...selectedPorts.filter((p: string) => p !== selectedPort)])
-    }else{
-      if(form.getFieldValue('ports')?.includes(selectedPort)){
-        setSelectedPorts([...selectedPorts, selectedPort])
-        form.setFieldValue('forceUp', selectedPort === forceUpPort)
-      }
+  const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    if(isSwitchLagForceUpEnabled){
+      const targetPorts: string[] = []
+      targetSelectedKeys.forEach(item => {
+        if(ports.includes(item)){
+          form.setFieldValue('forceUp', item === forceUpPort)
+          targetPorts.push(item)
+        }
+      })
+      setSelectedPorts(targetPorts)
     }
   }
 
@@ -609,16 +625,14 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             showSelectAll={false}
             dataSource={[...finalAvailablePorts]}
             render={(item: TransferItem) => (
-              <div
-                style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
-                onClick={() => onSelectChange(item.name)}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                 <span>{item.name}</span>
                 {item.name === forceUpPort &&
                   <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force Up</span>}
               </div>
             )}
             operations={['Add', 'Remove']}
-            selectAllLabels={selectedPorts}
+            onSelectChange={onSelectChange}
           />
         </Form.Item>
       </Col>
