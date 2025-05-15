@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { FormInstance, Space, Typography } from 'antd'
 import _, { cloneDeep }                    from 'lodash'
 import moment                              from 'moment-timezone'
@@ -487,10 +488,14 @@ const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
   })
   Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
     // eslint-disable-next-line max-len
+    const lagSettingsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+    // eslint-disable-next-line max-len
     const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
     if(currentSubInterfaceItem) {
       // eslint-disable-next-line max-len
-      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
+      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).filter(([portId]) => {
+        return !lagSettingsOfCurrentNode?.some(lag => lag.lagMembers.some(member => member.portId === portId))
+      }).map(([portId, subInterfaces]) => ({
         portId: portId,
         subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
       }))
