@@ -321,6 +321,8 @@ export const ImportDashboardDrawer = (props: {
     zIndex={999}
     forceRender={true}
     destroyOnClose={false}
+    mask={true}
+    maskClosable={true}
     children={
       props.visible && <UI.Tabs
         type='third'

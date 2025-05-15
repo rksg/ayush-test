@@ -19,6 +19,7 @@ import {
   isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -26,6 +27,8 @@ import * as UI from './styledComponents'
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
@@ -123,21 +126,21 @@ export default function SelectServiceForm () {
         ...(isPortalProfileEnabled ? [
           {
             type: ServiceType.PORTAL_PROFILE,
-            categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH]
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
           }
         ] : [
           { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
           {
             type: ServiceType.WEBAUTH_SWITCH,
-            categories: [RadioCardCategory.SWITCH],
+            categories: [RadioCardCategory.EDGE],
             disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
           }
         ]),
-        {
+        ...(isCore ? [] : [{
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],
           disabled: !propertyManagementEnabled
-        }
+        }])
       ]
     }
   ]
