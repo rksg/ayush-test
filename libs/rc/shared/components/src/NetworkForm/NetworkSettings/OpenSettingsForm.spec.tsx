@@ -45,6 +45,32 @@ jest.mock('../../ApCompatibility', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
+const defaultPageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+const mockPersonaGroupList = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'persona-group-id',
+      name: 'persona-group-name',
+      propertyId: 'venue-id-1'
+    }
+  ]
+}
+
 describe('OpenNetwork form', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -69,7 +95,7 @@ describe('OpenNetwork form', () => {
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ content: [] }))
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       )
     )
 
