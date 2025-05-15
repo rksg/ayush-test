@@ -26,10 +26,13 @@ type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
   fetch the totalCount for accurate data retrieval.
 */
 function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedService> {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   // Service features
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
-  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
@@ -42,8 +45,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
 
   // Policy features
-  const { accountTier } = getUserProfile()
-  const isCore = isCoreTier(accountTier)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
@@ -52,7 +53,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
-  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
@@ -197,7 +198,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.ROGUE_AP_DETECTION,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL
+        category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
+        disabled: isCore
       },
       {
         type: PolicyType.SAML_IDP,
@@ -250,7 +252,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled || isCore
+        disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled
       },
       {
         type: ServiceType.DHCP,
