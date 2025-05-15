@@ -376,6 +376,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         })
     }
     setFinalAvailablePorts(finalAvailablePorts)
+    form.setFieldValue('forceUp', false)
+    setForceUpPort('')
+    setSelectedPorts([])
   }
 
   // TODO:
@@ -486,9 +489,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     form.setFieldValue('forceUp', false)
   }
 
-  const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
-    form.setFieldValue('forceUp', targetSelectedKeys[0] === forceUpPort)
-    setSelectedPorts(targetSelectedKeys)
+  const onSelectChange = (selectedPort: string) => {
+    if(selectedPorts.includes(selectedPort)){
+      setSelectedPorts([...selectedPorts.filter((p: string) => p !== selectedPort)])
+    }else{
+      if(form.getFieldValue('ports')?.includes(selectedPort)){
+        setSelectedPorts([...selectedPorts, selectedPort])
+        form.setFieldValue('forceUp', selectedPort === forceUpPort)
+      }
+    }
   }
 
   const lagForm = <Form
@@ -600,14 +609,16 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             showSelectAll={false}
             dataSource={[...finalAvailablePorts]}
             render={(item: TransferItem) => (
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
+                onClick={() => onSelectChange(item.name)}>
                 <span>{item.name}</span>
                 {item.name === forceUpPort &&
                   <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force Up</span>}
               </div>
             )}
             operations={['Add', 'Remove']}
-            onSelectChange={onSelectChange}
+            selectAllLabels={selectedPorts}
           />
         </Form.Item>
       </Col>
