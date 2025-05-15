@@ -35,7 +35,7 @@ jest.mock('@acx-ui/utils', () => {
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const mockedPortsConfig = mockEdgePortConfig.ports[0]
@@ -245,6 +245,30 @@ describe('EditEdge ports - sub-interface', () => {
 
       expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
       expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+    })
+
+    it('should show gateway field when access port is checked', async () => {
+      render(
+        <Provider>
+          <SubInterfaceDrawer
+            mac={mockedPortsConfig.mac}
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+          />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      await userEvent.click(screen.getByRole('checkbox', { name: 'Access port' }))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
+      await userEvent.click(await screen.findByText('Static IP'))
+      expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
     })
   })
 })
