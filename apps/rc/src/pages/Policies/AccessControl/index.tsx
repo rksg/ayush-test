@@ -10,10 +10,10 @@ import {
   getPolicyAllowedOperation,
   PolicyOperation,
   PolicyType,
-  usePoliciesBreadcrumb
+  usePoliciesBreadcrumb,
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
 import { SwitchAccessControl } from '../SwitchAccessControl/index'
 
@@ -54,27 +54,35 @@ export default function AccessControl () {
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const getAddButton = () => {
-    return activeTab === PortProfileTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
-      <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
-        to={'/policies/accessControl/create'}
-      >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
-      </TenantLink>
-    ]) : hasCrossVenuesPermission() && filterByAccess([
-      <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
-        }
-        rbacOpsIds={
-          getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
-        }
-        to={'/policies/accessControl/switch/add'}
-      >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
-      </TenantLink>
-    ])
+    return activeTab === PortProfileTabsEnum.WIFI
+      ? filterByAccessForServicePolicyMutation([
+        <TenantLink
+          scopeKey={
+            getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          rbacOpsIds={
+            getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          to={
+            getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })
+          }
+        >
+          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+        </TenantLink>
+      ])
+      : filterByAccessForServicePolicyMutation([
+        <TenantLink
+          scopeKey={
+            getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          rbacOpsIds={
+            getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          to={'/policies/accessControl/switch/add'}
+        >
+          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+        </TenantLink>
+      ])
   }
 
   return (

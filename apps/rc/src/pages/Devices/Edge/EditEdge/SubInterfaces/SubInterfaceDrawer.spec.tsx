@@ -3,6 +3,8 @@ import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features }                                                                         from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                            from '@acx-ui/rc/components'
 import { EdgePortConfigFixtures, EdgeSubInterfaceFixtures, EdgeSubInterface, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                         from '@acx-ui/store'
 import {
@@ -30,6 +32,11 @@ jest.mock('@acx-ui/utils', () => {
     getIntl: () => intl
   }
 })
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 const mockedPortsConfig = mockEdgePortConfig.ports[0]
 const mockedData = mockEdgeSubInterfaces.content[0] as EdgeSubInterface
@@ -206,5 +213,38 @@ describe('EditEdge ports - sub-interface', () => {
     })
     rerender(<MockedComponent />)
     expect(screen.queryByRole('spinbutton', { name: 'VLAN' })).toHaveAttribute('value', '')
+  })
+
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show core port and access port fields when FF is on', async () => {
+      render(
+        <Provider>
+          <SubInterfaceDrawer
+            mac={mockedPortsConfig.mac}
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+          />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
+      expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+    })
   })
 })
