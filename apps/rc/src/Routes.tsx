@@ -214,16 +214,16 @@ import {
   MyServices as MyServicesNew,
   ServiceCatalog as ServiceCatalogNew
 } from './pages/Services/UnifiedServices'
-import WifiCallingTable                      from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                              from './pages/Timeline'
-import PersonaPortal                         from './pages/Users/Persona'
-import PersonaDetails                        from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                   from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                      from './pages/Users/Switch/ClientList'
-import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
-import { WiredClientList, WiredTabsEnum }    from './pages/Users/Wired'
+import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                             from './pages/Timeline'
+import PersonaPortal                        from './pages/Users/Persona'
+import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                     from './pages/Users/Switch/ClientList'
+import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import { WiredClientList, WiredTabsEnum }   from './pages/Users/Wired'
 
 
 export default function RcRoutes () {
