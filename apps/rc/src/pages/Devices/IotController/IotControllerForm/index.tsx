@@ -6,7 +6,6 @@ import {
   Input,
   InputNumber,
   Row,
-  Space,
   Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
@@ -27,11 +26,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   redirectPreviousPage,
-  whitespaceOnlyRegExp,
   IotControllerSetting,
   excludeSpaceRegExp,
-  domainNameRegExp,
-  trailingNorLeadingSpaces
+  domainNameRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -79,23 +76,28 @@ export function IotControllerForm () {
       return
     }
     setTestConnectionStatus(undefined)
-    const { publicAddress, publicPort, apiKey } = form.getFieldsValue()
+    const { publicAddress, publicPort, apiToken } = form.getFieldsValue()
     const payload = {
       publicAddress,
       publicPort,
-      apiKey
+      apiToken
     }
     try{
       currentTestConnectionFun = testConnectionIotController({
         payload: payload
       })
       const result = await currentTestConnectionFun.unwrap()
-      if(result.requestId){
+      if(result.serialNumber){
+        form.setFieldsValue({ iotSerialNumber: result.serialNumber })
         setTestConnectionStatus(TestConnectionStatusEnum.PASS)
       }
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
+  }
+
+  const handleChange = () => {
+    setTestConnectionStatus(undefined)
   }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
@@ -156,72 +158,73 @@ export function IotControllerForm () {
           <Loader states={[{
             isLoading: isIotControllerLoading
           }]}>
-            <Row gutter={20}>
-              <Col span={8}>
-                <Form.Item
-                  name='name'
-                  initialValue={data?.name}
-                  label={$t({ defaultMessage: 'IoT Controller Name' })}
-                  rules={[
-                    { type: 'string', required: true },
-                    { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
-                    { validator: (_, value) => whitespaceOnlyRegExp(value) },
-                    { validator: (_, value) => trailingNorLeadingSpaces(value) }
-                  ]}
-                  validateFirst
-                  children={<Input />}
-                  validateTrigger={'onBlur'}
-                />
-                <Form.Item
-                  name='inboundAddress'
-                  initialValue={data?.inboundAddress}
-                  label={$t({ defaultMessage: 'FQDN / IP (AP Inbound IP address)' })}
-                  rules={[
-                    { type: 'string', required: true,
-                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
-                    },
-                    { validator: (_, value) => domainNameRegExp(value),
-                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
-                    }
-                  ]}
-                  children={<Input />}
-                />
-                <StepsForm.FieldLabel width={'280px'}
-                  style={{ height: '28px' }}
-                >
-                  {$t({ defaultMessage: 'Enable Public IP address' })}
+            <>
+              <Row gutter={20}>
+                <Col span={8}>
                   <Form.Item
-                    name='publicEnabled'
-                    valuePropName={'checked'}
-                    children={<Switch
-                      onChange={(checked: boolean)=>{
-                        if(checked){
-                          setSerialNumberEnabled(false)
-                        } else {
-                          setSerialNumberEnabled(true)
-                        }
-                      }}/>}
+                    name='name'
+                    initialValue={data?.name}
+                    label={$t({ defaultMessage: 'IoT Controller Name' })}
+                    rules={[
+                      { type: 'string', required: true }
+                    ]}
+                    validateFirst
+                    children={<Input />}
+                    validateTrigger={'onBlur'}
                   />
-                </StepsForm.FieldLabel>
-                <UI.FieldTitle>
-                  {
-                    // eslint-disable-next-line max-len
-                    $t({ defaultMessage: 'If Public IP address is not enabled, no information will be fetched from vRIoT Controller.' })
-                  }
-                </UI.FieldTitle>
-                {publicEnabled && <>
-                  <Form.Item>
-                    <Space>
+                  <Form.Item
+                    name='inboundAddress'
+                    initialValue={data?.inboundAddress}
+                    label={$t({ defaultMessage: 'FQDN / IP (AP Inbound IP address)' })}
+                    rules={[
+                      { type: 'string', required: true,
+                        message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                      },
+                      { validator: (_, value) => domainNameRegExp(value),
+                        message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                      }
+                    ]}
+                    children={<Input />}
+                  />
+                  <StepsForm.FieldLabel width={'280px'}
+                    style={{ height: '28px' }}
+                  >
+                    {$t({ defaultMessage: 'Enable Public IP address' })}
+                    <Form.Item
+                      name='publicEnabled'
+                      valuePropName={'checked'}
+                      children={<Switch
+                        onChange={(checked: boolean)=>{
+                          if(checked){
+                            setSerialNumberEnabled(false)
+                          } else {
+                            setSerialNumberEnabled(true)
+                          }
+                        }}/>}
+                    />
+                  </StepsForm.FieldLabel>
+                  <UI.FieldTitle>
+                    {
+                      // eslint-disable-next-line max-len
+                      $t({ defaultMessage: 'If Public IP address is not enabled, no information will be fetched from vRIoT Controller.' })
+                    }
+                  </UI.FieldTitle>
+                </Col>
+              </Row>
+              {publicEnabled &&
+              <>
+                <Row gutter={20}>
+                  <Col span={8}>
+                    <UI.SpaceWrapper>
                       <Form.Item
-                        style={{ width: '430px' }}
+                        style={{ width: '100%' }}
                         name='publicAddress'
                         initialValue={data?.publicAddress}
                         label={$t({ defaultMessage: 'FQDN / IP' })}
                         rules={[
                           { validator: (_, value) => domainNameRegExp(value) }
                         ]}
-                        children={<Input />}
+                        children={<Input onChange={handleChange} />}
                       />
                       <Form.Item
                         name='publicPort'
@@ -232,65 +235,92 @@ export function IotControllerForm () {
                           { type: 'number', max: 65535 }
                         ]}
                         children={<InputNumber
+                          onChange={handleChange}
                           min={1}
                           max={65535}/>}
                       />
-                      {// eslint-disable-next-line max-len
-                        testConnectionStatus !== TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
-                    </Space>
-                  </Form.Item>
+                    </UI.SpaceWrapper>
+                  </Col>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'green'
+                    }}
+                    span={1}
+                  >
+                    {// eslint-disable-next-line max-len
+                      testConnectionStatus === TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
+                  </Col>
+                </Row>
+                <Row gutter={20}>
+                  <Col span={8}>
+                    <Form.Item
+                      name='apiToken'
+                      initialValue={data?.apiToken}
+                      label={<>{$t({ defaultMessage: 'API Token' })}
+                        <Tooltip.Question
+                          title={$t({ defaultMessage:
+                            // eslint-disable-next-line max-len
+                            'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
+                          placement='right'
+                          iconStyle={{
+                            width: 16,
+                            height: 16
+                          }}
+                        />
+                      </>}
+                      rules={[
+                        { validator: (_, value) => excludeSpaceRegExp(value) }
+                      ]}
+                      children={<PasswordInput onChange={handleChange} />}
+                    />
+                  </Col>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'green'
+                    }}
+                    span={1}
+                  >
+                    {// eslint-disable-next-line max-len
+                      testConnectionStatus === TestConnectionStatusEnum.PASS && <UI.CheckMarkIcon />}
+                  </Col>
+                </Row>
+                <Row gutter={20}>
+                  <Col span={8}>
+                    <div style={{ textAlign: 'right' }}>
+                      <Button
+                        htmlType='submit'
+                        disabled={isTesting}
+                        loading={isTesting}
+                        onClick={onClickTestConnection}
+                      >
+                        {$t({ defaultMessage: 'Validate' })}
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+              </>}
+              <Row gutter={20}>
+                <Col span={8}>
                   <Form.Item
-                    name='apiKey'
-                    initialValue={data?.apiKey}
-                    label={<>{$t({ defaultMessage: 'API Token' })}
-                      <Tooltip.Question
-                        title={$t({ defaultMessage:
-                          // eslint-disable-next-line max-len
-                          'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
-                        placement='right'
-                        iconStyle={{
-                          width: 16,
-                          height: 16
-                        }}
-                      />
-                    </>}
+                    name='iotSerialNumber'
+                    initialValue={data?.iotSerialNumber}
+                    label={$t({ defaultMessage: 'IoT Controller Serial Number' })}
                     rules={[
-                      { validator: (_, value) => excludeSpaceRegExp(value) }
+                      {
+                        required: true,
+                        message: $t({ defaultMessage: 'Please enter Serial Number' })
+                      }
                     ]}
-                    children={<PasswordInput />}
+                    children={<Input disabled={isEditMode || !serialNumberEnabled} />}
+                    validateFirst
                   />
-                  <div style={{ textAlign: 'right' }}>
-                    <Button
-                      style={{
-                        background: 'var(--acx-primary-black)',
-                        color: 'var(--acx-primary-white)',
-                        borderColor: 'var(--acx-primary-black)'
-                      }}
-                      type='primary'
-                      htmlType='submit'
-                      disabled={isTesting}
-                      loading={isTesting}
-                      onClick={onClickTestConnection}
-                    >
-                      {$t({ defaultMessage: 'Validate' })}
-                    </Button>
-                  </div>
-                </>}
-                <Form.Item
-                  name='iotSerialNumber'
-                  initialValue={data?.iotSerialNumber}
-                  label={$t({ defaultMessage: 'IoT Controller Serial Number' })}
-                  rules={[
-                    {
-                      required: true,
-                      message: $t({ defaultMessage: 'Please enter Serial Number' })
-                    }
-                  ]}
-                  children={<Input disabled={isEditMode || !serialNumberEnabled} />}
-                  validateFirst
-                />
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            </>
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>
