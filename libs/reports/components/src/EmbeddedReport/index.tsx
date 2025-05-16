@@ -24,7 +24,7 @@ import { REPORT_BASE_RELATIVE_URL, refreshJWT }               from '@acx-ui/stor
 import { RolesEnum as RolesEnumR1, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile as getUserProfileR1,
   UserProfile as UserProfileR1, CustomRoleType, hasPermission,
-  aiOpsApis } from '@acx-ui/user'
+  aiOpsApis, isCoreTier } from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext, AccountTier } from '@acx-ui/utils'
 
 import {
@@ -213,6 +213,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   const isRA = get('IS_MLISA_SA')
   const { accountTier = undefined } = getUserProfileR1() || {}
+  const isCore = isCoreTier(accountTier as AccountTier)
   const reportsFoundationTierToggle =
     useIsSplitOn(Features.ACX_UI_REPORTS_FOUNDATION_TIER_TOGGLE) && !isRA
 
@@ -384,6 +385,7 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   const isR1RoleReadOnly = () => {
+    if (isCore) return true
     const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
     if (customRoleType === CustomRoleType.SYSTEM) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
