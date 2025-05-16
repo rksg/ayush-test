@@ -869,6 +869,28 @@ describe('getSupersetRlsClause',() => {
     expect(rlsClauseOverviewReport).toMatchSnapshot('rlsClauseOverviewReport')
     expect(emptyRlsClauseOverviewReport).toMatchSnapshot('emptyRlsClauseOverviewReport')
   })
+
+  it('should handle edge devices in network paths correctly', () => {
+    const edgePaths: NetworkPath[] = [
+      [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'venue1' },
+        { type: 'edge', name: 'edge123' }
+      ],
+      [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'venue2' }
+      ]
+    ]
+
+    const rlsClauseWithEdge = getSupersetRlsClause(ReportType.EDGE_APPLICATION, edgePaths, [])
+    const rlsClauseWirelessWithEdge = getSupersetRlsClause(ReportType.WIRELESS, edgePaths, [])
+    const rlsClauseWiredWithEdge = getSupersetRlsClause(ReportType.WIRED, edgePaths, [])
+
+    expect(rlsClauseWithEdge).toMatchSnapshot('rlsClauseWithEdge')
+    expect(rlsClauseWirelessWithEdge).toMatchSnapshot('rlsClauseWirelessWithEdge')
+    expect(rlsClauseWiredWithEdge).toMatchSnapshot('rlsClauseWiredWithEdge')
+  })
 })
 
 describe('getRLSClauseForSA', () => {

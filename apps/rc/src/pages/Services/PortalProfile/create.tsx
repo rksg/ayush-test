@@ -1,7 +1,13 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { PageHeader, StepsForm }  from '@acx-ui/components'
+import {
+  categoryMapping,
+  PageHeader,
+  RadioCard,
+  RadioCardCategory,
+  StepsForm
+}  from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import {
@@ -69,12 +75,22 @@ export default function CreatePortalProfile () {
               <Space direction='vertical'>
                 <Radio value={PortalProfileTabsEnum.GUEST}
                   disabled={!hasCreateGuestPortalPermission}>
-                  {$t({ defaultMessage: 'Guest Portal' })}
+                  <RadioCard.CategoryWrapper style={{ position: 'static' }}>
+                    {$t({ defaultMessage: 'Guest Portal' })}
+                    <RadioCard.Category color={categoryMapping[RadioCardCategory.WIFI].color}>
+                      {$t(categoryMapping[RadioCardCategory.WIFI].text)}
+                    </RadioCard.Category>
+                  </RadioCard.CategoryWrapper>
                 </Radio>
                 <Radio value={PortalProfileTabsEnum.PIN}
                   // eslint-disable-next-line max-len
                   disabled={!isEdgePinReady || ! isPinSwitchEnabled || !hasWebAuthSwitchPortalPermission}>
-                  {$t({ defaultMessage: 'PIN (Personal Identity Network) Portal for Switch' })}
+                  <RadioCard.CategoryWrapper style={{ position: 'static' }}>
+                    {$t({ defaultMessage: 'PIN (Personal Identity Network) Portal for Switch' })}
+                    <RadioCard.Category color={categoryMapping[RadioCardCategory.EDGE].color}>
+                      {$t(categoryMapping[RadioCardCategory.EDGE].text)}
+                    </RadioCard.Category>
+                  </RadioCard.CategoryWrapper>
                 </Radio>
               </Space>
             </Radio.Group>
