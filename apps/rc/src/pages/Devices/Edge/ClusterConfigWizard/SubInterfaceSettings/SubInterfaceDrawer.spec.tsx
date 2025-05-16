@@ -340,6 +340,27 @@ describe('EditEdge ports - sub-interface', () => {
       expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
       expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
     })
+
+    it('should show gateway field when access port is checked', async () => {
+      render(
+        <Provider>
+          <SubInterfaceDrawer
+            serialNumber='edge-id'
+            visible={true}
+            setVisible={mockedSetVisible}
+            data={undefined}
+            handleAdd={mockedHandleAddFn}
+            handleUpdate={mockedHandleUpdateFn}
+            allSubInterfaceVlans={[]}
+          />
+        </Provider>
+      )
+
+      await userEvent.click(screen.getByRole('checkbox', { name: 'Access port' }))
+      await userEvent.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
+      await userEvent.click(await screen.findByText('Static IP'))
+      expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
+    })
   })
 })
 
