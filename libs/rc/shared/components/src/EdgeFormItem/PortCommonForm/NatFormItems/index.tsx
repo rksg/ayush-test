@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Form, Row, Col, Switch, Input } from 'antd'
-import { get }                           from 'lodash'
-import { useIntl }                       from 'react-intl'
+import { Form, Row, Col, Switch, Input, Space } from 'antd'
+import { get }                                  from 'lodash'
+import { useIntl }                              from 'react-intl'
 
 import { StepsFormLegacy }                                               from '@acx-ui/components'
 import { Features }                                                      from '@acx-ui/feature-toggle'
@@ -10,12 +10,15 @@ import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
   EdgeLag, EdgeNatPool, EdgePort,
+  IncompatibilityFeatures,
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }  from '../../../useEdgeActions'
-import { StyledNoMarginFormItem } from '../styledComponents'
-import { formFieldsPropsType }    from '../types'
+import { ApCompatibilityToolTip }                         from '../../../ApCompatibility/ApCompatibilityToolTip'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../../Compatibility/Edge/EdgeCompatibilityDrawer'
+import { useIsEdgeFeatureReady }                          from '../../../useEdgeActions'
+import { StyledNoMarginFormItem }                         from '../styledComponents'
+import { formFieldsPropsType }                            from '../types'
 
 export interface NatFormItemsProps {
   parentNamePath: string[],
@@ -36,6 +39,9 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
 
   const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
   const form = Form.useFormInstance()
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
+
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
@@ -88,7 +94,17 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     // eslint-disable-next-line max-len
     isMultiNatIpEnabled && natEnabled && clusterInfo.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY &&
      <Form.Item
-       label={$t({ defaultMessage: 'NAT IP Addresses Range' })}
+       label={
+         <Space size={3}>
+           {$t({ defaultMessage: 'NAT IP Addresses Range' })}
+           <ApCompatibilityToolTip
+             title=''
+             placement='bottom'
+             showDetailButton
+             // eslint-disable-next-line max-len
+             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.MULTI_NAT_IP)}
+           />
+         </Space>}
      >
        <Form.List
          name={parentNamePath.concat('natPools')}
@@ -143,6 +159,13 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
            </>
          }}
        </Form.List>
+       <EdgeCompatibilityDrawer
+         visible={!!edgeCompatibilityFeature}
+         type={EdgeCompatibilityType.ALONE}
+         title={$t({ defaultMessage: 'Compatibility Requirement' })}
+         featureName={edgeCompatibilityFeature}
+         onClose={() => setEdgeCompatibilityFeature(undefined)}
+       />
      </Form.Item>
   }
   </>
