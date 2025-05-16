@@ -34,7 +34,6 @@ import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassC
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 import * as UI                                   from './styledComponents'
-import { DivByFraction }                         from './styledComponents'
 const defaultPayload = {
   fields: [
     'id',
