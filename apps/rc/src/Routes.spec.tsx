@@ -19,6 +19,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import { WiredTabsEnum }    from './pages/Users/Wired'
 import RcRoutes             from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
@@ -113,6 +114,14 @@ jest.mock('./pages/Services/Portal/PortalTable', () => () => {
   return <div data-testid='PortalTable' />
 })
 
+jest.mock('./pages/Services/PortalProfile/create', () => () => {
+  return <div data-testid='CreatePortalProfile' />
+})
+
+jest.mock('./pages/Services/PortalProfile', () => () => {
+  return <div data-testid='PortalProfile' />
+})
+
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
   return <div data-testid='NetworkSegAuthTable' />
 })
@@ -149,6 +158,11 @@ jest.mock('./pages/Users/Switch/ClientList', () => () => {
   return <div data-testid='SwitchClientList' />
 })
 
+jest.mock('./pages/Users/Wired', () => ({
+  ...jest.requireActual('./pages/Users/Wired'),
+  WiredClientList: (props: { tab: WiredTabsEnum }) => <div data-testid={props.tab} />
+}))
+
 jest.mock('./pages/Users/Wifi/ClientList', () => ({
   ...jest.requireActual('./pages/Users/Wifi/ClientList'),
   WifiClientList: (props: { tab: WirelessTabsEnum }) => <div data-testid={props.tab} />
@@ -182,6 +196,14 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
 
 jest.mock('./pages/Devices/IotController', () => ({
   IotController: () => <div data-testid='IotController' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerDetails', () => ({
+  IotControllerDetails: () => <div data-testid='IotControllerDetails' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerForm', () => ({
+  IotControllerForm: () => <div data-testid='IotControllerForm' />
 }))
 
 jest.mock('./pages/Timeline', () => () => {
@@ -1311,6 +1333,38 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+    })
+
+    /* Wired Client */
+    test('should redirect users/wired/switch to users/wired/switch/clients', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/switch/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/wifi/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/wifi/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.AP_CLIENTS)).toBeVisible()
     })
   })
 

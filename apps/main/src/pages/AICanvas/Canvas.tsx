@@ -6,9 +6,14 @@ import { useIntl }                      from 'react-intl'
 
 import { Button, Dropdown, Tooltip }                              from '@acx-ui/components'
 import { ArrowExpand, LockOutlined, GlobeOutlined, Check, Close } from '@acx-ui/icons-new'
-import { useGetCanvasQuery, useCreateCanvasMutation, useUpdateCanvasMutation,
-  useLazyGetCanvasByIdQuery, usePatchCanvasMutation } from '@acx-ui/rc/services'
+import {
+  useCreateCanvasMutation,
+  useUpdateCanvasMutation,
+  useLazyGetCanvasByIdQuery,
+  usePatchCanvasMutation
+} from '@acx-ui/rc/services'
 import { Canvas as CanvasType, trailingNorLeadingSpaces, validateDuplicateName } from '@acx-ui/rc/utils'
+import { UseQueryResult }                                                        from '@acx-ui/types'
 
 import Layout                                     from './components/Layout'
 import ManageCanvasDrawer                         from './components/ManageCanvasDrawer'
@@ -50,6 +55,7 @@ export interface CardInfo {
   widgetId?: string
   chatId?: string
   canvasId?: string
+  timeRange?: string
 }
 export interface Group {
   id: string
@@ -95,6 +101,7 @@ export const DEFAULT_CANVAS = [
 export interface CanvasRef {
   save: () => Promise<void>
   removeShadowCard: () => void
+  createNewCanvas: () => void
   currentCanvas: CanvasType
 }
 
@@ -116,15 +123,18 @@ interface CanvasProps {
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
   editCanvasId?: string
+  getCanvasQuery: UseQueryResult<CanvasType[]>
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({
-  onCanvasChange, groups, setGroups, checkChanges, canvasHasChanges, editCanvasId }, ref) => {
+  getCanvasQuery, onCanvasChange, groups, setGroups,
+  checkChanges, canvasHasChanges, editCanvasId }, ref) => {
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState(editCanvasId || '')
   const [diffWidgetIds, setDiffWidgetIds] = useState([] as string[])
   const [currentCanvas, setCurrentCanvas] = useState({} as CanvasType)
+  const [previewData, setPreviewData] = useState({} as CanvasType)
   const [layout, setLayout] = useState(layoutConfig)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
@@ -137,8 +147,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
-  const { data: canvasList } = useGetCanvasQuery({})
   const [form] = Form.useForm()
+  const { data: canvasList, isFetching: isCanvasFetching } = getCanvasQuery
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -176,7 +186,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList && !editCanvasId) {
+    if(canvasList && !editCanvasId && !isCanvasFetching) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
@@ -257,6 +267,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const setupCanvas = (response: CanvasType) => {
     setCurrentCanvas(response)
+    setPreviewData(response)
     setVisibilityType(response.visible ? 'public' : 'private')
     if(isEditName){
       setIsEditName(false)
@@ -314,6 +325,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   useImperativeHandle(ref, () => ({
     save: onSave,
     removeShadowCard: removeShadowCard,
+    createNewCanvas: onNewCanvas,
     currentCanvas: currentCanvas
   }))
 
@@ -367,6 +379,18 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const onCancelEditCanvasName = () => {
     setIsEditName(false)
+  }
+
+  const onPreview = () => {
+    const tmpSection = _.cloneDeep(sections)
+    tmpSection[0].groups = _.cloneDeep(groups)
+    setPreviewData(
+      {
+        ...currentCanvas,
+        content: JSON.stringify(tmpSection)
+      }
+    )
+    setPreviewModalVisible(true)
   }
 
   const onSubmit = (value: { name:string }) => {
@@ -512,7 +536,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                   <div className='type'>
                     <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
                     <div>
-                      {$t({ defaultMessage: `Hide this canvas from the public. 
+                      {$t({ defaultMessage: `Hide this canvas from the public.
                           The canvas will be visible to the owner only.` })}
                     </div>
                   </div>
@@ -528,7 +552,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
               />
             </>
           }
-          <Button className='black' onClick={()=>{setPreviewModalVisible(true)}}>
+          <Button className='black' onClick={onPreview}>
             {$t({ defaultMessage: 'Preview' })}
           </Button>
           <Button type='primary' onClick={()=>{onSave()}}>
@@ -560,7 +584,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       }
       {
         previewModalVisible && <PreviewDashboardModal
-          data={[currentCanvas]}
+          data={[previewData]}
           visible={previewModalVisible}
           setVisible={setPreviewModalVisible}
         />

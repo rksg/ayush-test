@@ -3,26 +3,44 @@ import { ApiInfo } from '@acx-ui/utils'
 export const IotUrlsInfo: { [key: string]: ApiInfo } = {
   addIotController: {
     method: 'post',
-    url: '/iotController',
+    url: '/iotControllers',
     newApi: true,
-    opsApi: 'POST:/iotController'
+    opsApi: 'POST:/iotControllers'
   },
   getIotController: {
     method: 'get',
-    url: '/iotController/:serialNumber',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'GET:/iotController/{serialNumber}'
+    opsApi: 'GET:/iotControllers/{id}'
   },
-  getIotControllerList: {
-    method: 'post',
-    url: '/iots/query',
+  updateIotController: {
+    method: 'PATCH',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'POST:/iots/query'
+    opsApi: 'PATCH:/iotControllers/{id}'
   },
   deleteIotController: {
     method: 'delete',
-    url: '/iots/:iotId',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'DELETE:/iotController/{iotId}'
+    opsApi: 'DELETE:/iotControllers/{id}'
+  },
+  getIotControllerList: {
+    method: 'post',
+    url: '/iotControllers/query',
+    newApi: true,
+    opsApi: 'POST:/iotControllers/query'
+  },
+  testConnectionIotController: {
+    method: 'PATCH',
+    url: '/iotControllers/diagnosisCommands',
+    newApi: true,
+    opsApi: 'PATCH:/iotControllers/diagnosisCommands'
+  },
+  getIotControllerDashboard: {
+    method: 'get',
+    url: '/iotControllers/:iotId/dashboard',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
   }
 }

@@ -20,6 +20,7 @@ import {
   PropertyUrlsInfo,
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo,
+  SamlIdpProfileUrls,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -88,10 +89,24 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
   },
   [ServiceType.WEBAUTH_SWITCH]: {
-    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
-    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
-    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
-    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+    [ServiceOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+  },
+  [ServiceType.PORTAL_PROFILE]: { // include PORTAL & WEBAUTH_SWITCH
+    [ServiceOperation.CREATE]: [
+      'POST:/portalServiceProfiles',
+      getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [ServiceOperation.EDIT]: [
+      'PUT:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [ServiceOperation.DELETE]: [
+      'DELETE:/portalServiceProfiles/{id}',
+      getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [ServiceOperation.LIST]: [
+      'POST:/portalServiceProfiles/query',
+      getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   },
   [ServiceType.RESIDENT_PORTAL]: {
     [ServiceOperation.CREATE]: [getOpsApi(PropertyUrlsInfo.addResidentPortal)],
@@ -143,6 +158,15 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: ['PUT:/switchAccessControlProfiles/{id}'],
     [PolicyOperation.DELETE]: ['DELETE:/switchAccessControlProfiles/{id}'],
     [PolicyOperation.LIST]: ['POST:/switchAccessControlProfiles/query']
+  },
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: {
+    [PolicyOperation.CREATE]: ['POST:/accessControlProfiles', 'POST:/switchAccessControlProfiles'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.EDIT]: ['PUT:/accessControlProfiles/{id}', 'PUT:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.DELETE]: ['DELETE:/accessControlProfiles/{id}', 'DELETE:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.LIST]: ['POST:/accessControlProfiles/query', 'POST:/switchAccessControlProfiles/query']
   },
   [PolicyType.LAYER_2_POLICY]: {
     [PolicyOperation.CREATE]: ['POST:/l2AclPolicies'],
@@ -287,6 +311,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
+  },
+  [PolicyType.SAML_IDP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SamlIdpProfileUrls.createSamlIdpProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SamlIdpProfileUrls.updateSamlIdpProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SamlIdpProfileUrls.deleteSamlIdpProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SamlIdpProfileUrls.getSamlIdpProfileViewDataList)]
   },
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],

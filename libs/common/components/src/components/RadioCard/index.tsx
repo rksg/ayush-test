@@ -34,16 +34,16 @@ export type RadioCardProps = RadioProps & {
   helpIcon?: React.ReactNode
 }
 
-const categoryMapping = {
-  wifi: {
+export const categoryMapping = {
+  [RadioCardCategory.WIFI]: {
     text: defineMessage({ defaultMessage: 'Wi-Fi' }),
     color: '--acx-accents-blue-60'
   },
-  switch: {
+  [RadioCardCategory.SWITCH]: {
     text: defineMessage({ defaultMessage: 'Switch' }),
     color: '--acx-semantics-green-60'
   },
-  edge: {
+  [RadioCardCategory.EDGE]: {
     text: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
     color: '--acx-semantics-yellow-60'
   }
@@ -73,3 +73,5 @@ export function RadioCard ({
 }
 
 RadioCard.Radio = Radio
+RadioCard.Category = Category
+RadioCard.CategoryWrapper = CategoryWrapper

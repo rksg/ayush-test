@@ -9,11 +9,45 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
+
+import { getStreamingWordingKey } from './index.utils'
 
 import AICanvas from '.'
 
+const currentCanvas = {
+  id: '001',
+  name: 'Dashboard Canvas',
+  visible: true,
+  dashboardIds: ['123'],
+  content: `[{
+    "id":"default_section",
+    "type":"section",
+    "hasTab":false,
+    "groups":[
+      {
+        "id":"default_group",
+        "sectionId":"default_section",
+        "type":"group",
+        "cards":[
+          {
+            "axisType":"category","multiSeries":false,"chartType":"bar","chartOption":{
+            "dimensions":["Current Connection Status","AP Count"],
+            "source":[["Offline",3],["Online",1]],
+            "seriesEncode":[{"x":"AP Count","y":"Current Connection Status","seriesName":null}],
+            "multiSeries":false},"sessionId":"989a8e31-f282-497e-be3b-14478f5c1cf9",
+            "id":"685e5931349d4f86867419a67dc93ec92d8900ce-29d3-4677-9ddc-0c5aae9ade15",
+            "chatId":"685e5931349d4f86867419a67dc93ec9","type":"card","isShadow":false,
+            "width":2,"height":6,"currentSizeIndex":0,
+            "sizes":[{"width":2,"height":6},{"width":3,"height":10},{"width":4,"height":12}],
+            "gridx":0,"gridy":0}]
+          }
+        ]
+      }
+    ]`
+}
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
 jest.mock('./Canvas', () => {
@@ -30,7 +64,7 @@ const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
-  const Button = jest.requireActual('@acx-ui/components').Button
+  const Button = jest.requireActual('antd').Button
   const Card = jest.requireActual('@acx-ui/components').Card
   return {
     Card,
@@ -118,6 +152,18 @@ jest.mock('@acx-ui/rc/services', () => {
               role: 'SYSTEM',
               text: 'Some older messages have been removed due to the 30-day retention policy',
               created: '2025-02-06T02:10:46.264+00:00'
+            },
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'AI',
+              text: 'Hello! I can help you!',
+              created: '2025-01-20T09:56:11.265+00:00'
             }
           ] })
       }))
@@ -145,6 +191,38 @@ jest.mock('@acx-ui/rc/services', () => {
           totalCount: 2
         } })
     ],
+    useGetCanvasQuery: () => ({ data: [
+      currentCanvas,
+      {
+        id: '002',
+        name: 'Second Canvas',
+        content: ''
+      }
+    ] }),
+    useStreamChatsAiMutation: () => [
+      jest.fn().mockResolvedValue({
+        data: {
+          sessionId: 'b2c7f415-4306-4ecf-a001-dd7288eca7f8',
+          title: 'New Chat',
+          updatedDate: '2025-01-20T09:56:05.006+00:00',
+          messages: [
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'STATUS',
+              text: '0',
+              created: '2025-01-20T09:56:11.265+00:00'
+            }
+          ],
+          totalCount: 2
+        } })
+    ],
+    useStopChatMutation: jest.fn(() => [jest.fn()]),
     useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })
@@ -301,6 +379,7 @@ describe('AICanvas', () => {
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
     const searchBtn = await screen.findByTestId('search-button')
+    await waitFor(() => expect(searchBtn).not.toBeDisabled())
     fireEvent.click(searchBtn)
     expect(await screen.findByText('hello')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
@@ -322,12 +401,12 @@ describe('AICanvas', () => {
     expect(feedbackSection).not.toBeVisible()
 
     const thumbsUpButtons = await screen.findAllByTestId('thumbs-up-btn')
-    expect(thumbsUpButtons).toHaveLength(2)
-    await userEvent.click(thumbsUpButtons[0])
+    expect(thumbsUpButtons).toHaveLength(3)
+    await userEvent.click(thumbsUpButtons[1])
     expect(mockedSendFeedback).toBeCalledTimes(0)
     const thumbsDownButtons = await screen.findAllByTestId('thumbs-down-btn')
-    expect(thumbsDownButtons).toHaveLength(2)
-    await userEvent.click(thumbsDownButtons[0])
+    expect(thumbsDownButtons).toHaveLength(3)
+    await userEvent.click(thumbsDownButtons[1])
     expect(mockedSendFeedback).toHaveBeenCalledWith({
       params: expect.objectContaining({
         sessionId: expect.any(String),
@@ -347,5 +426,27 @@ describe('AICanvas', () => {
     const computedStyle = window.getComputedStyle(fixedElements[0])
     const widthInPixels = parseFloat(computedStyle.width)
     expect(widthInPixels).toBe(300)
+  })
+})
+
+describe('Test utils', () => {
+  it('Test getStreamingWordingKey', async () => {
+    expect(getStreamingWordingKey('0')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('1')).toBe('INITIALIZING_INTENT')
+    expect(getStreamingWordingKey('2')).toBe('SELECTING_DATA_SOURCES')
+    expect(getStreamingWordingKey('3')).toBe('PROCESSING_DATA_INITIAL')
+    expect(getStreamingWordingKey('1.1')).toBe('PROCESSING_DATA_RETRY_1_1')
+    expect(getStreamingWordingKey('2.1')).toBe('PROCESSING_DATA_RETRY_2_1')
+    expect(getStreamingWordingKey('3.1')).toBe('PROCESSING_DATA_RETRY_3_1')
+    expect(getStreamingWordingKey('1.2')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.2')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('3.2')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('1.3')).toBe('PROCESSING_DATA_RETRY_1_2')
+    expect(getStreamingWordingKey('2.3')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('2.5')).toBe('PROCESSING_DATA_RETRY_2_2')
+    expect(getStreamingWordingKey('3.5')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('4.3')).toBe('PROCESSING_DATA_RETRY_3_2')
+    expect(getStreamingWordingKey('4')).toBe('FINALIZING_RESULT')
+    expect(getStreamingWordingKey('5')).toBe('FINALIZING_RESULT')
   })
 })

@@ -89,7 +89,9 @@ import EdgeDetails                                  from './pages/Devices/Edge/E
 import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
-import IotController                                from './pages/Devices/IotController'
+import { IotController }                            from './pages/Devices/IotController'
+import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
+import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -202,6 +204,8 @@ import PersonalIdentityNetworkTable          from './pages/Services/PersonalIden
 import PersonalIdentityNetworkTableEnhanced  from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                   from './pages/Services/Portal/PortalDetail'
 import PortalTable                           from './pages/Services/Portal/PortalTable'
+import PortalProfile                         from './pages/Services/PortalProfile'
+import CreatePortalProfile                   from './pages/Services/PortalProfile/create'
 import ResidentPortalDetail                  from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                     from './pages/Services/SelectServiceForm'
@@ -215,6 +219,7 @@ import SwitchClientList                      from './pages/Users/Switch/ClientLi
 import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
+import { WiredClientList, WiredTabsEnum }    from './pages/Users/Wired'
 
 
 export default function RcRoutes () {
@@ -381,6 +386,15 @@ function DeviceRoutes () {
         } />
 
       <Route path='devices/iotController' element={<IotController />} />
+      <Route
+        path='devices/iotController/add'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/:action'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/details/:activeTab'
+        element={<IotControllerDetails />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
@@ -668,6 +682,7 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
 
   return rootRoutes(
@@ -785,6 +800,26 @@ function ServiceRoutes () {
 
       {(isEdgePinReady) && pinRoutes}
 
+      {isPortalProfileEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
+          element={<CreatePortalProfile />}
+        />
+        <Route
+          path='services/portalProfile/:activeTab'
+          element={<PortalProfile />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/pin' />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/guest' />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
@@ -1085,6 +1120,15 @@ function PolicyRoutes () {
         element={<AccessControlTable />}
       />
       {isSwitchMacAclEnabled && <>
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, SwitchScopes.CREATE]}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
         <Route
           path='policies/accessControls/create'
           element={
@@ -1755,6 +1799,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1776,11 +1821,23 @@ function UserRoutes () {
         <Route path=':activeTab' element={<WifiClientDetails />} />
         <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
       </Route>
-      <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
-      <Route path='users/switch/clients'
-        element={<SwitchClientList />} />
-      <Route path='users/switch/clients/:clientId'
-        element={<SwitchClientDetailsPage />} />
+      {(!isSupportWifiWiredClient)
+        ? <>
+          <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
+          <Route path='users/switch/clients'
+            element={<SwitchClientList />} />
+          <Route path='users/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+        </> : <>
+          <Route path='users/wired/switch' element={<TenantNavigate replace to='/users/wired/switch/clients' />} />
+          <Route path='users/wired/switch/clients'
+            element={<WiredClientList tab={WiredTabsEnum.SWITCH_CLIENTS}/>} />
+          <Route path='users/wired/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+          <Route path='users/wired/wifi/clients'
+            element={<WiredClientList tab={WiredTabsEnum.AP_CLIENTS} />} />
+        </>
+      }
       {(isCloudpathBetaEnabled)
         ? <>
           <Route

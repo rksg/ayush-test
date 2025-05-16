@@ -255,7 +255,8 @@ export function NetworkVenuesTab () {
 
   const { data: networkDetailHeader } = useNetworkDetailHeaderQuery({
     params: params,
-    payload: { isTemplate }
+    payload: { isTemplate },
+    enableRbac: resolvedRbacEnabled
   })
 
   const [
