@@ -219,6 +219,7 @@ import SwitchClientList                      from './pages/Users/Switch/ClientLi
 import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
+import { WiredClientList, WiredTabsEnum }    from './pages/Users/Wired'
 
 
 export default function RcRoutes () {
@@ -1798,6 +1799,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1819,11 +1821,23 @@ function UserRoutes () {
         <Route path=':activeTab' element={<WifiClientDetails />} />
         <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
       </Route>
-      <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
-      <Route path='users/switch/clients'
-        element={<SwitchClientList />} />
-      <Route path='users/switch/clients/:clientId'
-        element={<SwitchClientDetailsPage />} />
+      {(!isSupportWifiWiredClient)
+        ? <>
+          <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
+          <Route path='users/switch/clients'
+            element={<SwitchClientList />} />
+          <Route path='users/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+        </> : <>
+          <Route path='users/wired/switch' element={<TenantNavigate replace to='/users/wired/switch/clients' />} />
+          <Route path='users/wired/switch/clients'
+            element={<WiredClientList tab={WiredTabsEnum.SWITCH_CLIENTS}/>} />
+          <Route path='users/wired/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+          <Route path='users/wired/wifi/clients'
+            element={<WiredClientList tab={WiredTabsEnum.AP_CLIENTS} />} />
+        </>
+      }
       {(isCloudpathBetaEnabled)
         ? <>
           <Route
