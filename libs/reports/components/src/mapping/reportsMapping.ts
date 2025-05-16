@@ -58,11 +58,11 @@ export const reportAccountTierMapping: Partial<Record<AccountTier, ReportType[]>
 }
 
 export const getDataStudioReportName = (
-  reportType: ReportType, accountTier: AccountTier, reportsFoundationTierToggle: boolean
+  reportType: ReportType, accountTier: AccountTier, reportsCoreTierToggle: boolean
 ): string => {
   const reportName = reportTypeDataStudioMapping[reportType]
   if (
-    !reportsFoundationTierToggle ||
+    !reportsCoreTierToggle ||
     !accountTier ||
     !(reportAccountTierMapping[accountTier] ?? []).includes(reportType)
   ) {
