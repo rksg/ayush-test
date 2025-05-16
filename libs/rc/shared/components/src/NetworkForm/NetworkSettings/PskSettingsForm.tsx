@@ -415,7 +415,7 @@ function SettingsForm () {
       { ( isWifiIdentityManagementEnable &&
           !isMacRegistrationList &&
           !isTemplate ) &&
-          <IdentityGroup comboWidth='200px' />}
+          <IdentityGroup />}
     </Space>
   )
 }
