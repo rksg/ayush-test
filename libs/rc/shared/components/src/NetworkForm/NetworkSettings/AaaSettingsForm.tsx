@@ -223,7 +223,7 @@ function SettingsForm () {
         {
           (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
           <Form.Item>
-            <IdentityGroup comboWidth='210px' />
+            <IdentityGroup />
           </Form.Item>
         }
         <div>
