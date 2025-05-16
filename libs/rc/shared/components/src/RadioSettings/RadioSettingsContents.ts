@@ -262,6 +262,18 @@ export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioTy
   }
 }
 
+// eslint-disable-next-line max-len
+export const setValueForRadioType = (state: StateOfIsUseVenueSettings, radioType: RadioType, value: boolean): StateOfIsUseVenueSettings => {
+  return {
+    ...state,
+    ...(radioType === RadioType.Normal24GHz && { isUseVenueSettings24G: value }),
+    ...(radioType === RadioType.Normal5GHz && { isUseVenueSettings5G: value }),
+    ...(radioType === RadioType.Normal6GHz && { isUseVenueSettings6G: value }),
+    ...(radioType === RadioType.Lower5GHz && { isUseVenueSettingsLower5G: value }),
+    ...(radioType === RadioType.Upper5GHz && { isUseVenueSettingsUpper5G: value })
+  }
+}
+
 export const getRadioTypeDisplayName = (radioType: RadioType) => {
   switch (radioType) {
     case RadioType.Normal24GHz:

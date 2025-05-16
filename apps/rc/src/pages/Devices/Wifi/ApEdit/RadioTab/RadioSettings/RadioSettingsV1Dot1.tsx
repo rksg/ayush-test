@@ -29,7 +29,7 @@ import {
   findIsolatedGroupByChannel,
   ApRadioTypeDataKeyMap,
   isCurrentTabUseVenueSettings,
-  toggleState,
+  setValueForRadioType,
   getRadioTypeDisplayName,
   RadioType,
   StateOfIsUseVenueSettings
@@ -1164,17 +1164,19 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
     handleChange()
   }
 
-  const handleStateOfIsUseVenueSettingsChange = () => {
+  const handleStateOfIsUseVenueSettingsChange = (e: RadioChangeEvent) => {
+    const nextValue = e.target.value
+
     // 1. set updatedState
     const updatedState = summarizedStateOfIsUseVenueSettings(
-      toggleState(stateOfIsUseVenueSettings, currentTab))
+      setValueForRadioType(stateOfIsUseVenueSettings, currentTab, nextValue))
 
     setStateOfIsUseVenueSettings(updatedState)
 
     const currentSettings = formRef?.current?.getFieldsValue()
     // 2. save cached if isUseVenue is true
     // (that means toggle radio settings from useCustomize to useVenue, therefore we save current customized settings to cache for restoring later)
-    const isUseVenue= isCurrentTabUseVenueSettings(updatedState, currentTab)
+    const isUseVenue= nextValue
     if (isUseVenue) {
       cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab)
     }
