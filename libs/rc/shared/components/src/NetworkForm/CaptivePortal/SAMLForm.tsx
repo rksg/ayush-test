@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { Button, Form, Input, Space } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { Button, Divider, Form, Input } from 'antd'
+import { useIntl }                      from 'react-intl'
 
 import { Drawer, GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
@@ -26,6 +26,7 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
+import * as UI                                   from './styledComponents'
 
 export const SAMLForm = () => {
   const { data, editMode, isRuckusAiMode, cloneMode } =
@@ -94,7 +95,7 @@ export const SAMLForm = () => {
           <StepsFormLegacy.Title
             children={$t({ defaultMessage: 'Onboarding' })}
           />
-          <Space>
+          <UI.DivByFraction>
             <Form.Item
               label={$t({
                 defaultMessage: 'Select Identity Provider (IdP) via SAML'
@@ -104,12 +105,11 @@ export const SAMLForm = () => {
               children={
                 <Select
                   data-testid={'saml-idp-profile-select'}
-                  style={{ width: '220px' }}
                   options={samlIdpOptions}
                 />
               }
             />
-            <Space split='|'>
+            <UI.TypeSpace split={<Divider type='vertical' />}>
               <Button
                 type='link'
                 disabled={!selectedSamlIdpProfilesId}
@@ -127,15 +127,15 @@ export const SAMLForm = () => {
                 }}>
                 {$t({ defaultMessage: 'Add' })}
               </Button>
-            </Space>
-          </Space>
+            </UI.TypeSpace>
+          </UI.DivByFraction>
           <Form.Item
             noStyle
             name={'samlIdpProfilesName'}
             hidden
             children={<Input hidden />}
           />
-          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='220px' />}
+          {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup />}
           <WlanSecurityFormItems />
           <RedirectUrlInput />
           <DhcpCheckbox />
