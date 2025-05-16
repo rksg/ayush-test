@@ -26,7 +26,7 @@ describe('QuotaUsageBar', () => {
     expect(await screen.findByText('49.9 GB of data remaining')).toBeVisible()
     expect(await screen.findByText('100 MB of 50 GB used (0%)')).toBeVisible()
   })
-  it('should render correct 20%', async () => {
+  it('should render correct 100% threshold exceeded', async () => {
     const mockedOnClick = jest.fn()
     mockServer.use(
       rest.get(
@@ -44,7 +44,7 @@ describe('QuotaUsageBar', () => {
     await userEvent.click(screen.getByTestId('sync-button'))
     expect(mockedOnClick).toBeCalled()
   })
-  it('should render correct 100% threshold exceeded', async () => {
+  it('should render correct 20% ', async () => {
     const mockedOnClick = jest.fn()
     mockServer.use(
       rest.get(
