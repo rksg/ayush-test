@@ -724,7 +724,7 @@ describe('data transformer', () => {
   const mockGivenData = _.cloneDeep(mockClusterConfigWizardData)
 
   // eslint-disable-next-line max-len
-  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings']) =>
+  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings'], isCoreAccessEnabled?: boolean) =>
     _.cloneDeep(lagSettings)
       .map(item => ({
         ...item,
@@ -741,11 +741,14 @@ describe('data transformer', () => {
           ),
           natEnabled: lag.portType === EdgePortTypeEnum.WAN ? lag.natEnabled : false,
           ipMode: lag.portType === EdgePortTypeEnum.WAN ? lag.ipMode : EdgeIpModeEnum.STATIC,
-          gateway: !lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN ? '' : lag.gateway
+          gateway: (!lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) ?
+            (isCoreAccessEnabled ? (lag.accessPortEnabled ? lag.gateway :'') : '') :
+            lag.gateway
         }))
       }))
 
-  const getExpectedPorts = (portSettings: InterfaceSettingsFormType['portSettings']) => {
+  // eslint-disable-next-line max-len
+  const getExpectedPorts = (portSettings: InterfaceSettingsFormType['portSettings'], isCoreAccessEnabled?: boolean) => {
     return Object.entries(portSettings).map(([serialNumber, ports]) => ({
       serialNumber,
       ports: Object.values(ports).flat().map(port =>
@@ -759,7 +762,10 @@ describe('data transformer', () => {
                   false :
                   port.accessPortEnabled
               } : {}
-          )
+          ),
+          gateway: (!port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) ?
+            (isCoreAccessEnabled ? (port.accessPortEnabled ? port.gateway :'') : '') :
+            port.gateway
         })
       )
     }))
@@ -799,8 +805,8 @@ describe('data transformer', () => {
       true
     )
 
-    const expectLags = getExpectLags(mockData.lagSettings)
-    const expectPorts = getExpectedPorts(mockData.portSettings)
+    const expectLags = getExpectLags(mockData.lagSettings, true)
+    const expectPorts = getExpectedPorts(mockData.portSettings, true)
 
     expect(result).toStrictEqual({
       lagSettings: expectLags,

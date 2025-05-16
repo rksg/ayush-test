@@ -29,7 +29,8 @@ export enum IncompatibilityFeatures {
   EDGE_MDNS_PROXY = 'MDNS_PROXY', // edge mDNS
   ARP_TERMINATION = 'ARP_TERMINATION',
   L2OGRE = 'L2oGRE',
-  DUAL_WAN = 'Dual WAN'
+  DUAL_WAN = 'Dual WAN',
+  MULTI_NAT_IP = 'Multi NAT IP'
 }
 
 export enum IncompatibilityFeatureGroups {
