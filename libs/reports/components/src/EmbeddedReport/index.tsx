@@ -214,13 +214,13 @@ export function EmbeddedReport (props: ReportProps) {
   const isRA = get('IS_MLISA_SA')
   const { accountTier = undefined } = getUserProfileR1() || {}
   const isCore = isCoreTier(accountTier as AccountTier)
-  const reportsFoundationTierToggle =
-    useIsSplitOn(Features.ACX_UI_REPORTS_FOUNDATION_TIER_TOGGLE) && !isRA
+  const reportsCoreTierToggle =
+    useIsSplitOn(Features.ACX_UI_REPORTS_CORE_TIER_TOGGLE) && !isRA
 
   const embedDashboardName = getDataStudioReportName(
     reportName,
     accountTier as AccountTier,
-    reportsFoundationTierToggle
+    reportsCoreTierToggle
   )
   const systems = useSystems()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA

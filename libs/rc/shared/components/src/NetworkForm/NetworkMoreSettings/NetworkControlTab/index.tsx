@@ -54,19 +54,23 @@ export function NetworkControlTab () {
     `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities.
     Disabling this feature stops the monitoring and reporting of these activities. ` })
 
+  const forceDhcpFieldName = ['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']
+
   const form = Form.useFormInstance()
   const [
     enableDnsProxy,
     enableAntiSpoofing,
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit,
-    enableWifiCalling
+    enableWifiCalling,
+    forceMobileDeviceDhcp
   ] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'dnsProxyEnabled']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAntiSpoofing']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableDhcpRequestRateLimit']),
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled']),
+    useWatch<boolean>(forceDhcpFieldName)
   ]
 
   useEffect(() => {
@@ -111,6 +115,12 @@ export function NetworkControlTab () {
       }))
     }
     return Promise.resolve()
+  }
+
+  const onEnableAntiSpoofing = (checked: boolean) => {
+    if(checked && !forceMobileDeviceDhcp) {
+      form.setFieldValue(forceDhcpFieldName, checked)
+    }
   }
 
   return (
@@ -179,7 +189,7 @@ export function NetworkControlTab () {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch onChange={(value) => onEnableAntiSpoofing(value)}/>}
           />
         </UI.FieldLabel>
         {enableAntiSpoofing &&
@@ -277,7 +287,7 @@ export function NetworkControlTab () {
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item
-          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          name={forceDhcpFieldName}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
