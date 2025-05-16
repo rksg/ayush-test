@@ -202,7 +202,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               />
             </UI.FormItemWrapper>
             <Form.Item
-              {...(readMode? undefined : { name: 'fallbackEnabled' })}
+              {...(readMode? undefined : { name: 'gatewayFailbackEnabled' })}
               initialValue={false}
               valuePropName='checked'
               children={
@@ -236,7 +236,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             >
               <Space>
                 <Form.Item
-                  name='primaryAvailabilityCheckInterval'
+                  name='gatewaySecondaryToPrimaryTimer'
                   initialValue={60}
                   rules={[
                     {
