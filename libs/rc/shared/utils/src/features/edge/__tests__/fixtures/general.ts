@@ -489,6 +489,7 @@ export const mockedHaNetworkSettings = {
       subnet: '',
       gateway: '',
       corePortEnabled: false,
+      accessPortEnabled: false,
       natEnabled: true,
       lagEnabled: true,
       natPools: []
@@ -508,6 +509,7 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.0.0',
       gateway: '127.1.1.0',
       corePortEnabled: false,
+      accessPortEnabled: false,
       natEnabled: false,
       lagEnabled: true,
       natPools: []
@@ -527,6 +529,7 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
       corePortEnabled: false,
+      accessPortEnabled: false,
       interfaceName: 'port1',
       maxSpeedCapa: 0.0,
       natPools: []
@@ -543,6 +546,7 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
+      accessPortEnabled: true,
       interfaceName: 'port2',
       maxSpeedCapa: 0.0,
       natPools: []
@@ -561,6 +565,7 @@ export const mockedHaNetworkSettings = {
       subnet: '',
       gateway: '',
       corePortEnabled: false,
+      accessPortEnabled: false,
       interfaceName: 'port1',
       natPools: []
     },
@@ -576,6 +581,7 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
+      accessPortEnabled: true,
       interfaceName: 'port2',
       natPools: []
     }]

@@ -2,8 +2,10 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
 import { StepsForm }                                                                                                                            from '@acx-ui/components'
+import { Features }                                                                                                                             from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                from '@acx-ui/rc/components'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen }                                                                                                                       from '@acx-ui/test-utils'
+import { render, screen, waitFor }                                                                                                              from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -21,7 +23,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgePortsGeneralBase: (
   ) => <div data-testid='rc-EdgePortsGeneralBase'>
-  </div>
+  </div>,
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const defaultCxtData = {
@@ -141,5 +144,51 @@ describe('InterfaceSettings - PortForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     // eslint-disable-next-line max-len
     await screen.findByText('Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.')
+  })
+
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should not be blocked when node does not exist valid gateway setting when access port FF is on', async () => {
+      const mockFinishFn = jest.fn()
+      const mockNoWanPortData = _.cloneDeep(mockedHaWizardNetworkSettings)
+      Object.keys(mockNoWanPortData.portSettings).forEach(sn => {
+        Object.keys(mockNoWanPortData.portSettings[sn]).forEach(port => {
+          if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.WAN) {
+            mockNoWanPortData.portSettings[sn][port][0].portType = EdgePortTypeEnum.LAN
+          }
+
+          if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.LAN) {
+            mockNoWanPortData.portSettings[sn][port][0].corePortEnabled = false
+          }
+        })
+      })
+
+      render(
+        <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+          <StepsForm initialValues={mockNoWanPortData} onFinish={mockFinishFn}>
+            <StepsForm.StepForm>
+              <PortForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(screen.getByText('Port General Settings')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+      // eslint-disable-next-line max-len
+      await waitFor(() => expect(mockFinishFn).toBeCalledTimes(1))
+    })
   })
 })

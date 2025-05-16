@@ -401,6 +401,19 @@ describe('EditEdge ports - ports general', () => {
         expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
         expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
       })
+
+      it('should show gateway field when access port is checked', async () => {
+        render(<MockedComponent />)
+
+        await screen.findByText(/00:0c:29:b6:ad:04/i)
+        // disabled WAN port
+        await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+        await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Access port' }))
+        await userEvent.click(await screen.findByRole('radio', { name: 'Static/Manual' }))
+        expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
+      })
     })
   })
 })
