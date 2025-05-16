@@ -235,6 +235,8 @@ export function SwitchLayer2ACL () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <Loader
       states={[tableQuery]}
@@ -249,10 +251,8 @@ export function SwitchLayer2ACL () {
         pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
         actions={allowedActions}
-        rowActions={rowActions}
-        rowSelection={{
-          type: 'checkbox'
-        }}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         stickyHeaders={false}
       />
     </Loader>

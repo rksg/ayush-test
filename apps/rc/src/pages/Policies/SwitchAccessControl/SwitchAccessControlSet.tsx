@@ -11,6 +11,7 @@ import {
 import { Features, useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
   SwitchAccessControl,
   SwitchUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
@@ -155,6 +156,8 @@ export function SwitchAccessControlSet () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <Loader
@@ -169,10 +172,8 @@ export function SwitchAccessControlSet () {
           onFilterChange={tableQuery.handleFilterChange}
           pagination={tableQuery.pagination}
           dataSource={tableQuery.data?.data}
-          rowActions={rowActions}
-          rowSelection={{
-            type: 'checkbox'
-          }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           stickyHeaders={false}
         />
       </Loader>
