@@ -80,6 +80,10 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   useEffect(() => {
     if (!policyId || !softGreData) return
 
+    if (softGreData.gatewayFailbackEnabled) {
+      setFallbackEnable(softGreData.gatewayFailbackEnabled)
+    }
+
     form.setFieldsValue(softGreData)
 
   }, [policyId, softGreData, form])
