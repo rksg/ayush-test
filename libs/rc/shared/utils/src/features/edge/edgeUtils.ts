@@ -156,7 +156,10 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 }
 
 // eslint-disable-next-line max-len
-export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
+export const convertEdgeNetworkIfConfigToApiPayload = (
+  formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface,
+  isEdgeCoreAccessSeparationReady?: boolean
+) => {
   const payload = _.cloneDeep(formData)
 
   switch (payload.portType) {
@@ -167,18 +170,35 @@ export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithSta
       }
       break
     case EdgePortTypeEnum.LAN:
-      // normal(non-corePort) LAN port
-      if (payload.corePortEnabled === false) {
-
-        // should clear all non core port LAN port's gateway.
-        if (payload.gateway) {
-          payload.gateway = ''
+      if(isEdgeCoreAccessSeparationReady) {
+        // normal(non-accessPort) LAN port
+        if (!payload.accessPortEnabled) {
+          // should clear all non core port LAN port's gateway.
+          if (payload.gateway) {
+            payload.gateway = ''
+          }
         }
+        if(!payload.corePortEnabled && !payload.accessPortEnabled) {
+          // prevent LAN port from using DHCP
+          // when it had been core port before but not a core port now.
+          if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+            payload.ipMode = EdgeIpModeEnum.STATIC
+          }
+        }
+      } else {
+        // normal(non-corePort) LAN port
+        if (!payload.corePortEnabled) {
 
-        // prevent LAN port from using DHCP
-        // when it had been core port before but not a core port now.
-        if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-          payload.ipMode = EdgeIpModeEnum.STATIC
+          // should clear all non core port LAN port's gateway.
+          if (payload.gateway) {
+            payload.gateway = ''
+          }
+
+          // prevent LAN port from using DHCP
+          // when it had been core port before but not a core port now.
+          if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+            payload.ipMode = EdgeIpModeEnum.STATIC
+          }
         }
       }
       break
