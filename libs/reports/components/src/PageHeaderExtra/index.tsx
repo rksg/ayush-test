@@ -46,7 +46,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
     />
   ]
   showFilter && !isNetworkFilterDisabled && component.unshift(
-    get('IS_MLISA_SA')
+    isRA
       ? <SANetworkFilter
         key={getShowWithoutRbacCheckKey('sa-network-filter')}
         shouldQueryAp={isAPReport}
