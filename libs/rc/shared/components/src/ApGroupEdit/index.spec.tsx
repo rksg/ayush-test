@@ -11,8 +11,8 @@ import {
   FirmwareUrlsInfo,
   CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   apDeviceRadio,
@@ -34,7 +34,7 @@ const mockAPGroupList = {
   page: 1,
   data: [
     {
-      id: 'ac333e4988e846d59cd7c2e648088b0a',
+      id: 'apgroup-id',
       venueId: '5e75f787e010471984b18ad0eb156487'
     }
   ]
@@ -46,6 +46,30 @@ const setEditRadioContextDataFn = jest.fn()
 const mockedGetApGroupRadioCustomization = jest.fn()
 const mockedUpdateApGroupRadioCustomization = jest.fn()
 const mockedGetApGroupDefaultRegulatoryChannels = jest.fn()
+const mockedGetApGroupBandModeSettings = jest.fn()
+
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) => {
+    delete otherProps.dropdownClassName
+    return (
+      <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {children}
+      </select>
+    )
+  }
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -180,7 +204,7 @@ describe('AP Group Edit', () => {
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(2)
+    expect(tabs).toHaveLength(6) // 2 tabs and 4 radio tabs
 
     fireEvent.click(await screen.findByRole('tab', { name: 'General' }))
 
@@ -330,7 +354,10 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
         (_, res, ctx) => res(ctx.json([{ model: 'R760' }]))),
       rest.get(
         WifiRbacUrlsInfo.getApGroupBandModeSettings.url,
-        (_, res, ctx) => res(ctx.json(apGroupTripleBandMode))),
+        (_, res, ctx) => {
+          mockedGetApGroupBandModeSettings()
+          return res(ctx.json(apGroupTripleBandMode))
+        }),
       rest.get(
         WifiRbacUrlsInfo.getApGroupApCapabilities.url,
         (_, res, ctx) => res(ctx.json(apGroupApCaps)))
@@ -342,7 +369,6 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          venueId: venuelist.data[0].id,
           isEditMode: true, isApGroupTableFlag: true
         }}>
           <ApGroupEdit />
@@ -352,14 +378,13 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       }
     )
 
-    await waitFor(() => {
-      expect(mockedApGroupListReq).toHaveBeenCalled()
-    })
-
-    expect(mockedGetApGroupDefaultRegulatoryChannels).not.toHaveBeenCalled()
+    await waitFor(() => { expect(mockedApGroupListReq).toHaveBeenCalled() })
+    await waitFor(() => { expect(mockedGetApGroupBandModeSettings).toHaveBeenCalled() })
 
     expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
     expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
@@ -367,5 +392,10 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     const customizeBandMode = screen.getByText(/customize settings/i)
     userEvent.click(customizeBandMode)
     expect(await screen.findByText(/r760/i)).toBeVisible()
+
+    let customizeRadio = screen.getByText(/customize 2\.4 ghz settings/i)
+    userEvent.click(customizeRadio)
+
+    expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()
   })
 })

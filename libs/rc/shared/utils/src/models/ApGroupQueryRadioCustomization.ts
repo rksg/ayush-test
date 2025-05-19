@@ -4,21 +4,21 @@ import { ApGroupRadioParams6G }     from './ApGroupRadioParams6G'
 import { ApGroupRadioParamsDual5G } from './ApGroupRadioParamsDual5G'
 
 export class ApGroupQueryRadioCustomization {
-  apGroupRadioParamsDual5G?: ApGroupRadioParamsDual5G
+  radioParamsDual5G?: ApGroupRadioParamsDual5G
 
-  apGroupRadioParams24G?: ApGroupRadioParams24G
+  radioParams24G?: ApGroupRadioParams24G
 
-  apGroupRadioParams50G?: ApGroupRadioParams50G
+  radioParams5G?: ApGroupRadioParams50G
 
-  apGroupRadioParams6G?: ApGroupRadioParams6G
+  radioParams6G?: ApGroupRadioParams6G
 
   constructor () {
-    this.apGroupRadioParamsDual5G = new ApGroupRadioParamsDual5G()
+    this.radioParamsDual5G = new ApGroupRadioParamsDual5G()
 
-    this.apGroupRadioParams24G = new ApGroupRadioParams24G()
+    this.radioParams24G = new ApGroupRadioParams24G()
 
-    this.apGroupRadioParams50G = new ApGroupRadioParams50G()
+    this.radioParams5G = new ApGroupRadioParams50G()
 
-    this.apGroupRadioParams6G = new ApGroupRadioParams6G()
+    this.radioParams6G = new ApGroupRadioParams6G()
   }
 }

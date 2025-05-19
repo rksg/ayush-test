@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }             from '@acx-ui/components'
+import { Filter }                  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -101,7 +101,8 @@ import {
   ApGroupRadioCustomization,
   ApGroupApModelBandModeSettings,
   ApGroupDefaultRegulatoryChannels,
-  ApExternalAntennaSettings
+  ApExternalAntennaSettings,
+  ApGroupQueryRadioCustomization
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -789,12 +790,12 @@ export const apApi = baseApApi.injectEndpoints({
           return { error: response.error }
         }
 
-        const responseData = response.data as ApGroupRadioCustomization
+        const responseData = response.data as ApGroupQueryRadioCustomization
 
         return {
           data: {
             radioParams24G: responseData.radioParams24G,
-            radioParams50G: responseData.radioParams50G,
+            radioParams50G: responseData.radioParams5G,
             radioParams60G: responseData.radioParams6G,
             radioParamsDual5G: responseData.radioParamsDual5G
           } as ApGroupRadioCustomization
@@ -812,7 +813,7 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
-    updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
+    updateApRadioCustomization: build.mutation<ApGroupQueryRadioCustomization, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)

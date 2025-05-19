@@ -267,7 +267,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     useApGroupConfigTemplateQueryFnSwitcher<ApGroupDefaultRegulatoryChannels>({
       useQueryFn: useGetApGroupDefaultRegulatoryChannelsQuery,
       useTemplateQueryFn: useGetApGroupDefaultRegulatoryChannelsQuery,
-      extraParams: { venueId }
+      extraParams: { venueId },
+      skip: !venueId
     })
 
   // Custom radio data
@@ -287,7 +288,8 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       useQueryFn: useGetApGroupRadioCustomizationQuery,
       useTemplateQueryFn: useGetApGroupRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      extraParams: { venueId, apGroupId }
+      extraParams: { venueId, apGroupId },
+      skip: !venueId
     })
 
   const [ updateApGroupRadioCustomization, { isLoading: isUpdatingApGroupRadio } ] = useApGroupConfigTemplateMutationFnSwitcher(
@@ -309,7 +311,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     })
 
   const { data: apGroupBandModeSavedData, isLoading: isLoadingApGroupBandModeData } =
-    useGetApGroupApModelBandModeSettingsQuery({ params: { venueId, apGroupId }, enableRbac: isUseRbacApi })
+    useGetApGroupApModelBandModeSettingsQuery({
+      params: { venueId, apGroupId },
+      enableRbac: isUseRbacApi
+    }, { skip: !venueId })
 
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
 
@@ -1019,6 +1024,10 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           radioParams24G: {
             ...defaultRadioSettings?.radioParams24G,
             ...data.radioParams24G
+          },
+          radioParams5G: {
+            ...defaultRadioSettings?.radioParams50G,
+            ...data.radioParams50G
           }
         },
         enableRbac: resolvedRbacEnabled
