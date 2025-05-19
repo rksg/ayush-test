@@ -1,8 +1,6 @@
-import { Dropdown, Menu, Typography }            from 'antd'
+import { Menu, Typography }      from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
-
-import { Button } from '@acx-ui/components'
 
 
 export const StepNode = styled.div<{ selected?: boolean }>`
