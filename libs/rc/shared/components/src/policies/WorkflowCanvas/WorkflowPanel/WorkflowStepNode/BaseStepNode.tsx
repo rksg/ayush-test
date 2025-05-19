@@ -77,7 +77,7 @@ export default function BaseStepNode (props: NodeProps
     })
   }
 
-  const onDeleteStepClick = (deleteChildren:Boolean) => {
+  const onDeleteStepClick = (e:any) => {
     onPreviewClose()
     onHandleNode(props)
     stepDrawerState.onClose()
@@ -90,11 +90,11 @@ export default function BaseStepNode (props: NodeProps
         entityValue: $t(ActionTypeTitle[props.type as ActionType])
           ?? $t({ defaultMessage: 'Step' })
       },
-      content: deleteChildren ?
+      content: e.key === 'deleteStepAndChildren' ?
         $t({ defaultMessage: 'Do you want to delete this step and all of its children?' })
         : $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
-        deleteChildren ?
+        e.key === 'deleteStepAndChildren' ?
           deleteStepAndDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
           : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
@@ -133,18 +133,16 @@ export default function BaseStepNode (props: NodeProps
         {workflowValidationEnhancementFFToggle ?
           <Popover
             zIndex={1000}
-            content={<Space size={12} direction={'vertical'}>
-              <UI.WhiteTextButton
-                size={'small'}
-                type={'link'}
-                onClick={() => onDeleteStepClick(false)}
-              >{$t({ defaultMessage: 'Delete step only' })}</UI.WhiteTextButton>
-              <UI.WhiteTextButton
-                size={'small'}
-                type={'link'}
-                onClick={() => onDeleteStepClick(true)}
-              >{$t({ defaultMessage: 'Delete step and children' })}</UI.WhiteTextButton>
-            </Space>}
+            content={
+              <UI.DeleteMenu
+                theme='dark'
+                selectable={false}
+                onClick={onDeleteStepClick}
+                items={[
+                  { key: 'deleteStep', label: 'Delete Step Only' },
+                  { key: 'deleteStepAndChildren', label: 'Delete Step and Children' }
+                ]}
+              />}
             trigger={'hover'}
             placement={'bottomLeft'}
             color={'var(--acx-primary-black)'}
@@ -154,7 +152,7 @@ export default function BaseStepNode (props: NodeProps
               size={'small'}
               type={'link'}
               rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
-              disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+              disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])} 
               icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
             />
           </Popover>
