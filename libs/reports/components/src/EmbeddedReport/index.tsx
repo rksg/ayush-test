@@ -25,14 +25,14 @@ import { RolesEnum as RolesEnumR1, SwitchScopes, WifiScopes } from '@acx-ui/type
 import { getUserProfile as getUserProfileR1,
   UserProfile as UserProfileR1, CustomRoleType, hasPermission,
   aiOpsApis } from '@acx-ui/user'
-import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext } from '@acx-ui/utils'
+import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext, AccountTier } from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
   ReportType,
-  reportTypeDataStudioMapping,
   reportTypeMapping,
-  networkFilterDisabledReports
+  networkFilterDisabledReports,
+  getDataStudioReportName
 } from '../mapping/reportsMapping'
 
 interface ReportProps {
@@ -212,7 +212,15 @@ export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
   const isRA = get('IS_MLISA_SA')
-  const embedDashboardName = reportTypeDataStudioMapping[reportName]
+  const { accountTier = undefined } = getUserProfileR1() || {}
+  const reportsCoreTierToggle =
+    useIsSplitOn(Features.ACX_UI_REPORTS_CORE_TIER_TOGGLE) && !isRA
+
+  const embedDashboardName = getDataStudioReportName(
+    reportName,
+    accountTier as AccountTier,
+    reportsCoreTierToggle
+  )
   const systems = useSystems()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
