@@ -48,8 +48,6 @@ export interface AdminSwapGroupData {
   role: RolesEnum
 }
 
-const MAX_SSO_GROUP_ALLOWED = 100
-
 const ProcessingPriorityComponent = function (props: {
     maxAllowedPriority: number,
     isEditing: boolean
@@ -76,7 +74,7 @@ const ProcessingPriorityComponent = function (props: {
       min={1}
       controls={true}
       autoFocus={true}
-      max={maxAllowedPriority || MAX_SSO_GROUP_ALLOWED}
+      max={maxAllowedPriority}
       onClick={(e) => e.stopPropagation()}
       onChange={debounce((value) => {
         if(value !== priority) {
@@ -97,6 +95,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
   const params = useParams()
+  const isSSOLimit100Toggle = useIsSplitOn(Features.SSO_GROUP_LIMIT100)
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
@@ -105,7 +104,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const [editingRowKey, setEditingRowKey] = useState('')
   const [isPriorityChangeLoading, setIsPriorityChangeLoading] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
-  const isSSOLimit100Toggle = useIsSplitOn(Features.SSO_GROUP_LIMIT100)
+  const MAX_SSO_GROUP_ALLOWED = isSSOLimit100Toggle ? 100 : 20
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
