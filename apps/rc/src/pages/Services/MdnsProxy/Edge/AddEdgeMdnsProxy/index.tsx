@@ -48,7 +48,7 @@ const AddEdgeMdnsProxy = () => {
         <Col span={24}>
           <AddEdgeMdnsProxyForm
             onFinish={handleFinish}
-            onCancel={() => navigate(previousPath)}
+            onCancel={() => navigate(previousPath, { replace: true })}
           />
         </Col>
       </Row>

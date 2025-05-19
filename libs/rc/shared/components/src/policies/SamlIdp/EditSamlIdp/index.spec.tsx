@@ -8,8 +8,8 @@ import {
   PolicyType,
   SamlIdpProfileUrls,
   getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { certList, mockCertName1, mockCertName2, mockCertName3, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedSamlIdpProfileList } from '../__tests__/fixtures'
 
@@ -162,6 +162,7 @@ describe('Edit SAML IdP Profile', () => {
     await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
     await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
 
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => expect(mockedMainSamlIdpProfile).toBeCalled())
@@ -222,6 +223,8 @@ describe('Edit SAML IdP Profile', () => {
     await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
     await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
 
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
     //get the Enable SAML Response Encryption switch
     const encryptionSwitch = screen.getByRole('switch', { name: 'Enable SAML Response Encryption' })
     expect(encryptionSwitch).toBeChecked()
@@ -255,6 +258,8 @@ describe('Edit SAML IdP Profile', () => {
     )
     await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
     await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     expect(screen.getByText(mockedSamlIdpProfileByURL.metadataUrl)).toBeVisible()
   })
