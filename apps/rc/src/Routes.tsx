@@ -220,6 +220,7 @@ import WifiClientDetails                     from './pages/Users/Wifi/ClientDeta
 import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
 import { WiredClientList, WiredTabsEnum }    from './pages/Users/Wired'
+import ApWiredClientDetails                  from './pages/Users/Wired/ApWiredClientDetails'
 
 
 export default function RcRoutes () {
@@ -1836,6 +1837,10 @@ function UserRoutes () {
             element={<SwitchClientDetailsPage />} />
           <Route path='users/wired/wifi/clients'
             element={<WiredClientList tab={WiredTabsEnum.AP_CLIENTS} />} />
+          <Route path='users/wired/wifi/clients/:clientId/details'>
+            <Route path='' element={<Navigate replace to='./overview' />} />
+            <Route path=':activeTab' element={<ApWiredClientDetails />} />
+          </Route>
         </>
       }
       {(isCloudpathBetaEnabled)
