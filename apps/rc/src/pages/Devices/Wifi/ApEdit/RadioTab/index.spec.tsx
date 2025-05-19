@@ -110,3 +110,26 @@ describe('AP Radio Tab', () => {
 
   })
 })
+
+describe('AP Radio Tab Radio Settings', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
+  it('should render correctly',async () => {
+    render(
+      <Provider>
+        <ApDataContext.Provider value={{
+          apData: ApData_T750SE,
+          apCapabilities: ApCap_T750SE }} >
+          <RadioTab />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
+      }
+    )
+
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
+    expect(await screen.findByTestId('radioSettings')).toBeVisible()
+  })
+})
