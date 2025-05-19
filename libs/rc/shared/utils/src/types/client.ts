@@ -177,9 +177,9 @@ export type ApWiredClientInfo = {
   venueName: string
   vlanId: number
 
-  deviceTypeStr: string
+  deviceType: string
   osType: string
-  status: number
+  authStatus: number
 }
 
 type VenueInformation = {

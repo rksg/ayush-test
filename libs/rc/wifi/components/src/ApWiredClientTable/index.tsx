@@ -18,11 +18,11 @@ import * as UI from './styledComponents'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','ipAddress','hostname','apMac'],
+  searchTargetFields: ['macAddress','ipAddress','hostname','apMacAddress'],
   filters: {},
   fields: [
     'hostname', 'macAddress', 'ipAddress',
-    'deviceTypeStr', 'osType', 'status',
+    'deviceType', 'osType', 'authStatus',
     'venueName', 'venueId',
     'apId', 'apMacAddress', 'apName',
     'portNumber', 'vlanId'
@@ -216,32 +216,32 @@ export const ApWiredClientTable = (props: {
       sorter: true,
       align: 'center'
     }, {
-      key: 'status',
+      key: 'authStatus',
       title: intl.$t({ defaultMessage: 'Auth Status' }),
-      dataIndex: 'status',
+      dataIndex: 'authStatus',
       sorter: true,
-      render: (_, { status }) => {
+      render: (_, { authStatus }) => {
         let statusText = noDataDisplay as string
-        if (status === 1) {
+        if (authStatus === 1) {
           statusText = intl.$t({ defaultMessage: 'Authorized' })
-        } else if (status === 0) {
+        } else if (authStatus === 0) {
           statusText = intl.$t({ defaultMessage: 'Unauthorized' })
-        } else if (status === -1) {
+        } else if (authStatus === -1) {
           statusText = intl.$t({ defaultMessage: 'N/A' })
         }
         return statusText
       }
     }, {
-      key: 'deviceTypeStr',
+      key: 'deviceType',
       width: 60,
       title: $t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'deviceTypeStr',
+      dataIndex: 'deviceType',
       align: 'center',
       sorter: true,
-      render: (_, { deviceTypeStr }) => {
+      render: (_, { deviceType }) => {
         return <UI.IconContainer>
-          <Tooltip title={deviceTypeStr}>
-            { getDeviceTypeIcon(deviceTypeStr) }
+          <Tooltip title={deviceType}>
+            { getDeviceTypeIcon(deviceType) }
           </Tooltip>
         </UI.IconContainer>
       }
