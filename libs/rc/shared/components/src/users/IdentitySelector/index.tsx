@@ -83,7 +83,7 @@ export const IdentitySelector = ({
       }]}
     >
       {!identityGroupId ? (
-        <Typography>{noDataDisplay}</Typography>
+        <Typography>{$t({ defaultMessage: 'Select Identity' })}</Typography>
       ) : readonly ? (
         <Loader states={[{ isLoading, isFetching }]}>
           <Typography>{!selectedIdentityId
@@ -101,7 +101,7 @@ export const IdentitySelector = ({
           <Typography.Link onClick={handleOpen} data-testid='identity-selector'>
             {selectedIdentityId
               ? $t({ defaultMessage: 'Change' })
-              : $t({ defaultMessage: 'Add Identity' })}
+              : $t({ defaultMessage: 'Select Identity' })}
           </Typography.Link>
         </Space>
       )}

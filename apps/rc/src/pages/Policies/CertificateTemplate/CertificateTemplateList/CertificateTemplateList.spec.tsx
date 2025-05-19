@@ -63,7 +63,7 @@ describe('CertificateTemplateList', () => {
         }
       })
 
-    expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
     expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
     expect(await screen.findByText('Add Certificate Template')).toBeInTheDocument()
@@ -81,9 +81,8 @@ describe('CertificateTemplateList', () => {
         }
       })
 
-    expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
     expect(await screen.findByText('Add Certificate Authority')).toBeInTheDocument()
   })
 
@@ -98,9 +97,8 @@ describe('CertificateTemplateList', () => {
           path: '/:tenantId/policies/certificate/list'
         }
       })
-    expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
     expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })
 
@@ -161,9 +159,8 @@ describe('CertificateTemplateList', () => {
           path: '/:tenantId/serverCertificates/list'
         }
       })
-    expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
     expect(await screen.findByText('Server & Client Certificates (2)')).toBeInTheDocument()
     expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })
