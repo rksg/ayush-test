@@ -29,7 +29,7 @@ import {
   findIsolatedGroupByChannel,
   ApRadioTypeDataKeyMap,
   isCurrentTabUseVenueSettings,
-  toggleState,
+  setValueForRadioType,
   getRadioTypeDisplayName,
   RadioType,
   StateOfIsUseVenueSettings
@@ -830,7 +830,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       if (isSupportDual5GAp) { // ex: R760
         setIsDual5gMode(isDual5gEnabled)
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
-        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueOrApGroupSettings)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueOrApGroupEnabled'], currentApBandModeData?.useVenueOrApGroupSettings)
 
         if (prevoiusBendModeRef.current) {
           formRef.current?.setFieldValue(['apRadioParamsDual5G', 'lower5gEnabled'], isDual5gEnabled)
@@ -1145,12 +1145,12 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         operationCache.current = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], apGroupRef?.current?.apRadioParamsDual5G?.enabled)
         setIsDual5gMode(apGroupRef?.current?.apRadioParamsDual5G?.enabled ?? true)
-        formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+        formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueOrApGroupEnabled'], flipState)
       } else {
         operationCache.current = formRef.current?.getFieldValue(['apRadioParamsDual5G', 'enabled'])
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], venueRef?.current?.apRadioParamsDual5G?.enabled)
         setIsDual5gMode(venueRef?.current?.apRadioParamsDual5G?.enabled ?? true)
-        formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+        formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueOrApGroupEnabled'], flipState)
       }
     // Customize
     } else {
@@ -1158,23 +1158,25 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
         formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], operationCache.current)
         setIsDual5gMode(operationCache.current)
       }
-      formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], flipState)
+      formRef?.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueOrApGroupEnabled'], flipState)
     }
     setStateOfUseVenueEnabled(flipState)
     handleChange()
   }
 
-  const handleStateOfIsUseVenueSettingsChange = () => {
+  const handleStateOfIsUseVenueSettingsChange = (e: RadioChangeEvent) => {
+    const nextValue = e.target.value
+
     // 1. set updatedState
     const updatedState = summarizedStateOfIsUseVenueSettings(
-      toggleState(stateOfIsUseVenueSettings, currentTab))
+      setValueForRadioType(stateOfIsUseVenueSettings, currentTab, nextValue))
 
     setStateOfIsUseVenueSettings(updatedState)
 
     const currentSettings = formRef?.current?.getFieldsValue()
     // 2. save cached if isUseVenue is true
     // (that means toggle radio settings from useCustomize to useVenue, therefore we save current customized settings to cache for restoring later)
-    const isUseVenue= isCurrentTabUseVenueSettings(updatedState, currentTab)
+    const isUseVenue= nextValue
     if (isUseVenue) {
       cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab)
     }
@@ -1281,7 +1283,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                 {stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venueData} /></Col>}
                 <Col span={3}>
                   <Form.Item
-                    name={['apRadioParamsDual5G', 'useVenueEnabled']}
+                    name={['apRadioParamsDual5G', 'useVenueOrApGroupEnabled']}
                     hidden
                     children={<></>}
                   />
@@ -1317,7 +1319,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
             { isSupportDual5GAp &&
             <>
               <Form.Item
-                name={['apRadioParamsDual5G', 'useVenueEnabled']}
+                name={['apRadioParamsDual5G', 'useVenueOrApGroupEnabled']}
                 hidden
                 children={<></>}
               />

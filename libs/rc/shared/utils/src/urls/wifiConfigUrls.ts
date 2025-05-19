@@ -41,8 +41,8 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateApBandModeSettingsV1Dot1: {
@@ -50,8 +50,8 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   getApGroupBandModeSettings: {
@@ -125,8 +125,8 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/venues/{id}/aps/{id}/radioSettings',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateApRadioCustomizationV1Dot1: {
@@ -135,8 +135,8 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'PUT:/venues/{id}/aps/{id}/radioSettings',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
 
