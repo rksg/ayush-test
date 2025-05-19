@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                            from '@acx-ui/store'
-import { mockServer, render, waitFor, screen }                                                 from '@acx-ui/test-utils'
+import { DirectoryServerUrls, PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                 from '@acx-ui/store'
+import { mockServer, render, waitFor, screen }                                                                      from '@acx-ui/test-utils'
 
 import { mockExternalIdentityList, mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
@@ -66,6 +66,14 @@ describe('PersonaOverview', () => {
       ),
       rest.get(
         SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            id: 'id'
+          }))
+        }
+      ),
+      rest.get(
+        DirectoryServerUrls.getDirectoryServer.url,
         (_, res, ctx) => {
           return res(ctx.json({
             id: 'id'
