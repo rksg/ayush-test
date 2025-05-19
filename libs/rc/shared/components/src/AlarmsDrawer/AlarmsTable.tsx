@@ -131,7 +131,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     pageSize: 10000 }
 
   const { data: allAlarms } = useAlarmsListQuery({ payload: allAlarmsPayload },
-    { skip: !isNewAlarm }
+    { skip: !isNewAlarm && isClearAllAlarmsToggleEnabled }
   )
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
