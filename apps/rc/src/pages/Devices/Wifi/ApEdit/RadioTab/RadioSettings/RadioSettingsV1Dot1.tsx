@@ -821,7 +821,6 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       return
     }
 
-    //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
     const currentBendMode = getCurrentBandMode()
 
     if (currentBendMode !== prevoiusBendModeRef.current) {

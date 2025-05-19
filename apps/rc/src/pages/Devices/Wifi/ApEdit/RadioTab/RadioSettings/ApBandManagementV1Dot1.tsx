@@ -44,7 +44,6 @@ export const ApBandManagementV1Dot1 = ({ venueBandMode, apGroupBandMode, current
   }, [currentApBandModeData, venueBandMode, apGroupBandMode, apGroupData])
 
   const onChangeBandCombination = (value: BandModeEnum) => {
-    console.info('[RadioSettings][ApBandManagement] onChangeBandCombination, value = ', value) // eslint-disable-line no-console
     setCurrentApBandModeData({ ...currentApBandModeData, bandMode: value })
   }
 
