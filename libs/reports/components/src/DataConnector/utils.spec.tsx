@@ -114,7 +114,7 @@ describe('isVisibleByAction', () => {
     })
     it('should not show for Delete', () => {
       setRaiPermissions({
-        WRITE_DATA_STUDIO: false
+        DELETE_DATA_CONNECTOR: false
       } as RaiPermissions)
       expect(isVisibleByAction([activeRow], Actions.Delete, userId)).toBeFalsy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, userId)).toBeFalsy()
@@ -122,7 +122,7 @@ describe('isVisibleByAction', () => {
 
     it('RAI - should show for Delete', () => {
       setRaiPermissions({
-        WRITE_DATA_STUDIO: true
+        DELETE_DATA_CONNECTOR: true
       } as RaiPermissions)
       expect(isVisibleByAction([activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()

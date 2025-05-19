@@ -32,7 +32,7 @@ export enum Actions {
 
 export const isPrimeAdmin = () => {
   return get('IS_MLISA_SA')
-    ? hasRaiPermission('WRITE_DATA_STUDIO')
+    ? hasRaiPermission('DELETE_DATA_CONNECTOR')
     : hasRoles(RolesEnum.PRIME_ADMIN)
 }
 
