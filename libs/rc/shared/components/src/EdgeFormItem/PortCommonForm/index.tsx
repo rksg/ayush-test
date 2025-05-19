@@ -30,16 +30,15 @@ import { formFieldsPropsType } from './types'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
-  fieldHeadPath: string[],
-  portsDataRootPath: string[],
+  fieldHeadPath?: string[],
+  portsDataRootPath?: string[],
   portsData: EdgePort[],
   lagData?: EdgeLag[],
   isEdgeSdLanRun: boolean,
   isListForm?: boolean,
-  formListItemKey: string,
-  formListID?: string,
+  formListItemKey?: string,
   formFieldsProps?: formFieldsPropsType
-  subnetInfoForValidation?: { ip: string, subnetMask: string } []
+  subnetInfoForValidation?: { id: string | number | undefined, ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
 }
 
@@ -48,13 +47,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const {
     formRef: form,
     fieldHeadPath = [],
-    portsDataRootPath,
     isEdgeSdLanRun,
     portsData,
     lagData,
     isListForm = true,
     formListItemKey = '0',
-    formListID,
     formFieldsProps,
     subnetInfoForValidation = [],
     clusterInfo
@@ -77,6 +74,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       : [fieldName]
   }, [isListForm, fieldHeadPath])
 
+  const id = useWatch(getFieldFullPath('id'), form)
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
   // eslint-disable-next-line max-len
@@ -86,6 +84,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
+  const existingLagMember = lagData?.flatMap(lag => lag.lagMembers
+    ?.map(member => member?.portId)) ?? []
 
   // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
   // 2. corePort should be grey-out when one of the following NOT matches :
@@ -98,10 +98,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //     - must be LAN port type
   const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
 
-  const isExistingWanPortInLagMember = lagData?.some(lag => lag.lagMembers
-    // eslint-disable-next-line max-len
-    ? lag.lagMembers.filter(member => wanPortsInfo.find(wan => (wan as EdgePort).id === member?.portId)).length > 0
-    : false) ?? false
+  const isExistingWanPortInLagMember = existingLagMember.some(lagMember =>
+    wanPortsInfo.find(wan => (wan as EdgePort).id === lagMember)) ?? false
 
   const hasWANPort = wanPortsInfo.length > 0 && !isExistingWanPortInLagMember
 
@@ -113,25 +111,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       ip: form.getFieldValue(getFieldFullPath('ip')),
       subnetMask: form.getFieldValue(getFieldFullPath('subnet'))
     }
-  }
-
-  const getSubnetInfoWithoutCurrent = () => {
-    const formValues = portsDataRootPath.length
-      ? _.get(form.getFieldsValue(true), portsDataRootPath)
-      : form.getFieldsValue(true)
-
-    return Object.entries<EdgePort[]>(formValues)
-      .filter(item => {
-        return item[0] !== formListID
-        && _.get(item[1], getFieldPathBaseFormList('enabled'))
-        && !!_.get(item[1], getFieldPathBaseFormList('ip'))
-        && !!_.get(item[1], getFieldPathBaseFormList('subnet'))
-      })
-      .map(item => ({
-        ipMode: _.get(item[1], getFieldPathBaseFormList('ipMode')),
-        ip: _.get(item[1], getFieldPathBaseFormList('ip')),
-        subnetMask: _.get(item[1], getFieldPathBaseFormList('subnet'))
-      }))
   }
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
@@ -193,7 +172,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     interfaceSubnetValidator(
                       getCurrentSubnetInfo(),
                       // eslint-disable-next-line max-len
-                      [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
+                      subnetInfoForValidation.filter(item => item.id !== id && !existingLagMember.includes(item.id + ''))
                     )
                 }
               ]}
