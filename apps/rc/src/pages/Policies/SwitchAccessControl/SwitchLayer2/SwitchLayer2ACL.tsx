@@ -24,10 +24,10 @@ import {
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import { filterByAccess } from '@acx-ui/user'
 export function SwitchLayer2ACL () {
   const { $t } = useIntl()
   const navigate = useNavigate()
