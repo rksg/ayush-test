@@ -14,6 +14,7 @@ import {
   VirtualIpSetting,
   getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -580,17 +581,19 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
   const MockedComponentTestNatPool = ({ initVals, otherProps }:
     { initVals?: unknown, otherProps?:unknown })=> {
 
-    return <Form
-      initialValues={initVals ?? mockNatFormEdgePortConfig}
-      onFinish={formOnFinish}
-    >
-      <EdgePortsGeneralBase
-        {...mockedProps}
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-        {...(otherProps ?? {})}
-      />
-      <button data-testid='rc-submit'>Submit</button>
-    </Form>
+    return <Provider>
+      <Form
+        initialValues={initVals ?? mockNatFormEdgePortConfig}
+        onFinish={formOnFinish}
+      >
+        <EdgePortsGeneralBase
+          {...mockedProps}
+          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
+          {...(otherProps ?? {})}
+        />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>
+    </Provider>
   }
 
   beforeEach(() => {

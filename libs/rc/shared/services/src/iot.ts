@@ -6,6 +6,7 @@ import {
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotSerialNumberResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -79,7 +80,7 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
     }),
-    testConnectionIotController: build.mutation<CommonResult, RequestPayload>({
+    testConnectionIotController: build.mutation<IotSerialNumberResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(IotUrlsInfo.testConnectionIotController,
           undefined,
