@@ -20,11 +20,12 @@ export function ApWiredClientContextProvider (props: { children: ReactNode }) {
 
   const fields = [
     'hostname', 'macAddress', 'ipAddress',
-    'deviceTypeStr', 'osType', 'status',
+    'deviceType', 'osType', 'authStatus',
     'venueName', 'venueId',
     'apId', 'apMacAddress', 'apName',
     'portNumber', 'vlanId'
   ]
+
   const results = useGetApWiredClientsQuery({ payload: {
     fields,
     filters: { macAddress: [params.clientId] }
