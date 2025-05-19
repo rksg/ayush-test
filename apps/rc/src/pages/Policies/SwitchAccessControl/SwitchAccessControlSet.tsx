@@ -11,7 +11,6 @@ import {
 import { Features, useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
 import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
   SwitchAccessControl,
   SwitchUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
@@ -20,6 +19,7 @@ import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDetail } from './SwitchLayer2/SwitchLayer2ACLDetail'
+import { filterByAccess } from '@acx-ui/user'
 
 const payload ={
   fields: [
@@ -156,7 +156,7 @@ export function SwitchAccessControlSet () {
     }
   ]
 
-  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const allowedRowActions = filterByAccess(rowActions)
 
   return (
     <>

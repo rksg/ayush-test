@@ -14,7 +14,6 @@ import {
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useDeleteLayer2AclMutation, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   MacAcl,
@@ -28,6 +27,7 @@ import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { filterByAccess } from '@acx-ui/user'
 export function SwitchLayer2ACL () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -165,7 +165,7 @@ export function SwitchLayer2ACL () {
       }, { replace: false })
     }
   }]
-  const allowedActions = filterByAccessForServicePolicyMutation(actions)
+  const allowedActions = filterByAccess(actions)
 
   const rowActions: TableProps<MacAcl>['rowActions'] = [
     {
@@ -235,7 +235,7 @@ export function SwitchLayer2ACL () {
     }
   ]
 
-  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const allowedRowActions = filterByAccess(rowActions)
 
   return (
     <Loader
