@@ -11,3 +11,10 @@ export const OsType = styled(Space)`
     }
   }
 `
+export const IconContainer = styled.div`
+  svg {
+    width: 24px;
+    height: 20px;
+    vertical-align: middle;
+  }
+`
