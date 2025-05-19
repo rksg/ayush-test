@@ -47,7 +47,7 @@ export function DHCPForm (props: DHCPFormProps) {
     type: ServiceType.DHCP,
     oper: ServiceOperation.LIST
   }))
-  
+
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
@@ -104,6 +104,7 @@ export function DHCPForm (props: DHCPFormProps) {
     })
   }
 
+  // eslint-disable-next-line max-len
   const navigateToPreviousPage = (replaceCurrentPath = false, targetPath: string | Path = previousPath) => {
     navigate(targetPath, {
       replace: replaceCurrentPath,
