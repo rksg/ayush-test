@@ -1,9 +1,10 @@
 import { defineMessage } from 'react-intl'
 
-import { getUserName as getUserNameRAI, getUserProfile as getUserProfileRAI } from '@acx-ui/analytics/utils'
-import { get }                                                                from '@acx-ui/config'
-import { getUserName as getUserNameR1, getUserProfile as getUserProfileR1 }   from '@acx-ui/user'
-import { getIntl }                                                            from '@acx-ui/utils'
+import { getUserName as getUserNameRAI, getUserProfile as getUserProfileRAI }                           from '@acx-ui/analytics/utils'
+import { get }                                                                                          from '@acx-ui/config'
+import { RolesEnum }                                                                                    from '@acx-ui/types'
+import { getUserName as getUserNameR1, getUserProfile as getUserProfileR1, hasRaiPermission, hasRoles } from '@acx-ui/user'
+import { getIntl }                                                                                      from '@acx-ui/utils'
 
 import { DataConnector, Frequency } from './types'
 
@@ -29,7 +30,16 @@ export enum Actions {
   Delete = 'delete'
 }
 
-export const isVisibleByAction = (rows: DataConnector[], action: Actions) => {
+export const isPrimeAdmin = () => {
+  return get('IS_MLISA_SA')
+    ? hasRaiPermission('WRITE_DATA_STUDIO')
+    : hasRoles(RolesEnum.PRIME_ADMIN)
+}
+
+export const isVisibleByAction = (rows: DataConnector[], action: Actions, userId:string) => {
+  if (action !== Actions.Delete && !rows.every(row => row.userId === userId)) {
+    return false
+  }
   switch (action) {
     case Actions.Resume:
       return rows.every(row => !row.status)
@@ -38,7 +48,7 @@ export const isVisibleByAction = (rows: DataConnector[], action: Actions) => {
     case Actions.Edit:
       return rows.length === 1
     case Actions.Delete:
-      return true
+      return isPrimeAdmin()
     default:
       return false
   }
