@@ -5,8 +5,11 @@ import { EdgeDhcpSettingForm }           from '@acx-ui/rc/components'
 import {
   CommonResult,
   EdgeDhcpSettingFormData,
+  getServiceRoutePath,
+  ServiceOperation,
   ServiceType,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,12 +28,17 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
     isDataLoading = false
   } = props
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.EDGE_DHCP, ServiceOperation.LIST)
+  const routeToList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_DHCP,
+    oper: ServiceOperation.LIST
+  }))
 
   const handleFinish = async (data: EdgeDhcpSettingFormData) => {
     try {
       await onFinish(data)
-      navigate(linkToServices, { replace: true })
+      navigate(routeToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -46,7 +54,7 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
         <StepsForm
           form={form}
           onFinish={handleFinish}
-          onCancel={() => navigate(linkToServices)}
+          onCancel={() => navigate(previousPath, { replace: true })}
           buttonLabel={{ submit: submitButtonLabel }}
         >
           <StepsForm.StepForm>

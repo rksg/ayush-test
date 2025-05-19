@@ -8,7 +8,8 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceRoutePath,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -16,6 +17,8 @@ const AddEdgeMdnsProxy = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { createEdgeMdns } = useEdgeMdnsActions()
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.LIST)
 
   const routeToList = getServiceRoutePath({
     type: ServiceType.EDGE_MDNS_PROXY,
@@ -45,7 +48,7 @@ const AddEdgeMdnsProxy = () => {
         <Col span={24}>
           <AddEdgeMdnsProxyForm
             onFinish={handleFinish}
-            onCancel={() => navigate(linkToServiceList)}
+            onCancel={() => navigate(previousPath)}
           />
         </Col>
       </Row>

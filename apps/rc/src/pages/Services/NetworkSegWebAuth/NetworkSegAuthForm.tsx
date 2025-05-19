@@ -64,7 +64,7 @@ export default function NetworkSegAuthForm (
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
 
-  const finishHandler = (response?: WebAuthTemplate)=>{
+  const finishHandler = (response?: WebAuthTemplate, previousPath = '')=>{
     formRef.current?.resetFields()
     if (modalMode) modalCallBack(response?.id)
     else redirectPreviousPage(navigate, previousPath, linkToTableView)
@@ -133,7 +133,7 @@ export default function NetworkSegAuthForm (
       <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => finishHandler()}
+        onCancel={() => finishHandler(undefined, previousPath)}
         onFinish={saveData}
       >
         <StepsFormLegacy.StepForm

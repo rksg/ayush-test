@@ -18,9 +18,10 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { useParams, useNavigate } from '@acx-ui/react-router-dom'
+import { useParams, useNavigate, useTenantLink, Path } from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -42,6 +43,11 @@ export function DHCPForm (props: DHCPFormProps) {
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
+  const routeToList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.DHCP,
+    oper: ServiceOperation.LIST
+  }))
+  
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
@@ -78,6 +84,8 @@ export function DHCPForm (props: DHCPFormProps) {
         })
       }
       await saveOrUpdateDHCP({ params, payload, enableRbac: resolvedEnableRbac }).unwrap()
+
+      navigateToPreviousPage(true, routeToList)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -96,8 +104,8 @@ export function DHCPForm (props: DHCPFormProps) {
     })
   }
 
-  const navigateToPreviousPage = (replaceCurrentPath = false) => {
-    navigate(previousPath, {
+  const navigateToPreviousPage = (replaceCurrentPath = false, targetPath: string | Path = previousPath) => {
+    navigate(targetPath, {
       replace: replaceCurrentPath,
       ...(returnParams ? { state: { from: { returnParams } } } : {})
     })
@@ -114,12 +122,7 @@ export function DHCPForm (props: DHCPFormProps) {
           formRef={formRef}
           editMode={editMode}
           onCancel={navigateToPreviousPage}
-          onFinish={
-            async (data)=>{
-              await handleAddOrUpdateDHCP(data)
-              navigateToPreviousPage(true)
-            }
-          }
+          onFinish={handleAddOrUpdateDHCP}
         >
           <StepsFormLegacy.StepForm
             name='settings'

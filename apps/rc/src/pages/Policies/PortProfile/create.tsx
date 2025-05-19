@@ -8,6 +8,7 @@ import {
   getPolicyAllowedOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getSelectPolicyRoutePath,
   LocationExtended,
   PolicyOperation,
   PolicyType,
@@ -28,7 +29,7 @@ export default function CreatePortProfile () {
   const createSwitchPortProfilePath =
     useTenantLink(`${getPolicyListRoutePath(true)}/portProfile/switch/profiles/add`)
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/wifi'
-  const policiesPageLink = useTenantLink(`${getPolicyListRoutePath(true) + '/select'}`)
+  const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
