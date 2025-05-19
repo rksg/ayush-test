@@ -26,6 +26,13 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
       content: data?.secondaryGatewayAddress || noDataDisplay
     },
     {
+      title: $t({ defaultMessage: 'Fallback To Primary Gateway' }),
+      content: data?.gatewayFailbackEnabled ?
+        `${$t({ defaultMessage: 'On' })} (${data?.gatewaySecondaryToPrimaryTimer} ` +
+        `${$t({ defaultMessage: 'mins' })})` :
+        $t({ defaultMessage: 'Off' })
+    },
+    {
       title: $t({ defaultMessage: 'Disassociate Clients' }),
       content: data?.disassociateClientEnabled ?
         $t({ defaultMessage: 'On' }) :
@@ -46,5 +53,5 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
     }
   ]
 
-  return data ? <SummaryCard data={softGreInfo} colPerRow={6} /> : null
+  return data ? <SummaryCard data={softGreInfo} colPerRow={4} /> : null
 }
