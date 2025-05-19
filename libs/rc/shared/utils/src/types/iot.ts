@@ -5,7 +5,7 @@ export interface IotControllerStatus {
   serialNumber: string
   publicAddress: string
   publicPort: number
-  apiKey: string
+  apiToken: string
   tenantId: string
 }
 
@@ -15,8 +15,13 @@ export interface IotControllerSetting {
   inboundAddress: string
   publicAddress?: string
   publicPort?: number
-  apiKey?: string
+  apiToken?: string
   iotSerialNumber: string
+}
+
+export interface IotSerialNumberResult {
+  requestId: string
+  serialNumber: string
 }
 
 export interface IotControllerDashboard {

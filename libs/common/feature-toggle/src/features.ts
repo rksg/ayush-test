@@ -297,6 +297,7 @@ export enum Features {
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   ACX_UI_DATE_RANGE_RESET_MSG ='acx-ui-date-range-event-limit-90-days-toggle',
+  ACX_UI_REPORTS_CORE_TIER_TOGGLE = 'acx-ui-reports-core-tier-toggle',
   ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT ='acx-ui-historical-clients-date-range-limit-90-days-toggle',
   ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING ='acx-ui-multiple-ap-dhcp-mode-warning-toggle',
   VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
