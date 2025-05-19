@@ -74,7 +74,7 @@ export function RadioTab () {
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
   const antennaTitle = $t({ defaultMessage: 'Antenna' })
-  const extAntennaTitle = $t({ defaultMessage: 'External Antenna' })
+  //const extAntennaTitle = $t({ defaultMessage: 'External Antenna' })
   const clientSteeringTitle = $t({ defaultMessage: 'Client Steering' })
 
   const anchorItems = [{
@@ -131,11 +131,11 @@ export function RadioTab () {
     )
   }]: []),
   ...((supportExtAnt)? [{
-    title: extAntennaTitle,
+    title: antennaTitle,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='extAntennaTitle'>
-          {extAntennaTitle}
+          {antennaTitle}
         </StepsFormLegacy.SectionTitle>
         {<ExternalAntennaSettings />}
       </>
