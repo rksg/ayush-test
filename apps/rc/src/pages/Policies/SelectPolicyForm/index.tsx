@@ -175,7 +175,7 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.WORKFLOW,
       categories: [RadioCardCategory.WIFI],
-      disabled: !isWorkflowFFEnabled && !isWorkflowTierEnabled
+      disabled: !isWorkflowFFEnabled || !isWorkflowTierEnabled
     },
     {
       type: PolicyType.SOFTGRE,
