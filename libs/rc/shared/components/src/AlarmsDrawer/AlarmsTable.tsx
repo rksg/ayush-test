@@ -1,5 +1,6 @@
 import { Key, useState } from 'react'
 
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -409,7 +410,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     }
   ]
 
-  return <Loader states={[
+  return <Space direction='vertical'><Loader states={[
     tableQuery,{ isLoading: false,
       isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning || isAllAlarmsCleaning) }
   ]}>
@@ -429,4 +430,5 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       />
     </UI.TableWrapper>
   </Loader>
+  </Space>
 }
