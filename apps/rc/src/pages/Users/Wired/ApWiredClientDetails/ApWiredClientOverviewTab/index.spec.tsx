@@ -31,7 +31,7 @@ jest.mock('../ApWiredClientContextProvider', () => ({
 
 describe('ApWiredClientOverview', () => {
 
-  it('should render Ap wired client overview', async() => {
+  it('should render Ap wired client overview', async () => {
     (useApWiredClientContext as jest.Mock).mockReturnValue({
       clientInfo: mockClientInfo
     })
