@@ -5,8 +5,8 @@ import { Canvas } from '@acx-ui/rc/utils'
 import { Group, Section, DEFAULT_CANVAS } from './Canvas'
 import { compactLayout }                  from './utils/compact'
 
-const MENU_COLLAPSED_WIDTH = 60
-const MENU_EXPANDED_WIDTH = 216
+export const MENU_COLLAPSED_WIDTH = 60
+export const MENU_EXPANDED_WIDTH = 216
 const SIDE_PADDING = 72
 const WIDGET_GRID_GAP = 60
 const COLUMN_COUNT = 4
@@ -94,7 +94,6 @@ export const getStreamingWordingKey = (step: string): keyof typeof StreamingMess
     return (`PROCESSING_DATA_RETRY_${step}_${retries}`) as keyof typeof StreamingMessages
   } else {
     switch (stepNumber) {
-      case 0:
       case 1:
         return 'INITIALIZING_INTENT'
       case 2:
@@ -104,7 +103,7 @@ export const getStreamingWordingKey = (step: string): keyof typeof StreamingMess
       case 4:
       case 5:
         return 'FINALIZING_RESULT'
-      default:
+      default: // 0
         return 'INITIALIZING_INTENT'
     }
   }
