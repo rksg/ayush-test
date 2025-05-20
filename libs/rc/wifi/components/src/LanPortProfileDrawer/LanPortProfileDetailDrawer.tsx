@@ -33,18 +33,17 @@ interface LanPortProfileDetailsDrawerProps {
   title: string
   visible: boolean
   setVisible: (visible: boolean) => void
-  wiredPortVisible: boolean
+  wiredPortVisible?: boolean
   ethernetPortProfileData?: EthernetPortProfileViewData
-  softGreProfileData?: SoftGreViewData
-  clientIsolationData?: ClientIsolationSaveData
+  apSerial?: string
+  portId?: string
+  venueId?: string
 }
-
-
 
 const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { title, visible, setVisible, wiredPortVisible, ethernetPortProfileData } = props
+  const { title, visible, setVisible, wiredPortVisible=false, ethernetPortProfileData } = props
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
@@ -69,6 +68,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     })
   })
 
+  // /ethernetPortProfiles/:id
   const { data: ethernetData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileByIdQuery,
     useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,

@@ -1,7 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
+import { Button, ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
 import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
@@ -15,6 +15,8 @@ import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { useState } from 'react'
+import LanPortProfileDetailsDrawer from '../LanPortProfileDrawer/LanPortProfileDetailDrawer'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
@@ -72,7 +74,11 @@ export const ApWiredClientTable = (props: {
     filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) => {
   const params = useParams()
+  const { $t } = useIntl()
   const { searchable, settingsId = 'ap-wired-clients-table' } = props
+  const [detailVisible, setDetailVisible]=useState(false)
+  const [apName, setApName]=useState<string>()
+  const [portNumber, setPortNumber]=useState<string>()
 
   defaultApWiredClientPayload.filters =
   params.venueId ? { venueId: [params.venueId] } :
@@ -206,8 +212,15 @@ export const ApWiredClientTable = (props: {
       title: intl.$t({ defaultMessage: 'LAN Port' }),
       dataIndex: 'portNumber',
       sorter: true,
-      render: (_, { portNumber }) => {
-        return portNumber ? `LAN ${portNumber}` : noDataDisplay
+      render: (_: React.ReactNode, row: ApWiredClientInfo) => {
+        const { portNumber } = row
+        return portNumber ? <Button type='link'
+        onClick={()=> {
+          setApName(row.apName)
+          setPortNumber(row.portNumber)
+          setDetailVisible(true)}}>
+        {$t({ defaultMessage: 'LAN {portNumber}' }, {portNumber})}
+      </Button> : noDataDisplay
       }
     }, {
       key: 'vlanId',
@@ -266,6 +279,16 @@ export const ApWiredClientTable = (props: {
           rowKey='macAddress'
           filterPersistence={true}
         />
+        <LanPortProfileDetailsDrawer
+        title={$t(
+          { defaultMessage: '{apName} - LAN {portNumber}' },
+          { apName, portNumber}
+        )}
+        visible={detailVisible}
+        wiredPortVisible={true}
+        setVisible={()=>setDetailVisible(false)}
+
+      />
       </Loader>
     </div>
   )
