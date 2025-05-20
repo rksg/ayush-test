@@ -5,6 +5,7 @@ import { useIntl }                                                              
 import { useParams }                                                            from 'react-router-dom'
 
 import { Loader, Button, PasswordInput }     from '@acx-ui/components'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import {
   useGetDirectoryServerByIdQuery,
   useLazyGetDirectoryServerViewDataListQuery,
@@ -16,9 +17,12 @@ import {
   DirectoryServerProfileEnum,
   domainNameRegExp,
   DirectoryServerDiagnosisCommand,
-  DirectoryServerDiagnosisCommandEnum
+  DirectoryServerDiagnosisCommandEnum,
+  IdentityAttributeMappingNameType
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
+
+import { IdentityAttributesInput, excludedAttributeTypes } from '../../IdentityAttributesInput'
 
 import * as UI from './styledComponents'
 
@@ -58,11 +62,41 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
   let currentTestConnectionFun: ReturnType<typeof testConnectionDirectoryServer> | undefined
 
+  // eslint-disable-next-line max-len
+  const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+
   useEffect(() => {
     if (!policyId || !data) return
 
     form.setFieldsValue(data)
 
+    if (isSupportIdentityAttribute && data.attributeMappings) {
+      form.setFieldValue('identityName',
+        data.attributeMappings
+          .find(
+            mapping => mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
+          )?.mappedByName
+      )
+      form.setFieldValue('identityEmail',
+        data.attributeMappings
+          .find(
+            mapping => mapping.name === IdentityAttributeMappingNameType.EMAIL
+          )?.mappedByName
+      )
+      form.setFieldValue('identityPhone',
+        data.attributeMappings
+          .find(
+            mapping => mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
+          )?.mappedByName
+      )
+
+      // remove above three mappings from attributeMappings
+      form.setFieldValue('attributeMappings', data.attributeMappings.filter(
+        mapping => !excludedAttributeTypes.includes(
+          mapping.name as IdentityAttributeMappingNameType
+        )
+      ))
+    }
   }, [policyId, data, form])
 
   const nameValidator = async (value: string) => {
@@ -315,7 +349,18 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             />
           </Col>)
         }
-
+        {!readMode && isSupportIdentityAttribute && <Col span={16}>
+          <IdentityAttributesInput
+            form={form}
+            fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
+            description={
+              $t({ defaultMessage: 'Map user attributes from your AD/LDAP to identity attributes'+
+                                  ' in RUCKUS One using the exact values from your AD/LDAP.'+
+                                  ' Claim names are available in your AD/LDAP console.' })
+            }
+          />
+        </Col>
+        }
         <Col span={8} />
         <Col span={24}>
           <Space>
