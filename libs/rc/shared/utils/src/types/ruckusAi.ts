@@ -86,6 +86,8 @@ export interface WidgetListData {
   widgetId?: string
   name?: string
   updated?: boolean //TODO
+  timeRange?: string
+  defaultTimeRange?: string
 }
 
 export interface Canvas {
@@ -98,6 +100,7 @@ export interface Canvas {
   widgetIds?: string[]
   diffWidgetIds?: string[]
   author?: string
+  authorId?: string
 }
 
 export interface DashboardInfo extends Canvas {

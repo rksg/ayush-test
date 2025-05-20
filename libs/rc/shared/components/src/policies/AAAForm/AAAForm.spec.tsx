@@ -25,6 +25,9 @@ const params = {
 }
 describe('AAAForm', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))

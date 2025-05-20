@@ -4,6 +4,7 @@
     "analytics-components": "libs/analytics/components",
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",
+    "cloudpath-components": "libs/rc/cloudpath/components",
     "common-components": "libs/common/components",
     "common-config": "libs/common/config",
     "common-feature-toggle": "libs/common/feature-toggle",
@@ -14,6 +15,7 @@
     "common-types": "libs/common/types",
     "common-user": "libs/common/user",
     "common-utils": "libs/common/utils",
+    "edge-components": "libs/rc/edge/components",
     "main": "apps/main",
     "main-components": "libs/main/components",
     "msp": "apps/msp",
@@ -24,16 +26,15 @@
     "rc": "apps/rc",
     "rc-components": "libs/rc/shared/components",
     "rc-services": "libs/rc/shared/services",
+    "rc-switch-utils": "libs/rc/switch/utils",
     "rc-utils": "libs/rc/shared/utils",
-    "cloudpath-components": "libs/rc/cloudpath/components",
-    "switch-components": "libs/rc/switch/components",
-    "wifi-components": "libs/rc/wifi/components",
-    "edge-components": "libs/rc/edge/components",
     "react-router-dom": "libs/common/react-router-dom",
     "reports-components": "libs/reports/components",
     "reports-routes": "libs/reports/routes",
     "reports-services": "libs/reports/services",
-    "reports-utils": "libs/reports/utils"
+    "reports-utils": "libs/reports/utils",
+    "switch-components": "libs/rc/switch/components",
+    "wifi-components": "libs/rc/wifi/components"
   },
   "architect": {
     "serve": {

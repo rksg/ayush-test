@@ -3,8 +3,10 @@ import {
   onActivityMessageReceived,
   CommonResult,
   TableResult,
+  IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotSerialNumberResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -78,7 +80,7 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
     }),
-    testConnectionIotController: build.mutation<CommonResult, RequestPayload>({
+    testConnectionIotController: build.mutation<IotSerialNumberResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(IotUrlsInfo.testConnectionIotController,
           undefined,
@@ -89,6 +91,21 @@ export const iotApi = baseIotApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    refreshIotController: build.mutation<void, void>({
+      queryFn: async () => {
+        return { data: undefined }
+      },
+      invalidatesTags: [{ type: 'IotController', id: 'DETAIL' }]
+    }),
+    iotControllerDashboard: build.query<IotControllerDashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerDashboard, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
     })
   })
 })
@@ -101,5 +118,7 @@ export const {
   useLazyGetIotControllerQuery,
   useUpdateIotControllerMutation,
   useDeleteIotControllerMutation,
-  useTestConnectionIotControllerMutation
+  useTestConnectionIotControllerMutation,
+  useRefreshIotControllerMutation,
+  useIotControllerDashboardQuery
 } = iotApi

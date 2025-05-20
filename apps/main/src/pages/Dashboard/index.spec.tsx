@@ -171,6 +171,7 @@ describe('Dashboard', () => {
   describe('Dashboard canvas', () => {
     const mockCloneCanvas = jest.fn()
     const mockDeleteCanvas = jest.fn()
+    const mockUpdateDashboard = jest.fn()
     jest.mocked(useGetCanvasesQuery).mockImplementation(() => ({
       data: canvasList,
       refetch: jest.fn()
@@ -192,6 +193,13 @@ describe('Dashboard', () => {
         rest.delete(
           RuckusAiChatUrlInfo.removeDashboards.url,
           (req, res, ctx) => res(ctx.json({}))
+        ),
+        rest.post(
+          RuckusAiChatUrlInfo.updateDashboards.url,
+          (req, res, ctx) => {
+            mockUpdateDashboard()
+            return res(ctx.json({}))
+          }
         ),
         rest.get(
           RuckusAiChatUrlInfo.getCanvasById.url,
@@ -216,6 +224,8 @@ describe('Dashboard', () => {
     afterEach(async () => {
       mockCloneCanvas.mockClear()
       mockDeleteCanvas.mockClear()
+      mockUpdateDashboard.mockClear()
+      mockLazyGetCanvasesUnwrap.mockClear()
       Modal.destroyAll()
     })
 
@@ -246,7 +256,7 @@ describe('Dashboard', () => {
       )
     })
 
-    it('should view dashboard canvas correctly', async () => {
+    it('should view default dashboard correctly', async () => {
       render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
       await waitFor(async ()=>{
         expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
@@ -259,6 +269,23 @@ describe('Dashboard', () => {
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
       await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(await screen.findByRole('menuitem', { name: 'View' }))
+      expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    })
+
+    it('should view canvas dashboard correctly', async () => {
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      await waitFor(async ()=>{
+        expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+      })
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'View' }))
       expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
       expect(await screen.findByTestId('expanded-button')).toBeVisible()
@@ -277,7 +304,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit in Canvas Editor' }))
       expect(await screen.findByTestId('canvas-editor')).toBeVisible()
     })
@@ -294,7 +321,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove from Dashboard' }))
       await waitFor(async ()=>{
         expect(await within(dashboardDrawer).findByText('My Dashboards (3)')).toBeVisible()
@@ -344,8 +371,8 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       let dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      expect(dashboardMoreBtn).toHaveLength(3)
-      await userEvent.click(dashboardMoreBtn[0])
+      expect(dashboardMoreBtn).toHaveLength(4)
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Set as Landing Page' }))
       await waitFor(async ()=>{
         dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
@@ -488,7 +515,7 @@ describe('Dashboard', () => {
       })
     })
 
-    it('should delate canvas correctly', async () => {
+    it('should delete canvas correctly', async () => {
       mockLazyGetCanvasesUnwrap
         .mockResolvedValueOnce(canvasList)
         .mockResolvedValue({
@@ -526,5 +553,73 @@ describe('Dashboard', () => {
       })
     })
 
+    it('should search public canvas correctly', async () => {
+      mockLazyGetCanvasesUnwrap
+        .mockResolvedValueOnce(canvasList)
+        .mockResolvedValue({
+          data: canvasList.data.filter(item => item.author?.includes('dog2'))
+        })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Dashboard')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
+      await userEvent.click(await screen.findByText(/Public Canvases/))
+
+      const tabPanel = screen.getByRole('tabpanel', { hidden: false })
+      expect(await screen.findByText('Dashboard Canvas 2')).toBeVisible()
+
+      const searchInput = await within(tabPanel).findByTestId('search-input')
+      await userEvent.type(searchInput, 'dog2')
+      await waitFor(async ()=> {
+        expect(mockLazyGetCanvasesUnwrap).toHaveBeenCalledTimes(2)
+      })
+      await waitFor(async ()=>{
+        expect(screen.queryByText('Dashboard Canvas 1')).toBeNull()
+      })
+      expect(await screen.findByText('Dashboard Canvas 2')).toBeVisible()
+    })
+
+    it('should import canvas correctly', async () => {
+      mockLazyGetCanvasesUnwrap
+        .mockResolvedValueOnce(canvasList)
+        .mockResolvedValue({
+          data: canvasList.data.filter((item, index) => index !== 1)
+        })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Dashboard')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
+      expect(await screen.findByRole('button', { name: 'Import (0)' })).toBeDisabled()
+
+      const checkbox = await screen.findAllByRole('checkbox')
+      await userEvent.click(checkbox[1])
+
+      const importBtn = await screen.findByRole('button', { name: 'Import (1)' })
+      expect(importBtn).toBeVisible()
+      await userEvent.click(importBtn)
+      expect(mockUpdateDashboard).toBeCalled()
+    })
   })
 })

@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState, useRef } from 'react'
 
 import { Divider, Menu, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -53,6 +53,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useGetDashboardsQuery,
+  usePatchDashboardMutation,
   useUpdateDashboardsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -135,61 +136,21 @@ export const useDashBoardUpdatedFilter = () => {
   return context
 }
 export default function Dashboard () {
-  const { $t } = useIntl()
-  const { accountTier } = getUserProfile()
-  const isEdgeEnabled = useIsEdgeReady()
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
-  const isCore = isCoreTier(accountTier)
-
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
-      label: $t({ defaultMessage: 'Wi-Fi' }),
-      value: 'ap',
-      children: <ApWidgets />
-    },
-    {
-      label: $t({ defaultMessage: 'Switch' }),
-      value: 'switch',
-      children: <SwitchWidgets />
-    },
-    ...(isEdgeEnabled ? [
-      {
-        label: $t({ defaultMessage: 'RUCKUS Edge' }),
-        value: 'edge',
-        children: <EdgeWidgets />
-      }
-    ] : [])
-  ]
-
-  /**
-   * Sets the selected tab value in local storage.
-   *
-   * @param {string} value - The value of the selected tab.
-   * @return {void} This function does not return anything.
-   */
-  const onTabChange = (value: string): void => {
-    localStorage.setItem('dashboard-tab', value)
-  }
-
-  const { menuCollapsed } = useLayoutContext()
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [dashboardId, setDashboardId] = useState('')
   const [initDashboardId, setInitDashboardId] = useState(false)
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
-  const [layout, setLayout] = useState({
-    ...layoutConfig,
-    calWidth: getCalculatedColumnWidth(menuCollapsed)
-  })
-  const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
-  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isCanvasQ2Enabled })
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
   useEffect(() => {
-    if (!isCanvasQ2Enabled) {
+    if (!isDashboardCanvasEnabled) {
       setDashboardId(DEFAULT_DASHBOARD_ID)
     }
   }, [])
@@ -209,16 +170,7 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled) {
-      setLayout({
-        ...layout,
-        calWidth: getCalculatedColumnWidth(menuCollapsed)
-      })
-    }
-  }, [menuCollapsed])
-
-  useEffect(() => {
-    if (isCanvasQ2Enabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
       const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
       if (selectedDashboard) {
         const { canvasId, sections, groups } = getCanvasData(
@@ -242,56 +194,14 @@ export default function Dashboard () {
         getDashboardsQuery={getDashboardsQuery}
       />
       {
-        <Loader states={[{ isLoading: isCanvasQ2Enabled ? dashboardsLoading : false }]}>{
-
+        <Loader states={[{ isLoading: isDashboardCanvasEnabled ? dashboardsLoading : false }]}>{
           dashboardId === DEFAULT_DASHBOARD_ID
-            ? <>
-              {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
-              <Divider dashed
-                style={{
-                  borderColor: 'var(--acx-neutrals-30)',
-                  margin: '20px 0px 5px 0px' }}/>
-              <ContentSwitcher
-                tabId={'dashboard-devices'}
-                tabDetails={tabDetails}
-                size='large'
-                defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-                onChange={onTabChange}
-                extra={
-                  <UI.Wrapper>
-                    <TenantLink to={'/reports'}>
-                      {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-                    </TenantLink>
-                  </UI.Wrapper>
-                }
-                tabPersistence={enabledUXOptFeature}
-              />
-              <Divider dashed
-                style={{
-                  borderColor: 'var(--acx-neutrals-30)',
-                  margin: '20px 0px' }}/>
-              <DashboardMapWidget />
-            </>
-            : <DndProvider backend={HTML5Backend}>
-              <div className='grid'>
-                <CanvasUI.Grid $type='pageview'>
-                  <Layout
-                    readOnly={true}
-                    sections={sections}
-                    groups={groups}
-                    setGroups={setGroups}
-                    compactType={'horizontal'}
-                    layout={layout}
-                    setLayout={setLayout}
-                    canvasId={canvasId}
-                    shadowCard={shadowCard}
-                    setShadowCard={setShadowCard}
-                    containerId='dashboard-canvas-container'
-                  />
-                </CanvasUI.Grid>
-              </div>
-            </DndProvider>
-
+            ? <DefaultDashboard />
+            : <CanvasDashboard
+              canvasId={canvasId}
+              sections={sections}
+              groups={groups}
+              setGroups={setGroups} />
         }</Loader>
       }
     </DashboardFilterProvider>
@@ -315,13 +225,19 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
+  const [previewId, setPreviewId] = useState('')
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
+  const [patchDashboard] = usePatchDashboardMutation()
+  const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
     scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
@@ -402,14 +318,36 @@ function DashboardPageHeader (props: {
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters, true)
+    return () => {
+      if (isCanvasQ2Enabled && shouldCleanupDashboardIdRef.current) {
+        handleClearNotifications(shouldCleanupDashboardIdRef.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
-  const handleDashboardChange = (value: string) => {
-    //TODO: patch API to clear notifications
+  const handleClearNotifications = async (value: string) => {
+    await patchDashboard({
+      params: { dashboardId: value }
+    })
+    shouldCleanupDashboardIdRef.current = undefined
+  }
+
+  const handleChangeDashboard = async (value: string) => {
+    const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+    const newDashboard = dashboardList.find(item => item.id === value)
+    const hasDiff = (dashboard?: DashboardInfo) =>
+      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
+
+    if (currentDashboard && hasDiff(currentDashboard)) {
+      handleClearNotifications(currentDashboard.id)
+    }
+    if (newDashboard && hasDiff(newDashboard)) {
+      shouldCleanupDashboardIdRef.current = value
+    }
     setDashboardId(value)
   }
 
@@ -434,11 +372,11 @@ function DashboardPageHeader (props: {
         dropdownMatchSelectWidth={false}
         dropdownClassName='dashboard-select-dropdown'
         optionLabelProp='label'
-        onChange={handleDashboardChange}
+        onChange={handleChangeDashboard}
       >{
           dashboardList.map(item => {
             const isDefault = item.id === DEFAULT_DASHBOARD_ID
-            const hasUpdated = item.author && item.diffWidgetIds && item.diffWidgetIds.length > 0
+            const hasUpdated = !!item.authorId && !!item.diffWidgetIds?.length
             const icon = item.visible || isDefault
               ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' />
 
@@ -505,10 +443,11 @@ function DashboardPageHeader (props: {
       ]}
     />
 
-    { isCanvasQ2Enabled && <>
+    { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
+        setPreviewId={setPreviewId}
         handleOpenPreview={handleOpenPreview}
         handleOpenCanvas={handleOpenCanvas}
         onClose={() => {
@@ -539,17 +478,20 @@ function DashboardPageHeader (props: {
         onClose={() => setImportDashboardDrawerVisible(false)}
       />
 
-      { <PreviewDashboardModal
+      <PreviewDashboardModal
         data={previewData}
+        previewId={previewId}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
-      />}
+        DefaultDashboard={DefaultDashboard}
+      />
 
-      { <AICanvasModal
+      <AICanvasModal
         isModalOpen={canvasModalVisible}
         setIsModalOpen={setCanvasModalVisible}
         editCanvasId={editCanvasId}
-      />}
+        openNewCanvas={editCanvasId ? !editCanvasId : true}
+      />
 
     </>}
 
@@ -706,4 +648,133 @@ function CommonDashboardWidgets () {
       </GridCol>
     </GridRow>
   )
+}
+
+function DeviceWidgetsAndMapWidget (props: {
+  tabDetails: ContentSwitcherProps['tabDetails'],
+  onTabChange: (value: string) => void,
+  enabledUXOptFeature: boolean
+}) {
+  const { $t } = useIntl()
+  const { tabDetails, onTabChange, enabledUXOptFeature } = props
+
+  return <>
+    <Divider dashed
+      style={{ borderColor: 'var(--acx-neutrals-30)', margin: '20px 0px 5px 0px' }}
+    />
+    <ContentSwitcher
+      tabId={'dashboard-devices'}
+      tabDetails={tabDetails}
+      size='large'
+      defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+      onChange={onTabChange}
+      extra={
+        <UI.Wrapper>
+          <TenantLink to={'/reports'}>
+            {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+          </TenantLink>
+        </UI.Wrapper>
+      }
+      tabPersistence={enabledUXOptFeature}
+    />
+    <Divider dashed
+      style={{ borderColor: 'var(--acx-neutrals-30)', margin: '20px 0px' }}
+    />
+    <DashboardMapWidget />
+  </>
+}
+
+function DefaultDashboard () {
+  const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+  const isEdgeEnabled = useIsEdgeReady()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Wi-Fi' }),
+      value: 'ap',
+      children: <ApWidgets />
+    },
+    {
+      label: $t({ defaultMessage: 'Switch' }),
+      value: 'switch',
+      children: <SwitchWidgets />
+    },
+    ...(isEdgeEnabled ? [
+      {
+        label: $t({ defaultMessage: 'RUCKUS Edge' }),
+        value: 'edge',
+        children: <EdgeWidgets />
+      }
+    ] : [])
+  ]
+
+  /**
+   * Sets the selected tab value in local storage.
+   *
+   * @param {string} value - The value of the selected tab.
+   * @return {void} This function does not return anything.
+   */
+  const onTabChange = (value: string): void => {
+    localStorage.setItem('dashboard-tab', value)
+  }
+
+  return <>
+    {isCore ? <CoreDashboardWidgets /> : <CommonDashboardWidgets />}
+    <DeviceWidgetsAndMapWidget
+      tabDetails={tabDetails}
+      onTabChange={onTabChange}
+      enabledUXOptFeature={enabledUXOptFeature}
+    />
+  </>
+}
+
+function CanvasDashboard (props: {
+  canvasId: string
+  sections: Section[]
+  groups: Group[]
+  setGroups: React.Dispatch<React.SetStateAction<Group[]>>
+}) {
+  const { canvasId, sections, groups, setGroups } = props
+  const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+
+  const { menuCollapsed } = useLayoutContext()
+  const [layout, setLayout] = useState({
+    ...layoutConfig,
+    calWidth: getCalculatedColumnWidth(menuCollapsed)
+  })
+  const [shadowCard, setShadowCard] = useState({} as CardInfo)
+
+  useEffect(() => {
+    if (isDashboardCanvasEnabled) {
+      setLayout({
+        ...layout,
+        calWidth: getCalculatedColumnWidth(menuCollapsed)
+      })
+    }
+  }, [menuCollapsed])
+
+  return <DndProvider backend={HTML5Backend}>
+    <div className='grid'>
+      <CanvasUI.Grid $type='pageview'>
+        <Layout
+          readOnly={true}
+          sections={sections}
+          groups={groups}
+          setGroups={setGroups}
+          compactType={'horizontal'}
+          layout={layout}
+          setLayout={setLayout}
+          canvasId={canvasId}
+          shadowCard={shadowCard}
+          setShadowCard={setShadowCard}
+          containerId='dashboard-canvas-container'
+        />
+      </CanvasUI.Grid>
+    </div>
+  </DndProvider>
 }

@@ -7,11 +7,12 @@ import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/r
 import { useGetEdgeMvSdLanQuery }                                from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanExtended,
-  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  EdgeMvSdLanFormModel } from '@acx-ui/rc/utils'
+  EdgeMvSdLanFormModel,
+  useServiceListBreadcrumb
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormContainer } from '../Form'
@@ -88,11 +89,7 @@ export const EditEdgeSdLan = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit SD-LAN' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
       />
       <Loader states={[{ isLoading, isFetching }]}>
         <EdgeSdLanFormContainer

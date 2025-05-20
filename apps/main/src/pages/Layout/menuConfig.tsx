@@ -75,9 +75,11 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [
@@ -163,10 +165,18 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
-            {
-              uri: '/users/switch/clients',
-              label: $t({ defaultMessage: 'Wired Clients List' })
-            }
+            ...(!isSupportWifiWiredClient? [
+              {
+                uri: '/users/switch/clients',
+                label: $t({ defaultMessage: 'Wired Clients List' })
+              }
+            ] : [{
+              uri: '/users/wired/switch/clients',
+              label: $t({ defaultMessage: 'Switch Clients List' })
+            }, {
+              uri: '/users/wired/wifi/clients',
+              label: $t({ defaultMessage: 'AP Clients List' })
+            }])
           ]
         },
         ...(isCloudpathBetaEnabled ? [{
@@ -319,7 +329,22 @@ export function useMenuConfig () {
       ]
     }] : []
     ),
-    {
+    ...(isNewServiceCatalogEnabled ? [{
+      label: $t({ defaultMessage: 'Network Control' }),
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid,
+      children: [
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
+    }] : [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -337,7 +362,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Policies & Profiles' })
         }
       ]
-    },
+    }]),
     ...(isCore && !isSupportUser ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
@@ -409,8 +434,10 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck &&
-              hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+            ...(isMspAppMonitoringEnabled && !isCore &&
+              (rbacOpsApiEnabled ?
+                hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+                : !isCustomRole)
               ? [
                 {
                   uri: '/administration/privacy',

@@ -19,6 +19,7 @@ import {
   useRemoveDashboardsMutation
 } from '@acx-ui/rc/services'
 import { DashboardInfo } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
@@ -31,7 +32,7 @@ type ListItemProps = {
   item: DashboardInfo;
   index: number;
   handleDrag: (from: number, to: number) => void;
-  handleReorder: () => void;
+  handleReorder: (updatedList?: DashboardInfo[]) => void;
   handleMenuClick: MenuProps['onClick'],
   isDraggingItemRef: React.MutableRefObject<boolean>
 }
@@ -71,22 +72,49 @@ function CustomDragPreview () {
   )
 }
 
+function FallbackDropZone () {
+  const { isDragging } = useDragLayer((monitor) => ({
+    isDragging: monitor.isDragging()
+  }))
+
+  const [, drop] = useDrop({
+    accept: ItemTypes.CARD
+  })
+
+  if (!isDragging) return null
+
+  return (
+    <div
+      ref={drop}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}
+    />
+  )
+}
+
 const getActionMenu = (
   data: DashboardInfo,
   handleMenuClick: MenuProps['onClick'],
   $t: IntlShape['$t']
 ) => {
-  const { id, canvasId, author, isLanding, isDefault } = data
-  const isEditable = !author
+  const { id, canvasId, authorId, isLanding, isDefault } = data
+  const isEditable = !authorId
   const getKey = (type: string) => `${type}_${id}_${canvasId}`
   const menuItems = [{
     label: $t({ defaultMessage: 'Set as Landing Page' }),
     key: getKey('landing'),
     visible: !isLanding
-  }, { //TODO: can view default dashboard
+  }, {
     label: $t({ defaultMessage: 'View' }),
     key: getKey('view'),
-    visible: !isDefault
+    visible: true
   }, {
     label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
     key: getKey('edit'),
@@ -114,6 +142,7 @@ const getItemInfo = (props: {
   const hasDropdownMenu = dropdownMenu.props.items.length > 0
   const dashboardName = item.isDefault
     ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' }) : item.name
+  const authorName = item.author || noDataDisplay
 
   return <>
     <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
@@ -139,9 +168,9 @@ const getItemInfo = (props: {
         { item.updatedDate && <span className='date'>{
           moment(item.updatedDate).format('YYYY/MM/DD')
         }</span> }
-        { item.author && <span className='author'>
+        { item.authorId && <span className='author'>
           <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name' title={item.author}>{ item.author }</span>
+          <span className='name' title={authorName}>{ authorName }</span>
         </span>
         }
       </div>}
@@ -167,11 +196,11 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
+  setPreviewId: (id: string) => void,
   handleOpenPreview: (data: DashboardInfo[]) => void
   handleOpenCanvas: (id?: string) => void
 }) => {
   const { $t } = useIntl()
-  // const [selectedItem, setSelectedItem] = useState({} as DashboardInfo)
   const [dashboardList, setDashboardList] = useState(props.data as DashboardInfo[])
   const isDraggingItemRef = useRef(false)
   const [reorderDashboards] = useReorderDashboardsMutation()
@@ -210,6 +239,7 @@ export const DashboardDrawer = (props: {
       default: // view
         const previewDashboard = dashboardList.filter(item => item.id === id)
         props.handleOpenPreview(previewDashboard)
+        props.setPreviewId(id)
         break
     }
   }
@@ -235,8 +265,9 @@ export const DashboardDrawer = (props: {
       end: (item, monitor) => {
         const didDrop = monitor.didDrop()
         const originalIndex = originalIndexRef.current
-        if (!didDrop && originalIndex !== undefined) {
-          handleDrag(item.index, originalIndex)
+        if (!didDrop && originalIndex && originalIndex !== item.index) {
+          const updated = handleDrag(originalIndex, item.index)
+          handleReorder(updated)
         }
         originalIndexRef.current = undefined
         isDraggingItemRef.current = false
@@ -245,7 +276,7 @@ export const DashboardDrawer = (props: {
 
     const [, drop] = useDrop({
       accept: ItemTypes.CARD,
-      hover (dragged: { index: number }, monitor) { //TODO
+      hover (dragged: { index: number }, monitor) {
         const dragIndex = dragged.index
         const hoverIndex = index
         if (!ref.current) return
@@ -268,7 +299,6 @@ export const DashboardDrawer = (props: {
 
         handleDrag(dragIndex, targetIndex)
         dragged.index = targetIndex
-        // isDraggingItemRef.current = false
       },
       drop: () => {
         handleReorder()
@@ -283,7 +313,8 @@ export const DashboardDrawer = (props: {
     drag(drop(ref))
 
     return (
-      <UI.DashboardItem {...!item.isLanding && { ref: ref }}
+      <UI.DashboardItem ref={ref}
+        style={{ cursor: item.isLanding ? 'default' : 'grab' }}
         className={`${draggedItem?.id === item.id ? 'dragging' : ''}`}
       >
         { getItemInfo({ item, $t, handleMenuClick }) }
@@ -291,19 +322,20 @@ export const DashboardDrawer = (props: {
     )
   }
 
-  const handleDrag = async (from: number, to: number) => {
+  const handleDrag = (from: number, to: number) => {
     if (from === to || to === 0) return
     const updated = [...dashboardList]
     const [moved] = updated.splice(from, 1)
     updated.splice(to, 0, moved)
-    setDashboardList(formatDashboardList(updated))
+    const updatedDashboardList = formatDashboardList(updated)
+    setDashboardList(updatedDashboardList)
+    return updatedDashboardList
   }
 
-  const handleReorder = async () => {
-    const updatedIds = dashboardList.map(item => item.id)
-    await reorderDashboards({
-      payload: updatedIds
-    })
+  const handleReorder = async (updatedDashboardList?: DashboardInfo[]) => {
+    const list = updatedDashboardList || dashboardList
+    const updatedIds = list.map(item => item.id)
+    await reorderDashboards({ payload: updatedIds })
   }
 
   return <Drawer
@@ -312,9 +344,13 @@ export const DashboardDrawer = (props: {
     width={420}
     visible={props.visible}
     onClose={props.onClose}
+    zIndex={999}
     forceRender={true}
     destroyOnClose={false}
+    mask={true}
+    maskClosable={true}
     children={props.visible && <DndProvider backend={HTML5Backend}>
+      <FallbackDropZone />
       <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>
         {dashboardList.map((item, index) => (
           <ListItem
@@ -329,7 +365,8 @@ export const DashboardDrawer = (props: {
         ))}
         <CustomDragPreview />
       </UI.DashboardList>
-    </DndProvider>}
+    </DndProvider>
+    }
     footer={
       <Space style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
         <Tooltip title={dashboardList?.length === MAXIMUM_DASHBOARD

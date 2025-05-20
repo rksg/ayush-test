@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
@@ -49,6 +49,8 @@ interface PortSettingViewProps {
 const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
   const {
@@ -61,6 +63,16 @@ const PortSettingView = (props: PortSettingViewProps) => {
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
   const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
   const timeout = form.getFieldValue('timeout')
+  // eslint-disable-next-line max-len
+  const portSubInterfaces = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
+  // eslint-disable-next-line max-len
+  const lagSubInterfaces = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
+
+  const allSubInterface = useMemo(() =>[
+    ...Object.values(portSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat(),
+    ...Object.values(lagSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat()
+  ], [portSubInterfaces, lagSubInterfaces])
+
   const vipConfigArr = vipConfig?.map(item => ({
     virtualIp: item.vip,
     ports: item.interfaces,
@@ -75,21 +87,24 @@ const PortSettingView = (props: PortSettingViewProps) => {
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
     }]}>
-      <StyledHiddenFormItem
-        name='clusterGatewayValidate'
-        rules={[
-          { validator: () => {
-            // eslint-disable-next-line max-len
-            const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
-            const allLagsValues = nodesLagData.map(lag => lag.lags)
-            const allPortsData = _.flatten(allPortsValues) as EdgePort[]
-            const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
-            // eslint-disable-next-line max-len
-            return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
-          } }
-        ]}
-        children={<input hidden/>}
-      />
+      {
+        !isEdgeCoreAccessSeparationReady &&
+        <StyledHiddenFormItem
+          name='clusterGatewayValidate'
+          rules={[
+            { validator: () => {
+              // eslint-disable-next-line max-len
+              const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+              const allLagsValues = nodesLagData.map(lag => lag.lags)
+              const allPortsData = _.flatten(allPortsValues) as EdgePort[]
+              const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
+              // eslint-disable-next-line max-len
+              return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
+            } }
+          ]}
+          children={<input hidden/>}
+        />
+      }
       <NodesTabs
         nodeList={clusterInfo?.edgeList}
         content={
@@ -107,7 +122,9 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 onTabChange={handleTabChange}
                 fieldHeadPath={['portSettings', serialNumber]}
                 vipConfig={vipConfigArr}
+                subInterfaceList={allSubInterface}
                 isClusterWizard
+                clusterInfo={clusterInfo!}
               />
               : <div />
           }

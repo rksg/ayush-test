@@ -15,12 +15,10 @@ import {
   FlexibleAuthentication,
   FlexAuthMessages,
   FlexAuthVlanLabel,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   whitespaceOnlyRegExp,
-  PolicyOperation,
   PolicyType,
-  validateVlanExcludingReserved
+  validateVlanExcludingReserved,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -52,11 +50,6 @@ export const FlexibleAuthenticationForm = (props: {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/')
-  const flexAuthRoute = getPolicyRoutePath({
-    type: PolicyType.FLEX_AUTH,
-    oper: PolicyOperation.LIST
-  })
-
   const { useWatch } = Form
   const [form] = Form.useForm()
   const { editMode, onFinish } = props
@@ -103,13 +96,7 @@ export const FlexibleAuthenticationForm = (props: {
             action: editMode ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' })
           })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Authentication' }), link: flexAuthRoute }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.FLEX_AUTH)}
       />
 
       <StepsForm
