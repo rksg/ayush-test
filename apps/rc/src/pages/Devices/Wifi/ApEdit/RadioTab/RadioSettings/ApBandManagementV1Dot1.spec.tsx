@@ -18,6 +18,7 @@ import {
 import { ApBandManagementV1Dot1 } from './ApBandManagementV1Dot1'
 
 const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760') as ApModel
+const t760Cap = triBandApCap.apModels.find(cap => cap.model === 'T670') as ApModel
 
 describe('ApBandManagement', ()=> {
 
@@ -65,6 +66,86 @@ describe('ApBandManagement', ()=> {
 
       expect(await screen.findByRole('option',
         { name: 'Tri-band', selected: true })).toBeInTheDocument()
+    })
+  })
+
+  describe('ApBandManagement with T760 AP', () => {
+    it('should render correctly', async () => {
+      const { result: hooks } = renderHook(() => {
+        const [currentApBandModeData, setCurrentApBandModeData] =
+          useState(
+            {
+              useVenueOrApGroupSettings: true,
+              bandMode: BandModeEnum.TRIPLE
+            } as ApBandModeSettingsV1Dot1)
+        return { currentApBandModeData, setCurrentApBandModeData }
+      })
+
+      const MockedComponent = () => (<Provider>
+        <ApDataContext.Provider value={{ apCapabilities: t760Cap }}>
+          <ApBandManagementV1Dot1
+            venueBandMode={BandModeEnum.DUAL}
+            apGroupBandMode={BandModeEnum.DUAL}
+            currentApBandModeData={hooks.current.currentApBandModeData}
+            setCurrentApBandModeData={hooks.current.setCurrentApBandModeData}
+            apGroupData=''
+          />
+        </ApDataContext.Provider>
+      </Provider>)
+
+      const { rerender } = render(
+        <MockedComponent />, { route: { params: { tenantId: 'tenantId' } } }
+      )
+
+      expect(await screen.findByText(/Use inherited settings from/)).toBeInTheDocument()
+      expect(screen.getByText('Dual-band')).toBeInTheDocument()
+      expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+
+      await userEvent.click(screen.getByLabelText('Customize settings'))
+
+      rerender(<MockedComponent />)
+
+      const combo = await screen.findByRole('combobox')
+      expect(combo).toBeInTheDocument()
+      expect(combo).not.toBeDisabled()
+
+      await userEvent.click(screen.getByRole('combobox'))
+
+      expect(await screen.findByRole('option',
+        { name: 'Tri-band', selected: true })).toBeInTheDocument()
+    })
+  })
+
+  describe('ApBandManagement with AP and no capability data', () => {
+    it('should render correctly', async () => {
+      const { result: hooks } = renderHook(() => {
+        const [currentApBandModeData, setCurrentApBandModeData] =
+          useState(
+            {
+              useVenueOrApGroupSettings: true,
+              bandMode: BandModeEnum.TRIPLE
+            } as ApBandModeSettingsV1Dot1)
+        return { currentApBandModeData, setCurrentApBandModeData }
+      })
+
+      const MockedComponent = () => (<Provider>
+        <ApDataContext.Provider value={{}}>
+          <ApBandManagementV1Dot1
+            venueBandMode={BandModeEnum.DUAL}
+            apGroupBandMode={BandModeEnum.DUAL}
+            currentApBandModeData={hooks.current.currentApBandModeData}
+            setCurrentApBandModeData={hooks.current.setCurrentApBandModeData}
+            apGroupData=''
+          />
+        </ApDataContext.Provider>
+      </Provider>)
+
+      const { rerender } = render(
+        <MockedComponent />, { route: { params: { tenantId: 'tenantId' } } }
+      )
+
+      expect(await screen.findByText(/Use inherited settings from/)).not.toBeInTheDocument()
+      rerender(<MockedComponent />)
     })
   })
 
