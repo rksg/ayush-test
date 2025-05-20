@@ -1,13 +1,8 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
 import { ServiceOperation, ServiceType } from '../../constants'
-import { PolicyType }                    from '../../types'
+import { DpskDetailsTabKey, PolicyType } from '../../types'
 import { policyTypePathMapping }         from '../policy'
-
-export enum DpskDetailsTabKey {
-  OVERVIEW = 'overview',
-  PASSPHRASE_MGMT = 'passphraseMgmt'
-}
 
 export interface ServiceRoutePathProps {
   type: ServiceType;

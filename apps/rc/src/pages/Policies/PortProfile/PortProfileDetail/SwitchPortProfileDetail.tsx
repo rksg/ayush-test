@@ -8,7 +8,8 @@ import {
   SwitchPortProfilesAppliedTargets,
   PolicyType,
   PolicyOperation,
-  useTableQuery
+  useTableQuery,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                             from '@acx-ui/types'
@@ -114,11 +115,7 @@ export default function SwitchPortProfileDetail () {
       <PageHeader
         title={data?.name || ''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute
