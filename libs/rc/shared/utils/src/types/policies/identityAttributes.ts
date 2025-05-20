@@ -9,6 +9,6 @@ export enum IdentityAttributeMappingNameType {
 }
 
 export interface AttributeMapping {
-    name: string
+    name: IdentityAttributeMappingNameType
     mappedByName: string
 }
