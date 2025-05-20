@@ -1,6 +1,6 @@
-import { Form, Collapse, Checkbox, Space } from 'antd'
-import { join }                            from 'lodash'
-import styled                              from 'styled-components/macro'
+import { Form, Collapse, Checkbox } from 'antd'
+import { join }                     from 'lodash'
+import styled                       from 'styled-components/macro'
 
 import { InformationSolid } from '@acx-ui/icons'
 
@@ -18,12 +18,6 @@ export const FieldLabelByFraction = styled.div<{ fraction: number[] }>`
   grid-template-columns: ${props => join(props.fraction.map(f => `${f}fr`), ' ')};
 `
 
-export const TypeSpace = styled(Space)`
-  gap: 0px !important;
-  .ant-divider-vertical {
-    background-color: var(--acx-neutrals-60);
-  }
-`
 export const FormItemNoLabel = styled(Form.Item)`
   margin-bottom: 5px;
 `

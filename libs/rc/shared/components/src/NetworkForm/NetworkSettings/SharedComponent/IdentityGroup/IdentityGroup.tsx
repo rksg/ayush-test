@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 
-import { Form, Switch, Button, Space, Input, Col, Row, Divider } from 'antd'
-import { useIntl }                                               from 'react-intl'
+import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
 import { Drawer }                 from '@acx-ui/components'
 import {
@@ -28,30 +28,8 @@ interface IdentityGroupProps {
   comboWidth?: string
 }
 
-const IdentityGroupLayoutWrapper = (
-  { children, comboWidth }: { children: React.ReactNode, comboWidth?: string }
-) => {
-  if(comboWidth) {
-    return (
-      <Space>
-        {children}
-      </Space>
-    )
-  }
-  return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '6fr 4fr',
-      gridColumnGap: 10
-    }}>
-      {children}
-    </div>
-  )
-
-}
-
 export function IdentityGroup (props: IdentityGroupProps) {
-  const { comboWidth } = props
+  const { comboWidth = '280px' } = props
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
@@ -158,7 +136,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
 
   return (
     <>
-      <IdentityGroupLayoutWrapper comboWidth={comboWidth}>
+      <Space>
         <Form.Item
           label={$t({ defaultMessage: 'Identity Group' })}
           name={['identityGroupId']}
@@ -180,7 +158,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
             />
           }
         />
-        <UI.TypeSpace split={<Divider type='vertical' />}>
+        <Space split='|'>
           <Button
             type='link'
             disabled={!formFieldIdentityGroupId}
@@ -198,8 +176,8 @@ export function IdentityGroup (props: IdentityGroupProps) {
             }}>
             {$t({ defaultMessage: 'Add' })}
           </Button>
-        </UI.TypeSpace>
-      </IdentityGroupLayoutWrapper>
+        </Space>
+      </Space>
       {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
           <UI.FieldLabelByFraction fraction={[9,1]}>
