@@ -74,6 +74,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
@@ -180,7 +182,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     try {
       const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
-      const payload = convertEdgeNetworkIfConfigToApiPayload(formData) as EdgeLag
+      // eslint-disable-next-line max-len
+      const payload = convertEdgeNetworkIfConfigToApiPayload(formData, isEdgeCoreAccessSeparationReady) as EdgeLag
 
       if(data) {
         await onEdit(serialNumber, payload)

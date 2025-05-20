@@ -20,14 +20,14 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceListRoutePath,
   Portal,
   PortalLanguageEnum,
   Demo,
   PORTAL_LIMIT_NUMBER,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getImageDownloadUrl }                                     from '@acx-ui/utils'
@@ -206,6 +206,7 @@ export default function PortalTable (props: { hideHeader?: boolean }) {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
@@ -214,15 +215,8 @@ export default function PortalTable (props: { hideHeader?: boolean }) {
           // eslint-disable-next-line max-len
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          {
-            text: intl.$t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
-          // eslint-disable-next-line max-len
           <TenantLink
             rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}

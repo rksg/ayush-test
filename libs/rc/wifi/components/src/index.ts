@@ -1,1 +1,1 @@
-//export
+export { ApWiredClientTable } from './ApWiredClientTable'

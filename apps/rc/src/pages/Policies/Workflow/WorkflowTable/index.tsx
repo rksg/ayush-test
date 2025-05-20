@@ -20,7 +20,7 @@ import {
   useLazyGetWorkflowStepsByIdQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -298,11 +298,7 @@ export default function WorkflowTable () {
       ]}
     >
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         title={
           $t(
             { defaultMessage: 'Onboarding Workflows ({count})' },
