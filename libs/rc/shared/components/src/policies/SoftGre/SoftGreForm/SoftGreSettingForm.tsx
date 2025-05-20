@@ -5,6 +5,7 @@ import { useIntl }                                                  from 'react-
 import { useParams }                                                from 'react-router-dom'
 
 import { Loader, Tooltip }                                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
 import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                            from '@acx-ui/rc/services'
 import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                                                 from '@acx-ui/utils'
@@ -55,6 +56,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const { $t } = useIntl()
   const { readMode, editMode, policyId } = props
   const params = useParams()
+  const isGatewayFailbackEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE)
   const form = Form.useFormInstance()
   const mtuType = Form.useWatch('mtuType')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
@@ -194,30 +196,32 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }
           />
         </Col>
-        <Col span={isDrawerMode ? 16 : 11} >
-          <UI.StyledSpace style={{
-            display: readMode ? 'block' : 'flex',
-            justifyContent: readMode ? 'initial' : 'space-between'
-          }}>
-            <UI.FormItemWrapper>
+        {isGatewayFailbackEnabled && (
+          <Col span={isDrawerMode ? 16 : 11} >
+            <UI.StyledSpace style={{
+              display: readMode ? 'block' : 'flex',
+              justifyContent: readMode ? 'initial' : 'space-between'
+            }}>
+              <UI.FormItemWrapper>
+                <Form.Item
+                  label={$t({ defaultMessage: 'Fallback to Primary Gateway' })}
+                  tooltip={readMode ? null : $t(messageMapping.fallback_tooltip)}
+                />
+              </UI.FormItemWrapper>
               <Form.Item
-                label={$t({ defaultMessage: 'Fallback to Primary Gateway' })}
-                tooltip={readMode ? null : $t(messageMapping.fallback_tooltip)}
+                {...(readMode? undefined : { name: 'gatewayFailbackEnabled' })}
+                initialValue={false}
+                valuePropName='checked'
+                children={
+                  readMode
+                    ? softGreData?.gatewayFailbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
+                    : <Switch onClick={toggleFallbackEnable} />
+                }
               />
-            </UI.FormItemWrapper>
-            <Form.Item
-              {...(readMode? undefined : { name: 'gatewayFailbackEnabled' })}
-              initialValue={false}
-              valuePropName='checked'
-              children={
-                readMode
-                  ? softGreData?.gatewayFailbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
-                  : <Switch onClick={toggleFallbackEnable} />
-              }
-            />
-          </UI.StyledSpace>
-        </Col>
-        {readMode && fallbackEnable && (
+            </UI.StyledSpace>
+          </Col>
+        )}
+        {isGatewayFailbackEnabled && readMode && fallbackEnable && (
           <Col span={24}>
             <Form.Item
               label={$t({ defaultMessage: 'Primary Availability Check Interval' })}
@@ -226,7 +230,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             />
           </Col>
         )}
-        {!readMode && fallbackEnable && (
+        {isGatewayFailbackEnabled && !readMode && fallbackEnable && (
           <Col span={24}>
             <Form.Item
               label={<>
