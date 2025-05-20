@@ -80,9 +80,9 @@ const FWVersionMgmt = () => {
 
   const { isAPPLibraryAvailable } = useGetSigPackQuery({
     params: { changesIncluded: 'false' },
-    enableRbac: isWifiRbacEnabled,
-    skip: isCore
+    enableRbac: isWifiRbacEnabled
   }, {
+    skip: isCore,
     selectFromResult: ({ data }) => ({
       isAPPLibraryAvailable: data?.currentVersion !== data?.latestVersion
     })
@@ -188,7 +188,7 @@ const FWVersionMgmt = () => {
         {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
-      content: <ApplicationPolicyMgmt />,
+      content: isCore ? <></> : <ApplicationPolicyMgmt />,
       visible: !isCore
     }
   }
