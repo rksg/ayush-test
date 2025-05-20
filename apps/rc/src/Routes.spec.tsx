@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -19,6 +19,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import { WiredTabsEnum }    from './pages/Users/Wired'
 import RcRoutes             from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
@@ -80,6 +81,11 @@ jest.mock('./pages/Policies/MyPolicies', () => () => {
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
   return <div data-testid='SelectServiceForm' />
 })
+
+jest.mock('./pages/Services/UnifiedServices', () => ({
+  MyServices: () => <div data-testid='MyServicesNew' />,
+  ServiceCatalog: () => <div data-testid='ServiceCatalogNew' />
+}))
 
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => {
   return <div data-testid='MdnsProxyForm' />
@@ -156,6 +162,11 @@ jest.mock('./pages/Services/DHCP/Edge/EditDHCP', () => () => {
 jest.mock('./pages/Users/Switch/ClientList', () => () => {
   return <div data-testid='SwitchClientList' />
 })
+
+jest.mock('./pages/Users/Wired', () => ({
+  ...jest.requireActual('./pages/Users/Wired'),
+  WiredClientList: (props: { tab: WiredTabsEnum }) => <div data-testid={props.tab} />
+}))
 
 jest.mock('./pages/Users/Wifi/ClientList', () => ({
   ...jest.requireActual('./pages/Users/Wifi/ClientList'),
@@ -426,7 +437,10 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
 })
 
 describe('RcRoutes: Devices', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+  })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -656,34 +670,62 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Services', () => {
-    test('should navigate to service list', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceListRoutePath(),
-          wrapRoutes: false
-        }
+    describe('My Services and Service Catalog', () => {
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServices')).toBeVisible()
       })
-      expect(screen.getByTestId('MyServices')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
+      })
+
+      test('should navigate to select service page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getSelectServiceRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+      })
     })
 
-    test('should navigate to service catalog', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceCatalogRoutePath(),
-          wrapRoutes: false
-        }
+    describe('New - My Services and Service Catalog', () => {
+      beforeEach(() => {
+        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
       })
-      expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
-    })
 
-    test('should navigate to select service page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getSelectServiceRoutePath(),
-          wrapRoutes: false
-        }
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServicesNew')).toBeVisible()
       })
-      expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalogNew')).toBeVisible()
+      })
     })
 
     test('should navigate to create MdnsProxy page', async () => {
@@ -1327,6 +1369,38 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+    })
+
+    /* Wired Client */
+    test('should redirect users/wired/switch to users/wired/switch/clients', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/switch/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/wifi/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/wifi/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.AP_CLIENTS)).toBeVisible()
     })
   })
 

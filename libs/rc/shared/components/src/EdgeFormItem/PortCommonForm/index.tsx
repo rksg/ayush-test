@@ -5,6 +5,7 @@ import _                                                                        
 import { useIntl }                                                                          from 'react-intl'
 
 import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features }                 from '@acx-ui/feature-toggle'
 import {
   EdgeClusterStatus,
   EdgeIpModeEnum,
@@ -20,6 +21,7 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
+import { useIsEdgeFeatureReady }  from '../../useEdgeActions'
 import { getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
 import { EdgeNatFormItems }    from './NatFormItems'
@@ -57,6 +59,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     subnetInfoForValidation = [],
     clusterInfo
   } = props
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
 
@@ -78,6 +82,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   // eslint-disable-next-line max-len
   const portEnabled = useWatch(getFieldFullPath((_.get(formFieldsProps, 'enabled')?.name as string) ?? 'enabled'), form)
   const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
+  const accessPortEnabled = useWatch(getFieldFullPath('accessPortEnabled'), form)
 
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
@@ -130,50 +135,25 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   }
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
-    if(
-      portType === EdgePortTypeEnum.LAN && !corePortEnabled) {
-      return (
-        <>
-          <Form.Item
-            name={getFieldPathBaseFormList('ip')}
-            label={$t({ defaultMessage: 'IP Address' })}
-            validateFirst
-            rules={[
-              { required: true },
-              { validator: (_, value) =>
-                edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
-              },
-              {
-                validator: () =>
-                  interfaceSubnetValidator(
-                    getCurrentSubnetInfo(),
-                    // eslint-disable-next-line max-len
-                    [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
-                  )
-              }
-            ]}
-            {..._.get(formFieldsProps, 'ip')}
-            children={<Input />}
-          />
-          <Form.Item
-            name={getFieldPathBaseFormList('subnet')}
-            label={$t({ defaultMessage: 'Subnet Mask' })}
-            validateFirst
-            rules={[
-              { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(value) }
-            ]}
-            {..._.get(formFieldsProps, 'subnet')}
-            children={<Input />}
-          />
-        </>
-      )
-    } else if (portType === EdgePortTypeEnum.WAN
+    const isIpModeVisible = portType === EdgePortTypeEnum.WAN
       || portType === EdgePortTypeEnum.CLUSTER
-      // only core port enabled LAN port can configure `ipMode`
-      || (portType === EdgePortTypeEnum.LAN && corePortEnabled)) {
-      return (
-        <>
+      || (portType === EdgePortTypeEnum.LAN && (corePortEnabled || accessPortEnabled))
+    const isIpSubnetVisible = (portType !== EdgePortTypeEnum.UNCONFIGURED
+      && ipMode === EdgeIpModeEnum.STATIC)
+      // Ensures that IP subnet fields appear immediately when switching IP mode,
+      // preventing a delayed UI update when toggling between DHCP and Static modes.
+      || (portType === EdgePortTypeEnum.LAN && !corePortEnabled && !accessPortEnabled)
+    const isGatewayVisible = (
+      portType === EdgePortTypeEnum.WAN
+      || (portType === EdgePortTypeEnum.LAN
+        && (isEdgeCoreAccessSeparationReady ? accessPortEnabled : corePortEnabled)))
+      && ipMode === EdgeIpModeEnum.STATIC
+    const isNatItemsVisible = portType === EdgePortTypeEnum.WAN
+
+    return (
+      <>
+        {
+          isIpModeVisible &&
           <Form.Item
             name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
@@ -195,77 +175,77 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
               </Radio.Group>
             }
           />
-          {ipMode === EdgeIpModeEnum.STATIC &&
-            <>
-              <Form.Item
-                name={getFieldPathBaseFormList('ip')}
-                label={$t({ defaultMessage: 'IP Address' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) =>
-                    edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
-                  },
-                  {
-                    validator: () =>
+        }
+        {
+          isIpSubnetVisible && <>
+            <Form.Item
+              name={getFieldPathBaseFormList('ip')}
+              label={$t({ defaultMessage: 'IP Address' })}
+              validateFirst
+              rules={[
+                { required: true },
+                { validator: (_, value) =>
+                  edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+                },
+                {
+                  validator: () =>
+                  // eslint-disable-next-line max-len
+                    interfaceSubnetValidator(
+                      getCurrentSubnetInfo(),
                       // eslint-disable-next-line max-len
-                      interfaceSubnetValidator(
-                        getCurrentSubnetInfo(),
-                        // eslint-disable-next-line max-len
-                        [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
-                      )
-                  }
-                ]}
-                {..._.get(formFieldsProps, 'ip')}
-                children={<Input />}
-              />
-              <Form.Item
-                name={getFieldPathBaseFormList('subnet')}
-                label={$t({ defaultMessage: 'Subnet Mask' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => subnetMaskIpRegExp(value) }
-                ]}
-                {..._.get(formFieldsProps, 'subnet')}
-                children={<Input />}
-              />
-              {portType !== EdgePortTypeEnum.CLUSTER &&
-              <Form.Item
-                name={getFieldPathBaseFormList('gateway')}
-                label={$t({ defaultMessage: 'Gateway' })}
-                validateFirst
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) },
-                  {
-                    validator: (_, value) => {
-                      let subnet = getCurrentSubnetInfo()
-                      return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
-                    }
-                  }
-                ]}
-                {..._.get(formFieldsProps, 'gateway')}
-                children={<Input />}
-              />
-              }
-            </>
-          }
-          { // only WAN port can configure NAT enable
-            portType === EdgePortTypeEnum.WAN &&
-            <EdgeNatFormItems
-              parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
-              getFieldFullPath={getFieldFullPath}
-              formFieldsProps={formFieldsProps}
-              clusterInfo={clusterInfo}
-              portsData={portsData}
-              lagData={lagData}
+                      [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
+                    )
+                }
+              ]}
+              {..._.get(formFieldsProps, 'ip')}
+              children={<Input />}
             />
-          }
-        </>
-      )
-    }
-    return null
+            <Form.Item
+              name={getFieldPathBaseFormList('subnet')}
+              label={$t({ defaultMessage: 'Subnet Mask' })}
+              validateFirst
+              rules={[
+                { required: true },
+                { validator: (_, value) => subnetMaskIpRegExp(value) }
+              ]}
+              {..._.get(formFieldsProps, 'subnet')}
+              children={<Input />}
+            />
+          </>
+        }
+        {
+          isGatewayVisible &&
+          <Form.Item
+            name={getFieldPathBaseFormList('gateway')}
+            label={$t({ defaultMessage: 'Gateway' })}
+            validateFirst
+            rules={[
+              { required: true },
+              { validator: (_, value) => serverIpAddressRegExp(value) },
+              {
+                validator: (_, value) => {
+                  let subnet = getCurrentSubnetInfo()
+                  return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                }
+              }
+            ]}
+            {..._.get(formFieldsProps, 'gateway')}
+            children={<Input />}
+          />
+        }
+        {
+          isNatItemsVisible &&
+          <EdgeNatFormItems
+            parentNamePath={getFieldPathBaseFormList('').slice(0, -1)}
+            getFieldFullPath={getFieldFullPath}
+            formFieldsProps={formFieldsProps}
+            clusterInfo={clusterInfo}
+            portsData={portsData}
+            lagData={lagData}
+          />
+        }
+      </>
+    )
   }
 
   useLayoutEffect(() => {
@@ -321,39 +301,65 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           _portType === EdgePortTypeEnum.CLUSTER
         ) ? (
             <>
-              {_portType === EdgePortTypeEnum.LAN &&
-                <Form.Item
-                  name={getFieldPathBaseFormList('corePortEnabled')}
-                  valuePropName='checked'
-                  {..._.get(formFieldsProps, 'corePortEnabled')}
-                >
-                  <Checkbox
-                    disabled={!corePortInfo.isExistingCorePortInLagMember
-                      && (
-                        (hasWANPort && !corePortEnabled)
-                        || (isEdgeSdLanRun
-                          ? hasCorePortEnabled
-                          // eslint-disable-next-line max-len
-                          : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
-                      )
+              {
+                _portType === EdgePortTypeEnum.LAN && (isEdgeCoreAccessSeparationReady ?
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Use port as…' })}
+                    children={
+                      <Space direction='vertical'>
+                        <Form.Item
+                          name={getFieldPathBaseFormList('corePortEnabled')}
+                          valuePropName='checked'
+                          noStyle
+                        >
+                          <Checkbox
+                            children={$t({ defaultMessage: 'Core port' })}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          name={getFieldPathBaseFormList('accessPortEnabled')}
+                          valuePropName='checked'
+                          noStyle
+                        >
+                          <Checkbox
+                            children={$t({ defaultMessage: 'Access port' })}
+                          />
+                        </Form.Item>
+                      </Space>
                     }
+                  /> :
+                  <Form.Item
+                    name={getFieldPathBaseFormList('corePortEnabled')}
+                    valuePropName='checked'
+                    {..._.get(formFieldsProps, 'corePortEnabled')}
                   >
-                    {
-                      // eslint-disable-next-line max-len
-                      _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
-                    }
-
-                    <Tooltip
-                      placement='topRight'
-                      title={
-                        // eslint-disable-next-line max-len
-                        $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this RUCKUS Edge establishes tunnels for directing data traffic effectively' })
+                    <Checkbox
+                      disabled={!corePortInfo.isExistingCorePortInLagMember
+                        && (
+                          (hasWANPort && !corePortEnabled)
+                          || (isEdgeSdLanRun
+                            ? hasCorePortEnabled
+                            // eslint-disable-next-line max-len
+                            : ((hasCorePortEnabled && !corePortEnabled) || portType !== EdgePortTypeEnum.LAN))
+                        )
                       }
                     >
-                      <UI.StyledQuestionIcon />
-                    </Tooltip>
-                  </Checkbox>
-                </Form.Item>
+                      {
+                        // eslint-disable-next-line max-len
+                        _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
+                      }
+
+                      <Tooltip
+                        placement='topRight'
+                        title={
+                          // eslint-disable-next-line max-len
+                          $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this RUCKUS Edge establishes tunnels for directing data traffic effectively' })
+                        }
+                      >
+                        <UI.StyledQuestionIcon />
+                      </Tooltip>
+                    </Checkbox>
+                  </Form.Item>)
               }
               <StepsFormLegacy.FieldLabel width='120px'>
                 {

@@ -724,18 +724,52 @@ describe('data transformer', () => {
   const mockGivenData = _.cloneDeep(mockClusterConfigWizardData)
 
   // eslint-disable-next-line max-len
-  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings']) =>
+  const getExpectLags = (lagSettings: ClusterNetworkSettings['lagSettings'], isCoreAccessEnabled?: boolean) =>
     _.cloneDeep(lagSettings)
       .map(item => ({
         ...item,
         lags: item.lags.map(lag => ({
           ...lag,
           corePortEnabled: lag.portType === EdgePortTypeEnum.WAN ? false : lag.corePortEnabled,
+          ...(
+            lag.accessPortEnabled !== undefined ?
+              {
+                accessPortEnabled: lag.portType === EdgePortTypeEnum.WAN ?
+                  false :
+                  lag.accessPortEnabled
+              } : {}
+          ),
           natEnabled: lag.portType === EdgePortTypeEnum.WAN ? lag.natEnabled : false,
           ipMode: lag.portType === EdgePortTypeEnum.WAN ? lag.ipMode : EdgeIpModeEnum.STATIC,
-          gateway: !lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN ? '' : lag.gateway
+          gateway: (!lag.corePortEnabled && lag.portType === EdgePortTypeEnum.LAN) ?
+            (isCoreAccessEnabled ? (lag.accessPortEnabled ? lag.gateway :'') : '') :
+            lag.gateway
         }))
       }))
+
+  // eslint-disable-next-line max-len
+  const getExpectedPorts = (portSettings: InterfaceSettingsFormType['portSettings'], isCoreAccessEnabled?: boolean) => {
+    return Object.entries(portSettings).map(([serialNumber, ports]) => ({
+      serialNumber,
+      ports: Object.values(ports).flat().map(port =>
+        ({
+          ...port,
+          corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled,
+          ...(
+            port.accessPortEnabled !== undefined ?
+              {
+                accessPortEnabled: port.portType === EdgePortTypeEnum.WAN ?
+                  false :
+                  port.accessPortEnabled
+              } : {}
+          ),
+          gateway: (!port.corePortEnabled && port.portType === EdgePortTypeEnum.LAN) ?
+            (isCoreAccessEnabled ? (port.accessPortEnabled ? port.gateway :'') : '') :
+            port.gateway
+        })
+      )
+    }))
+  }
 
   it('should transform data from form data to API data (AA)', () => {
     const mockData = _.cloneDeep(mockGivenData)
@@ -748,18 +782,11 @@ describe('data transformer', () => {
     )
 
     const expectLags = getExpectLags(mockData.lagSettings)
+    const expectPorts = getExpectedPorts(mockData.portSettings)
 
     expect(result).toStrictEqual({
       lagSettings: expectLags,
-      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
-        serialNumber,
-        ports: Object.values(ports).flat().map(port =>
-          ({
-            ...port,
-            corePortEnabled: port.portType === EdgePortTypeEnum.WAN ? false : port.corePortEnabled
-          })
-        )
-      })),
+      portSettings: expectPorts,
       multiWanSettings: undefined
     })
   })
@@ -778,14 +805,12 @@ describe('data transformer', () => {
       true
     )
 
-    const expectLags = getExpectLags(mockData.lagSettings)
+    const expectLags = getExpectLags(mockData.lagSettings, true)
+    const expectPorts = getExpectedPorts(mockData.portSettings, true)
 
     expect(result).toStrictEqual({
       lagSettings: expectLags,
-      portSettings: Object.entries(mockData.portSettings).map(([serialNumber, ports]) => ({
-        serialNumber,
-        ports: Object.values(ports).flat()
-      })),
+      portSettings: expectPorts,
       multiWanSettings: undefined,
       virtualIpSettings: mockData.vipConfig?.map(item => {
         if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined

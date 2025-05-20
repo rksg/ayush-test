@@ -17,7 +17,7 @@ import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  getServiceListRoutePath
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -162,6 +162,8 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
     }
   }
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.RESIDENT_PORTAL)
+
   return (
     <>
       {!modalMode && <PageHeader
@@ -169,11 +171,7 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
           ? $t({ defaultMessage: 'Edit Resident Portal' })
           : $t({ defaultMessage: 'Add Resident Portal' })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Resident Portals' }), link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
       />}
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
         <StepsFormLegacy<CreateResidentPortalFormFields>

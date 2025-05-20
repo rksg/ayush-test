@@ -1,25 +1,24 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { PageHeader, StepsForm }                       from '@acx-ui/components'
-import { getPolicyListRoutePath, NetworkTypeTabsEnum } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                  from '@acx-ui/components'
+import { getSelectPolicyRoutePath, LocationExtended, NetworkTypeTabsEnum, usePoliciesBreadcrumb } from '@acx-ui/rc/utils'
+import { useLocation, useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
 export default function CreateAccessControl () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const createWifiAccessControlPath =
-    useTenantLink(`${getPolicyListRoutePath(true)}/accessControl/create`)
-  const createSwitchAccessControlPath =
-    useTenantLink(`${getPolicyListRoutePath(true)}/accessControl/switch/add`)
-  const wifiAccessControlRoute = getPolicyListRoutePath(true) + '/accessControl/wifi'
-  const policiesPageLink = useTenantLink(`${getPolicyListRoutePath(true) + '/select'}`)
+  const createWifiAccessControlPath = useTenantLink('/policies/accessControl/create')
+  const createSwitchAccessControlPath = useTenantLink('/policies/accessControl/switch/add')
+  const wifiAccessControlRoute = '/policies/accessControl/wifi'
+  const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
+  const fromPage = (useLocation() as LocationExtended)?.state?.from
 
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('accessControlType')
     navigate(type === NetworkTypeTabsEnum.WIFI ?
-      createWifiAccessControlPath : createSwitchAccessControlPath)
+      createWifiAccessControlPath : createSwitchAccessControlPath, { state: { from: fromPage } })
   }
 
   return (
@@ -31,11 +30,7 @@ export default function CreateAccessControl () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Access Control' }),
             link: wifiAccessControlRoute
