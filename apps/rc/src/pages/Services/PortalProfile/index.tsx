@@ -7,11 +7,11 @@ import {
   ServiceType,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceListRoutePath,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
   getServiceAllowedOperation,
-  PortalProfileTabsEnum
+  PortalProfileTabsEnum,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -85,13 +85,7 @@ export default function PortalProfile () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Portal' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
 
         extra={getAddButton()}
         footer={<ProfileTabs activeKey={activeTab} isPinSwitchReady={isPinSwitchReady} />}
