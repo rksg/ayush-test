@@ -79,4 +79,51 @@ describe('SmartMonitor', () => {
 
     expect(screen.queryByText(/off/i)).toBeNull()
   })
+
+  it('should render customize correctly', async () => {
+
+    mockServer.use(
+      rest.get(
+        WifiRbacUrlsInfo.getApSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json({
+          enabled: false,
+          interval: 10,
+          threshold: 3,
+          useVenueSettings: false
+        }))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json({
+          enabled: false,
+          interval: 10,
+          threshold: 3
+        })))
+    )
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          ...defaultApEditCtxData,
+          editNetworkingContextData: {} as ApNetworkingContext,
+          setEditNetworkingContextData: jest.fn()
+        }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
+            <SmartMonitor />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    expect(await screen.findByText(/custom settings/i)).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', {
+      name: /use venue settings/i
+    }))
+
+    expect(screen.queryByText(/off/i)).toBeVisible()
+  })
 })
