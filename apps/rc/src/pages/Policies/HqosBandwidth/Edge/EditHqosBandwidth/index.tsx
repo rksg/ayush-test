@@ -14,7 +14,7 @@ import {
   PolicyOperation,
   PolicyType,
   TrafficClassSetting,
-  getPolicyListRoutePath,
+  usePolicyListBreadcrumb,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -146,12 +146,7 @@ const EditEdgeHqosBandwidth = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit HQoS Bandwidth Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'HQoS Bandwidth' }), link: qosListRoute }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.HQOS_BANDWIDTH)}
       />
       <Loader states={[{ isLoading }]}>
         <HqosBandwidthForm
