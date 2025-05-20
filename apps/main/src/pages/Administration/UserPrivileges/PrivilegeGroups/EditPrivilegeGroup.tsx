@@ -230,7 +230,7 @@ export function EditPrivilegeGroup () {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
           const venueIds = ec.allVenues ? []
-            : ec.children.filter(v => v.selected).map(venue => venue.id)
+            : ec.children?.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -331,7 +331,7 @@ export function EditPrivilegeGroup () {
         {firstCustomer.name} ({
           intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
             { count: firstCustomer.allVenues ? 'All'
-              : firstCustomer.children.filter(v => v.selected).length })
+              : firstCustomer.children?.filter(v => v.selected).length })
         })
         <Button
           type='link'
@@ -343,7 +343,7 @@ export function EditPrivilegeGroup () {
         <UI.VenueList key={ec.id}>
           {ec.name} ({
             intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-              { count: ec.allVenues ? 'All' : ec.children.filter(v => v.selected).length })
+              { count: ec.allVenues ? 'All' : ec?.children.filter(v => v.selected).length })
           })
         </UI.VenueList>
       )}</div>

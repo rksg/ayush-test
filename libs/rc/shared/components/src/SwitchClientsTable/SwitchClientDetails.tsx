@@ -27,6 +27,7 @@ export function SwitchClientDetails () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { data, isLoading } = useGetSwitchClientDetailsQuery({
     params,
@@ -208,6 +209,8 @@ export function SwitchClientDetails () {
     }
   ]
 
+  const breadcrumbLink = isSupportWifiWiredClient? '/users/wired/switch' : '/users/switch'
+
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
@@ -215,7 +218,7 @@ export function SwitchClientDetails () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Clients' }) },
           { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
+          { text: $t({ defaultMessage: 'Wired Clients List' }), link: breadcrumbLink }
         ]}
         extra={
           <Button

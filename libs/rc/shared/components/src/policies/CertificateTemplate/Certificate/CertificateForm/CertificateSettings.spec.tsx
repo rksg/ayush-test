@@ -28,6 +28,10 @@ describe('CertificateSettings', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupWithIdentity))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

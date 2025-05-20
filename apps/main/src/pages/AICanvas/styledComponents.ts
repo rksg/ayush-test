@@ -1,20 +1,23 @@
-import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled, { css }                                 from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge, Modal, List as AntList } from 'antd'
+import styled, { css }                                                  from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Button, Card }    from '@acx-ui/components'
+import { ThumbsDown as UIThumbsDown,
+  ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
+import { Dashboard } from '@acx-ui/icons-new'
 
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
 export const ChatModal = styled(Modal)<{ showCanvas?: boolean }>`
   ${(props) => props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   ${(props) => !props.showCanvas && `
-    transition: all 0.2s ease-in-out; 
-    transform: scale(1); 
+    transition: all 0.1s ease-in-out;
+    transform: scale(1);
   `
 }
   .ant-modal-content {
@@ -46,6 +49,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  padding-bottom: 60px;
   .hint{
     font-style: italic;
     color: var(--acx-neutrals-60);
@@ -142,7 +146,7 @@ export const History = styled.div`
 
 const CanvasChatWidth = '400px'
 const ChatOnlyWidth = '1000px'
-const ChatOnlyHeightDiff = '100px'
+const ChatOnlyHeightDiff = '0px'
 const ModalMargin = '80px'
 const ModalHeaderHeight = '50px'
 const ModalInputHeight = '130px'
@@ -158,6 +162,7 @@ display: flex;
 .chat-wrapper {
   overflow: hidden;
   position: relative;
+  border-radius: 24px 0 0 24px;
 }
 .chat {
   border-top-left-radius: 24px;
@@ -215,7 +220,7 @@ display: flex;
   }
   .content {
     background: transparent;
-    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+    height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
       - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
     width: ${(props) => props.showCanvas? CanvasChatWidth: ChatOnlyWidth};
     top: 110px;
@@ -267,7 +272,7 @@ display: flex;
       /* Track */
       &::-webkit-scrollbar-track {
         border-radius: 6px;
-        background: transparent; 
+        background: transparent;
       }
 
       /* Handle */
@@ -275,7 +280,7 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight} 
+      height: calc(100vh - ${ModalMargin} - ${ModalHeaderHeight}
         - ${ModalInputHeight} - ${(props) => props.showCanvas? '0px' : ChatOnlyHeightDiff});
       overflow: auto;
       position: relative;
@@ -312,13 +317,14 @@ display: flex;
         .ant-divider-horizontal.ant-divider-with-text {
           border-top-color: var(--acx-neutrals-30);
         }
-        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::before,
         .ant-divider-horizontal.ant-divider-with-text::after {
           width: 29%;
         }
       }
       .chat-container {
         display: flex;
+        flex-direction: column;
       }
       .loading {
         display: flex;
@@ -344,6 +350,7 @@ display: flex;
         color: #000;
         margin-right: 5px;
         font-weight: 400;
+        align-self: flex-end;
       }
       .chat-bubble {
         background: linear-gradient(264deg, #0CC3EC -25.46%,
@@ -357,9 +364,65 @@ display: flex;
         margin-left: 10px;
         font-weight: 600;
       }
+      .chat-bubble {
+        align-self: flex-start;
+        &.loading {
+          position: relative;
+          font-style: italic;
+          overflow: hidden;
+          justify-content: flex-start;
+          background: transparent;
+          color: var(--acx-neutrals-70);
+          font-weight: 400;
+        }
+        .loader {
+          display: inline-block;
+          width: 24px;
+          max-height: 16px;
+          aspect-ratio: 3;
+          --_g: no-repeat radial-gradient(circle closest-side,var(--acx-neutrals-70) 90%,#0000);
+          background: 
+            var(--_g) 0%   50%,
+            var(--_g) 50%  50%,
+            var(--_g) 100% 50%;
+          background-size: calc(100%/5) 50%;
+          animation: l3 1s infinite linear;
+          margin-right: 9px;
+        }
+        @keyframes l3 {
+            20%{background-position:0%   0%, 50%  50%,100%  50%}
+            40%{background-position:0% 100%, 50%   0%,100%  50%}
+            60%{background-position:0%  50%, 50% 100%,100%   0%}
+            80%{background-position:0%  50%, 50%  50%,100% 100%}
+        }
+      }
+      .ai-message-tail {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        margin-right: 7px;
+        min-height: 25px;
+
+        &.fixed {
+          width: 300px;
+        }
+        &.fixed-narrower {
+          width: 200px !important;
+        }
+        &.dynamic {
+          align-self: flex-start;
+        }
+        .timestamp {
+          padding: 6px 0px 0px 0px;
+        }
+      }
+      .message-tail {
+        align-content: end;
+        .timestamp {
+          display: flex;
+        }
+      }
       .timestamp {
         color: var(--acx-neutrals-70);
-        display: flex;
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
@@ -368,10 +431,25 @@ display: flex;
           margin-right: 7px;
         }
       }
+      .message .user-feedback {
+        display: none;
+      }
+      .message:hover .user-feedback {
+        display: block;
+      }
     }
   }
 }
 
+`
+
+export const DashboardIcon = styled(Dashboard)`
+  background-color: var(--acx-neutrals-20);
+  color: var(--acx-neutrals-70);
+  padding: 2px;
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
 `
 
 export const Canvas = styled.div`
@@ -384,14 +462,71 @@ export const Canvas = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 8px 25px;
+    .edit-canvas-name {
+      display: flex;
+      align-items: center;
+      .ant-form-item {
+        margin-bottom: 0;
+        margin-right: 10px;
+        width: 220px;
+        .ant-form-item-explain {
+          display: none;
+        }
+      }
+      .action {
+        display: flex;
+      }
+      .button {
+        cursor: pointer;
+        margin-right: 8px;
+        margin-top: 4px;
+        &.confirm {
+          color: #23AB36;
+        }
+        &.cancel {
+          color: #ED1C24;
+        }
+      }
+      .error{
+        color: var(--acx-semantics-red-60);
+        font-size: 12px;
+      }
+    }
     .title{
-      cursor: default;
-      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      padding-top: 7px;
       font-family: var(--acx-accent-brand-font);
       font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
+      svg {
+        margin-right: 10px;
+      }
+      .name {
+        cursor: pointer;
+        padding-right: 10px;
+      }
+    }
+    .visibility-type {
+      display: flex;
+      padding: 6px 8px 6px 10px;
+      border: 1px solid var(--acx-neutrals-30);
+      border-radius: 20px;
+      min-width: 106px;
+      justify-content: space-between;
+      .label {
+        font-size: var(--acx-headline-4-font-size);
+        padding-right: 5px;
+        display:flex;
+        align-items: center;
+        svg{
+          margin-right: 4px;
+        }
+      }
     }
     .actions{
+      display: flex;
+      align-items: center;
       button {
         margin-left: 15px;
         &.black{
@@ -410,6 +545,18 @@ export const Canvas = styled.div`
   }
 `
 
+export const Visibility = styled.div`
+.type {
+  .title{
+    font-weight: 700;
+    font-size: 12px;
+  }
+  &:last-of-type {
+    margin-top: 20px;
+  }
+}
+`
+
 export const Grid = styled.div<{ $type?: string }>`
 height: calc(100vh - 150px);
 overflow: auto;
@@ -422,7 +569,7 @@ overflow: auto;
 /* Track */
 &::-webkit-scrollbar-track {
   border-radius: 6px;
-  background: #000 //transparent; 
+  background: transparent;
   padding-bottom: 10px;
 }
 
@@ -441,7 +588,8 @@ overflow: auto;
   padding: 20px;
 }
 .rglb_group-item .group-item-container .card-container .card-shadow {
-  background: rgba(15, 15, 15, 0.3);
+  background: rgba(84, 150, 234, 0.10);
+  border: 1px dashed var(--acx-accents-blue-50);
   position: absolute;
   border-radius: 8px;
   transition: all 0.2s ease-out;
@@ -489,6 +637,46 @@ overflow: auto;
     width: 20px;
     border-right: 2px solid #888;
     border-bottom: 2px solid #888;
+  }
+  .card-resizer{
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: inherit;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    background: var(--acx-primary-black);
+    color: var(--acx-primary-white);
+    border-radius: 0 0 4px 4px;
+    opacity: 0.9;
+    pointer-events: none;
+    padding: 0 5%;
+    .slider{
+      cursor: pointer;
+      margin: 0 min(6%, 24px);
+      .ant-slider-with-marks {
+        pointer-events: auto;
+        margin: 16px 0 20px 0;
+      }
+      .ant-slider-mark-text {
+        display: none;
+      }
+      .ant-slider-handle::before {
+        display: none !important;
+      }
+      .ant-slider-dot {
+        display: block;
+      }
+      .ant-slider-dot-active {
+        display: block;
+        background-color: var(--acx-accents-blue-50);
+        border-color: var(--acx-accents-blue-50);
+      }
+    }
+  }
+  &:hover .card-resizer{
+    display: flex;
   }
 }
 .rglb_group-item .group-item-container .card-container .card .card-footer {
@@ -565,7 +753,7 @@ export const Widget = styled(Card)`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
@@ -574,6 +762,9 @@ export const Widget = styled(Card)`
       border-radius: 4px;
       border-top: 1px solid var(--acx-primary-white);
     }
+  }
+  &.table .chart {
+    margin-top: 10px;
   }
   .chart {
     margin: 5px;
@@ -588,10 +779,17 @@ export const Widget = styled(Card)`
         max-width: calc(100% - 10px);
       }
       .ant-space-item:last-child {
-        flex: 10px; 
+        flex: 10px;
         max-width: auto;
       }
     }
+  }
+  .ant-card-head {
+    margin-bottom: 3px;
+  }
+  .sub-title {
+    font-size: 10px;
+    margin-left: 1px;
   }
   .update-indicator {
     display: inline-block;
@@ -621,12 +819,101 @@ export const Badge = styled(AntBadge)`
   }
 `
 
+export const CanvasListItem = styled(AntList.Item)`
+  display: flex;
+  height: 68px;
+  border-radius: 8px;
+  background: var(--acx-neutrals-10);
+  margin-bottom: 8px;
+  padding: 15px 20px 15px 24px !important;
+
+  .info {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .title {
+    display: inline-flex;
+    max-width: 100%;
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
+    font-weight: var(--acx-subtitle-4-font-weight);
+    color: var(--acx-neutrals-100);
+    margin-bottom: 4px;
+    align-items: center;
+    svg {
+      margin-left: 8px;
+      flex-shrink: 0;
+      color: var(--acx-neutrals-70);
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+  .desp {
+    display: flex
+  }
+  .count, .date {
+    display: inline-flex;
+    vertical-align: middle;
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    margin-right: 10px;
+    color: var(--acx-neutrals-70);
+  }
+  .count {
+    display: inline-block;
+    margin-right: 0;
+    &:after {
+      display: inline-block;
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--acx-neutrals-70);
+      margin: 0 6px;
+      vertical-align: middle;
+    }
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    color: var(--acx-accents-blue-50);
+    .button {
+      margin-left: 16px;
+      cursor: pointer;
+    }
+  }
+`
+
+export const EditCanvasModal = styled(Modal)`
+  .ant-modal-content {
+    .ant-modal-body {
+      padding-top: 4px;
+    }
+    .ant-radio-wrapper {
+      .label {
+        display: flex;
+        align-item: center;
+        svg {
+          margin-left: 5px;
+        }
+      }
+      .desp {
+        padding: 8px 0px;
+        color: var(--acx-neutrals-60);
+      }
+    }
+  }
+`
+
 export const PreviewModal = styled(Modal)<{ $type?: string }>`
   background: var(--acx-neutrals-10);
   border-radius: 12px;
   padding-bottom: 0;
   overflow: hidden;
-  transition: all .4s linear;
+  transition: all .2s linear;
   height: 100%;
   max-height: 80%;
 
@@ -670,13 +957,22 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
   .ant-modal-content {
     background: transparent;
     box-shadow: none !important;
-    transition: all .4s linear;
+    transition: all .2s linear;
     padding-top: 68px;
   }
   .ant-modal-body {
     padding: 0px 0 24px;
     height: calc(80vh - 68px);
-    overflow: auto;    
+    transition: all .2s linear;  
+    overflow: auto;
+    button, a {
+      pointer-events: none;
+    }
+    .header button,
+    .slick-slider button,
+    #map button {
+      pointer-events: auto;
+    }
   }
   .ant-modal-footer {
     display: none;
@@ -692,8 +988,54 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
       max-height: 100%;
     }
     .ant-modal-body {
-      height: calc(100vh - 68px);   
+      height: calc(100vh - 68px);
     }
   }
 
 `
+
+export const SearchButton = styled(Button)`
+  color: var(--acx-primary-white) !important;
+  &[disabled] {
+    svg path{
+      color: currentColor !important;
+    }
+  }
+  svg path {
+    color: currentColor;
+    stroke: currentColor !important;
+  }
+`
+
+export const StopIcon = styled.div`
+  display: inline-block;
+  background: var(--acx-primary-white);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+`
+
+const thumbStyles = `
+  margin: 0px 0px 0px 4px;
+  path {
+    stroke: var(--acx-neutrals-60);
+    fill: var(--acx-primary-white);
+  }
+  &:hover {
+    path {
+      cursor: pointer;
+      stroke: var(--acx-neutrals-60);
+      fill: var(--acx-neutrals-15);
+    }
+  }
+  &.clicked {
+    path {
+      cursor: default !important;
+      stroke: transparent !important;
+      fill: var(--acx-neutrals-70)  !important;
+    }
+  }
+`
+
+export const ThumbsUp = styled(UIThumbsUp)`${thumbStyles}`
+export const ThumbsDown = styled(UIThumbsDown)`${thumbStyles}`

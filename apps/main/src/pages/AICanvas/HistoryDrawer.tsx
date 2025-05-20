@@ -181,7 +181,6 @@ export default function HistoryDrawer (props: DrawerProps) {
           <div className='time'>{i.duration}</div>
           {
             i.history.map(j =>
-            // eslint-disable-next-line max-len
               isEditMode(j) ? (
                 editChatTitle(j)
               ) : (
@@ -222,7 +221,10 @@ export default function HistoryDrawer (props: DrawerProps) {
       mask={true}
       maskClosable={true}
       getContainer={false}
-      style={{ position: 'absolute' }}
+      style={{
+        position: 'absolute',
+        margin: '0'
+      }}
     />
   )
 }

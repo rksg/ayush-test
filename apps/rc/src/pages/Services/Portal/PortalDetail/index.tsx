@@ -11,10 +11,9 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -29,14 +28,7 @@ export default function PortalServiceDetail () {
     <>
       <PageHeader
         title={queryResults.data?.serviceName ?? queryResults.data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Guest Portal' }),
-            link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PORTAL)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceDetailsLink({

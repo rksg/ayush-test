@@ -31,9 +31,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
+const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
+  useIsWifiCallingProfileLimitReached: () => mockedUseIsWifiCallingProfileLimitReached()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -51,6 +52,10 @@ describe('Select Service Form', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
   const path = '/:tenantId/' + getSelectServiceRoutePath()
+
+  beforeEach(() => {
+    mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: false })
+  })
 
   it('should navigate to the correct service page', async () => {
     render(
@@ -185,6 +190,18 @@ describe('Select Service Form', () => {
       })
 
       expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
+  })
+
+  describe('Wi-Fi Calling', () => {
+    it('should not render Wi-Fi calling when limit is reached', () => {
+      mockedUseIsWifiCallingProfileLimitReached.mockReturnValue({ isLimitReached: true })
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
     })
   })
 })

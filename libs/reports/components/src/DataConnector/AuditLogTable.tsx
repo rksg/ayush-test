@@ -16,8 +16,8 @@ import { DateFormatEnum, formats, formatter } from '@acx-ui/formatter'
 import { useTableQuery }                      from '@acx-ui/rc/utils'
 import { getIntl }                            from '@acx-ui/utils'
 
-import { useGetAuditsQuery, useRetryAuditMutation } from './services'
-import { AuditDto, AuditStatusEnum }                from './types'
+import { useGetAuditsQuery, useRetryAuditMutation, useGetQuotaUsageQuery } from './services'
+import { AuditDto, AuditStatusEnum }                                       from './types'
 
 export const retryableStatus = [
   AuditStatusEnum.Failure,
@@ -41,21 +41,27 @@ const statusColorMapping = (status: AuditDto['status']) => {
 export const renderStatusWithBadge = (
   status: AuditDto['status'],
   error?: string
-) => (
-  <Badge
+) => {
+  const { $t } = getIntl()
+  let errorMsg = error
+  if (status === AuditStatusEnum.Failure && error && error.includes('quota')) {
+    errorMsg = $t({ defaultMessage: 'Quota exceeded' })
+  }
+
+  return (<Badge
     color={statusColorMapping(status)}
     text={
       <Tooltip
         popupVisible={Boolean(error)}
         placement='top'
-        title={error}
+        title={errorMsg}
         dottedUnderline={Boolean(error)}
       >
         {getAuditStatusLabel(status)}
       </Tooltip>
     }
-  />
-)
+  />)
+}
 
 const getAuditStatusLabel = (status: AuditDto['status']) => {
   const { $t } = getIntl()
@@ -101,6 +107,7 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
     pagination: { settingsId },
     defaultPayload: { filters: { dataConnectorId } }
   })
+  const quotaQuery = useGetQuotaUsageQuery()
 
   const rowActions: TableProps<AuditDto>['rowActions'] = useMemo(
     () => [
@@ -127,7 +134,9 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
               })
             })
         },
-        disabled: ([selectedRow]) => !!getRetryError(selectedRow),
+        disabled: ([selectedRow]) => {
+          return !!getRetryError(selectedRow)
+        },
         tooltip: ([selectedRow]) => getRetryError(selectedRow)
       }
     ],
@@ -173,6 +182,10 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
     [$t]
   )
 
+  const allowed = quotaQuery?.data?.allowed ?? 0
+  const used = quotaQuery?.data?.used ?? 0
+  const isEnoughQuota = allowed - used > 0
+
   return (
     <Loader states={[tableQuery]}>
       <Table
@@ -185,12 +198,17 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
         rowSelection={{
           type: 'radio',
           getCheckboxProps: (record: AuditDto) => ({
-            disabled: !!getRetryError(record)
+            disabled: !!getRetryError(record) || !isEnoughQuota
           }),
           renderCell: (_, record: AuditDto, __, node: ReactNode) => {
             const retryError = getRetryError(record)
             if (retryError) {
               return <Tooltip title={retryError}>{node}</Tooltip>
+            } else if (!isEnoughQuota) {
+              return (<Tooltip
+                title={$t({ defaultMessage: 'Quota exceeded' })}>
+                {node}
+              </Tooltip>)
             }
             return node
           }

@@ -18,10 +18,14 @@ import {
   useUpdateSwitchAccessControlSetMutation
 } from '@acx-ui/rc/services'
 import {
+  getPolicyRoutePath,
   MacAcl,
+  PolicyOperation,
   PolicyType,
   SwitchAccessControl,
-  usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchLayer2ACLForm } from './SwitchLayer2/SwitchLayer2ACLForm'
@@ -74,10 +78,14 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const [layer2ProfileVisible, setLayer2ProfileVisible] = useState(false)
   const [layer2AclDrawerId, setLayer2AclDrawerId] = useState('')
 
-  const switchAccessControlPage = '/policies/accessControl/switch'
-  const switchAccessControlLink = useTenantLink(switchAccessControlPage)
+  const previousPath = usePolicyPreviousPath(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.LIST)
+  const tablePath = getPolicyRoutePath({
+    type: PolicyType.SWITCH_ACCESS_CONTROL,
+    oper: PolicyOperation.LIST
+  })
+
+  const switchAccessControlLink = useTenantLink(tablePath)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
-  breadcrumb[2].link = switchAccessControlPage
   const pageTitle = editMode ? $t({ defaultMessage: 'Edit Switch Access Control' }) :
     $t({ defaultMessage: 'Add Switch Access Control' })
 
@@ -113,7 +121,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   }, [data, layer2ProfileList])
 
   const onCancel = () => {
-    navigate(switchAccessControlLink, { replace: false })
+    navigate(previousPath, { replace: false })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,7 +150,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
     if (duplicateACL) {
       return Promise.reject($t({
-        defaultMessage: 'MAC ACL name is duplicated.'
+        defaultMessage: 'Policy Name is duplicated.'
       }))
     }
 
@@ -183,9 +191,9 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
         >
           <Form.Item
             name='policyName'
-            label={$t({ defaultMessage: 'MAC ACL Name' })}
+            label={$t({ defaultMessage: 'Policy Name' })}
             rules={[
-              { required: true, message: 'Please enter MAC ACL name' },
+              { required: true, message: 'Please enter Policy name' },
               { validator: validateMacAclName }
             ]}
             validateTrigger='onBlur'

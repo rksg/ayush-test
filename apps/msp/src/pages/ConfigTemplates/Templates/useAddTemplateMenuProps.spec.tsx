@@ -1,6 +1,7 @@
-import { ItemType }           from '@acx-ui/components'
-import { ConfigTemplateType } from '@acx-ui/rc/utils'
-import { renderHook }         from '@acx-ui/test-utils'
+import { ItemType }                       from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { ConfigTemplateType }             from '@acx-ui/rc/utils'
+import { renderHook }                     from '@acx-ui/test-utils'
 
 import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem } from './useAddTemplateMenuProps'
 
@@ -29,7 +30,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
   [ConfigTemplateType.SWITCH_CLI]: false,
-  [ConfigTemplateType.AP_GROUP]: false
+  [ConfigTemplateType.AP_GROUP]: false,
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
 }
 
 describe('useAddTemplateMenuProps', () => {
@@ -50,6 +52,22 @@ describe('useAddTemplateMenuProps', () => {
       mockedUseConfigTemplateVisibilityMap.mockReturnValue(mockedMap)
       const { result } = renderHook(() => useAddTemplateMenuProps())
       expect(result.current).toBeNull()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return the correct menu items for the main overlay when the new service catatlog FF is enabled', () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
+
+      const { result } = renderHook(() => useAddTemplateMenuProps())
+      expect(result.current?.items?.filter(item => item)).toHaveLength(3)
+
+      const newServiceMenuItem = result.current?.items?.[2] as { children: ItemType[] }
+      expect(newServiceMenuItem).toBeDefined()
+      expect(newServiceMenuItem).toHaveProperty('children')
+      expect(Array.isArray(newServiceMenuItem?.children)).toBe(true)
+      expect(newServiceMenuItem?.children).toHaveLength(5)
+
     })
   })
 

@@ -362,6 +362,8 @@ export { ReactComponent as TopologySwitchDisconnected } from './icons/TopologySw
 export { ReactComponent as TopologySwitchInitiate } from './icons/TopologySwitchInitiate.svg'
 export { ReactComponent as TopologySwitchOperational } from './icons/TopologySwitchOperational.svg'
 export { ReactComponent as TopologyUnknown } from './icons/TopologyUnknown.svg'
+export { ReactComponent as ThumbsDown } from './icons/ThumbsDown.svg'
+export { ReactComponent as ThumbsUp } from './icons/ThumbsUp.svg'
 export { ReactComponent as Twitter } from './icons/TwitterX.svg'
 export { ReactComponent as TwitterOutlined } from './icons/TwitterXOutlined.svg'
 export { ReactComponent as Ubuntu } from './icons/Ubuntu.svg'
@@ -425,6 +427,7 @@ export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 export { ReactComponent as OweTransition } from './icons/OweTransition.svg'
+export { ReactComponent as CrossCircleSolidIcon } from './icons/CrossCircleSolidIcon.svg'
 
 
 export * from './styledComponents'

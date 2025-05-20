@@ -7,7 +7,7 @@ import { useIsSplitOn, Features }                                               
 import { IDENTITY_PROVIDER_MAX_COUNT, SAML_MAX_COUNT }                            from '@acx-ui/rc/components'
 import { useGetIdentityProviderListQuery, useGetSamlIdpProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   PolicyType,
@@ -57,7 +57,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
 
   const buttonLinkMapping: Record<IdentityProviderTabType, string> = {
     [IdentityProviderTabType.SAML]:
-      getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE }),
+      '/policies/samlIdp/add',
     [IdentityProviderTabType.Hotspot20]:
       getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })
   }
@@ -114,13 +114,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Identity Provider' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={buttonLinkMapping[currentTabType]}

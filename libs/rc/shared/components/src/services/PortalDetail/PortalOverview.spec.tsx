@@ -13,6 +13,11 @@ import {
 import { mockDetailResult } from './__tests__/fixtures'
 import { PortalOverview }   from './PortalOverview'
 
+jest.mock('../PortalDemo', () => ({
+  ...jest.requireActual('../PortalDemo'),
+  PortalPreviewModal: () => <div>Preview</div>
+}))
+
 describe('Portal Overview', () => {
 
   beforeEach(() => {
@@ -38,5 +43,6 @@ describe('Portal Overview', () => {
     expect(await screen.findByText('Language')).toBeVisible()
     expect(await screen.findByText('OFF')).toBeVisible()
     expect(await screen.findByText('English')).toBeVisible()
+    expect(await screen.findByText('Preview')).toBeVisible()
   })
 })

@@ -88,6 +88,8 @@ export function ClientsWidgetV2 () {
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+
   const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
 
   const queryResults = query({
@@ -116,6 +118,10 @@ export function ClientsWidgetV2 () {
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })
+
+  const switchClientsPath = isSupportWifiWiredClient
+    ? '/users/wired/switch/clients'
+    : '/users/switch/clients'
 
   return (
     <Loader states={[queryResults]}>
@@ -173,7 +179,7 @@ export function ClientsWidgetV2 () {
                         showTotal={false}
                         total={switchClientCount}
                         barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/users/switch/clients'}>
+                      <TenantLink to={switchClientsPath}>
                         {switchClientCount}
                       </TenantLink>
                     </Space>

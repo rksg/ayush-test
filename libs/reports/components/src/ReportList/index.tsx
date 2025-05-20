@@ -9,8 +9,12 @@ import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 
 export function ReportList () {
   const { $t } = useIntl()
-  const { accountTier } = getUserProfile()
+  const userProfileR1 = getUserProfile()
+  const { profile: userProfile, accountTier } = userProfileR1 ?
+    userProfileR1 : { profile: {}, accountTier: undefined }
+
   const isCore = isCoreTier(accountTier)
+  const isSupportUser = Boolean(userProfile?.support)
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
@@ -84,11 +88,11 @@ export function ReportList () {
       description: $t({ defaultMessage: 'Details of airtime by access points' }),
       path: 'wirelessAirtime'
     },
-    {
+    ...(!isCore ? [{
       title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
       description: $t({ defaultMessage: 'Details of traffic by applications and access points' }),
       path: 'trafficApplications'
-    }
+    }] : [])
   ]
   /* eslint-enable */
 
@@ -99,9 +103,10 @@ export function ReportList () {
   return (
     <>
       <PageHeader
-        title={isCore ? $t({ defaultMessage: 'Business Insights' }) :
+        title={isCore && !isSupportUser ? $t({ defaultMessage: 'Business Insights' }) :
           $t({ defaultMessage: 'Reports' })}
-        breadcrumb={isCore ? [] : [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+        breadcrumb={isCore && !isSupportUser ? [] :
+          [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
         {reports.map(({ title, description, path, disabled }) => (

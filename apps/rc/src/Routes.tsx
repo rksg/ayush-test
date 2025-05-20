@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                           from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -84,10 +84,14 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import AddEdgeCluster                               from './pages/Devices/Edge/AddEdgeCluster'
 import EdgeClusterConfigWizard                      from './pages/Devices/Edge/ClusterConfigWizard'
+import EdgeClusterDetails                           from './pages/Devices/Edge/ClusterDetails'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdge                                     from './pages/Devices/Edge/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
+import { IotController }                            from './pages/Devices/IotController'
+import { IotControllerDetails }                     from './pages/Devices/IotController/IotControllerDetails'
+import { IotControllerForm }                        from './pages/Devices/IotController/IotControllerForm'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -128,6 +132,7 @@ import EditEdgeHqosBandwidth                        from './pages/Policies/HqosB
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProvider                             from './pages/Policies/IdentityProvider'
+import IdentityProviderCreate                       from './pages/Policies/IdentityProvider/IdentityProviderCreate'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
@@ -199,19 +204,26 @@ import PersonalIdentityNetworkTable          from './pages/Services/PersonalIden
 import PersonalIdentityNetworkTableEnhanced  from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                   from './pages/Services/Portal/PortalDetail'
 import PortalTable                           from './pages/Services/Portal/PortalTable'
+import PortalProfile                         from './pages/Services/PortalProfile'
+import CreatePortalProfile                   from './pages/Services/PortalProfile/create'
 import ResidentPortalDetail                  from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                     from './pages/Services/SelectServiceForm'
 import ServiceCatalog                        from './pages/Services/ServiceCatalog'
-import WifiCallingTable                      from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                              from './pages/Timeline'
-import PersonaPortal                         from './pages/Users/Persona'
-import PersonaDetails                        from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                   from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                      from './pages/Users/Switch/ClientList'
-import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
+import {
+  MyServices as MyServicesNew,
+  ServiceCatalog as ServiceCatalogNew
+} from './pages/Services/UnifiedServices'
+import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                             from './pages/Timeline'
+import PersonaPortal                        from './pages/Users/Persona'
+import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                     from './pages/Users/Switch/ClientList'
+import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import { WiredClientList, WiredTabsEnum }   from './pages/Users/Wired'
 
 
 export default function RcRoutes () {
@@ -335,18 +347,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
-      <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
-          <EditEdgeCluster />
-        </AuthRoute>} />
-      <Route path='devices/edge/cluster/:clusterId/configure'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-          <EdgeClusterConfigWizard />
-        </AuthRoute>} />
-      <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-          <EdgeClusterConfigWizard />
-        </AuthRoute>} />
+
+      {useEdgeClusterRoutes()}
 
       <Route path='devices/switch'
         element={
@@ -386,6 +388,17 @@ function DeviceRoutes () {
             <StackForm />
           </AuthRoute>
         } />
+
+      <Route path='devices/iotController' element={<IotController />} />
+      <Route
+        path='devices/iotController/add'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/:action'
+        element={<IotControllerForm />} />
+      <Route
+        path='devices/iotController/:iotId/details/:activeTab'
+        element={<IotControllerDetails />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
@@ -476,6 +489,33 @@ const useEdgeOltRoutes = () => {
     <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
     <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
   </> : null
+}
+
+const useEdgeClusterRoutes = () => {
+  const isEdgeDualWanReady = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
+  return <>
+    <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
+      element={<AuthRoute scopes={[EdgeScopes.READ, EdgeScopes.UPDATE]}>
+        <EditEdgeCluster />
+      </AuthRoute>} />
+
+    {isEdgeDualWanReady ? <>
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab'
+        element={<EdgeClusterDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/details/:activeTab/:activeSubTab'
+        element={<EdgeClusterDetails />} />
+    </> : null}
+
+    <Route path='devices/edge/cluster/:clusterId/configure'
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EdgeClusterConfigWizard />
+      </AuthRoute>} />
+    <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EdgeClusterConfigWizard />
+      </AuthRoute>} />
+  </>
 }
 
 const edgeDhcpRoutes = () => {
@@ -646,7 +686,9 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -654,16 +696,28 @@ function ServiceRoutes () {
       <Route path='services'
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
-      <Route path={getServiceListRoutePath()} element={<MyServices />} />
-      <Route
-        path={getSelectServiceRoutePath()}
-        element={getUserProfile().rbacOpsApiEnabled
-          ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
-          : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
-            <SelectServiceForm />
-          </AuthRoute>
-        }/>
-      <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
+      {isNewServiceCatalogEnabled
+        ? <>
+          <Route path={getServiceListRoutePath()} element={<MyServicesNew />} />
+          <Route
+            path={getSelectServiceRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
+          <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalogNew />} />
+        </>
+        : <>
+          <Route path={getServiceListRoutePath()} element={<MyServices />} />
+          <Route
+            path={getSelectServiceRoutePath()}
+            element={getUserProfile().rbacOpsApiEnabled
+              ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
+              : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+                <SelectServiceForm />
+              </AuthRoute>
+            }/>
+          <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
+        </>
+      }
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={
@@ -763,6 +817,26 @@ function ServiceRoutes () {
 
       {(isEdgePinReady) && pinRoutes}
 
+      {isPortalProfileEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL_PROFILE, oper: ServiceOperation.CREATE })}
+          element={<CreatePortalProfile />}
+        />
+        <Route
+          path='services/portalProfile/:activeTab'
+          element={<PortalProfile />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/pin' />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.PORTAL,
+            oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to='/services/portalProfile/guest' />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
@@ -903,17 +977,31 @@ function PolicyRoutes () {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
-      <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-      <Route path={getSelectPolicyRoutePath()}
-        element={getUserProfile().rbacOpsApiEnabled
-          ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
-          : <SelectPolicyForm />
-        }
-      />
+      {isNewServiceCatalogEnabled
+        ? <>
+          <Route path={getPolicyListRoutePath()}
+            element={<TenantNavigate replace to={getServiceListRoutePath()} />}
+          />
+          <Route
+            path={getSelectPolicyRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
+        </>
+        : <>
+          <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
+          <Route path={getSelectPolicyRoutePath()}
+            element={getUserProfile().rbacOpsApiEnabled
+              ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+              : <SelectPolicyForm />
+            }
+          />
+        </>
+      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
         element={
@@ -1064,6 +1152,15 @@ function PolicyRoutes () {
       />
       {isSwitchMacAclEnabled && <>
         <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, SwitchScopes.CREATE]}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
           path='policies/accessControls/create'
           element={
             // eslint-disable-next-line max-len
@@ -1071,6 +1168,11 @@ function PolicyRoutes () {
               <CreateAccessControl />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/switch'} />}
         />
         <Route
           path='policies/accessControl/:activeTab/'
@@ -1578,7 +1680,7 @@ function PolicyRoutes () {
       }
       {isSwitchPortProfileEnabled && <>
         <Route
-          path='policies/portProfile/create'
+          path={getPolicyRoutePath({ type: PolicyType.PORT_PROFILE, oper: PolicyOperation.CREATE })}
           element={
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <CreatePortProfile />
@@ -1692,10 +1794,15 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.SAML_IDP ,
-            oper: PolicyOperation.CREATE
-          })}
+          path={getPolicyRoutePath({ type: PolicyType.SAML_IDP, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <IdentityProviderCreate/>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path={'policies/samlIdp/add'}
           element={
             <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.CREATE}>
               <AddSamlIdp/>
@@ -1728,6 +1835,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1749,11 +1857,23 @@ function UserRoutes () {
         <Route path=':activeTab' element={<WifiClientDetails />} />
         <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
       </Route>
-      <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
-      <Route path='users/switch/clients'
-        element={<SwitchClientList />} />
-      <Route path='users/switch/clients/:clientId'
-        element={<SwitchClientDetailsPage />} />
+      {(!isSupportWifiWiredClient)
+        ? <>
+          <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
+          <Route path='users/switch/clients'
+            element={<SwitchClientList />} />
+          <Route path='users/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+        </> : <>
+          <Route path='users/wired/switch' element={<TenantNavigate replace to='/users/wired/switch/clients' />} />
+          <Route path='users/wired/switch/clients'
+            element={<WiredClientList tab={WiredTabsEnum.SWITCH_CLIENTS}/>} />
+          <Route path='users/wired/switch/clients/:clientId'
+            element={<SwitchClientDetailsPage />} />
+          <Route path='users/wired/wifi/clients'
+            element={<WiredClientList tab={WiredTabsEnum.AP_CLIENTS} />} />
+        </>
+      }
       {(isCloudpathBetaEnabled)
         ? <>
           <Route

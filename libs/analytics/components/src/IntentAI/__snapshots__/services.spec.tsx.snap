@@ -18,6 +18,10 @@ exports[`Intent services should return intentHighlight 1`] = `
               new
               active
             }
+            ecoflex {
+              new
+              active
+            }
           }
         }
         "

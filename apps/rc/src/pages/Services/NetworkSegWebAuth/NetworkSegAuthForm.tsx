@@ -26,17 +26,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonResult,
-  LocationExtended,
   ServiceOperation,
   ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
-  getServiceListRoutePath,
   getServiceRoutePath,
   getWebAuthLabelValidator,
-  redirectPreviousPage
+  redirectPreviousPage,
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -47,10 +47,12 @@ export default function NetworkSegAuthForm (
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
-  const path = getServiceRoutePath(
-    { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
+  const { pathname: previousPath } =
+    useServicePreviousPath(ServiceType.WEBAUTH_SWITCH, ServiceOperation.LIST)
+  const linkToTableView = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WEBAUTH_SWITCH,
+    oper: ServiceOperation.LIST
+  }))
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
@@ -62,12 +64,10 @@ export default function NetworkSegAuthForm (
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
 
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-
-  const finishHandler = (response?: WebAuthTemplate)=>{
+  const finishHandler = (response?: WebAuthTemplate, previousPath = '')=>{
     formRef.current?.resetFields()
     if (modalMode) modalCallBack(response?.id)
-    else redirectPreviousPage(navigate, previousPath, linkToServices)
+    else redirectPreviousPage(navigate, previousPath, linkToTableView)
   }
 
   useEffect(() => {
@@ -120,23 +120,20 @@ export default function NetworkSegAuthForm (
       </UI.TextAreaWithReset>)
   }
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WEBAUTH_SWITCH)
+
   return (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Personal Identity Network Auth Page for Switch' }) :
-          $t({ defaultMessage: 'Add Personal Identity Network Auth Page for Switch' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }), link: path }
-        ]}
+          $t({ defaultMessage: 'Edit PIN Portal for Switch' }) :
+          $t({ defaultMessage: 'Add PIN Portal for Switch' })}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => finishHandler()}
+        onCancel={() => finishHandler(undefined, previousPath)}
         onFinish={saveData}
       >
         <StepsFormLegacy.StepForm
