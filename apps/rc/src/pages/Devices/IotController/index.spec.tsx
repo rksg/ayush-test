@@ -22,7 +22,7 @@ const iotControllerList = {
       serialNumber: 'rewqfdsafasd',
       publicAddress: 'ruckusdemos.cloud',
       publicPort: 443,
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
       tenantId: '3f10af1401b44902a88723cb68c4bc77'
     }, {
       id: 'bbc41563473348d29a36b76e95c50382',
@@ -31,7 +31,7 @@ const iotControllerList = {
       serialNumber: 'jfsdjoiasdfjo',
       publicAddress: 'iotController1.cloud',
       publicPort: 443,
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
       tenantId: '3f10af1401b44902a88723cb68c4bc77'
     }] as IotControllerStatus[]
   }

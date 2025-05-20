@@ -89,7 +89,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         sorter: { compare: sortProp('name', defaultSort) },
         render: function (_, row) {
           return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
-            $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
+          //eslint-disable-next-line max-len
+            $t({ defaultMessage: '{category, select, identity {Identity Name/} other {}}{name} (Regex)' },
+              { name: row.name, category: row.templateAttribute?.category })
         }
       },
       {

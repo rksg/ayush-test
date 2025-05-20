@@ -16,7 +16,7 @@ import {
   flowLevelLabelMapping,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -109,13 +109,7 @@ export default function SyslogTable () {
             defaultMessage: 'Syslog Server'
           })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}

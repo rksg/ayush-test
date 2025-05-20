@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                           from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -210,17 +210,21 @@ import ResidentPortalDetail                  from './pages/Services/ResidentPort
 import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                     from './pages/Services/SelectServiceForm'
 import ServiceCatalog                        from './pages/Services/ServiceCatalog'
-import WifiCallingTable                      from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                              from './pages/Timeline'
-import PersonaPortal                         from './pages/Users/Persona'
-import PersonaDetails                        from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                   from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                      from './pages/Users/Switch/ClientList'
-import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
-import { WiredClientList, WiredTabsEnum }    from './pages/Users/Wired'
-import ApWiredClientDetails                  from './pages/Users/Wired/ApWiredClientDetails'
+import {
+  MyServices as MyServicesNew,
+  ServiceCatalog as ServiceCatalogNew
+} from './pages/Services/UnifiedServices'
+import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                             from './pages/Timeline'
+import PersonaPortal                        from './pages/Users/Persona'
+import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                     from './pages/Users/Switch/ClientList'
+import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import { WiredClientList, WiredTabsEnum }   from './pages/Users/Wired'
+import ApWiredClientDetails                 from './pages/Users/Wired/ApWiredClientDetails'
 
 
 export default function RcRoutes () {
@@ -685,6 +689,7 @@ function ServiceRoutes () {
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -692,16 +697,28 @@ function ServiceRoutes () {
       <Route path='services'
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
-      <Route path={getServiceListRoutePath()} element={<MyServices />} />
-      <Route
-        path={getSelectServiceRoutePath()}
-        element={getUserProfile().rbacOpsApiEnabled
-          ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
-          : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
-            <SelectServiceForm />
-          </AuthRoute>
-        }/>
-      <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
+      {isNewServiceCatalogEnabled
+        ? <>
+          <Route path={getServiceListRoutePath()} element={<MyServicesNew />} />
+          <Route
+            path={getSelectServiceRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
+          <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalogNew />} />
+        </>
+        : <>
+          <Route path={getServiceListRoutePath()} element={<MyServices />} />
+          <Route
+            path={getSelectServiceRoutePath()}
+            element={getUserProfile().rbacOpsApiEnabled
+              ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
+              : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+                <SelectServiceForm />
+              </AuthRoute>
+            }/>
+          <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
+        </>
+      }
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={
@@ -961,17 +978,31 @@ function PolicyRoutes () {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
-      <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-      <Route path={getSelectPolicyRoutePath()}
-        element={getUserProfile().rbacOpsApiEnabled
-          ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
-          : <SelectPolicyForm />
-        }
-      />
+      {isNewServiceCatalogEnabled
+        ? <>
+          <Route path={getPolicyListRoutePath()}
+            element={<TenantNavigate replace to={getServiceListRoutePath()} />}
+          />
+          <Route
+            path={getSelectPolicyRoutePath()}
+            element={<TenantNavigate replace to={getServiceCatalogRoutePath()} />}
+          />
+        </>
+        : <>
+          <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
+          <Route path={getSelectPolicyRoutePath()}
+            element={getUserProfile().rbacOpsApiEnabled
+              ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+              : <SelectPolicyForm />
+            }
+          />
+        </>
+      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
         element={
@@ -1138,6 +1169,11 @@ function PolicyRoutes () {
               <CreateAccessControl />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.SWITCH_ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/switch'} />}
         />
         <Route
           path='policies/accessControl/:activeTab/'
@@ -1645,7 +1681,7 @@ function PolicyRoutes () {
       }
       {isSwitchPortProfileEnabled && <>
         <Route
-          path='policies/portProfile/create'
+          path={getPolicyRoutePath({ type: PolicyType.PORT_PROFILE, oper: PolicyOperation.CREATE })}
           element={
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <CreatePortProfile />
