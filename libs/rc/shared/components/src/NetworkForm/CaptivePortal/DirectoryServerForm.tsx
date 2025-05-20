@@ -34,7 +34,6 @@ import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassC
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 import * as UI                                   from './styledComponents'
-import { DivByFraction }                         from './styledComponents'
 const defaultPayload = {
   fields: [
     'id',
@@ -138,7 +137,7 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
-        <UI.DivByFraction>
+        <UI.FieldSpace>
           <Form.Item
             name={'directoryServerId'}
             rules={[
@@ -169,7 +168,7 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
                 setDetailDrawerVisible(true)
                 visible && setVisible(false)
               }}>
-              {$t({ defaultMessage: 'View Details' })}
+              {$t({ defaultMessage: 'Profile Detail' })}
             </Button>
             <Button type='link'
               onClick={() => {
@@ -179,8 +178,8 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
               {$t({ defaultMessage: 'Add Server' })}
             </Button>
           </UI.TypeSpace>
-        </UI.DivByFraction>
-        {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup />}
+        </UI.FieldSpace>
+        {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='220px' />}
         <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />

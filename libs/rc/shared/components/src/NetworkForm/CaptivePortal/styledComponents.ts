@@ -20,8 +20,8 @@ export const TypeSpace = styled(Space)`
   }
 `
 
-export const DivByFraction = styled.div`
-  display: grid;
-  grid-template-columns: 6fr 4fr;
-  column-gap: 10px
+export const FieldSpace = styled(Space)`
+  .ant-space-item:first-child {
+    width: 100%;
+  }
 `
