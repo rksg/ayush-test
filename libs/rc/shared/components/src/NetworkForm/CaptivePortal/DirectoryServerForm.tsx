@@ -64,6 +64,8 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isDirectoryReuseComponentEnable = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
 
   const { data: directoryServerListFromServer } =
     useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
@@ -179,7 +181,10 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
             </Button>
           </UI.TypeSpace>
         </UI.FieldSpace>
-        {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup />}
+        { isWifiIdentityManagementEnable &&
+          isDirectoryReuseComponentEnable &&
+          !isTemplate &&
+          <IdentityGroup />}
         <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />

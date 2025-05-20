@@ -136,7 +136,10 @@ describe('CaptiveNetworkForm-Directory', () => {
     // Arrange: Setup ref and context for create mode
     const directoryServerDataRef = { current: { id: '', name: '' } }
     jest.mocked(useIsSplitOn).mockImplementation(ff => {
-      return ff === Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE
+      return (
+        ff === Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE ||
+        ff === Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE
+      )
     })
     render(
       <Provider>
@@ -184,7 +187,10 @@ describe('CaptiveNetworkForm-Directory', () => {
     // Arrange: Setup ref and context for edit mode
     const directoryServerDataRef = { current: { id: '', name: '' } }
     jest.mocked(useIsSplitOn).mockImplementation(ff => {
-      return ff === Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE
+      return (
+        ff === Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE ||
+        ff === Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE
+      )
     })
     render(
       <Provider>

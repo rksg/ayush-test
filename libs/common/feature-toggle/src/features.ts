@@ -347,7 +347,8 @@ export enum Features {
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
-  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle'
+  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
+  WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE = 'wifi-directory-profile-reuse-component-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
