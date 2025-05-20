@@ -1,4 +1,5 @@
 import userEvent              from '@testing-library/user-event'
+import { Form, FormInstance } from 'antd'
 import { groupBy, transform } from 'lodash'
 import { rest }               from 'msw'
 
@@ -45,16 +46,24 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
+
+const MockForm = Form
 jest.mock('../Form', () => ({
   __esModule: true,
   ...jest.requireActual('../Form'),
   EdgeSdLanFormContainer: (props: {
+    form: FormInstance,
     editData: EdgeMvSdLanExtended | undefined,
-    onFinish: (values: unknown) => Promise<boolean | void>
+    onFinish: () => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
-    return <div
+    jest.spyOn(props.form, 'getFieldsValue').mockReturnValue(submitData)
+
+    return <MockForm
+      form={props.form}
       data-testid='rc-EdgeSdLanForm'
+      initialValues={props.editData}
+      onFinish={props.onFinish}
     >
       <div data-testid='rc-EdgeSdLanForm-dc-cluster-id'>{props.editData?.edgeClusterId}</div>
       <div data-testid='rc-EdgeSdLanForm-guestTunnelEnabled'>
@@ -68,9 +77,9 @@ jest.mock('../Form', () => ({
           })}
       </div>
       <button onClick={() => {
-        props.onFinish(submitData)
+        props.form.submit()
       }}>Submit</button>
-    </div>
+    </MockForm>
   }
 }))
 jest.mock('@acx-ui/rc/components', () => ({
@@ -206,6 +215,7 @@ describe('Edit SD-LAN service', () => {
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
         guestEdgeClusterId: originData.guestEdgeClusterId,
+        guestEdgeClusterVenueId: mockedDCData.guestEdgeClusterVenueId,
         guestTunnelProfileId: originData.guestTunnelProfileId,
         guestNetworks: originGuestNetworks
       })
@@ -220,7 +230,6 @@ describe('Edit SD-LAN service', () => {
     })
     expect(mockedNavigate).toBeCalledTimes(1)
   })
-
   it('should correctly handle guest network enabled case', async () => {
     const mockedDmzData = {
       ...sdLanFormDefaultValues,
@@ -235,6 +244,7 @@ describe('Edit SD-LAN service', () => {
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
       guestEdgeClusterId: 'mock_edge_id_2',
+      guestEdgeClusterVenueId: 'mock_venue_id_2',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworks: { venue_00003: ['network_2'] },
       activatedGuestNetworks: { venue_00003: [{
@@ -266,6 +276,7 @@ describe('Edit SD-LAN service', () => {
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
         guestEdgeClusterId: mockedDmzData.guestEdgeClusterId,
+        guestEdgeClusterVenueId: mockedDmzData.guestEdgeClusterVenueId,
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId,
         guestNetworks: transform(mockedDmzData.activatedGuestNetworks, (result, value, key) => {
           result[key] = value.map(v => v.id)
@@ -322,6 +333,7 @@ describe('Edit SD-LAN service', () => {
     await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
     await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
   })
+
   it('should skip req API when get profile API error', async () => {
     const mockedConsoleFn = jest.fn()
     jest.spyOn(console, 'log').mockImplementation(mockedConsoleFn)
