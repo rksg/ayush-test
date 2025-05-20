@@ -15,9 +15,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AttributeMapping,
+  IdentityAttributeMappingNameType,
   PolicyOperation,
   PolicyType,
-  SamlIdpAttributeMappingNameType,
   SamlIdpMessages,
   ServerCertificate,
   filterByAccessForServicePolicyMutation,
@@ -146,7 +146,7 @@ export const SamlIdpDetail = () => {
         return (
           samlIdpData?.attributeMappings?.find(
             (mapping: AttributeMapping) =>
-              mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+              mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
           )?.mappedByName || noDataDisplay
         )
       }
@@ -156,7 +156,7 @@ export const SamlIdpDetail = () => {
         return (
           samlIdpData?.attributeMappings?.find(
             (mapping: AttributeMapping) =>
-              mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+              mapping.name === IdentityAttributeMappingNameType.EMAIL
           )?.mappedByName || noDataDisplay
         )
       }
@@ -166,7 +166,7 @@ export const SamlIdpDetail = () => {
         return (
           samlIdpData?.attributeMappings?.find(
             (mapping: AttributeMapping) =>
-              mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+              mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
           )?.mappedByName || noDataDisplay
         )
       }
