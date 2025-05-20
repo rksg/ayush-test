@@ -342,6 +342,9 @@ export const EditPortMessages = {
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
     defaultMessage: 'Authentication cannot be enabled if Port MAC Security is turned ON.'
+  }),
+  ONLY_ONE_PORT_CAN_BE_FORCE_UP: defineMessage({
+    defaultMessage: 'Only one port can be set to force-up. Reset the previous selection before changing it to a different port.'
   })
 }
 

@@ -15,6 +15,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { TransferItem }      from 'antd/lib/transfer'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
+import styled                from 'styled-components/macro'
 
 import {
   Button,
@@ -60,6 +61,20 @@ import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
+
+const CardWrapper = styled.div<{ forceUpPort?: boolean }>`
+  .ant-card {
+    height: 296px;
+    border-color: var(--acx-neutrals-30);
+    box-shadow: 'none';
+    .ant-card-extra{
+      span {
+        opacity: ${(props) => props.forceUpPort ? '1' : '40%' };
+      }
+    }
+  }
+
+`
 
 export interface SwitchLagParams {
   switchMac: string,
@@ -623,7 +638,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                 <span>{item.name}</span>
                 {item.name === forceUpPort &&
-                  <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force Up</span>}
+                  <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force-up</span>}
               </div>
             )}
             operations={['Add', 'Remove']}
@@ -639,47 +654,54 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           offset={5}
           style={{ padding: '16px', marginTop: '6px' }}
           data-testid='force-up-interface'>
-          <Card
-            title={$t({ defaultMessage: 'Force-Up Interface' })}
-            action={{
-              actionName: $t({ defaultMessage: 'Reset' }),
-              onActionClick: resetForceUp
-            }}
-          >
-            <GridRow style={{ flexFlow: '2' }}>
-              <GridCol col={{ span: 24 }}>
-                <span data-testid='force-up-port'>
-                  {forceUpPort !== '' ? forceUpPort : noDataDisplay}</span>
-              </GridCol>
-            </GridRow>
-            <GridRow>
-              <GridCol col={{ span: 24 }}>
-                <Space size={8} style={{ display: 'flex', margin: '20px 0 30px' }}>
-                  {
-                    selectedPorts.length === 1 &&
-                    <><Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
-                      {$t({ defaultMessage: 'Port ' })} {selectedPorts[0]}
-                    </Typography.Text>
-                    <Form.Item
-                      noStyle
-                      name='forceUp'
-                      valuePropName='checked'
-                      children={<Switch
-                        disabled={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
-                          type !== LAG_TYPE.DYNAMIC}
-                        style={{ display: 'flex' }}
-                        onChange={(value) => value ?
-                          setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />}
-                    /></>
-                  }
-                  {
-                    selectedPorts.length > 1 &&
-              $t({ defaultMessage: 'You can select only one port and set it to force-up' })
-                  }
-                </Space>
-              </GridCol>
-            </GridRow>
-          </Card>
+          <CardWrapper forceUpPort={forceUpPort !== ''}>
+            <Card
+              title={$t({ defaultMessage: 'Force-Up Interface' })}
+              action={{
+                actionName: $t({ defaultMessage: 'Reset' }),
+                onActionClick: resetForceUp
+              }}
+            >
+              <GridRow style={{ flexFlow: '2' }}>
+                <GridCol col={{ span: 24 }}>
+                  <span data-testid='force-up-port' style={{ color: 'var(--acx-neutrals-60)' }}>
+                    {forceUpPort !== '' ? forceUpPort : noDataDisplay}</span>
+                </GridCol>
+              </GridRow>
+              <GridRow>
+                <GridCol col={{ span: 24 }}>
+                  <Space size={8} style={{ display: 'flex', margin: '20px 0 30px' }}>
+                    {
+                      selectedPorts.length === 1 &&
+                        <><Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
+                          {$t({ defaultMessage: 'Port ' })} {selectedPorts[0]}
+                        </Typography.Text>
+                        <Form.Item
+                          noStyle
+                          name='forceUp'
+                          valuePropName='checked'
+                          children={<Tooltip
+                            title={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
+                                  type !== LAG_TYPE.DYNAMIC ?
+                              $t(EditPortMessages.ONLY_ONE_PORT_CAN_BE_FORCE_UP) : ''}>
+                            <Switch
+                              disabled={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
+                                  type !== LAG_TYPE.DYNAMIC}
+                              style={{ display: 'flex' }}
+                              onChange={(value) => value ?
+                                setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
+                          </Tooltip>}
+                        /></>
+                    }
+                    {
+                      selectedPorts.length > 1 &&
+                  $t({ defaultMessage: 'You can select only one port and set it to force-up' })
+                    }
+                  </Space>
+                </GridCol>
+              </GridRow>
+            </Card>
+          </CardWrapper>
         </Col>
       }
     </Row>
