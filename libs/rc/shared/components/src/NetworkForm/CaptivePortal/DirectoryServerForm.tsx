@@ -179,7 +179,7 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
             </Button>
           </UI.TypeSpace>
         </UI.FieldSpace>
-        {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup comboWidth='220px' />}
+        {isWifiIdentityManagementEnable && !isTemplate && <IdentityGroup />}
         <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />
