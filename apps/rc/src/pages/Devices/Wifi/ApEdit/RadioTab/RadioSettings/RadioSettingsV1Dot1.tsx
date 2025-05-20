@@ -244,12 +244,6 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const supportWifi7_320MHz = useIsTierAllowed(TierFeatures.AP_70)
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
-
-  const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
-
   const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
@@ -272,8 +266,8 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params,
-    enableRbac: isUseRbacApi,
-    enableSeparation: is6gChannelSeparation
+    enableRbac: true,
+    enableSeparation: true
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -301,7 +295,6 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const [venueBandMode, setVenueBandMode] = useState(BandModeEnum.DUAL)
   const [apGroupBandMode, setApGroupBandMode] = useState(BandModeEnum.DUAL)
   const [venueRadioData, setVenueRadioData] = useState({} as VenueRadioCustomization)
-  const [apGroupRadioData, setApGroupRadioData] = useState({} as ApGroupRadioCustomization)
 
   const [isDual5gMode, setIsDual5gMode] = useState(false)
 
@@ -402,8 +395,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
     // 6G
     const availableCh6g = (availableChannels && availableChannels['6GChannels'])
-    const supportCh6g =
-      (is6gChannelSeparation ? (availableCh6g && availableCh6g[apModelType]) : availableCh6g) || {}
+    const supportCh6g = (availableCh6g && availableCh6g[apModelType]) || {}
     const bandwidth6g = GetSupportBandwidth(channelBandwidth6GOptions, supportCh6g, {
       isSupport160Mhz: is6GHas160Mhz,
       isSupport320Mhz: is6GHas320Mhz
@@ -454,10 +446,9 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
   const { isSupportTriBandRadioAp, isSupportBandManagementAp, isSupportDual5GAp, display6GHzTab } = useMemo(() => {
     const isSupportTriBandRadioAp = supportTriRadio ||
-    (isWifiSwitchableRfEnabled && supportBandCombination && includes(bandCombinationCapabilities, BandModeEnum.TRIPLE))
+    (supportBandCombination && includes(bandCombinationCapabilities, BandModeEnum.TRIPLE))
 
-    const isSupportBandManagementAp = isWifiSwitchableRfEnabled && supportTriRadio &&
-    (supportBandCombination || supportDual5gMode)
+    const isSupportBandManagementAp = supportTriRadio && (supportBandCombination || supportDual5gMode)
 
     const isSupportDual5GAp = supportTriRadio && supportDual5gMode
 
@@ -470,7 +461,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       display6GHzTab
     }
 
-  }, [bandCombinationCapabilities, isWifiSwitchableRfEnabled, supportBandCombination, supportDual5gMode, supportTriRadio, isDual5gMode, getCurrentBandMode])
+  }, [bandCombinationCapabilities, supportBandCombination, supportDual5gMode, supportTriRadio, isDual5gMode, getCurrentBandMode])
 
   const { data: apBandModeSavedData } =
   useGetApBandModeSettingsV1Dot1Query({ params },
@@ -585,8 +576,8 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi,
-        enableSeparation: is6gChannelSeparation
+        enableRbac: true,
+        enableSeparation: true
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)
@@ -679,10 +670,9 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       const apGroupId = apDetails?.apGroupId
       const apGroupRadioData = (await getApGroupCustomization({
         params: { venueId, apGroupId },
-        enableRbac: isUseRbacApi
+        enableRbac: true
       }, true).unwrap())
 
-      setApGroupRadioData(apGroupRadioData)
       const apGroupApData = convertApGroupRadioSetingsToApRadioSettings(apGroupRadioData)
       apGroupRef.current = apGroupApData
 
@@ -1118,7 +1108,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       await updateApRadio({
         params,
         payload: payload,
-        enableRbac: isUseRbacApi
+        enableRbac: true
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -1263,7 +1253,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   return (
     <Loader states={[{
       isLoading: !isApDataLoaded || isApRadioDataInitializing || (isSupportBandManagementAp && isApBandModeDataInitializing),
-      isFetching: isUpdatingApRadio || (isWifiSwitchableRfEnabled && isUpdatingApBandMode)
+      isFetching: isUpdatingApRadio || isUpdatingApBandMode
     }]}>
       <StepsFormLegacy
         formRef={formRef}
@@ -1384,17 +1374,12 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
               />
             </div>
-            <VenueRadioContext.Provider
-              value={{
-                venue: venueData,
-                venueRadio: apGroupData ? apGroupRadioData : venueRadioData
-              }}
-            >
+            <VenueRadioContext.Provider value={{ venue: venueData, venueRadio: venueRadioData }}>
               <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnable6g}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
-                  useVenueSettingsFieldName={['apRadioParams6G', 'useVenueOrApGroupSettings']}
+                  useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
                   enabledFieldName={['enable6G']}
                   onEnableChanged={handleEnableChanged}
                   radioType={ApRadioTypeEnum.Radio6G}

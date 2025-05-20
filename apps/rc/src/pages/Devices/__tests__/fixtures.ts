@@ -877,6 +877,108 @@ export const t670Ap = {
   model: 'T670'
 }
 
+export const t670ApV1Dot1 = {
+  serialNumber: '922406000185',
+  apGroupId: '59181904e1224ff884b77a4c363d7cbf',
+  venueId: '4910e33b100d42da97fba46d89a8fc0f',
+  radio: {
+    apRadioParams24G: {
+      method: 'CHANNELFLY',
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 10,
+      snr_dB: 32,
+      useVenueOrApGroupSettings: true,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 36,
+      snr_dB: 24,
+      txPower: 'MAX',
+      useVenueOrApGroupSettings: true,
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: false,
+      radioParamsLower5G: {
+        method: 'BACKGROUND_SCANNING',
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        useVenueOrApGroupSettings: true,
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        method: 'BACKGROUND_SCANNING',
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        useVenueOrApGroupSettings: true,
+        changeInterval: 33
+      },
+      useVenueOrApGroupEnabled: true
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 1,
+      snr_dB: 5,
+      channelBandwidth320MhzGroup: 'AUTO',
+      useVenueOrApGroupSettings: false,
+      method: 'CHANNELFLY',
+      allowedChannels: [
+        '1',
+        '5',
+        '9',
+        '13',
+        '17',
+        '21',
+        '25',
+        '29',
+        '33',
+        '37',
+        '41',
+        '45',
+        '49',
+        '53',
+        '57',
+        '61',
+        '65',
+        '69',
+        '73',
+        '77',
+        '81',
+        '85',
+        '89',
+        '93'
+      ],
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      enableMulticastUplinkRateLimiting: false,
+      multicastUplinkRateLimiting: 1,
+      enableMulticastDownlinkRateLimiting: false,
+      multicastDownlinkRateLimiting: 1,
+      enableAfc: true,
+      changeInterval: 33
+    },
+    enable24G: true,
+    enable50G: true,
+    enable6G: true
+  },
+  indoorModel: false,
+  name: 'Freddy_T670',
+  softDeleted: false,
+  model: 'T670'
+}
+
 export const triBandApCap = {
   apModels: [
     { model: 'R560',
