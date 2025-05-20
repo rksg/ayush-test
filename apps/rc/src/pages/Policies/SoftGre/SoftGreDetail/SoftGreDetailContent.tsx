@@ -31,8 +31,10 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
     ...(isGatewayFailbackEnabled ? [{
       title: $t({ defaultMessage: 'Fallback To Primary Gateway' }),
       content: data?.gatewayFailbackEnabled
-        ? `${$t({ defaultMessage: 'On' })} ` +
-          `(${data?.gatewaySecondaryToPrimaryTimer} ${$t({ defaultMessage: 'mins' })})`
+        ? $t(
+          { defaultMessage: 'On ({timer} mins)' },
+          { timer: data?.gatewaySecondaryToPrimaryTimer }
+        )
         : $t({ defaultMessage: 'Off' })
     }] : []),
     {
