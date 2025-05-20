@@ -15,12 +15,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
-  ClientIsolationSaveData,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   PolicyOperation,
   PolicyType,
-  SoftGreViewData,
   getEthernetPortAuthTypeString,
   getEthernetPortCredentialTypeString,
   getEthernetPortTypeString,
@@ -88,7 +86,9 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
       labelAlign='left'
     >
       <Form.Item
-        label={$t({ defaultMessage: 'Name' })}
+        label={wiredPortVisible ?
+          $t({ defaultMessage: 'Ethernet Port Profile' }) :
+          $t({ defaultMessage: 'Name' })}
         children={ethernetDataForDisplay?.name}
       />
       <Form.Item
@@ -155,7 +155,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           />
 
           <Form.Item
-            label={$t({ defaultMessage: 'Proxy Service(Auth)' })}
+            label={$t({ defaultMessage: 'Proxy Service (Auth)' })}
             children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
           />
 
@@ -174,7 +174,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
             }
           />
           <Form.Item
-            label={$t({ defaultMessage: 'Proxy Service(Accounting)' })}
+            label={$t({ defaultMessage: 'Proxy Service (Accounting)' })}
             children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
           />
 
@@ -211,7 +211,22 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
-          children={getEthernetPortAuthTypeString(ethernetDataForDisplay?.authType)}
+          children={transformDisplayOnOff(true)}
+        />
+
+        <Form.Item
+          label={$t({ defaultMessage: 'IPsec' })}
+          children={transformDisplayOnOff(true)}
+        />
+
+        <Form.Item
+          label={$t({ defaultMessage: 'Client Isolation' })}
+          children={transformDisplayOnOff(true)}
+        />
+
+        <Form.Item
+          label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
+          children={transformDisplayOnOff(true)}
         />
       </>
       }

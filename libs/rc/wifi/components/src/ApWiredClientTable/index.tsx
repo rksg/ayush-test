@@ -1,8 +1,10 @@
+import { useState } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
-import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
+import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
@@ -14,9 +16,9 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
-import { useState } from 'react'
 import LanPortProfileDetailsDrawer from '../LanPortProfileDrawer/LanPortProfileDetailDrawer'
+
+import * as UI from './styledComponents'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
@@ -77,8 +79,10 @@ export const ApWiredClientTable = (props: {
   const { $t } = useIntl()
   const { searchable, settingsId = 'ap-wired-clients-table' } = props
   const [detailVisible, setDetailVisible]=useState(false)
-  const [apName, setApName]=useState<string>()
-  const [portNumber, setPortNumber]=useState<string>()
+  const [apName, setApName] = useState<string>()
+  const [portNumber, setPortNumber]=useState<number>()
+  const [apSerialNumber, setApSerialNumber] = useState<string>()
+  const [venueId, setVenueId] = useState<string>()
 
   defaultApWiredClientPayload.filters =
   params.venueId ? { venueId: [params.venueId] } :
@@ -215,12 +219,14 @@ export const ApWiredClientTable = (props: {
       render: (_: React.ReactNode, row: ApWiredClientInfo) => {
         const { portNumber } = row
         return portNumber ? <Button type='link'
-        onClick={()=> {
-          setApName(row.apName)
-          setPortNumber(row.portNumber)
-          setDetailVisible(true)}}>
-        {$t({ defaultMessage: 'LAN {portNumber}' }, {portNumber})}
-      </Button> : noDataDisplay
+          onClick={()=> {
+            setApName(row.apName)
+            setPortNumber(row.portNumber)
+            setApSerialNumber(row.apId)
+            setVenueId(row.venueId)
+            setDetailVisible(true)}}>
+          {$t({ defaultMessage: 'LAN {portNumber}' }, { portNumber })}
+        </Button> : noDataDisplay
       }
     }, {
       key: 'vlanId',
@@ -280,15 +286,16 @@ export const ApWiredClientTable = (props: {
           filterPersistence={true}
         />
         <LanPortProfileDetailsDrawer
-        title={$t(
-          { defaultMessage: '{apName} - LAN {portNumber}' },
-          { apName, portNumber}
-        )}
-        visible={detailVisible}
-        wiredPortVisible={true}
-        setVisible={()=>setDetailVisible(false)}
-
-      />
+          title={$t(
+            { defaultMessage: '{apName} - LAN {portNumber}' },
+            { apName, portNumber }
+          )}
+          visible={detailVisible}
+          wiredPortVisible={true}
+          apSerial={apSerialNumber}
+          venueId={venueId}
+          setVisible={()=>setDetailVisible(false)}
+        />
       </Loader>
     </div>
   )
