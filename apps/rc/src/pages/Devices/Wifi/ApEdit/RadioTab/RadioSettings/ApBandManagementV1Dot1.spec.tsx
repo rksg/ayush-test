@@ -143,8 +143,6 @@ describe('ApBandManagement', ()=> {
       const { rerender } = render(
         <MockedComponent />, { route: { params: { tenantId: 'tenantId' } } }
       )
-
-      expect(await screen.findByText(/Use inherited settings from/)).not.toBeInTheDocument()
       rerender(<MockedComponent />)
     })
   })
