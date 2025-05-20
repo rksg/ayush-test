@@ -979,6 +979,108 @@ export const t670ApV1Dot1 = {
   model: 'T670'
 }
 
+export const r760ApV1Dot1 = {
+  serialNumber: '922406000185',
+  apGroupId: '59181904e1224ff884b77a4c363d7cbf',
+  venueId: '16b11938ee934928a796534e2ee47661',
+  radio: {
+    apRadioParams24G: {
+      method: 'CHANNELFLY',
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 10,
+      snr_dB: 32,
+      useVenueOrApGroupSettings: true,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 36,
+      snr_dB: 24,
+      txPower: 'MAX',
+      useVenueOrApGroupSettings: true,
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        method: 'BACKGROUND_SCANNING',
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        useVenueOrApGroupSettings: true,
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        method: 'BACKGROUND_SCANNING',
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        useVenueOrApGroupSettings: true,
+        changeInterval: 33
+      },
+      useVenueOrApGroupEnabled: true
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      operativeTxPower: 'max',
+      operativeChannel: 1,
+      snr_dB: 5,
+      channelBandwidth320MhzGroup: 'AUTO',
+      useVenueOrApGroupSettings: false,
+      method: 'CHANNELFLY',
+      allowedChannels: [
+        '1',
+        '5',
+        '9',
+        '13',
+        '17',
+        '21',
+        '25',
+        '29',
+        '33',
+        '37',
+        '41',
+        '45',
+        '49',
+        '53',
+        '57',
+        '61',
+        '65',
+        '69',
+        '73',
+        '77',
+        '81',
+        '85',
+        '89',
+        '93'
+      ],
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      enableMulticastUplinkRateLimiting: false,
+      multicastUplinkRateLimiting: 1,
+      enableMulticastDownlinkRateLimiting: false,
+      multicastDownlinkRateLimiting: 1,
+      enableAfc: true,
+      changeInterval: 33
+    },
+    enable24G: true,
+    enable50G: true,
+    enable6G: true
+  },
+  indoorModel: false,
+  name: 'Freddy_R670',
+  softDeleted: false,
+  model: 'R760'
+}
+
 export const triBandApCap = {
   apModels: [
     { model: 'R560',
@@ -1991,6 +2093,86 @@ export const apDeviceRadio = {
   },
   enable6G: false,
   useVenueSettings: false,
+  enable24G: true,
+  enable50G: true
+}
+
+export const apDeviceRadioV1Dot1 = {
+  apRadioParams24G: {
+    manualChannel: 0,
+    allowedChannels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+    channelBandwidth: 'AUTO',
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParams50G: {
+    allowedChannels: [
+      '36', '40', '44', '48',
+      '52', '56', '60', '64',
+      '100','104', '108', '112',
+      '116', '120', '124', '128',
+      '132', '136', '140', '144',
+      '149', '153', '157', '161'
+    ],
+    channelBandwidth: 'AUTO',
+    manualChannel: 0,
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParamsDual5G: {
+    enabled: true,
+    lower5gEnabled: false,
+    upper5gEnabled: false,
+    radioParamsLower5G: {
+      allowedChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    radioParamsUpper5G: {
+      allowedChannels: [
+        '100', '104', '108', '112',
+        '116', '120', '124', '128',
+        '132', '136', '140', '144',
+        '149', '153', '157', '161'
+      ],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    }
+  },
+  apRadioParams6G: {
+    manualChannel: 0,
+    method: 'CHANNELFLY',
+    allowedChannels: [
+      '1', '5', '9', '13',
+      '17', '21', '25', '29',
+      '33', '37', '41', '45',
+      '49', '53', '57', '61',
+      '65', '69', '73', '77',
+      '81', '85', '89', '93',
+      '97', '101', '105', '109',
+      '113', '117', '121', '125',
+      '129', '133', '137', '141',
+      '145', '149', '153', '157',
+      '161', '165', '169', '173',
+      '177', '181', '185', '189',
+      '193', '197', '201', '205',
+      '209', '213', '217', '221'
+    ],
+    channelBandwidth: 'AUTO',
+    bssMinRate6G: 'HE_MCS_0',
+    mgmtTxRate6G: '6',
+    txPower: 'MAX',
+    changeInterval: 33
+  },
+  enable6G: true,
   enable24G: true,
   enable50G: true
 }

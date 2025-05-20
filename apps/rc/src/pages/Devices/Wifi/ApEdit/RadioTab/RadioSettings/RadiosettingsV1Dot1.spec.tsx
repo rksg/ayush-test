@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   isCurrentTabUseVenueSettings,
   toggleState,
@@ -33,11 +33,12 @@ import '@testing-library/jest-dom'
 import { ApDataContext, ApEditContext } from '../..'
 import {
   apDeviceRadio,
+  apDeviceRadioV1Dot1,
   apR760DeviceRadio,
   apT670DeviceRadio,
   apViewModel,
   r560Ap,
-  r760Ap,
+  r760ApV1Dot1,
   t670ApV1Dot1,
   triBandApCap,
   tripleBandMode,
@@ -458,7 +459,7 @@ describe('RadioSettingsTab', ()=> {
 
   describe('RadioSettingsTab with R760 AP', () => {
     const defaultR760ApDataCxtData = {
-      apData: r760Ap,
+      apData: r760ApV1Dot1,
       apCapabilities: r760Cap,
       venueData: venueRadioDetail
     }
@@ -513,8 +514,8 @@ describe('RadioSettingsTab', ()=> {
           (_, res, ctx) => res(ctx.json({
             totalCount: 1, page: 1, data: [
               {
-                id: '1724eda6f49e4223be36f864f46faba5',
-                venueId: 'venue-id',
+                id: '59181904e1224ff884b77a4c363d7cbf',
+                venueId: '16b11938ee934928a796534e2ee47661',
                 name: ''
               }
             ]
@@ -532,7 +533,7 @@ describe('RadioSettingsTab', ()=> {
         ),
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1.url,
-          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
+          (_, res, ctx) => res(ctx.json(apDeviceRadioV1Dot1))),
         rest.put(
           WifiRbacUrlsInfo.updateApRadioCustomizationV1Dot1.url,
           (_, res, ctx) => res(ctx.json({}))),
@@ -553,28 +554,7 @@ describe('RadioSettingsTab', ()=> {
 
     afterEach(() => cleanup())
 
-    xit('should render correctly', async () => {
-      render(
-        <Provider>
-          <ApEditContext.Provider value={defaultApEditCxtData}>
-            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
-              <RadioSettingsV1Dot1 />
-            </ApDataContext.Provider>
-          </ApEditContext.Provider>
-        </Provider>, { route: { params } })
-
-      await userEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
-      await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
-      await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
-      await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
-      const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
-      await userEvent.click(transmitSelect)
-      await userEvent.click((await screen.findAllByTitle('Auto'))[0])
-      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
-    })
-
-    xit('should render correctly when tri-band type is dual5G mode', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_SWITCHABLE_RF_TOGGLE)
+    it('should render 6G channels correctly for R760 when separation', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -595,63 +575,7 @@ describe('RadioSettingsTab', ()=> {
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
-      await screen.findByRole('tab', { name: '2.4 GHz' })
-
-      const dual5GBtn = await screen.findByRole('radio',
-        { name: /Split 5GHz into lower and upper bands/ })
-      await userEvent.click(dual5GBtn)
-
-      const low5gTab = await screen.findByRole('tab', { name: 'Lower 5 GHz' })
-      await userEvent.click(low5gTab)
-
-      const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
-      await userEvent.click(up5gTab)
-    })
-
-    xit('should render correctly with disable lower 5G', async () => {
-      render(
-        <Provider>
-          <ApEditContext.Provider value={defaultApEditCxtData}>
-            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
-              <RadioSettingsV1Dot1 />
-            </ApDataContext.Provider>
-          </ApEditContext.Provider>
-        </Provider>, { route: { params } })
-
-      const dual5GBtn = await screen.findByRole('radio',
-        { name: /Split 5GHz into lower and upper bands/ })
-      await userEvent.click(dual5GBtn)
-
-      const low5gTab = await screen.findByRole('tab', { name: 'Lower 5 GHz' })
-      await userEvent.click(low5gTab)
-
-      const enableLower5GBtn = await screen.findByRole('switch')
-      await userEvent.click(enableLower5GBtn)
-
-      await screen.findByText('Lower 5 GHz Radio is disabled')
-    })
-
-    xit('should render correctly with disable upper 5G', async () => {
-      render(
-        <Provider>
-          <ApEditContext.Provider value={defaultApEditCxtData}>
-            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
-              <RadioSettingsV1Dot1 />
-            </ApDataContext.Provider>
-          </ApEditContext.Provider>
-        </Provider>, { route: { params } })
-
-      const dual5GBtn = await screen.findByRole('radio',
-        { name: /Split 5GHz into lower and upper bands/ })
-      await userEvent.click(dual5GBtn)
-
-      const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
-      await userEvent.click(up5gTab)
-
-      const enableUpper5GBtn = await screen.findByRole('switch')
-      await userEvent.click(enableUpper5GBtn)
-
-      await screen.findByText('Upper 5 GHz Radio is disabled')
+      await screen.findByRole('tab', { name: '6 GHz' })
     })
   })
 
