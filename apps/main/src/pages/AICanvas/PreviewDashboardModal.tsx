@@ -92,7 +92,7 @@ export const PreviewDashboardModal = (props: {
     title=''
     centered
     closable={false}
-    zIndex={9999}
+    zIndex={1001}
     footer={[]}
     visible={visible && !!canvasId}
     width={modalWidth}
