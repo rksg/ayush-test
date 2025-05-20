@@ -965,6 +965,14 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     height: calc(80vh - 68px);
     transition: all .2s linear;  
     overflow: auto;
+    button, a {
+      pointer-events: none;
+    }
+    .header button,
+    .slick-slider button,
+    #map button {
+      pointer-events: auto;
+    }
   }
   .ant-modal-footer {
     display: none;

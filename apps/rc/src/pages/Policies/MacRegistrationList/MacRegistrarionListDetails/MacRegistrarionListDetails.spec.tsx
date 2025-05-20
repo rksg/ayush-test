@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen }                                  from '@acx-ui/test-utils'
@@ -101,9 +101,10 @@ const macReglist = {
 }
 
 describe('MacRegistrationListDetails', () => {
-  jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPool.url,
@@ -155,6 +156,9 @@ describe('MacRegistrationListDetails', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
@@ -171,7 +175,7 @@ describe('MacRegistrationListDetails', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'MAC Registration Lists'
+      name: 'MAC Registration List'
     })).toBeVisible()
   })
 

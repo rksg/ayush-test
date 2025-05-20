@@ -1,11 +1,11 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                                                                                from '@acx-ui/components'
-import { useActivateHqosOnEdgeClusterMutation, useCreateEdgeHqosProfileMutation }                                    from '@acx-ui/rc/services'
-import { CommonErrorsResult, CommonResult, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                                from '@acx-ui/react-router-dom'
-import { CatchErrorDetails }                                                                                         from '@acx-ui/utils'
+import { PageHeader }                                                                                                 from '@acx-ui/components'
+import { useActivateHqosOnEdgeClusterMutation, useCreateEdgeHqosProfileMutation }                                     from '@acx-ui/rc/services'
+import { CommonErrorsResult, CommonResult, PolicyOperation, PolicyType, usePolicyListBreadcrumb, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                                 from '@acx-ui/react-router-dom'
+import { CatchErrorDetails }                                                                                          from '@acx-ui/utils'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { ScopeForm }                                 from '../HqosBandwidthForm/ScopeForm'
@@ -152,12 +152,7 @@ const AddEdgeHqosBandwidth = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add HQoS Bandwidth Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'HQoS Bandwidth' }), link: qosListRoute }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.HQOS_BANDWIDTH)}
       />
       <HqosBandwidthForm
         form={form}
