@@ -653,10 +653,18 @@ export default function AICanvasModal (props: {
                       data-testid='canvasCollapseIcon'
                       onClick={onClickCanvasMode}
                     />
-                      : <CanvasExpand
-                        data-testid='canvasExpandIcon'
-                        onClick={onClickCanvasMode}
-                      />
+                      : <Tooltip
+                        placement='bottom'
+                        title={$t(
+                          { defaultMessage: 'Expand <b>My Canvas</b> to place widgets' },
+                          { b: (chunks: React.ReactNode[]) => <b>{chunks}</b> }
+                        )}
+                      >
+                        <CanvasExpand
+                          data-testid='canvasExpandIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                      </Tooltip>
                   }
                 </div>
                 <div className='title'>

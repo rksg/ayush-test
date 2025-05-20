@@ -24,7 +24,6 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   getServiceRoutePath,
   PolicyType,
   PolicyOperation,
@@ -37,7 +36,8 @@ import {
   getScopeKeyByService,
   defaultSort,
   getServiceAllowedOperation,
-  IncompatibilityFeatures
+  IncompatibilityFeatures,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -338,13 +338,7 @@ export const EdgeSdLanTable = () => {
           { defaultMessage: 'SD-LAN ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}

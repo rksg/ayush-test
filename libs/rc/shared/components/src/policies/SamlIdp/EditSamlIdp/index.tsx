@@ -13,10 +13,11 @@ import {
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useUpdateSamlIdpProfileMutation
 } from '@acx-ui/rc/services'
-import { SamlIdpAttributeMappingNameType, SamlIdpProfileFormType } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
+import { IdentityAttributeMappingNameType, SamlIdpProfileFormType } from '@acx-ui/rc/utils'
+import { useParams }                                                from '@acx-ui/react-router-dom'
 
-import { SamlIdpForm, requestPreProcess, excludedAttributeTypes } from '../SamlIdpForm'
+import { excludedAttributeTypes }         from '../../IdentityAttributesInput'
+import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 
 export const EditSamlIdp = () => {
   const { $t } = useIntl()
@@ -98,25 +99,27 @@ export const EditSamlIdp = () => {
       form.setFieldValue('identityName',
         sourceData.attributeMappings
           .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+            mapping => mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
           )?.mappedByName
       )
       form.setFieldValue('identityEmail',
         sourceData.attributeMappings
           .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+            mapping => mapping.name === IdentityAttributeMappingNameType.EMAIL
           )?.mappedByName
       )
       form.setFieldValue('identityPhone',
         sourceData.attributeMappings
           .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+            mapping => mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
           )?.mappedByName
       )
 
       // remove above three mappings from attributeMappings
       form.setFieldValue('attributeMappings', sourceData.attributeMappings.filter(
-        mapping => !excludedAttributeTypes.includes(mapping.name as SamlIdpAttributeMappingNameType)
+        mapping => !excludedAttributeTypes.includes(
+          mapping.name as IdentityAttributeMappingNameType
+        )
       ))
     }
 

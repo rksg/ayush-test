@@ -13,7 +13,6 @@ import {
   PolicyType,
   WifiNetworkMessages,
   checkVlanMember,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   redirectPreviousPage,
   EthernetPortAuthType,
@@ -26,7 +25,8 @@ import {
   EthernetPortType,
   usePolicyListBreadcrumb,
   usePolicyPageHeaderTitle,
-  useConfigTemplate
+  useConfigTemplate,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -68,11 +68,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   const wifiBreadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
   const switchBreadcrumb = [
-    { text: $t({ defaultMessage: 'Network Control' }) },
-    {
-      text: $t({ defaultMessage: 'Policies & Profiles' }),
-      link: getPolicyListRoutePath(true)
-    },
+    ...usePoliciesBreadcrumb(),
     {
       text: $t({ defaultMessage: 'Ethernet Port Profile' }),
       link: '/policies/portProfile/wifi'
