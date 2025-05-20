@@ -10,7 +10,7 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceListRoutePath,
+  useServicesBreadcrumb,
   useTableQuery,
   WebAuthTemplateTableData,
   isDefaultWebAuth,
@@ -127,15 +127,13 @@ export default function NetworkSegAuthTable (props: { hideHeader?: boolean }) {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (<>
     { props.hideHeader !== true && <PageHeader
       title={$t({ defaultMessage: 'PIN Portal for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-      ]}
+      breadcrumb={breadcrumb}
       extra={filterByAccessForServicePolicyMutation([
         <TenantLink state={{ from: location }}
           to={getServiceRoutePath({
