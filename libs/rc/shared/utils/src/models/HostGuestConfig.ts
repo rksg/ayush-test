@@ -1,11 +1,11 @@
 export class HostGuestConfig {
   // List of domains (e.g. ruckuswireless.com) that is used to validate the email of the host
-  hostDomains?: string[]
+  hostDomains: string[]
 
   // List of choices of guest access duration for host to select from, Measured in hours. If set to 0, the duration is indefinite
   hostDurationChoices: number[]
 
-  hostEmails?: string[]
+  hostEmails: string[]
 
   hostApprovalType?: string
 
