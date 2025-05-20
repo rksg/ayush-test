@@ -364,6 +364,108 @@ export const apDetails = {
   updatedDate: '2022-11-15T08:37:42.987+0000'
 }
 
+export const apDetailsCustomize = {
+  serialNumber: '422039000034',
+  apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+  venueId: '16b11938ee934928a796534e2ee47661',
+  bonjourGateway: {
+    rules: [
+      { enabled: true, service: 'AIRTUNES', fromVlan: 33, toVlan: 22 },
+      { enabled: true, service: 'AIRDISK', fromVlan: 1, toVlan: 3 }
+    ]
+  },
+  radio: {
+    apRadioParams24G: {
+      manualChannel: 0,
+      allowedChannels: [
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11'
+      ],
+      channelBandwidth: 'AUTO',
+      txPower: 'Auto',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      allowedChannels: [
+        '36',
+        '40',
+        '44',
+        '48',
+        '52',
+        '56',
+        '60',
+        '64',
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'Auto',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      }
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    enable6G: false,
+    useVenueSettings: false,
+    enable24G: true,
+    enable50G: true
+  },
+  name: 'UI team ONLY',
+  description: '',
+  softDeleted: false,
+  model: 'R650',
+  updatedDate: '2022-11-15T08:37:42.987+0000'
+}
+
 export const currentAPNeighbor = {
   neighbors: [
     {
