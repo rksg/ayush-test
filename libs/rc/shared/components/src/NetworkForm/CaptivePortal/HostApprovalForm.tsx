@@ -73,7 +73,7 @@ export function HostApprovalForm () {
         form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], 'email')
       }
     }
-  }, [data])
+  }, [])
 
   const changeDomainOrEmailList = (e: RadioChangeEvent) => {
     const domainOrEmail = e.target.value
