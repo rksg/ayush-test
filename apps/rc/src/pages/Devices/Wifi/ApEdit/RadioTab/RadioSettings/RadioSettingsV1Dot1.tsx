@@ -242,9 +242,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
   const { setReadyToScroll } = useContext(AnchorContext)
   const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
-  const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
-  const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
+  const supportWifi7_320MHz = useIsTierAllowed(TierFeatures.AP_70)
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -681,8 +679,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
       const apGroupId = apDetails?.apGroupId
       const apGroupRadioData = (await getApGroupCustomization({
         params: { venueId, apGroupId },
-        enableRbac: isUseRbacApi,
-        enableSeparation: is6gChannelSeparation
+        enableRbac: isUseRbacApi
       }, true).unwrap())
 
       setApGroupRadioData(apGroupRadioData)
