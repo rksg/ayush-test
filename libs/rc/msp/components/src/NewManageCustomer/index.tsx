@@ -375,7 +375,7 @@ export function NewManageCustomer () {
           solutionTokenLicense: solutionTokenLic,
           solutionTokenTrialLicense: solutionTokenTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional,
+          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -456,6 +456,11 @@ export function NewManageCustomer () {
       setInstaller(assignedInstaller)
     }
   }, [techPartners])
+
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
+    return isMDU ? MspEcTierEnum.Core
+      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+  }
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {

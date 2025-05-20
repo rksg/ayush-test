@@ -15,7 +15,7 @@ import {
   getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  SamlIdpAttributeMappingNameType
+  IdentityAttributeMappingNameType
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -143,7 +143,7 @@ export function SAMLDetailDrawer (props: SAMLDetailDrawerProps) {
               label={$t({ defaultMessage: 'Identity Name' })}
               children={
                 samlIdpData?.attributeMappings?.find(
-                  mapping => mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
+                  mapping => mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
                 )?.mappedByName || noDataDisplay
               }
             />
@@ -151,7 +151,7 @@ export function SAMLDetailDrawer (props: SAMLDetailDrawerProps) {
               label={$t({ defaultMessage: 'Identity Email' })}
               children={
                 samlIdpData?.attributeMappings?.find(
-                  mapping => mapping.name === SamlIdpAttributeMappingNameType.EMAIL
+                  mapping => mapping.name === IdentityAttributeMappingNameType.EMAIL
                 )?.mappedByName || noDataDisplay
               }
             />
@@ -159,7 +159,7 @@ export function SAMLDetailDrawer (props: SAMLDetailDrawerProps) {
               label={$t({ defaultMessage: 'Identity Phone' })}
               children={
                 samlIdpData?.attributeMappings?.find(
-                  mapping => mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
+                  mapping => mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
                 )?.mappedByName || noDataDisplay
               }
             />
