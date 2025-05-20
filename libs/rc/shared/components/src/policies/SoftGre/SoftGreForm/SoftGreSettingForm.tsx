@@ -4,11 +4,11 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Tooltip }                                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                            from '@acx-ui/rc/services'
-import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                 from '@acx-ui/utils'
+import { Loader, Tooltip }                                                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                               from '@acx-ui/feature-toggle'
+import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                                                   from '@acx-ui/rc/services'
+import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp, transformDisplayOnOff } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                                        from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
@@ -214,7 +214,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                 valuePropName='checked'
                 children={
                   readMode
-                    ? softGreData?.gatewayFailbackEnabled ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })
+                    ? transformDisplayOnOff(softGreData?.gatewayFailbackEnabled ?? false)
                     : <Switch onClick={toggleFallbackEnable} />
                 }
               />
