@@ -4,10 +4,10 @@ import { useIntl } from 'react-intl'
 import { PageHeader }          from '@acx-ui/components'
 import { useEdgeSdLanActions } from '@acx-ui/edge/components'
 import {
-  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -82,11 +82,7 @@ export const AddEdgeSdLan = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add SD-LAN Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
       />
       <EdgeSdLanFormContainer
         form={form}

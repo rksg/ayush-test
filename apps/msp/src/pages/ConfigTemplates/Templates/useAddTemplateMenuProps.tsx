@@ -2,6 +2,7 @@ import { MenuProps } from 'antd'
 import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateLink,
@@ -24,12 +25,18 @@ import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null {
+  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const policyMenuItems = usePolicyMenuItems()
+  const serviceMenuItems = useServiceMenuItems()
+  const servicePolicyMenuItems = isNewServiceCatalogEnabled
+    ? [cosolidateServicePolicyMenuItems(serviceMenuItems, policyMenuItems)]
+    : [policyMenuItems, serviceMenuItems]
+
   const menuItems = [
     useWiFiMenuItems(),
     useVenueItem(),
     useSwitchMenuItems(),
-    usePolicyMenuItems(),
-    useServiceMenuItems()
+    ...servicePolicyMenuItems
   ].filter(item => item)
 
   if (menuItems.length === 0) return null
@@ -38,6 +45,31 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
     expandIcon: <UI.MenuExpandArrow />,
     subMenuCloseDelay: 0.2,
     items: menuItems
+  }
+}
+
+type ServicePolicyMenuItemType = Exclude<ItemType, null> & { labelText: string }
+
+function isServicePolicyMenuItem (item: ItemType): item is ServicePolicyMenuItemType {
+  return !!item && 'labelText' in item
+}
+
+function cosolidateServicePolicyMenuItems (serviceMenu: ItemType, policyMenu: ItemType): ItemType {
+  const { $t } = getIntl()
+
+  const allItems = [serviceMenu, policyMenu]
+    .flatMap(menu =>
+      menu && 'children' in menu && Array.isArray(menu.children)
+        ? menu.children
+        : []
+    )
+    .filter(isServicePolicyMenuItem)
+    .sort((a, b) => a.labelText.localeCompare(b.labelText))
+
+  return {
+    key: 'add-unified-services',
+    label: $t({ defaultMessage: 'Services' }),
+    children: allItems
   }
 }
 
@@ -61,8 +93,10 @@ export function usePolicyMenuItems (): ItemType {
   return menuItems.children.filter(item => item).length > 0 ? menuItems : null
 }
 
-// eslint-disable-next-line max-len
-export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, visibilityMap: Record<ConfigTemplateType, boolean>): ItemType {
+export function createPolicyMenuItem (
+  configTemplateType: ConfigTemplateType,
+  visibilityMap: Record<ConfigTemplateType, boolean>
+): null | ServicePolicyMenuItemType {
   const { $t } = getIntl()
   const policyType = configTemplatePolicyTypeMap[configTemplateType]
 
@@ -77,7 +111,8 @@ export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, vi
 
   return {
     key: `add-${configTemplateType}`,
-    label: labelNode
+    label: labelNode,
+    labelText: $t(policyTypeLabelMapping[policyType])
   }
 }
 
@@ -99,8 +134,10 @@ export function useServiceMenuItems (): ItemType {
   return menuItems.children.filter(item => item).length > 0 ? menuItems : null
 }
 
-// eslint-disable-next-line max-len
-export function createServiceMenuItem (configTemplateType: ConfigTemplateType, visibilityMap: Record<ConfigTemplateType, boolean>): ItemType {
+export function createServiceMenuItem (
+  configTemplateType: ConfigTemplateType,
+  visibilityMap: Record<ConfigTemplateType, boolean>
+): null | ServicePolicyMenuItemType {
   const { $t } = getIntl()
   const serviceType = configTemplateServiceTypeMap[configTemplateType]
 
@@ -115,7 +152,8 @@ export function createServiceMenuItem (configTemplateType: ConfigTemplateType, v
 
   return {
     key: `add-${configTemplateType}`,
-    label: labelNode
+    label: labelNode,
+    labelText: $t(serviceTypeLabelMapping[serviceType])
   }
 }
 
