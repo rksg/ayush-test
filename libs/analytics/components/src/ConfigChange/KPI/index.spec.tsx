@@ -2,13 +2,16 @@ import { ReactElement, useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
+import { rest }  from 'msw'
 
-import { brushPeriod }                      from '@acx-ui/components'
-import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { Provider, dataApiURL }             from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange, defaultRanges }         from '@acx-ui/utils'
+import { Settings }                                     from '@acx-ui/analytics/utils'
+import { brushPeriod }                                  from '@acx-ui/components'
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { Provider, dataApiURL, rbacApiURL }             from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, render, screen } from '@acx-ui/test-utils'
+import { DateRange, defaultRanges }                     from '@acx-ui/utils'
 
+import { defaultTenantSettings }                                              from '../../Health/Kpi/__tests__/fixtures'
 import { kpiForOverview,  kpiForConnection }                                  from '../__tests__/fixtures'
 import { ConfigChangeContext, ConfigChangeContextType, ConfigChangeProvider } from '../context'
 
@@ -36,10 +39,19 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   })
 }))
 
+const mockTenantSettings = (settings: Settings) => {
+  mockServer.use(
+    rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.json(
+      Object.entries(settings).map(([key, value]) => ({ key, value }))
+    )))
+  )
+}
+
 describe('KPIs', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
   it('should render KPIs correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    mockTenantSettings(defaultTenantSettings)
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <KPIs />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
@@ -69,6 +81,7 @@ describe('KPIs', () => {
   it('should show corresponding KPIs when dropdown changes', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForConnection } })
+    mockTenantSettings(defaultTenantSettings)
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <KPIs />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
@@ -83,6 +96,7 @@ describe('KPIs', () => {
   })
   it('should handle onClick when KPI is clicked', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    mockTenantSettings(defaultTenantSettings)
     const { asFragment } = render(
       <ConfigChangeProvider dateRange={DateRange.last7Days}>
         <KPIs />
@@ -119,6 +133,7 @@ describe('KPIs', () => {
       />
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    mockTenantSettings(defaultTenantSettings)
     render(
       <MockedProvider dateRange={DateRange.last7Days}><KPIs /></MockedProvider>,
       { wrapper: Provider, route: {} }

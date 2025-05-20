@@ -1,13 +1,16 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { healthApi }                   from '@acx-ui/analytics/services'
-import { pathToFilter }                from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
-import { dataApiURL, Provider, store } from '@acx-ui/store'
+import { healthApi }                               from '@acx-ui/analytics/services'
+import { pathToFilter, Settings }                  from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { BrowserRouter as Router }                 from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, rbacApiURL, store } from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlMutation,
   mockGraphqlQuery,
+  mockServer,
   render,
   screen,
   waitForElementToBeRemoved
@@ -19,6 +22,12 @@ import type { AnalyticsFilter }                                      from '@acx-
 
 import { HealthPageContext } from '../HealthPageContext'
 
+import {
+  defaultTenantSettings,
+  energySavingSettings,
+  intentFeatureSettingsWithoutEnergySaving
+} from './__tests__/fixtures'
+
 import KpiSection from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -28,6 +37,14 @@ jest.mock('@acx-ui/rc/utils', () => ({
     .mockReturnValueOnce({ venueId: 'testTenant' })
     .mockReturnValue({})
 }))
+
+const mockTenantSettings = (settings: Settings) => {
+  mockServer.use(
+    rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.json(
+      Object.entries(settings).map(([key, value]) => ({ key, value }))
+    )))
+  )
+}
 
 describe('Kpi Section', () => {
   beforeEach(() => {
@@ -75,6 +92,7 @@ describe('Kpi Section', () => {
       data: { timeToConnect: { success: true }
       }
     })
+    mockTenantSettings(defaultTenantSettings)
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const params = { tenantId: 'testTenant' }
     render(<Provider>
@@ -95,6 +113,7 @@ describe('Kpi Section', () => {
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: { saveThreshold: { success: true } }
     })
+    mockTenantSettings(defaultTenantSettings)
 
     const path =
       [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
@@ -131,6 +150,7 @@ describe('Kpi Section', () => {
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: { mutationAllowed: true }
     })
+    mockTenantSettings(defaultTenantSettings)
 
     const path = [{ type: 'ap' as NodeType, name: 'z1' }] as NetworkPath
     const filter = pathToFilter(path)
@@ -170,6 +190,7 @@ describe('Kpi Section', () => {
       data: { timeToConnect: { success: true }
       }
     })
+    mockTenantSettings(defaultTenantSettings)
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const filter = pathToFilter(path)
     render(<Router><Provider>
@@ -199,6 +220,7 @@ describe('Kpi Section', () => {
       data: { timeToConnect: { success: true }
       }
     })
+    mockTenantSettings(defaultTenantSettings)
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const params = { tenantId: 'testTenant' }
     render(<Provider>
@@ -233,6 +255,7 @@ describe('Kpi Section', () => {
       data: { timeToConnect: { success: true }
       }
     })
+    mockTenantSettings(defaultTenantSettings)
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const params = { tenantId: 'testTenant' }
     render(<Provider>
@@ -252,5 +275,53 @@ describe('Kpi Section', () => {
     })
     expect(screen.queryByText('Apply')).not.toBeInTheDocument()
     expect(screen.queryByText('Reset')).not.toBeInTheDocument()
+  })
+  it('should show NoData for energySavingAPs when energy saving is not enabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: 'Platinum'
+    })
+    mockTenantSettings(intentFeatureSettingsWithoutEnergySaving)
+
+    render(
+      <Provider>
+        <HealthPageContext.Provider value={healthContext}>
+          <KpiSection tab='overview' filters={filters} />
+        </HealthPageContext.Provider>
+      </Provider>
+    )
+
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getAllByText(/no data to display/i).length).toBeGreaterThan(0)
+  })
+  it('should show data for energySavingAPs when energy saving is enabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: true }
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: 'Platinum'
+    })
+    mockTenantSettings(energySavingSettings)
+
+    render(
+      <Provider>
+        <HealthPageContext.Provider value={healthContext}>
+          <KpiSection tab='overview' filters={filters} />
+        </HealthPageContext.Provider>
+      </Provider>
+    )
+
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.queryAllByText(/no data to display/i).length).toBe(0)
   })
 })

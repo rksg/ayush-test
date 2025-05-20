@@ -69,13 +69,16 @@ type PillQueryProps = {
   }
   threshold: number
   apCount?: number
+  skip?: boolean
 }
 
-export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
+export const usePillQuery = ({
+  kpi, filters, timeWindow, threshold, skip = false
+}: PillQueryProps) => {
   const { histogram, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow,
     kpi, enableSwitchFirmwareFilter }, {
-    skip: !Boolean(histogram),
+    skip: skip || !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
@@ -83,7 +86,7 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   })
   const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters,
     kpi, enableSwitchFirmwareFilter }, {
-    skip: Boolean(histogram),
+    skip: skip || Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data ? transformTSResponse(data!, timeWindow) : { success: 0, total: 0 }
@@ -97,8 +100,9 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   return { queryResults, percent, length, maxCount }
 }
 
-function HealthPill ({ filters, kpi, timeWindow, threshold }: {
-  filters: AnalyticsFilter, kpi: string, timeWindow: TimeStampRange, threshold: number
+function HealthPill ({ filters, kpi, timeWindow, threshold, isShowNoData }: {
+  filters: AnalyticsFilter, kpi: string, timeWindow: TimeStampRange, threshold: number,
+  isShowNoData?: boolean
 }) {
   const { $t } = useIntl()
 
@@ -106,7 +110,8 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const [ startDate, endDate ] = timeWindow as [string, string]
 
   const { queryResults, percent } = usePillQuery({
-    kpi, filters, timeWindow: { startDate, endDate }, threshold
+    kpi, filters, timeWindow: { startDate, endDate }, threshold,
+    skip: isShowNoData
   })
   let { success, total, length, maxCount } = queryResults.data as PillData
   // We need this check in case if wrong data is reported by an ICX.

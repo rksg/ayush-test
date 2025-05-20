@@ -7,7 +7,8 @@ import { useIntl }  from 'react-intl'
 
 import {
   KpiThresholdType,
-  healthApi
+  healthApi,
+  useGetTenantSettingsQuery
 } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
@@ -16,14 +17,18 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
 import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
 import {
   aiOpsApis,
+  getUserProfile,
   hasCrossVenuesPermission,
-  hasPermission
+  hasPermission,
+  isProfessionalTier
 } from '@acx-ui/user'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
+import { AiFeatures }        from '../../IntentAI/config'
 import { HealthPageContext } from '../HealthPageContext'
 
 import BarChart      from './BarChart'
@@ -32,6 +37,11 @@ import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
 
 const isMLISA = get('IS_MLISA_SA')
+const isProfessionalTierUser = () => {
+  const { accountTier } = getUserProfile()
+  // only R1 has tier, RAI will be undefined
+  return isProfessionalTier(accountTier)
+}
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -53,6 +63,18 @@ type KpiThresholdsQueryProps = {
   filters: AnalyticsFilter
 }
 
+export function useGetEnergySavingFromTenantSettings () {
+  const tenantSettingsQuery = useGetTenantSettingsQuery(undefined, {
+    skip: !hasPermission({ permission: 'READ_USERS' })
+  })
+  const tenantSettings = tenantSettingsQuery.data
+  if (!tenantSettings || !tenantSettings['enabled-intent-features']) {
+    return false
+  }
+  const enabledIntentFeatures = tenantSettings['enabled-intent-features'] as unknown as string[]
+  return enabledIntentFeatures?.includes(AiFeatures.EcoFlex) ?? false
+}
+
 export const useKpiThresholdsQuery = (
   { filters }: KpiThresholdsQueryProps,
   options?: { skip?: boolean }
@@ -69,9 +91,14 @@ export const useKpiThresholdsQuery = (
 }
 
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
+  const isEnergySavingToggled = [
+    useIsSplitOn(Features.RUCKUS_AI_ENERGY_SAVING_TOGGLE),
+    useIsSplitOn(Features.ACX_UI_ENERGY_SAVING_TOGGLE)
+  ].some(Boolean)
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab as keyof typeof kpisForTab]
+  const { kpis } = kpisForTab(isMLISA, isProfessionalTierUser(),
+    isEnergySavingToggled)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
@@ -99,6 +126,7 @@ export function KpiSection (props: {
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
   const { $t } = useIntl()
+  const isEnergySavingEnabled = useGetEnergySavingFromTenantSettings()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -119,6 +147,8 @@ export function KpiSection (props: {
   })
 
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
+  const isShowNoData = (kpi: string) => kpi === 'energySavingAPs' && !isEnergySavingEnabled
+
   return (
     <>
       {displayKpis.map((kpi) => (
@@ -131,6 +161,7 @@ export function KpiSection (props: {
                   kpi={kpi}
                   timeWindow={timeWindow as [string, string]}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+                  isShowNoData={isShowNoData(kpi)}
                 />
               </GridCol>
               <GridCol col={{ span: 19 }}>
@@ -141,6 +172,7 @@ export function KpiSection (props: {
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
                   {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
+                  isShowNoData={isShowNoData(kpi)}
                 />
               </GridCol>
             </GridRow>
@@ -167,6 +199,7 @@ export function KpiSection (props: {
                 filters={filters}
                 kpi={kpi}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+                isShowNoData={isShowNoData(kpi)}
               />
             )}
           </GridCol>

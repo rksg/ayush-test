@@ -18,11 +18,14 @@ import {
 import { kpiDelta }                                     from '@acx-ui/analytics/utils'
 import { Button, CaretDownSolidIcon, Dropdown, Loader } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { formatter }                                    from '@acx-ui/formatter'
+import { getUserProfile, isProfessionalTier }           from '@acx-ui/user'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { ConfigChangeContext } from '../context'
-import { useKPIChangesQuery }  from '../services'
+import { useGetEnergySavingFromTenantSettings } from '../../Health/Kpi'
+import { ConfigChangeContext }                  from '../context'
+import { useKPIChangesQuery }                   from '../services'
 
 import { Statistic, TransparentTrend, TrendPill, DropDownWrapper } from './styledComponents'
 
@@ -40,9 +43,10 @@ type KPIProps = ConfigChangeKPIConfig & {
     before: Record<string, number>
     after: Record<string, number>
   }
+  isShowNoData?: boolean
 }
 
-const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
+const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values, isShowNoData }: KPIProps) => {
   const { $t } = useIntl()
 
   const { trend, value } =
@@ -55,15 +59,21 @@ const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) 
       value={$t(
         { defaultMessage: 'Before: {before} | After: {after}' },
         {
-          before: _.isNumber(values?.before[apiMetric])
-            ? format(values?.before[apiMetric]) : noDataDisplay,
-          after: _.isNumber(values?.after[apiMetric])
-            ? format(values?.after[apiMetric]) : noDataDisplay
+          before: isShowNoData
+            ? noDataDisplay
+            : _.isNumber(values?.before[apiMetric])
+              ? format(values?.before[apiMetric]) : noDataDisplay,
+          after: isShowNoData
+            ? noDataDisplay
+            : _.isNumber(values?.after[apiMetric])
+              ? format(values?.after[apiMetric]) : noDataDisplay
         }
       )}
-      suffix={trend !== 'transparent'
-        ? <TrendPill value={value as string} trend={trend as TrendTypeEnum} />
-        : <TransparentTrend children={value}/>}
+      suffix={isShowNoData
+        ? <TransparentTrend children={noDataDisplay}/>
+        : trend !== 'transparent'
+          ? <TrendPill value={value as string} trend={trend as TrendTypeEnum} />
+          : <TransparentTrend children={value}/>}
     />
   </div>
 }
@@ -74,12 +84,26 @@ export function hasConfigChange <RecordType> (
   return !!(column as RecordType & { configChange: ConfigChangeKPIConfig }).configChange
 }
 
+const isProfessionalTierUser = () => {
+  const { accountTier } = getUserProfile()
+  // only R1 has tier, RAI will be undefined
+  return isProfessionalTier(accountTier)
+}
+
 export const KPIs = () => {
   const { $t } = useIntl()
   const [dropDownKey, setDropDownKey] = useState('overview')
+  const isEnergySavingEnabled = useGetEnergySavingFromTenantSettings()
+  const isEnergySavingToggled = [
+    useIsSplitOn(Features.RUCKUS_AI_ENERGY_SAVING_TOGGLE),
+    useIsSplitOn(Features.ACX_UI_ENERGY_SAVING_TOGGLE)
+  ].some(Boolean)
+  const isShowNoData = (kpi: string) => kpi === 'energySavingAPs' && !isEnergySavingEnabled
 
   const kpis = kpisForTab(
-    get('IS_MLISA_SA')
+    get('IS_MLISA_SA'),
+    isProfessionalTierUser(),
+    isEnergySavingToggled
   )[dropDownKey as keyof ReturnType<typeof kpisForTab>].kpis
     .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
     .reduce((agg, key: string) => {
@@ -127,6 +151,7 @@ export const KPIs = () => {
           key={key}
           {...kpis[key]}
           values={queryResults.data!}
+          isShowNoData={isShowNoData(key)}
         />)
         : undefined}
     </Loader>
