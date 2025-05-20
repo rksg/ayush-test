@@ -346,9 +346,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
         return <EdgePortCommonForm
           formRef={form}
-          // fieldHeadPath={[]}
-          // portsDataRootPath={[]}
-          // formListItemKey=''
           portsData={portList}
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}

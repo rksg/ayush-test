@@ -56,6 +56,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     subnetInfoForValidation = [],
     clusterInfo
   } = props
+
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
