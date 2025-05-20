@@ -43,15 +43,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SwitchVlanUnion,
-  EditPortMessages,
   SwitchPortViewModel,
-  Vlan,
   Lag,
   LAG_TYPE,
   sortPortFunction,
-  VenueMessages,
   VlanModalType,
   isFirmwareVersionAbove10010gCd1Or10020bCd1
+} from '@acx-ui/rc/switch/utils'
+import {
+  EditPortMessages,
+  Vlan,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'

@@ -13,19 +13,21 @@ import {
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
-  SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery,
-  SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
+} from '@acx-ui/rc/switch/utils'
+import {
+  SwitchMessages,
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'

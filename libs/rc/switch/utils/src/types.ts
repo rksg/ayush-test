@@ -627,6 +627,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
   stackingNeighborPort?: string
+  lagForceUpPort?: boolean
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -998,6 +999,7 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+  forceUpPort?: string
 }
 
 export interface AclStandardRule {
