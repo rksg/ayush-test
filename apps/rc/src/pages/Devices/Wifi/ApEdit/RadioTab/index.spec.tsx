@@ -109,6 +109,44 @@ describe('AP Radio Tab', () => {
     expect(mockUpdateWifiRadio).toBeCalled()
 
   })
+
+  it('cancel data after config changed', async () => {
+    const mockUpdateWifiRadio = jest.fn()
+
+    const newEditContextData = {
+      tabTitle: 'Radio',
+      unsavedTabKey: 'radio',
+      isDirty: true
+    }
+
+    const newEditRadioContextData = {
+      updateWifiRadio: mockUpdateWifiRadio,
+      discardWifiRadioChanges: jest.fn()
+    }
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: newEditContextData,
+          setEditContextData: jest.fn(),
+          editRadioContextData: newEditRadioContextData,
+          setEditNetworkControlContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
+        }} >
+          <ApDataContext.Provider value={{
+            apData: ApData_T750SE,
+            apCapabilities: ApCap_T750SE }} >
+            <RadioTab />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
+      }
+    )
+
+    expect(await screen.findByTestId('ExternalAntennaSettings')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
 })
 
 describe('AP Radio Tab Radio Settings', () => {
