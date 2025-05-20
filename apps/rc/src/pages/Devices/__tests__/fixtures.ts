@@ -1076,7 +1076,7 @@ export const r760ApV1Dot1 = {
     enable6G: true
   },
   indoorModel: false,
-  name: 'Freddy_R670',
+  name: 'Freddy_R760',
   softDeleted: false,
   model: 'R760'
 }

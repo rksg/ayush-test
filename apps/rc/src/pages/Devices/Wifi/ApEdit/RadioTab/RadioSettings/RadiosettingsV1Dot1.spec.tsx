@@ -554,7 +554,7 @@ describe('RadioSettingsTab', ()=> {
 
     afterEach(() => cleanup())
 
-    it('should render 6G channels correctly for R760 when separation', async () => {
+    it('should render 2.4G channels correctly for R760', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -575,7 +575,7 @@ describe('RadioSettingsTab', ()=> {
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
-      await screen.findByRole('tab', { name: '6 GHz' })
+      await screen.findByRole('tab', { name: '2.4 GHz' })
     })
   })
 
