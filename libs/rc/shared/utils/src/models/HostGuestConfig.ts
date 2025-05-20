@@ -7,6 +7,8 @@ export class HostGuestConfig {
 
   hostEmails?: string[]
 
+  hostApprovalType?: string
+
   constructor () {
     //@Size(  min = 1  )
     this.hostDomains = []

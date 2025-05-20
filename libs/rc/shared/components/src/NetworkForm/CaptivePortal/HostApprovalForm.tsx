@@ -53,12 +53,12 @@ export function HostApprovalForm () {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const passwordExpiration = useWatch(['guestPortal','hostGuestConfig','hostDurationChoices'])
-  const [domainOrEmail, setDomainOrEmail] = useState('domain')
   const [passwordExp, setPasswordExp]=useState((passwordExpiration||[
     '1','4','24']))
   const expirationKey = Object.keys(CaptivePassphraseExpirationEnum) as Array<
   keyof typeof CaptivePassphraseExpirationEnum>
   const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
+  const domainOrEmail = useWatch(['guestPortal','hostGuestConfig', 'hostApprovalType'])
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
@@ -68,9 +68,9 @@ export function HostApprovalForm () {
       }
 
       if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostDomains)) {
-        setDomainOrEmail('domain')
+        form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], 'domain')
       } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {
-        setDomainOrEmail('email')
+        form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], 'email')
       }
     }
   }, [data])
@@ -83,26 +83,7 @@ export function HostApprovalForm () {
     if (domainOrEmail === 'email') {
       form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'], undefined)
     }
-    setDomainOrEmail(e.target.value)
-    if(data) {
-      setData && setData({
-        ...data,
-        guestPortal: {
-          ...data.guestPortal,
-          hostGuestConfig: (domainOrEmail === 'domain' ? {
-            hostEmails: undefined,
-            hostDomains: form.getFieldValue(['guestPortal','hostGuestConfig', 'hostDomains']),
-            hostDurationChoices:
-              form.getFieldValue(['guestPortal','hostGuestConfig', 'hostDurationChoices'])
-          }: {
-            hostEmails: form.getFieldValue(['guestPortal','hostGuestConfig', 'hostEmails']),
-            hostDomains: undefined,
-            hostDurationChoices:
-              form.getFieldValue(['guestPortal','hostGuestConfig', 'hostDurationChoices'])
-          })
-        }
-      })
-    }
+    form.setFieldValue(['guestPortal','hostGuestConfig', 'hostApprovalType'], domainOrEmail)
   }
 
   return (<>
@@ -128,13 +109,17 @@ export function HostApprovalForm () {
           </Tooltip>
         </Row>
         {HAEmailList_FeatureFlag ?
-          <Radio.Group onChange={changeDomainOrEmailList} value={domainOrEmail}>
-            <Row>
-              <Radio value='domain' style={{ marginBottom: '5px' }}>
-              Entire Domain
-              </Radio>
-            </Row>
-            {domainOrEmail === 'domain' &&
+          <Form.Item
+            noStyle
+            name={['guestPortal','hostGuestConfig', 'hostApprovalType']}
+            initialValue='domain'>
+            <Radio.Group onChange={changeDomainOrEmailList}>
+              <Row>
+                <Radio value='domain' style={{ marginBottom: '5px' }}>
+                  {$t({ defaultMessage: 'Entire Domain' })}
+                </Radio>
+              </Row>
+              {domainOrEmail === 'domain' &&
             <Form.Item
               name={['guestPortal','hostGuestConfig', 'hostDomains']}
               rules={[
@@ -157,13 +142,13 @@ export function HostApprovalForm () {
                 />
               }
             />
-            }
-            <Row>
-              <Radio value='email' style={{ marginBottom: '5px' }}>
-              Specific E-mail Contacts
-              </Radio>
-            </Row>
-            { domainOrEmail === 'email' &&
+              }
+              <Row>
+                <Radio value='email' style={{ marginBottom: '5px' }}>
+                  {$t({ defaultMessage: 'Specific E-mail Contacts' })}
+                </Radio>
+              </Row>
+              { domainOrEmail === 'email' &&
             <Form.Item
               name={['guestPortal','hostGuestConfig', 'hostEmails']}
               rules={[
@@ -184,8 +169,9 @@ export function HostApprovalForm () {
                 />
               }
             />
-            }
-          </Radio.Group>
+              }
+            </Radio.Group>
+          </Form.Item>
           :
           <Form.Item
             name={['guestPortal','hostGuestConfig', 'hostDomains']}
