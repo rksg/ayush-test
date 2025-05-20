@@ -315,7 +315,7 @@ function SettingsForm () {
         {(isOpenNetworkIntegrateIdentityGroupEnable &&
           !isMacRegistrationList &&
           !isTemplate ) &&
-          <IdentityGroup />}
+          <IdentityGroup comboWidth='200px' />}
       </div>
     </>
   )
