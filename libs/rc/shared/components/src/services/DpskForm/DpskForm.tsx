@@ -37,11 +37,13 @@ import {
   TableResult,
   useServicePreviousPath,
   useConfigTemplate,
-  ConfigTemplateType
+  ConfigTemplateType,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useParams
+  useParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 
 import { useEnforcedStatus } from '../../configTemplates'
@@ -60,6 +62,10 @@ export function DpskForm (props: DpskFormProps) {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.DPSK, ServiceOperation.LIST)
+  const routeToList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.DPSK,
+    oper: ServiceOperation.LIST
+  }))
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
 
@@ -162,7 +168,7 @@ export function DpskForm (props: DpskFormProps) {
       if (modalMode) {
         idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
       } else {
-        navigate(previousPath, { replace: true })
+        navigate(routeToList, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

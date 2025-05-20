@@ -8,7 +8,7 @@ import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services
 import {
   PolicyType,
   PolicyOperation,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath, useTableQuery, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
@@ -44,13 +44,7 @@ export function AccessControlTable () {
           defaultMessage: 'Access Control'
         })
       }
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }
-      ]}
+      breadcrumb={usePoliciesBreadcrumb()}
       extra={filterByAccessForServicePolicyMutation([
         <TenantLink
           to={getPolicyRoutePath({

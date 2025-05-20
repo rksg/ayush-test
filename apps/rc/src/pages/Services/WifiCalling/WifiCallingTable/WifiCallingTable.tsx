@@ -18,7 +18,6 @@ import {
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceListRoutePath,
   getServiceRoutePath,
   Network,
   AclOptionType,
@@ -27,7 +26,8 @@ import {
   wifiCallingQosPriorityLabelMapping,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  ConfigTemplateType
+  ConfigTemplateType,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -153,10 +153,7 @@ export default function WifiCallingTable () {
           $t({ defaultMessage: 'Wi-Fi Calling ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len

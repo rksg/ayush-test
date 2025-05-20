@@ -256,7 +256,7 @@ describe('Dashboard', () => {
       )
     })
 
-    it('should view dashboard canvas correctly', async () => {
+    it('should view default dashboard correctly', async () => {
       render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
       await waitFor(async ()=>{
         expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
@@ -269,6 +269,23 @@ describe('Dashboard', () => {
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
       await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(await screen.findByRole('menuitem', { name: 'View' }))
+      expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    })
+
+    it('should view canvas dashboard correctly', async () => {
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      await waitFor(async ()=>{
+        expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+      })
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
+
+      const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'View' }))
       expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
       expect(await screen.findByTestId('expanded-button')).toBeVisible()
@@ -287,7 +304,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Edit in Canvas Editor' }))
       expect(await screen.findByTestId('canvas-editor')).toBeVisible()
     })
@@ -304,7 +321,7 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       const dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      await userEvent.click(dashboardMoreBtn[0])
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove from Dashboard' }))
       await waitFor(async ()=>{
         expect(await within(dashboardDrawer).findByText('My Dashboards (3)')).toBeVisible()
@@ -354,8 +371,8 @@ describe('Dashboard', () => {
       expect(await within(dashboardDrawer).findByText('My Dashboards (4)')).toBeVisible()
 
       let dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
-      expect(dashboardMoreBtn).toHaveLength(3)
-      await userEvent.click(dashboardMoreBtn[0])
+      expect(dashboardMoreBtn).toHaveLength(4)
+      await userEvent.click(dashboardMoreBtn[1])
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Set as Landing Page' }))
       await waitFor(async ()=>{
         dashboardMoreBtn = await screen.findAllByTestId('dashboard-more-btn')
@@ -498,7 +515,7 @@ describe('Dashboard', () => {
       })
     })
 
-    it('should delate canvas correctly', async () => {
+    it('should delete canvas correctly', async () => {
       mockLazyGetCanvasesUnwrap
         .mockResolvedValueOnce(canvasList)
         .mockResolvedValue({
