@@ -13,10 +13,14 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
-  useIsSplitOn: jest.fn().mockReturnValue(true),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
   Features: {
     NETWORK_SEGMENTATION_SWITCH: 'NETWORK_SEGMENTATION_SWITCH',
     EDGE_PIN_HA_TOGGLE: 'EDGE_PIN_HA_TOGGLE'
+  },
+  TierFeatures: {
+    SERVICE_CATALOG_UPDATED: 'SERVICE_CATALOG_UPDATED'
   }
 }))
 
@@ -31,6 +35,10 @@ describe('PortalProfile', () => {
   const baseParams = {
     tenantId: 'tenantId'
   }
+
+  beforeEach(() => {
+    jest.mocked(mockedUseSplitOn).mockReturnValue(true)
+  })
 
   it('renders the component with Guest tab active', () => {
     const params = {

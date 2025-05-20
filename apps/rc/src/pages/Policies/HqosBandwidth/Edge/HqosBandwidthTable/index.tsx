@@ -16,7 +16,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   IncompatibilityFeatures,
@@ -217,13 +217,7 @@ const EdgeHqosBandwidthTable = () => {
           $t({ defaultMessage: 'HQoS Bandwidth ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
