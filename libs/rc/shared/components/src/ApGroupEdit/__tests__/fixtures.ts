@@ -4506,7 +4506,7 @@ export const apGroupRadioCustomization = {
     changeInterval: 33,
     scanInterval: 20,
     txPower: 'MAX',
-    useVenueSettings: false,
+    useVenueSettings: true,
     enabled: true
   }
 }

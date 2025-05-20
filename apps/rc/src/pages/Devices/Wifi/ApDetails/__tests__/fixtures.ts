@@ -424,6 +424,147 @@ export const apLanPorts = {
   useVenueSettings: true
 }
 
+export const radioCustomizationData = {
+  radioParams6G: {
+    method: 'CHANNELFLY',
+    scanInterval: 10,
+    allowedChannels: [
+      '1',
+      '17',
+      '33',
+      '49',
+      '65',
+      '81',
+      '97',
+      '113',
+      '129',
+      '145',
+      '161',
+      '177',
+      '193',
+      '209'
+    ],
+    channelBandwidth: '80MHz',
+    bssMinRate6G: 'HE_MCS_0',
+    mgmtTxRate6G: '6',
+    changeInterval: 33,
+    txPower: 'MAX'
+  },
+  radioParamsDual5G: {
+    enabled: true,
+    inheritParamsLower5G: true,
+    radioParamsLower5G: {
+      allowedIndoorChannels: ['52', '56', '60', '64'],
+      allowedOutdoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      channelBandwidth: '40MHz',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    },
+    inheritParamsUpper5G: true,
+    radioParamsUpper5G: {
+      allowedIndoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      allowedOutdoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144'
+      ],
+      channelBandwidth: '40MHz',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    }
+  },
+  radioParams24G: {
+    allowedChannels: ['4', '5', '6', '7', '8', '9', '10', '11'],
+    channelBandwidth: '40MHz',
+    method: 'CHANNELFLY',
+    changeInterval: 33,
+    scanInterval: 20,
+    txPower: 'MAX'
+  },
+  radioParams50G: {
+    combineChannels: false,
+    allowedIndoorChannels: [
+      '52',
+      '56',
+      '60',
+      '64',
+      '100',
+      '104',
+      '108',
+      '112',
+      '116',
+      '120',
+      '124',
+      '128',
+      '132',
+      '136',
+      '140',
+      '144',
+      '149',
+      '153',
+      '157',
+      '161'
+    ],
+    allowedOutdoorChannels: [
+      '36',
+      '40',
+      '44',
+      '48',
+      '52',
+      '56',
+      '60',
+      '64',
+      '100',
+      '104',
+      '108',
+      '112',
+      '116',
+      '120',
+      '124',
+      '128',
+      '132',
+      '136',
+      '140',
+      '144'
+    ],
+    channelBandwidth: '160MHz',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33,
+    scanInterval: 20,
+    txPower: 'Auto'
+  }
+}
+
 export const apRadio = {
   apRadioParams24G: {
     manualChannel: 0,

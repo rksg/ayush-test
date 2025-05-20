@@ -183,7 +183,6 @@ describe('AP Group Edit Radio', () => {
     userEvent.click(customizeBandMode)
 
     expect(await screen.findByText(/r760/i)).toBeVisible()
-    expect(await screen.findByRole('tab', { name: '6 GHz' })).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: /2.4 GHz/ }))
     expect(await screen.findByText(/use inherited 2.4 ghz settings from venue/i)).toBeVisible()

@@ -1,4 +1,6 @@
 
+import React from 'react'
+
 import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
@@ -47,29 +49,6 @@ const mockedGetApGroupRadioCustomization = jest.fn()
 const mockedUpdateApGroupRadioCustomization = jest.fn()
 const mockedGetApGroupDefaultRegulatoryChannels = jest.fn()
 const mockedGetApGroupBandModeSettings = jest.fn()
-
-
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd')
-
-  // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) => {
-    delete otherProps.dropdownClassName
-    return (
-      <select
-        role='combobox'
-        onChange={e => onChange(e.target.value)}
-        {...otherProps}>
-        {children}
-      </select>
-    )
-  }
-  // @ts-ignore
-  Select.Option = ({ children, ...otherProps }) =>
-    <option role='option' {...otherProps}>{children}</option>
-
-  return { ...antd, Select }
-})
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -344,7 +323,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
           mockedGetApGroupRadioCustomization()
           return res(ctx.json(apGroupRadioCustomization))
         }),
-      rest.post(WifiRbacUrlsInfo.updateApGroupRadioCustomization.url,
+      rest.put(WifiRbacUrlsInfo.updateApGroupRadioCustomization.url,
         (_, res, ctx) => {
           mockedUpdateApGroupRadioCustomization()
           return res(ctx.json({}))
@@ -357,6 +336,11 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
         (_, res, ctx) => {
           mockedGetApGroupBandModeSettings()
           return res(ctx.json(apGroupTripleBandMode))
+        }),
+      rest.put(
+        WifiRbacUrlsInfo.updateApGroupBandModeSettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
         }),
       rest.get(
         WifiRbacUrlsInfo.getApGroupApCapabilities.url,
@@ -397,5 +381,14 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     userEvent.click(customizeRadio)
 
     expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()
+
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    await userEvent.click(saveButton)
+    await waitFor(() => expect(mockedUpdateApGroupRadioCustomization).toBeCalled())
+    expect(saveButton).toBeVisible()
   })
 })
