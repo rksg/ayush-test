@@ -66,7 +66,7 @@ const CardWrapper = styled.div<{ forceUpPort?: boolean }>`
   .ant-card {
     height: 296px;
     border-color: var(--acx-neutrals-30);
-    box-shadow: 'none';
+    box-shadow: none;
     .ant-card-extra{
       span {
         opacity: ${(props) => props.forceUpPort ? '1' : '40%' };
