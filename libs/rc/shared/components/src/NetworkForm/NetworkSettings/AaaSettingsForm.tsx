@@ -110,6 +110,7 @@ export function AaaSettingsForm () {
       authRadiusId: data.authRadiusId,
       useCertificateTemplate: data.useCertificateTemplate,
       certificateTemplateId: data.certificateTemplateId,
+      certificateTemplateIds: data.certificateTemplateIds,
       wlan: {
         wlanSecurity: data.wlan?.wlanSecurity,
         managementFrameProtection: data.wlan?.managementFrameProtection,

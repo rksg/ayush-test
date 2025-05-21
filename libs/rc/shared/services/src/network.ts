@@ -1622,9 +1622,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
-    activateCertificateTemplates: build.mutation<CommonResult, RequestPayload>({
+    deactivateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplates, params)
+        const req = createHttpRequest(WifiUrlsInfo.deactivateCertificateTemplate, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2176,7 +2176,7 @@ export const {
   useGetCertificateTemplateNetworkBindingQuery,
   useGetMacRegistrationPoolNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
-  useActivateCertificateTemplatesMutation,
+  useDeactivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
