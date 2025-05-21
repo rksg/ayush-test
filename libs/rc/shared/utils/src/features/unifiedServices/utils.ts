@@ -1,7 +1,8 @@
 import { MessageDescriptor } from 'react-intl'
 
-import { RolesEnum } from '@acx-ui/types'
-import { getIntl }   from '@acx-ui/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { RolesEnum }                                              from '@acx-ui/types'
+import { getIntl }                                                from '@acx-ui/utils'
 
 import { LocationExtended }                                                         from '../../common'
 import { ServiceOperation, ServiceType }                                            from '../../constants'
@@ -150,4 +151,11 @@ export function isUnifiedServiceAvailable (svc: UnifiedServiceTypeSet & { disabl
         disabled: svc.disabled
       }, PolicyOperation.LIST)
   }
+}
+
+export function useIsNewServicesCatalogEnabled (): boolean {
+  const isTierAllowed = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isFFEanbled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
+
+  return isTierAllowed && isFFEanbled
 }

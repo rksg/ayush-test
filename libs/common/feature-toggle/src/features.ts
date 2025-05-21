@@ -226,6 +226,7 @@ export enum Features {
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
   WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
+  WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE='wifi-directory-profile-reuse-component-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -347,7 +348,8 @@ export enum Features {
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
-  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle'
+  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
