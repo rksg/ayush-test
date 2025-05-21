@@ -16,6 +16,7 @@ import {
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDetail } from './SwitchLayer2/SwitchLayer2ACLDetail'
@@ -155,6 +156,8 @@ export function SwitchAccessControlSet () {
     }
   ]
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <>
       <Loader
@@ -169,10 +172,8 @@ export function SwitchAccessControlSet () {
           onFilterChange={tableQuery.handleFilterChange}
           pagination={tableQuery.pagination}
           dataSource={tableQuery.data?.data}
-          rowActions={rowActions}
-          rowSelection={{
-            type: 'checkbox'
-          }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           stickyHeaders={false}
         />
       </Loader>
