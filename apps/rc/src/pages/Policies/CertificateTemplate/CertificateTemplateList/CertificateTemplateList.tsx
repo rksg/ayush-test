@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                                                                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                        from '@acx-ui/feature-toggle'
-import { CertificateTable }                                                                                                                                                                              from '@acx-ui/rc/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery, useGetServerCertificatesQuery }                                                                    from '@acx-ui/rc/services'
-import { CertificateCategoryType, CertificateUrls, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                  from '@acx-ui/react-router-dom'
-import { getOpsApi }                                                                                                                                                                                     from '@acx-ui/utils'
+import { Button, PageHeader, Tabs }                                                                                                                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                       from '@acx-ui/feature-toggle'
+import { CertificateTable }                                                                                                                                                                             from '@acx-ui/rc/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery, useGetServerCertificatesQuery }                                                                   from '@acx-ui/rc/services'
+import { CertificateCategoryType, CertificateUrls, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, usePoliciesBreadcrumb, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                 from '@acx-ui/react-router-dom'
+import { getOpsApi }                                                                                                                                                                                    from '@acx-ui/utils'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
 import CertificateTemplateTable  from '../CertificateTemplateTable/CertificateTemplateTable'
@@ -97,12 +97,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Certificate Template' })}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        }, {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={buttonLinkMapping[props.tabKey]}
