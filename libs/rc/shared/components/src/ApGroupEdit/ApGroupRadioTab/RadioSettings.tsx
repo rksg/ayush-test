@@ -232,6 +232,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
   const venueRef = useRef<ApGroupRadioCustomization>()
   const cachedDataRef = useRef<ApGroupRadioCustomization>()
   const isTriBandRadioRef = useRef<boolean>(false)
+  const isDual5gModeRef = useRef<boolean>(true)
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
 
@@ -711,6 +712,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       const isDual5GEnabled = bandModeData.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
       setIsDual5gMode(isDual5GEnabled)
+      isDual5gModeRef.current = isDual5GEnabled
       formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
       if (!isDual5GEnabled && ['Lower5GHz', 'Upper5GHz'].includes(currentTab)) {
         onTabChange(isTriBandRadio ? 'Normal6GHz' : 'Normal5GHz')
@@ -1045,7 +1047,6 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       await updateApGroupRadioCustomization({
         params: { venueId, apGroupId },
         payload: {
-          // TODO: When the API is ready, include additional fields in the payload as required.
           radioParams24G: {
             ...defaultRadioSettings?.radioParams24G,
             ...data.radioParams24G
@@ -1053,6 +1054,16 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
           radioParams5G: {
             ...defaultRadioSettings?.radioParams50G,
             ...data.radioParams50G
+          },
+          ...(isDual5gModeRef.current ? {
+            radioParamsDual5G: {
+              ...defaultRadioSettings?.radioParamsDual5G,
+              ...data.radioParamsDual5G
+            }
+          } : {}),
+          radioParams6G: {
+            ...defaultRadioSettings?.radioParams6G,
+            ...data.radioParams6G
           }
         },
         enableRbac: resolvedRbacEnabled
