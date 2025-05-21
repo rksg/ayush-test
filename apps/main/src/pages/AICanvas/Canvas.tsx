@@ -140,6 +140,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [isEditName, setIsEditName] = useState(false)
+  const [isEditInit, setIsEditInit] = useState(true)
   const [visibilityType, setVisibilityType] = useState('')
   const [nameFieldError, setNameFieldError] = useState('')
   const [canvasDisplayName, setCanvasDisplayName] = useState('')
@@ -187,7 +188,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList && !editCanvasId && !isCanvasFetching) {
+    if(editCanvasId && isEditInit) {
+      // Avoid overwriting canvas data
+      setIsEditInit(false)
+      return
+    }
+    if(canvasList && !isCanvasFetching) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
