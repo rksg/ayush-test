@@ -126,25 +126,54 @@ describe('SoftGreSettingForm', () => {
 
   it('renders the Fallback to Primary Gateway toggle', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<SoftGreSettingForm editMode />)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
     expect(screen.getByText(/Fallback to Primary Gateway/i)).toBeInTheDocument()
-    expect(screen.getByRole('switch')).toBeInTheDocument()
+    expect(screen.getByTestId('gateway-failback-toggle')).toBeInTheDocument()
   })
 
-  it('shows Primary Availability Check Interval input when fallback is enabled', () => {
+  it('shows Primary Availability Check Interval input when fallback is enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<SoftGreSettingForm editMode />)
-    const toggle = screen.getByRole('switch')
-    user.click(toggle)
-    expect(screen.getByText(/Primary Availability Check Interval/i)).toBeInTheDocument()
-    expect(screen.getByRole('spinbutton')).toBeEnabled()
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const toggle = screen.getByTestId('gateway-failback-toggle')
+    await user.click(toggle)
+    expect(screen.getByTestId('primary-availability-check-input')).toBeEnabled()
   })
 
   it('hides Primary Availability Check Interval input when fallback is disabled', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<SoftGreSettingForm editMode />)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
     expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
-    const toggle = screen.getByRole('switch')
+    const toggle = screen.getByTestId('gateway-failback-toggle')
     user.click(toggle) // enable
     user.click(toggle) // disable
     expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
@@ -152,12 +181,22 @@ describe('SoftGreSettingForm', () => {
 
   it('validates Primary Availability Check Interval is between 60 and 1440', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<SoftGreSettingForm editMode />)
-    const toggle = screen.getByRole('switch')
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const toggle = screen.getByTestId('gateway-failback-toggle')
     await user.click(toggle)
 
     // Find the interval input
-    const input = screen.getByRole('spinbutton')
+    const input = screen.getByTestId('primary-availability-check-input')
 
     // Try a value below the minimum
     await user.clear(input)
