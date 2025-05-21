@@ -118,6 +118,11 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     ...ethernetPortProfileData
   }), [ethernetData, ethernetPortProfileData])
 
+  function getProfileDisplay (name: string|undefined) {
+    const onOff = transformDisplayOnOff(!!name)
+    return `${onOff}${name && ` (${name})`}`
+  }
+
   const content = (
     <Form
       labelCol={{ span: 9 }}
@@ -127,7 +132,16 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         label={wiredPortVisible ?
           $t({ defaultMessage: 'Ethernet Port Profile' }) :
           $t({ defaultMessage: 'Name' })}
-        children={ethernetDataForDisplay?.name}
+        children={
+          (ethernetDataForDisplay?.name)
+            ? (<TenantLink to={getPolicyDetailsLink({
+                type: PolicyType.ETHERNET_PORT_PROFILE,
+                oper: PolicyOperation.DETAIL,
+                policyId: targetLanPort?.ethernetPortProfileId! })}>
+                {ethernetDataForDisplay?.name}
+              </TenantLink>)
+            : ''
+          }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Port type' })}
@@ -250,12 +264,12 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
-          children={transformDisplayOnOff(!!targetLanPort?.softGreEnabled)}
+          children={getProfileDisplay(targetLanPort?.softGreProfileName)}
         />
 
         {targetLanPort?.softGreEnabled && <Form.Item
           label={$t({ defaultMessage: 'IPsec' })}
-          children={transformDisplayOnOff(!!targetLanPort?.ipsecEnabled)}
+          children={getProfileDisplay(targetLanPort?.ipsecProfileName)}
         />}
 
         <Form.Item
@@ -265,7 +279,9 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
         {targetLanPort?.clientIsolationEnabled && <Form.Item
           label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
-          children={transformDisplayOnOff(true)}
+          children={
+            getProfileDisplay(targetLanPort?.clientIsolationProfileName) ??
+            $t({ defaultMessage: 'Not active'})}
         />}
       </>
       }

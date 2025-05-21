@@ -999,6 +999,7 @@ export const apApi = baseApApi.injectEndpoints({
                 let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
                 if (venueTargetPort) {
                   venueTargetPort.ethernetPortProfileId = eth.id
+                  venueTargetPort.ethernetPortProfileName = eth.name
                 }
               }
             }
@@ -1010,6 +1011,7 @@ export const apApi = baseApApi.injectEndpoints({
                   ?.find(l => l.portId === port.portId?.toString())
                 if (targetPort) {
                   targetPort.ethernetPortProfileId = eth.id
+                  targetPort.ethernetPortProfileName = eth.name
                 }
               }
             }
@@ -1033,6 +1035,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let softGre of softGreList.data) {
               findTargetLanPorts(apLanPorts, softGre.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.softGreProfileId = softGre.id
+                targetPort.softGreProfileName = softGre.name
               })
             }
           }
@@ -1055,6 +1058,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let ipsec of ipsecList.data) {
               findTargetLanPorts(apLanPorts, ipsec.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.ipsecProfileId = ipsec.id
+                targetPort.ipsecProfileName = ipsec.name
                 targetPort.ipsecEnabled = true
               })
             }
@@ -1078,6 +1082,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let clientIsolation of clientIsolationList.data) {
               findTargetLanPorts(apLanPorts, clientIsolation.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.clientIsolationProfileId = clientIsolation.id
+                targetPort.clientIsolationProfileName = clientIsolation.name
               })
             }
           }
@@ -1884,7 +1889,6 @@ export const {
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useGetApLanPortsWithActivatedProfilesQuery,
-  useLazyGetApLanPortsWithActivatedProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
