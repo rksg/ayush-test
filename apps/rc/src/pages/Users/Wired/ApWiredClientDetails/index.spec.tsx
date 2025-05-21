@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { apApi, clientApi }                               from '@acx-ui/rc/services'
+import { clientApi }                                      from '@acx-ui/rc/services'
 import { ClientUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
