@@ -667,22 +667,28 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
     // special case
     if (dual5gApModels.length > 0) {
       const dual5GData = venueSavedChannelsData.radioParamsDual5G
-      const bendModelWithDual5gAps = apGroupBandModeSavedData?.apModelBandModeSettings?.filter(vbm => dual5gApModels.includes(vbm.model))
-      const bendModelWithoutDual5gAps = apGroupBandModeSavedData?.apModelBandModeSettings?.filter(vbm => !dual5gApModels.includes(vbm.model))
-      if (dual5GData && bendModelWithDual5gAps) {
-        const initApGroupBandModeData = [ ...bendModelWithoutDual5gAps,
-          ...bendModelWithDual5gAps.map(bandModel => ({ model: bandModel.model, bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })) ]
-        setInitApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: initApGroupBandModeData })
-        setCurrentApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings, apModelBandModeSettings: [ ...initApGroupBandModeData ] })
-        setInitVenueBandModeData([ ...venueBandModeSavedData ])
-        return
-      }
+
+      const updatedApGroupBandModeSettings = handleDual5GBandModeSpecialCase(
+        apGroupBandModeSavedData.apModelBandModeSettings,
+        dual5gApModels,
+        dual5GData
+      )
+      setInitApGroupBandModeData({
+        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+        apModelBandModeSettings: updatedApGroupBandModeSettings
+      })
+      setCurrentApGroupBandModeData({
+        useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
+        apModelBandModeSettings: [...updatedApGroupBandModeSettings]
+      })
+
+      const updatedVenueBandModeSettings = handleDual5GBandModeSpecialCase(
+        venueBandModeSavedData,
+        dual5gApModels,
+        dual5GData
+      )
+      setInitVenueBandModeData([ ...updatedVenueBandModeSettings ])
     }
-    setInitVenueBandModeData([ ...venueBandModeSavedData ])
-    setInitApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-      apModelBandModeSettings: [ ...(apGroupBandModeSavedData.apModelBandModeSettings ?? []) ] })
-    setCurrentApGroupBandModeData({ useVenueSettings: apGroupBandModeSavedData.useVenueSettings,
-      apModelBandModeSettings: [ ...(apGroupBandModeSavedData.apModelBandModeSettings ?? []) ] })
   }, [isWifiSwitchableRfEnabled, apGroupBandModeSavedData, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, venueTriBandApModels])
 
   useEffect(() => {
@@ -714,6 +720,25 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
       handleChange()
     }
   }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, currentApGroupBandModeData, initApGroupBandModeData, dual5gApModels])
+
+  function handleDual5GBandModeSpecialCase (
+    bandModeSettings: { model: string; bandMode: BandModeEnum }[] | undefined,
+    dual5gModels: string[],
+    dual5GData: { enabled?: boolean } | undefined
+  ) {
+    if (!bandModeSettings) return []
+    const dual5g = bandModeSettings.filter(vbm => dual5gModels.includes(vbm.model))
+    const nonDual5g = bandModeSettings.filter(vbm => !dual5gModels.includes(vbm.model))
+
+    if (dual5GData && dual5g.length > 0) {
+      const updatedDual5g = dual5g.map(bandModel => ({
+        model: bandModel.model,
+        bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE
+      }))
+      return [...nonDual5g, ...updatedDual5g]
+    }
+    return [...bandModeSettings]
+  }
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
   const onTabChange = (tab: string) => {
