@@ -7,7 +7,7 @@ import { useApWiredClientContext } from '../ApWiredClientContextProvider'
 
 import * as UI from './styledComponents'
 
-const getAuthStatus = (status: number) => {
+const getAuthStatus = (status: number | undefined) => {
   let authStatus = noDataDisplay as string
   const { $t } = getIntl()
   if (status === 1) {
@@ -51,8 +51,9 @@ const ApWiredClientOverviewTab = () => {
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Auth Status' })}
-          children={clientInfo?.authStatus ?
-            getAuthStatus(clientInfo?.authStatus) : noDataDisplay}
+          children={
+            getAuthStatus(clientInfo?.authStatus)
+          }
         />
       </Descriptions>
       <Subtitle level={4} style={{ marginTop: '2em' }}>

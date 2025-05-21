@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 
-import { TierFeatures, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles }                               from '@acx-ui/user'
@@ -10,7 +9,7 @@ import { LocationExtended }                                                     
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
 import { ServiceType, ServiceOperation }                                                  from '../../constants'
 import { generatePageHeaderTitle }                                                        from '../../pages'
-import { generateUnifiedServicesBreadcrumb }                                              from '../unifiedServices'
+import { generateUnifiedServicesBreadcrumb, useIsNewServicesCatalogEnabled }              from '../unifiedServices'
 
 import { serviceTypeLabelMapping }                      from './contentsMap'
 import { getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
@@ -36,7 +35,7 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
 // eslint-disable-next-line max-len
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   // If the user is in the template context, use the config template breadcrumb.
@@ -47,7 +46,7 @@ export function useServiceListBreadcrumb (type: ServiceType): { text: string, li
 }
 
 export function useServicesBreadcrumb (): { text: string, link?: string }[] {
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return generateServicesBreadcrumb(isNewServiceCatalogEnabled, from)

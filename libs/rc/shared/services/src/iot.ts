@@ -1,8 +1,10 @@
 import {
   onSocketActivityChanged,
   onActivityMessageReceived,
+  ActivePluginsData,
   CommonResult,
   TableResult,
+  RcapLicenseUtilizationData,
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
@@ -96,12 +98,30 @@ export const iotApi = baseIotApi.injectEndpoints({
       queryFn: async () => {
         return { data: undefined }
       },
-      invalidatesTags: [{ type: 'IotController', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerLicenseStatus: build.query<RcapLicenseUtilizationData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerLicenseStatus, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
     iotControllerDashboard: build.query<IotControllerDashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerDashboard, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerPlugins: build.query<ActivePluginsData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerPlugins, params),
           body: payload
         }
       },
@@ -120,5 +140,7 @@ export const {
   useDeleteIotControllerMutation,
   useTestConnectionIotControllerMutation,
   useRefreshIotControllerMutation,
-  useIotControllerDashboardQuery
+  useIotControllerLicenseStatusQuery,
+  useIotControllerDashboardQuery,
+  useIotControllerPluginsQuery
 } = iotApi

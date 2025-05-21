@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { MemoryRouter } from 'react-router-dom'
 
+import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { useApWiredClientContext } from '../ApWiredClientContextProvider'
@@ -24,12 +25,27 @@ const mockClientInfo = {
   venueId: 'c33f6e8b25a8404a907fc6b2e764fa24'
 }
 
+const mockClientInfo1 = {
+  authStatus: 0,
+  hostname: 'kyle-All-Series'
+}
+
+const mockClientInfo2 = {
+  authStatus: -1,
+  hostname: 'kyle-All-Series'
+}
+
 jest.mock('../ApWiredClientContextProvider', () => ({
   useApWiredClientContext: jest.fn()
 }))
 
 
-describe('ApWiredClientOverview', () => {
+describe('AP Wired Client Details - Overview tab', () => {
+  const params = {
+    tenantId: 'tenant-id',
+    clientId: 'user-id',
+    activeTab: 'overview'
+  }
 
   it('should render Ap wired client overview', async () => {
     (useApWiredClientContext as jest.Mock).mockReturnValue({
@@ -67,5 +83,29 @@ describe('ApWiredClientOverview', () => {
     //VLAN
     expect(await screen.findByText('VLAN')).toBeVisible()
     expect(await screen.findByText('1')).toBeVisible()
+  })
+
+  it('should render Ap wired client overview with some data are miss', async () => {
+    (useApWiredClientContext as jest.Mock).mockReturnValue({
+      clientInfo: mockClientInfo1
+    })
+
+    render(<Provider><ApWiredClientOverviewTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/users/wired/wifi/clients/:clientId/details/:activeTab' }
+    })
+
+    expect(await screen.findByText('Unauthorized')).toBeVisible()
+  })
+
+  it('should render Ap wired client overview with authStatus is -1 data', async () => {
+    (useApWiredClientContext as jest.Mock).mockReturnValue({
+      clientInfo: mockClientInfo2
+    })
+
+    render(<Provider><ApWiredClientOverviewTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/users/wired/wifi/clients/:clientId/details/:activeTab' }
+    })
+
+    expect(await screen.findByText('N/A')).toBeVisible()
   })
 })
