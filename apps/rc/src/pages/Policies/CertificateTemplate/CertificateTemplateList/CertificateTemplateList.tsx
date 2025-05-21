@@ -41,7 +41,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
       <Tabs activeKey={activeSubTab} type='card' onChange={onTabChange}>
         <Tabs.TabPane
           tab={$t(
-            { defaultMessage: 'Certificate ({count})' },
+            { defaultMessage: 'Certificates ({count})' },
             { count: getCertificates.data?.totalCount || 0 }
           )}
           key={CertificateCategoryType.CERTIFICATE}
@@ -49,7 +49,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
         />
         <Tabs.TabPane
           tab={$t(
-            { defaultMessage: 'Certificate Template ({count})' },
+            { defaultMessage: 'Templates ({count})' },
             { count: getCertificateTemplates.data?.totalCount || 0 }
           )}
           key={CertificateCategoryType.CERTIFICATE_TEMPLATE}
@@ -141,7 +141,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
               key={CertificateCategoryType.CERTIFICATE}
             />
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Certificate Authority ({count})' },
+              tab={$t({ defaultMessage: 'Certificate Authorities ({count})' },
                 { count: getCertificateAuthorities.data?.totalCount || 0 })}
               key={CertificateCategoryType.CERTIFICATE_AUTHORITY}
             />

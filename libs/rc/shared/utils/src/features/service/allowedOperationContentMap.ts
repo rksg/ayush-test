@@ -312,6 +312,13 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
   },
+  [PolicyType.SERVER_CERTIFICATES]: {
+    /* eslint-disable max-len */
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.updateServerCertificate)],
+    [PolicyOperation.DELETE]: [getOpsApi(CertificateUrls.deleteServerCertificate)],
+    [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getServerCertificates), getOpsApi(CertificateUrls.getCertificateList)]
+  },
   [PolicyType.SAML_IDP]: {
     [PolicyOperation.CREATE]: [getOpsApi(SamlIdpProfileUrls.createSamlIdpProfile)],
     [PolicyOperation.EDIT]: [getOpsApi(SamlIdpProfileUrls.updateSamlIdpProfile)],
