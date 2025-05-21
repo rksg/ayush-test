@@ -135,13 +135,13 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         children={
           (ethernetDataForDisplay?.name)
             ? (<TenantLink to={getPolicyDetailsLink({
-                type: PolicyType.ETHERNET_PORT_PROFILE,
-                oper: PolicyOperation.DETAIL,
-                policyId: targetLanPort?.ethernetPortProfileId! })}>
-                {ethernetDataForDisplay?.name}
-              </TenantLink>)
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.DETAIL,
+              policyId: targetLanPort?.ethernetPortProfileId! })}>
+              {ethernetDataForDisplay?.name}
+            </TenantLink>)
             : ''
-          }
+        }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Port type' })}
@@ -280,8 +280,8 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         {targetLanPort?.clientIsolationEnabled && <Form.Item
           label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
           children={
-            getProfileDisplay(targetLanPort?.clientIsolationProfileName) ??
-            $t({ defaultMessage: 'Not active'})}
+            targetLanPort?.clientIsolationProfileName ??
+            $t({ defaultMessage: 'Not active' })}
         />}
       </>
       }
