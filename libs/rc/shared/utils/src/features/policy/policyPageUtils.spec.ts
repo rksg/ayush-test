@@ -1,5 +1,5 @@
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { renderHook }                     from '@acx-ui/test-utils'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { renderHook }       from '@acx-ui/test-utils'
 
 import { PolicyType, PolicyOperation } from '../../types'
 
@@ -19,10 +19,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
+const mockedUseIsNewServicesCatalogEnabled = jest.fn(() => false)
 jest.mock('../unifiedServices', () => ({
   ...jest.requireActual('../unifiedServices'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  generateUnifiedServicesBreadcrumb: (from: any) => mockedGenerateUnifiedServicesBreadcrumb(from)
+  generateUnifiedServicesBreadcrumb: (from: any) => mockedGenerateUnifiedServicesBreadcrumb(from),
+  useIsNewServicesCatalogEnabled: () => mockedUseIsNewServicesCatalogEnabled()
 }))
 
 describe('policyPageUtils', () => {
@@ -34,6 +36,7 @@ describe('policyPageUtils', () => {
   afterEach(() => {
     mockedUseConfigTemplate.mockRestore()
     mockedGenerateUnifiedServicesBreadcrumb.mockClear()
+    mockedUseIsNewServicesCatalogEnabled.mockRestore()
   })
 
   it('should generate Policy PageHeader Title correctly', () => {
@@ -71,8 +74,7 @@ describe('policyPageUtils', () => {
   })
 
   it('usePolicyListBreadcrumb when isNewServiceCatalogEnabled is true', () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
+    mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
 
     renderHook(() => usePolicyListBreadcrumb(PolicyType.AAA))
 
