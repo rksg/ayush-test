@@ -64,8 +64,8 @@ describe('CertificateTemplateList', () => {
       })
 
     expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate Authorities (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificates (2)')).toBeInTheDocument()
     expect(await screen.findByText('Add Certificate Template')).toBeInTheDocument()
   })
 
@@ -82,7 +82,7 @@ describe('CertificateTemplateList', () => {
       })
 
     expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate Authorities (3)')).toBeInTheDocument()
     expect(await screen.findByText('Add Certificate Authority')).toBeInTheDocument()
   })
 
@@ -98,7 +98,7 @@ describe('CertificateTemplateList', () => {
         }
       })
     expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate Authorities (3)')).toBeInTheDocument()
     expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })
 
@@ -160,7 +160,7 @@ describe('CertificateTemplateList', () => {
         }
       })
     expect(await screen.findByText('Device Certificates')).toBeInTheDocument()
-    expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
+    expect(await screen.findByText('Certificate Authorities (3)')).toBeInTheDocument()
     expect(await screen.findByText('Server & Client Certificates (2)')).toBeInTheDocument()
     expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })

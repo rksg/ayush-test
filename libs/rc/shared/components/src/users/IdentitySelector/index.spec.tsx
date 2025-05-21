@@ -209,6 +209,6 @@ describe('IdentitySelector', () => {
     ).not.toBeInTheDocument()
 
     // Ensure onChange is not called
-    expect(screen.getByText('Add Identity')).toBeInTheDocument()
+    expect(screen.getByText('Select Identity')).toBeInTheDocument()
   })
 })
