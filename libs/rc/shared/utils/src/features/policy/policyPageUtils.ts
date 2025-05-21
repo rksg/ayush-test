@@ -1,17 +1,16 @@
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { TierFeatures, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                        from '@acx-ui/types'
 import { hasRoles }                         from '@acx-ui/user'
 import { getIntl }                          from '@acx-ui/utils'
 
-import { LocationExtended }                                    from '../../common/redirect.utils'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
-import { generatePageHeaderTitle }                             from '../../pages'
-import { PolicyType, PolicyOperation }                         from '../../types'
-import { generateDpskManagementBreadcrumb }                    from '../service/servicePageUtils'
-import { generateUnifiedServicesBreadcrumb }                   from '../unifiedServices'
+import { LocationExtended }                                                  from '../../common/redirect.utils'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate }               from '../../configTemplate'
+import { generatePageHeaderTitle }                                           from '../../pages'
+import { PolicyType, PolicyOperation }                                       from '../../types'
+import { generateDpskManagementBreadcrumb }                                  from '../service/servicePageUtils'
+import { generateUnifiedServicesBreadcrumb, useIsNewServicesCatalogEnabled } from '../unifiedServices'
 
 import { policyTypeLabelMapping }                     from './contentsMap'
 import { getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
@@ -35,7 +34,7 @@ export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyTyp
  */
 export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link?: string }[] {
   const { isTemplate } = useConfigTemplate()
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return isTemplate
@@ -49,7 +48,7 @@ export function usePolicyListBreadcrumb (type: PolicyType): { text: string, link
  * @returns The breadcrumb for the policies page.
  */
 export function usePoliciesBreadcrumb (): { text: string, link?: string }[] {
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   return generatePoliciesBreadcrumb(isNewServiceCatalogEnabled, from)

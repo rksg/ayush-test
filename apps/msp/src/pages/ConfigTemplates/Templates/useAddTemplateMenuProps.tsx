@@ -2,7 +2,6 @@ import { MenuProps } from 'antd'
 import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateLink,
@@ -17,7 +16,8 @@ import {
   PolicyOperation,
   policyTypeLabelMapping,
   ServiceOperation,
-  serviceTypeLabelMapping
+  serviceTypeLabelMapping,
+  useIsNewServicesCatalogEnabled
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -25,7 +25,7 @@ import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null {
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const policyMenuItems = usePolicyMenuItems()
   const serviceMenuItems = useServiceMenuItems()
   const servicePolicyMenuItems = isNewServiceCatalogEnabled
