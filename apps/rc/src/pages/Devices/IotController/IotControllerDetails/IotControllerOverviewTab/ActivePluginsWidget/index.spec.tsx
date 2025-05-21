@@ -10,7 +10,7 @@ import { render,
 
 import { data, noData } from './__tests__/fixtures'
 
-import { ActivePluginsByRadio } from '.'
+import { ActivePluginsWidget } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -18,7 +18,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('ActivePluginsByRadio Widget', () => {
+describe('ActivePlugins Widget', () => {
   let params: {
     tenantId: string,
     iotId: string,
@@ -39,17 +39,17 @@ describe('ActivePluginsByRadio Widget', () => {
 
     const { asFragment } = render(
       <Provider>
-        <ActivePluginsByRadio />
+        <ActivePluginsWidget />
       </Provider>,
       { route: { params, path: '/:tenantId/t/devices/iotController/:iotId/details/:activeTab' } }
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Active Plugins by Radio')
+    await screen.findByText('Active Plugins')
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
 
-  it('should render "No Active Plugins by Radio" when no data exist', async () => {
+  it('should render "No Active Plugins " when no data exist', async () => {
     mockServer.use(
       rest.get(IotUrlsInfo.getIotControllerPlugins.url,
         (req, res, ctx) => res(ctx.json(noData)))
@@ -62,12 +62,12 @@ describe('ActivePluginsByRadio Widget', () => {
 
     render(
       <Provider>
-        <ActivePluginsByRadio />
+        <ActivePluginsWidget />
       </Provider>,
       { route: { params, path: '/:tenantId/t/devices/iotController/:iotId/details/:activeTab' } }
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('No Active Plugins by Radio')).toBeVisible()
+    expect(await screen.findByText('No Active Plugins')).toBeVisible()
   })
 })
