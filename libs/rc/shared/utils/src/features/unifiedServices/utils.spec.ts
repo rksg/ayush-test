@@ -44,7 +44,7 @@ describe('utils', () => {
         searchKeywords: [defineMessage({ defaultMessage: 'AAA Keyword' })]
       }]
 
-      const result = buildUnifiedServices(input, true)
+      const result = buildUnifiedServices(input)
 
       expect(result[0].label).toBe($t(serviceTypeLabelMapping[ServiceType.DPSK]))
       expect(result[0].description).toBe($t(serviceTypeDescMapping[ServiceType.DPSK]))

@@ -25,15 +25,14 @@ export type BuildUnifiedServicesIncomingType =
   Omit<UnifiedService<MessageDescriptor>, 'label' | 'route' | 'description'>
 
 export function buildUnifiedServices (
-  list: Array<BuildUnifiedServicesIncomingType>,
-  isNewServiceCatalogEnabled: boolean
+  list: Array<BuildUnifiedServicesIncomingType>
 ): Array<UnifiedService> {
 
   return list.map(item => ({
     label: translateDescriptor(getLabelDescriptor(item)),
     route: getUnifiedServiceRoute(item, 'list'),
     description: translateDescriptor(getDescriptionDescriptor(item)),
-    breadcrumb: generateUnifiedServiceListBreadCrumb(item, isNewServiceCatalogEnabled),
+    breadcrumb: generateUnifiedServiceListBreadCrumb(item),
     ...item,
     searchKeywords: item.searchKeywords?.map(keyword => translateDescriptor(keyword))
   }))
@@ -87,14 +86,13 @@ export function generateUnifiedServicesBreadcrumb (from?: LocationExtended['stat
 }
 
 function generateUnifiedServiceListBreadCrumb (
-  svc: UnifiedServiceTypeSet,
-  isNewServiceCatalogEnabled: boolean
+  svc: UnifiedServiceTypeSet
 ): { text: string, link?: string }[] {
   switch (svc.sourceType) {
     case UnifiedServiceSourceType.SERVICE:
-      return generateServiceListBreadcrumb(svc.type as ServiceType, isNewServiceCatalogEnabled)
+      return generateServiceListBreadcrumb(svc.type as ServiceType, true)
     case UnifiedServiceSourceType.POLICY:
-      return generatePolicyListBreadcrumb(svc.type as PolicyType, isNewServiceCatalogEnabled)
+      return generatePolicyListBreadcrumb(svc.type as PolicyType, true)
   }
 }
 
