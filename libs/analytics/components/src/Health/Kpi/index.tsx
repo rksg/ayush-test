@@ -131,7 +131,6 @@ export function KpiSection (props: {
   })
 
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
-
   return (
     <>
       {displayKpis.map((kpi) => (
