@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { CreateDpskPassphrasesFormFields, DpskUrls }       from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
@@ -141,4 +141,65 @@ describe('AddDpskPassphrasesForm', () => {
     jest.mocked(useIsTierAllowed).mockReset()
   })
 
+  it('should fail validation when passphrase is shorter than 8 characters', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    await userEvent.type(await screen.findByLabelText('Passphrase'), ' ')
+    expect(await screen.findByText('Passphrase must be at least 8 characters')).toBeVisible()
+  })
+
+  it('should fail validation when passphrase is longer than 63 characters', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    await userEvent.type(await screen.findByLabelText('Passphrase'), ' '.repeat(64))
+    expect(await screen.findByText('Passphrase must be less than 64 characters')).toBeVisible()
+  })
+
+  it('should fail validation when passphrase length does not match enforced length', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff
+      === Features.DPSK_PASSPHRASE_LENGTH_ENFORCEMENT)
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm<CreateDpskPassphrasesFormFields>()[0]
+    })
+
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
+      </Provider>,
+      { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
+    )
+
+    await userEvent.type(await screen.findByLabelText('Passphrase'), ' ')
+    expect(await screen.findByText('Passphrase must be at least 16 characters')).toBeVisible()
+  })
 })

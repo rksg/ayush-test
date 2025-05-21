@@ -72,6 +72,7 @@ function PersonaDetails () {
   const navigate = useNavigate()
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
 
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
@@ -160,7 +161,9 @@ function PersonaDetails () {
 
   useEffect(() => {
     if (identityClientsQuery?.data) {
-      setDeviceCount(identityClientsQuery.data?.totalCount ?? 0)
+      setDeviceCount(identityClientsQuery.data?.totalCount > 100
+        ? 100
+        : identityClientsQuery.data?.totalCount ?? 0)
     }
   }, [identityClientsQuery.data])
 
@@ -191,14 +194,13 @@ function PersonaDetails () {
 
   const getRevokedContent = () => {
     return $t({
-      defaultMessage: `{revokedStatus, select,
-      true {Are you sure you want to unblock this identity?}
-      other {The user will be blocked. Are you sure want to block this identity?}
-      }`,
+      // eslint-disable-next-line max-len
+      defaultMessage: '{revokedStatus, select, true {Are you sure you want to unblock this identity?} other {You are about to block this identity. Are you sure you wish to continue? Note: Blocking this identity will only take effect in the DPSK, MAC registration, {isCaptivePortalSsoSamlEnabled, select, true {SAML auth, } other {}}and certificate template services.}}',
       // eslint-disable-next-line max-len
       description: 'Translation strings - Are you sure you want to unblock this identity, The user will be blocked. Are you sure want to block this identity'
     }, {
-      revokedStatus
+      revokedStatus,
+      isCaptivePortalSsoSamlEnabled
     })
   }
 

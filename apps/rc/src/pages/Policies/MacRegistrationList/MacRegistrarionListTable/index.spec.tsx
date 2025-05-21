@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   ExpirationType,
   MacRegListUrlsInfo,
@@ -111,9 +112,63 @@ export const policySetList = {
   ]
 }
 
+export const wifiNetworklist = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      apSerialNumbers: ['apSerialNumber1'],
+      apCount: 1,
+      clientCount: 0,
+      id: 'a22e0192e090459ab04cdc161bf6285f',
+      name: 'network-01',
+      nwSubType: 'psk',
+      ssid: '01',
+      venueApGroups: [
+        { venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4' }
+      ],
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: 'WPA3'
+        }
+      }
+    }
+  ]
+}
+
+export const mockedVenueData = {
+  fields: [
+    'name',
+    'id',
+    'addressLine'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      id: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+      name: 'My-Venue',
+      addressLine: '85 Main St,New York,United States'
+    },
+    {
+      id: '770c3794b4fd4bf6bf9e64e8f14db293',
+      name: 'venue1',
+      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+    },
+    {
+      id: 'ea982f159b334c489a3e424767e96c1e',
+      name: 'venue2',
+      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+    }
+  ]
+}
+
 describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
@@ -134,6 +189,14 @@ describe('MacRegistrationListsTable', () => {
       rest.post(
         RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(wifiNetworklist))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueData))
       )
     )
   })

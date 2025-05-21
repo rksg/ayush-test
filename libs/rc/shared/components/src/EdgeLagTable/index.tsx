@@ -1,17 +1,21 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Col, Row }            from 'antd'
 import _, { get, union, uniq } from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features }                                    from '@acx-ui/feature-toggle'
+import { CheckMark }                                   from '@acx-ui/icons'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeLag,
   EdgeLagStatus,
   EdgePort,
   EdgeSerialNumber,
   EdgeUrlsInfo,
+  SubInterface,
   defaultSort,
   getEdgePortDisplayName,
   getEdgePortIpModeString,
@@ -21,6 +25,8 @@ import {
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getOpsApi }                     from '@acx-ui/utils'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -39,6 +45,9 @@ interface EdgeLagTableProps {
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
   actionScopes?: { [key in string]: ScopeKeys }
+  subInterfaceList?: SubInterface[]
+  isClusterWizard?: boolean
+  clusterInfo: EdgeClusterStatus
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -46,11 +55,15 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete,
-    actionScopes
+    actionScopes, subInterfaceList,
+    isClusterWizard = false,
+    clusterInfo
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const transToTableData = (edgeLagList?: EdgeLag[], edgeLagStatusList?: EdgeLagStatus[]) => {
     return edgeLagList?.map(item => ({
@@ -134,7 +147,31 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
           row.lagEnabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
       },
       sorter: { compare: sortProp('adminStatus', defaultSort) }
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: EdgeLagTableType) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: EdgeLagTableType) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
   const getToolTipContent = (
@@ -252,6 +289,9 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         vipConfig={vipConfig}
         onAdd={onAdd}
         onEdit={onEdit}
+        subInterfaceList={subInterfaceList}
+        isClusterWizard={isClusterWizard}
+        clusterInfo={clusterInfo}
       />
     </>
   )

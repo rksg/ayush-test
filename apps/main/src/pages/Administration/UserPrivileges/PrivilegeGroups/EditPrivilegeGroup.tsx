@@ -9,7 +9,8 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -19,6 +20,7 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
@@ -136,6 +138,7 @@ export function EditPrivilegeGroup () {
   const [disableNameChange, setDisableNameChange] = useState(false)
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
   const [selectedRole, setCustomRole] = useState('')
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -158,8 +161,8 @@ export function EditPrivilegeGroup () {
       useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
   const { data: customerList } =
-      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
-        { skip: !isOnboardedMsp })
+      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload,
+        enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isOnboardedMsp })
 
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
   useEffect(() => {
@@ -228,7 +231,7 @@ export function EditPrivilegeGroup () {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
           const venueIds = ec.allVenues ? []
-            : ec.children.filter(v => v.selected).map(venue => venue.id)
+            : ec.children?.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -307,16 +310,28 @@ export function EditPrivilegeGroup () {
     return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
       marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
-        {firstVenue.name}
+        <Typography.Text
+          title={firstVenue.name}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstVenue.name}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectVenue}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restVenue.map(venue =>
         <UI.VenueList key={venue.id}>
-          {venue.name}
+          <Typography.Text
+            title={venue.name}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {venue.name}
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }
@@ -324,25 +339,41 @@ export function EditPrivilegeGroup () {
   const DisplaySelectedCustomers = () => {
     const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
+    const firstCustomerWithVenues = `${firstCustomer.name} (${
+      intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+        { count: firstCustomer.allVenues ? 'All'
+          : firstCustomer.children?.filter(v => v.selected).length })})`
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({
-          intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-            { count: firstCustomer.allVenues ? 'All'
-              : firstCustomer.children.filter(v => v.selected).length })
-        })
+        <Typography.Text
+          title={firstCustomerWithVenues}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstCustomerWithVenues}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectCustomer}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({
-            intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-              { count: ec.allVenues ? 'All' : ec.children.filter(v => v.selected).length })
-          })
+          <Typography.Text
+            title={`${ec.name} (${
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.allVenues ? 'All' : ec?.children.filter(v => v.selected).length })
+            })`}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {ec.name} ({
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.allVenues ? 'All'
+                  : ec?.children.filter(v => v.selected).length })
+            })
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }

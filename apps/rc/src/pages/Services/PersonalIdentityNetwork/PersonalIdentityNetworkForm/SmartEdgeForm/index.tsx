@@ -41,7 +41,7 @@ export const SmartEdgeForm = () => {
     dhcpList,
     dhcpOptions,
     isDhcpOptionsLoading,
-    getClusterName
+    getClusterInfoByClusterId
   } = useContext(PersonalIdentityNetworkFormContext)
 
   const edgeClusterId = Form.useWatch('edgeClusterId', form) || form.getFieldValue('edgeClusterId')
@@ -186,6 +186,8 @@ export const SmartEdgeForm = () => {
     }}
   />
 
+  const currentClusterInfo = getClusterInfoByClusterId(edgeClusterId)
+
   return (
     <>
       <SelectDhcpPoolDrawer
@@ -207,7 +209,11 @@ export const SmartEdgeForm = () => {
                 <Col span={24}>
                   <Form.Item
                     label={$t({ defaultMessage: 'Edge Cluster' })}
-                    children={getClusterName(edgeClusterId)}
+                    children={
+                      <Space>
+                        {currentClusterInfo?.name}
+                      </Space>
+                    }
                   />
                 </Col>
               </Row> :

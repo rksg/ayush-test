@@ -45,6 +45,8 @@ const venueResponse = {
   }
 }
 
+const venueTagReponse = ['newtag', 'sunnyvale', 'tag3']
+
 const mockedUsedNavigate = jest.fn()
 const mockedUseLocation = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -53,6 +55,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => mockedUseLocation()
 }))
 
+const services = require('@acx-ui/rc/services')
 
 type MutationFnSwitcherTypes = Parameters<typeof useConfigTemplateMutationFnSwitcher>
 type LazyQueryFnSwitcherTypes = Parameters<typeof useConfigTemplateLazyQueryFnSwitcher>
@@ -78,6 +81,9 @@ describe('Venues Form', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    services.useGetVenueTagListQuery = jest.fn().mockImplementation(() => {
+      return { data: venueTagReponse }
+    })
     mockServer.use(
       rest.post(CommonUrlsInfo.addVenue.url,
         (req, res, ctx) => {

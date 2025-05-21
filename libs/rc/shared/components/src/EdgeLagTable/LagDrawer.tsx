@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Form, Space }             from 'antd'
 import TextArea                    from 'antd/lib/input/TextArea'
@@ -9,6 +9,7 @@ import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
@@ -17,7 +18,8 @@ import {
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber,
-  convertEdgePortsConfigToApiPayload,
+  SubInterface,
+  convertEdgeNetworkIfConfigToApiPayload,
   getEdgePortTypeOptions,
   isInterfaceInVRRPSetting,
   validateEdgeGateway
@@ -41,6 +43,9 @@ interface LagDrawerProps {
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
+  subInterfaceList?: SubInterface[]
+  isClusterWizard?: boolean
+  clusterInfo: EdgeClusterStatus
 }
 
 const defaultFormValues = {
@@ -52,20 +57,25 @@ const defaultFormValues = {
   ipMode: EdgeIpModeEnum.DHCP,
   natEnabled: false,
   lagEnabled: true,
-  lagMembers: []
+  lagMembers: [],
+  natPools: []
 } as Partial<EdgeLag>
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
     clusterId = '', serialNumber = '', visible, setVisible,
-    data, portList, existedLagList, vipConfig = [],
-    onAdd, onEdit
+    data, portList = [], existedLagList = [], vipConfig = [],
+    onAdd, onEdit, subInterfaceList = [],
+    isClusterWizard,
+    clusterInfo
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
@@ -78,10 +88,27 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
+  const subnetInfoForValidation = useMemo(() => {
+    return [
+      // eslint-disable-next-line max-len
+      ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
+        .map(port => ({ ip: port.ip, subnetMask: port.subnet })),
+      // eslint-disable-next-line max-len
+      ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
+        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+      // eslint-disable-next-line max-len
+      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
+        .map(subInterface => ({
+          ip: subInterface.ip ?? '',
+          subnetMask: subInterface.subnet ?? ''
+        }))
+    ]
+  }, [portList, existedLagList, subInterfaceList])
+
   useEffect(() => {
     if(visible) {
       form.resetFields()
-      const corePortInfo = getEnabledCorePortInfo(portList ?? [], existedLagList ?? [])
+      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList)
       const hasCorePortEnabled = !!corePortInfo.key
 
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
@@ -155,7 +182,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     try {
       const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
-      const payload = convertEdgePortsConfigToApiPayload(formData) as EdgeLag
+      // eslint-disable-next-line max-len
+      const payload = convertEdgeNetworkIfConfigToApiPayload(formData, isEdgeCoreAccessSeparationReady) as EdgeLag
 
       if(data) {
         await onEdit(serialNumber, payload)
@@ -320,24 +348,29 @@ export const LagDrawer = (props: LagDrawerProps) => {
           fieldHeadPath={[]}
           portsDataRootPath={[]}
           formListItemKey=''
-          portsData={portList ?? []}
+          portsData={portList}
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
+          clusterInfo={clusterInfo}
           formFieldsProps={{
+            // we should ONLY apply Edge gateway validator on node level edit LAG
+            // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {
               options: portTypeOptions,
               disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
-              rules: [{ validator: () => {
-                const dryRunPorts = cloneDeep(portList ?? [])
-                allValues.lagMembers.forEach(member => {
-                  const idx = findIndex(dryRunPorts, { id: member.portId })
-                  if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
-                })
+              rules: isClusterWizard
+                ? undefined
+                :[{ validator: () => {
+                  const dryRunPorts = cloneDeep(portList ?? [])
+                  allValues.lagMembers.forEach(member => {
+                    const idx = findIndex(dryRunPorts, { id: member.portId })
+                    if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
+                  })
 
-                // eslint-disable-next-line max-len
-                return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
-              } }]
+                  // eslint-disable-next-line max-len
+                  return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
+                } }]
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
@@ -347,6 +380,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
               title: $t({ defaultMessage: 'LAG Enabled' })
             }
           }}
+          subnetInfoForValidation={subnetInfoForValidation}
         />
       }}
     </Form.Item>

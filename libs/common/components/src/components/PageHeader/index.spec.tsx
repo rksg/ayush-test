@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { renderHook, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -11,7 +12,9 @@ describe('PageHeader', () => {
   afterEach(() => jest.restoreAllMocks())
 
   it('should render basic page header', () => {
-    const { asFragment } = render(<PageHeader title='Basic' />)
+    const { asFragment } = render(
+      <BrowserRouter><PageHeader title='Basic' /></BrowserRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -212,5 +215,24 @@ describe('PageHeader', () => {
     </>, { route: true })
 
     await waitFor(() => expect(setPageHeaderY).toBeCalled())
+  })
+
+  it('wrapper with greybg', async () => {
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.CANVAS_Q2)
+    render(<PageHeader
+      title='Title'
+      extra={[
+        <button>Button 1</button>,
+        <button>Button 2</button>
+      ]}
+    />, { route: { path: '/t/dashboard' } })
+
+    const title = await screen.findByRole('heading', { name: /title/i })
+    expect(title).toHaveStyle({
+      backgroundColor: 'var(--acx-neutrals-10)'
+    })
+
+    expect(await screen.findAllByRole('button')).toHaveLength(2)
   })
 })

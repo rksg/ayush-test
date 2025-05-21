@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Typography }             from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                                         from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached } from '@acx-ui/rc/components'
 import {
   IncompatibilityFeatures,
   ServiceOperation,
@@ -16,6 +16,7 @@ import {
   serviceTypeLabelMapping,
   serviceTypeDescMapping
 } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -30,12 +31,17 @@ interface ServiceCardItem {
     disabled?: boolean
     helpIcon?: React.ReactNode
     isBetaFeature?: boolean
+    readonly?: boolean
   }[]
 }
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -47,6 +53,7 @@ export default function ServiceCatalog () {
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -92,7 +99,8 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_OLT,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeOltEnabled
+          disabled: !isEdgeOltEnabled,
+          readonly: true
         }
       ]
     },
@@ -125,23 +133,34 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeTnmServiceReady
         },
-        { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
+        {
+          type: ServiceType.WIFI_CALLING,
+          categories: [RadioCardCategory.WIFI],
+          readonly: isWifiCallingLimitReached
+        }
       ]
     },
     {
       title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
-        {
-          type: ServiceType.WEBAUTH_SWITCH,
-          categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
-        },
-        {
+        ...(isPortalProfileEnabled ? [
+          {
+            type: ServiceType.PORTAL_PROFILE,
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
+          }
+        ] : [
+          { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+          {
+            type: ServiceType.WEBAUTH_SWITCH,
+            categories: [RadioCardCategory.EDGE],
+            disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+          }
+        ]),
+        ...(isCore ? [] : [{
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],
           disabled: !propertyManagementEnabled
-        }
+        }])
       ]
     }
   ] as ServiceCardItem []
@@ -159,8 +178,8 @@ export default function ServiceCatalog () {
           </Typography.Title>
           <GridRow>
             {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
-              return item.type === ServiceType.EDGE_OLT
-                ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
+              return item.readonly
+                ? <UI.ReadonlyCardWrapper key={item.type} col={{ span: 6 }}>
                   <RadioCard
                     type={'button'}
                     buttonText={defineMessage({ defaultMessage: 'Add' })}
@@ -170,7 +189,7 @@ export default function ServiceCatalog () {
                     description={$t(serviceTypeDescMapping[item.type])}
                     categories={item.categories}
                   />
-                </UI.OltCardWrapper>
+                </UI.ReadonlyCardWrapper>
                 : <GridCol key={item.type} col={{ span: 6 }}>
                   <ServiceCard
                     key={item.type}

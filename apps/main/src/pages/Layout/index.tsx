@@ -54,6 +54,7 @@ function Layout () {
   const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList || isCanvasQ2Enabled
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const logo = useLogo(tenantId)
 
@@ -84,7 +85,8 @@ function Layout () {
   }
   const invitationTableQuery = useTableQuery({
     useQuery: useInviteCustomerListQuery,
-    defaultPayload: invitationPayload
+    defaultPayload: invitationPayload,
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
   const nonVarDelegation = delegationCount > 0

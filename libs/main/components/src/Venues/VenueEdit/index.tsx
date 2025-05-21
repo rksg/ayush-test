@@ -9,7 +9,7 @@ import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
-  VeuneApAntennaTypeSettings,
+  VenueApAntennaTypeSettings,
   CommonUrlsInfo,
   useConfigTemplate,
   WifiRbacUrlsInfo,
@@ -21,7 +21,8 @@ import {
   getUserProfile,
   hasAllowedOperations,
   hasPermission,
-  hasRoles }               from '@acx-ui/user'
+  hasRoles
+}               from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
@@ -68,8 +69,8 @@ export interface RadioContext {
   apiApModels?: { [index: string]: ExternalAntenna }
   apModels?: { [index: string]: ExternalAntenna }
   updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
-  apModelAntennaTypes?: { [index: string]: VeuneApAntennaTypeSettings }
-  updateAntennaType?: ((data: VeuneApAntennaTypeSettings[]) => void)
+  apModelAntennaTypes?: { [index: string]: VenueApAntennaTypeSettings }
+  updateAntennaType?: ((data: VenueApAntennaTypeSettings[]) => void)
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
@@ -232,7 +233,7 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
 }
 
 // eslint-disable-next-line max-len
-export function getAntennaTypePayload (antTypeModels: { [index: string]: VeuneApAntennaTypeSettings }) {
+export function getAntennaTypePayload (antTypeModels: { [index: string]: VenueApAntennaTypeSettings }) {
   return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 

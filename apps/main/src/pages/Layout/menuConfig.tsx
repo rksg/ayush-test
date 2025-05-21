@@ -27,8 +27,8 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { useIsEdgeReady }  from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
+import { useIsEdgeReady }          from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -37,7 +37,8 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab,
   MigrationUrlsInfo,
-  LicenseUrlsInfo
+  LicenseUrlsInfo,
+  useIsNewServicesCatalogEnabled
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -68,15 +69,19 @@ export function useMenuConfig () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -161,10 +166,18 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
-            {
-              uri: '/users/switch/clients',
-              label: $t({ defaultMessage: 'Wired Clients List' })
-            }
+            ...(!isSupportWifiWiredClient? [
+              {
+                uri: '/users/switch/clients',
+                label: $t({ defaultMessage: 'Wired Clients List' })
+              }
+            ] : [{
+              uri: '/users/wired/switch/clients',
+              label: $t({ defaultMessage: 'Switch Clients List' })
+            }, {
+              uri: '/users/wired/wifi/clients',
+              label: $t({ defaultMessage: 'AP Clients List' })
+            }])
           ]
         },
         ...(isCloudpathBetaEnabled ? [{
@@ -296,7 +309,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI || isIotEnabled) ? [{
       label: $t({ defaultMessage: 'Gateway' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
@@ -309,11 +322,30 @@ export function useMenuConfig () {
         ...(showRwgUI ? [{
           uri: '/ruckus-wan-gateway',
           label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
+        }] : []),
+        ...(isIotEnabled ? [{
+          uri: '/devices/iotController',
+          label: $t({ defaultMessage: 'IoT Controller' })
         }] : [])
       ]
     }] : []
     ),
-    {
+    ...(isNewServiceCatalogEnabled ? [{
+      label: $t({ defaultMessage: 'Network Control' }),
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid,
+      children: [
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
+    }] : [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -331,8 +363,8 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Policies & Profiles' })
         }
       ]
-    },
-    ...(isCore ? [{
+    }]),
+    ...(isCore && !isSupportUser ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: SpeedIndicatorOutlined,
@@ -403,8 +435,10 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck &&
-              hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+            ...(isMspAppMonitoringEnabled && !isCore &&
+              (rbacOpsApiEnabled ?
+                hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
+                : !isCustomRole)
               ? [
                 {
                   uri: '/administration/privacy',

@@ -10,6 +10,12 @@ jest.mock('@acx-ui/rc/components', () => ({
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 
+const mockedUseIsNewServicesCatalogEnabled = jest.fn(() => false)
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useIsNewServicesCatalogEnabled: () => mockedUseIsNewServicesCatalogEnabled()
+}))
+
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.NETWORK]: true,
   [ConfigTemplateType.VENUE]: true,
@@ -29,13 +35,19 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
   [ConfigTemplateType.SWITCH_CLI]: false,
-  [ConfigTemplateType.AP_GROUP]: false
+  [ConfigTemplateType.AP_GROUP]: false,
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
 }
 
 describe('useAddTemplateMenuProps', () => {
   beforeEach(() => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })
   })
+
+  afterEach(() => {
+    mockedUseIsNewServicesCatalogEnabled.mockRestore()
+  })
+
   describe('main overlay', () => {
     it('should return the correct menu items for the main overlay', () => {
       const { result } = renderHook(() => useAddTemplateMenuProps())
@@ -50,6 +62,21 @@ describe('useAddTemplateMenuProps', () => {
       mockedUseConfigTemplateVisibilityMap.mockReturnValue(mockedMap)
       const { result } = renderHook(() => useAddTemplateMenuProps())
       expect(result.current).toBeNull()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return the correct menu items for the main overlay when the new service catatlog FF is enabled', () => {
+      mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
+
+      const { result } = renderHook(() => useAddTemplateMenuProps())
+      expect(result.current?.items?.filter(item => item)).toHaveLength(3)
+
+      const newServiceMenuItem = result.current?.items?.[2] as { children: ItemType[] }
+      expect(newServiceMenuItem).toBeDefined()
+      expect(newServiceMenuItem).toHaveProperty('children')
+      expect(Array.isArray(newServiceMenuItem?.children)).toBe(true)
+      expect(newServiceMenuItem?.children).toHaveLength(5)
+
     })
   })
 

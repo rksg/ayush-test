@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
-import { each, zip }                               from 'lodash'
+import { each, uniq }                              from 'lodash'
 
 import {
   MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
@@ -76,7 +76,8 @@ import {
   ScepKeyData,
   ServerCertificate,
   ServerClientCertificateResult,
-  NewAPModel
+  NewAPModel,
+  Venue
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -1970,7 +1971,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
             fields: ['name', 'id', 'addressLine'],
             ...(tableChangePayload.searchVenueNameString ? {
               searchString: tableChangePayload.searchVenueNameString,
-              searchTargetFields: ['name', 'addressLine']
+              searchTargetFields: ['name', 'addressLine', 'tagList']
+            } : {}),
+            ...(tableChangePayload.sortField ? {
+              sortField: tableChangePayload.sortField === 'venueName' ? 'name' : tableChangePayload.sortField,
+              sortOrder: tableChangePayload.sortOrder
             } : {}),
             page: 1,
             pageSize: 10000
@@ -2093,16 +2098,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
             }
           })
 
-          venueData.data.forEach(venue => {
-            if (venuesMap[venue.id]) {
-              venuesMap[venue.id].venueName = venue.name
-              venuesMap[venue.id].address = venue.addressLine
-              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
-              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
-            }
-          })
+          // ACX-85105: Preserve the original data order from venueData to support sorting behavior in venues query
+          const resolvedData: VenueUsageByClientIsolation[] = venueData.data.map(venue => {
+            if (!venuesMap[venue.id]) return null
 
-          const result = { data: Object.values(venuesMap), page: 1, totalCount: Object.values(venuesMap).length }
+            return {
+              ...venuesMap[venue.id],
+              venueName: venue.name,
+              address: venue.addressLine,
+              apCount: apsGroupByVenueData[venue.id]?.size || 0,
+              apNames: Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
+            }
+          }).filter((venue): venue is VenueUsageByClientIsolation => venue !== null)
+
+          const result = { data: resolvedData, page: 1, totalCount: Object.values(venuesMap).length }
           return { data: result as unknown as TableResult<VenueUsageByClientIsolation> }
         } else {
           const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
@@ -2525,31 +2534,87 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
       async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
           const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
-            body: JSON.stringify( { filters: { id: [params?.policyId] } })
+            body: JSON.stringify( {
+              fields: ['apSerialNumbers', 'venueIds'],
+              filters: { id: [params?.policyId] }
+            })
           }
           const response = await fetchWithBQ(req)
           const rbacApSnmpViewModel = response.data as TableResult<RbacApSnmpViewModelData>
-          const apsnmpProfile = rbacApSnmpViewModel.data[0]
-          const unformattedData = zip(apsnmpProfile.apNames,
-            apsnmpProfile.apSerialNumbers,
-            apsnmpProfile.venueIds,
-            apsnmpProfile.venueNames)
+          const apSnmpProfile = rbacApSnmpViewModel.data[0]
 
-          const formattedData: ApSnmpApUsage[] = unformattedData.map((data) => {
-            const [apName, apId, venueId, venueName] = data as [string, string, string, string]
-            return { apName, apId, venueId, venueName }
+          const { venueIds, apSerialNumbers } = apSnmpProfile
+
+          const venueIdNameMap = new Map<string, string>()
+          if (venueIds.length) {
+            const venueListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, apiCustomHeader),
+              body: JSON.stringify({
+                fields: ['id', 'name'],
+                filters: { id: venueIds },
+                page: 1,
+                pageSize: 10000
+              })
+            })
+            const venueList = venueListQuery.data as TableResult<Venue>
+            const venuesData = venueList?.data as Venue[]
+
+            venuesData?.forEach(venue => {
+              venueIdNameMap.set(venue.id, venue.name)
+            })
+          }
+
+          const snmpUsageData: ApSnmpApUsage[] = []
+          let apUsedVenueIds: string[] = []
+          if (apSerialNumbers.length) {
+            const apListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, apiCustomHeader),
+              body: JSON.stringify({
+                fields: ['name', 'serialNumber', 'venueId'],
+                filters: { serialNumber: apSerialNumbers },
+                page: 1,
+                pageSize: 10000
+              })
+            })
+            const apList = apListQuery.data as TableResult<NewAPModel>
+            const apListData = apList?.data as NewAPModel[]
+
+            apListData?.forEach(ap => {
+              const { name='', serialNumber='', venueId='' } = ap
+              apUsedVenueIds.push(venueId)
+
+              snmpUsageData.push({
+                apId: serialNumber,
+                apName: name,
+                venueId,
+                venueName: venueIdNameMap.get(venueId) ?? ''
+              })
+            })
+          }
+
+          apUsedVenueIds = uniq(apUsedVenueIds)
+          // only venue data without AP
+          venueIdNameMap.forEach((value, key) => {
+            if (!apUsedVenueIds.includes(key)) {
+              snmpUsageData.push({
+                apId: '',
+                apName: '',
+                venueId: key,
+                venueName: value
+              })
+            }
           })
 
-          let result : TableResult<ApSnmpApUsage> = {
-            ...rbacApSnmpViewModel,
-            data: formattedData
+          const result : TableResult<ApSnmpApUsage> = {
+            page: 1,
+            totalCount: snmpUsageData.length,
+            data: snmpUsageData
           }
           return { data: result }
 
@@ -2577,14 +2642,50 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const res = await fetchWithBQ(req)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
           const rbacApSnmpViewModels = tableResult.data
+
+          let allVenueIds: string[] = []
+          rbacApSnmpViewModels.forEach((snmp) => {
+            allVenueIds = allVenueIds.concat(snmp.venueIds)
+          })
+          allVenueIds = uniq(allVenueIds)
+
+          const venueIdNameMap = new Map<string, string>()
+          if (allVenueIds.length) {
+            const venueListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonUrlsInfo.getVenuesList, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+              body: JSON.stringify({
+                fields: ['id', 'name'],
+                filters: { id: allVenueIds },
+                page: 1,
+                pageSize: 10000
+              })
+            })
+            const venueList = venueListQuery.data as TableResult<Venue>
+            const venuesData = venueList?.data as Venue[]
+
+            venuesData?.forEach(venue => {
+              venueIdNameMap.set(venue.id, venue.name)
+            })
+          }
+
+
           const apSnmpViewModelData = rbacApSnmpViewModels.map((profile) => {
+            const { communityNames, userNames, venueIds, apNames } = profile
+            const venueNames: string[] = []
+            venueIds?.forEach(venueId => {
+              const venueName = venueId && venueIdNameMap.get(venueId)
+              if (venueName) {
+                venueNames.push(venueName)
+              }
+            })
+
             return {
               id: profile.id,
               name: profile.name,
-              v2Agents: convertToCountAndNumber(profile.communityNames),
-              v3Agents: convertToCountAndNumber(profile.userNames),
-              venues: convertToCountAndNumber(profile.venueNames),
-              aps: convertToCountAndNumber(profile.apNames)
+              v2Agents: convertToCountAndNumber(communityNames),
+              v3Agents: convertToCountAndNumber(userNames),
+              venues: convertToCountAndNumber(venueNames),
+              aps: convertToCountAndNumber(apNames)
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>
@@ -2710,7 +2811,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           return { data: result }
         }
       },
-      providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+      providesTags: [{ type: 'SnmpAgent', id: 'AP' }, { type: 'SnmpAgent', id: 'LIST' }]
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
@@ -2732,18 +2833,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const payload = JSON.stringify({ useVenueSettings: true })
         const req = createHttpRequest(urlsInfo.resetApSnmpSettings, params, apiCustomHeader)
         return {
           ...req,
           // eslint-disable-next-line max-len
-          ...(enableRbac ? { body: payload } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]

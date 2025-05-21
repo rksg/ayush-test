@@ -20,7 +20,7 @@ import {
   useLazyGetWorkflowStepsByIdQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -32,14 +32,20 @@ import {
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
-  getPolicyAllowedOperation, InitialEmptyStepsCount
+  getPolicyAllowedOperation, InitialEmptyStepsCount,
+  StatusReason
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
+
+import PublishReadinessProgress from '../PublishReadinessProgress'
 
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
+  const workflowValidationEnhancementFFToggle =
+      useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
 
   const columns: TableProps<Workflow>['columns'] = [
     {
@@ -80,6 +86,35 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description'
     },
+    ...( workflowValidationEnhancementFFToggle ? [{
+      key: 'version',
+      title: $t({ defaultMessage: 'Version' }),
+      dataIndex: ['publishedDetails', 'version'],
+      sorter: false,
+      render: (_: React.ReactNode, row: Workflow) => {
+        return row.publishedDetails?.version
+          ? <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.WORKFLOW,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.id!!,
+              activeTab: WorkflowDetailsTabKey.OVERVIEW
+            })}
+          >{row.publishedDetails?.version}</TenantLink>
+          : noDataDisplay
+      }
+    },
+    {
+      key: 'publishReadiness',
+      title: $t({ defaultMessage: 'Publishing Readiness' }),
+      dataIndex: 'publishReadiness',
+      sorter: false,
+      render: (_: React.ReactNode, row: Workflow) => {
+        return <PublishReadinessProgress
+          publishReadiness={row.publishReadiness as number}
+          reasons={row?.statusReasons as StatusReason[]}/>
+      }
+    }] : []),
     {
       key: 'url',
       title: $t({ defaultMessage: 'URL' }),
@@ -263,11 +298,7 @@ export default function WorkflowTable () {
       ]}
     >
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         title={
           $t(
             { defaultMessage: 'Onboarding Workflows ({count})' },

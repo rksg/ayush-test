@@ -1,14 +1,17 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Loader, useStepFormContext }                from '@acx-ui/components'
-import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { Loader, useStepFormContext }                                       from '@acx-ui/components'
+import { Features }                                                         from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { validateEdgeClusterLevelGateway, EdgePort, EdgeLag }               from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import { StyledHiddenFormItem }                                           from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
@@ -45,6 +48,10 @@ interface PortSettingViewProps {
 
 const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
   const {
     clusterInfo,
@@ -56,6 +63,16 @@ const PortSettingView = (props: PortSettingViewProps) => {
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
   const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
   const timeout = form.getFieldValue('timeout')
+  // eslint-disable-next-line max-len
+  const portSubInterfaces = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
+  // eslint-disable-next-line max-len
+  const lagSubInterfaces = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
+
+  const allSubInterface = useMemo(() =>[
+    ...Object.values(portSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat(),
+    ...Object.values(lagSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat()
+  ], [portSubInterfaces, lagSubInterfaces])
+
   const vipConfigArr = vipConfig?.map(item => ({
     virtualIp: item.vip,
     ports: item.interfaces,
@@ -70,6 +87,24 @@ const PortSettingView = (props: PortSettingViewProps) => {
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
     }]}>
+      {
+        !isEdgeCoreAccessSeparationReady &&
+        <StyledHiddenFormItem
+          name='clusterGatewayValidate'
+          rules={[
+            { validator: () => {
+              // eslint-disable-next-line max-len
+              const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+              const allLagsValues = nodesLagData.map(lag => lag.lags)
+              const allPortsData = _.flatten(allPortsValues) as EdgePort[]
+              const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
+              // eslint-disable-next-line max-len
+              return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
+            } }
+          ]}
+          children={<input hidden/>}
+        />
+      }
       <NodesTabs
         nodeList={clusterInfo?.edgeList}
         content={
@@ -87,6 +122,9 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 onTabChange={handleTabChange}
                 fieldHeadPath={['portSettings', serialNumber]}
                 vipConfig={vipConfigArr}
+                subInterfaceList={allSubInterface}
+                isClusterWizard
+                clusterInfo={clusterInfo!}
               />
               : <div />
           }

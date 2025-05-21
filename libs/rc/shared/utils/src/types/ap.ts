@@ -108,7 +108,9 @@ export interface NewAPModel {
   serialNumber: string
   name?: string
   apGroupId?: string
+  apGroupName?: string
   venueId?: string
+  venueName? : string
   tags?: string[]
   model?: string
   supportSecureBoot?: boolean
@@ -193,6 +195,10 @@ export interface NewAPModelExtended extends NewAPModel {
   networks?: {
     count?: number
   }
+  networksInfo?: {
+    count?: number
+    names?: string[]
+  }
   switchSerialNumber?: string
   switchId?: string
   switchName?: string
@@ -200,6 +206,8 @@ export interface NewAPModelExtended extends NewAPModel {
   rogueCategory?: { [key: string]: number }
   incompatible?: number
   compatibilityStatus?: string
+  children?: NewAPModel[]
+  deviceGroupName?: string
 }
 export interface NewCelluarInfo {
   activeSim: string,
@@ -611,6 +619,11 @@ export interface ApBandModeSettings {
   useVenueSettings: boolean
 }
 
+export type ApExternalAntennaSettings = {
+  externalAntenna: ExternalAntenna,
+  useVenueSettings: boolean
+}
+
 export type ApAntennaTypeSettings = {
   antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
@@ -752,6 +765,7 @@ export interface NewAPExtendedGrouped extends NewAPModelExtended {
   id?: number | string
   deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
   deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
+  networksInfo?: { count: number, names: string[] } | undefined
 }
 export type ImportErrorRes = {
   errors: {
@@ -1108,7 +1122,9 @@ export enum IpsecOptionChangeState {
   Init,
   OnChange,
   ReloadOptionList,
-  ResetToDefault
+  AddSoftGreOption,
+  ResetToDefault,
+  OnSave
 }
 
 export interface IpsecOptionChangeDispatcher {

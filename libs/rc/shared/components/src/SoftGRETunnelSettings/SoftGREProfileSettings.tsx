@@ -188,6 +188,12 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
         callbackFn={async (option: DefaultOptionType, gatewayIps: string[]) => {
+          ipsecOptionDispatch && ipsecOptionDispatch({
+            state: IpsecOptionChangeState.AddSoftGreOption,
+            newOption: option, portId,
+            apModel: (!isUnderAPNetworking ? apModel : undefined),
+            serialNumber: (isUnderAPNetworking ? serialNumber : undefined)
+          })
           optionDispatch && optionDispatch({
             state: SoftGreDuplicationChangeState.ReloadOptionList,
             index: String(index ?? 0),
@@ -197,6 +203,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               { model: apModel, portId: portId }
             )
           })
+          onGUIChanged && onGUIChanged('softGreProfileId')
         }}
       />
     </>

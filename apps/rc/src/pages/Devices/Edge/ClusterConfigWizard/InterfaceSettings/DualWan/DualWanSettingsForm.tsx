@@ -4,7 +4,7 @@ import { useIntl }                from 'react-intl'
 import { getDualWanModeString } from '@acx-ui/edge/components'
 import { EdgeMultiWanModeEnum } from '@acx-ui/rc/utils'
 
-import { WanPriorityTable } from './WanPriorityTable'
+import { WanPortPriorityTable } from './WanPortPriorityTable'
 
 export interface DualWanSettingsFormProps {
   nodeNameMapping: Record<string, string>
@@ -45,7 +45,7 @@ export const DualWanSettingsForm = ({ nodeNameMapping }: DualWanSettingsFormProp
           }]}
           valuePropName='data'
         >
-          <WanPriorityTable nodeNameMapping={nodeNameMapping} />
+          <WanPortPriorityTable nodeNameMapping={nodeNameMapping} />
         </Form.Item>
       </Col>
     </Row>

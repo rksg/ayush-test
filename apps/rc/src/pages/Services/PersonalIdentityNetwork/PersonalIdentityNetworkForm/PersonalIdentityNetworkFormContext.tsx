@@ -74,6 +74,7 @@ export interface PersonalIdentityNetworkFormContextType {
   requiredSwitchModels?: string[]
   getClusterInfoByTunnelProfileId: (tunnelId: string) => EdgeClusterStatus | undefined
   availableTunnelProfiles?: TunnelProfileViewData[]
+  getClusterInfoByClusterId: (clusterId: string) => EdgeClusterStatus | undefined
 }
 
 // eslint-disable-next-line max-len
@@ -232,17 +233,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     isDataLoading: isAvailableTunnelProfilesLoading
   } = useGetAvailableTunnelProfile({ serviceIds: [params.serviceId] })
 
-  const { tunnelProfileOptions } = useMemo(() => {
-    const availableTunnelProfileOptions = availableTunnelProfiles.filter(item =>
-      item.tunnelType === TunnelTypeEnum.VXLAN_GPE)?.map(item => ({
-      label: item.name,
-      value: item.id
-    }))
-    return {
-      tunnelProfileOptions: isL2GreEnabled ? availableTunnelProfileOptions : oldTunnelProfileOptions
-    }
-  }, [availableTunnelProfiles, isL2GreEnabled, oldTunnelProfileOptions])
-
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
     payload: {
@@ -373,6 +363,24 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     }
   })
 
+  const { tunnelProfileOptions } = useMemo(() => {
+    const availableTunnelProfileOptions = availableTunnelProfiles
+      .filter(item => item.tunnelType === TunnelTypeEnum.VXLAN_GPE)
+      .filter(item => {
+        // eslint-disable-next-line max-len
+        const targetClusterInfo = allClusterData?.find(cluster => cluster.clusterId === item.destinationEdgeClusterId)
+        return targetClusterInfo && isPinSupportCluster(targetClusterInfo, requiredFw!)
+      })
+      ?.map(item => ({
+        label: item.name,
+        value: item.id
+      }))
+    return {
+      tunnelProfileOptions: isL2GreEnabled ? availableTunnelProfileOptions : oldTunnelProfileOptions
+    }
+  // eslint-disable-next-line max-len
+  }, [availableTunnelProfiles, isL2GreEnabled, oldTunnelProfileOptions, allClusterData, requiredFw])
+
   const getVenueName = (value: string) => {
     return venueOptions?.find(item => item.value === value)?.label ?? ''
   }
@@ -398,6 +406,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     // eslint-disable-next-line max-len
     const targetClusterId = availableTunnelProfiles?.find(item => item.id === value)?.destinationEdgeClusterId ?? ''
     return allClusterData?.find(item => item.clusterId === targetClusterId)
+  }
+
+  const getClusterInfoByClusterId = (value: string) => {
+    return allClusterData?.find(item => item.clusterId === value)
   }
 
   const addNetworkCallback = useCallback((dpskPoolId?: string) => {
@@ -442,7 +454,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         requiredFw_AS,
         requiredSwitchModels,
         getClusterInfoByTunnelProfileId,
-        availableTunnelProfiles
+        availableTunnelProfiles,
+        getClusterInfoByClusterId
       }}
     >
       {props.children}

@@ -89,6 +89,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   }
 
   useEffect(() => {
+    if (!isIpSecOverNetworkEnabled) {
+      return
+    }
     const target = usedProfileData?.data || []
     const operations = usedProfileData?.operations || []
     if (!isSoftGreTunnelToggleEnabled) {
@@ -103,7 +106,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       let standardOp = target.find(a => isUnderAPNetworking ?
         a.portId === portId && a.serialNumber === serialNumber :
         a.portId === portId && a.apModel === apModel)
+      let isDbData = true
       if (!!!standardOp) {
+        isDbData = false
         standardOp = target[0]
       }
       if (!!standardOp.ipsecId) {
@@ -118,8 +123,10 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       } else if (!!standardOp.softGreId) {
         setIsIpsecDisabled(true)
         form.setFieldValue(ipsecFieldName, false)
-        form.setFieldValue(['lan', index, 'softGreProfileId'], standardOp.softGreId)
-        onFormChange()
+        if (isDbData && !!!form.getFieldValue(['lan', index, 'softGreProfileId'])) {
+          form.setFieldValue(['lan', index, 'softGreProfileId'], standardOp.softGreId)
+          onFormChange()
+        }
       }
     } else if (operations.length > 0) {
       const currentOps = isUnderAPNetworking ?
@@ -151,6 +158,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         } else {
           setSoftGreProfileDisabled(false)
           setIsIpsecDisabled(false)
+          if (currentOps[0].ipsecId) {
+            form.setFieldValue(['lan', index, 'ipsecProfileId'], currentOps[0].ipsecId)
+          }
         }
       }
     } else {

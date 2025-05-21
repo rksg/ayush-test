@@ -90,6 +90,7 @@ export function MspCustomers () {
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isCustomFilterEnabled = useIsSplitOn(Features.VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -156,7 +157,8 @@ export function MspCustomers () {
     },
     option: {
       skip: techPartnerAssignEcsEanbled
-    }
+    },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
 
   useEffect(() => {
@@ -489,7 +491,9 @@ export function MspCustomers () {
         render: function (_: React.ReactNode, row: MspEc) {
           return row.accountTier === MspEcTierEnum.Essentials
             ? $t({ defaultMessage: 'Essentials' })
-            : $t({ defaultMessage: 'Professional' })
+            : row.accountTier === MspEcTierEnum.Professional
+              ? $t({ defaultMessage: 'Professional' })
+              : $t({ defaultMessage: 'Core' })
         }
       }]),
       {
@@ -551,7 +555,8 @@ export function MspCustomers () {
       search: {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     const alarmList = useGetMspEcAlarmListQuery(
@@ -786,7 +791,8 @@ export function MspCustomers () {
       search: {
         searchTargetFields: integratorPayload.searchTargetFields as string[]
       },
-      pagination: { settingsId }
+      pagination: { settingsId },
+      enableRbac: isViewmodleAPIsMigrateEnabled
     })
 
     const alarmList = useGetMspEcAlarmListQuery(

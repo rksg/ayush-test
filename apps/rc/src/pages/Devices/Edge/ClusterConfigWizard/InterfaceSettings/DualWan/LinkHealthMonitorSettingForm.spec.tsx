@@ -60,7 +60,7 @@ describe('LinkHealthMonitorSettingForm', () => {
 
     expect(screen.getByRole('button', { name: 'Add Target' })).toBeInTheDocument()
     // eslint-disable-next-line max-len
-    expect(screen.getByRole('radio', { name: 'All destinations were unreachable' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'All targets were unreachable' })).toBeChecked()
     const selects = screen.getAllByRole('combobox')
     selects.forEach((select) => {
       if ( select.getAttribute('id') === 'protocol' ) return
@@ -84,7 +84,7 @@ describe('LinkHealthMonitorSettingForm', () => {
     expect(screen.getByText('10.10.10.10')).toBeVisible()
 
     // eslint-disable-next-line max-len
-    expect(screen.getByRole('radio', { name: 'One or more of the destinations were unreachable' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'One or more of the targets were unreachable' })).toBeChecked()
 
     const selects = screen.getAllByRole('combobox')
     const intervalSeconds = find(selects, { id: 'intervalSeconds' })
@@ -107,8 +107,8 @@ describe('LinkHealthMonitorSettingForm', () => {
     />)
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('radio', { name: 'One or more of the destinations were unreachable' })).toBeChecked()
-    await userEvent.click(screen.getByRole('radio', { name: 'All destinations were unreachable' }))
+    expect(await screen.findByRole('radio', { name: 'One or more of the targets were unreachable' })).toBeChecked()
+    await userEvent.click(screen.getByRole('radio', { name: 'All targets were unreachable' }))
 
     const selects = screen.getAllByRole('combobox')
     const intervalSeconds = find(selects, { id: 'intervalSeconds' }) as HTMLElement
@@ -197,10 +197,33 @@ describe('LinkHealthMonitorSettingForm', () => {
       }))
     })
 
+    it('should greyout add target button when target = 3', async () => {
+      const { result: { current: [mockForm] } } = renderHook(() => Form.useForm())
+
+      render(<LinkHealthMonitorSettingForm
+        form={mockForm}
+        onFinish={mockOnFinish}
+        editData={mockEditData}
+      />)
+
+      const addBtn = await screen.findByRole('button', { name: 'Add Target' })
+      await userEvent.click(addBtn)
+      const input = await screen.findByRole('textbox')
+      await userEvent.type(input, '12.12.12.12')
+      expect(input).toHaveValue('12.12.12.12')
+      const checkIcon = screen.getByTestId('Check')
+      await userEvent.click(checkIcon)
+      await screen.findByText('12.12.12.12')
+      expect(addBtn).toBeDisabled()
+
+      mockForm.submit()
+      expect(mockOnFinish).toBeCalledTimes(0)
+    })
+
     it('should catch error when target > 3', async () => {
       const { result: { current: [mockForm] } } = renderHook(() => Form.useForm())
       const mockData = cloneDeep(mockEditData)
-      mockData.targetIpAddresses.push('1.2.3.4')
+      mockData.targetIpAddresses.push(...['1.2.3.4', '12.12.12.12'])
 
       render(<LinkHealthMonitorSettingForm
         form={mockForm}
@@ -208,12 +231,9 @@ describe('LinkHealthMonitorSettingForm', () => {
         editData={mockData}
       />)
 
-      await userEvent.click(await screen.findByRole('button', { name: 'Add Target' }))
-      const input = await screen.findByRole('textbox')
-      await userEvent.type(input, '12.12.12.12')
-      expect(input).toHaveValue('12.12.12.12')
-      const checkIcon = screen.getByTestId('Check')
-      await userEvent.click(checkIcon)
+      const addBtn = await screen.findByRole('button', { name: 'Add Target' })
+      await userEvent.click(addBtn)
+      expect(addBtn).toBeDisabled()
       await screen.findByText('12.12.12.12')
 
       mockForm.submit()

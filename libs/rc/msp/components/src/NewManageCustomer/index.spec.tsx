@@ -334,6 +334,10 @@ describe('NewManageCustomer', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string, status?: string }
   beforeEach(async () => {
     mockServer.use(
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
       rest.get(
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))

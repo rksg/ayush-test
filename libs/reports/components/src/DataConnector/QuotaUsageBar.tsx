@@ -27,7 +27,7 @@ export const QuotaUsageBar: React.FC<QuotaUsageBarProps> = ({ onClick }) => {
       setPercent(Math.round((used / allowed) * 100))
     }
   }, [quotaQuery])
-
+  const usedPct = percent > 100 ? $t({ defaultMessage: '100% threshold exceeded' }) : `${percent}%`
   return (
     <Loader states={[quotaQuery]} >
       <GridRow>
@@ -52,10 +52,10 @@ export const QuotaUsageBar: React.FC<QuotaUsageBarProps> = ({ onClick }) => {
               onClick={onClick} />) : null}
           </UI.QuotaUsageBarContent>
           <UI.QuotaUsageSubTitle>
-            {$t({ defaultMessage: '{used} of {total} used ({percent}%)' },
+            {$t({ defaultMessage: '{used} of {total} used ({usedPct})' },
               { used: formats.bytesFormat(quotaQuery?.data?.used ?? 0),
                 total: formats.bytesFormat(quotaQuery?.data?.allowed ?? 0),
-                percent
+                usedPct
               })}
           </UI.QuotaUsageSubTitle>
         </GridCol>

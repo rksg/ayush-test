@@ -59,6 +59,7 @@ export default function StepDrawer (props: StepDrawerProps) {
 
   const { createStepWithActionMutation: createStep, patchActionMutation } = useWorkflowStepActions()
   const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
   const [actionData, setActionData] = useState<GenericActionData | undefined>()
   const [ getActionById, {
     isLoading: isActionLoading,
@@ -89,6 +90,7 @@ export default function StepDrawer (props: StepDrawerProps) {
   }, [formInstance, actionId, isEdit])
 
   const onSave = async () => {
+    setIsLoading(true)
     try {
       const formContent = await formInstance.validateFields()
 
@@ -105,13 +107,16 @@ export default function StepDrawer (props: StepDrawerProps) {
         })
     } catch (ignore) {
 
-    }
+    } finally { setIsLoading(false) }
   }
 
   return (<>
     <Drawer
       title={$t(ActionTypeTitle[actionType])}
       destroyOnClose
+      mask={true}
+      maskClosable={false}
+      closable={!isLoading}
       width={650}
       visible={visible}
       onClose={onClose}
@@ -143,11 +148,13 @@ export default function StepDrawer (props: StepDrawerProps) {
           }}
           onSave={onSave}
           onCancel={onClose}
+          disableCancelBtn={isLoading}
           showSaveButton={!isActionError &&
             hasPermission({ rbacOpsIds: isEdit? [getOpsApi(WorkflowUrls.patchAction)] :
               [getOpsApi(WorkflowUrls.createAction)] })}
           extra={
             <Button
+              disabled={isLoading}
               type={'link'}
               icon={<EyeOpenSolid/>}
               onClick={() => {

@@ -87,13 +87,13 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       key: 'venueInformation.name',
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueInformation.name',
-      render: (_, { venueInformation }) => venueInformation.name ?? ''
+      render: (_, { venueInformation }) => venueInformation?.name ?? ''
     },
     {
       key: 'apInformation.name',
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: 'apInformation.name',
-      render: (_, { apInformation }) => apInformation.name ?? ''
+      render: (_, { apInformation }) => apInformation?.name ?? ''
     }
   ]
 

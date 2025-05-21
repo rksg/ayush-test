@@ -55,7 +55,8 @@ export interface ChatMessage {
   role: string,
   text: string,
   created?: string,
-  widgets?: ChatWidget[]
+  widgets?: ChatWidget[],
+  userFeedback?: string
 }
 
 export interface HistoryListItem {
@@ -84,10 +85,34 @@ export interface WidgetListData {
   canvasId?: string
   widgetId?: string
   name?: string
+  updated?: boolean //TODO
+  timeRange?: string
+  defaultTimeRange?: string
 }
 
 export interface Canvas {
-  id: string,
-  name: string,
+  id: string
+  name: string
   content: string
+  updatedDate?: string
+  visible?: boolean
+  dashboardIds?: string[]
+  widgetIds?: string[]
+  diffWidgetIds?: string[]
+  author?: string
+  authorId?: string
 }
+
+export interface DashboardInfo extends Canvas {
+  index: number
+  canvasId: string
+  isLanding?: boolean
+  isDefault?: boolean
+}
+
+export interface CanvasInfo extends Canvas {
+  owned: boolean
+  widgetCount: number
+  usedAsOwnDashboard: boolean
+}
+

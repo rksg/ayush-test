@@ -19,7 +19,8 @@ import {
   SWITCH_SERIAL_8100,
   SWITCH_SERIAL_8100X,
   SWITCH_SERIAL_7550Zippy,
-  SWITCH_SERIAL_SUFFIX
+  SWITCH_SERIAL_SUFFIX,
+  SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL
 } from '../../types'
 import { FlexibleAuthentication } from '../../types'
 
@@ -175,12 +176,6 @@ export const ICX_MODELS_MODULES = {
     '24PV': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
     'C08PFV': [['8X10/100/1000Mbps'], ['2X1/10G']]
   }
-}
-
-export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig: boolean) => {
-  const isOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
-  const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
-  return isOperational || isUpgradeFail
 }
 
 export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady: boolean, syncedSwitchConfig: boolean) => {
@@ -743,13 +738,19 @@ export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   return new RegExp(`^(${pattern})${SWITCH_SERIAL_SUFFIX}$`, 'i')
 }
 
+export const createSwitchSerialPatternForSpecific8100Model = () => {
+  return new RegExp(`^(${SWITCH_SERIAL_8100})${SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL}$`, 'i')
+}
+
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
   supportModels: SupportModels,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const serialNumberRegExp = createSwitchSerialPattern(supportModels)
+  const serialNumberRegExp = (supportModels.isSupport8100 && isSpecific8100Model(data?.id))
+    ? createSwitchSerialPatternForSpecific8100Model()
+    : createSwitchSerialPattern(supportModels)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
@@ -821,7 +822,7 @@ export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) 
   }
 }
 
-export const isFirmwareVersionAbove10010g2Or10020b = function (firmwareVersion?: string) {
+export const isFirmwareVersionAbove10010gOr10020b = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
   1. > 10010g < 10020
@@ -830,6 +831,20 @@ export const isFirmwareVersionAbove10010g2Or10020b = function (firmwareVersion?:
   if (firmwareVersion) {
     return isVerGEVer(firmwareVersion, '10010g', false) &&
     (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
+}
+
+export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010g_cd1 < 10020
+  2. > 10020b_cd1
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10010g_cd1', true) &&
+    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b_cd1', true))
   } else {
     return false
   }
@@ -939,4 +954,11 @@ export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
     }
     return acc
   }, { permit: 0, deny: 0 })
+}
+
+export const isSpecific8100Model = (serialNumber: string) => {
+  return serialNumber && (serialNumber?.startsWith('FNX') ||
+    serialNumber?.startsWith('FNY') ||
+    serialNumber?.startsWith('FNZ') ||
+    serialNumber?.startsWith('FPA'))
 }

@@ -17,10 +17,6 @@ export const ClickableWrapper = styled.div`
   width: 100%;
 `
 
-export const DownloadWrapper = styled.div`
-  width: fit-content;
-`
-
 export const GraphWrapper = styled.div`
   position: relative;
   display: grid;
@@ -48,9 +44,9 @@ export const GraphLegendWrapper = styled.div`
 
 export const GraphTitle = styled.div`
   color: var(--acx-primary-black);
-  font-size: var(--acx-subtitle-4-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  font-weight: var(--acx-subtitle-4-font-weight);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight);
   background-color: var(--acx-primary-white);
   width: fit-content;
   height: fit-content;
@@ -143,6 +139,18 @@ export const GraphTitleWrapperLegacy = styled.div`
   left: 0px;
   display: grid;
   grid-template-columns: 3.6fr 4.8fr;
+`
+
+export const GraphTitleLegacy = styled.div`
+  color: var(--acx-primary-black);
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+  background-color: var(--acx-primary-white);
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const LegendItemsLegacy = styled.div`

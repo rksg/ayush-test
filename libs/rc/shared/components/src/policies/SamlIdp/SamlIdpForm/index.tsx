@@ -8,7 +8,6 @@ import { cloneDeep }                                          from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
-import { DeleteOutlined }                                         from '@acx-ui/icons'
 import { useGetServerCertificatesQuery }                          from '@acx-ui/rc/services'
 import {
   LocationExtended,
@@ -23,16 +22,16 @@ import {
   ServerCertificate,
   KeyUsageType,
   HttpURLRegExp,
-  getSamlIdpAttributeMappingNameTypeOptions,
-  SamlIdpAttributeMappingNameType,
-  AttributeMapping
+  AttributeMapping,
+  IdentityAttributeMappingNameType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
-import CertificateDrawer                                   from '../../CertificateUtil/CertificateDrawer'
+import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
+import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
+import { IdentityAttributesInput }       from '../../IdentityAttributesInput'
 
-import { Description } from './styledComponents'
+import { ImportXMLFileDrawer } from './styledComponents'
 
 interface SamlIdpFormProps {
     title: string
@@ -43,12 +42,6 @@ interface SamlIdpFormProps {
     isEditMode?: boolean
     isEmbedded?: boolean
   }
-
-export const excludedAttributeTypes = [
-  SamlIdpAttributeMappingNameType.DISPLAY_NAME,
-  SamlIdpAttributeMappingNameType.EMAIL,
-  SamlIdpAttributeMappingNameType.PHONE_NUMBER
-]
 
 export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const { $t } = useIntl()
@@ -77,12 +70,8 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const isSigningCertificateEnabled = useWatch('signingCertificateEnabled', formRef)
   const isEncryptionCertificateEnabled = useWatch('encryptionCertificateEnabled', formRef)
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
-  const attributeMappings = useWatch('attributeMappings', formRef)
 
   const fieldColSpan = isEmbedded ? 20 : 12
-
-  const maxMappingCount =
-    getSamlIdpAttributeMappingNameTypeOptions().length - excludedAttributeTypes.length // TODO: 3 for testing, should be 64 for production
 
   const { encryptionCertificateOptions, signingCertificateOptions } =
     useGetServerCertificatesQuery(
@@ -252,17 +241,17 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   rows={10}
                   data-testid='metadata-textarea' />
               </Form.Item>
-              <ImportFileDrawer
+              <ImportXMLFileDrawer
                 title={$t({ defaultMessage: 'Import via XML' })}
                 visible={uploadXmlDrawerVisible}
                 readAsText={true}
                 type={ImportFileDrawerType.DPSK}
                 acceptType={['xml']}
-                maxSize={CsvSize['5MB']}
-                maxEntries={1024}
+                maxSize={CsvSize['512KB']}
                 importRequest={handleImportRequest}
                 formDataName={'unitImports'}
                 onClose={() => setUploadXmlDrawerVisible(false)}
+                footerButtons={['cancel', 'import']}
               />
             </Col>
           </Row>
@@ -298,7 +287,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                       options={signingCertificateOptions}
                     />
                   }
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select a signing certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
@@ -340,7 +334,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   children={<Select
                     options={encryptionCertificateOptions}
                   />}
-                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select an encryption certificate' })
+                    }
+                  ]}
                 />
                 <Button
                   type='link'
@@ -354,122 +353,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
           </Row>
           <Row>
             <Col span={fieldColSpan}>
-              <StepsForm.FieldLabel width={'280px'}>
-                {$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
-              </StepsForm.FieldLabel>
-
-              <Description>
-                {$t({ defaultMessage: 'Map user attributes from your IdP to identity attributes'+
-                    ' in RUCKUS One using the exact values from your IdP.'+
-                    ' Claim names are available in your IdP console.' })}
-              </Description>
-
-              <Form.Item
-                name='identityName'
-                label={
-                  <>
-                    {$t({ defaultMessage: 'Identity Name' })}
-                    <Tooltip.Question
-                      title={$t(SamlIdpMessages.IDENTITY_NAME)}
-                      placement='bottom'
-                      iconStyle={{ width: 16, height: 16 }}
-                    />
-                  </>
-                }
-                initialValue={$t({ defaultMessage: 'displayName' })}
-                rules={[{ max: 256 }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name='identityEmail'
-                label={$t({ defaultMessage: 'Identity Email' })}
-                initialValue={$t({ defaultMessage: 'email' })}
-                rules={[{ max: 256 }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name='identityPhone'
-                label={$t({ defaultMessage: 'Identity Phone' })}
-                initialValue={$t({ defaultMessage: 'phone' })}
-                rules={[{ max: 256 }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.List
-                name='attributeMappings'
-              >
-                {
-                  (fields, { add, remove }) => (
-                    <Row gutter={[16, 20]}>
-                      {
-                        fields.map((field, index) => (
-                          <Col key={`attribute-mapping-${field.key}`} span={24}>
-                            <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <StepsForm.FieldLabel width='280px'>
-                                {$t(
-                                  { defaultMessage: 'Identity Attribute {number}' },
-                                  { number: index + 1 }
-                                )}
-                              </StepsForm.FieldLabel>
-                              <Button
-                                type='link'
-                                onClick={() => remove(index)}
-                                icon={<DeleteOutlined />}
-                              />
-                            </Space>
-                            <Form.Item
-                              name={[index, 'name']}
-                              label={$t({ defaultMessage: 'Attribute Type' })}
-                              rules={[{ required: true }]}
-                            >
-                              <Select
-                                options={
-                                  getSamlIdpAttributeMappingNameTypeOptions()
-                                    .filter(option => {
-                                      const value = option.value as SamlIdpAttributeMappingNameType
-
-                                      if (excludedAttributeTypes.includes(value)) return false
-
-                                      const selectedTypes = attributeMappings
-                                        ?.map((mapping: AttributeMapping, i: number) => {
-                                          // Skip current row
-                                          if (i === index) return null
-                                          return mapping?.name
-                                        })
-                                        .filter(Boolean) ?? []
-                                      return !selectedTypes.includes(value)
-                                    })
-                                }
-                              />
-                            </Form.Item>
-                            <Form.Item
-                              {...field}
-                              name={[index, 'mappedByName']}
-                              label={$t({ defaultMessage: 'Claim Name' })}
-                              rules={[{ required: true }]}
-                            >
-                              <Input />
-                            </Form.Item>
-                          </Col>
-                        ))
-                      }
-                      <Col span={24}>
-                        {fields.length < maxMappingCount &&
-                          <Button
-                            type='link'
-                            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-                            onClick={() => add()}
-                            children={$t({ defaultMessage: 'Add custom field' })}
-                          />
-                        }
-                      </Col>
-                    </Row>
-                  )
-                }
-              </Form.List>
+              <IdentityAttributesInput
+                form={formRef}
+                fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
+                description={$t(SamlIdpMessages.IDENTITY_DESCRIPTION)}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -478,14 +366,12 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
         visible={encryptCertFormVisible}
         setVisible={setEncryptCertFormVisible}
         handleSave={handleEncryptCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.KEY_ENCIPHERMENT]}
       />
       <CertificateDrawer
         visible={signingCertFormVisible}
         setVisible={setSigningCertFormVisible}
         handleSave={handleSigningCertificateSave}
-        width={1000}
         keyUsages={[KeyUsages.DIGITAL_SIGNATURE]}
       />
     </>
@@ -509,10 +395,14 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
 
   //Add three identity attributes to attributeMappings
   const identityMappings = [
-    { name: SamlIdpAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName ?? '' },
-    { name: SamlIdpAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail ?? '' },
-    { name: SamlIdpAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone ?? '' }
-  ]
+    // eslint-disable-next-line max-len
+    result.identityName && { name: IdentityAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
+    // eslint-disable-next-line max-len
+    result.identityEmail && { name: IdentityAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
+    // eslint-disable-next-line max-len
+    result.identityPhone && { name: IdentityAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
+  ].filter(Boolean) as AttributeMapping[]
+
   result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
   delete result.identityName
   delete result.identityEmail

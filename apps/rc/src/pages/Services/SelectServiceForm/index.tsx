@@ -9,7 +9,7 @@ import {
   StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady, useIsWifiCallingProfileLimitReached }               from '@acx-ui/rc/components'
 import {
   ServiceOperation,
   ServiceType,
@@ -19,6 +19,7 @@ import {
   isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -26,11 +27,14 @@ import * as UI from './styledComponents'
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
@@ -40,6 +44,7 @@ export default function SelectServiceForm () {
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -108,23 +113,34 @@ export default function SelectServiceForm () {
           categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeTnmServiceReady
         },
-        { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
+        {
+          type: ServiceType.WIFI_CALLING,
+          categories: [RadioCardCategory.WIFI],
+          disabled: isWifiCallingLimitReached
+        }
       ]
     },
     {
       title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
-        {
-          type: ServiceType.WEBAUTH_SWITCH,
-          categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
-        },
-        {
+        ...(isPortalProfileEnabled ? [
+          {
+            type: ServiceType.PORTAL_PROFILE,
+            categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
+          }
+        ] : [
+          { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+          {
+            type: ServiceType.WEBAUTH_SWITCH,
+            categories: [RadioCardCategory.EDGE],
+            disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
+          }
+        ]),
+        ...(isCore ? [] : [{
           type: ServiceType.RESIDENT_PORTAL,
           categories: [RadioCardCategory.WIFI],
           disabled: !propertyManagementEnabled
-        }
+        }])
       ]
     }
   ]

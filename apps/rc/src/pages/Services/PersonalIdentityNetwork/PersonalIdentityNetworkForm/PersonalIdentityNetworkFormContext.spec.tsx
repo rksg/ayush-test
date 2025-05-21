@@ -400,7 +400,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
     const mockAvailableTunnelProfiles = [
       {
         id: 'tunnelProfileVxLANGpeId1',
-        destinationEdgeClusterId: 'clusterId_1',
+        destinationEdgeClusterId: 'clusterId_2',
         name: 'tunnelProfile_VxLAN_GPE_1',
         tunnelType: TunnelTypeEnum.VXLAN_GPE
       }
@@ -429,7 +429,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
         route: { params, path: createPinPath }
       })
 
-      expect(result.current.tunnelProfileOptions?.length).toBe(1)
+      await waitFor(() => expect(result.current.tunnelProfileOptions?.length).toBe(1))
       expect(result.current.tunnelProfileOptions?.[0].label).toBe('tunnelProfile_VxLAN_GPE_1')
       expect(result.current.tunnelProfileOptions?.[0].value).toBe('tunnelProfileVxLANGpeId1')
     })
@@ -445,7 +445,21 @@ describe('PersonalIdentityNetworkFormContext', () => {
       })
 
       // eslint-disable-next-line max-len
-      await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[0]))
+      await waitFor(() => expect(result.current.getClusterInfoByTunnelProfileId('tunnelProfileVxLANGpeId1')).toStrictEqual(mockEdgeClusterList.data[1]))
+    })
+
+    it('should get cluster info by cluster id', async () => {
+      const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+        wrapper: ({ children }) => <Provider>
+          <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+            {children}
+          </PersonalIdentityNetworkFormDataProvider>
+        </Provider>,
+        route: { params, path: createPinPath }
+      })
+
+      // eslint-disable-next-line max-len
+      await waitFor(() => expect(result.current.getClusterInfoByClusterId(mockEdgeClusterList.data[0].clusterId)).toStrictEqual(mockEdgeClusterList.data[0]))
     })
   })
 })

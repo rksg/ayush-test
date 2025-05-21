@@ -83,7 +83,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       }
     }, {
       key: 'templateId',
-      title: $t({ defaultMessage: 'Auth Page of Personal Identity Network' }),
+      title: $t({ defaultMessage: 'PIN Portal for Switch Profile' }),
       dataIndex: 'templateId',
       sorter: true,
       width: 300,

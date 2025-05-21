@@ -8,8 +8,7 @@ import {
   ApSnmpViewModelData,
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
@@ -27,11 +26,7 @@ const rbacSnmpFields = [
   'id',
   'name',
   'communityNames',
-  'userNames',
-  'apSerialNumbers',
-  'apNames',
-  'venueIds',
-  'venueNames'
+  'userNames'
 ]
 
 export default function SnmpAgentDetail () {
@@ -40,8 +35,6 @@ export default function SnmpAgentDetail () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
   const defaultPayload = {
     searchString: '',
@@ -60,6 +53,7 @@ export default function SnmpAgentDetail () {
         id: [params.policyId]
       }
     },
+    enableRbac: isUseRbacApi,
     customHeaders:
     ( isUseRbacApi ?
       GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
@@ -72,14 +66,7 @@ export default function SnmpAgentDetail () {
     <>
       <PageHeader
         title={basicData?.name||''}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyDetailsLink({

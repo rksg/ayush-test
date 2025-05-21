@@ -73,9 +73,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { useUserProfileContext }      from '@acx-ui/user'
-import { AccountType, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                       from '@acx-ui/types'
+import { useUserProfileContext }                                           from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -188,6 +188,7 @@ export function NewManageCustomer () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -234,6 +235,10 @@ export function NewManageCustomer () {
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
   const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
+  const { acx_account_vertical } = getJwtTokenPayload()
+
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const entitlementSummaryPayload = {
     filters: {
@@ -287,7 +292,8 @@ export function NewManageCustomer () {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    option: { skip: action !== 'edit' }
+    option: { skip: action !== 'edit' },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
@@ -369,7 +375,7 @@ export function NewManageCustomer () {
           solutionTokenLicense: solutionTokenLic,
           solutionTokenTrialLicense: solutionTokenTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional,
+          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -450,6 +456,11 @@ export function NewManageCustomer () {
       setInstaller(assignedInstaller)
     }
   }, [techPartners])
+
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
+    return isMDU ? MspEcTierEnum.Core
+      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+  }
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -972,12 +983,24 @@ export function NewManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
+      initialValue={isMDU ? MspEcTierEnum.Core
+        : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
-                return <Radio
+                // isMDU : show only Core
+                // isHospitality: show only Professional
+                // everything else: show both Professional and Essentials
+                return (
+                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (isHospitality && value === MspEcTierEnum.Professional) ||
+                  ((!isMDU && value !== MspEcTierEnum.Core) &&
+                  (!isMDU && !isHospitality &&
+                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                ) &&
+                <Radio
                   onChange={handleServiceTierChange}
                   key={value}
                   value={value}

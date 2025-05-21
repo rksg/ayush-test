@@ -24,6 +24,10 @@ jest.mock('./components/WidgetChart', () => ({
 
 jest.mock('./components/Card', () => () =><div>Card</div>)
 
+jest.mock('./PreviewDashboardModal', () => ({
+  PreviewDashboardModal: () => <div data-testid='PreviewDashboardModal' />
+}))
+
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
@@ -34,13 +38,15 @@ const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
-  const Button = jest.requireActual('@acx-ui/components').Button
+  const Button = jest.requireActual('antd').Button
   const Card = jest.requireActual('@acx-ui/components').Card
+  const Dropdown = jest.requireActual('@acx-ui/components').Dropdown
   return {
     Card,
     Button,
     Loader,
     Tooltip,
+    Dropdown,
     showActionModal: () => mockedShowActionModal
   }
 })
@@ -78,14 +84,52 @@ const mockedGetCanvas = jest.fn(() => ({
     }
   ])
 }))
+const mockedCreate = jest.fn()
 const mockedUpdate = jest.fn()
+const mockedPatch = jest.fn()
+const currentCanvas = {
+  id: '65bcb4d334ec4a47b21ae5e062de279f',
+  name: 'Dashboard Canvas',
+  content: `[{
+    "id":"default_section",
+    "type":"section",
+    "hasTab":false,
+    "groups":[
+      {
+        "id":"default_group",
+        "sectionId":"default_section",
+        "type":"group",
+        "cards":[
+          {
+            "axisType":"category","multiSeries":false,"chartType":"bar","chartOption":{
+            "dimensions":["Current Connection Status","AP Count"],
+            "source":[["Offline",3],["Online",1]],
+            "seriesEncode":[{"x":"AP Count","y":"Current Connection Status","seriesName":null}],
+            "multiSeries":false},"sessionId":"989a8e31-f282-497e-be3b-14478f5c1cf9",
+            "id":"685e5931349d4f86867419a67dc93ec92d8900ce-29d3-4677-9ddc-0c5aae9ade15",
+            "chatId":"685e5931349d4f86867419a67dc93ec9","type":"card","isShadow":false,
+            "width":2,"height":6,"currentSizeIndex":0,
+            "sizes":[{"width":2,"height":6},{"width":3,"height":10},{"width":4,"height":12}],
+            "gridx":0,"gridy":0}]
+          }
+        ]
+      }
+    ]`
+}
+const mockedGetCanvasById = jest.fn(() => ({
+  unwrap: jest.fn().mockResolvedValue(currentCanvas)
+}))
 
 jest.mock('@acx-ui/rc/services', () => {
   const useGetAllChatsQuery = jest.requireActual('@acx-ui/rc/services').useGetAllChatsQuery
   return {
     useGetAllChatsQuery,
+    useGetCanvasQuery: () => ({ data: [currentCanvas] }),
+    useCreateCanvasMutation: () => ([ mockedCreate ]),
     useUpdateCanvasMutation: () => ([ mockedUpdate ]),
+    usePatchCanvasMutation: () => ([ mockedPatch ]),
     useLazyGetCanvasQuery: () => ([ mockedGetCanvas ]),
+    useLazyGetCanvasByIdQuery: () => ([ mockedGetCanvasById ]),
     useCreateWidgetMutation: () => [
       jest.fn(() => ({
         then: jest.fn().mockResolvedValue({
@@ -161,7 +205,32 @@ jest.mock('@acx-ui/rc/services', () => {
           ],
           totalCount: 2
         } })
-    ]
+    ],
+    useStreamChatsAiMutation: () => [
+      jest.fn().mockResolvedValue({
+        data: {
+          sessionId: 'b2c7f415-4306-4ecf-a001-dd7288eca7f8',
+          title: 'New Chat',
+          updatedDate: '2025-01-20T09:56:05.006+00:00',
+          messages: [
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'STATUS',
+              text: '0',
+              created: '2025-01-20T09:56:11.265+00:00'
+            }
+          ],
+          totalCount: 2
+        } })
+    ],
+    useStopChatMutation: jest.fn(() => [jest.fn()]),
+    useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })
 
@@ -242,7 +311,7 @@ describe('AICanvas Drag', () => {
   it('should render a chat content correctly', async () => {
     renderWithDndProvider(
       <Provider>
-        <AICanvas isModalOpen={true} setIsModalOpen={()=>{}}/>
+        <AICanvas isModalOpen={true} setIsModalOpen={jest.fn()}/>
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()

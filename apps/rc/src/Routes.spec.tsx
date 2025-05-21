@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -19,6 +19,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import { WiredTabsEnum }    from './pages/Users/Wired'
 import RcRoutes             from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
@@ -81,6 +82,11 @@ jest.mock('./pages/Services/SelectServiceForm', () => () => {
   return <div data-testid='SelectServiceForm' />
 })
 
+jest.mock('./pages/Services/UnifiedServices', () => ({
+  MyServices: () => <div data-testid='MyServicesNew' />,
+  ServiceCatalog: () => <div data-testid='ServiceCatalogNew' />
+}))
+
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => {
   return <div data-testid='MdnsProxyForm' />
 })
@@ -111,6 +117,14 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
 
 jest.mock('./pages/Services/Portal/PortalTable', () => () => {
   return <div data-testid='PortalTable' />
+})
+
+jest.mock('./pages/Services/PortalProfile/create', () => () => {
+  return <div data-testid='CreatePortalProfile' />
+})
+
+jest.mock('./pages/Services/PortalProfile', () => () => {
+  return <div data-testid='PortalProfile' />
 })
 
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
@@ -149,6 +163,11 @@ jest.mock('./pages/Users/Switch/ClientList', () => () => {
   return <div data-testid='SwitchClientList' />
 })
 
+jest.mock('./pages/Users/Wired', () => ({
+  ...jest.requireActual('./pages/Users/Wired'),
+  WiredClientList: (props: { tab: WiredTabsEnum }) => <div data-testid={props.tab} />
+}))
+
 jest.mock('./pages/Users/Wifi/ClientList', () => ({
   ...jest.requireActual('./pages/Users/Wifi/ClientList'),
   WifiClientList: (props: { tab: WirelessTabsEnum }) => <div data-testid={props.tab} />
@@ -166,7 +185,7 @@ jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
   return <div data-testid='AddEdge' />
 })
 
-jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
+jest.mock('./pages/Devices/Edge/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
@@ -178,6 +197,18 @@ jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
   ...jest.requireActual('./pages/Devices/Edge/Olt/OltTable'),
   __esModule: true,
   default: jest.fn().mockReturnValue(undefined)
+}))
+
+jest.mock('./pages/Devices/IotController', () => ({
+  IotController: () => <div data-testid='IotController' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerDetails', () => ({
+  IotControllerDetails: () => <div data-testid='IotControllerDetails' />
+}))
+
+jest.mock('./pages/Devices/IotController/IotControllerForm', () => ({
+  IotControllerForm: () => <div data-testid='IotControllerForm' />
 }))
 
 jest.mock('./pages/Timeline', () => () => {
@@ -392,8 +423,24 @@ jest.mock('./pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy', () => () => {
   return <div data-testid='EditEdgeMdnsProxy' />
 })
 
+jest.mock('./pages/Devices/Edge/EditEdgeCluster', () => () => {
+  return <div data-testid='EditEdgeCluster' />
+})
+jest.mock('./pages/Devices/Edge/AddEdgeCluster', () => () => {
+  return <div data-testid='AddEdgeCluster' />
+})
+jest.mock('./pages/Devices/Edge/ClusterConfigWizard', () => () => {
+  return <div data-testid='ClusterConfigWizard' />
+})
+jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
+  return <div data-testid='ClusterDetails' />
+})
+
 describe('RcRoutes: Devices', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+  })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -434,34 +481,94 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('SwitchesTable')).toBeVisible()
   })
 
-  test('should navigate to devices AddEdge', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/add',
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Devices > Edge Node', () => {
+
+    test('should navigate to devices AddEdge', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdge')).toBeVisible()
     })
-    expect(screen.getByTestId('AddEdge')).toBeVisible()
+
+    test('should navigate to devices EditEdge', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdge')).toBeVisible()
+    })
+
+    test('should navigate to devices EditEdge with subTab', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab/activeSubTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdge')).toBeVisible()
+    })
   })
 
-  test('should navigate to devices EditEdge', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab',
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Devices > Edge Cluster', () => {
+    beforeEach(() => {
+      jest.mocked(mockUseIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true) // Enable Edge Cluster feature
     })
-    expect(screen.getByTestId('EditEdge')).toBeVisible()
-  })
 
-  test('should navigate to devices EditEdge with subTab', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab/activeSubTab',
-        wrapRoutes: false
-      }
+    test('should navigate to AddEdgeCluster page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeCluster')).toBeVisible()
     })
-    expect(screen.getByTestId('EditEdge')).toBeVisible()
+
+    test('should navigate to EditEdgeCluster page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeCluster')).toBeVisible()
+    })
+
+    test('should navigate to EditEdgeCluster with subTab', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/edit/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeCluster')).toBeVisible()
+    })
+
+    test('should navigate to EdgeCluster config wizard', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/configure',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ClusterConfigWizard')).toBeVisible()
+    })
+
+    test('should navigate to EdgeCluster details tab page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/edge/cluster/clusterId/details/activeTab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ClusterDetails')).toBeVisible()
+    })
   })
 
   describe('RcRoutes: Devices > Edge Optical', () => {
@@ -563,34 +670,63 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Services', () => {
-    test('should navigate to service list', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceListRoutePath(),
-          wrapRoutes: false
-        }
+    describe('My Services and Service Catalog', () => {
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServices')).toBeVisible()
       })
-      expect(screen.getByTestId('MyServices')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
+      })
+
+      test('should navigate to select service page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getSelectServiceRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+      })
     })
 
-    test('should navigate to service catalog', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceCatalogRoutePath(),
-          wrapRoutes: false
-        }
+    describe('New - My Services and Service Catalog', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
       })
-      expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
-    })
 
-    test('should navigate to select service page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getSelectServiceRoutePath(),
-          wrapRoutes: false
-        }
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServicesNew')).toBeVisible()
       })
-      expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalogNew')).toBeVisible()
+      })
     })
 
     test('should navigate to create MdnsProxy page', async () => {
@@ -1234,6 +1370,38 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+    })
+
+    /* Wired Client */
+    test('should redirect users/wired/switch to users/wired/switch/clients', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/switch/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/switch/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.SWITCH_CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wired/wifi/clients correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wired/wifi/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WiredTabsEnum.AP_CLIENTS)).toBeVisible()
     })
   })
 

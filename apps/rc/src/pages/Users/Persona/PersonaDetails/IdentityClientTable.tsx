@@ -3,25 +3,20 @@ import React, { useContext, useEffect, useState } from 'react'
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
-import { Loader, Table }                                         from '@acx-ui/components'
-import { useRbacClientTableColumns }                             from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }                             from '@acx-ui/components'
+import { defaultRbacClientPayload, useRbacClientTableColumns }   from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
   ClientInfo, defaultSort,
-  IdentityClient, sortProp,
-  useTableQuery
+  IdentityClient, SORTER, sortProp,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 
 import { IdentityDetailsContext } from './index'
 
-const defaultClientPayload = {
-  searchString: '',
-  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
-  fields: ['macAddress','ipAddress','username', 'hostname','osType',
-    'venueInformation', 'apInformation',
-    'lastUpdatedTime', 'networkInformation'],
+const defaultClientPagination = {
   page: 1,
-  pageSize: 10000
+  pageSize: 100
 }
 
 const onboardingTypesMapping: { [key: string]: string } = {
@@ -30,7 +25,9 @@ const onboardingTypesMapping: { [key: string]: string } = {
   'mac-auth': 'Mac Auth',
   'AAANetwork': 'AAA Network',
   'PSKNetwork': 'PSK Network',
-  'eap': 'EAP/TLS'
+  'eap': 'EAP/TLS',
+  'Hotspot20Network': 'Hotspot 2.0 Network',
+  'GuestNetwork': 'Guest Network'
 }
 
 const getOnboardingTerm = (type?: string): string => {
@@ -46,13 +43,14 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const settingsId = 'identity-client-table'
   const [ datasource, setDatasource ] = useState<ClientInfo[]>([])
   const [ clientMacs, setClientMacs ] = useState<Set<string>>(new Set())
+  const [ esSorter, setEsSorter ] = useState<SORTER>()
   // const addClientMac = (mac: string) => setClientMacs(prev => new Set(prev.add(mac)))
 
   const [
     getClientList,
     { isLoading: isEsClientLoading, isFetching: isEsClientFetching }
   ] = useLazyGetClientsQuery()
-  const tableQuery = useTableQuery<IdentityClient>({
+  const tableQuery = usePollingTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
     pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
@@ -79,47 +77,58 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   }, [tableQuery.data])
 
   useEffect(() => {
+    if (tableQuery.isFetching) return
     if (clientMacs.size === 0) return
 
     const aggregateClientInfo = (
       identityClients: IdentityClient[],
       esClients: ClientInfo[]
     ) : ClientInfo[] => {
-      const esClientMap = new Map<string, ClientInfo>()
-      esClients.forEach(esClient =>
-        esClientMap.set(toClientMacFormat(esClient.macAddress), esClient))
+      const aggregatedClients: ClientInfo[] = []
+      const identityClientMap = new Map<string, IdentityClient>()
+      identityClients.forEach(identityClient =>
+        identityClientMap.set(toClientMacFormat(identityClient.clientMac), identityClient))
 
-      return identityClients.map(identityClient => {
-        const existingClient = esClientMap.get(toClientMacFormat(identityClient.clientMac))
-        if (existingClient && existingClient.networkInformation.id === identityClient.networkId) {
-          return {
+      // ES data as major sorted data
+      esClients.forEach(esClient => {
+        const identityClient = identityClientMap.get(toClientMacFormat(esClient.macAddress))
+        if (identityClient && identityClient.networkId === esClient.networkInformation.id) {
+          identityClientMap.delete(toClientMacFormat(esClient.macAddress))
+          aggregatedClients.push({
             ...identityClient,
-            ...existingClient
-          } as ClientInfo
-        } else {
-          return {
-            ...identityClient,
-            macAddress: identityClient.clientMac,
-            signalStatus: { health: 'Default' } // disconnected icon
-          } as unknown as ClientInfo
+            ...esClient
+          } as ClientInfo)
         }
       })
+
+      // Remaining data (disconnected)
+      identityClientMap.forEach(identityClient => {
+        aggregatedClients.push({
+          ...identityClient,
+          macAddress: identityClient.clientMac,
+          signalStatus: { health: 'Default' } // disconnected icon
+        } as unknown as ClientInfo)
+      })
+
+      return aggregatedClients
     }
 
     getClientList({
       payload: {
-        ...defaultClientPayload,
+        ...defaultRbacClientPayload,
+        ...defaultClientPagination,
+        ...esSorter,
         filters: { macAddress: [...clientMacs] }  // should be lowered case
       }
     })
       .then(result => {
         if (!result.data?.data) return
         setDatasource(aggregateClientInfo(
-          datasource as unknown as IdentityClient[],
+          tableQuery.data?.data ?? [],
           result.data.data
         ))
       })
-  }, [clientMacs])
+  }, [clientMacs, tableQuery.isFetching, esSorter])
 
   const useClientTableColumns = () => {
     return useRbacClientTableColumns(useIntl(), false).map(c => {
@@ -136,6 +145,23 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
         return { ...c, filterable: false }
       }
     })
+  }
+
+  const handleTableChange: TableProps<ClientInfo>['onChange'] = (
+    _pagination, _filters, sorters
+  ) => {
+    const sorter = Array.isArray(sorters) ? sorters[0] : sorters
+
+    if (!sorter.columnKey || sorter.columnKey === 'onboardType') {
+      // `onBoardType` is the data from identity not ES, so it can not be sorted
+      return
+    }
+
+    setEsSorter(
+      {
+        sortField: sorter.columnKey,
+        sortOrder: sorter?.order === 'ascend' ? 'ASC' : 'DESC'
+      } as SORTER)
   }
 
   return <Loader
@@ -159,6 +185,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       ]}
       settingsId={settingsId}
       dataSource={datasource}
+      onChange={handleTableChange}
       pagination={{ pageSize: 10, defaultPageSize: 10 }}
     />
   </Loader>

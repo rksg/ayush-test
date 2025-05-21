@@ -16,7 +16,7 @@ import {
   getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   getTunnelTypeString,
@@ -290,13 +290,7 @@ const TunnelProfileTable = () => {
             { count: tableQuery.data?.totalCount }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.CREATE)}

@@ -101,8 +101,9 @@ export function useDelegateToMspEcPath () {
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getMspCustomersList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const mspCustomerListReq = createHttpRequest(mspUrlsInfo.getMspCustomersList, params)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -130,8 +131,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getIntegratorCustomersList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const mspCustomerListReq = createHttpRequest(mspUrlsInfo.getIntegratorCustomersList, params)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -169,8 +171,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     varCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const varCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const varCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...varCustomerListReq,
           body: payload
@@ -190,8 +193,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const inviteCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const inviteCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...inviteCustomerListReq,
           body: payload
@@ -211,9 +215,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const deviceInventoryListReq =
-          createHttpRequest(MspUrlsInfo.getMspDeviceInventory, params)
+          createHttpRequest(mspUrlsInfo.getMspDeviceInventory, params)
         return {
           ...deviceInventoryListReq,
           body: payload
@@ -223,9 +228,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const deviceInventoryListReq =
-          createHttpRequest(MspUrlsInfo.getIntegratorDeviceInventory, params)
+          createHttpRequest(mspUrlsInfo.getIntegratorDeviceInventory, params)
         return {
           ...deviceInventoryListReq,
           body: payload
@@ -309,9 +315,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspCustomerListReq =
-        createHttpRequest(MspUrlsInfo.getMspCustomersList, params, {}, true)
+        createHttpRequest(mspUrlsInfo.getMspCustomersList, params, {}, true)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -357,9 +364,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     integratorCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const integratorCustomerListReq =
-        createHttpRequest(MspUrlsInfo.getIntegratorCustomersList, params, {}, true)
+        createHttpRequest(mspUrlsInfo.getIntegratorCustomersList, params, {}, true)
         return {
           ...integratorCustomerListReq,
           body: payload
@@ -673,9 +681,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req = createHttpRequest(
-          MspUrlsInfo.exportMspEcDeviceInventory,
+          mspUrlsInfo.exportMspEcDeviceInventory,
           { ...params },
           {}
         )
@@ -906,6 +915,19 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse: (response: AvailableMspRecCustomers) => {
+        const _childAccounts = response.child_accounts?.map((account) => {
+          return (!account?.is_tenant_onboarded)
+            ? { ...account, account_name: '* ' + account.account_name }
+            : account
+        }).sort((a,b) => {
+          if(a.account_name < b.account_name) { return -1 }
+          if(a.account_name > b.account_name) { return 1 }
+          return 0
+        })
+
+        return { ...response, child_accounts: _childAccounts }
       }
     }),
     addRecCustomer: build.mutation<CommonResult, RequestPayload>({
@@ -931,8 +953,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const mspUrlsInfo = getMspUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(MspUrlsInfo.getMspCustomersList, arg.params),
+          ...createHttpRequest(mspUrlsInfo.getMspCustomersList, arg.params),
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)

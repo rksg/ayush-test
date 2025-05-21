@@ -59,6 +59,7 @@ type CodeContent = {
 export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
   customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent,
+  isUsingLegacyErrorModal?: boolean
 }
 
 export interface ModalRef {
@@ -99,7 +100,7 @@ export const convertToJSON = (content: ErrorDetailsProps) => {
 
 export const showActionModal = (props: ActionModalProps) => {
   const modal = Modal[props.type]({})
-  const config = transformProps(props, modal)
+  const config = transformProps(props, modal, props.isUsingLegacyErrorModal)
   modal.update({
     ...config,
     content: <RawIntlProvider value={getIntl()} children={config.content} />,
@@ -108,11 +109,14 @@ export const showActionModal = (props: ActionModalProps) => {
   return pick(modal, 'destroy')
 }
 
-const transformProps = (props: ActionModalProps, modal: ModalRef) => {
+const transformProps = (
+  props: ActionModalProps,
+  modal: ModalRef,
+  isUsingLegacyErrorModal?: boolean) => {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
-  const enabledDialogImproved = getEnabledDialogImproved()
+  const enabledDialogImproved = isUsingLegacyErrorModal ? false : getEnabledDialogImproved()
   switch (props.customContent?.action) {
     case 'DELETE':
       const {

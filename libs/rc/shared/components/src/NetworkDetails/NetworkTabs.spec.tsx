@@ -1,16 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { get }                                            from '@acx-ui/config'
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
-import { generatePath }                                   from '@acx-ui/react-router-dom'
-import { Provider }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }              from '@acx-ui/user'
+import { get }                                                               from '@acx-ui/config'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { CommonRbacUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { generatePath }                                                      from '@acx-ui/react-router-dom'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, fireEvent }                    from '@acx-ui/test-utils'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                                                       from '@acx-ui/utils'
 
-import { networkDetailHeaderData } from './__tests__/fixtures'
-import NetworkTabs                 from './NetworkTabs'
+import { networkDetailHeaderData, networkViewModelData } from './__tests__/fixtures'
+import NetworkTabs                                       from './NetworkTabs'
 
 const params = { networkId: 'network-id', tenantId: 'tenant-id' }
 const url = generatePath(CommonRbacUrlsInfo.getNetworksDetailHeader.url, params)
@@ -29,7 +30,11 @@ describe('NetworkTabs', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData)))
+      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData))),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networkViewModelData))
+      )
     )
   })
 
@@ -61,6 +66,16 @@ describe('NetworkTabs', () => {
   it('should hide incidents when READ_INCIDENTS permission is false', async () => {
     mockGet.mockReturnValue('true')
     setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    render(<Provider><NetworkTabs /></Provider>, { route: { params } })
+    expect(screen.queryByText('Incidents')).toBeNull()
+  })
+
+  it('should hide incidents with Core Tier', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.CORE
+    })
     render(<Provider><NetworkTabs /></Provider>, { route: { params } })
     expect(screen.queryByText('Incidents')).toBeNull()
   })

@@ -17,7 +17,9 @@ import {
   EdgePortTypeEnum,
   EdgeServiceTypeEnum, EdgeStatusSeverityEnum,
   NodeClusterRoleEnum,
-  EdgeClusterProfileTypeEnum
+  EdgeClusterProfileTypeEnum,
+  EdgeWanLinkHealthStatusEnum,
+  EdgeWanPortRoleStatusEnum
 } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -96,6 +98,11 @@ export interface EdgeDetails {
   updatedDate: string
 }
 
+export interface EdgeNatPool {
+  startIpAddress: string
+  endIpAddress: string
+}
+
 export interface EdgePort {
   id: string
   portType: EdgePortTypeEnum
@@ -107,9 +114,11 @@ export interface EdgePort {
   subnet: string
   gateway: string
   natEnabled: boolean
+  natPools: EdgeNatPool[]
   corePortEnabled: boolean
   interfaceName?: string
   maxSpeedCapa: number
+  accessPortEnabled?: boolean
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -140,6 +149,27 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
+interface EdgeMultiWanStats {
+  wanPortStatus?: EdgeWanPortRoleStatusEnum
+  wanLinkStatus?: EdgeWanLinkHealthStatusEnum    // overall link health status
+  wanLinkTargets?: { ip: string, status: EdgeWanLinkHealthStatusEnum }[] // per link target health status
+}
+
+export interface EdgeMultiWanConfigStats extends EdgeMultiWanStats{
+  serialNumber:string
+  edgeClusterId: string
+  multiWanPolicyId: string
+  portName:string
+  priority: number
+  linkHealthMonitorEnabled: boolean
+  monitorProtocol: EdgeMultiWanProtocolEnum
+  monitorTargets: string[]
+  monitorLinkDownCriteria: EdgeLinkDownCriteriaEnum
+  monitorIntervalSec: number
+  monitorMaxCountToDown: number
+  monitorMaxCountToUp:number
+}
+
 export interface EdgePortStatus {
   type: EdgePortTypeEnum
   portId: string
@@ -157,6 +187,7 @@ export interface EdgePortStatus {
   interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
+  multiWan?: EdgeMultiWanConfigStats
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -362,6 +393,7 @@ export interface EdgeLagStatus {
   ip?: string
   subnet?: string
   isCorePort: string
+  multiWan?: EdgeMultiWanConfigStats
 }
 
 export interface EdgeLag {
@@ -380,7 +412,9 @@ export interface EdgeLag {
     subnet?: string
     gateway?: string
     corePortEnabled: boolean
+    accessPortEnabled?: boolean
     natEnabled: boolean
+    natPools: EdgeNatPool[]
     lagEnabled: boolean
 }
 
@@ -564,7 +598,8 @@ export interface ClusterNetworkSettings {
       }
     }
     loadDistribution: ClusterHaLoadDistributionEnum
-  },
+  }
+  subInterfaceSettings?: NodeSubInterfaces[]
   multiWanSettings?: ClusterNetworkMultiWanSettings
 }
 
@@ -622,6 +657,8 @@ export interface SubInterface {
   ip?: string
   subnet?: string
   interfaceName?: string
+  corePortEnabled?: boolean
+  accessPortEnabled?: boolean
 }
 
 export interface ClusterArpTerminationSettings {

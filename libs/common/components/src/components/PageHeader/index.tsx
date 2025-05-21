@@ -10,7 +10,8 @@ import {
 import _            from 'lodash'
 import { useIntl  } from 'react-intl'
 
-import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { TenantLink, TenantType, useLocation } from '@acx-ui/react-router-dom'
 
 import { useLayoutContext } from '../Layout'
 
@@ -38,8 +39,11 @@ PageHeader.defaultProps = {
 
 function PageHeader (props: PageHeaderProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const location = useLocation()
   const layout = useLayoutContext()
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
+  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isR1DashboardPage = location.pathname?.includes('t/dashboard')
   const { $t } = useIntl()
 
   useLayoutEffect(() => {
@@ -108,7 +112,7 @@ function PageHeader (props: PageHeaderProps) {
     </Breadcrumb>
   }
 
-  return <UI.Wrapper ref={ref}>
+  return <UI.Wrapper ref={ref} greyBg={isCanvasQ2Enabled && isR1DashboardPage}>
     <AntPageHeader {...pageHeaderProps} extra={extra}>
       {props.subTitle && <Typography.Text ellipsis>{subTitle as React.ReactNode}</Typography.Text>}
     </AntPageHeader>

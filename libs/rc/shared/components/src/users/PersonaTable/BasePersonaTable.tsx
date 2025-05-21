@@ -402,7 +402,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         label: $t({ defaultMessage: 'Add Identity' }),
         rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
-          if (isIdentityRefactor) {
+          if (isIdentityRefactor && !useByIdentityGroup) {
             let pathname = basePath.pathname
             if (personaGroupId) {
               pathname = pathname.concat(`/${personaGroupId}`)

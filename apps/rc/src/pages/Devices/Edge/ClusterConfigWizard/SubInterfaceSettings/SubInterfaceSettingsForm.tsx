@@ -10,8 +10,7 @@ import {
   EdgePortInfo
 } from '@acx-ui/rc/utils'
 
-import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
-import { PortSubInterfaceTable } from './PortSubInterfaceTable'
+import { SubInterfaceTable } from './SubInterfaceTable'
 
 const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
   return _.find(portData, { interfaceName: ifName })?.id ?? ''
@@ -19,7 +18,7 @@ const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
 
 export interface SubInterfaceSettingsFormProps {
   serialNumber: string
-  ports: EdgePort[],
+  ports: EdgePort[]
   portStatus: EdgePortInfo[]
   lagStatus: EdgePortInfo[]
 }
@@ -33,15 +32,16 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
     setCurrentTab(activeKey)
   }
 
+  const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
+
   useEffect(() => {
-    const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
     if (unLagPortIdx > -1) {
       const portId = findPortIdByIfName(ports, portStatus[unLagPortIdx].portName)
       setCurrentTab(`port_${portId}`)
     } else {
       setCurrentTab(`lag_${lagStatus?.[0]?.id}`)
     }
-  }, [ports, portStatus, lagStatus])
+  }, [unLagPortIdx])
 
   return ports?.length ?
     <Tabs
@@ -65,12 +65,16 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
             key={`port_${portId}`}
             children={
               <Form.Item name={['portSubInterfaces', serialNumber, portId]}>
-                <PortSubInterfaceTable
+                <SubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
                   ip={item.ip!}
                   mac={item.mac}
-                  portId={portId}
+                  allInterface={[
+                    ...portStatus,
+                    ...lagStatus
+                  ]}
+                  currentInterfaceName={item.portName}
                 />
               </Form.Item>
             }
@@ -85,12 +89,16 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
             key={'lag_' + item.id}
             children={
               <Form.Item name={['lagSubInterfaces', serialNumber, item.id]}>
-                <LagSubInterfaceTable
+                <SubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
                   ip={item.ip ?? ''}
                   mac={item.mac ?? ''}
-                  lagId={item.id}
+                  allInterface={[
+                    ...portStatus,
+                    ...lagStatus
+                  ]}
+                  currentInterfaceName={item.portName}
                 />
               </Form.Item>
             }

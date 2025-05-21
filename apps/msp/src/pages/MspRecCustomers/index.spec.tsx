@@ -238,17 +238,8 @@ const fakeDelegatedAdminList = [
 ]
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const rcServices = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
 const user = require('@acx-ui/user')
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user')
-}))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -295,6 +286,10 @@ describe('MspRecCustomers', () => {
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
