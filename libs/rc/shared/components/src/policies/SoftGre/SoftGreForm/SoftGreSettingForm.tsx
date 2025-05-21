@@ -215,7 +215,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                 children={
                   readMode
                     ? transformDisplayOnOff(softGreData?.gatewayFailbackEnabled ?? false)
-                    : <Switch data-testid='gateway-failback-toggle' onClick={toggleFallbackEnable} />
+                    : <Switch aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
                 }
               />
             </UI.StyledSpace>
@@ -262,7 +262,10 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                   ]}
                   validateFirst
                   noStyle
-                  children={<InputNumber style={{ width: '60px' }} data-testid='primary-availability-check-input'/>}
+                  children={<InputNumber
+                    aria-label='Primary Availability Check Interval'
+                    style={{ width: '60px' }}
+                  />}
                 />
                 <div>{$t({ defaultMessage: 'minutes' })}</div>
               </Space>

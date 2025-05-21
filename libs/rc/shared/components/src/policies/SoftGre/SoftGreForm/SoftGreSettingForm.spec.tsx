@@ -39,6 +39,7 @@ const user = userEvent.setup()
 describe('SoftGreSettingForm', () => {
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
       rest.post(
@@ -138,7 +139,7 @@ describe('SoftGreSettingForm', () => {
       { route: { path: createViewPath, params } }
     )
     expect(screen.getByText(/Fallback to Primary Gateway/i)).toBeInTheDocument()
-    expect(screen.getByTestId('gateway-failback-toggle')).toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })).toBeInTheDocument()
   })
 
   it('shows Primary Availability Check Interval input when fallback is enabled', async () => {
@@ -154,9 +155,10 @@ describe('SoftGreSettingForm', () => {
       </Provider>,
       { route: { path: createViewPath, params } }
     )
-    const toggle = screen.getByTestId('gateway-failback-toggle')
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
     await user.click(toggle)
-    expect(screen.getByTestId('primary-availability-check-input')).toBeEnabled()
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('spinbutton', { name: 'Primary Availability Check Interval' })).toBeEnabled()
   })
 
   it('hides Primary Availability Check Interval input when fallback is disabled', () => {
@@ -173,7 +175,7 @@ describe('SoftGreSettingForm', () => {
       { route: { path: createViewPath, params } }
     )
     expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
-    const toggle = screen.getByTestId('gateway-failback-toggle')
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
     user.click(toggle) // enable
     user.click(toggle) // disable
     expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
@@ -192,11 +194,11 @@ describe('SoftGreSettingForm', () => {
       </Provider>,
       { route: { path: createViewPath, params } }
     )
-    const toggle = screen.getByTestId('gateway-failback-toggle')
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
     await user.click(toggle)
 
     // Find the interval input
-    const input = screen.getByTestId('primary-availability-check-input')
+    const input = screen.getByRole('spinbutton', { name: 'Primary Availability Check Interval' })
 
     // Try a value below the minimum
     await user.clear(input)
