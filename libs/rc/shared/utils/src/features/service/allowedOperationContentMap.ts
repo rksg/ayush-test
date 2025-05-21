@@ -308,7 +308,7 @@ export const policyAllowedOperationMap = {
     /* eslint-disable max-len */
     [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.generateCertificate), getOpsApi(CertificateUrls.generateCertificatesToIdentity), getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
     /* eslint-disable max-len */
-    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
   },
