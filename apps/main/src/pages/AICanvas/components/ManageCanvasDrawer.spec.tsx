@@ -87,9 +87,9 @@ describe('ManageCanvasDrawer', () => {
           id: '002',
           name: 'Canvas 2',
           visible: true,
-          content: ``
+          content: ''
         }
-      ] 
+      ]
     }
     render(
       <Provider>
