@@ -94,7 +94,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.PIN,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useGetEdgePinViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
@@ -104,7 +104,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.EDGE_SD_LAN,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { fields: ['id', 'edgeClusterId'] }
       },{

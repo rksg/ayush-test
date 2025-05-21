@@ -74,12 +74,12 @@ export default function SelectServiceForm () {
         },
         {
           type: ServiceType.PIN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeHaReady || !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         },
         {
