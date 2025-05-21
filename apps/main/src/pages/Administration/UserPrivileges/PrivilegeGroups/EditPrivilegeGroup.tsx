@@ -370,7 +370,7 @@ export function EditPrivilegeGroup () {
           >
             {ec.name} ({
               intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-                { count: ec.allVenues ? 'All <VenuePlural></VenuePlural>'
+                { count: ec.allVenues ? 'All'
                   : ec?.children.filter(v => v.selected).length })
             })
           </Typography.Text>
