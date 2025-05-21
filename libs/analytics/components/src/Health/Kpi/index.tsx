@@ -7,7 +7,8 @@ import { useIntl }  from 'react-intl'
 
 import {
   KpiThresholdType,
-  healthApi } from '@acx-ui/analytics/services'
+  healthApi
+} from '@acx-ui/analytics/services'
 import {
   CategoryTab,
   kpisForTab,
