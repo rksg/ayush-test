@@ -361,10 +361,10 @@ export function EditPrivilegeGroup () {
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
           <Typography.Text
-            title={`${ec.name} (${ec.allVenues ?
-              intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+            title={`${ec.name} (${
               intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-                { count: ec.children?.filter(v => v.selected).length })})`}
+                { count: ec.allVenues ? 'All' : ec?.children.filter(v => v.selected).length })
+            })`}
             style={{ width: '250px' }}
             ellipsis={true}
           >
