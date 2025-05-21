@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-import { Divider, Form } from 'antd'
-import { useIntl }       from 'react-intl'
-import { useParams }     from 'react-router-dom'
+import { Divider, Form }             from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { useParams }                 from 'react-router-dom'
 
 import { Drawer }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
@@ -81,7 +81,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         setTargetLanPort(targetPort)
       }
     }
-  }, [portId, apLanPortsData])
+  }, [portId, apLanPortsData, isApLanPortsLoading])
 
   const onClose = () => {
     setVisible(false)
@@ -104,7 +104,6 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     })
   })
 
-  // /ethernetPortProfiles/:id
   const { data: ethernetData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileByIdQuery,
     useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
@@ -117,11 +116,6 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     ...ethernetData,
     ...ethernetPortProfileData
   }), [ethernetData, ethernetPortProfileData])
-
-  function getProfileDisplay (name: string|undefined) {
-    const onOff = transformDisplayOnOff(!!name)
-    return `${onOff}${name && ` (${name})`}`
-  }
 
   const content = (
     <Form
@@ -264,12 +258,44 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
-          children={getProfileDisplay(targetLanPort?.softGreProfileName)}
+          children={
+            (targetLanPort?.softGreProfileName && targetLanPort?.softGreProfileId) &&
+              (<FormattedMessage
+                defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
+                values={{
+                  status: transformDisplayOnOff(targetLanPort.softGreEnabled!),
+                  leftQuote: targetLanPort?.ipsecProfileName ? '(' : '',
+                  rightQuote: targetLanPort?.ipsecProfileName ? ')' : '',
+                  profileLink: () => targetLanPort.softGreProfileId ?
+                    <TenantLink to={getPolicyDetailsLink({
+                      type: PolicyType.SOFTGRE,
+                      oper: PolicyOperation.DETAIL,
+                      policyId: targetLanPort?.softGreProfileId! })}>
+                      {targetLanPort?.softGreProfileName}
+                    </TenantLink> : ''
+                }}/>)
+          }
         />
 
         {targetLanPort?.softGreEnabled && <Form.Item
           label={$t({ defaultMessage: 'IPsec' })}
-          children={getProfileDisplay(targetLanPort?.ipsecProfileName)}
+          children={
+            (targetLanPort?.ipsecProfileName && targetLanPort?.ipsecProfileId) &&
+              (<FormattedMessage
+                defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
+                values={{
+                  status: transformDisplayOnOff(targetLanPort.ipsecEnabled!),
+                  leftQuote: targetLanPort?.ipsecProfileName ? '(' : '',
+                  rightQuote: targetLanPort?.ipsecProfileName ? ')' : '',
+                  profileLink: () => targetLanPort.ipsecProfileId ?
+                    <TenantLink to={getPolicyDetailsLink({
+                      type: PolicyType.IPSEC,
+                      oper: PolicyOperation.DETAIL,
+                      policyId: targetLanPort?.ipsecProfileId! })}>
+                      {targetLanPort?.ipsecProfileName}
+                    </TenantLink> : ''
+                }}/>)
+          }
         />}
 
         <Form.Item
@@ -280,8 +306,15 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         {targetLanPort?.clientIsolationEnabled && <Form.Item
           label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
           children={
-            targetLanPort?.clientIsolationProfileName ??
-            $t({ defaultMessage: 'Not active' })}
+            (targetLanPort?.clientIsolationProfileName &&
+             targetLanPort.clientIsolationProfileId) ?
+              (<TenantLink to={getPolicyDetailsLink({
+                type: PolicyType.CLIENT_ISOLATION,
+                oper: PolicyOperation.DETAIL,
+                policyId: targetLanPort?.clientIsolationProfileId! })}>
+                {targetLanPort?.clientIsolationProfileName}
+              </TenantLink>) :
+              $t({ defaultMessage: 'Not active' })}
         />}
       </>
       }
