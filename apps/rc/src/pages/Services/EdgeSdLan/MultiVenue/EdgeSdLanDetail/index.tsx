@@ -12,8 +12,7 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
+  useServiceListBreadcrumb,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -83,17 +82,7 @@ export const EdgeSdLanDetail = () => {
     <>
       <PageHeader
         title={edgeSdLanData?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'SD-LAN' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_SD_LAN,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}

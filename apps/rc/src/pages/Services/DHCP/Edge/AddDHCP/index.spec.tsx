@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
@@ -49,6 +49,7 @@ describe('AddEdgeDhcp', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockedReqFn.mockClear()
+    mockedUsedNavigate.mockClear()
 
     mockServer.use(
       rest.post(
@@ -233,11 +234,10 @@ describe('AddEdgeDhcp', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/services`,
-      hash: '',
-      search: ''
-    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/` + getServiceRoutePath({
+      type: ServiceType.EDGE_DHCP,
+      oper: ServiceOperation.LIST
+    }), { replace: true })
   })
 })
 

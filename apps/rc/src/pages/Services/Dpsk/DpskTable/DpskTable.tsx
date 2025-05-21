@@ -31,14 +31,14 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
-  getServiceListRoutePath,
   PassphraseFormatEnum,
   displayDeviceCountLimit,
   displayDefaultAccess,
   getScopeKeyByService,
   filterDpskOperationsByPermission,
   getServiceAllowedOperation,
-  ConfigTemplateType
+  ConfigTemplateType,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
@@ -118,15 +118,8 @@ export default function DpskTable () {
     }
   ]
 
-  const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
-    ? [
-      { text: intl.$t({ defaultMessage: 'Network Control' }) },
-      {
-        text: intl.$t({ defaultMessage: 'My Services' }),
-        link: getServiceListRoutePath(true)
-      }
-    ]
-    : []
+  const servicesBreadcrumb = useServicesBreadcrumb()
+  const breadCrumb = hasRoles(RolesEnum.DPSK_ADMIN) ? [] : servicesBreadcrumb
 
   const title = !hasRoles(RolesEnum.DPSK_ADMIN)
     ? intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })

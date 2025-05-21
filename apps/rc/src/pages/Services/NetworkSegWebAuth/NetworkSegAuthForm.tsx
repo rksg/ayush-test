@@ -30,10 +30,10 @@ import {
   ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
-  getServiceListRoutePath,
   getServiceRoutePath,
   getWebAuthLabelValidator,
   redirectPreviousPage,
+  useServiceListBreadcrumb,
   useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -64,7 +64,7 @@ export default function NetworkSegAuthForm (
 
   const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
 
-  const finishHandler = (response?: WebAuthTemplate)=>{
+  const finishHandler = (response?: WebAuthTemplate, previousPath = '')=>{
     formRef.current?.resetFields()
     if (modalMode) modalCallBack(response?.id)
     else redirectPreviousPage(navigate, previousPath, linkToTableView)
@@ -120,24 +120,20 @@ export default function NetworkSegAuthForm (
       </UI.TextAreaWithReset>)
   }
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WEBAUTH_SWITCH)
+
   return (
     <>
       { !modalMode && <PageHeader
         title={editMode ?
           $t({ defaultMessage: 'Edit PIN Portal for Switch' }) :
           $t({ defaultMessage: 'Add PIN Portal for Switch' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'PIN Portal for Switch' }), link: getServiceRoutePath(
-            { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => finishHandler()}
+        onCancel={() => finishHandler(undefined, previousPath)}
         onFinish={saveData}
       >
         <StepsFormLegacy.StepForm

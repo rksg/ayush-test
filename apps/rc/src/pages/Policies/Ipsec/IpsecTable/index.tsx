@@ -14,7 +14,7 @@ import {
   useTableQuery,
   PolicyOperation,
   PolicyType,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
@@ -121,13 +121,7 @@ export default function IpsecTable () {
             { count: tableQuery.data?.totalCount ?? 0 }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
