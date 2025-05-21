@@ -221,18 +221,18 @@ export function AddPrivilegeGroup () {
   const DisplaySelectedCustomers = () => {
     const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
-    const firstCustomerVenues = `${firstCustomer.name} (${firstCustomer.allVenues ?
+    const firstCustomerWithVenues = `${firstCustomer.name} (${firstCustomer.allVenues ?
       intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
       intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
         { count: firstCustomer.children?.filter(v => v.selected).length })})`
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
         <Typography.Text
-          title={firstCustomerVenues}
+          title={firstCustomerWithVenues}
           style={{ width: '250px' }}
           ellipsis={true}
         >
-          {firstCustomerVenues}
+          {firstCustomerWithVenues}
         </Typography.Text>
         <Button
           type='link'
