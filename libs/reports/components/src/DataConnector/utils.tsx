@@ -30,7 +30,7 @@ export enum Actions {
   Delete = 'delete'
 }
 
-export const isPrimeAdmin = () => {
+const canDeleteConnector = () => {
   return get('IS_MLISA_SA')
     ? hasRaiPermission('DELETE_DATA_CONNECTOR')
     : hasRoles(RolesEnum.PRIME_ADMIN)
@@ -48,7 +48,7 @@ export const isVisibleByAction = (rows: DataConnector[], action: Actions, userId
     case Actions.Edit:
       return rows.length === 1
     case Actions.Delete:
-      return isPrimeAdmin()
+      return canDeleteConnector()
     default:
       return false
   }
