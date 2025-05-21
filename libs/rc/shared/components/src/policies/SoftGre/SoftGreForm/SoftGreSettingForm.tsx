@@ -233,14 +233,16 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
         {isGatewayFailbackEnabled && !readMode && fallbackEnable && (
           <Col span={24}>
             <Form.Item
-              label={<>
-                { $t({ defaultMessage: 'Primary Availability Check Interval' }) }
-                {readMode ? null
-                  : <Tooltip.Question
+              label={
+                <>
+                  { $t({ defaultMessage: 'Primary Availability Check Interval' }) }
+                  <Tooltip.Question
                     title={$t(messageMapping.primary_availability_check_tooltip)}
-                    placement='bottom'/>}
-              </>}
-              required={!readMode}
+                    placement='bottom'
+                  />
+                </>
+              }
+              required
             >
               <Space>
                 <Form.Item
