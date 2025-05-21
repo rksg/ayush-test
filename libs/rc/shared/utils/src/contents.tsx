@@ -323,7 +323,7 @@ export const EditPortMessages = {
     defaultMessage: 'Before enable Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
   }),
   GUIDE_TO_AUTHENTICATION: defineMessage({
-    defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
+    defaultMessage: 'Go to "{path}"'
   }),
   SWITCH_PORT_PROFILE_NOT_ENABLED: defineMessage({
     defaultMessage: 'The firmware version on the selected switches must be FI 10.0.20b or higher.'
