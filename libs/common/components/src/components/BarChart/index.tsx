@@ -32,6 +32,7 @@ export interface BarChartProps
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
+  tooltip?: object
   labelRichStyle?: object
   onClick?: (params: EventParams) => void
   yAxisType?: 'time' & 'category',
@@ -43,11 +44,12 @@ const getSeries = (
   barColors: string[],
   labelFormatter: string | LabelFormatterCallback<CallbackDataParams> | undefined,
   labelRichStyle: object | undefined,
-  clickable?: boolean
+  clickable?: boolean,
+  silent?: boolean
 ): RegisteredSeriesOption['bar'][] => {
   return data?.seriesEncode.map(encode => ({
     type: 'bar',
-    silent: !clickable,
+    silent: silent ?? !clickable,
     cursor: clickable ? 'pointer' : 'auto',
     colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
     color: data?.seriesEncode?.length === 1 ? barColors : undefined,
@@ -74,6 +76,7 @@ export function BarChart<TChartData extends BarChartData>
   grid: gridProps,
   labelFormatter,
   tooltipFormatter,
+  tooltip,
   labelRichStyle,
   barColors,
   barWidth,
@@ -116,10 +119,12 @@ export function BarChart<TChartData extends BarChartData>
     tooltip: {
       show: tooltipFormatter !== undefined,
       ...tooltipOptions(),
-      trigger: 'axis',
-      axisPointer: {
-        type: 'none'
-      },
+      ...(tooltip ? tooltip : {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'none'
+        } }
+      ),
       formatter: tooltipFormatter
     },
     ...(disableLegend ? {} : {
@@ -155,7 +160,9 @@ export function BarChart<TChartData extends BarChartData>
         }
       }
     },
-    series: getSeries(data, barColors as string[], labelFormatter, labelRichStyle, !!onClick)
+    series: getSeries(
+      data, barColors as string[], labelFormatter, labelRichStyle, !!onClick, !tooltip
+    )
   }
 
   return (
