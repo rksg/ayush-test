@@ -3,13 +3,13 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                          from '@acx-ui/components'
-import { useGetLayer2AclByIdQuery }                          from '@acx-ui/rc/services'
-import {  getPolicyListRoutePath, SwitchUrlsInfo }           from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                      from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
-import { getOpsApi }                                         from '@acx-ui/utils'
+import { Button, PageHeader, Tabs }                                       from '@acx-ui/components'
+import { useGetLayer2AclByIdQuery }                                       from '@acx-ui/rc/services'
+import {  getPolicyListRoutePath, SwitchUrlsInfo, usePoliciesBreadcrumb } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                   from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission }                       from '@acx-ui/user'
+import { getOpsApi }                                                      from '@acx-ui/utils'
 
 import Layer2ACLOverview from './Layer2ACLOverview'
 import Layer2ACLRules    from './Layer2ACLRules'
@@ -74,11 +74,7 @@ export function SwitchLayer2Detail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Access Control' }),
             link: accessControlRoute

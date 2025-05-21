@@ -90,7 +90,9 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'create')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'create', e.target.checked)} />
-        </Form.Item> : <></>
+        </Form.Item> :<Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
+        </Form.Item>
       }
     },
     {
@@ -124,7 +126,9 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'delete')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'delete', e.target.checked)} />
-        </Form.Item>: <></>
+        </Form.Item>: <Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
+        </Form.Item>
       }
     }
   ]

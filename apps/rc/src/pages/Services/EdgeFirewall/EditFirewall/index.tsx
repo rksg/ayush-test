@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                                                          from '@acx-ui/components'
-import { useGetEdgeFirewallQuery, useUpdateEdgeFirewallMutation }                      from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                       from '@acx-ui/react-router-dom'
+import { Loader, PageHeader }                                                           from '@acx-ui/components'
+import { useGetEdgeFirewallQuery, useUpdateEdgeFirewallMutation }                       from '@acx-ui/rc/services'
+import { getServiceRoutePath, ServiceOperation, ServiceType, useServiceListBreadcrumb } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                        from '@acx-ui/react-router-dom'
 
 import FirewallForm, { FirewallFormEdge, FirewallFormModel } from '../FirewallForm'
 import { ScopeForm }                                         from '../FirewallForm/ScopeForm'
@@ -57,11 +57,7 @@ const EditFirewall = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Firewall Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Firewall' }), link: firewallListRoute }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_FIREWALL)}
       />
       <Loader states={[{ isLoading: isLoading }]}>
         <FirewallForm
