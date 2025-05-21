@@ -41,13 +41,11 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useServicePreviousPath,
-  Demo,
-  getServiceRoutePath
+  Demo
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useParams,
-  useTenantLink
+  useParams
 } from '@acx-ui/react-router-dom'
 import { getImageDownloadUrl } from '@acx-ui/utils'
 
@@ -99,10 +97,6 @@ export const PortalForm = (props: {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.PORTAL, ServiceOperation.LIST)
-  const routeToList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.PORTAL,
-    oper: ServiceOperation.LIST
-  }))
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -280,7 +274,7 @@ export const PortalForm = (props: {
       }
       networkView
         ? backToNetwork?.(data)
-        : navigate(routeToList, { replace: true })
+        : navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

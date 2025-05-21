@@ -142,7 +142,7 @@ export function ApGroupGeneralTab () {
   })
 
   useEffect(() => {
-    if (Object.keys(apInfos).length == 0) return
+    if (Object.keys(apInfos).length !== 0) return
     if (newApTableListQuery.data?.data && Object.keys(apInfos).length === 0) {
       const apInfos = newApTableListQuery.data.data.reduce((acc, data) => {
         if ((data as { children?: NewAPModel[] }).children?.length) {
@@ -155,7 +155,7 @@ export function ApGroupGeneralTab () {
       setApInfos(apInfos)
     }
 
-  }, [newApTableListQuery])
+  }, [newApTableListQuery, apInfos])
 
   const locationState = location.state as { venueId?: string, history?: string }
 
@@ -198,7 +198,7 @@ export function ApGroupGeneralTab () {
   }, [isEditMode, apGroupData, isApGroupDataLoading, venueId, apInfos])
 
   const handleVenueChange = async (value: string,
-    extraMemberList?: ApGroupOptionType[]) => {
+    extraMemberList: ApGroupOptionType[] = []) => {
     const defaultApGroupOption: ApGroupOptionType[] = []
 
     if (value) {
@@ -239,7 +239,7 @@ export function ApGroupGeneralTab () {
       }
     }
 
-    if (extraMemberList && defaultApGroupOption) {
+    if (defaultApGroupOption) {
       setApsOption(defaultApGroupOption.concat(extraMemberList)
         .filter((option, ind) => ind ===
           defaultApGroupOption.findIndex(elem => elem.name === option.name &&
@@ -387,12 +387,13 @@ export function ApGroupGeneralTab () {
           style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto', fontSize: '13px' }}
           type={'link'}
           onClick={() => {
-            if (isHide) {
-              setTableDataOption(apsOption)
-            } else {
-              setTableDataOption(apsOption.filter(option => option.name.includes('AP')))
-            }
             setIsHide(!isHide)
+            if (!isHide) {
+              // eslint-disable-next-line max-len
+              setTableDataOption(apsOption.filter(option => !option.apGroupName))
+            } else {
+              setTableDataOption(apsOption.filter(option => option))
+            }
           }}
         >
           {isHide
@@ -472,7 +473,10 @@ export function ApGroupGeneralTab () {
                   ? <Transfer
                     listStyle={{ width: 400, height: 400 }}
                     type={'table'}
-                    tableData={tableDataOption}
+                    tableData={
+                      tableDataOption
+                        .filter(option => isHide ? !option.apGroupName : option)
+                    }
                     leftColumns={leftColumns}
                     rightColumns={rightColumns}
                     showSearch
