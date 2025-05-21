@@ -11,8 +11,8 @@ import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
-import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable, useIsNewServicesCatalogEnabled } from './utils'
 
 
 type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
@@ -364,7 +364,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
   return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
