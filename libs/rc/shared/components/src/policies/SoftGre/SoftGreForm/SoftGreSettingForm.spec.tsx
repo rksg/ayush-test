@@ -122,4 +122,54 @@ describe('SoftGreSettingForm', () => {
     await user.type(secondaryGatewayField,'128.0.0.1')
     expect(errMsg).not.toBeInTheDocument()
   })
+
+  it('renders the Fallback to Primary Gateway toggle', () => {
+    render(<SoftGreSettingForm editMode />)
+    expect(screen.getByText(/Fallback to Primary Gateway/i)).toBeInTheDocument()
+    expect(screen.getByRole('switch')).toBeInTheDocument()
+  })
+
+  it('shows Primary Availability Check Interval input when fallback is enabled', () => {
+    render(<SoftGreSettingForm editMode />)
+    const toggle = screen.getByRole('switch')
+    user.click(toggle)
+    expect(screen.getByText(/Primary Availability Check Interval/i)).toBeInTheDocument()
+    expect(screen.getByRole('spinbutton')).toBeEnabled()
+  })
+
+  it('hides Primary Availability Check Interval input when fallback is disabled', () => {
+    render(<SoftGreSettingForm editMode />)
+    expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
+    const toggle = screen.getByRole('switch')
+    user.click(toggle) // enable
+    user.click(toggle) // disable
+    expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
+  })
+
+  it('validates Primary Availability Check Interval is between 60 and 1440', async () => {
+    render(<SoftGreSettingForm editMode />)
+    const toggle = screen.getByRole('switch')
+    await user.click(toggle)
+
+    // Find the interval input
+    const input = screen.getByRole('spinbutton')
+
+    // Try a value below the minimum
+    await user.clear(input)
+    await user.type(input, '30')
+    input.blur()
+    expect(await screen.findByText(/must be between 60 and 1440/i)).toBeInTheDocument()
+
+    // Try a value above the maximum
+    await user.clear(input)
+    await user.type(input, '2000')
+    input.blur()
+    expect(await screen.findByText(/must be between 60 and 1440/i)).toBeInTheDocument()
+
+    // Try a valid value
+    await user.clear(input)
+    await user.type(input, '120')
+    input.blur()
+    expect(screen.queryByText(/must be between 60 and 1440/i)).not.toBeInTheDocument()
+  })
 })
