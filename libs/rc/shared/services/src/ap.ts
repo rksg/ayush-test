@@ -999,7 +999,6 @@ export const apApi = baseApApi.injectEndpoints({
                 let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
                 if (venueTargetPort) {
                   venueTargetPort.ethernetPortProfileId = eth.id
-                  venueTargetPort.ethernetPortProfileName = eth.name
                 }
               }
             }
@@ -1011,7 +1010,6 @@ export const apApi = baseApApi.injectEndpoints({
                   ?.find(l => l.portId === port.portId?.toString())
                 if (targetPort) {
                   targetPort.ethernetPortProfileId = eth.id
-                  targetPort.ethernetPortProfileName = eth.name
                 }
               }
             }

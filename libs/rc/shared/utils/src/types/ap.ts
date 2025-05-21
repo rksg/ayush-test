@@ -495,7 +495,6 @@ export interface LanPort {
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
   ethernetPortProfileId?: string,
-  ethernetPortProfileName?: string,
   softGreProfileId?: string,
   softGreProfileName?: string,
   softGreEnabled?: boolean,

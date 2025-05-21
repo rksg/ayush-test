@@ -71,7 +71,8 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     enableEthernetProfile: isEthernetPortProfileEnabled,
     enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
     enableIpsecOverNetwork: isIpSecOverNetworkEnabled,
-    enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled
+    enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled,
+    skip: !wiredPortVisible
   })
 
   useEffect(() => {
@@ -127,7 +128,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           $t({ defaultMessage: 'Ethernet Port Profile' }) :
           $t({ defaultMessage: 'Name' })}
         children={
-          (ethernetDataForDisplay?.name)
+          (wiredPortVisible && ethernetDataForDisplay?.name)
             ? (<TenantLink to={getPolicyDetailsLink({
               type: PolicyType.ETHERNET_PORT_PROFILE,
               oper: PolicyOperation.DETAIL,
