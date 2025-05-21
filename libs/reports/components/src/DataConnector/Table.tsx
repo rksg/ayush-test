@@ -19,8 +19,8 @@ import {
   useDeleteDataConnectorMutation,
   usePatchDataConnectorMutation
 } from './services'
-import { DataConnector, Frequency }                                          from './types'
-import { Actions, frequencyMap, getUserId, isVisibleByAction, isPrimeAdmin } from './utils'
+import { DataConnector, Frequency }                                                from './types'
+import { Actions, frequencyMap, getUserId, isVisibleByAction, canDeleteConnector } from './utils'
 
 export function DataConnectorTable () {
   const { $t } = useIntl()
@@ -246,7 +246,7 @@ export function DataConnectorTable () {
         hasDataPermission && allowedRowActions.length > 0 && {
           type: 'checkbox',
           getCheckboxProps: (record: DataConnector) => ({
-            disabled: record.userId !== userId && !isPrimeAdmin()
+            disabled: record.userId !== userId && !canDeleteConnector()
           })
         }
       }

@@ -30,7 +30,7 @@ export enum Actions {
   Delete = 'delete'
 }
 
-const canDeleteConnector = () => {
+export const canDeleteConnector = () => {
   return get('IS_MLISA_SA')
     ? hasRaiPermission('DELETE_DATA_CONNECTOR')
     : hasRoles(RolesEnum.PRIME_ADMIN)

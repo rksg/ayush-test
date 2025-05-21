@@ -2,8 +2,15 @@ import { get }                                                               fro
 import { RolesEnum }                                                         from '@acx-ui/types'
 import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
-import { DataConnector }                                                                    from './types'
-import { Actions, connectorNameRegExp, generateBreadcrumb, getUserName, isVisibleByAction } from './utils'
+import { DataConnector } from './types'
+import {
+  Actions,
+  connectorNameRegExp,
+  generateBreadcrumb,
+  getUserName,
+  isVisibleByAction,
+  canDeleteConnector
+} from './utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -91,6 +98,7 @@ describe('isVisibleByAction', () => {
           roles: [RolesEnum.ADMINISTRATOR]
         }
       })
+      expect(canDeleteConnector()).toBeFalsy()
       expect(isVisibleByAction([activeRow], Actions.Delete, userId)).toBeFalsy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, userId)).toBeFalsy()
     })
@@ -103,6 +111,7 @@ describe('isVisibleByAction', () => {
           roles: [RolesEnum.PRIME_ADMIN]
         }
       })
+      expect(canDeleteConnector()).toBeTruthy()
       expect(isVisibleByAction([activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()
     })
@@ -116,6 +125,7 @@ describe('isVisibleByAction', () => {
       setRaiPermissions({
         DELETE_DATA_CONNECTOR: false
       } as RaiPermissions)
+      expect(canDeleteConnector()).toBeFalsy()
       expect(isVisibleByAction([activeRow], Actions.Delete, userId)).toBeFalsy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, userId)).toBeFalsy()
     })
@@ -124,6 +134,7 @@ describe('isVisibleByAction', () => {
       setRaiPermissions({
         DELETE_DATA_CONNECTOR: true
       } as RaiPermissions)
+      expect(canDeleteConnector()).toBeTruthy()
       expect(isVisibleByAction([activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()
       expect(isVisibleByAction([activeRow, activeRow], Actions.Delete, 'otherUserId')).toBeTruthy()
     })
