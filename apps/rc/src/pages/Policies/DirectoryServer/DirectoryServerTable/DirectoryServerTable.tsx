@@ -14,7 +14,7 @@ import {
   DIRECTORY_SERVER_LIMIT_NUMBER,
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -96,13 +96,7 @@ export default function DirectoryServerTable () {
           // eslint-disable-next-line max-len
           $t({ defaultMessage: 'Directory Server ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len

@@ -111,10 +111,10 @@ const getActionMenu = (
     label: $t({ defaultMessage: 'Set as Landing Page' }),
     key: getKey('landing'),
     visible: !isLanding
-  }, { //TODO: can view default dashboard
+  }, {
     label: $t({ defaultMessage: 'View' }),
     key: getKey('view'),
-    visible: !isDefault
+    visible: true
   }, {
     label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
     key: getKey('edit'),
@@ -196,6 +196,7 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
+  setPreviewId: (id: string) => void,
   handleOpenPreview: (data: DashboardInfo[]) => void
   handleOpenCanvas: (id?: string) => void
 }) => {
@@ -238,6 +239,7 @@ export const DashboardDrawer = (props: {
       default: // view
         const previewDashboard = dashboardList.filter(item => item.id === id)
         props.handleOpenPreview(previewDashboard)
+        props.setPreviewId(id)
         break
     }
   }
@@ -345,6 +347,8 @@ export const DashboardDrawer = (props: {
     zIndex={999}
     forceRender={true}
     destroyOnClose={false}
+    mask={true}
+    maskClosable={true}
     children={props.visible && <DndProvider backend={HTML5Backend}>
       <FallbackDropZone />
       <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>

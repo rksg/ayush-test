@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
 
-import { Form, Input, InputNumber, Select } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Select, Space } from 'antd'
+import { useIntl }                                           from 'react-intl'
 
-import { Alert, Drawer }                                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                     from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                                                                   from '@acx-ui/components'
+import { Features }                                                                                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                           from '@acx-ui/rc/components'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp, serverIpAddressRegExp, validateGatewayInSubnet } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                     from '@acx-ui/utils'
 
 interface StaticRoutesDrawerProps {
   mac: string
@@ -36,6 +38,8 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
   const { $t } = useIntl()
   const { mac, visible, setVisible, data, handleAdd, handleUpdate } = props
   const [formRef] = Form.useForm()
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   useEffect(() => {
     if(visible) {
@@ -48,6 +52,11 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
       { operation: data ? $t({ defaultMessage: 'Edit' }) :
         $t({ defaultMessage: 'Add' }) })
+  }
+
+  const getCurrentSubnetInfo = () => {
+    const { ipMode, ip, subnet } = formRef.getFieldsValue(true)
+    return { ipMode, ip, subnetMask: subnet }
   }
 
   const handleClose = () => {
@@ -115,9 +124,37 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
         ) : null
       }
     </Form.Item>
+    {
+      isEdgeCoreAccessSeparationReady && <Form.Item
+        label={$t({ defaultMessage: 'Use port as…' })}
+        children={
+          <Space direction='vertical'>
+            <Form.Item
+              name='corePortEnabled'
+              valuePropName='checked'
+              noStyle
+            >
+              <Checkbox
+                children={$t({ defaultMessage: 'Core port' })}
+              />
+            </Form.Item>
+            <Form.Item
+              name='accessPortEnabled'
+              valuePropName='checked'
+              noStyle
+            >
+              <Checkbox
+                children={$t({ defaultMessage: 'Access port' })}
+              />
+            </Form.Item>
+          </Space>
+        }
+      />
+    }
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode}
+      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode ||
+        prev.accessPortEnabled !== cur.accessPortEnabled}
     >
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.STATIC ? (
@@ -142,6 +179,25 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
               ]}
               children={<Input />}
             />
+            {
+              (isEdgeCoreAccessSeparationReady && getFieldValue('accessPortEnabled')) ?
+                <Form.Item
+                  name='gateway'
+                  label={$t({ defaultMessage: 'Gateway' })}
+                  validateFirst
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => serverIpAddressRegExp(value) },
+                    {
+                      validator: (_, value) => {
+                        let subnet = getCurrentSubnetInfo()
+                        return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                      }
+                    }
+                  ]}
+                  children={<Input />}
+                /> : null
+            }
           </>
         ) : null
       }

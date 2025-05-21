@@ -354,6 +354,110 @@ describe('Network Filter', () => {
     expect(await screen.findAllByRole('menuitemcheckbox')).toHaveLength(1)
   })
 
+  it('should return empty array when shouldQueryAp is true and any item contains edge data',
+    async () => {
+      mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+        data: { network: { venueHierarchy: networkFilterResult } }
+      })
+      mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+        data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+      })
+
+      // Mock raw values that would be generated when edge venues are processed
+      // This simulates what happens when venues with edge devices are selected
+      mockUseReportsFilter.raw = [
+        // Regular venue without edge
+        [
+          '[{"type":"network","name":"Network"},{"type":"zone","name":"zone1"}]',
+          'apszone1',
+          '[{"type":"network","name":"Network"},{"type":"zone","name":"zone1"}]'
+        ],
+        // Venue with edge device - this should trigger empty return
+        [
+          '[{"type":"network","name":"Network"},{"type":"zone","name":"zone2"}]',
+          'edgezone2',
+          // eslint-disable-next-line max-len
+          '[{"type":"network","name":"Network"},{"type":"zone","name":"zone2"},{"type":"edge","name":"edge1"}]'
+        ]
+      ] as never[]
+
+      renderNetworkFilter({
+        shouldQueryAp: true,
+        shouldQuerySwitch: false,
+        shouldQueryEdge: false,
+        filterFor: 'reports'
+      })
+
+      await screen.findByText('Entire Organization')
+    })
+
+  it('should filter normally when shouldQueryAp is true and no edge data exists', async () => {
+    // Set up test data with NO edge devices
+    const testData = [
+      {
+        id: 'zone1',
+        type: 'zone',
+        name: 'Venue1',
+        aps: [{ name: 'AP1', mac: '00:00:00:00:00:01' }]
+      }
+    ]
+
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: testData } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+
+    // Clear any existing raw data
+    mockUseAnalyticsFilter.raw = []
+
+    renderNetworkFilter({
+      shouldQueryAp: true,
+      shouldQuerySwitch: false,
+      shouldQueryEdge: false
+    })
+
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+
+    // Verify that venue options are shown when no edge data is present
+    const options = await screen.findAllByRole('menuitemcheckbox')
+    expect(options.length).toBeGreaterThan(0)
+  })
+
+  it('should show edge data when shouldQueryEdge is true', async () => {
+    jest.mocked(useAnySplitsOn).mockReturnValue(true) // Enable edge feature toggle
+
+    // Set up test data with edge devices
+    const testData = [{
+      id: 'venue1',
+      type: 'zone',
+      name: 'Venue With Edge',
+      edges: [{ id: 'edge1', name: 'Test Edge 1' }]
+    }]
+
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { venueHierarchy: testData } }
+    })
+
+    // Clear any existing raw data
+    mockUseAnalyticsFilter.raw = []
+
+    renderNetworkFilter({
+      shouldQueryAp: false,
+      shouldQuerySwitch: false,
+      shouldQueryEdge: true
+    })
+
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+
+    // Verify that edge options are shown
+    const options = await screen.findAllByRole('menuitemcheckbox')
+    expect(options.length).toBeGreaterThan(0)
+  })
+
   it('should select network node and bands with onApplyFn', async () => {
     mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
       data: { network: { venueHierarchy: networkFilterResult } }

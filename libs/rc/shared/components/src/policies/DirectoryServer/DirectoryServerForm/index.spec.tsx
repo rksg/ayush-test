@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { directoryServerApi } from '@acx-ui/rc/services'
 import {
   DirectoryServerProfileEnum,
@@ -225,6 +226,7 @@ describe('DirectoryServerForm', () => {
 
     // eslint-disable-next-line max-len
     it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
       render(
         <Provider>
           <DirectoryServerForm editMode={true} />

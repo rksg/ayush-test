@@ -25,7 +25,7 @@ import {
   PolicyType,
   SEARCH,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   returnExpirationString,
   useTableQuery,
@@ -289,11 +289,7 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
