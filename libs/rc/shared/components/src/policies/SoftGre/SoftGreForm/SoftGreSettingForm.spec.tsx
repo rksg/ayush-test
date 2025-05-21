@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { softGreApi }                                                        from '@acx-ui/rc/services'
 import { SoftGreUrls }                                                       from '@acx-ui/rc/utils'
 import { Path }                                                              from '@acx-ui/react-router-dom'
@@ -124,12 +125,14 @@ describe('SoftGreSettingForm', () => {
   })
 
   it('renders the Fallback to Primary Gateway toggle', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<SoftGreSettingForm editMode />)
     expect(screen.getByText(/Fallback to Primary Gateway/i)).toBeInTheDocument()
     expect(screen.getByRole('switch')).toBeInTheDocument()
   })
 
   it('shows Primary Availability Check Interval input when fallback is enabled', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<SoftGreSettingForm editMode />)
     const toggle = screen.getByRole('switch')
     user.click(toggle)
@@ -138,6 +141,7 @@ describe('SoftGreSettingForm', () => {
   })
 
   it('hides Primary Availability Check Interval input when fallback is disabled', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<SoftGreSettingForm editMode />)
     expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
     const toggle = screen.getByRole('switch')
@@ -147,6 +151,7 @@ describe('SoftGreSettingForm', () => {
   })
 
   it('validates Primary Availability Check Interval is between 60 and 1440', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<SoftGreSettingForm editMode />)
     const toggle = screen.getByRole('switch')
     await user.click(toggle)
