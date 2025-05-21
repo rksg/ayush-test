@@ -1,5 +1,6 @@
 import { Key, useState } from 'react'
 
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -15,10 +16,12 @@ import {
   Alarm,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  defaultSort,
   EventSeverityEnum,
   EventTypeEnum,
   FILTER,
   SEARCH,
+  sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
@@ -129,7 +132,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     pageSize: 10000 }
 
   const { data: allAlarms } = useAlarmsListQuery({ payload: allAlarmsPayload },
-    { skip: !isNewAlarm }
+    { skip: !isNewAlarm && isClearAllAlarmsToggleEnabled }
   )
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
@@ -219,7 +222,8 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Generated on' }),
       key: 'startTime',
       dataIndex: 'startTime',
-      sorter: true,
+      sorter: { compare: sortProp('startTime', defaultSort) },
+      defaultSortOrder: 'descend',
       width: 140,
       render: function (_, row) {
         return (<UI.ListItem>
@@ -406,7 +410,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     }
   ]
 
-  return <Loader states={[
+  return <Space direction='vertical'><Loader states={[
     tableQuery,{ isLoading: false,
       isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning || isAllAlarmsCleaning) }
   ]}>
@@ -426,4 +430,5 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       />
     </UI.TableWrapper>
   </Loader>
+  </Space>
 }

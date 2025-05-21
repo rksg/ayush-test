@@ -71,10 +71,12 @@ export enum Features {
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
+  EDGE_CORE_ACCESS_SEPARATION_TOGGLE = 'edge-core-access-separation-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
   EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   EDGE_L2OGRE_TOGGLE = 'edge-l2ogre-toggle',
   EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
+  EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -132,6 +134,7 @@ export enum Features {
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
+  PORTAL_PROFILE_CONSOLIDATION_TOGGLE = 'acx-ui-consolidated-portal-profile-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
   NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
@@ -201,6 +204,7 @@ export enum Features {
   WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
+  WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   WIFI_EDA_LBS_TOGGLE = 'wifi-eda-lbs-toggle',
@@ -222,6 +226,7 @@ export enum Features {
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
   WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
+  WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE='wifi-directory-profile-reuse-component-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -293,6 +298,7 @@ export enum Features {
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   ACX_UI_DATE_RANGE_RESET_MSG ='acx-ui-date-range-event-limit-90-days-toggle',
+  ACX_UI_REPORTS_CORE_TIER_TOGGLE = 'acx-ui-reports-core-tier-toggle',
   ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT ='acx-ui-historical-clients-date-range-limit-90-days-toggle',
   ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING ='acx-ui-multiple-ap-dhcp-mode-warning-toggle',
   VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
@@ -313,6 +319,7 @@ export enum Features {
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  DPSK_PASSPHRASE_LENGTH_ENFORCEMENT = 'dpsk-passphrase-length-enforcement',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
@@ -332,14 +339,17 @@ export enum Features {
   DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
   SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle',
   WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE = 'wifi-wired-client-visibility-for-lanport-toggle',
-  PASSPHRASE_ENFORCEMENT = 'property-dpsk-passphrase-enforcement',
   WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE = 'wifi-ap-group-more-parameter-phase1-toggle',
   SUPPORT_STACK_NEIGHBOR_PORT_TOGGLE = 'acx-ui-support-stack-neighbor-port-toggle',
   WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE = 'wifi-open-network-integrate-identity-group-toggle',
   IDENTITY_COMMON_ATTRIBUTES_TOGGLE = 'acx-ui-identity-common-attributes-toggle',
   WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
   WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
-  WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle'
+  WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
+  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
+  NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
+  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -358,10 +368,12 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
+  EDGE_MULTI_NAT_IP = 'EDGE-MULTI-NAT-IP',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
-  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03'
+  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03',
+  SERVICE_CATALOG_UPDATED = 'SERVICE-CATALOG-UPDATED'
 }
 
 interface BetaList {
@@ -387,11 +399,12 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
   { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
-  { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support NAT-Traversal' }), status: false },
+  { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge NAT-T Support: Enables NAT Traversal (NAT-T) for VxLAN-GPE tunnels between RUCKUS APs and RUCKUS Edge, allowing APs located behind a NAT router to establish tunnel connections.' }), status: true },
   { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: true },
   { key: TierFeatures.EDGE_MDNS_PROXY, description: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge: RUCKUS Edge mDNS gateway enables seamless service discovery across VLANs by overcoming Bonjour/mDNS’s Layer 2 limitations. It records services and processes client requests, allowing devices to discover and access services across network segments.' }), status: true },
   { key: TierFeatures.EDGE_HQOS, description: defineMessage({ defaultMessage: 'Edge HQoS Bandwidth: RUCKUS Edge HQoS-Driven Egress Scheduling to enforce strict SLAs, intelligent bandwidth management, LLQ prioritization, and DSCP-based classification for seamless, end-to-end QoS.' }), status: true },
   { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
+  { key: TierFeatures.SERVICE_CATALOG_UPDATED, description: defineMessage({ defaultMessage: 'Service Catalog (Updated): Introduces a new layout and filtering logic for network services and policies, enabling clearer visibility and easier access to unified services for RUCKUS network deployments.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

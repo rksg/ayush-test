@@ -185,7 +185,7 @@ export function getVLANPoolPolicyViewModelListFn (isTemplate = false) : QueryFn<
       const aggregated: VLANPoolViewModelType[] = data.data.map( v => {
         let val = v as VLANPoolViewModelRbacType
         const venueApGroups: VenueAPGroup[] = []
-        const venueIds: string[] = []
+        const venueIds = new Set<string>()
         val.wifiNetworkIds?.forEach(networkId => {
           networkMap.get(networkId)?.forEach(group => {
             if (group.isAllApGroups) {
@@ -197,12 +197,12 @@ export function getVLANPoolPolicyViewModelListFn (isTemplate = false) : QueryFn<
                   default: true
                 }]
               })
-              venueIds.push(group.venueId)
+              venueIds.add(group.venueId)
             }
           })
         })
         val.wifiNetworkVenueApGroups?.forEach(group => {
-          venueIds.push(group.venueId)
+          venueIds.add(group.venueId)
           if (!group.isAllApGroups) {
             venueApGroups.push({
               id: group.venueId,
@@ -223,7 +223,7 @@ export function getVLANPoolPolicyViewModelListFn (isTemplate = false) : QueryFn<
           vlanMembers: val.vlanMembers,
           networkIds: val.wifiNetworkIds,
           venueApGroups: venueApGroups,
-          venueIds: venueIds
+          venueIds: [...venueIds]
         } as VLANPoolViewModelType
       })
 

@@ -1,18 +1,15 @@
 import { ReactNode } from 'react'
 
-import { RadioProps }                                from 'antd'
+import { ButtonProps, RadioProps, Tooltip }          from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+
+import { SmartEdgeSolid, SwitchSolid, WiFi } from '@acx-ui/icons'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
 
 import {
-  Button,
-  Radio,
-  Card,
-  Title,
-  Description,
-  Category,
-  CategoryWrapper,
+  Button, Radio, Card, Title, Description,
+  Category, CategoryWrapper, CategoryIcon,
   RadioCardType
 } from './styledComponents'
 
@@ -28,31 +25,39 @@ export type RadioCardProps = RadioProps & {
   description: string
   value: string
   categories?: RadioCardCategory[]
+  categoryDisplayMode?: 'text' | 'icon'
   buttonText?: MessageDescriptor,
+  buttonProps?: ButtonProps,
   onClick?: () => void
   isBetaFeature?: boolean
   helpIcon?: React.ReactNode
 }
 
-const categoryMapping = {
-  wifi: {
+export const categoryMapping = {
+  [RadioCardCategory.WIFI]: {
     text: defineMessage({ defaultMessage: 'Wi-Fi' }),
     color: '--acx-accents-blue-60'
   },
-  switch: {
+  [RadioCardCategory.SWITCH]: {
     text: defineMessage({ defaultMessage: 'Switch' }),
     color: '--acx-semantics-green-60'
   },
-  edge: {
+  [RadioCardCategory.EDGE]: {
     text: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
     color: '--acx-semantics-yellow-60'
   }
 }
 
+const categoryIconMapping = {
+  wifi: WiFi,
+  switch: SwitchSolid,
+  edge: SmartEdgeSolid
+}
+
 export function RadioCard ({
-  type = 'default', title, description, value, categories = [],
-  buttonText, onClick, isBetaFeature, helpIcon, ...rest
-}: RadioCardProps){
+  type = 'default', title, description, value, categories = [], categoryDisplayMode = 'text',
+  buttonText, buttonProps = {}, onClick, isBetaFeature, helpIcon, ...rest
+}: RadioCardProps) {
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
@@ -60,16 +65,41 @@ export function RadioCard ({
       { helpIcon }
     </Title>
     <Description>{description}</Description>
-    { categories.length > 0 &&
-      <CategoryWrapper>{categories.map(category=> {
-        const set = categoryMapping[category]
-        return set && <Category key={category} color={set.color}>{$t(set.text)}</Category>
-      })}
-      </CategoryWrapper>}
+    <CategoryViewer categories={categories} categoryDisplayMode={categoryDisplayMode} />
     {(type === 'button' && buttonText) &&
-      <Button onClick={onClick} size='small' type='primary'>{$t(buttonText)}</Button>}
+      <Button
+        {...buttonProps}
+        onClick={onClick}
+        size='small'
+        type='primary'
+      >{$t(buttonText)}</Button>}
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }
 
+function CategoryViewer (
+  props: { categories: RadioCardCategory[], categoryDisplayMode: 'text' | 'icon' }
+) {
+  const { categories, categoryDisplayMode } = props
+  const { $t } = useIntl()
+
+  if (categories.length === 0 ) return null
+
+  return <CategoryWrapper>{categories.map(category=> {
+    const set = categoryMapping[category]
+
+    if (categoryDisplayMode === 'text') {
+      return set && <Category key={category} color={set.color}>{$t(set.text)}</Category>
+    }
+
+    const Icon = categoryIconMapping[category]
+    return set && Icon && <CategoryIcon key={category} color={set.color}>
+      <Tooltip title={$t(set.text)}><Icon width={16} height={16} key={category} /></Tooltip>
+    </CategoryIcon>
+  })}
+  </CategoryWrapper>
+}
+
 RadioCard.Radio = Radio
+RadioCard.Category = Category
+RadioCard.CategoryWrapper = CategoryWrapper

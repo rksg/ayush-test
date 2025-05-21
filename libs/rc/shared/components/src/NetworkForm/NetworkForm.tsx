@@ -637,7 +637,10 @@ export function NetworkForm (props:{
 
   const handleWlanIdentityGroup = (data: NetworkSaveData, identityGroupFlag: boolean) => {
     if (
-      (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
+      ( data.type === NetworkTypeEnum.PSK ||
+        data.type === NetworkTypeEnum.AAA ||
+        data.type === NetworkTypeEnum.HOTSPOT20 ||
+        data.type === NetworkTypeEnum.CAPTIVEPORTAL )
       && identityGroupFlag
     ) {
       return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
@@ -649,6 +652,18 @@ export function NetworkForm (props:{
     if ((data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SAML)
       && SAMLFlag) {
       return omit(data, ['samlIdpProfilesId', 'samlIdpProfilesName'])
+    }
+    return data
+  }
+
+  const handleCaptivePortalHostApproval = (data: NetworkSaveData) => {
+    if(data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval){
+      const hostApprovalType = 'guestPortal.hostGuestConfig.hostApprovalType'
+      if(data.guestPortal.hostGuestConfig?.hostApprovalType === 'email'){
+        return omit(data, [hostApprovalType, 'guestPortal.hostGuestConfig.hostDomains'])
+      } else if(data.guestPortal.hostGuestConfig?.hostApprovalType === 'domain'){
+        return omit(data, [hostApprovalType, 'guestPortal.hostGuestConfig.hostEmails'])
+      }
     }
     return data
   }
@@ -931,13 +946,15 @@ export function NetworkForm (props:{
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
     const processBindingIdentityGroup = (data: NetworkSaveData) => handleWlanIdentityGroup(data, isWifiIdentityManagementEnable)
     const processSAMLProfile = (data: NetworkSaveData) => handleWlanSAMLProfile(data, isSSOSamlEnabled)
+    const processHostApprovalType = (data: NetworkSaveData) => handleCaptivePortalHostApproval(data)
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
       processCloneMode,
       processClientIsolationAllowlist,
       processBindingIdentityGroup,
-      processSAMLProfile
+      processSAMLProfile,
+      processHostApprovalType
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -1052,7 +1069,8 @@ export function NetworkForm (props:{
     const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const dataRemoveIdentity = handleWlanIdentityGroup(dataWlan, isWifiIdentityManagementEnable)
     const dataRemoveSAMLProfile = handleWlanSAMLProfile(dataRemoveIdentity, isSSOSamlEnabled)
-    const dataMore = handleGuestMoreSetting(dataRemoveSAMLProfile)
+    const dataRemoveHostApprovalType = handleCaptivePortalHostApproval(dataRemoveSAMLProfile)
+    const dataMore = handleGuestMoreSetting(dataRemoveHostApprovalType)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -1111,18 +1129,19 @@ export function NetworkForm (props:{
     }
     if (editMode && data.wlan?.wlanSecurity) {
       const toRemoveFromWlan: string[] = []
-      if (data.wlan.wlanSecurity === WlanSecurityEnum.OWE) {
-        toRemoveFromWlan.push('passphrase', 'saePassphrase')
-      } else if (data.wlan.wlanSecurity === WlanSecurityEnum.None) {
-        toRemoveFromWlan.push('managementFrameProtection', 'passphrase', 'saePassphrase')
-      } else {
+
+      if([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3, WlanSecurityEnum.None].includes(data.wlan.wlanSecurity)) {
         toRemoveFromWlan.push('managementFrameProtection')
-        if (data.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
-          toRemoveFromWlan.push('passphrase')
-        } else if (data.wlan.wlanSecurity !== WlanSecurityEnum.WPA23Mixed) {
-          toRemoveFromWlan.push('saePassphrase')
-        }
       }
+
+      if([WlanSecurityEnum.OWE, WlanSecurityEnum.None, WlanSecurityEnum.WPA3].includes(data.wlan.wlanSecurity)) {
+        toRemoveFromWlan.push('passphrase')
+      }
+      const isSupportSaePhrase = [WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed].includes(data.wlan.wlanSecurity)
+      if(!isSupportSaePhrase) {
+        toRemoveFromWlan.push('saePassphrase')
+      }
+
       saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
         toRemoveFromWlan
       )

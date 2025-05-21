@@ -27,9 +27,10 @@ import { TrafficPercent }                                                from '.
 
 
 export function TopApplicationsByTraffic ({
-  filters
+  filters, tabId
 }: {
   filters: AnalyticsFilter;
+  tabId: string;
 }) {
   const { $t } = useIntl()
   const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
@@ -42,6 +43,7 @@ export function TopApplicationsByTraffic ({
   const queryResults = useTopApplicationsByTrafficQuery(filters)
   const { data: privacySettings } = useGetPrivacySettingsQuery({ params: { tenantId } })
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   useEffect(() => {
     if(!isAppPrivacyFFEnabled || isRA){
@@ -142,7 +144,11 @@ export function TopApplicationsByTraffic ({
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
               {isAppVisibilityEnabled ?
-                <ContentSwitcher tabDetails={tabDetails} size='small' />
+                <ContentSwitcher
+                  tabId={tabId}
+                  tabDetails={tabDetails}
+                  size='small'
+                  tabPersistence={enabledUXOptFeature} />
                 : <NoData text={noPermissionText}/>}
             </div>
           )}

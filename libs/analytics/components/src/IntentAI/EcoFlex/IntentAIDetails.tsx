@@ -16,6 +16,7 @@ import { getStatusTooltip }     from '../services'
 
 import { BenefitsGrid }            from './BenefitsGrid'
 import { CustomizeKPIGrid }        from './CustomizeKPIGrid'
+import { DownloadPowerSavePlan }   from './DownloadPowerSavePlan'
 import * as SideNotes              from './IntentAIForm/SideNotes'
 import { useIntentAIEcoFlexQuery } from './services'
 
@@ -43,11 +44,12 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, state } = useIntentContext()
+    const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = useCommonFields(intent)
     const kpiQuery = useIntentAIEcoFlexQuery()
+    const noData = state === 'no-data'
 
     return <>
       <IntentDetailsHeader />
@@ -63,6 +65,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 }/>
               <DescriptionSection fields={fields}/>
               <br />
+              {!noData && isDataRetained && isHotTierData
+                ? <DownloadPowerSavePlan />
+                : null}
             </div>)}
           </FixedAutoSizer>
         </GridCol>

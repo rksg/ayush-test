@@ -8,8 +8,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType
@@ -24,24 +23,12 @@ export default function DirectoryServerDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetDirectoryServerByIdQuery({ params })
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Directory Server' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.DIRECTORY_SERVER)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.DIRECTORY_SERVER,

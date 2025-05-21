@@ -171,8 +171,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     varCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const varCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const varCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...varCustomerListReq,
           body: payload
@@ -192,8 +193,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const inviteCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const inviteCustomerListReq = createHttpRequest(mspUrlsInfo.getVarDelegations, params)
         return {
           ...inviteCustomerListReq,
           body: payload
@@ -913,6 +915,19 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse: (response: AvailableMspRecCustomers) => {
+        const _childAccounts = response.child_accounts?.map((account) => {
+          return (!account?.is_tenant_onboarded)
+            ? { ...account, account_name: '* ' + account.account_name }
+            : account
+        }).sort((a,b) => {
+          if(a.account_name < b.account_name) { return -1 }
+          if(a.account_name > b.account_name) { return 1 }
+          return 0
+        })
+
+        return { ...response, child_accounts: _childAccounts }
       }
     }),
     addRecCustomer: build.mutation<CommonResult, RequestPayload>({
