@@ -17,7 +17,7 @@ import {
   getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  getPolicyListRoutePath,
+  usePolicyListBreadcrumb,
   MacRegistrationPool,
   transferDataToExpirationFormFields,
   transferExpirationFormFieldsToData
@@ -51,6 +51,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.MAC_REGISTRATION_LIST)
 
   useEffect(() => {
     if (data && editMode) {
@@ -140,15 +141,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         title={editMode
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
-            link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<MacRegistrationPoolFormFields>
         editMode={editMode}

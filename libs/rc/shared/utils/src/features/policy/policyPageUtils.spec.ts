@@ -1,4 +1,5 @@
-import { renderHook } from '@acx-ui/test-utils'
+import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { renderHook }                     from '@acx-ui/test-utils'
 
 import { PolicyType, PolicyOperation } from '../../types'
 
@@ -11,13 +12,28 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedLocationFrom = { pathname: '/test' }
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useLocation: () => ({ state: { from: mockedLocationFrom } })
+}))
+
+const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
+jest.mock('../unifiedServices', () => ({
+  ...jest.requireActual('../unifiedServices'),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  generateUnifiedServicesBreadcrumb: (from: any) => mockedGenerateUnifiedServicesBreadcrumb(from)
+}))
+
 describe('policyPageUtils', () => {
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
   })
 
   afterEach(() => {
     mockedUseConfigTemplate.mockRestore()
+    mockedGenerateUnifiedServicesBreadcrumb.mockClear()
   })
 
   it('should generate Policy PageHeader Title correctly', () => {
@@ -52,5 +68,15 @@ describe('policyPageUtils', () => {
         link: getPolicyRoutePath({ type: targetPolicyType, oper: PolicyOperation.LIST })
       }
     ])
+  })
+
+  it('usePolicyListBreadcrumb when isNewServiceCatalogEnabled is true', () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
+
+    renderHook(() => usePolicyListBreadcrumb(PolicyType.AAA))
+
+    // eslint-disable-next-line max-len
+    expect(mockedGenerateUnifiedServicesBreadcrumb).toHaveBeenCalledWith(mockedLocationFrom)
   })
 })
