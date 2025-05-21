@@ -7,7 +7,7 @@ import {
   useGetCertificateAuthoritiesQuery,
   useGetCertificateTemplatesQuery
 } from '@acx-ui/rc/services'
-import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
+import { CertificateTemplate } from '@acx-ui/rc/utils'
 
 import { IdentitySelector }                                   from '../../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
@@ -24,11 +24,6 @@ export default function CertificateSettings (
   const certificateTemplateId = Form.useWatch('certificateTemplateId', form)
   // eslint-disable-next-line max-len
   const [identityGroupId, setIdentityGroupId] = useState<string | undefined>(templateData?.identityGroupId)
-
-  const [, setIdentityDrawerState] = useState({
-    visible: false,
-    data: {} as Persona | undefined
-  })
 
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
@@ -88,7 +83,6 @@ export default function CertificateSettings (
 
   useEffect(() =>{
     form.setFieldValue('identityId', undefined)
-    setIdentityDrawerState({ visible: false, data: undefined })
   }, [certificateTemplateId])
 
   return (
