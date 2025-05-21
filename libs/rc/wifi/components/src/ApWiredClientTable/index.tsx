@@ -285,17 +285,18 @@ export const ApWiredClientTable = (props: {
           rowKey='macAddress'
           filterPersistence={true}
         />
-        <LanPortProfileDetailsDrawer
+        {detailVisible && <LanPortProfileDetailsDrawer
           title={$t(
             { defaultMessage: '{apName} - LAN {portNumber}' },
             { apName, portNumber }
           )}
           visible={detailVisible}
           wiredPortVisible={true}
-          apSerial={apSerialNumber}
+          serialNumber={apSerialNumber}
           venueId={venueId}
+          portId={portNumber?.toString()}
           setVisible={()=>setDetailVisible(false)}
-        />
+        />}
       </Loader>
     </div>
   )

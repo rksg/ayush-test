@@ -1884,6 +1884,7 @@ export const {
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useGetApLanPortsWithActivatedProfilesQuery,
+  useLazyGetApLanPortsWithActivatedProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,

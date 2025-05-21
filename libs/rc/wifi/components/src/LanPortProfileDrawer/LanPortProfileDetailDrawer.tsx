@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
@@ -10,6 +10,7 @@ import { Drawer }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyViewModelListQuery,
+  useGetApLanPortsWithActivatedProfilesQuery,
   useGetEthernetPortProfileByIdQuery,
   useGetEthernetPortProfileTemplateQuery
 } from '@acx-ui/rc/services'
@@ -17,6 +18,7 @@ import {
   AAAViewModalType,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
+  LanPort,
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
@@ -33,17 +35,53 @@ interface LanPortProfileDetailsDrawerProps {
   setVisible: (visible: boolean) => void
   wiredPortVisible?: boolean
   ethernetPortProfileData?: EthernetPortProfileViewData
-  apSerial?: string
+  serialNumber?: string
   portId?: string
   venueId?: string
 }
 
 const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { title, visible, setVisible, wiredPortVisible=false, ethernetPortProfileData } = props
+  const { tenantId } = useParams()
+  const {
+    title,
+    visible,
+    setVisible,
+    wiredPortVisible=false,
+    portId,
+    venueId,
+    serialNumber,
+    ethernetPortProfileData
+  } = props
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isEthernetClientIsolationEnabled =
+    useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
+
+  const [targetLanPort, setTargetLanPort] = useState<LanPort>()
+
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
+  useGetApLanPortsWithActivatedProfilesQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi,
+    enableEthernetProfile: isEthernetPortProfileEnabled,
+    enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
+    enableIpsecOverNetwork: isIpSecOverNetworkEnabled,
+    enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled
+  })
+
+  useEffect(() => {
+    if (portId && !isApLanPortsLoading && apLanPortsData) {
+      const targetPort = apLanPortsData.lanPorts?.find(l => l.portId === portId)
+      if (targetPort) {
+        setTargetLanPort(targetPort)
+      }
+    }
+  }, [portId, apLanPortsData])
 
   const onClose = () => {
     setVisible(false)
@@ -51,7 +89,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
   // eslint-disable-next-line max-len
   const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
+    params: { tenantId },
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -71,8 +109,8 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     useQueryFn: useGetEthernetPortProfileByIdQuery,
     useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
     enableRbac: true,
-    extraParams: { id: ethernetPortProfileData?.id },
-    skip: !ethernetPortProfileData?.id
+    extraParams: { id: ethernetPortProfileData?.id || targetLanPort?.ethernetPortProfileId },
+    skip: !ethernetPortProfileData?.id && !targetLanPort?.ethernetPortProfileId
   })
 
   const ethernetDataForDisplay = useMemo(() => ({
@@ -122,7 +160,8 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           }
         />
       }
-      {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED) &&
+      {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED ||
+       ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN) &&
       <>
         <Divider/>
 
@@ -211,23 +250,23 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
-          children={transformDisplayOnOff(true)}
+          children={transformDisplayOnOff(!!targetLanPort?.softGreEnabled)}
         />
 
-        <Form.Item
+        {targetLanPort?.softGreEnabled && <Form.Item
           label={$t({ defaultMessage: 'IPsec' })}
-          children={transformDisplayOnOff(true)}
-        />
+          children={transformDisplayOnOff(!!targetLanPort?.ipsecEnabled)}
+        />}
 
         <Form.Item
           label={$t({ defaultMessage: 'Client Isolation' })}
-          children={transformDisplayOnOff(true)}
+          children={transformDisplayOnOff(!!targetLanPort?.clientIsolationEnabled)}
         />
 
-        <Form.Item
+        {targetLanPort?.clientIsolationEnabled && <Form.Item
           label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
           children={transformDisplayOnOff(true)}
-        />
+        />}
       </>
       }
     </Form>
