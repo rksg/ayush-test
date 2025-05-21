@@ -23,9 +23,8 @@ import { formatter }                                    from '@acx-ui/formatter'
 import { getUserProfile, isProfessionalTier }           from '@acx-ui/user'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { useGetEnergySavingFromTenantSettings } from '../../Health/Kpi'
-import { ConfigChangeContext }                  from '../context'
-import { useKPIChangesQuery }                   from '../services'
+import { ConfigChangeContext } from '../context'
+import { useKPIChangesQuery }  from '../services'
 
 import { Statistic, TransparentTrend, TrendPill, DropDownWrapper } from './styledComponents'
 
@@ -43,10 +42,9 @@ type KPIProps = ConfigChangeKPIConfig & {
     before: Record<string, number>
     after: Record<string, number>
   }
-  isShowNoData?: boolean
 }
 
-const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values, isShowNoData }: KPIProps) => {
+const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
 
   const { trend, value } =
@@ -59,21 +57,15 @@ const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values, isShowNoData
       value={$t(
         { defaultMessage: 'Before: {before} | After: {after}' },
         {
-          before: isShowNoData
-            ? noDataDisplay
-            : _.isNumber(values?.before[apiMetric])
-              ? format(values?.before[apiMetric]) : noDataDisplay,
-          after: isShowNoData
-            ? noDataDisplay
-            : _.isNumber(values?.after[apiMetric])
-              ? format(values?.after[apiMetric]) : noDataDisplay
+          before: _.isNumber(values?.before[apiMetric])
+            ? format(values?.before[apiMetric]) : noDataDisplay,
+          after: _.isNumber(values?.after[apiMetric])
+            ? format(values?.after[apiMetric]) : noDataDisplay
         }
       )}
-      suffix={isShowNoData
-        ? <TransparentTrend children={noDataDisplay}/>
-        : trend !== 'transparent'
-          ? <TrendPill value={value as string} trend={trend as TrendTypeEnum} />
-          : <TransparentTrend children={value}/>}
+      suffix={trend !== 'transparent'
+        ? <TrendPill value={value as string} trend={trend as TrendTypeEnum} />
+        : <TransparentTrend children={value}/>}
     />
   </div>
 }
@@ -93,12 +85,10 @@ const isProfessionalTierUser = () => {
 export const KPIs = () => {
   const { $t } = useIntl()
   const [dropDownKey, setDropDownKey] = useState('overview')
-  const isEnergySavingEnabled = useGetEnergySavingFromTenantSettings()
   const isEnergySavingToggled = [
     useIsSplitOn(Features.RUCKUS_AI_ENERGY_SAVING_TOGGLE),
     useIsSplitOn(Features.ACX_UI_ENERGY_SAVING_TOGGLE)
   ].some(Boolean)
-  const isShowNoData = (kpi: string) => kpi === 'energySavingAPs' && !isEnergySavingEnabled
 
   const kpis = kpisForTab(
     get('IS_MLISA_SA'),
@@ -151,7 +141,6 @@ export const KPIs = () => {
           key={key}
           {...kpis[key]}
           values={queryResults.data!}
-          isShowNoData={isShowNoData(key)}
         />)
         : undefined}
     </Loader>

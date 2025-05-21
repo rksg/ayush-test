@@ -31,8 +31,7 @@ function KpiTimeseries ({
   threshold,
   chartRef,
   setTimeWindow,
-  timeWindow,
-  isShowNoData
+  timeWindow
 }: {
   filters: AnalyticsFilter;
   kpi: keyof typeof kpiConfig;
@@ -40,15 +39,9 @@ function KpiTimeseries ({
   chartRef: RefCallback<ReactECharts>;
   setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void };
   timeWindow: TimeStampRange | undefined // not set if there is no zoom
-  isShowNoData?: boolean
 }) {
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-
-  if (isShowNoData) {
-    return <NoData />
-  }
-
   const queryResults = healthApi.useKpiTimeseriesQuery(
     { ...filters, kpi, threshold: threshold as unknown as string, enableSwitchFirmwareFilter },
     {

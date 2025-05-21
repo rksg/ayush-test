@@ -31,21 +31,16 @@ export const formatYDataPoint = (data: number | unknown) =>
 function BarChart ({
   filters,
   kpi,
-  threshold,
-  isShowNoData
+  threshold
 }: {
   filters: AnalyticsFilter;
   kpi: string;
   threshold: number;
-  isShowNoData?: boolean;
 }) {
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').tz('UTC').format()
-  if (isShowNoData) {
-    return <NoData />
-  }
   const queryResults = healthApi.useKpiTimeseriesQuery(
     {
       ...filters,

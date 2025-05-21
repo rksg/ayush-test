@@ -49,8 +49,6 @@ export type Settings = {
   'lsp-name': string
   'property-name': string
   'sla-prospect-count': string
-  // TODO: how to use string[]?
-  'enabled-intent-features': string
 }
 
 export type ManagedUser = {

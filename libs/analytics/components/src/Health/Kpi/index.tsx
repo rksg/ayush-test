@@ -7,9 +7,7 @@ import { useIntl }  from 'react-intl'
 
 import {
   KpiThresholdType,
-  healthApi,
-  useGetTenantSettingsQuery
-} from '@acx-ui/analytics/services'
+  healthApi } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
   kpisForTab,
@@ -28,7 +26,6 @@ import {
 } from '@acx-ui/user'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { AiFeatures }        from '../../IntentAI/config'
 import { HealthPageContext } from '../HealthPageContext'
 
 import BarChart      from './BarChart'
@@ -61,18 +58,6 @@ export const defaultThreshold: KpiThresholdType = {
 
 type KpiThresholdsQueryProps = {
   filters: AnalyticsFilter
-}
-
-export function useGetEnergySavingFromTenantSettings () {
-  const tenantSettingsQuery = useGetTenantSettingsQuery(undefined, {
-    skip: !hasPermission({ permission: 'READ_USERS' })
-  })
-  const tenantSettings = tenantSettingsQuery.data
-  if (!tenantSettings || !tenantSettings['enabled-intent-features']) {
-    return false
-  }
-  const enabledIntentFeatures = tenantSettings['enabled-intent-features'] as unknown as string[]
-  return enabledIntentFeatures?.includes(AiFeatures.EcoFlex) ?? false
 }
 
 export const useKpiThresholdsQuery = (
@@ -126,7 +111,6 @@ export function KpiSection (props: {
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
   const { $t } = useIntl()
-  const isEnergySavingEnabled = useGetEnergySavingFromTenantSettings()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -147,7 +131,6 @@ export function KpiSection (props: {
   })
 
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
-  const isShowNoData = (kpi: string) => kpi === 'energySavingAPs' && !isEnergySavingEnabled
 
   return (
     <>
@@ -161,7 +144,6 @@ export function KpiSection (props: {
                   kpi={kpi}
                   timeWindow={timeWindow as [string, string]}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                  isShowNoData={isShowNoData(kpi)}
                 />
               </GridCol>
               <GridCol col={{ span: 19 }}>
@@ -172,7 +154,6 @@ export function KpiSection (props: {
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
                   {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
-                  isShowNoData={isShowNoData(kpi)}
                 />
               </GridCol>
             </GridRow>
@@ -199,7 +180,6 @@ export function KpiSection (props: {
                 filters={filters}
                 kpi={kpi}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                isShowNoData={isShowNoData(kpi)}
               />
             )}
           </GridCol>
