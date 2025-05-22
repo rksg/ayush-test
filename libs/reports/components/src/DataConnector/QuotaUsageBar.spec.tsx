@@ -44,7 +44,7 @@ describe('QuotaUsageBar', () => {
     await userEvent.click(screen.getByTestId('sync-button'))
     expect(mockedOnClick).toBeCalled()
   })
-  it('should render correct 20% ', async () => {
+  it('should render correct 20%', async () => {
     const mockedOnClick = jest.fn()
     mockServer.use(
       rest.get(
