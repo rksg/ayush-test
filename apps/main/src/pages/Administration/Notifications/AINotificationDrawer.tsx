@@ -20,6 +20,11 @@ const titleChannelSelection = defineMessage({
   defaultMessage: 'Set preferences for Incidents, Notification Types and Recommendations. These notifications will be sent only to the recipients whose emails are activated.'
 })
 
+const titleChannelSelectionForCoreTier = defineMessage({
+  // eslint-disable-next-line max-len
+  defaultMessage: 'Set preferences for Notification Types and Recommendations. These notifications will be sent only to the recipients whose emails are activated.'
+})
+
 const afterMsg = defineMessage({
   defaultMessage: 'This will apply to all the recipients defined for this account.'
 })
@@ -69,7 +74,9 @@ export const AINotificationDrawer = ({
     </UI.FooterWrapper>}
   >
     <UI.IncidentNotificationWrapper>
-      <div>{notificationChannelEnabled ? $t(titleChannelSelection) : $t(title)}</div>
+      <div>{notificationChannelEnabled ?
+        (isCore ? $t(titleChannelSelectionForCoreTier) : $t(titleChannelSelection))
+        : $t(title)}</div>
       <Form layout='vertical'>
         {notificationChannelEnabled && <R1NotificationSettings
           tenantId={user.profile.tenantId}
