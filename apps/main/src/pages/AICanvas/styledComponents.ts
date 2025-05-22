@@ -543,6 +543,11 @@ export const Canvas = styled.div`
     border-bottom-right-radius: 24px;
     height: calc(100vh - 130px);
   }
+  .ant-card {
+    &:hover {
+      border: 1px solid var(--acx-neutrals-40) !important;
+    }
+  }
 `
 
 export const Visibility = styled.div`
@@ -801,9 +806,6 @@ export const Widget = styled(Card)`
     height: 6px;
     border-radius: 50%;
     background-color: var(--acx-semantics-red-50);
-  }
-  &:hover {
-    border: 1px solid var(--acx-neutrals-40);
   }
 `
 
