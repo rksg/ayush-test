@@ -53,7 +53,6 @@ import {
   SEARCH,
   TableQuery,
   TableResult,
-  transformDisplayNumber,
   transformDisplayText,
   usePollingTableQuery,
   PowerSavingStatusEnum,
