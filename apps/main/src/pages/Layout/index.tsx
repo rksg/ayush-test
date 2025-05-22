@@ -69,7 +69,7 @@ function Layout () {
   useEffect(() => {
     const modal = showBrowserLangDialog()
     return () => modal && modal.destroy()
-  }, [])
+  }, [showBrowserLangDialog])
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType

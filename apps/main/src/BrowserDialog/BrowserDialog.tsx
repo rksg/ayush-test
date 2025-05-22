@@ -1,7 +1,5 @@
 import { useCallback } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { showActionModal }                from '@acx-ui/components'
 import { browserSupportedLocales as bsl } from '@acx-ui/types'
 import {
@@ -12,7 +10,8 @@ import {
 import {
   LangKey,
   DEFAULT_SYS_LANG,
-  useLocaleContext
+  useLocaleContext,
+  getIntl
 } from '@acx-ui/utils'
 
 export interface PartialUserData {
@@ -33,13 +32,13 @@ export const detectBrowserLang = () => {
 }
 
 export const useBrowserDialog = () => {
-  const { $t } = useIntl()
   const locale = useLocaleContext()
   const [updateUserProfile] = useUpdateUserProfileMutation()
 
   const { data: userProfile } = useUserProfileContext()
 
   const showBrowserLangDialog = useCallback(() => {
+    const { $t } = getIntl()
     const browserLang = detectBrowserLang()
     const browserCacheLang = localStorage.getItem('browserLang')
     const userLang = locale?.lang || DEFAULT_SYS_LANG
@@ -89,7 +88,7 @@ export const useBrowserDialog = () => {
             + ' Would you like to change the system\'s language to {bLangDisplay}?' },
       { bLangDisplay })
     })
-  }, [$t, locale, updateUserProfile, userProfile])
+  }, [locale, updateUserProfile, userProfile])
 
   return { showBrowserLangDialog }
 }
