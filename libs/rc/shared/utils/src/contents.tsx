@@ -167,6 +167,9 @@ export const WifiNetworkMessages = {
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
+  }),
+  ENABLE_PROXY_IN_CAPTIVE_PORTAL_TOOLTIP: defineMessage({
+    defaultMessage: 'A proxy accounting server is used when APs send accounting messages to the RUCKUS One and the RUCKUS One forwards these messages to an external accounting server.'
   })
 }
 
