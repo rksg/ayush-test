@@ -55,11 +55,11 @@ export function WorkflowForm () {
           />
           {/*SANTODO: Add Accounting Service*/}
         </GridCol>
-        {/*SANTODO: Change the image once George provide it to you.*/}
+        {/*SANTODO: Images need update, no psk and owe.*/}
         <GridCol col={{ span: 14 }}>
           <NetworkDiagram
             type={NetworkTypeEnum.CAPTIVEPORTAL}
-            networkPortalType={GuestNetworkTypeEnum.SAML}
+            networkPortalType={GuestNetworkTypeEnum.Workflow}
             wlanSecurity={data?.wlan?.wlanSecurity}
           />
         </GridCol>

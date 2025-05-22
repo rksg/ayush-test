@@ -52,6 +52,7 @@ import WISPrWithAlwaysAcceptDiagram    from '../assets/images/network-wizard-dia
 import WISPrWithOweDiagram             from '../assets/images/network-wizard-diagrams/wispr-owe.png'
 import WISPrWithPskDiagram             from '../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                    from '../assets/images/network-wizard-diagrams/wispr.png'
+import WorkflowDiagram                 from '../assets/images/network-wizard-diagrams/workflow.png'
 import NetworkFormContext              from '../NetworkFormContext'
 import { Diagram }                     from '../styledComponents'
 
@@ -183,7 +184,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
       : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram),
     [GuestNetworkTypeEnum.SAML]: wisprWithOwe ? SAMLWithOweDiagram
-      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram)
+      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram),
+    [GuestNetworkTypeEnum.Workflow]: WorkflowDiagram
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
