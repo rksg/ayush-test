@@ -8,7 +8,7 @@ import {
   getOsTypeIcon,
   TableQuery,
   usePollingTableQuery,
-  WiredClientInfo
+  ApWiredClientInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -18,11 +18,11 @@ import * as UI from './styledComponents'
 
 export const defaultApWiredClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','ipAddress','hostname','apMac'],
+  searchTargetFields: ['macAddress','ipAddress','hostname','apMacAddress'],
   filters: {},
   fields: [
     'hostname', 'macAddress', 'ipAddress',
-    'deviceTypeStr', 'osType', 'status',
+    'deviceType', 'osType', 'authStatus',
     'venueName', 'venueId',
     'apId', 'apMacAddress', 'apName',
     'portNumber', 'vlanId'
@@ -67,7 +67,7 @@ function GetApFilterOptions (venueId: string|undefined) {
 
 export const ApWiredClientTable = (props: {
     settingsId?: string
-    tableQuery?: TableQuery<WiredClientInfo, RequestPayload<unknown>, unknown>
+    tableQuery?: TableQuery<ApWiredClientInfo, RequestPayload<unknown>, unknown>
     searchable?: boolean
     filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) => {
@@ -97,7 +97,7 @@ export const ApWiredClientTable = (props: {
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const { $t } = intl
-    const columns: TableProps<WiredClientInfo>['columns'] = [{
+    const columns: TableProps<ApWiredClientInfo>['columns'] = [{
       key: 'hostname',
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
@@ -105,9 +105,12 @@ export const ApWiredClientTable = (props: {
       sorter: true,
       fixed: 'left',
       searchable: searchable,
-      render: (_, { hostname }, __, highlightFn) => {
+      render: (_, { hostname, macAddress }, __, highlightFn) => {
         const host = searchable ? highlightFn(hostname) : hostname
-        return host ?? noDataDisplay
+
+        return host? <TenantLink
+          to={`users/wired/wifi/clients/${macAddress}/details/overview`}
+        >{host}</TenantLink> : noDataDisplay
       }
     }, {
       key: 'osType',
@@ -155,7 +158,7 @@ export const ApWiredClientTable = (props: {
       filterMultiple: false,
       filterSearchable: true,
       filterable: (params.apId || params.venueId) ? false : GetVenueFilterOptions(),
-      render: (_: React.ReactNode, row: WiredClientInfo) => {
+      render: (_: React.ReactNode, row: ApWiredClientInfo) => {
         const { venueName, venueId } = row
         const displayVenueName = venueName ?? noDataDisplay
         const link = `/venues/${venueId}/venue-details/overview`
@@ -174,7 +177,7 @@ export const ApWiredClientTable = (props: {
       filterMultiple: false,
       filterSearchable: true,
       filterable: params.serialNumber ? false : GetApFilterOptions(params.venueId),
-      render: (_: React.ReactNode, row: WiredClientInfo) => {
+      render: (_: React.ReactNode, row: ApWiredClientInfo) => {
         const { apId, apName } = row
         const displayApName = apName ?? noDataDisplay
         const link = `/devices/wifi/${apId}/details/overview`
@@ -189,7 +192,7 @@ export const ApWiredClientTable = (props: {
       sorter: true,
       searchable: searchable,
       render: (
-        _: React.ReactNode, row: WiredClientInfo, __: number, highlightFn: TableHighlightFnArgs
+        _: React.ReactNode, row: ApWiredClientInfo, __: number, highlightFn: TableHighlightFnArgs
       ) => {
         const { apMacAddress } = row
         const displayApName = apMacAddress?
@@ -213,32 +216,32 @@ export const ApWiredClientTable = (props: {
       sorter: true,
       align: 'center'
     }, {
-      key: 'status',
+      key: 'authStatus',
       title: intl.$t({ defaultMessage: 'Auth Status' }),
-      dataIndex: 'status',
+      dataIndex: 'authStatus',
       sorter: true,
-      render: (_, { status }) => {
+      render: (_, { authStatus }) => {
         let statusText = noDataDisplay as string
-        if (status === 1) {
+        if (authStatus === 1) {
           statusText = intl.$t({ defaultMessage: 'Authorized' })
-        } else if (status === 0) {
+        } else if (authStatus === 0) {
           statusText = intl.$t({ defaultMessage: 'Unauthorized' })
-        } else if (status === -1) {
+        } else if (authStatus === -1) {
           statusText = intl.$t({ defaultMessage: 'N/A' })
         }
         return statusText
       }
     }, {
-      key: 'deviceTypeStr',
+      key: 'deviceType',
       width: 60,
       title: $t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'deviceTypeStr',
+      dataIndex: 'deviceType',
       align: 'center',
       sorter: true,
-      render: (_, { deviceTypeStr }) => {
+      render: (_, { deviceType }) => {
         return <UI.IconContainer>
-          <Tooltip title={deviceTypeStr}>
-            { getDeviceTypeIcon(deviceTypeStr) }
+          <Tooltip title={deviceType}>
+            { getDeviceTypeIcon(deviceType) }
           </Tooltip>
         </UI.IconContainer>
       }

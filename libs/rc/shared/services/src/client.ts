@@ -28,7 +28,7 @@ import {
   SwitchRbacUrlsInfo,
   SwitchClient,
   SwitchInformation,
-  WiredClientInfo
+  ApWiredClientInfo
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -558,7 +558,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         return { data: 'done' }
       }
     }),
-    getApWiredClients: build.query<TableResult<WiredClientInfo>, RequestPayload>({
+    getApWiredClients: build.query<TableResult<ApWiredClientInfo>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const { params, payload } = arg
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -567,7 +567,7 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
         const wiredClientListQuery = await fetchWithBQ(wiredClientListInfo)
-        const wiredClientList = wiredClientListQuery.data as TableResult<WiredClientInfo>
+        const wiredClientList = wiredClientListQuery.data as TableResult<ApWiredClientInfo>
         const aggregatedList = aggregatedApWiredClientListData(wiredClientList)
 
         return wiredClientListQuery.data
@@ -662,8 +662,9 @@ export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
   return { ...guestsListResult, data: guestsList }
 }
 
-export const aggregatedApWiredClientListData = (wiredClientList: TableResult<WiredClientInfo>) => {
-  const data: WiredClientInfo[] = []
+// eslint-disable-next-line max-len
+export const aggregatedApWiredClientListData = (wiredClientList: TableResult<ApWiredClientInfo>) => {
+  const data: ApWiredClientInfo[] = []
 
   wiredClientList?.data.forEach(client => {
     const tmp = {
