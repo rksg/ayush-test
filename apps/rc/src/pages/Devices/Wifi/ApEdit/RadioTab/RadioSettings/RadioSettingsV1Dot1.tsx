@@ -1379,7 +1379,7 @@ export function RadioSettingsV1Dot1 (props: ApEditItemProps) {
                 <ApSingleRadioSettings
                   isEnabled={isEnable6g}
                   radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
-                  useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
+                  useVenueSettingsFieldName={['apRadioParams6G', 'useVenueOrApGroupSettings']}
                   enabledFieldName={['enable6G']}
                   onEnableChanged={handleEnableChanged}
                   radioType={ApRadioTypeEnum.Radio6G}
