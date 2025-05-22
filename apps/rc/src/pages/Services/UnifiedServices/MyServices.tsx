@@ -1,9 +1,10 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                      from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader }                               from '@acx-ui/components'
 import {
-  AddProfileButton, canCreateAnyUnifiedService, getServiceCatalogRoutePath
+  AddProfileButton, canCreateAnyUnifiedService,
+  collectAvailableProductsAndCategories, getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
@@ -15,11 +16,14 @@ import { useUnifiedServiceSearchFilter }       from './useUnifiedServiceSearchFi
 
 export function MyServices () {
   const { $t } = useIntl()
+  const defaultSortOrder = ServiceSortOrder.ASC
+
   const {
     unifiedServiceListWithTotalCount: rawUnifiedServiceList,
     isFetching
   } = useUnifiedServiceListWithTotalCount()
-  const defaultSortOrder = ServiceSortOrder.ASC
+
+  const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
 
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
@@ -41,6 +45,7 @@ export function MyServices () {
         setFilters={setFilters}
         defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
+        availableFilters={{ products, categories }}
       />
       {isFetching
         ? <SkeletonLoaderCard />

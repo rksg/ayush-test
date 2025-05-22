@@ -1,5 +1,6 @@
 import { MessageDescriptor } from 'react-intl'
 
+import { RadioCardCategory }                                      from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { getIntl }                                                from '@acx-ui/utils'
@@ -17,7 +18,7 @@ import {
   serviceTypeLabelMapping
 } from '../service'
 
-import { UnifiedService, UnifiedServiceSourceType } from './constants'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
 
 type UnifiedServiceTypeSet = Pick<UnifiedService, 'type' | 'sourceType'>
 
@@ -156,4 +157,21 @@ export function useIsNewServicesCatalogEnabled (): boolean {
   const isFFEanbled = useIsSplitOn(Features.NEW_SERVICE_CATALOG)
 
   return isTierAllowed && isFFEanbled
+}
+
+export function collectAvailableProductsAndCategories (
+  services: UnifiedService[]
+): { products: RadioCardCategory[]; categories: UnifiedServiceCategory[] } {
+  const productSet = new Set<RadioCardCategory>()
+  const categorySet = new Set<UnifiedServiceCategory>()
+
+  for (const service of services) {
+    service.products.forEach(product => productSet.add(product))
+    categorySet.add(service.category)
+  }
+
+  return {
+    products: Array.from(productSet),
+    categories: Array.from(categorySet)
+  }
 }
