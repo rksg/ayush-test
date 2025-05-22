@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Button }                                                            from '@acx-ui/components'
-import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, screen, waitFor }                                           from '@acx-ui/test-utils'
+import { Button }                                                                                     from '@acx-ui/components'
+import { ClusterHighAvailabilityModeEnum, EdgePort, EdgePortConfigFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                   from '@acx-ui/store'
+import { render, screen, waitFor }                                                                    from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
@@ -12,6 +13,21 @@ const { mockEdgePortConfig } = EdgePortConfigFixtures
 
 jest.mock('../../../useEdgeActions', () => ({
   useIsEdgeFeatureReady: jest.fn()
+}))
+jest.mock('../../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: (props: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip'>
+      <button onClick={props.onClick}>See compatibility</button>
+    </div>
+}))
+
+jest.mock('../../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../../Compatibility/Edge/EdgeCompatibilityDrawer'),
+  EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
+    <div data-testid='EdgeCompatibilityDrawer'>
+      <span>Feature:{props.featureName}</span>
+      <button onClick={props.onClose}>Close</button>
+    </div>
 }))
 
 const defaultProps = {
@@ -29,10 +45,12 @@ const currentPort = mockEdgePortConfig.ports[0] as EdgePort
 const MockComponent = (props: Partial<NatFormItemsProps> & { initialValues?: Partial<EdgePort> }) => {
   const { initialValues, ...otherProps } = props
 
-  return <Form initialValues={{ ...currentPort, ...initialValues }} onFinish={mockOnFinish}>
-    <EdgeNatFormItems {...defaultProps} {...otherProps}/>
-    <Button htmlType='submit'>Submit</Button>
-  </Form>
+  return <Provider>
+    <Form initialValues={{ ...currentPort, ...initialValues }} onFinish={mockOnFinish}>
+      <EdgeNatFormItems {...defaultProps} {...otherProps}/>
+      <Button htmlType='submit'>Submit</Button>
+    </Form>
+  </Provider>
 }
 
 describe('EdgeNatFormItems', () => {
@@ -69,34 +87,26 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('should correctly submit when both of start and end IP are well formatted', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
-      await natPoolTestPreparation()
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const { startInput, endInput } = await natPoolTestPreparation()
 
-      await userEvent.type(startIp, '1.1.2.2')
-      await userEvent.type(endIp, '1.1.2.20')
+      await userEvent.type(startInput, '1.1.2.2')
+      await userEvent.type(endInput, '1.1.2.20')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
 
       await waitFor(() => expect(mockOnFinish).toBeCalledWith({
         natEnabled: true,
         natPools: [{ startIpAddress: '1.1.2.2', endIpAddress: '1.1.2.20' }]
       }))
-      expect(screen.queryByRole('alert')).toBeNull()
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
     })
 
     it('does not render NAT IP Addresses Range if HA mode is not ACTIVE_STANDBY', async () => {
-      render(
-        <Form>
-          <EdgeNatFormItems
-            {...defaultProps}
-            clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE }}
-          />
-        </Form>
-      )
+      render(<MockComponent
+        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE }}
+      />)
+
       expect(screen.getByText('Use NAT Service')).toBeInTheDocument()
       // Simulate enabling NAT
       const natSwitch = screen.getByRole('switch')
@@ -108,37 +118,27 @@ describe('EdgeNatFormItems', () => {
     })
 
     it('correctly block when pool range is invalid', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
-      await natPoolTestPreparation()
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const { startInput, endInput } = await natPoolTestPreparation()
 
-      await userEvent.type(startIp, '1.1.1.100')
-      await userEvent.type(endIp, '1.1.1.1')
+      await userEvent.type(startInput, '1.1.1.100')
+      await userEvent.type(endInput, '1.1.1.1')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-      const alertMsg = await screen.findByRole('alert')
-      expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('Invalid NAT pool start IP and end IP')
+      await screen.findByRole('alert')
+      await screen.findByText('Start IP cannot larger or equal to end IP')
     })
 
     it('correctly block when pool range size > over maximum', async () => {
-      render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-      />)
+      render(<MockComponent />)
 
-      await natPoolTestPreparation()
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const { startInput, endInput } = await natPoolTestPreparation()
 
-      await userEvent.type(startIp, '1.1.1.5')
-      await userEvent.type(endIp, '1.1.1.200')
+      await userEvent.type(startInput, '1.1.1.5')
+      await userEvent.type(endInput, '1.1.1.200')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-      const alertMsg = await screen.findByRole('alert')
-      expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('NAT IP address range exceeds maximum size 128')
+      await screen.findByRole('alert')
+      await screen.findByText('NAT IP address range exceeds maximum size 128')
     })
 
     it('correctly block when pool ranges are overlapped', async () => {
@@ -150,25 +150,20 @@ describe('EdgeNatFormItems', () => {
           natPools: [
             { startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }
           ] }]}
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
       />)
 
-      await natPoolTestPreparation()
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const { startInput, endInput } = await natPoolTestPreparation()
 
-      await userEvent.type(startIp, '1.1.1.10')
-      await userEvent.type(endIp, '1.1.1.20')
+      await userEvent.type(startInput, '1.1.1.10')
+      await userEvent.type(endInput, '1.1.1.20')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-      const alertMsg = await screen.findByRole('alert')
-      expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('The selected NAT pool overlaps with other NAT pools')
+      await screen.findByRole('alert')
+      await screen.findByText('The selected NAT pool overlaps with other NAT pools')
     })
 
 
     it('should block when one of start and end IP is empty', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -181,19 +176,21 @@ describe('EdgeNatFormItems', () => {
       await waitFor(() => expect(natSwitch).toBeChecked())
 
       await screen.findByText('NAT IP Addresses Range')
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
+      const inputs = screen.getAllByRole('textbox')
+
+      const startIp = inputs[0]
       expect(startIp).toHaveValue('1.1.1.5')
 
       await userEvent.clear(startIp)
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
       const alertMsg = await screen.findByRole('alert')
       expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('Invalid NAT pool start IP and end IP')
+      expect(alertMsg.textContent).toEqual('Invalid NAT pool start or end IP')
+      expect(mockOnFinish).not.toBeCalled()
     })
 
     it('should be ok when both of start and end IP is empty', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -206,9 +203,10 @@ describe('EdgeNatFormItems', () => {
       await waitFor(() => expect(natSwitch).toBeChecked())
 
       await screen.findByText('NAT IP Addresses Range')
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
+      const inputs = screen.getAllByRole('textbox')
+      const startIp = inputs[0]
       expect(startIp).toHaveValue('1.1.1.5')
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const endIp = inputs[1]
       expect(endIp).toHaveValue('1.1.1.10')
 
       await userEvent.clear(startIp)
@@ -219,12 +217,11 @@ describe('EdgeNatFormItems', () => {
         natEnabled: true,
         natPools: [{ startIpAddress: '', endIpAddress: '' }]
       }))
-      expect(screen.queryByRole('alert')).toBeNull()
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
     })
 
     it('should be ok when both of start and end IP is empty - no origin pool data', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true
         }}
@@ -239,14 +236,13 @@ describe('EdgeNatFormItems', () => {
 
       await waitFor(() => expect(mockOnFinish).toBeCalledWith({
         natEnabled: true,
-        natPools: [{ startIpAddress: undefined, endIpAddress: undefined }]
+        natPools: [{ startIpAddress: '', endIpAddress: '' }]
       }))
-      expect(screen.queryByRole('alert')).toBeNull()
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
     })
 
     it('should block when IP format is invalid', async () => {
       render(<MockComponent
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         initialValues={{
           natEnabled: true,
           natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }]
@@ -259,60 +255,62 @@ describe('EdgeNatFormItems', () => {
       await waitFor(() => expect(natSwitch).toBeChecked())
 
       await screen.findByText('NAT IP Addresses Range')
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
+      const inputs = screen.getAllByRole('textbox')
+      const startIp = inputs[0]
       expect(startIp).toHaveValue('1.1.1.5')
 
       // change into 1.1.1.5555
       await userEvent.type(startIp, '555')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
 
-      const alertMsg = await screen.findByRole('alert')
-      expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('Please enter a valid IP address')
+      await screen.findByRole('alert')
+      await screen.findByText('Please enter a valid IP address')
     })
 
     it('correctly handles undefined lagData', async () => {
       render(<Form>
         <EdgeNatFormItems
-          parentNamePath={[]}
-          getFieldFullPath={(name: string) => [name]}
-          formFieldsProps={{}}
-          portsData={[]}
+          {...defaultProps}
           lagData={undefined}
-          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
         />
         <Button htmlType='submit'>Submit</Button>
       </Form>)
 
-      await natPoolTestPreparation()
-      const startIp = screen.getByRole('textbox', { name: 'Start' })
-      const endIp = screen.getByRole('textbox', { name: 'End' })
+      const { startInput, endInput } = await natPoolTestPreparation()
 
-      await userEvent.type(startIp, '1.1.1.5')
-      await userEvent.type(endIp, '1.1.1.200')
+      await userEvent.type(startInput, '1.1.1.5')
+      await userEvent.type(endInput, '1.1.1.200')
       await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-      const alertMsg = await screen.findByRole('alert')
-      expect(alertMsg).toBeInTheDocument()
-      expect(alertMsg.textContent).toEqual('NAT IP address range exceeds maximum size 128')
+      await screen.findByRole('alert')
+      await screen.findByText('NAT IP address range exceeds maximum size 128')
+    })
+
+    it('should show "Multi NAT IP" compatibility component', async () => {
+      render(<MockComponent />)
+
+      await natPoolTestPreparation()
+      const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(compatibilityToolTips.length).toBe(1)
+      compatibilityToolTips.forEach(t => expect(t).toBeVisible())
+      await userEvent.click(compatibilityToolTips[0])
+      const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
+      expect(compatibilityDrawer).toBeVisible()
+      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.MULTI_NAT_IP)
     })
 
     describe('LAG has existing NAT pool', () => {
       it('should be blocked when overlapped with existing LAG NAT pool', async () => {
         render(<MockComponent
-          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
           lagData={[{ natPools: [{ startIpAddress: '1.1.1.5', endIpAddress: '1.1.1.10' }] }]}
         />)
 
-        await natPoolTestPreparation()
-        const startIp = screen.getByRole('textbox', { name: 'Start' })
-        const endIp = screen.getByRole('textbox', { name: 'End' })
+        const { startInput, endInput } = await natPoolTestPreparation()
 
-        await userEvent.type(startIp, '1.1.1.7')
-        await userEvent.type(endIp, '1.1.1.30')
+        await userEvent.type(startInput, '1.1.1.7')
+        await userEvent.type(endInput, '1.1.1.30')
         await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-        const alertMsg = await screen.findByRole('alert')
-        expect(alertMsg).toBeInTheDocument()
-        expect(alertMsg.textContent).toEqual('The selected NAT pool overlaps with other NAT pools')
+        await screen.findByRole('alert')
+        await screen.findByText('The selected NAT pool overlaps with other NAT pools')
       })
     })
   })
@@ -325,4 +323,6 @@ const natPoolTestPreparation = async () => {
   await userEvent.click(natSwitch)
 
   await screen.findByText('NAT IP Addresses Range')
+  const inputs = screen.getAllByRole('textbox')
+  return { startInput: inputs[0], endInput: inputs[1] }
 }

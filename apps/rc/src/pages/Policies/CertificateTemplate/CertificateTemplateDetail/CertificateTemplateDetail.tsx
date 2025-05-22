@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                                              from '@acx-ui/components'
-import { caTypeShortLabel, CertificateTable }                                                                                                                                                         from '@acx-ui/rc/components'
-import { useGetAdaptivePolicySetQuery, useGetCertificateTemplateQuery, useGetPersonaGroupByIdQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery }                    from '@acx-ui/rc/services'
-import { CertificateUrls, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { getOpsApi, noDataDisplay }                                                                                                                                                                   from '@acx-ui/utils'
+import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                           from '@acx-ui/components'
+import { caTypeShortLabel, CertificateTable }                                                                                                                                      from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateTemplateQuery, useGetPersonaGroupByIdQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
+import { CertificateUrls, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, usePolicyListBreadcrumb, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                              from '@acx-ui/react-router-dom'
+import { getOpsApi, noDataDisplay }                                                                                                                                                from '@acx-ui/utils'
 
 import { Section } from '../styledComponents'
 
@@ -104,20 +104,7 @@ export default function CertificateTemplateDetail () {
     <Loader states={[{ isLoading }]}>
       <PageHeader
         title={certificateTemplateData?.name}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },
-        {
-          text: $t({ defaultMessage: 'Certificate Template' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.CERTIFICATE_TEMPLATE,
-            oper: PolicyOperation.LIST
-          })
-        }]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.CERTIFICATE_TEMPLATE)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyDetailsLink({

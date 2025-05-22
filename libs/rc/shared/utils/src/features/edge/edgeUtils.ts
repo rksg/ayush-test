@@ -47,7 +47,8 @@ export const edgePhysicalPortInitialConfigs = {
   gateway: '',
   enabled: true,
   natEnabled: true,
-  corePortEnabled: false
+  corePortEnabled: false,
+  natPools: []
 }
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
@@ -156,7 +157,10 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 }
 
 // eslint-disable-next-line max-len
-export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
+export const convertEdgeNetworkIfConfigToApiPayload = (
+  formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface,
+  isEdgeCoreAccessSeparationReady?: boolean
+) => {
   const payload = _.cloneDeep(formData)
 
   switch (payload.portType) {
@@ -167,18 +171,35 @@ export const convertEdgeNetworkIfConfigToApiPayload = (formData: EdgePortWithSta
       }
       break
     case EdgePortTypeEnum.LAN:
-      // normal(non-corePort) LAN port
-      if (payload.corePortEnabled === false) {
-
-        // should clear all non core port LAN port's gateway.
-        if (payload.gateway) {
-          payload.gateway = ''
+      if(isEdgeCoreAccessSeparationReady) {
+        // normal(non-accessPort) LAN port
+        if (!payload.accessPortEnabled) {
+          // should clear all non core port LAN port's gateway.
+          if (payload.gateway) {
+            payload.gateway = ''
+          }
         }
+        if(!payload.corePortEnabled && !payload.accessPortEnabled) {
+          // prevent LAN port from using DHCP
+          // when it had been core port before but not a core port now.
+          if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+            payload.ipMode = EdgeIpModeEnum.STATIC
+          }
+        }
+      } else {
+        // normal(non-corePort) LAN port
+        if (!payload.corePortEnabled) {
 
-        // prevent LAN port from using DHCP
-        // when it had been core port before but not a core port now.
-        if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-          payload.ipMode = EdgeIpModeEnum.STATIC
+          // should clear all non core port LAN port's gateway.
+          if (payload.gateway) {
+            payload.gateway = ''
+          }
+
+          // prevent LAN port from using DHCP
+          // when it had been core port before but not a core port now.
+          if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+            payload.ipMode = EdgeIpModeEnum.STATIC
+          }
         }
       }
       break
@@ -353,15 +374,6 @@ export const poolRangeOverlapValidator = async (pools:
   // loop to check if range overlap
   for (let i=0; i < pools.length; i++) {
     if (!pools[i]) continue
-
-    const start = convertIpToLong(pools[i].startIpAddress)
-    const end = convertIpToLong(pools[i].endIpAddress)
-
-    // check if the range is valid (ascending)
-    if (start >= end) {
-      // eslint-disable-next-line max-len
-      return Promise.reject($t({ defaultMessage: 'Invalid NAT pool start IP and end IP' }))
-    }
 
     for (let j=i+1; j < pools.length; j++) {
       if (i === pools.length - 1) break

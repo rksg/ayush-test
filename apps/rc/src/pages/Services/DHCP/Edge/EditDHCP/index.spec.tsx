@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { edgeDhcpApi }        from '@acx-ui/rc/services'
-import { EdgeDhcpUrls }       from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { edgeDhcpApi }                                                      from '@acx-ui/rc/services'
+import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -39,6 +39,7 @@ describe('EditEdgeDhcp', () => {
     store.dispatch(edgeDhcpApi.util.resetApiState())
     mockedGetReq.mockClear()
     mockedUpdateReq.mockClear()
+    mockedUsedNavigate.mockClear()
 
     mockServer.use(
       rest.get(
@@ -171,11 +172,10 @@ describe('EditEdgeDhcp', () => {
       })
     await waitFor(() => expect(mockedGetReq).toBeCalled())
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/services`,
-      hash: '',
-      search: ''
-    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/` + getServiceRoutePath({
+      type: ServiceType.EDGE_DHCP,
+      oper: ServiceOperation.LIST
+    }), { replace: true })
   })
 })
 

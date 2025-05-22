@@ -214,6 +214,7 @@ display: flex;
       .newChat {
         &.disabled {
           color: var(--acx-neutrals-50);
+          cursor: not-allowed;
         }
       }
     }
@@ -883,6 +884,10 @@ export const CanvasListItem = styled(AntList.Item)`
     .button {
       margin-left: 16px;
       cursor: pointer;
+      &.disabled {
+        color: var(--acx-neutrals-50);
+        cursor: not-allowed;
+      }
     }
   }
 `
@@ -965,6 +970,14 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     height: calc(80vh - 68px);
     transition: all .2s linear;  
     overflow: auto;
+    button, a {
+      pointer-events: none;
+    }
+    .header button,
+    .slick-slider button,
+    #map button {
+      pointer-events: auto;
+    }
   }
   .ant-modal-footer {
     display: none;

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs, Tooltip }                                         from '@acx-ui/components'
-import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { LineChartOutline, ListSolid }                           from '@acx-ui/icons'
 import { ClientDualTable, SwitchClientsTable, BasePersonaTable } from '@acx-ui/rc/components'
 import {
@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
+import { ApWiredClientTable }                    from '@acx-ui/wifi/components'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
 
@@ -26,6 +27,8 @@ export function VenueClientsTab () {
   const { venueId, activeSubTab, categoryTab } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+
   const { propertyConfig } = useGetQueriablePropertyConfigsQuery(
     { payload: { ...venueOptionsDefaultPayload, filters: { venueId } } },
     {
@@ -81,9 +84,14 @@ export function VenueClientsTab () {
         </Tabs.TabPane>
       </IconThirdTab>
     },
+    ...(isSupportWifiWiredClient? [{
+      label: $t({ defaultMessage: 'AP Wired' }),
+      value: 'apWired',
+      children: <ApWiredClientTable searchable={true} />
 
+    }] : []),
     {
-      label: $t({ defaultMessage: 'Wired' }),
+      label: $t({ defaultMessage: 'Switch Wired' }),
       value: 'switch',
       children: <SwitchClientsTable filterBySwitch={true}/>
     },

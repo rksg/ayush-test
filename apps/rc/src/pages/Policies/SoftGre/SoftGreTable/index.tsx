@@ -11,7 +11,7 @@ import {
 import {
   PolicyOperation,
   PolicyType,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   SoftGreViewData,
   getPolicyDetailsLink,
@@ -117,13 +117,7 @@ export default function SoftGreTable () {
             { count: tableQuery.data?.totalCount ?? 0 }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len

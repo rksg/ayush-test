@@ -18,7 +18,7 @@ const iotController = {
       inboundAddress: '192.168.1.1',
       publicAddress: 'ruckusdemos.cloud',
       publicPort: 443,
-      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      apiToken: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       iotSerialNumber: 'rewqfdsafasd'
     }
   }
