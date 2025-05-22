@@ -704,6 +704,7 @@ describe('RcRoutes: Devices', () => {
 
     describe('New - My Services and Service Catalog', () => {
       beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
         jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
       })
 

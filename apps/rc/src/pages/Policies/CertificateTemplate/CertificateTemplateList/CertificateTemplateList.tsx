@@ -25,15 +25,46 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
     useQuery: useGetCertificatesQuery,
     defaultPayload: {}
   })
+  const tabKey = props.tabKey === CertificateCategoryType.CERTIFICATE_TEMPLATE ?
+    CertificateCategoryType.CERTIFICATE : props.tabKey
 
   const getServerCertificates = useGetServerCertificatesQuery({ payload: { pageSize: 1, page: 1 } })
 
   const isServerCertificateFFToggle = useIsSplitOn(Features.SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE)
 
+  const onTabChange = (tab: string) => {
+    navigate(tabsPathMapping[tab as CertificateCategoryType])
+  }
+
+  const deviceCertificateTabs = (activeSubTab: string | undefined) => {
+    return (
+      <Tabs activeKey={activeSubTab} type='card' onChange={onTabChange}>
+        <Tabs.TabPane
+          tab={$t(
+            { defaultMessage: 'Certificates ({count})' },
+            { count: getCertificates.data?.totalCount || 0 }
+          )}
+          key={CertificateCategoryType.CERTIFICATE}
+          children={<CertificateTable tableQuery={certificateTableQuery} />}
+        />
+        <Tabs.TabPane
+          tab={$t(
+            { defaultMessage: 'Templates ({count})' },
+            { count: getCertificateTemplates.data?.totalCount || 0 }
+          )}
+          key={CertificateCategoryType.CERTIFICATE_TEMPLATE}
+          children={<CertificateTemplateTable />}
+        />
+      </Tabs>
+    )
+  }
+
   const tabs: Record<CertificateCategoryType, JSX.Element> = {
-    [CertificateCategoryType.CERTIFICATE_TEMPLATE]: <CertificateTemplateTable/>,
+    // eslint-disable-next-line max-len
+    [CertificateCategoryType.CERTIFICATE_TEMPLATE]: deviceCertificateTabs(CertificateCategoryType.CERTIFICATE_TEMPLATE),
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]: <CertificateAuthorityTable/>,
-    [CertificateCategoryType.CERTIFICATE]: <CertificateTable tableQuery={certificateTableQuery}/>,
+    // eslint-disable-next-line max-len
+    [CertificateCategoryType.CERTIFICATE]: deviceCertificateTabs(CertificateCategoryType.CERTIFICATE),
     [CertificateCategoryType.SERVER_CERTIFICATES]: <ServerCertificatesTable/>
   }
 
@@ -89,14 +120,10 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
   }
 
 
-  const onTabChange = (tab: string) => {
-    navigate(tabsPathMapping[tab as CertificateCategoryType])
-  }
-
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Certificate Template' })}
+        title={$t({ defaultMessage: 'Certificate Management' })}
         breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
@@ -108,19 +135,13 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
           </TenantLink>
         ])}
         footer={
-          <Tabs activeKey={props.tabKey} onChange={onTabChange}>
+          <Tabs activeKey={tabKey} onChange={onTabChange}>
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Certificate ({count})' },
-                { count: getCertificates.data?.totalCount || 0 })}
+              tab={$t({ defaultMessage: 'Device Certificates' })}
               key={CertificateCategoryType.CERTIFICATE}
             />
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Certificate Template ({count})' },
-                { count: getCertificateTemplates.data?.totalCount || 0 })}
-              key={CertificateCategoryType.CERTIFICATE_TEMPLATE}
-            />
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Certificate Authority ({count})' },
+              tab={$t({ defaultMessage: 'Certificate Authorities ({count})' },
                 { count: getCertificateAuthorities.data?.totalCount || 0 })}
               key={CertificateCategoryType.CERTIFICATE_AUTHORITY}
             />
