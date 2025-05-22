@@ -164,13 +164,17 @@ export const DashboardItem = styled.div`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
     }
     .name {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
@@ -300,13 +304,18 @@ export const CanvasListItem = styled(AntList.Item)`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
       margin-right: 4px;
     }
     .name {
-      text-overflow: ellipsis;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
