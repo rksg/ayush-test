@@ -607,6 +607,7 @@ overflow: auto;
     padding: 8px;
     border-radius: 4px;
     margin: 8px;
+    gap: 4px;
     .icon{
       cursor: pointer;
       margin: 4px;
@@ -742,6 +743,7 @@ ${props => props.$type === 'pageview' && css`
 `
 
 export const Widget = styled(Card)`
+  transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;
     /* width */
@@ -799,6 +801,9 @@ export const Widget = styled(Card)`
     height: 6px;
     border-radius: 50%;
     background-color: var(--acx-semantics-red-50);
+  }
+  &:hover {
+    border: 1px solid var(--acx-neutrals-40);
   }
 `
 

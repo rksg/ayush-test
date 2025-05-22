@@ -441,6 +441,7 @@ function DashboardPageHeader (props: {
           maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
+      style={{ marginBottom: '2px' }}
     />
 
     { isDashboardCanvasEnabled && <>
