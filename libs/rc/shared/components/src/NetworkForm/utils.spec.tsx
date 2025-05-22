@@ -39,7 +39,8 @@ import {
   useClientIsolationActivations,
   useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
   useUpdateSoftGreActivations,
-  useWifiCalling
+  useWifiCalling,
+  useCertificateTemplateActivation
 } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
@@ -1236,4 +1237,58 @@ describe('Network utils test', () => {
     })
   })
 
+  describe('useCertificateTemplateActivation', () => {
+    const networkId = 'networkId'
+    const mockActivate = jest.fn()
+    const mockDeactivate = jest.fn()
+
+    beforeEach(() => {
+      mockActivate.mockClear()
+      mockDeactivate.mockClear()
+
+      mockServer.use(
+        rest.put(WifiUrlsInfo.activateCertificateTemplate.url,
+          (_, res, ctx) => {
+            mockActivate()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.delete(WifiUrlsInfo.deactivateCertificateTemplate.url,
+          (_, res, ctx) => {
+            mockDeactivate()
+            return res(ctx.json({}))
+          }
+        )
+      )
+    })
+
+    it('should call activateCertificateTemplate', async () => {
+      const { result } = renderHook(() => {
+        return useCertificateTemplateActivation()
+      }, { wrapper: Provider })
+
+      const { activateCertificateTemplate } = result.current
+      const certificateTemplateId = 'cert-id'
+
+      await activateCertificateTemplate(certificateTemplateId, networkId)
+
+      await waitFor(() => expect(mockActivate).toBeCalledTimes(1))
+      await waitFor(() => expect(mockDeactivate).toBeCalledTimes(0))
+    })
+
+    it('should call activate/deactivate apis with correct times', async () => {
+      const { result } = renderHook(() => {
+        return useCertificateTemplateActivation()
+      }, { wrapper: Provider })
+
+      const { updateCertificateTemplateActivation } = result.current
+
+      const existingIds = ['id1', 'id2']
+      const newIds = ['id3', 'id4']
+      await updateCertificateTemplateActivation(networkId, newIds, existingIds)
+
+      await waitFor(() => expect(mockDeactivate).toHaveBeenCalledTimes(existingIds.length))
+      await waitFor(() => expect(mockActivate).toBeCalledTimes(newIds.length))
+    })
+  })
 })
