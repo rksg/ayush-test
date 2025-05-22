@@ -59,6 +59,7 @@ import { Diagram }                     from '../styledComponents'
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
+  forceHideAAAButton?: boolean;
 }
 
 interface DefaultDiagramProps extends DiagramProps {
@@ -195,9 +196,10 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const title = data?.type ? $t(networkTypes[data?.type]) : undefined
+  const { forceHideAAAButton = false } = props
 
   const showButtons = !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
-  && data?.enableAccountingService
+  && data?.enableAccountingService && forceHideAAAButton
   const enableMACAuth = data?.wlan?.macAddressAuthentication
 
   const diagram = getDiagram({
