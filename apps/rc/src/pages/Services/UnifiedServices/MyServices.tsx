@@ -1,7 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, Loader, PageHeader }                              from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader }                                      from '@acx-ui/components'
 import {
   AddProfileButton, canCreateAnyUnifiedService, getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
@@ -9,6 +9,7 @@ import {
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
 import { ServiceSortOrder, ServicesToolBar }   from './ServicesToolBar'
+import { SkeletonLoaderCard }                  from './SkeletonLoaderCard'
 import { useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
 import { useUnifiedServiceSearchFilter }       from './useUnifiedServiceSearchFilter'
 
@@ -41,8 +42,9 @@ export function MyServices () {
         defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
       />
-      <Loader states={[{ isLoading: isFetching }]}>
-        <GridRow>
+      {isFetching
+        ? <SkeletonLoaderCard />
+        : <GridRow>
           {filteredServices.map(service => (
             <GridCol key={service.type} col={{ span: 6 }}>
               <UnifiedServiceCard
@@ -52,8 +54,7 @@ export function MyServices () {
               />
             </GridCol>
           ))}
-        </GridRow>
-      </Loader>
+        </GridRow>}
     </Space>
   </>
 }
