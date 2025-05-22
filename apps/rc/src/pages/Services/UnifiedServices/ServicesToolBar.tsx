@@ -33,12 +33,12 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
   }, 500)
 
 
-  const handleProductFilterChange = (value: RadioCardCategory[]) => {
-    setFilters(filters => ({ ...filters, products: value }))
+  const handleProductFilterChange = (value: RadioCardCategory) => {
+    setFilters(filters => ({ ...filters, products: value !== undefined ? [value] : [] }))
   }
 
-  const handleCategoryFilterChange = (value: UnifiedServiceCategory[]) => {
-    setFilters(filters => ({ ...filters, categories: value }))
+  const handleCategoryFilterChange = (value: UnifiedServiceCategory) => {
+    setFilters(filters => ({ ...filters, categories: value !== undefined ? [value] : [] }))
   }
 
   const handleSortOrderChange = (value: ServiceSortOrder) => {
@@ -59,8 +59,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         maxLength={64}
         allowClear
       />
-      <Select<RadioCardCategory[]>
-        mode='multiple'
+      <Select<RadioCardCategory>
         key='product'
         onChange={handleProductFilterChange}
         placeholder={$t({ defaultMessage: 'Product' })}
@@ -75,8 +74,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
           { label: $t({ defaultMessage: 'RUCKUS Edge' }), value: RadioCardCategory.EDGE }
         ]}
       />
-      <Select<UnifiedServiceCategory[]>
-        mode='multiple'
+      <Select<UnifiedServiceCategory>
         key='category'
         onChange={handleCategoryFilterChange}
         placeholder={$t({ defaultMessage: 'Category' })}
