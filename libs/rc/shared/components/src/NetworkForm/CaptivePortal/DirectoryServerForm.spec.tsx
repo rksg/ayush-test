@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                                                                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { directoryServerApi }                                                                                                       from '@acx-ui/rc/services'
+import { StepsFormLegacy }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { directoryServerApi }     from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonUrlsInfo,
@@ -14,11 +14,10 @@ import {
   NetworkTypeEnum,
   PersonaUrls,
   DpskUrls,
-  AccessControlUrls
-} from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                      from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                                                                             from '@acx-ui/user'
+  AccessControlUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
 import {
   enhancedLayer2PolicyListResponse,
