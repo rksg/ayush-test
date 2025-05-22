@@ -5,7 +5,6 @@ import {
   Col,
   Form,
   Row,
-  Select,
   Switch
 } from 'antd'
 import { isEmpty } from 'lodash'
@@ -19,11 +18,12 @@ import {
   ModalType,
   StepsFormLegacy,
   Subtitle,
-  Tooltip
+  Tooltip,
+  Select
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { InformationSolid }                from '@acx-ui/icons'
-import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import { useGetCertificateTemplatesQuery }                        from '@acx-ui/rc/services'
 import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
@@ -50,13 +50,13 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../../ApCompatibility'
-import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
-import { AAAInstance }                                         from '../AAAInstance'
-import { NetworkDiagram }                                      from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }                                          from '../NetworkForm'
-import NetworkFormContext                                      from '../NetworkFormContext'
-import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import * as UI                                                 from '../styledComponents'
+import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT, MAX_CERTIFICATE_TEMPLATE_PER_NETWORK } from '../../policies'
+import { AAAInstance }                                                                               from '../AAAInstance'
+import { NetworkDiagram }                                                                            from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                                                                                from '../NetworkForm'
+import NetworkFormContext                                                                            from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }                                                                   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                                                                                       from '../styledComponents'
 
 import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
 
@@ -70,10 +70,11 @@ export function AaaSettingsForm () {
   const form = Form.useFormInstance()
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [hasSetRuckusAiFields, setRuckusAiFields] = useState(false)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
@@ -109,6 +110,7 @@ export function AaaSettingsForm () {
       authRadiusId: data.authRadiusId,
       useCertificateTemplate: data.useCertificateTemplate,
       certificateTemplateId: data.certificateTemplateId,
+      certificateTemplateIds: data.certificateTemplateIds,
       wlan: {
         wlanSecurity: data.wlan?.wlanSecurity,
         managementFrameProtection: data.wlan?.managementFrameProtection,
@@ -143,6 +145,8 @@ function SettingsForm () {
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isMultipleCertificateTemplatesEnabled
+  = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
   const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
@@ -226,13 +230,20 @@ function SettingsForm () {
           </Form.Item>
         }
         <div>
-          {useCertificateTemplate ? <CertAuth /> : <AaaService />}
+          {useCertificateTemplate
+            ? isMultipleCertificateTemplatesEnabled ? <CertsAuth /> : <CertAuth />
+            : <AaaService />}
         </div>
       </> : <AaaService />}
     </Space>
   )
 }
 
+/**
+ * @deprecated: Support multiple selection in the future for AAA network
+ * Use the new `CertsAuth` component instead.
+ * This component can be removed once Features.MULTIPLE_CERTIFICATE_TEMPLATE is removed.
+ * */
 function CertAuth () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -289,6 +300,71 @@ function CertAuth () {
   )
 }
 
+function CertsAuth () {
+  const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const [certTempModalVisible, setCertTempModalVisible] = useState(false)
+  const { certTemplateOptions } =
+    useGetCertificateTemplatesQuery({ payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 } },
+      { selectFromResult: ({ data }) => {
+        return {
+          certTemplateOptions: data?.data.map(d => ({ value: d.id, label: d.name })) }} })
+  return (
+    <>
+      <GridRow>
+        <GridCol col={{ span: 20 }}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Certificate Template' })}
+            name='certificateTemplateIds'
+            rules={[
+              { required: true },
+              { max: MAX_CERTIFICATE_TEMPLATE_PER_NETWORK, type: 'array' }
+            ]}
+          >
+            <Select
+              placeholder={$t({ defaultMessage: 'Select...' })}
+              optionFilterProp='label'
+              mode='multiple'
+              allowClear
+              showArrow
+              showSearch
+              options={certTemplateOptions}
+            >
+            </Select>
+          </Form.Item>
+        </GridCol>
+        { hasPolicyPermission({
+          type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          <Button
+            type='link'
+            style={{ top: '28px' }}
+            onClick={() => setCertTempModalVisible(true)}
+          >
+            { $t({ defaultMessage: 'Add' }) }
+          </Button> }
+      </GridRow>
+      <Modal
+        title={$t({ defaultMessage: 'Add Certificate Template' })}
+        visible={certTempModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<CertificateTemplateForm
+          modalMode={true}
+          modalCallBack={(id) => {
+            if (id) {
+              const existingIds = form.getFieldValue('certificateTemplateIds') ?? []
+              form.setFieldValue('certificateTemplateIds', [...existingIds, id])
+            }
+            setCertTempModalVisible(false)
+          }}
+        />}
+        onCancel={() => setCertTempModalVisible(false)}
+        width={1200}
+        destroyOnClose={true}
+      />
+    </ >
+  )
+}
+
 function AaaService () {
   const { $t } = useIntl()
   const { networkId } = useParams()
@@ -305,8 +381,10 @@ function AaaService () {
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
 
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+    && isRadSecFeatureTierAllowed
 
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
@@ -334,16 +412,24 @@ function AaaService () {
   }
 
   useEffect(() => {
-    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAuthProxy', true)
+    // This workaround is due to the other network type will set form fields and cause the proxy mode default value be effected
+    if(data) {
+      form.setFieldValue('enableAuthProxy', data.enableAuthProxy)
+      form.setFieldValue('enableAccountingProxy', data.enableAccountingProxy)
     }
-  }, [selectedAuthRadius])
+  },[data])
+
+  useEffect(() => {
+    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+      setData && setData({ ...data, enableAuthProxy: true })
+    }
+  }, [supportRadsec, selectedAuthRadius])
 
   useEffect(() => {
     if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
-      form.setFieldValue('enableAccountingProxy', true)
+      setData && setData({ ...data, enableAccountingProxy: true })
     }
-  }, [selectedAcctRadius])
+  }, [supportRadsec, selectedAcctRadius])
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'

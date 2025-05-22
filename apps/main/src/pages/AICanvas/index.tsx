@@ -1,32 +1,58 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Divider, Form, Spin } from 'antd'
-import { debounce }            from 'lodash'
-import moment                  from 'moment'
-import { DndProvider }         from 'react-dnd'
-import { HTML5Backend }        from 'react-dnd-html5-backend'
-import { useIntl }             from 'react-intl'
-import { v4 as uuidv4 }        from 'uuid'
+import { Divider, Form, InputRef, Spin } from 'antd'
+import { debounce, difference }          from 'lodash'
+import moment                            from 'moment'
+import { DndProvider }                   from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { v4 as uuidv4 }                  from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip }               from '@acx-ui/components'
-import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, CanvasCollapse, CanvasExpand }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation, useSendFeedbackMutation } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage }                                                             from '@acx-ui/rc/utils'
+import { Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import {
+  SendMessageSolid,
+  HistoricalOutlined,
+  Plus,
+  Close,
+  CanvasCollapse,
+  CanvasExpand
+}    from '@acx-ui/icons-new'
+import {
+  useStreamChatsAiMutation,
+  useGetAllChatsQuery,
+  useGetCanvasQuery,
+  useGetChatsMutation,
+  useStopChatMutation,
+  useSendFeedbackMutation
+} from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
 
-import Canvas, { CanvasRef, Group } from './Canvas'
-import { DraggableChart }           from './components/WidgetChart'
-import HistoryDrawer                from './HistoryDrawer'
-import * as UI                      from './styledComponents'
+import Canvas, { CanvasRef, Group }                   from './Canvas'
+import { DraggableChart }                             from './components/WidgetChart'
+import HistoryDrawer                                  from './HistoryDrawer'
+import { MAXIMUM_CHAT_HISTORY, MAXIMUM_OWNED_CANVAS } from './index.utils'
+import {
+  getStreamingWordingKey,
+  StreamingMessages
+} from './index.utils'
+import * as UI from './styledComponents'
+
+enum MessageRole {
+  AI = 'AI',
+  SYSTEM = 'SYSTEM',
+  STREAMING = 'STATUS',
+  USER = 'USER'
+}
 
 const Message = (props:{
     chat: ChatMessage,
     sessionId:string,
     groups: Group[],
     canvasRef?: React.RefObject<CanvasRef>,
+    showCanvas: boolean,
     onUserFeedback: (feedback: string, message: ChatMessage) => void
 }) => {
-  const { chat, sessionId, groups, canvasRef, onUserFeedback } = props
+  const { chat, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const messageTailRef = useRef<HTMLDivElement>(null)
   const { $t } = useIntl()
@@ -57,15 +83,25 @@ const Message = (props:{
         messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
       }
     }
-  }, [chat.text])
+  }, [chat.text, showCanvas])
 
-  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+  const streamingMsgKey = chat.role === MessageRole.STREAMING
+    ? getStreamingWordingKey(chat.text) : undefined
+
+  return chat.role === MessageRole.SYSTEM
+    ? <Divider plain>{deletedHint}</Divider>
     : <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        {/* eslint-disable-next-line max-len */}
-        <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+      <div className={`chat-container ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+        { chat.role !== MessageRole.STREAMING
+          // eslint-disable-next-line max-len
+          ? <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+          : <div className='chat-bubble loading' ref={chatBubbleRef} style={{ width: '90%' }}>
+            <div className='loader'></div>
+            { streamingMsgKey && $t(StreamingMessages[streamingMsgKey]) }
+          </div>
+        }
       </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+      { chat.role === MessageRole.AI && !!chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],
         sessionId,
         id: chat.id,
@@ -79,12 +115,14 @@ const Message = (props:{
         <div ref={messageTailRef}
           data-testid='messageTail'
           // eslint-disable-next-line max-len
-          className={`${chat.role === 'AI' ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
-          <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-            {moment(chat.created).format('hh:mm A')}
+          className={`${chat.role === MessageRole.AI ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'} ${(!!chat.widgets?.length && chat.widgets[0].chartType === 'pie') ? 'fixed-narrower' : ''}`}>
+          <div className={`timestamp ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+            { chat.created !== '-' && chat.role !== MessageRole.STREAMING
+              ? moment(chat.created).format('hh:mm A') : <>&nbsp;</>
+            }
           </div>
           {
-            chat.role === 'AI' &&
+            chat.role === MessageRole.AI &&
             <div className='user-feedback' data-testid={`user-feedback-${chat.id}`}>
               <UI.ThumbsUp
                 data-testid='thumbs-up-btn'
@@ -116,6 +154,7 @@ const Messages = memo((props:{
   sessionId:string,
   groups: Group[],
   canvasRef: React.RefObject<CanvasRef>,
+  showCanvas: boolean,
   onUserFeedback: (feedback: string, message: ChatMessage) => void
 })=> {
   const { $t } = useIntl()
@@ -125,34 +164,43 @@ const Messages = memo((props:{
     text: $t({ defaultMessage:
       'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
   }
-  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef, onUserFeedback } = props
+
+  const { moreloading, chats, sessionId, groups, canvasRef, showCanvas, onUserFeedback } = props
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
         chat={welcomeMessage}
         sessionId={sessionId}
         groups={groups}
+        showCanvas={showCanvas}
         onUserFeedback={onUserFeedback} />
     }
     {moreloading && <div className='loading'><Spin /></div>}
     {chats?.map((i) => (
       // eslint-disable-next-line max-len
-      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} onUserFeedback={onUserFeedback}/>
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} showCanvas={showCanvas} onUserFeedback={onUserFeedback}/>
     ))}
-    {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
 
 export default function AICanvasModal (props: {
   isModalOpen: boolean,
   setIsModalOpen: (p: boolean) => void
+  editCanvasId?: string
+  openNewCanvas?: boolean
 }) {
-  const { isModalOpen, setIsModalOpen } = props
+  const { isModalOpen, setIsModalOpen, editCanvasId, openNewCanvas = false } = props
+  // eslint-disable-next-line max-len
+  const isInitCanvasShown = !!editCanvasId || openNewCanvas || localStorage.getItem('show-canvas') == 'true'
   const canvasRef = useRef<CanvasRef>(null)
-  const { $t } = useIntl()
   const scrollRef = useRef(null)
+  const searchInputRef = useRef<InputRef>(null)
+
+  const { $t } = useIntl()
   const [form] = Form.useForm()
-  const [chatAi] = useChatAiMutation()
+  const [streamChatsAi] = useStreamChatsAiMutation()
+
   const [getChats] = useGetChatsMutation()
+  const [stopChat] = useStopChatMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
@@ -166,8 +214,10 @@ export default function AICanvasModal (props: {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
-  const [showCanvas, setShowCanvas] = useState(localStorage.getItem('show-canvas') == 'true')
+  const [showCanvas, setShowCanvas] = useState(isInitCanvasShown)
   const [skipScrollTo, setSkipScrollTo] = useState(false)
+  const [streamingMessageIds, setStreamingMessageIds] = useState<string[] | []>([])
+  const [isModalOpenInitialized, setIsModalOpenInitialized] = useState(false)
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -180,10 +230,38 @@ export default function AICanvasModal (props: {
     'How many clients were connected to my network yesterday?'
   ] // Only support english default questions
 
+  const getAllChatsQuery = useGetAllChatsQuery({}, { skip: !isModalOpen })
+  const getCanvasQuery = useGetCanvasQuery({}, { skip: !isModalOpen })
+  const { data: historyData, isLoading: isHistoryLoading } = getAllChatsQuery
+  // eslint-disable-next-line max-len
+  const { data: canvasList, isLoading: isCanvasLoading, isFetching: isCanvasFetching } = getCanvasQuery
 
+  const isChatHistoryLimitReached = !!historyData && historyData.length >= MAXIMUM_CHAT_HISTORY
+  const isCanvasLimitReached = !!canvasList && canvasList.length >= MAXIMUM_OWNED_CANVAS
 
-  const getAllChatsQuery = useGetAllChatsQuery({})
-  const { data: historyData } = getAllChatsQuery
+  const setHistoryData = (data?: ChatHistory[]) => {
+    if(data?.length) {
+      const latestId = data[data.length - 1].id
+      if(sessionId !== latestId) {
+        setSessionId(latestId)
+        setReload(true)
+      }
+    } else if(data?.length === 0) {
+      setIsChatsLoading(false)
+      setHistoryVisible(false)
+      onNewChat()
+    }
+  }
+
+  useEffect(()=>{
+    if (isModalOpen) {
+      getAllChatsQuery.refetch()
+      setIsModalOpenInitialized(!openNewCanvas)
+    } else {
+      setSessionId('')
+      setIsModalOpenInitialized(false)
+    }
+  }, [isModalOpen])
 
   useEffect(()=>{
     if(page === 1 || aiBotLoading) {
@@ -201,19 +279,30 @@ export default function AICanvasModal (props: {
     }
   }, [chats])
 
-  useEffect(()=>{
-    if(historyData?.length) {
-      const latestId = historyData[historyData.length - 1].id
-      if(sessionId !== latestId) {
-        setSessionId(latestId)
-        setReload(true)
+  useEffect(() => {
+    const isLimitNotReached = !isChatHistoryLimitReached || !isCanvasLimitReached
+    if (!isModalOpen || isHistoryLoading || isCanvasLoading || isCanvasFetching) return
+    if (openNewCanvas && !isModalOpenInitialized && isLimitNotReached) {
+      setIsModalOpenInitialized(true)
+      if (!isCanvasLimitReached) {
+        canvasRef.current && canvasRef.current.createNewCanvas?.()
       }
-    } else if(historyData?.length === 0) {
-      setIsChatsLoading(false)
-      setHistoryVisible(false)
-      onNewChat()
+      if (!isChatHistoryLimitReached) {
+        setIsChatsLoading(false)
+        setHistoryVisible(false)
+        onNewChat()
+      } else {
+        setHistoryData(historyData)
+      }
+    } else if (!isModalOpenInitialized) {
+      setHistoryData(historyData)
     }
-  }, [historyData])
+  }, [openNewCanvas, isModalOpen, isHistoryLoading, isCanvasLoading, isCanvasFetching])
+
+  useEffect(()=>{
+    if (!isModalOpen || isHistoryLoading || (openNewCanvas && !isModalOpenInitialized)) return
+    setHistoryData(historyData)
+  }, [historyData, isHistoryLoading, isModalOpen])
 
   const getLatestPageChats = () => {
     getSessionChats(1)
@@ -242,14 +331,15 @@ export default function AICanvasModal (props: {
     }
   }
 
-  const getSessionChats = async (pageNum: number)=>{
+  const getSessionChats = async (pageNum: number, sessionChatId?: string)=>{
     if(pageNum ===1) {
       setIsChatsLoading(true)
     } else {
       setMoreLoading(true)
     }
+    const id: string = sessionChatId || sessionId
     const response = await getChats({
-      params: { sessionId },
+      params: { sessionId: id },
       payload: {
         page: pageNum,
         pageSize: 100,
@@ -275,50 +365,129 @@ export default function AICanvasModal (props: {
       handleSearch()
     }
   }
+
+  const handlePollStreaming = async (sessionId: string, streamMessageIds: string[]) => {
+    try {
+      const streamingResponse = await getChats({
+        params: { sessionId },
+        payload: {
+          page: 1,
+          pageSize: 100,
+          sortOrder: 'DESC'
+        }
+      }).unwrap()
+
+      const streamingMessageIds = streamingResponse.data
+        .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+      const successedStreamIds = difference(streamMessageIds, streamingMessageIds)
+
+      if (!!streamingMessageIds.length) {
+        await new Promise(res => setTimeout(res, 300))
+        setChats([...streamingResponse.data].reverse())
+        await handlePollStreaming(sessionId, streamMessageIds)
+      } else {
+        if(streamingResponse) {
+          const tempChats = streamingResponse.data.map(msg => {
+            if (successedStreamIds.includes(msg.id)) {
+              return {
+                ...msg,
+                role: MessageRole.STREAMING,
+                text: '5'
+              }
+            }
+            return msg
+          })
+          setChats(tempChats.reverse())
+          setTimeout(()=>{
+            setChats([...streamingResponse.data].reverse())
+            setTotalPages(streamingResponse.totalPages)
+            setPage(1)
+          }, 500)
+        }
+        setAiBotLoading(false)
+        setStreamingMessageIds([])
+      }
+    } catch (error) {
+      console.error(error) // eslint-disable-line no-console
+      setAiBotLoading(false)
+      setStreamingMessageIds([])
+      getSessionChats(1, sessionId)
+    }
+  }
+
   const handleSearch = async (suggestion?: string) => {
     if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
     let question = suggestion || searchText
     question = question.replaceAll('\n', '<br/>')
     const newMessage = {
       id: uuidv4(),
-      role: 'USER',
+      created: '-',
+      role: MessageRole.USER,
       text: question
     }
-    setChats([...chats, newMessage])
+    const fakeInitStreamingMessage = {
+      id: uuidv4(),
+      created: '-',
+      role: MessageRole.STREAMING,
+      text: '0'
+    }
+    setChats([...chats, newMessage, fakeInitStreamingMessage])
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    await chatAi({
+
+    await streamChatsAi({
       customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,
         ...(sessionId && { sessionId })
       }
-    })
-      .then(({ data: response, error })=>{
-        if(error) {
-          getSessionChats(1)
-        } else {
-          if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-        || !historyData?.length){
-            getAllChatsQuery.refetch()
-          }
-          if(sessionId && isNewChat) {
-            setIsNewChat(false)
-          }
-          if(response) {
-            if(response.sessionId && !sessionId) {
-              setSessionId(response.sessionId)
-            }
-            setChats([...response.messages].reverse())
-            setTotalPages(response.totalPages)
-            setPage(1)
-          }
+    }).then(async ({ data, error })=>{
+      if(error) {
+        getSessionChats(1)
+      } else {
+        const response = data as RuckusAiChat
+        if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+      || !historyData?.length){
+          getAllChatsQuery.refetch()
         }
-        setAiBotLoading(false)
-      })
+        if(sessionId && isNewChat) {
+          setIsNewChat(false)
+        }
+        if(response) {
+          if(response.sessionId && !sessionId) {
+            setSessionId(response.sessionId)
+          }
+          const startStreamingIds = response?.messages
+            .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+
+          setStreamingMessageIds(startStreamingIds)
+          await handlePollStreaming(response.sessionId, startStreamingIds)
+        }
+      }
+    })
+
+  }
+
+  const handleStop = async () => {
+    const [messageId] = streamingMessageIds
+    if (messageId) {
+      try {
+        await stopChat({
+          params: { sessionId, messageId },
+          payload: {
+            page: 1,
+            pageSize: 100,
+            sortOrder: 'DESC'
+          }
+        }).unwrap()
+        searchInputRef.current?.focus()
+      } catch (error) {
+        // console.error(error) // eslint-disable-line no-console
+      }
+    }
   }
 
   const checkChanges = (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {
@@ -331,7 +500,9 @@ export default function AICanvasModal (props: {
           {$t({ defaultMessage: 'Do you want to save your changes to Canvas:' })}
           <span style={{ padding: ' 0 1px 0 3px', fontWeight: '700' }}>
             {canvasRef?.current?.currentCanvas?.name}</span>?
-          <div>{$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}</div>
+          <span style={{ paddingLeft: '3px' }}>
+            {$t({ defaultMessage: 'Unsaved changes will be lost if discarded.' })}
+          </span>
         </div>,
         customContent: {
           action: 'CUSTOM_BUTTONS',
@@ -391,7 +562,7 @@ export default function AICanvasModal (props: {
   }
 
   const onNewChat = () => {
-    if(historyData && historyData.length >= 10){
+    if(isChatHistoryLimitReached){
       return
     }
     setIsNewChat(true)
@@ -427,6 +598,8 @@ export default function AICanvasModal (props: {
     localStorage.setItem('show-canvas', value.toString())
   }
 
+  const isStopAllowed = aiBotLoading && !!streamingMessageIds.length
+
   return (
     <UI.ChatModal
       visible={isModalOpen}
@@ -437,8 +610,10 @@ export default function AICanvasModal (props: {
       closable={false}
       maskClosable={false}
       showCanvas={showCanvas}
+      forceRender
+      destroyOnClose={false}
     >
-      <DndProvider backend={HTML5Backend}>
+      { isModalOpen && <DndProvider backend={HTML5Backend}>
         <UI.Wrapper showCanvas={showCanvas}>
           <div className='chat-wrapper'>
             {
@@ -458,7 +633,7 @@ export default function AICanvasModal (props: {
                       <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
                       <Tooltip
                         placement='right'
-                        title={historyData && historyData.length >= 10
+                        title={isChatHistoryLimitReached
                           ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
                           : ''}
@@ -466,8 +641,7 @@ export default function AICanvasModal (props: {
                         <Plus
                           data-testid='newChatIcon'
                           className={
-                            'newChat' + (historyData && historyData.length >= 10 ?
-                              ' disabled' : '')
+                            'newChat' + (isChatHistoryLimitReached ? ' disabled' : '')
                           }
                           onClick={onNewChat}
                         />
@@ -479,10 +653,18 @@ export default function AICanvasModal (props: {
                       data-testid='canvasCollapseIcon'
                       onClick={onClickCanvasMode}
                     />
-                      : <CanvasExpand
-                        data-testid='canvasExpandIcon'
-                        onClick={onClickCanvasMode}
-                      />
+                      : <Tooltip
+                        placement='bottom'
+                        title={$t(
+                          { defaultMessage: 'Expand <b>My Canvas</b> to place widgets' },
+                          { b: (chunks: React.ReactNode[]) => <b>{chunks}</b> }
+                        )}
+                      >
+                        <CanvasExpand
+                          data-testid='canvasExpandIcon'
+                          onClick={onClickCanvasMode}
+                        />
+                      </Tooltip>
                   }
                 </div>
                 <div className='title'>
@@ -506,6 +688,7 @@ export default function AICanvasModal (props: {
                       sessionId={sessionId}
                       canvasRef={canvasRef}
                       groups={groups}
+                      showCanvas={showCanvas}
                       onUserFeedback={cacheUserFeedback} />
                     {
                       !chats?.length && <div className='placeholder'>
@@ -527,6 +710,7 @@ export default function AICanvasModal (props: {
                       <Form.Item
                         name='searchInput'
                         children={<UI.Input
+                          ref={searchInputRef}
                           autoFocus
                           maxLength={maxSearchTextNumber}
                           data-testid='search-input'
@@ -541,12 +725,14 @@ export default function AICanvasModal (props: {
                       searchText.length > 0 && <div className='text-counter'>
                         {searchText.length + '/' + maxSearchTextNumber}</div>
                     }
-                    <Button
-                      data-testid='search-button'
-                      icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading || searchText.length <= 1}
-                      onClick={()=> { handleSearch() }}
-                    />
+                    <Tooltip title={isStopAllowed ? $t({ defaultMessage: 'Stop generating' }) : ''}>
+                      <UI.SearchButton
+                        data-testid='search-button'
+                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageSolid />}
+                        disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
+                        onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
+                      />
+                    </Tooltip>
                   </div>
                 </Loader>
               </div>
@@ -555,15 +741,17 @@ export default function AICanvasModal (props: {
           {
             showCanvas && <Canvas
               ref={canvasRef}
+              getCanvasQuery={getCanvasQuery}
               canvasHasChanges={canvasHasChanges}
               onCanvasChange={handleCanvasChange}
               checkChanges={checkChanges}
               groups={groups}
               setGroups={setGroups}
+              editCanvasId={editCanvasId}
             />
           }
         </UI.Wrapper>
-      </DndProvider>
+      </DndProvider> }
     </UI.ChatModal>
   )
 }

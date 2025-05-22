@@ -76,6 +76,12 @@ const DEFAULT_PAGINATION = {
   total: 0
 }
 
+// With pageSize 0, only the totalCount will be returned.
+// Supported only for ES queries
+export const COUNT_ALL_REQ_CONTENT = {
+  pagination: { pageSize: 0 }
+}
+
 const SORTER_ABBR = {
   descend: 'DESC',
   ascend: 'ASC'

@@ -13,9 +13,9 @@ import {
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
-  isOperationalSwitch,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
@@ -24,7 +24,8 @@ import {
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010g2Or10020b,
+  isFirmwareVersionAbove10010gOr10020b,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'
@@ -121,7 +122,7 @@ export function SwitchPortTable (props: {
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
         setSwitchSupportErrorRecovery(isSwitchErrorRecoveryEnabled &&
-          isFirmwareVersionAbove10010g2Or10020b(switchDetail?.firmware))
+          isFirmwareVersionAbove10010gOr10020b(switchDetail?.firmware))
       }
     }
     setData()
@@ -192,7 +193,7 @@ export function SwitchPortTable (props: {
     sorter: true
   },
   ...( isSwitchErrorDisableEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    && (isVenueLevel || isFirmwareVersionAbove10010gOr10020b(switchFirmware))
     ? [{
       key: 'errDisable',
       title: $t({ defaultMessage: 'ErrDisabled' }),
@@ -254,7 +255,7 @@ export function SwitchPortTable (props: {
     }
   },
   ...( isSwitchMacAclEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    && (isVenueLevel || isFirmwareVersionAbove10010gCd1Or10020bCd1(switchFirmware))
     ? [{
       key: 'switchMacAcl',
       title: $t({ defaultMessage: 'MAC ACL' }),

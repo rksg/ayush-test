@@ -6,6 +6,7 @@ export type NodeType = 'network'
   | 'AP' | 'apGroup'
   | 'switch' | 'switchGroup' | 'switchSubGroup'
   | 'wlan' | 'wlanGroup'
+  | 'edge'
 
 export type PathNode = {
   type: NodeType

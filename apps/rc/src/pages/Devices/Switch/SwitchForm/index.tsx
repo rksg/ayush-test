@@ -32,6 +32,7 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   SwitchMessages,
   Switch,
@@ -40,7 +41,6 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isOperationalSwitch,
   isFirmwareVersionAbove10010f,
   redirectPreviousPage,
   LocationExtended,
@@ -51,7 +51,9 @@ import {
   FirmwareSwitchVenueVersionsV1002,
   SwitchFirmwareModelGroup,
   getSwitchFwGroupVersionV1002,
-  createSwitchSerialPattern
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model,
+  isSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -463,12 +465,14 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = createSwitchSerialPattern({
-      isSupport8200AV: isSupport8200AV,
-      isSupport8100: isSupport8100,
-      isSupport8100X: isSupport8100X,
-      isSupport7550Zippy: isSupport7550Zippy
-    })
+    const re = (isSupport8100 && isSpecific8100Model(value))
+      ? createSwitchSerialPatternForSpecific8100Model()
+      : createSwitchSerialPattern({
+        isSupport8200AV: isSupport8200AV,
+        isSupport8100: isSupport8100,
+        isSupport8100X: isSupport8100X,
+        isSupport7550Zippy: isSupport7550Zippy
+      })
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

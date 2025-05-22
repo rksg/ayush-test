@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Row }  from 'antd'
-import { cloneDeep, find } from 'lodash'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Col, Row }              from 'antd'
+import { cloneDeep, find, omit } from 'lodash'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
-import { AnchorContext, Loader }               from '@acx-ui/components'
-import { ApExtAntennaForm }                    from '@acx-ui/rc/components'
+import { AnchorContext, Loader, showActionModal } from '@acx-ui/components'
+import { ApExtAntennaForm }                       from '@acx-ui/rc/components'
 import {
   useLazyGetApExternalAntennaSettingsQuery,
   useLazyGetVenueExternalAntennaQuery,
@@ -22,13 +22,14 @@ import { paramsType } from './AntennaSection'
 
 const cleanExtModel = (model: ExternalAntenna) => {
   let data = JSON.parse(JSON.stringify(model))
-
-  if (data.enable24G !== undefined && data.enable24G === false) {
-    delete data.gain24G
+  const removeFields = ['coupled', 'supportDisable', 'model']
+  if (!data.enable24G) {
+    removeFields.push('gain24G')
   }
-  if (data.enable50G !== undefined && data.enable50G === false) {
-    delete data.gain50G
+  if (!data.enable50G) {
+    removeFields.push('gain50G')
   }
+  data = omit(data, removeFields)
   return data
 }
 
@@ -50,8 +51,6 @@ export function ExternalAntennaSettings () {
   const venueExtAntennaRef = useRef<ExternalAntenna>()
   const customExtAntennaRef = useRef<ExternalAntenna>()
   const paramsRef = useRef<paramsType>()
-
-  const form = Form.useFormInstance()
 
   const [formInitializing, setFormInitializing] = useState(true)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
@@ -132,7 +131,7 @@ export function ExternalAntennaSettings () {
       venueExtAntennaRef.current :
       customExtAntennaRef.current
 
-    form.setFieldValue('externalAntenna', extAnt)
+    setExtAntenna(extAnt!)
 
     handleFormChanged()
   }
@@ -158,15 +157,34 @@ export function ExternalAntennaSettings () {
   }
 
   const handleUpdateExtAntenna = async () => {
-    try {
-      const params = paramsRef.current
-      const payload = {
-        useVenueSettings: isUseVenueSettingsRef.current,
-        externalAntenna: cleanExtModel(form.getFieldValue('externalAntenna'))
-      }
-      await updateApExtAntSettings({ params, payload }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    const isUseVenue = isUseVenueSettingsRef.current
+    const extAnt = (isUseVenue)?
+      venueExtAntennaRef.current :
+      customExtAntennaRef.current
+
+    if (extAnt) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'External Antenna Settings Change' }),
+        content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Modifying the External Antenna settings will cause a reboot of this AP. Are you sure you want to continue?' }),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          try {
+            const params = paramsRef.current
+            const payload = {
+              useVenueSettings: isUseVenueSettingsRef.current,
+              externalAntenna: cleanExtModel(extAnt)
+            }
+
+            await updateApExtAntSettings({ params, payload }).unwrap()
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }
+      })
     }
   }
 

@@ -20,7 +20,7 @@ import {
   PolicyType,
   PolicyOperation,
   ClientIsolationSaveData,
-  getPolicyListRoutePath, formatMacAddress
+  usePolicyListBreadcrumb, formatMacAddress
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -53,6 +53,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
     { params, enableRbac },
     { skip: !editMode })
   const formRef = useRef<StepsFormLegacyInstance<ClientIsolationSaveData>>()
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.CLIENT_ISOLATION)
 
   useEffect(() => {
     if (dataFromServer && editMode) {
@@ -101,14 +102,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
           ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
           : $t({ defaultMessage: 'Add Client Isolation Profile' })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
       />
       }
       <StepsFormLegacy<ClientIsolationSaveData>

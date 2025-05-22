@@ -18,20 +18,17 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { formatter }                  from '@acx-ui/formatter'
 import { useGetPrivacySettingsQuery } from '@acx-ui/rc/services'
 import { PrivacyFeatureName }         from '@acx-ui/rc/utils'
-import { getJwtTokenPayload }         from '@acx-ui/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }       from '@acx-ui/utils'
 
 import { App, useTopApplicationsQuery } from './services'
 
-const useAppVisibility = (tenantId: string) => {
+const useAppVisibility = (tenantId: string | undefined) => {
   const isRA = Boolean(get('IS_MLISA_SA'))
-  const isAppPrivacyFFEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+  const isAppPrivacyFFEnabled = useIsSplitOn(Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   const { data: privacySettings } = useGetPrivacySettingsQuery({
-    params: { tenantId },
-    customHeaders: { 'x-rks-tenantid': tenantId },
-    payload: { ignoreDelegation: true }
+    params: { tenantId }
   })
 
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
@@ -45,7 +42,13 @@ const useAppVisibility = (tenantId: string) => {
     if (privacySettings) {
       const privacyVisibilitySetting = privacySettings
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
-      setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
+
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      // if enforceDefault is false, use isEnabled value
+      setIsAppVisibilityEnabled(
+        Boolean(privacyVisibilitySetting?.enforceDefault ||
+        privacyVisibilitySetting?.isEnabled)
+      )
     }
   }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
@@ -85,7 +88,7 @@ function TopApplicationsWidget ({ filters, type }: {
   type: 'donut' | 'line' }) {
   const { $t } = useIntl()
   const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
-  const { tenantId } = getJwtTokenPayload()
+  const { tenantId } = useParams()
   const isAppVisibilityEnabled = useAppVisibility(tenantId)
 
   const queryResults = useTopApplicationsQuery(filters,{
@@ -126,7 +129,7 @@ function TopApplicationsWidget ({ filters, type }: {
                   legendFormatter={() => ''}
                 />
               )
-              : <NoData text={!isAppVisibilityEnabled ? noPermissionText : undefined} />
+              : <NoData text={isAppVisibilityEnabled ? undefined : noPermissionText} />
           )}
         </AutoSizer>
       </HistoricalCard>

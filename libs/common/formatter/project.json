@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/common/formatter/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["acx-lib"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",

@@ -27,7 +27,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -37,8 +38,11 @@ const defaultPayload = {
 
 export default function MyServices () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -139,29 +143,42 @@ export default function MyServices () {
       }).data?.totalCount
     },
     {
+      type: ServiceType.PORTAL_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: (useGetEnhancedPortalProfileListQuery({
+        params, payload: { filters: {} }, enableRbac: isEnabledRbacService
+      }).data?.totalCount ?? 0) + (useWebAuthTemplateListQuery({
+        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+      }, {
+        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
+      }).data?.totalCount ?? 0),
+      disabled: !isPortalProfileEnabled
+    },
+    {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedPortalProfileListQuery({
         params, payload: { filters: {} }, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }).data?.totalCount,
+      disabled: isPortalProfileEnabled
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
-      categories: [RadioCardCategory.SWITCH],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {
         skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }).data?.totalCount,
-      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
+      disabled: isPortalProfileEnabled || (!isEdgePinReady || !networkSegmentationSwitchEnabled)
     },
     {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
-        skip: !propertyManagementEnabled
+        skip: !propertyManagementEnabled || isCore
       }).data?.totalCount,
-      disabled: !propertyManagementEnabled
+      disabled: !propertyManagementEnabled || isCore
     }
   ]
 
