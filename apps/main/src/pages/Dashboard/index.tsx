@@ -441,7 +441,7 @@ function DashboardPageHeader (props: {
           maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
-      style={{ marginBottom: '2px' }}
+      style={{ marginBottom: '12px' }}
     />
 
     { isDashboardCanvasEnabled && <>
@@ -760,7 +760,7 @@ function CanvasDashboard (props: {
   }, [menuCollapsed])
 
   return <DndProvider backend={HTML5Backend}>
-    <div className='grid'>
+    <div className='grid' style={{ marginTop: '-10px' }}>
       <CanvasUI.Grid $type='pageview'>
         <Layout
           readOnly={true}
