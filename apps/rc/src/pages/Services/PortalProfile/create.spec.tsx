@@ -1,4 +1,6 @@
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import CreatePortalProfile from './create'
 
@@ -15,9 +17,13 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn().mockReturnValue(true),
+  useIsTierAllowed: jest.fn(),
   Features: {
     NETWORK_SEGMENTATION_SWITCH: 'NETWORK_SEGMENTATION_SWITCH',
     EDGE_PIN_HA_TOGGLE: 'EDGE_PIN_HA_TOGGLE'
+  },
+  TierFeatures: {
+    SERVICE_CATALOG_UPDATED: 'SERVICE_CATALOG_UPDATED'
   }
 }))
 
@@ -26,30 +32,34 @@ describe('PortalProfile', () => {
     tenantId: 'tenantId'
   }
 
+  beforeEach(() => {
+    mockedUsedNavigate.mockClear()
+  })
+
   it('renders the component correctly', () => {
     render(<CreatePortalProfile />, { route: { params } })
 
-    expect(screen.getByLabelText('Guest Portal')).toBeInTheDocument()
-    expect(screen.getByLabelText(
+    expect(screen.getByText('Guest Portal')).toBeInTheDocument()
+    expect(screen.getByText(
       'PIN (Personal Identity Network) Portal for Switch')).toBeInTheDocument()
   })
 
-  it('should navigate to create page when Next button is clicked', () => {
+  it('should navigate to create page when Next button is clicked', async () => {
     render(<CreatePortalProfile />, { route: { params } })
 
-    fireEvent.click(screen.getByLabelText(
+    await userEvent.click(screen.getByText(
       'PIN (Personal Identity Network) Portal for Switch'))
 
-    fireEvent.click(screen.getByRole('button', { name: /next/i }))
+    await userEvent.click(screen.getByRole('button', { name: /next/i }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith('services/webAuth/create', {
       state: { from: undefined }
     })
   })
 
-  it('should navigate to select page when Cancel button is clicked', () => {
+  it('should navigate to select page when Cancel button is clicked', async () => {
     render(<CreatePortalProfile />, { route: { params } })
 
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/services/select')
   })
 })

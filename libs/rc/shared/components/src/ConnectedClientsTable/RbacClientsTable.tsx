@@ -24,7 +24,8 @@ import {
   networkTypes,
   ClientInfo,
   getClientHealthClass,
-  ClientUrlsInfo
+  ClientUrlsInfo,
+  transformByte
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
@@ -407,7 +408,9 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       show: !!showAllColumns,
       render: (_, row) => {
         return AsyncLoadingInColumn(row, () => {
-          return row.trafficStatus?.totalTraffic || noDataDisplay
+          return row.trafficStatus?.totalTraffic
+            ? transformByte(row.trafficStatus.totalTraffic)
+            : noDataDisplay
         })
       }
     },
@@ -417,7 +420,9 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       dataIndex: 'trafficStatus.trafficToClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (_, { trafficStatus }) => trafficStatus?.trafficToClient || noDataDisplay
+      render: (_, { trafficStatus }) => trafficStatus?.trafficToClient
+        ? transformByte(trafficStatus.trafficToClient)
+        : noDataDisplay
     },
     {
       key: 'trafficStatus.trafficFromClient',
@@ -425,7 +430,9 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       dataIndex: 'trafficStatus.trafficFromClient',
       sorter: true,
       show: !!showAllColumns,
-      render: (_, { trafficStatus }) => trafficStatus?.trafficFromClient || noDataDisplay
+      render: (_, { trafficStatus }) => trafficStatus?.trafficFromClient
+        ? transformByte(trafficStatus?.trafficFromClient)
+        : noDataDisplay
     },
     {
       key: 'signalStatus.rssi',

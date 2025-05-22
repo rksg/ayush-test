@@ -2,18 +2,19 @@ import userEvent        from '@testing-library/user-event'
 import { Form }         from 'antd'
 import _, { cloneDeep } from 'lodash'
 
-import { Features }   from '@acx-ui/feature-toggle'
+import { Features }        from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
+  EdgeClusterStatus,
+  EdgeGeneralFixtures,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting,
-  getEdgePortDisplayName,
-  EdgeGeneralFixtures,
-  EdgeClusterStatus
+  getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -377,6 +378,43 @@ describe('EditEdge ports - ports general', () => {
       await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
       expect(await screen.findByRole('combobox', { name: 'Port Type' })).toBeDisabled()
     })
+
+    describe('Core Access', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line max-len
+        jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+      })
+
+      afterEach(() => {
+        jest.mocked(useIsEdgeFeatureReady).mockReset()
+      })
+
+      it('should show core port and access port fields when FF is on', async () => {
+        render(<MockedComponent />)
+
+        await screen.findByText(/00:0c:29:b6:ad:04/i)
+        // disabled WAN port
+        await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+
+        await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+
+        expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
+        expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
+      })
+
+      it('should show gateway field when access port is checked', async () => {
+        render(<MockedComponent />)
+
+        await screen.findByText(/00:0c:29:b6:ad:04/i)
+        // disabled WAN port
+        await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+        await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Access port' }))
+        await userEvent.click(await screen.findByRole('radio', { name: 'Static/Manual' }))
+        expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
+      })
+    })
   })
 })
 
@@ -389,6 +427,15 @@ describe('EditEdge ports', () => {
       <button data-testid='rc-submit'>Submit</button>
     </Form>
   }
+
+  beforeEach(() => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    jest.mocked(useIsEdgeFeatureReady).mockReset()
+  })
 
   it('should correctly display core port info', async () => {
     render(<MockedComponentTestSDLAN />)
@@ -534,17 +581,19 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
   const MockedComponentTestNatPool = ({ initVals, otherProps }:
     { initVals?: unknown, otherProps?:unknown })=> {
 
-    return <Form
-      initialValues={initVals ?? mockNatFormEdgePortConfig}
-      onFinish={formOnFinish}
-    >
-      <EdgePortsGeneralBase
-        {...mockedProps}
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-        {...(otherProps ?? {})}
-      />
-      <button data-testid='rc-submit'>Submit</button>
-    </Form>
+    return <Provider>
+      <Form
+        initialValues={initVals ?? mockNatFormEdgePortConfig}
+        onFinish={formOnFinish}
+      >
+        <EdgePortsGeneralBase
+          {...mockedProps}
+          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
+          {...(otherProps ?? {})}
+        />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>
+    </Provider>
   }
 
   beforeEach(() => {

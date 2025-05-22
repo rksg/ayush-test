@@ -1,9 +1,9 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, PageHeader }             from '@acx-ui/components'
-import { MdnsProxyServiceInfo }           from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader }       from '@acx-ui/components'
+import { MdnsProxyServiceInfo }     from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyQuery } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -11,9 +11,8 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  transformEdgeMdnsRulesToViewModelType
+  transformEdgeMdnsRulesToViewModelType,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -29,15 +28,7 @@ const EdgeMdnsProxyDetails = () => {
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'mDNS Proxy for RUCKUS Edge ' }),
-            // eslint-disable-next-line max-len
-            link: getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_MDNS_PROXY)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)}

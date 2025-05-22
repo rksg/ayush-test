@@ -5,15 +5,15 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                                  from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                                                                                                                                                               from '@acx-ui/formatter'
-import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                                   from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                                         from '@acx-ui/rc/services'
-import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls, StatusReason } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
-import { hasPermission }                                                                                                                                                                                                           from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                                                                                                                                                                                from '@acx-ui/utils'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                                                                                                                                                from '@acx-ui/formatter'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                                    from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                                          from '@acx-ui/rc/services'
+import { usePolicyListBreadcrumb, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls, StatusReason } from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                                                                                                                                from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                                                                                            from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                                                                                                                                                                                 from '@acx-ui/utils'
 
 import PublishReadinessProgress from '../PublishReadinessProgress'
 
@@ -183,16 +183,7 @@ export default function WorkflowDetails () {
   return <>
     <PageHeader
       title={data?.name || ''}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }, {
-          text: $t({ defaultMessage: 'Workflows' }),
-          link: getPolicyRoutePath({ type: PolicyType.WORKFLOW , oper: PolicyOperation.LIST })
-        }
-      ]}
+      breadcrumb={usePolicyListBreadcrumb(PolicyType.WORKFLOW)}
       extra={
         [
           // eslint-disable-next-line max-len

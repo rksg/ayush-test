@@ -69,6 +69,10 @@
             "allow": [],
             "depConstraints": [
               {
+                "sourceTag": "no-acx-lib-deps",
+                "notDependOnLibsWithTags": ["acx-lib"]
+              },
+              {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
               }

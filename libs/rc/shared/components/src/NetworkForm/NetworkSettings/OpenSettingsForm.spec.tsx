@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
-import { mockServer, render, screen }                                from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, PersonaUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen }                                             from '@acx-ui/test-utils'
 
 import {
   mockAAAPolicyListResponse,
@@ -45,6 +45,32 @@ jest.mock('../../ApCompatibility', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
+const defaultPageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+const mockPersonaGroupList = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'persona-group-id',
+      name: 'persona-group-name',
+      propertyId: 'venue-id-1'
+    }
+  ]
+}
+
 describe('OpenNetwork form', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -66,7 +92,11 @@ describe('OpenNetwork form', () => {
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
       rest.post(AaaUrls.queryAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+      )
     )
 
   })
