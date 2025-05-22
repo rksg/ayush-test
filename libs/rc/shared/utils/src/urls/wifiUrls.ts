@@ -526,7 +526,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'DELETE',
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
-    opsApi: 'DELETE:/wifiNetworks/{id}/certificateTemplates',
+    opsApi: 'DELETE:/wifiNetworks/{id}/certificateTemplates/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
