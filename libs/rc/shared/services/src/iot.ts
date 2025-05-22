@@ -23,7 +23,7 @@ const iotControllerList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
     data: [{
-      id: 'bbc41563473348d29a36b76e95c50381',
+      id: 'a48a5d2a-5433-42e9-b370-7d45ed5f4266',
       name: 'ruckusdemos',
       inboundAddress: '192.168.1.1',
       iotSerialNumber: 'rewqfdsafasd',
@@ -36,10 +36,10 @@ const iotControllerList = {
       id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
       name: 'iotController1',
       inboundAddress: '192.168.2.21',
-      iotSerialNumber: 'jfsdjoiasdfjo',
+      iotSerialNumber: '10104820711209934',
       publicAddress: '35.229.207.4',
       publicPort: 443,
-      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      apiToken: 'UYqHZs3ZshQUNjTflYyvLxNLLGHNXqw6e88y6KA8RsuFltcmk09xRk8XYxEZXevH',
       tenantId: '3f10af1401b44902a88723cb68c4bc77',
       assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
     }] as IotControllerStatus[]
@@ -120,10 +120,11 @@ export const iotApi = baseIotApi.injectEndpoints({
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),
     updateIotController: build.mutation<IotControllerSetting, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(IotUrlsInfo.updateIotController, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
