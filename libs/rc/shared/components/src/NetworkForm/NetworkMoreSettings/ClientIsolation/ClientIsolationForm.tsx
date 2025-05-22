@@ -27,8 +27,6 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const clientIsolationEnabled = useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
-  // eslint-disable-next-line max-len
-  const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
   useEffect(() => {
     if (data) {
       form.setFieldValue(['wlan','advancedCustomization','clientIsolationAllowlistEnabled'],
@@ -89,7 +87,6 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
-          initialValue={clientIsolationAllowlistEnabledInitValue}
           children={<Switch />} />
       </UI.FieldLabel> : null}
       {clientIsolationAllowlistEnabled && isClientIsolationAllowlistSupported &&
