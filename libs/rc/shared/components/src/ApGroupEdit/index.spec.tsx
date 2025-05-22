@@ -18,11 +18,17 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import {
   apDeviceRadio,
-  apGroupApCaps, apGroupRadioCustomization, apGroupTripleBandMode, apGroupValidRadioChannels,
+  apGroupApCaps,
+  apGroupRadioCustomization,
+  apGroupTripleBandMode,
+  apGroupValidRadioChannels,
   mockApModelFamilies,
-  radioData, validRadioChannels,
+  radioData,
+  validRadioChannels,
+  venueCaps,
   venuelist,
-  venueRadioCustomization
+  venueRadioCustomization,
+  mockedApModelFamilies
 } from './__tests__/fixtures'
 import { ApGroupEditContext } from './context'
 
@@ -81,10 +87,36 @@ describe('AP Group Edit', () => {
       ),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
-      ))
+      ),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApGroup.url,
+        (req, res, ctx) => res(ctx.json({ }))
+      ),
+      // rbac
+      rest.post(CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
+      rest.get(
+        WifiRbacUrlsInfo.getApGroupApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(apGroupApCaps)))
+    )
   })
 
   it('should render correctly - Add ApGroup', async () => {
+    mockServer.use(
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps)))
+    )
     const params = {
       tenantId: 'tenant-id',
       apGroupId: 'apgroup-id',
@@ -106,6 +138,10 @@ describe('AP Group Edit', () => {
   })
 
   it('should render correctly - default Edit ApGroup', async () => {
+    mockServer.use(
+      rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps)))
+    )
     const params = {
       tenantId: 'tenant-id',
       apGroupId: 'apgroup-id',
@@ -349,6 +385,15 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
   })
 
   it('should render correctly with unsaved dialogs', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      // rbac
+      rest.post(CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
+    )
+
     render(
       <Provider>
         <ApGroupEditContext.Provider value={{

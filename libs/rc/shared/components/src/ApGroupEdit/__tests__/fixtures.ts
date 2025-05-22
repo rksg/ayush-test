@@ -5602,3 +5602,81 @@ export const radioData = {
     enableAfc: false
   }
 }
+
+export const mockedApModelFamilies = [
+  {
+    name: 'AC_WAVE1',
+    displayName: '11ac wave 1',
+    apModels: [
+      'R600',
+      'R500',
+      'R310',
+      'R730',
+      'T300',
+      'T300E',
+      'T301N',
+      'T301S'
+    ]
+  },
+  {
+    name: 'AC_WAVE2',
+    displayName: '11ac wave 2',
+    apModels: [
+      'R720',
+      'R710',
+      'R610',
+      'R510',
+      'R320',
+      'M510',
+      'H510',
+      'H320',
+      'E510',
+      'T710',
+      'T710S',
+      'T610',
+      'T610S',
+      'T310C',
+      'T310D',
+      'T310N',
+      'T310S'
+    ]
+  },
+  {
+    name: 'WIFI_6',
+    displayName: 'Wi-Fi 6',
+    apModels: [
+      'R850',
+      'R750',
+      'R650',
+      'R550',
+      'R350',
+      'H550',
+      'H350',
+      'T750',
+      'T750SE',
+      'T350C',
+      'T350D',
+      'T350SE'
+    ]
+  },
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: [
+      'R560',
+      'R760'
+    ]
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: [
+      'R770',
+      'R670',
+      'T670',
+      'T670SN',
+      'H670'
+    ]
+  }
+]
+
