@@ -320,7 +320,8 @@ export function EmbeddedReport (props: ReportProps) {
       user: {
         firstName,
         lastName,
-        email
+        email,
+        acxAccountTier: accountTier
       },
       resources: [
         {
