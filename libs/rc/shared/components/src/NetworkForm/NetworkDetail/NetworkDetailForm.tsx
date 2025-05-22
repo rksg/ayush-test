@@ -61,6 +61,7 @@ export function NetworkDetailForm () {
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const onChange = (e: RadioChangeEvent) => {
+    // The default enable proxy for DPSK be implement on DpskSettingsForm, if no other case use this feature then we can remove
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: e.target.value === NetworkTypeEnum.DPSK,
       enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network

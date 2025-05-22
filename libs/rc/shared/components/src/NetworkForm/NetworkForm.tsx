@@ -327,15 +327,6 @@ export function NetworkForm (props:{
         delete saveData?.authRadiusId
       }
 
-      if(editMode &&
-        saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
-        saveData.isCloudpathEnabled){
-        updateSate.enableAuthProxy = false
-        updateSate.enableAccountingProxy = false
-        saveData.enableAuthProxy = false
-        saveData.enableAccountingProxy = false
-      }
-
       const mergedData = merge({}, updateSate, saveData)
       mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
       if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
@@ -975,7 +966,10 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       beforeVenueActivationRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
       if (enableServiceRbac) {
-        beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        if(saveState.useDpskService) {
+          beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        }
+
         beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
 
