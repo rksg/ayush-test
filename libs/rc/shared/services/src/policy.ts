@@ -3740,6 +3740,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     }),
+    deleteServerCertificate: build.mutation<ServerCertificate, RequestPayload>({
+      query: ({ params }) => {
+        const headers = { ...defaultCertTempVersioningHeaders }
+        const req = createHttpRequest(CertificateUrls.deleteServerCertificate, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
     downloadServerCertificate: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -4046,6 +4056,7 @@ export const {
   useGenerateCertificateToIdentityMutation,
   useGetServerCertificatesQuery,
   useUpdateServerCertificateMutation,
+  useDeleteServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
   useGenerateClientServerCertificatesMutation,
