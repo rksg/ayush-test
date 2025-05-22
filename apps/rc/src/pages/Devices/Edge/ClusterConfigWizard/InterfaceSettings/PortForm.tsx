@@ -49,6 +49,8 @@ interface PortSettingViewProps {
 const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
   const {
@@ -85,21 +87,24 @@ const PortSettingView = (props: PortSettingViewProps) => {
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
     }]}>
-      <StyledHiddenFormItem
-        name='clusterGatewayValidate'
-        rules={[
-          { validator: () => {
-            // eslint-disable-next-line max-len
-            const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
-            const allLagsValues = nodesLagData.map(lag => lag.lags)
-            const allPortsData = _.flatten(allPortsValues) as EdgePort[]
-            const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
-            // eslint-disable-next-line max-len
-            return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
-          } }
-        ]}
-        children={<input hidden/>}
-      />
+      {
+        !isEdgeCoreAccessSeparationReady &&
+        <StyledHiddenFormItem
+          name='clusterGatewayValidate'
+          rules={[
+            { validator: () => {
+              // eslint-disable-next-line max-len
+              const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+              const allLagsValues = nodesLagData.map(lag => lag.lags)
+              const allPortsData = _.flatten(allPortsValues) as EdgePort[]
+              const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
+              // eslint-disable-next-line max-len
+              return validateEdgeClusterLevelGateway(allPortsData, allLagsData ?? [], clusterInfo?.edgeList ?? [], isDualWanEnabled)
+            } }
+          ]}
+          children={<input hidden/>}
+        />
+      }
       <NodesTabs
         nodeList={clusterInfo?.edgeList}
         content={
@@ -119,6 +124,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 vipConfig={vipConfigArr}
                 subInterfaceList={allSubInterface}
                 isClusterWizard
+                clusterInfo={clusterInfo!}
               />
               : <div />
           }

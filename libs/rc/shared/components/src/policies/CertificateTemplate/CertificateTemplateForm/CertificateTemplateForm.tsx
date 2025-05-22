@@ -4,10 +4,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                                                                                                                                                                                    from '@acx-ui/components'
-import { useAddCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation }                                from '@acx-ui/rc/services'
-import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                                                                                                                                                                               from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                                                                                                                                                     from '@acx-ui/components'
+import { useAddCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation }                                 from '@acx-ui/rc/services'
+import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyRoutePath, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                                                                                                                                                                                from '@acx-ui/react-router-dom'
 
 import { transferExpirationFormDataToPayload, transferPayloadToExpirationFormData } from '../certificateTemplateUtils'
 
@@ -39,6 +39,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
     type: PolicyType.CERTIFICATE_TEMPLATE,
     oper: PolicyOperation.LIST
   }))
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.CERTIFICATE_TEMPLATE)
 
   const steps = [
     {
@@ -164,18 +165,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
       {!modalMode && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Certificate Template' }) :
           $t({ defaultMessage: 'Add Certificate Template' })}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        }, {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }, {
-          text: $t({ defaultMessage: 'Certificate Template' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.CERTIFICATE_TEMPLATE,
-            oper: PolicyOperation.LIST
-          })
-        }]}
+        breadcrumb={breadcrumb}
       />}
       <StepsForm
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}

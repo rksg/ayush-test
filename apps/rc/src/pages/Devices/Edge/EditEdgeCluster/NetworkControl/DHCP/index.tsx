@@ -7,7 +7,7 @@ import { Loader, StepsForm, useStepFormContext }                                
 import { EdgePermissions }                                                                          from '@acx-ui/edge/components'
 import { Features }                                                                                 from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgePinViewDataListQuery }                                     from '@acx-ui/rc/services'
+import { useGetDhcpStatsQuery, useGetEdgeMvSdLanViewDataListQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, IncompatibilityFeatures }                                               from '@acx-ui/rc/utils'
 import { hasPermission }                                                                            from '@acx-ui/user'
 
@@ -17,6 +17,7 @@ export const DhcpFormItem = (props: {
 }) => {
   const { currentClusterStatus, setEdgeFeatureName } = props
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isMvEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const { $t } = useIntl()
   const { form } = useStepFormContext()
 
@@ -50,6 +51,31 @@ export const DhcpFormItem = (props: {
     }
   })
 
+  const { hasSdlan } = useGetEdgeMvSdLanViewDataListQuery(
+    {
+      payload: {
+        fields: ['id', 'edgeClusterId',
+          'isGuestTunnelEnabled', 'guestEdgeClusterId'
+        ],
+        filters: {
+          tenantId: [currentClusterStatus.tenantId]
+        }
+      }
+    },
+    {
+      skip: !Boolean(currentClusterStatus.clusterId) || !isMvEdgeSdLanEnabled,
+      selectFromResult: ({ data }) => {
+        return {
+          hasSdlan: data?.data.some(sdlan => {
+            return sdlan.edgeClusterId === currentClusterStatus.clusterId
+                 || (sdlan.isGuestTunnelEnabled &&
+                  sdlan.guestEdgeClusterId === currentClusterStatus.clusterId)
+          })
+        }
+      }
+    }
+  )
+
   useEffect(() => {
     form.setFieldValue('originDhcpId', currentDhcpId)
     form.setFieldsValue({
@@ -78,7 +104,7 @@ export const DhcpFormItem = (props: {
               <Form.Item
                 name='dhcpSwitch'
                 valuePropName='checked'
-                children={<Switch disabled={hasPin || !hasUpdatePermission}/>}
+                children={<Switch disabled={hasSdlan || hasPin || !hasUpdatePermission}/>}
               />
             </StepsForm.FieldLabel>
           </Loader>

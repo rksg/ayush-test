@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
-  convertEdgePortsConfigToApiPayload,
+  convertEdgeNetworkIfConfigToApiPayload,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeNodesPortsInfo,
@@ -225,8 +225,8 @@ export const InterfaceSettings = () => {
     }
 
     configWizardForm.validateFields()
-      .then(() => doCompatibleCheck(typeKey))
       .catch(() => {/* do nothing */})
+      .finally(() => doCompatibleCheck(typeKey))
   }, 1000), [configWizardForm])
 
   // initial Dual WAN check when clusterNetworkSettingsFormData is ready
@@ -286,7 +286,7 @@ export const InterfaceSettings = () => {
           for (let portIfName in allValues[nodeSN]) {
             allValues[nodeSN][portIfName].forEach((item, idx) => {
               // eslint-disable-next-line max-len
-              allValues[nodeSN][portIfName][idx] = convertEdgePortsConfigToApiPayload(item) as EdgePort
+              allValues[nodeSN][portIfName][idx] = convertEdgeNetworkIfConfigToApiPayload(item, isEdgeCoreAccessSeparationReady) as EdgePort
             })
           }
         }

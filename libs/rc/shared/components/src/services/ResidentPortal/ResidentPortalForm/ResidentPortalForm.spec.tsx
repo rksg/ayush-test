@@ -129,7 +129,7 @@ describe('ResidentPortalForm', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Resident Portals'
+      name: 'Resident Portal'
     })).toBeVisible()
   })
 

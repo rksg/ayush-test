@@ -169,6 +169,8 @@ const LagSettingView = (props: LagSettingViewProps) => {
                 delete: [EdgeScopes.UPDATE]
               }}
               subInterfaceList={allSubInterface}
+              isClusterWizard
+              clusterInfo={clusterInfo!}
             />
           </>
         }

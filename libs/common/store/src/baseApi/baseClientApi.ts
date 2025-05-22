@@ -6,6 +6,6 @@ export const baseClientApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
+  tagTypes: ['Client', 'Guest', 'HistoricalClient', 'WiredClient'],
   endpoints: () => ({ })
 })

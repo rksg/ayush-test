@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
@@ -26,8 +26,12 @@ jest.mock('react-router-dom', () => ({
 
 describe('Edge HQoS Bandwidth Detail', () => {
   let params: { tenantId: string, policyId: string }
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       policyId: 'testPolicyId'

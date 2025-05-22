@@ -38,6 +38,8 @@ export const getCompatibilityFeatureDisplayName = (
       return $t({ defaultMessage: 'Dual WAN' })
     case IncompatibilityFeatures.L2OGRE:
       return $t({ defaultMessage: 'L2GRE' })
+    case IncompatibilityFeatures.MULTI_NAT_IP:
+      return $t({ defaultMessage: 'Multiple NAT IP Addresses' })
     default:
       return featureName
   }

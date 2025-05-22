@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
+import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {
   Button,
   Drawer,
@@ -59,24 +60,30 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     // setVisible(false)
   }
 
+  function highlightFirstAsterisk (str: string) {
+    const index = str.indexOf('*')
+    if (index === -1) return str
+    return (
+      <span
+        style={{ fontWeight: 'bold' }}><span style={{
+          color: 'var(--acx-accents-orange-50)',
+          paddingRight: '4px'
+        }}>*</span>
+        {str.slice(index + 1)} </span>
+    )
+  }
+
   const columns: TableProps<MspRecCustomer>['columns'] = [
     {
       title: $t({ defaultMessage: 'Property Name' }),
       dataIndex: 'account_name',
       key: 'account_name',
-      sorter: true,
+      sorter: { compare: sortProp('account_name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         return (isRecToMspREcConversionEnabled && !row?.is_tenant_onboarded)
-          ? <span
-            style={{ fontWeight: 'bold' }}>
-            { row.account_name }
-            <span style={{
-              color: 'var(--acx-accents-orange-50)',
-              paddingLeft: '4px'
-            }}>*</span>
-          </span>
+          ? highlightFirstAsterisk(row.account_name)
           : row.account_name
       }
     },
@@ -84,7 +91,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'billing_street',
       key: 'billing_street',
-      sorter: true,
+      sorter: { compare: sortProp('billing_street', defaultSort) },
       render: function (_, row) {
         return mspUtils.transformMspRecAddress(row)
       }
@@ -125,13 +132,12 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
       }}>{$t({ defaultMessage:
         'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
         { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
-
-      { isRecToMspREcConversionEnabled && <label>{ $t({ defaultMessage: 'Property names with' }) }
-        <span style={{
-          color: 'var(--acx-accents-orange-50)',
-          margin: '0 4px'
-        }}>*</span>
-        { $t({ defaultMessage: 'have RUCKUS One subscription but haven’t been onboarded.' })}
+      { isRecToMspREcConversionEnabled && <label>{ <span style={{
+        color: 'var(--acx-accents-orange-50)',
+        margin: '0 4px'
+      }}>*</span> }
+      { $t({ defaultMessage:
+          'Property has RUCKUS One cloud subscription but has not been onboarded.' })}
       </label> }
     </div>
 
