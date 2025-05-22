@@ -5,7 +5,7 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   ComparisonObjectType,
@@ -59,7 +59,9 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation,
-  useUpdateRadiusServerTemplateSettingsMutation
+  useUpdateRadiusServerTemplateSettingsMutation,
+  useActivateCertificateTemplateMutation,
+  useDeactivateCertificateTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -630,6 +632,41 @@ export function useWifiCalling (notReady: boolean) {
     wifiCallingIds,
     updateWifiCallingActivation
   }
+}
+
+export function useCertificateTemplateActivation () {
+  const [ activateTemplate ] = useActivateCertificateTemplateMutation()
+  const [ deactivateTemplate ] = useDeactivateCertificateTemplateMutation()
+
+  const activateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await activateTemplate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  const deactivateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await deactivateTemplate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  const updateCertificateTemplateActivation =
+    async (networkId?: string, newIds: string[] = [], existingIds: string[] = []) => {
+      const requests = []
+      const activateIds = _.difference(newIds, existingIds)
+      const deactivateIds = _.difference(existingIds, newIds)
+
+      requests.push(...deactivateIds.map(id => deactivateCertificateTemplate(id, networkId)))
+      requests.push(...activateIds.map(id => activateCertificateTemplate(id, networkId)))
+
+      return await Promise.all(requests)
+    }
+
+  return { activateCertificateTemplate, updateCertificateTemplateActivation }
 }
 
 // eslint-disable-next-line max-len
