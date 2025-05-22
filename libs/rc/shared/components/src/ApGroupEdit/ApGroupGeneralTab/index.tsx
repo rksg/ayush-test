@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Col, Form, Input, Row, Select, Tag } from 'antd'
 import { TransferItem }                               from 'antd/lib/transfer'

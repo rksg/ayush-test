@@ -47,14 +47,14 @@ describe('TopologyFloorPlanWidget', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
+    render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>)
     // expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText(/floor plans/i)).toBeVisible()
   })
   it('should render floorplan topology widget under AP overview', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
+    render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
       currentDevice={currentApDevice}
       venueId='7231da344778480d88f37f0cca1c534f'
@@ -83,7 +83,7 @@ describe('TopologyFloorPlanWidget', () => {
   })
 
   it('should render floorplan topology widget under Switch overview', async () => {
-    const { asFragment } = render(<Provider><TopologyFloorPlanWidget
+    render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
       currentDevice={currentSwitchDevice}
       venueId='7231da344778480d88f37f0cca1c534f'
