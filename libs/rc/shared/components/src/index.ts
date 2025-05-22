@@ -232,7 +232,6 @@ export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
   useEdgeMvSdLanActions,
-  useEdgeSdLanActions,
   useGetEdgeSdLanByEdgeOrClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
@@ -340,3 +339,4 @@ export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
 export * from './SoftGRETunnelSettings'
 export { ResourceBanner } from './ResourceBanner'
+export { IotControllerDrawer } from './IotControllerDrawer'

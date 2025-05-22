@@ -21,7 +21,7 @@ import {
   ApSnmpViewModelData,
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -177,13 +177,7 @@ export default function SnmpAgentTable () {
             { count: (list)? `(${list.totalCount})` : '' }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={((list?.totalCount as number) < 64) && filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.CREATE)}

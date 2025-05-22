@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
@@ -11,6 +9,7 @@ import { LocationExtended }                                                     
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
 import { ServiceType, ServiceOperation }                                                  from '../../constants'
 import { generatePageHeaderTitle }                                                        from '../../pages'
+import { generateUnifiedServicesBreadcrumb, useIsNewServicesCatalogEnabled }              from '../unifiedServices'
 
 import { serviceTypeLabelMapping }                      from './contentsMap'
 import { getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
@@ -26,16 +25,31 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
   })
 }
 
+/**
+ * Get the breadcrumb for the specific service list page.
+ *
+ * @param type The type of service.
+ *
+ * @returns The breadcrumb for the service list page.
+ */
 // eslint-disable-next-line max-len
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useMemo(() => {
-    return isTemplate
-      ? generateConfigTemplateBreadcrumb()
-      : generateServiceListBreadcrumb(type)
-  }, [isTemplate])
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const from = (useLocation() as LocationExtended)?.state?.from
 
-  return breadcrumb
+  // If the user is in the template context, use the config template breadcrumb.
+  // Otherwise, use the service list breadcrumb.
+  return isTemplate
+    ? generateConfigTemplateBreadcrumb()
+    : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled, from)
+}
+
+export function useServicesBreadcrumb (): { text: string, link?: string }[] {
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const from = (useLocation() as LocationExtended)?.state?.from
+
+  return generateServicesBreadcrumb(isNewServiceCatalogEnabled, from)
 }
 
 // eslint-disable-next-line max-len
@@ -59,7 +73,12 @@ export function generateDpskManagementBreadcrumb () {
   ]
 }
 
-function generateServicesBreadcrumb () {
+function generateServicesBreadcrumb (
+  isNewServiceCatalogEnabled: boolean,
+  from?: LocationExtended['state']['from']
+) {
+  if (isNewServiceCatalogEnabled) return generateUnifiedServicesBreadcrumb(from)
+
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Network Control' }) },
@@ -70,14 +89,18 @@ function generateServicesBreadcrumb () {
   ]
 }
 
-function generateServiceListBreadcrumb (type: ServiceType) {
+export function generateServiceListBreadcrumb (
+  type: ServiceType,
+  isNewServiceCatalogEnabled = false,
+  from?: LocationExtended['state']['from']
+) {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   if (type === ServiceType.DPSK && isDPSKAdmin) return generateDpskManagementBreadcrumb()
 
   const { $t } = getIntl()
   return [
-    ...generateServicesBreadcrumb(),
+    ...generateServicesBreadcrumb(isNewServiceCatalogEnabled, from),
     {
       text: $t(serviceTypeLabelMapping[type]),
       link: getServiceRoutePath({ type, oper: ServiceOperation.LIST })

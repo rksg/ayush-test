@@ -60,7 +60,11 @@ export default function ReportsRoutes () {
       <Route path='reports/rssTraffic' element={reports.rssTraffic} />
       <Route path='reports/rssSession' element={reports.rssSession} />
       <Route path='reports/wirelessAirtime' element={reports.wirelessAirtime} />
-      <Route path='reports/trafficApplications' element={reports.trafficApplications} />
+      <Route path='reports/trafficApplications'
+        element={
+          <AuthRoute unsupportedTiers={[AccountTier.CORE]}>
+            {reports.trafficApplications}
+          </AuthRoute>} />
       <Route path='dataStudio' element={<DataStudio />} />
       <Route path='dataConnector' element={<DataConnectorContent />} />
       <Route path='dataConnector/create' element={<ConnectorForm />} />

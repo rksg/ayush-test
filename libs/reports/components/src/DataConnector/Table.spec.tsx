@@ -11,7 +11,7 @@ import {
   hasRoles, RaiPermissions, setRaiPermissions, setUserProfile
 } from '@acx-ui/user'
 
-import { mockedConnectors, mockedUserId } from './__fixtures__'
+import { mockedConnectors, mockedUserId } from './__tests__/fixtures'
 import { DataConnectorTable }             from './Table'
 import { DataConnector }                  from './types'
 
@@ -40,7 +40,10 @@ describe('DataConnector table', () => {
   describe('RAI', () => {
     beforeEach(() => {
       mockGet.mockReturnValue('true')
-      setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
+      setRaiPermissions({
+        WRITE_DATA_CONNECTOR: true,
+        DELETE_DATA_CONNECTOR: true
+      } as RaiPermissions)
       mockUserProfileRA.mockReturnValue({ userId: mockedUserId } as UserProfile)
       mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
         data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
@@ -199,6 +202,59 @@ describe('DataConnector table', () => {
           search: ''
         })
       )
+    })
+
+    const prepareDeleteDialog = async (dataConnector: DataConnector) => {
+      const { targetRow } = await findRowInTable(dataConnector)
+
+      await click(targetRow)
+      expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
+
+      await click(await screen.findByRole('button', { name: 'Delete' }))
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toBeVisible()
+      expect(dialog).toHaveTextContent('Are you sure you want to delete this Data Connector?')
+      return { dialog }
+    }
+
+    it('handle delete', async () => {
+      const deleteFn = jest.fn()
+      mockServer.use(
+        rest.delete(
+          `${notificationApiURL}/dataConnector`,
+          (req, res, ctx) => {
+            deleteFn(req.body)
+            return res(ctx.json(null))
+          })
+      )
+
+      const dataConnector = mockedConnectors[3]
+      const { dialog } = await prepareDeleteDialog(dataConnector)
+      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
+
+      await waitFor(() => {
+        expect(deleteFn).toBeCalledWith([dataConnector.id])
+      })
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).toBeNull()
+      })
+      expect(await screen.findByText(
+        'The selected data connector has been deleted successfully.')).toBeVisible()
+    })
+
+    it('handle delete RTKQuery error', async () => {
+      mockServer.use(
+        rest.delete(
+          `${notificationApiURL}/dataConnector`,
+          (_, res) => res.networkError('Failed to connect'))
+      )
+
+      const dataConnector = mockedConnectors[3]
+      const { dialog } = await prepareDeleteDialog(dataConnector)
+      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
+
+      expect(await screen.findByText(
+        'Failed to delete the selected data connector.')).toBeVisible()
     })
 
     it(

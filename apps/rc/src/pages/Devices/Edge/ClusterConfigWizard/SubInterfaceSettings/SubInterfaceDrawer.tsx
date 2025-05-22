@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 
-import { Form, Input, InputNumber, Select } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Select, Space } from 'antd'
+import { useIntl }                                           from 'react-intl'
 
 import { Alert, Drawer, useStepFormContext } from '@acx-ui/components'
+import { Features }                          from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }             from '@acx-ui/rc/components'
 import {
   EdgeIpModeEnum,
   EdgePortInfo,
@@ -11,7 +13,9 @@ import {
   SubInterface,
   edgePortIpValidator,
   generalSubnetMskRegExp,
-  lanPortSubnetValidator
+  interfaceSubnetValidator,
+  serverIpAddressRegExp,
+  validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -53,6 +57,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   const { visible, setVisible, data, handleAdd, handleUpdate, allInterface = [] } = props
   const [formRef] = Form.useForm()
   const { form: stepFormRef } = useStepFormContext<SubInterfaceSettingsFormType>()
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   useEffect(() => {
     if(visible) {
@@ -110,8 +116,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   }
 
   const getCurrentSubnetInfo = () => {
-    const { ip, subnet } = formRef.getFieldsValue(true)
-    return { ip, subnetMask: subnet }
+    const { ipMode, ip, subnet } = formRef.getFieldsValue(true)
+    return { ipMode, ip, subnetMask: subnet }
   }
 
   const getSubnetInfoWithoutCurrent = () => {
@@ -119,12 +125,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
     const allPhysicalInterfaceSubnets = (allInterface
       ?.map(item => extractSubnetFromEdgePortInfo(item))
-      .filter(Boolean) as { id?: string, ip: string, subnetMask: string }[]) ?? []
+      // eslint-disable-next-line max-len
+      .filter(Boolean) as { id?: string, ipMode: EdgeIpModeEnum, ip: string, subnetMask: string }[]) ?? []
 
     const allSubInterfaceSubnets = getAllSubInterfacesFromForm()
       .filter(item => item.id !== currentSubInterfaceId)
       .map(item => extractSubnetFromSubInterface(item))
-      .filter(Boolean) as { ip: string, subnetMask: string }[]
+      .filter(Boolean) as { ipMode: EdgeIpModeEnum, ip: string, subnetMask: string }[]
 
     return [...allPhysicalInterfaceSubnets, ...allSubInterfaceSubnets]
   }
@@ -168,9 +175,38 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
         ) : null
       }
     </Form.Item>
+    {
+      isEdgeCoreAccessSeparationReady && <Form.Item
+        label={$t({ defaultMessage: 'Use port as…' })}
+        children={
+          <Space direction='vertical'>
+            <Form.Item
+              name='corePortEnabled'
+              valuePropName='checked'
+              noStyle
+            >
+              <Checkbox
+                children={$t({ defaultMessage: 'Core port' })}
+              />
+            </Form.Item>
+            <Form.Item
+              name='accessPortEnabled'
+              valuePropName='checked'
+              noStyle
+            >
+              <Checkbox
+                children={$t({ defaultMessage: 'Access port' })}
+              />
+            </Form.Item>
+          </Space>
+        }
+      />
+    }
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode}
+      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode
+        || prev.accessPortEnabled !== cur.accessPortEnabled
+      }
     >
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.STATIC ? (
@@ -184,7 +220,8 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
                 { validator: (_, value) => edgePortIpValidator(value, getFieldValue('subnet')) },
                 {
                   validator: () =>
-                    lanPortSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                    // eslint-disable-next-line max-len
+                    interfaceSubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC))
                 }
               ]}
               children={<Input />}
@@ -199,6 +236,25 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
               ]}
               children={<Input />}
             />
+            {
+              (isEdgeCoreAccessSeparationReady && getFieldValue('accessPortEnabled')) ?
+                <Form.Item
+                  name='gateway'
+                  label={$t({ defaultMessage: 'Gateway' })}
+                  validateFirst
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => serverIpAddressRegExp(value) },
+                    {
+                      validator: (_, value) => {
+                        let subnet = getCurrentSubnetInfo()
+                        return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                      }
+                    }
+                  ]}
+                  children={<Input />}
+                /> : null
+            }
           </>
         ) : null
       }

@@ -28,6 +28,27 @@ Object {
 }
 `;
 
+exports[`getSupersetRlsClause should handle edge devices in network paths correctly: rlsClauseWiredWithEdge 1`] = `
+Object {
+  "networkClause": "",
+  "radioBandClause": "",
+}
+`;
+
+exports[`getSupersetRlsClause should handle edge devices in network paths correctly: rlsClauseWirelessWithEdge 1`] = `
+Object {
+  "networkClause": "\\"zoneName\\" in ('venue2')",
+  "radioBandClause": "",
+}
+`;
+
+exports[`getSupersetRlsClause should handle edge devices in network paths correctly: rlsClauseWithEdge 1`] = `
+Object {
+  "networkClause": "\\"zoneName\\" in ('venue2') OR \\"edgeId\\" in ('edge123')",
+  "radioBandClause": "",
+}
+`;
+
 exports[`getSupersetRlsClause should return RLS clause based network filters and report type: emptyRlsClauseOverviewReport 1`] = `
 Object {
   "networkClause": "",

@@ -13,7 +13,7 @@ import {
 import {
   FlexibleAuthentication,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyAllowedOperation,
   getPolicyRoutePath,
   SwitchUrlsInfo,
@@ -169,14 +169,7 @@ const FlexibleAuthenticationTable = () => {
           { count: tableQuery.data?.totalCount }
         )
       }
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }
-      ]}
-
+      breadcrumb={usePoliciesBreadcrumb()}
       extra={hasCrossVenuesPermission() && filterByAccess([<TenantLink
         scopeKey={[SwitchScopes.CREATE]}
         rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}

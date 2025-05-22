@@ -295,10 +295,15 @@ function ConnectedNetworkFilter ({
   if (isReports) {
     // conditions below will avoid empty tags in the filter while switching between AP and Switch reports
     selectedBands = shouldQueryAp ? selectedBands : []
-    rawVal = rawVal.filter(value => (
-      ((shouldQueryAp || shouldQueryEdge) && value[0].includes('zone')) ||
-      (shouldQuerySwitch && value[0].includes('switchGroup'))
-    ))
+
+    // If querying AP and any item has edge data, return empty
+    if (shouldQueryAp && rawVal.some(value => value[2]?.includes('edge'))) {
+      rawVal = []
+    } else {
+      rawVal = rawVal.filter(value =>
+        ((shouldQueryAp || shouldQueryEdge) && value[0].includes('zone')) ||
+        (shouldQuerySwitch && value[0].includes('switchGroup')))
+    }
   } else {
     const dataText = queryResults.data
       .filter(Boolean)
