@@ -21,10 +21,12 @@ import {
 import {
   useAddIotControllerMutation,
   useGetIotControllerQuery,
+  useLazyGetIotControllerListQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
 import {
+  checkObjectNotExists,
   redirectPreviousPage,
   IotControllerSetting,
   excludeSpaceRegExp,
@@ -36,6 +38,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
+import { validationMessages }    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -100,6 +103,17 @@ export function IotControllerForm () {
     setTestConnectionStatus(undefined)
   }
 
+  const [getIotControllerList] = useLazyGetIotControllerListQuery()
+  const nameValidator = async (value: string) => {
+    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+      return Promise.reject($t(validationMessages.name))
+    }
+    // const payload = { ...gatewayListPayload, searchString: value }
+    const list = (await getIotControllerList({ params: { tenantId } })
+      .unwrap()).data?.map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
+  }
+
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
       const formData = { ...values }
@@ -149,7 +163,7 @@ export function IotControllerForm () {
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToIotController)
         }
-        disabled={isCustomRole}
+        disabled={isCustomRole || isTesting}
         buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}
@@ -166,7 +180,10 @@ export function IotControllerForm () {
                     initialValue={data?.name}
                     label={$t({ defaultMessage: 'IoT Controller Name' })}
                     rules={[
-                      { type: 'string', required: true }
+                      { type: 'string', required: true },
+                      {
+                        validator: (_, value) => nameValidator(value)
+                      }
                     ]}
                     validateFirst
                     children={<Input />}

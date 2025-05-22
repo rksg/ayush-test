@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps }             from '@acx-ui/components'
@@ -6,55 +8,17 @@ import { useGetIotControllerListQuery }                              from '@acx-
 import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext }                     from '@acx-ui/user'
-// import { getOpsApi }                                              from '@acx-ui/utils'
 
+import { AssocVenueDrawer } from './AssocVenueDrawer'
 
-function useColumns (
-  searchable?: boolean
-) {
-  const { $t } = useIntl()
-
-  const columns: TableProps<IotControllerStatus>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'IoT Controller' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
-      fixed: 'left',
-      searchable: searchable,
-      defaultSortOrder: 'ascend',
-      render: function (_, row, __, highlightFn) {
-        return (
-          <TenantLink
-            to={`/iots/${row.serialNumber}/details/overview`}>
-            {highlightFn(row.name)}</TenantLink>
-        )
-      }
-    },{
-      title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
-      dataIndex: 'inboundAddress',
-      key: 'inboundAddress'
-    },
-    {
-      title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
-      dataIndex: 'publicAddress',
-      key: 'publicAddress'
-    },
-    {
-      title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
-      dataIndex: 'venueCount',
-      key: 'venueCount'
-    }
-  ]
-
-  return columns
-}
 
 export function IotController () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const iotControllerActions = useIotControllerActions()
   const { isCustomRole } = useUserProfileContext()
+  const [ assocVenueDrawerVisible, setAssocVenueDrawerVisible ] = useState(false)
+  const [ venueIds, setVenueIds ] = useState<string[]>([])
 
   const payload = {
     filters: {}
@@ -69,6 +33,59 @@ export function IotController () {
     }
   })
 
+  function useColumns (
+    searchable?: boolean
+  ) {
+    const { $t } = useIntl()
+
+    const columns: TableProps<IotControllerStatus>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'IoT Controller' }),
+        key: 'name',
+        dataIndex: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
+        fixed: 'left',
+        searchable: searchable,
+        defaultSortOrder: 'ascend',
+        render: function (_, row, __, highlightFn) {
+          return (
+            <TenantLink
+              to={`/devices/iotController/${row.id}/details/overview`}>
+              {highlightFn(row.name)}</TenantLink>
+          )
+        }
+      },{
+        title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
+        dataIndex: 'inboundAddress',
+        key: 'inboundAddress'
+      },
+      {
+        title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
+        dataIndex: 'publicAddress',
+        key: 'publicAddress',
+        render: function (_, row) {
+          return row.publicAddress + ':' + row.publicPort
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
+        dataIndex: 'venueCount',
+        key: 'venueCount',
+        render: function (_, row) {
+
+          const onClickHandler = () => {
+            setVenueIds(row.assocVenueIds || [])
+            setAssocVenueDrawerVisible(true)
+          }
+
+          return <Button type='link' onClick={onClickHandler}> {row.assocVenueIds?.length} </Button>
+        }
+      }
+    ]
+
+    return columns
+  }
+
   const columns = useColumns(true)
 
   const rowActions: TableProps<IotControllerStatus>['rowActions'] = [{
@@ -76,7 +93,7 @@ export function IotController () {
     // rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].serialNumber}/edit`, { replace: false })
+      navigate(`${selectedRows[0].id}/edit`, { replace: false })
     }
   },
   {
@@ -95,6 +112,14 @@ export function IotController () {
     })
     tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
+
+  // const rowSelection = () => {
+  //   return {
+  //     getCheckboxProps: (record: IotControllerStatus) => ({
+  //       disabled: false
+  //     })
+  //   }
+  // }
 
   const count = tableQuery?.data?.totalCount || 0
 
@@ -119,10 +144,18 @@ export function IotController () {
           dataSource={tableQuery?.data?.data}
           pagination={{ total: tableQuery?.data?.totalCount }}
           onFilterChange={tableQuery.handleFilterChange}
-          rowKey='iotContollerId'
+          rowKey={(row: IotControllerStatus) => (row.id ?? `c-${row.id}`)}
           rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
+          rowSelection={{ type: 'checkbox' }}
           onChange={handleTableChange}
         />
+        {assocVenueDrawerVisible && <AssocVenueDrawer
+          key='association-drawer'
+          visible={assocVenueDrawerVisible}
+          setVisible={setAssocVenueDrawerVisible}
+          usedVenueIds={venueIds}
+        />
+        }
       </Loader>
     </>
   )

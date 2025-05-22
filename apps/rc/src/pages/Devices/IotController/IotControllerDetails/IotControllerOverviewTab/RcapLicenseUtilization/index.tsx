@@ -51,11 +51,11 @@ export function RcapLicenseUtilization () {
 
   const subTitle = <Space style={{ width: 'max-content' }}>
     <Badge
-      color={cssStr('--acx-semantics-blue-50')}
+      color='blue'
       text={$t({ defaultMessage: 'Used' })}
     />
     <Badge
-      color={cssStr('--acx-semantics-orange-50')}
+      color='orange'
       text={$t({ defaultMessage: 'Available' })}
     />
   </Space>

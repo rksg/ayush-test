@@ -51,7 +51,7 @@ export function ActivePluginsByRadio () {
       <Card title={$t({ defaultMessage: 'Active Plugins by Radio' })}>
         <AutoSizer>
           {({ height, width }) => (
-            (data && data.length > 0)
+            (data && data.length > 0 && false)
               ? <UI.Container>
                 <DonutChart
                   style={{ width, height }}
