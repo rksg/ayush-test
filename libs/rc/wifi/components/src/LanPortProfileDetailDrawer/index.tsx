@@ -139,7 +139,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         }
       />
       <Form.Item
-        label={$t({ defaultMessage: 'Port type' })}
+        label={$t({ defaultMessage: 'Port Type' })}
         children={getEthernetPortTypeString(ethernetDataForDisplay?.type)
         }
       />
@@ -148,7 +148,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         children={ethernetDataForDisplay?.untagId}
       />
       <Form.Item
-        label={$t({ defaultMessage: 'VLAN Member' })}
+        label={$t({ defaultMessage: 'VLAN Members' })}
         children={ethernetDataForDisplay?.vlanMembers}
       />
 

@@ -16,7 +16,7 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import LanPortProfileDetailsDrawer from '../LanPortProfileDrawer/LanPortProfileDetailDrawer'
+import LanPortProfileDetailsDrawer from '../LanPortProfileDetailDrawer'
 
 import * as UI from './styledComponents'
 
