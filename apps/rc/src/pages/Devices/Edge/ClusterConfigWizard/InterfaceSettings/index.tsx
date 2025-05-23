@@ -190,11 +190,23 @@ export const InterfaceSettings = () => {
     }
   }
 
-  // only active-standby cluster and 2 WAN ports are configured
   const getShouldRenderDualWan = () => {
-    const shouldDualWanVisible = get(dynamicStepsVisible, 'dualWanSettings')
-    return shouldDualWanVisible && isSingleNode
+    return get(dynamicStepsVisible, 'dualWanSettings')
   }
+
+  const updateDynamicStepsDualWan = useCallback((ports: EdgePort[], lags: EdgeLag[]) => {
+    // check if has multi WAN
+    const wanCount = getEdgeWanInterfaceCount(ports, lags)
+    // valid Dual WAN: single-node cluster and 2 WAN ports are configured
+    const isDualWan = isSingleNode && wanCount > 1
+
+    setDynamicStepsVisible((prevState) => {
+      return {
+        ...prevState,
+        dualWanSettings: isDualWan
+      }
+    })
+  }, [isSingleNode])
 
   const handleValuesChange = useCallback(debounce((
     typeKey: string,
@@ -205,29 +217,23 @@ export const InterfaceSettings = () => {
     }
 
     // check if has multi WAN
-    if (isSingleNode) {
-      const nodeSn = Object.keys(configWizardForm.getFieldValue('portSettings'))[0]
-      // eslint-disable-next-line max-len
-      const ports = Object.values((configWizardForm.getFieldValue('portSettings')[nodeSn]) as { [portId:string]: EdgePort[] })
-        .flat()
-      const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
-      // eslint-disable-next-line max-len
-      const wanCount = getEdgeWanInterfaceCount(ports as EdgePort[], lags as EdgeLag[])
-      const isDualWan = wanCount > 1
-      setDynamicStepsVisible({ dualWanSettings: isDualWan })
-    }
+    const nodeSn = Object.keys(configWizardForm.getFieldValue('portSettings'))[0]
+    // eslint-disable-next-line max-len
+    const ports = Object.values((configWizardForm.getFieldValue('portSettings')[nodeSn]) as { [portId:string]: EdgePort[] })
+      .flat()
+    const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
+    updateDynamicStepsDualWan(ports, lags)
 
     configWizardForm.validateFields()
       .catch(() => {/* do nothing */})
       .finally(() => doCompatibleCheck(typeKey))
-  }, 1000), [configWizardForm])
+  }, 1000), [configWizardForm, updateDynamicStepsDualWan])
 
-  // initial Dual WAN check when clusterNetworkSettingsFormData is ready
+  // initial Dual WAN check when clusterNetworkSettings is ready
   useEffect(() => {
     // eslint-disable-next-line max-len
-    const wanCount = getEdgeWanInterfaceCount(clusterNetworkSettings?.portSettings[0].ports as EdgePort[], clusterNetworkSettings?.lagSettings[0].lags as EdgeLag[])
-    setDynamicStepsVisible({ dualWanSettings: wanCount > 1 })
-  }, [clusterNetworkSettings])
+    updateDynamicStepsDualWan(clusterNetworkSettings?.portSettings[0].ports as EdgePort[], clusterNetworkSettings?.lagSettings[0].lags as EdgeLag[])
+  }, [clusterNetworkSettings, updateDynamicStepsDualWan])
 
   const onPortStepFinish = useCallback(async () => {
     // dual WAN check
@@ -306,7 +312,8 @@ export const InterfaceSettings = () => {
         content: <Summary />
       }
     ] as InterfaceSettingsFormStepProps[]
-  }, [configWizardForm, getCompatibleCheckResult, handleValuesChange, onPortStepFinish])
+  // eslint-disable-next-line max-len
+  }, [configWizardForm, getCompatibleCheckResult, handleValuesChange, onPortStepFinish, dynamicStepsVisible])
 
   const invokeUpdateApi = async (
     value: InterfaceSettingsFormType,
