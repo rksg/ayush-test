@@ -57,7 +57,7 @@ describe('ReportList', () => {
     })
     render(<ReportList />, { route: { path, params } })
     expect(await screen.findByText('Business Insights')).toBeVisible()
-    expect(screen.queryByText('Reports')).toBeVisible()
+    expect(screen.queryByText('Reports')).toBeNull()
 
   })
 

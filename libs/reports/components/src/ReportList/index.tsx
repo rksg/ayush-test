@@ -10,10 +10,11 @@ import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 export function ReportList () {
   const { $t } = useIntl()
   const userProfileR1 = getUserProfile()
-  const { accountTier } = userProfileR1 ?
-    userProfileR1 : { accountTier: undefined }
+  const { profile: userProfile, accountTier } = userProfileR1 ?
+    userProfileR1 : { profile: {}, accountTier: undefined }
 
   const isCore = isCoreTier(accountTier)
+  const isSupportUser = Boolean(userProfile?.support)
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
