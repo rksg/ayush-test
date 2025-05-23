@@ -22,7 +22,7 @@ const titleChannelSelection = defineMessage({
 
 const titleChannelSelectionForCoreTier = defineMessage({
   // eslint-disable-next-line max-len
-  defaultMessage: 'Set preferences for Notification Types and Recommendations. These notifications will be sent only to the recipients whose emails are activated.'
+  defaultMessage: 'Set preferences for Notification Types. These notifications will be sent only to the recipients whose emails are activated.'
 })
 
 const afterMsg = defineMessage({
