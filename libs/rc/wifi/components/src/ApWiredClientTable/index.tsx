@@ -16,7 +16,7 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import LanPortProfileDetailsDrawer from '../LanPortProfileDetailDrawer'
+import LanPortProfileDetailsDrawer, { LanPortDetailState } from '../LanPortProfileDetailDrawer'
 
 import * as UI from './styledComponents'
 
@@ -76,13 +76,8 @@ export const ApWiredClientTable = (props: {
     filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) => {
   const params = useParams()
-  const { $t } = useIntl()
   const { searchable, settingsId = 'ap-wired-clients-table' } = props
-  const [detailVisible, setDetailVisible]=useState(false)
-  const [apName, setApName] = useState<string>()
-  const [portNumber, setPortNumber]=useState<number>()
-  const [apSerialNumber, setApSerialNumber] = useState<string>()
-  const [venueId, setVenueId] = useState<string>()
+  const [lanPortDrawerState, setLanPortDrawerState] = useState<LanPortDetailState>()
 
   defaultApWiredClientPayload.filters =
   params.venueId ? { venueId: [params.venueId] } :
@@ -220,11 +215,13 @@ export const ApWiredClientTable = (props: {
         const { portNumber } = row
         return portNumber ? <Button type='link'
           onClick={()=> {
-            setApName(row.apName)
-            setPortNumber(row.portNumber)
-            setApSerialNumber(row.apId)
-            setVenueId(row.venueId)
-            setDetailVisible(true)}}>
+            setLanPortDrawerState({
+              detailVisible: true,
+              serialNumber: row.apId,
+              apName: row.apName,
+              venueId: row.venueId,
+              portId: portNumber?.toString()
+            })}}>
           {$t({ defaultMessage: 'LAN {portNumber}' }, { portNumber })}
         </Button> : noDataDisplay
       }
@@ -285,17 +282,10 @@ export const ApWiredClientTable = (props: {
           rowKey='macAddress'
           filterPersistence={true}
         />
-        {detailVisible && <LanPortProfileDetailsDrawer
-          title={$t(
-            { defaultMessage: '{apName} - LAN {portNumber}' },
-            { apName, portNumber }
-          )}
-          visible={detailVisible}
-          wiredPortVisible={true}
-          serialNumber={apSerialNumber}
-          venueId={venueId}
-          portId={portNumber?.toString()}
-          setVisible={()=>setDetailVisible(false)}
+        {lanPortDrawerState?.detailVisible && <LanPortProfileDetailsDrawer
+          visible={lanPortDrawerState?.detailVisible}
+          setVisible={()=>setLanPortDrawerState(lanPortDrawerState)}
+          portData={lanPortDrawerState!}
         />}
       </Loader>
     </div>

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Divider, Form }             from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -17,7 +17,6 @@ import {
 import {
   AAAViewModalType,
   EthernetPortAuthType,
-  EthernetPortProfileViewData,
   LanPort,
   PolicyOperation,
   PolicyType,
@@ -27,34 +26,33 @@ import {
   getPolicyDetailsLink,
   transformDisplayOnOff,
   useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
+
+export interface LanPortDetailState {
+  detailVisible: boolean
+  apName: string
+  serialNumber: string
+  portId: string
+  venueId: string
+}
 
 interface LanPortProfileDetailsDrawerProps {
-  title: string
   visible: boolean
-  setVisible: (visible: boolean) => void
-  wiredPortVisible?: boolean
-  ethernetPortProfileData?: EthernetPortProfileViewData
-  serialNumber?: string
-  portId?: string
-  venueId?: string
+  setVisible: (detailState: LanPortDetailState) => void
+  portData: LanPortDetailState
 }
 
 const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const {
-    title,
     visible,
     setVisible,
-    wiredPortVisible=false,
-    portId,
-    venueId,
-    serialNumber,
-    ethernetPortProfileData
+    portData
   } = props
+  const { apName, serialNumber, portId, venueId } = portData
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
@@ -72,7 +70,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
     enableIpsecOverNetwork: isIpSecOverNetworkEnabled,
     enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled,
-    skip: !wiredPortVisible
+    skip: !visible
   })
 
   useEffect(() => {
@@ -85,7 +83,8 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
   }, [portId, apLanPortsData, isApLanPortsLoading])
 
   const onClose = () => {
-    setVisible(false)
+    portData.detailVisible = false
+    setVisible(portData)
   }
 
   // eslint-disable-next-line max-len
@@ -109,14 +108,9 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     useQueryFn: useGetEthernetPortProfileByIdQuery,
     useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
     enableRbac: true,
-    extraParams: { id: ethernetPortProfileData?.id || targetLanPort?.ethernetPortProfileId },
-    skip: !ethernetPortProfileData?.id && !targetLanPort?.ethernetPortProfileId
+    extraParams: { id: targetLanPort?.ethernetPortProfileId },
+    skip: !targetLanPort?.ethernetPortProfileId
   })
-
-  const ethernetDataForDisplay = useMemo(() => ({
-    ...ethernetData,
-    ...ethernetPortProfileData
-  }), [ethernetData, ethernetPortProfileData])
 
   const content = (
     <Form
@@ -124,125 +118,111 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
       labelAlign='left'
     >
       <Form.Item
-        label={wiredPortVisible ?
-          $t({ defaultMessage: 'Ethernet Port Profile' }) :
-          $t({ defaultMessage: 'Name' })}
-        children={
-          (wiredPortVisible && ethernetDataForDisplay?.name)
-            ? (<TenantLink to={getPolicyDetailsLink({
-              type: PolicyType.ETHERNET_PORT_PROFILE,
-              oper: PolicyOperation.DETAIL,
-              policyId: targetLanPort?.ethernetPortProfileId! })}>
-              {ethernetDataForDisplay?.name}
-            </TenantLink>)
-            : ''
+        label={$t({ defaultMessage: 'Ethernet Port Profile' })}
+        children={(ethernetData?.name)
+          ? (<TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.ETHERNET_PORT_PROFILE,
+            oper: PolicyOperation.DETAIL,
+            policyId: targetLanPort?.ethernetPortProfileId! })}>
+            {ethernetData?.name}
+          </TenantLink>)
+          : noDataDisplay
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Port Type' })}
-        children={getEthernetPortTypeString(ethernetDataForDisplay?.type)
-        }
+        children={getEthernetPortTypeString(ethernetData?.type) ?? noDataDisplay}
       />
       <Form.Item
         label={$t({ defaultMessage: 'VLAN Untag ID' })}
-        children={ethernetDataForDisplay?.untagId}
+        children={ethernetData?.untagId ?? noDataDisplay}
       />
       <Form.Item
         label={$t({ defaultMessage: 'VLAN Members' })}
-        children={ethernetDataForDisplay?.vlanMembers}
+        children={ethernetData?.vlanMembers ?? noDataDisplay}
       />
 
       <Form.Item
         label={$t({ defaultMessage: '802.1X' })}
         children={
-          transformDisplayOnOff(!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED ||
-           ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN))
+          transformDisplayOnOff(!(ethernetData?.authType === EthernetPortAuthType.DISABLED ||
+            ethernetData?.authType === EthernetPortAuthType.OPEN))
         }
       />
-      {!wiredPortVisible && enableClientVisibility &&
-        <Form.Item
-          label={$t({ defaultMessage: 'Client Visibility' })}
-          children={
-            transformDisplayOnOff(ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN ||
-            ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED ||
-            ethernetDataForDisplay?.authType === EthernetPortAuthType.PORT_BASED)
-          }
-        />
-      }
-      {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED ||
-       ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN) &&
+      {!(ethernetData?.authType === EthernetPortAuthType.DISABLED ||
+       ethernetData?.authType === EthernetPortAuthType.OPEN) &&
       <>
         <Divider/>
 
         <Form.Item
           label={$t({ defaultMessage: '802.1X Role' })}
-          children={getEthernetPortAuthTypeString(ethernetDataForDisplay?.authType)}
+          children={getEthernetPortAuthTypeString(ethernetData?.authType)}
         />
 
-        {ethernetDataForDisplay?.authType === EthernetPortAuthType.SUPPLICANT &&
+        {ethernetData?.authType === EthernetPortAuthType.SUPPLICANT &&
         <Form.Item
           label={$t({ defaultMessage: 'Credential Type' })}
-          children={getEthernetPortCredentialTypeString(ethernetDataForDisplay?.supplicantAuthenticationOptions?.type)}
+          children={getEthernetPortCredentialTypeString(ethernetData?.supplicantAuthenticationOptions?.type)}
         />
         }
-        {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.SUPPLICANT) &&
+        {!(ethernetData?.authType === EthernetPortAuthType.SUPPLICANT) &&
         <>
           <Form.Item
             label={$t({ defaultMessage: 'Authentication Service' })}
             children={
-              (!ethernetDataForDisplay?.authRadiusId)
-                ? ''
+              (!ethernetData?.authRadiusId)
+                ? noDataDisplay
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetDataForDisplay.authRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetDataForDisplay?.authRadiusId)?.value || ''}
+                    policyId: ethernetData.authRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === ethernetData?.authRadiusId)?.value || noDataDisplay}
                   </TenantLink>)
             }
           />
 
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service (Auth)' })}
-            children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
+            children={transformDisplayOnOff(!!ethernetData?.enableAuthProxy)}
           />
 
           <Form.Item
             label={$t({ defaultMessage: 'Accounting Service' })}
             children={
-              (!ethernetDataForDisplay?.accountingRadiusId)
-                ? '-'
+              (!ethernetData?.accountingRadiusId)
+                ? noDataDisplay
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetDataForDisplay.accountingRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetDataForDisplay?.accountingRadiusId)?.value || ''}
+                    policyId: ethernetData.accountingRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === ethernetData?.accountingRadiusId)?.value || noDataDisplay}
                   </TenantLink>)
             }
           />
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service (Accounting)' })}
-            children={transformDisplayOnOff(!!ethernetDataForDisplay?.enableAuthProxy)}
+            children={transformDisplayOnOff(!!ethernetData?.enableAuthProxy)}
           />
 
-          {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
+          {ethernetData?.authType === EthernetPortAuthType.MAC_BASED &&
           <>
             <Form.Item
               label={$t({ defaultMessage: 'MAC Auth Bypass' })}
-              children={transformDisplayOnOff(!!ethernetDataForDisplay?.bypassMacAddressAuthentication)}
+              children={transformDisplayOnOff(!!ethernetData?.bypassMacAddressAuthentication)}
             />
 
-            {ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED &&
+            {ethernetData?.authType === EthernetPortAuthType.MAC_BASED &&
               <>
                 <Form.Item
                   label={$t({ defaultMessage: 'Dynamic VLAN' })}
-                  children={transformDisplayOnOff(!!ethernetDataForDisplay?.dynamicVlanEnabled)}
+                  children={transformDisplayOnOff(!!ethernetData?.dynamicVlanEnabled)}
                 />
-                { ethernetDataForDisplay?.dynamicVlanEnabled &&
+                { ethernetData?.dynamicVlanEnabled &&
                   <Form.Item
                     label={$t({ defaultMessage: 'Guest VLAN' })}
-                    children={ethernetDataForDisplay?.unauthenticatedGuestVlan}
+                    children={ethernetData?.unauthenticatedGuestVlan}
                   />
                 }
               </>
@@ -253,14 +233,14 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
         }
       </>
       }
-      {wiredPortVisible && enableClientVisibility &&
-      <>
-        <Divider/>
+      {
+        <>
+          <Divider/>
 
-        <Form.Item
-          label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
-          children={
-            (targetLanPort?.softGreProfileName && targetLanPort?.softGreProfileId) &&
+          <Form.Item
+            label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
+            children={
+              (targetLanPort?.softGreProfileName && targetLanPort?.softGreProfileId) &&
               (<FormattedMessage
                 defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
                 values={{
@@ -275,13 +255,13 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
                       {targetLanPort?.softGreProfileName}
                     </TenantLink> : ''
                 }}/>)
-          }
-        />
+            }
+          />
 
-        {targetLanPort?.softGreEnabled && <Form.Item
-          label={$t({ defaultMessage: 'IPsec' })}
-          children={
-            (targetLanPort?.ipsecProfileName && targetLanPort?.ipsecProfileId) &&
+          {targetLanPort?.softGreEnabled && <Form.Item
+            label={$t({ defaultMessage: 'IPsec' })}
+            children={
+              (targetLanPort?.ipsecProfileName && targetLanPort?.ipsecProfileId) &&
               (<FormattedMessage
                 defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
                 values={{
@@ -296,35 +276,38 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
                       {targetLanPort?.ipsecProfileName}
                     </TenantLink> : ''
                 }}/>)
-          }
-        />}
+            }
+          />}
 
-        <Form.Item
-          label={$t({ defaultMessage: 'Client Isolation' })}
-          children={transformDisplayOnOff(!!targetLanPort?.clientIsolationEnabled)}
-        />
+          <Form.Item
+            label={$t({ defaultMessage: 'Client Isolation' })}
+            children={transformDisplayOnOff(!!targetLanPort?.clientIsolationEnabled)}
+          />
 
-        {targetLanPort?.clientIsolationEnabled && <Form.Item
-          label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
-          children={
-            (targetLanPort?.clientIsolationProfileName &&
+          {targetLanPort?.clientIsolationEnabled && <Form.Item
+            label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
+            children={
+              (targetLanPort?.clientIsolationProfileName &&
              targetLanPort.clientIsolationProfileId) ?
-              (<TenantLink to={getPolicyDetailsLink({
-                type: PolicyType.CLIENT_ISOLATION,
-                oper: PolicyOperation.DETAIL,
-                policyId: targetLanPort?.clientIsolationProfileId! })}>
-                {targetLanPort?.clientIsolationProfileName}
-              </TenantLink>) :
-              $t({ defaultMessage: 'Not active' })}
-        />}
-      </>
+                (<TenantLink to={getPolicyDetailsLink({
+                  type: PolicyType.CLIENT_ISOLATION,
+                  oper: PolicyOperation.DETAIL,
+                  policyId: targetLanPort?.clientIsolationProfileId! })}>
+                  {targetLanPort?.clientIsolationProfileName}
+                </TenantLink>) :
+                $t({ defaultMessage: 'Not active' })}
+          />}
+        </>
       }
     </Form>
   )
 
   return (
     <Drawer
-      title={title}
+      title={$t(
+        { defaultMessage: '{apName} - LAN {portId}' },
+        { apName, portId }
+      )}
       visible={visible}
       onClose={onClose}
       children={content}
