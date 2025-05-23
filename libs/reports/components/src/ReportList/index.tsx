@@ -102,8 +102,10 @@ export function ReportList () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Reports' })}
-        breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+        title={isCore && !isSupportUser ? $t({ defaultMessage: 'Business Insights' }) :
+          $t({ defaultMessage: 'Reports' })}
+        breadcrumb={isCore && !isSupportUser ? [] :
+          [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
         {reports.map(({ title, description, path, disabled }) => (
