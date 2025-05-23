@@ -19,8 +19,8 @@ interface PermissionsTabProps {
 // to toggle checkbox. this needs generic solution. as we are rendering checkbox
 // based on feature not based on feature permission.
 
-const exludeCreatePermissions: (string | number)[] = ['wifi.venue.wifi']
-const exludeDeletePermissions: (string | number)[] = ['wifi.venue.wifi']
+const exludeCreatePermissions: (string | number)[] = ['wifi.venue.wifi', 'wifi.wifi.access_points']
+const exludeDeletePermissions: (string | number)[] = ['wifi.venue.wifi', 'wifi.wifi.access_points']
 
 export const PermissionsTab = (props: PermissionsTabProps) => {
   const { $t } = useIntl()
@@ -90,7 +90,9 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'create')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'create', e.target.checked)} />
-        </Form.Item> : <></>
+        </Form.Item> :<Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
+        </Form.Item>
       }
     },
     {
@@ -124,7 +126,9 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'delete')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'delete', e.target.checked)} />
-        </Form.Item>: <></>
+        </Form.Item>: <Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
+        </Form.Item>
       }
     }
   ]

@@ -25,7 +25,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     isCloudpathEnabled: data.isCloudpathEnabled,
     authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId,
     useCertificateTemplate: data.useCertificateTemplate,
-    certificateTemplateId: data.certificateTemplateId
+    certificateTemplateId: data.certificateTemplateId,
+    certificateTemplateIds: data.certificateTemplateIds
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {
@@ -321,6 +322,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
   }
 
   // accessControlForm
+  if (get(data, 'accessControlProfileToggleEnable')) {
+    advancedCustomization.devicePolicyId = null
+    advancedCustomization.applicationPolicyId = null
+    advancedCustomization.l2AclPolicyId = null
+    advancedCustomization.l3AclPolicyId = null
+  }
   if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
     advancedCustomization.devicePolicyId = null
   }

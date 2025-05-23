@@ -17,10 +17,9 @@ import {
   ServiceOperation,
   ServiceType, useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath,
-  useConfigTemplate,
-  getServiceRoutePath
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -35,10 +34,6 @@ export const WifiCallingForm = () => {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
-  const routeToList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING,
-    oper: ServiceOperation.LIST
-  }))
   const params = useParams()
 
   const serviceName = ''
@@ -87,7 +82,7 @@ export const WifiCallingForm = () => {
         await saveEnforcementConfig(result.response.id)
       }
 
-      navigate(routeToList, { replace: true })
+      navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

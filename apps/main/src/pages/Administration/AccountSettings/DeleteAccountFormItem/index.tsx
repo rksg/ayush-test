@@ -52,10 +52,10 @@ const DeleteAccountFormItem = () => {
       onOk: async () => {
         try {
           await deleteTenant({ params }).unwrap()
+          userLogout()
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
-        userLogout()
       }
     })
   }

@@ -3,12 +3,26 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table }                                                                                                                                                                                                    from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                                                                                                                    from '@acx-ui/formatter'
-import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, issuedByLabel, ServerCertificateDetailDrawer }                                                                                                                            from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery }                                                                                                                                                                                                from '@acx-ui/rc/services'
-import { CertificateStatusType, EnrollmentType, ExtendedKeyUsages, FILTER, PolicyOperation, PolicyType, SEARCH, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                                                                                                                                                from '@acx-ui/utils'
+import { Loader, TableProps, Table }                                                                         from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                         from '@acx-ui/formatter'
+import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, issuedByLabel, ServerCertificateDetailDrawer } from '@acx-ui/rc/components'
+import { doProfileDelete, useDeleteServerCertificateMutation, useGetServerCertificatesQuery }                from '@acx-ui/rc/services'
+import {
+  CertificateStatusType,
+  EnrollmentType,
+  ExtendedKeyUsages,
+  FILTER,
+  PolicyOperation,
+  PolicyType,
+  SEARCH,
+  ServerCertificate,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
+  serverCertStatusColors,
+  useTableQuery,
+  getPolicyAllowedOperation
+} from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -29,6 +43,7 @@ export default function ServerCertificatesTable () {
     apiParams: {},
     pagination: { settingsId }
   })
+  const [deleteServerCert] = useDeleteServerCertificateMutation()
 
   useEffect(() => {
     tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
@@ -115,12 +130,30 @@ export default function ServerCertificatesTable () {
 
   const rowActions: TableProps<ServerCertificate>['rowActions'] = [
     {
-      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DETAIL),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SERVER_CERTIFICATES, PolicyOperation.DETAIL),
+      scopeKey: getScopeKeyByPolicy(PolicyType.SERVER_CERTIFICATES, PolicyOperation.DETAIL),
       label: $t({ defaultMessage: 'Download' }),
       onClick: ([selectedRow]) => {
         setDetailId(selectedRow.id)
         setDetailData(selectedRow)
         setDetailDrawerOpen(true)
+      }
+    },
+    {
+      // eslint-disable-next-line max-len
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SERVER_CERTIFICATES, PolicyOperation.DELETE),
+      scopeKey: getScopeKeyByPolicy(PolicyType.SERVER_CERTIFICATES, PolicyOperation.DELETE),
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([selectedRow], clearSelection) => {
+        doProfileDelete(
+          [selectedRow],
+          $t({ defaultMessage: 'certificate' }),
+          selectedRow.name,
+          [],
+          async () => deleteServerCert({
+            params: { certId: selectedRow.id }
+          }).then(clearSelection)
+        )
       }
     }
   ]
