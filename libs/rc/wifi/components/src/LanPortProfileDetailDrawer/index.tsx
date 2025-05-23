@@ -150,36 +150,42 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
             ethernetData?.authType === EthernetPortAuthType.OPEN))
         }
       />
-      {!(ethernetData?.authType === EthernetPortAuthType.DISABLED) &&
+      {(ethernetData?.authType !== EthernetPortAuthType.DISABLED) &&
       <>
         <Divider/>
 
-        <Form.Item
-          label={$t({ defaultMessage: '802.1X Role' })}
-          children={getEthernetPortAuthTypeString(ethernetData?.authType)}
-        />
+        {(ethernetData?.authType !== EthernetPortAuthType.OPEN) &&
+          <Form.Item
+            label={$t({ defaultMessage: '802.1X Role' })}
+            children={getEthernetPortAuthTypeString(ethernetData?.authType)}
+          />
+        }
 
-        {!(ethernetData?.authType === EthernetPortAuthType.SUPPLICANT) &&
+        {(ethernetData?.authType !== EthernetPortAuthType.SUPPLICANT) &&
         <>
-          <Form.Item
-            label={$t({ defaultMessage: 'Authentication Service' })}
-            children={
-              (!targetLanPort?.authRadiusId)
-                ? noDataDisplay
-                : (
-                  <TenantLink to={getPolicyDetailsLink({
-                    type: PolicyType.AAA,
-                    oper: PolicyOperation.DETAIL,
-                    policyId: targetLanPort.authRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === targetLanPort?.authRadiusId)?.value || noDataDisplay}
-                  </TenantLink>)
-            }
-          />
+          {(ethernetData?.authType !== EthernetPortAuthType.OPEN) &&
+          <>
+            <Form.Item
+              label={$t({ defaultMessage: 'Authentication Service' })}
+              children={
+                (!targetLanPort?.authRadiusId)
+                  ? noDataDisplay
+                  : (
+                    <TenantLink to={getPolicyDetailsLink({
+                      type: PolicyType.AAA,
+                      oper: PolicyOperation.DETAIL,
+                      policyId: targetLanPort.authRadiusId })}>
+                      {radiusNameMap.find(radius => radius.key === targetLanPort?.authRadiusId)?.value || noDataDisplay}
+                    </TenantLink>)
+              }
+            />
 
-          <Form.Item
-            label={$t({ defaultMessage: 'Proxy Service (Auth)' })}
-            children={transformDisplayOnOff(!!ethernetData?.enableAuthProxy)}
-          />
+            <Form.Item
+              label={$t({ defaultMessage: 'Proxy Service (Auth)' })}
+              children={transformDisplayOnOff(!!ethernetData?.enableAuthProxy)}
+            />
+          </>
+          }
 
           <Form.Item
             label={$t({ defaultMessage: 'Accounting Service' })}

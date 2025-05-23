@@ -50,8 +50,6 @@ export const getEthernetPortAuthTypeString = (type?: EthernetPortAuthType) => {
       return $t({ defaultMessage: 'Port-based Authenticator' })
     case EthernetPortAuthType.SUPPLICANT:
       return $t({ defaultMessage: 'Supplicant' })
-    case EthernetPortAuthType.OPEN:
-      return $t({ defaultMessage: 'Open' })
     case EthernetPortAuthType.DISABLED:
     default:
       return ''
