@@ -123,6 +123,7 @@ export interface NewAPModel {
   status?: ApDeviceStatusEnum
   meshRole?: string
   clientCount?: number
+  apWiredClientCount?: number
   networkStatus?: NewApNetworkStatus
   lanPortStatuses?: {
     id: string
@@ -393,6 +394,7 @@ export interface ApDetailHeader {
   headers: {
     overview: string,
     clients: number,
+    apWiredClients?: number,
     networks: number,
     services: number
   }
