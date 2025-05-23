@@ -591,7 +591,7 @@ export function RadioSettings (props: ApEditItemProps) {
         return {
           enable24G: true,
           enable50G: true,
-          enable6G: true,
+          enable6G: supportTriRadio, // default enable6G
           apRadioParams24G: venueRadioParams24G,
           apRadioParams50G: venueRadioParams50G,
           apRadioParamsDual5G: venueRadioParamsDual5G,
@@ -991,6 +991,7 @@ export function RadioSettings (props: ApEditItemProps) {
         updateRadioParams(payload.apRadioParams50G, supportRadioChannels[ApRadioTypeEnum.Radio5G])
       } else {
         delete payload.apRadioParams50G
+        payload.enable50G = false
       }
 
       if (hasRadio6G) {
@@ -1006,6 +1007,7 @@ export function RadioSettings (props: ApEditItemProps) {
         }
       } else {
         delete payload.apRadioParams6G
+        payload.enable6G = false
       }
 
       if (hasRadioDual5G) {
