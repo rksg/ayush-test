@@ -56,7 +56,7 @@ export function IotControllerForm () {
 
   const [form] = Form.useForm()
   const publicEnabled = Form.useWatch('publicEnabled', form)
-  const [ testConnectionIotController, { isLoading: isTesting }] =
+  const [ testConnectionIotController, { isLoading: isConnectionTesting }] =
     useTestConnectionIotControllerMutation()
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
   let currentTestConnectionFun: ReturnType<typeof testConnectionIotController> | undefined
@@ -108,10 +108,13 @@ export function IotControllerForm () {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject($t(validationMessages.name))
     }
-    // const payload = { ...gatewayListPayload, searchString: value }
-    const list = (await getIotControllerList({ params: { tenantId } })
-      .unwrap()).data?.map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
+    try {
+      const list = (await getIotControllerList({ params: { tenantId } })
+        .unwrap()).data?.map(n => ({ name: n.name }))
+      return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
@@ -128,7 +131,7 @@ export function IotControllerForm () {
 
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values, id: data?.id } // rwg update API use post method where rwgId is required to pass
+      const formData = { ...values, id: data?.id }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -163,7 +166,7 @@ export function IotControllerForm () {
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToIotController)
         }
-        disabled={isCustomRole || isTesting}
+        disabled={isCustomRole || isConnectionTesting}
         buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}
@@ -310,8 +313,8 @@ export function IotControllerForm () {
                     <div style={{ textAlign: 'right' }}>
                       <Button
                         htmlType='submit'
-                        disabled={isTesting}
-                        loading={isTesting}
+                        disabled={isConnectionTesting}
+                        loading={isConnectionTesting}
                         onClick={onClickTestConnection}
                       >
                         {$t({ defaultMessage: 'Validate' })}
