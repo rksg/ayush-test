@@ -22,7 +22,6 @@ import {
   AuthTimeoutAction,
   PortControl
 } from './index'
-import { Path } from 'react-router-dom'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
@@ -208,7 +207,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         hash: '',
         pathname: '/tenant-id/t/policies/authentication/list',
         search: ''
-      } as Path)
+      })
     })
 
     describe('Handle the visibility of form items', ()=>{
