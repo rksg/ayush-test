@@ -270,7 +270,7 @@ export const ImportDashboardDrawer = (props: {
                       overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
                     >
                       <AccountCircleSolid size='sm' />
-                      <span className='name' title={authorName}>{ authorName }</span>
+                      <span className='name'>{ authorName }</span>
                     </Tooltip>
                   </span>
                   }

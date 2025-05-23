@@ -686,7 +686,7 @@ overflow: auto;
         width: calc(100% + 14px);
         left: -7px;
         top: -7px;
-        background-color: transparent; //yellow;
+        background-color: transparent;
         &:after {
           content: '';
           display: block;
