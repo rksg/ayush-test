@@ -21,7 +21,6 @@ import {
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
-  getEthernetPortCredentialTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
   transformDisplayOnOff,
