@@ -1,6 +1,6 @@
 
 
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { EthernetPortAuthType, EthernetPortSupplicantType, EthernetPortType } from '../../models'
 
@@ -23,7 +23,7 @@ export const getEthernetPortTypeString = (type?: EthernetPortType) => {
     case EthernetPortType.TRUNK:
       return $t({ defaultMessage: 'Trunk' })
     default:
-      return noDataDisplay
+      return ''
   }
 }
 
