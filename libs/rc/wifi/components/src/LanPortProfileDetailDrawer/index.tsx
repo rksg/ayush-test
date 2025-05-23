@@ -83,8 +83,10 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
   }, [portId, apLanPortsData, isApLanPortsLoading])
 
   const onClose = () => {
-    portData.detailVisible = false
-    setVisible(portData)
+    setVisible({
+      ...portData,
+      detailVisible: false
+    })
   }
 
   // eslint-disable-next-line max-len
