@@ -48,6 +48,10 @@ const RadiusList = {
     {
       id: 'f5cf248c518645248c1adafdcb60d99e',
       name: 'test-radius-1'
+    },
+    {
+      id: 'b91e0a5217ee46a3aa0c1f60a2c86fef',
+      name: 'test-acct-1'
     }
   ]
 }
@@ -218,7 +222,9 @@ const EthernetPortProfileMacData = {
   isDefault: false,
   authType: 'MAC_BASED_AUTHENTICATOR',
   enableAuthProxy: true,
+  authRadiusId: 'f5cf248c518645248c1adafdcb60d99e',
   enableAccountingProxy: true,
+  accountingRadiusId: 'b91e0a5217ee46a3aa0c1f60a2c86fef',
   bypassMacAddressAuthentication: true,
   dynamicVlanEnabled: true,
   untagId: 1,
@@ -314,8 +320,10 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('802.1X Role')).toBeInTheDocument()
     expect(await screen.findByText('MAC-based Authenticator')).toBeInTheDocument()
     expect(await screen.findByText('Authentication Service')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'test-radius-1' })).toBeVisible()
     expect(await screen.findByText('Proxy Service (Auth)')).toBeInTheDocument()
     expect(await screen.findByText('Accounting Service')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'test-acct-1' })).toBeVisible()
     expect(await screen.findByText('Proxy Service (Accounting)')).toBeInTheDocument()
     expect(await screen.findByText('MAC Auth Bypass')).toBeInTheDocument()
     expect(await screen.findByText('Dynamic VLAN')).toBeInTheDocument()
@@ -380,6 +388,6 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
     expect(await screen.findAllByText('On')).toHaveLength(2)
     expect(await screen.findByText('Client Isolation Allowlist')).toBeInTheDocument()
-    expect(await screen.findByText('clientIsolationProfile1')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'clientIsolationProfile1' })).toBeVisible()
   })
 })
