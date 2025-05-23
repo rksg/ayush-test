@@ -989,7 +989,7 @@ export function NetworkForm (props:{
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
         beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
       }
-      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState))
+      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
       beforeVenueActivationRequest.push(
