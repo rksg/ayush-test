@@ -20,11 +20,8 @@ import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
 import {
   aiOpsApis,
-  getUserProfile,
   hasCrossVenuesPermission,
-  hasPermission,
-  isProfessionalTier
-} from '@acx-ui/user'
+  hasPermission } from '@acx-ui/user'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
@@ -35,11 +32,6 @@ import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
 
 const isMLISA = get('IS_MLISA_SA')
-const isProfessionalTierUser = () => {
-  const { accountTier } = getUserProfile()
-  // only R1 has tier, RAI will be undefined
-  return isProfessionalTier(accountTier)
-}
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -83,8 +75,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   ].some(Boolean)
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA, isProfessionalTierUser(),
-    isEnergySavingToggled)[tab as keyof typeof kpisForTab]
+  const { kpis } = kpisForTab(isMLISA, isEnergySavingToggled)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })

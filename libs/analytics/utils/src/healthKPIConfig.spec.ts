@@ -1,3 +1,6 @@
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
+
 import { multipleBy1000, divideBy100, noFormat,
   kpisForTab, wiredKPIsForTab,
   numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
@@ -62,11 +65,11 @@ describe('Health KPI', () => {
       }
     }
     // RAI with Energy Saving FF off (isProfessionalTierUser is undefined in RAI)
-    expect(kpisForTab('true', undefined, false)).toMatchObject(expectedObject)
+    expect(kpisForTab('true', false)).toMatchObject(expectedObject)
   })
   it('should return correct config with Energy Saving for RA', () => {
     // RAI with Energy Saving FF on (isProfessionalTierUser is undefined in RAI)
-    expect(kpisForTab('true', undefined, true)).toMatchObject({
+    expect(kpisForTab('true', true)).toMatchObject({
       overview: {
         kpis: [
           'connectionSuccess',
@@ -111,17 +114,31 @@ describe('Health KPI', () => {
         ]
       }
     }
+
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.GOLD
+    })
     // R1 with non professional tier with Energy Saving FF off
-    expect(kpisForTab(undefined, false, false)).toMatchObject(expectedObject)
+    expect(kpisForTab(undefined, false)).toMatchObject(expectedObject)
     // R1 with non professional tier with Energy Saving FF on
-    expect(kpisForTab(undefined, false, true)).toMatchObject(expectedObject)
+    expect(kpisForTab(undefined, true)).toMatchObject(expectedObject)
+
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.PLATINUM
+    })
     // R1 with professional tier with Energy Saving FF off
-    expect(kpisForTab(undefined, true, false)).toMatchObject(expectedObject)
+    expect(kpisForTab(undefined, false)).toMatchObject(expectedObject)
   })
   // eslint-disable-next-line max-len
   it('should return correct config with Energy Saving for ACX', () => {
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.PLATINUM
+    })
     // R1 with professional tier with Energy Saving FF on
-    expect(kpisForTab(undefined, true, true)).toMatchObject({
+    expect(kpisForTab(undefined, true)).toMatchObject({
       overview: {
         kpis: [
           'connectionSuccess',

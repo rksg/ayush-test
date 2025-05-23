@@ -20,7 +20,6 @@ import { Button, CaretDownSolidIcon, Dropdown, Loader } from '@acx-ui/components
 import { get }                                          from '@acx-ui/config'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { formatter }                                    from '@acx-ui/formatter'
-import { getUserProfile, isProfessionalTier }           from '@acx-ui/user'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
 import { ConfigChangeContext } from '../context'
@@ -76,12 +75,6 @@ export function hasConfigChange <RecordType> (
   return !!(column as RecordType & { configChange: ConfigChangeKPIConfig }).configChange
 }
 
-const isProfessionalTierUser = () => {
-  const { accountTier } = getUserProfile()
-  // only R1 has tier, RAI will be undefined
-  return isProfessionalTier(accountTier)
-}
-
 export const KPIs = () => {
   const { $t } = useIntl()
   const [dropDownKey, setDropDownKey] = useState('overview')
@@ -91,9 +84,7 @@ export const KPIs = () => {
   ].some(Boolean)
 
   const kpis = kpisForTab(
-    get('IS_MLISA_SA'),
-    isProfessionalTierUser(),
-    isEnergySavingToggled
+    get('IS_MLISA_SA'), isEnergySavingToggled
   )[dropDownKey as keyof ReturnType<typeof kpisForTab>].kpis
     .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
     .reduce((agg, key: string) => {

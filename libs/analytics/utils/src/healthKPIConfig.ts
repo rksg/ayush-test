@@ -3,8 +3,9 @@ import { identity, flow } from 'lodash'
 import moment             from 'moment-timezone'
 import { defineMessage }  from 'react-intl'
 
-import { get }       from '@acx-ui/config'
-import { formatter } from '@acx-ui/formatter'
+import { get }                                from '@acx-ui/config'
+import { formatter }                          from '@acx-ui/formatter'
+import { getUserProfile, isProfessionalTier } from '@acx-ui/user'
 
 const isMLISA = get('IS_MLISA_SA')
 
@@ -700,9 +701,12 @@ export const kpiConfig = {
 }
 export const kpisForTab = (
   isMLISA?: string,
-  isProfessionalTierUser?: boolean,
   isEnergySavingToggled?: boolean
 ) => {
+  // only R1 has tier, RAI will be undefined
+  const { accountTier } = getUserProfile()
+  const isProfessionalTierUser = isProfessionalTier(accountTier)
+
   const isShowEnergySaving = Boolean(isEnergySavingToggled && (isMLISA || isProfessionalTierUser))
   return {
     overview: {
