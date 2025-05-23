@@ -42,7 +42,7 @@ import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams }
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { SwitchScopes }                                                          from '@acx-ui/types'
-import { AuthRoute }                                                             from '@acx-ui/user'
+import { aiOpsApis, AuthRoute, hasPermission }                                   from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
@@ -67,7 +67,10 @@ export function Init () {
   } = useContext(HspContext)
 
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isBrand360Enabled =
+    useIsSplitOn(Features.MSP_BRAND_360) &&
+    brand360PLMEnabled &&
+    hasPermission({ rbacOpsIds: [aiOpsApis.readBrand360Dashboard] })
 
   const { tenantType } = getJwtTokenPayload()
 

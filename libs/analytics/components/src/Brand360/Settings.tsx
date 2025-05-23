@@ -7,7 +7,7 @@ import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/anal
 import { Settings }                                           from '@acx-ui/analytics/utils'
 import { Drawer, Button, Tooltip, Loader }                    from '@acx-ui/components'
 import { WifiScopes }                                         from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }            from '@acx-ui/user'
+import { aiOpsApis, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { truthy }                                             from '@acx-ui/utils'
 
 import { Setting as UI } from './styledComponents'
@@ -95,7 +95,13 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
     (lspValue !== lspName),
     (propertyValue !== propertyName)
   ].some(hasChanged => hasChanged)
-  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }))
+  const isReadOnly = !(
+    hasCrossVenuesPermission() &&
+    hasPermission({
+      scopes: [WifiScopes.UPDATE],
+      rbacOpsIds: [aiOpsApis.updateBrand360Dashboard]
+    })
+  )
   const isDisabled = isInvalid || !hasChanged || isReadOnly
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
   const saveSettings = useCallback(() => {
@@ -106,7 +112,7 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
       'lsp-name': lspValue,
       'property-name': propertyValue
     })
-  }, [settings, ssidValue, brandValue, lspValue, propertyValue])
+  }, [updateSettings, settings, ssidValue, brandValue, lspValue, propertyValue])
 
   useEffect(() => {
     form &&

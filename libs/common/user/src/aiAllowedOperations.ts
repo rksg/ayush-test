@@ -21,7 +21,9 @@ export const opsApis = {
   deleteVideoCallQoe: 'DELETE:/videoCallQoe/{id}',
   createReportSchedules: 'POST:/reportSchedules',
   updateReportSchedules: 'PATCH:/reportSchedules/{id}',
-  deleteReportSchedules: 'DELETE:/reportSchedules/{id}'
+  deleteReportSchedules: 'DELETE:/reportSchedules/{id}',
+  readBrand360Dashboard: 'GET:/brand360Dashboard',
+  updateBrand360Dashboard: 'PATCH:/brand360Dashboard/{id}'
 }
 
 // Operations available for each scope
@@ -71,6 +73,18 @@ const aiOperations = [
     scope: ['bi.reports-d'],
     uri: [
       opsApis.deleteReportSchedules
+    ]
+  },
+  {
+    scope: ['brand360.dashboard-r'],
+    uri: [
+      opsApis.readBrand360Dashboard
+    ]
+  },
+  {
+    scope: ['brand360.dashboard-u'],
+    uri: [
+      opsApis.updateBrand360Dashboard
     ]
   }
 ]
