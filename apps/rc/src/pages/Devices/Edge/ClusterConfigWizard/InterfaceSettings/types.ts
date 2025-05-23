@@ -6,11 +6,28 @@ import { ClusterNetworkSettings, EdgePort, EdgeSerialNumber } from '@acx-ui/rc/u
 import { VirtualIpFormType }            from '../../EditEdgeCluster/VirtualIp'
 import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
+export const enum InterfaceSettingsTypeEnum {
+  LAGS = 'lagSettings',
+  PORTS = 'portSettings',
+  SUB_INTERFACE = 'subInterfaceSettings',
+  DUAL_WAN = 'dualWanSettings',
+  VIRTUAL_IP = 'virtualIpSettings',
+  HA_SETTING = 'haSettings'
+}
+
 // eslint-disable-next-line max-len
 type FallbackSettingsType = Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>['fallbackSettings']
 
 interface FallbackSettingsFormType extends Omit<FallbackSettingsType, 'schedule'> {
   schedule: Omit<FallbackSettingsType['schedule'], 'time'> & { time?: Moment }
+}
+
+export interface InterfaceSettingsFormStepProps {
+      title: string
+      id: InterfaceSettingsTypeEnum | 'summary'
+      content: React.ReactNode
+      onFinish?: boolean | ((typeKey: string, event?: React.MouseEvent) => Promise<boolean|void>)
+      onValuesChange?: (changedValues: Partial<InterfaceSettingsFormType>) => void
 }
 
 export interface InterfaceSettingsFormType extends SubInterfaceSettingsFormType {
