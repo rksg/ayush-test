@@ -189,7 +189,11 @@ export const DashboardItem = styled.div`
       justify-content: center;
       transition: .2s;
       &:hover {
+        color: var( --acx-neutrals-70);
         background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
       }
     }
     svg {
@@ -340,7 +344,11 @@ export const CanvasListItem = styled(AntList.Item)`
       justify-content: center;
       transition: .2s;
       &:hover {
+        color: var( --acx-neutrals-70);
         background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
       }
     }
     svg {
