@@ -161,12 +161,6 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           children={getEthernetPortAuthTypeString(ethernetData?.authType)}
         />
 
-        {ethernetData?.authType === EthernetPortAuthType.SUPPLICANT &&
-        <Form.Item
-          label={$t({ defaultMessage: 'Credential Type' })}
-          children={getEthernetPortCredentialTypeString(ethernetData?.supplicantAuthenticationOptions?.type)}
-        />
-        }
         {!(ethernetData?.authType === EthernetPortAuthType.SUPPLICANT) &&
         <>
           <Form.Item

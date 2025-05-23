@@ -5,9 +5,7 @@ import { clientApi }    from '@acx-ui/rc/services'
 import {
   AaaUrls,
   ClientIsolationUrls,
-  EthernetPortAuthType,
   EthernetPortProfileUrls,
-  EthernetPortType,
   IpsecUrls,
   LanPortsUrls,
   SoftGreUrls,
@@ -214,7 +212,22 @@ const ApData = {
   }
 }
 
-const EthernetPortProfileData = {
+const EthernetPortProfileMacData = {
+  type: 'TRUNK',
+  name: 'client_visibility_enabled',
+  isDefault: false,
+  authType: 'MAC_BASED_AUTHENTICATOR',
+  enableAuthProxy: true,
+  enableAccountingProxy: true,
+  bypassMacAddressAuthentication: true,
+  dynamicVlanEnabled: true,
+  untagId: 1,
+  vlanMembers: '1-4094',
+  isEnforced: false,
+  id: 'a6bd9bfa129c402da8d146d649c6aad9'
+}
+
+const EthernetPortProfileOpenData = {
   type: 'TRUNK',
   name: 'client_visibility_enabled',
   isDefault: false,
@@ -227,39 +240,6 @@ const EthernetPortProfileData = {
   vlanMembers: '1-4094',
   isEnforced: false,
   id: 'a6bd9bfa129c402da8d146d649c6aad9'
-}
-
-const PortProfileViewData = {
-  id: 'ae5af7daab00479faa6f8e985898b53e',
-  name: 'mac_based_client_visibility',
-  venueIds: [
-    '4b6dc218411d4b8cade17d16a034bcbb'
-  ],
-  apSerialNumbers: [
-
-  ],
-  type: EthernetPortType.ACCESS,
-  untagId: 1,
-  vlanMembers: '1',
-  isDefault: false,
-  authType: EthernetPortAuthType.MAC_BASED,
-  authRadiusId: '78fba4d214af46f5984ba33507258a21',
-  accountingRadiusId: 'a0900cc82f324b78a74a660174585f6c',
-  venueActivations: [
-    {
-      venueId: '4b6dc218411d4b8cade17d16a034bcbb',
-      apModel: 'H670',
-      portId: 3
-    },
-    {
-      venueId: '4b6dc218411d4b8cade17d16a034bcbb',
-      apModel: 'R610',
-      portId: 2
-    }
-  ],
-  apActivations: [
-
-  ]
 }
 
 describe('LanPortProfileDetailDrawer', () => {
@@ -292,27 +272,31 @@ describe('LanPortProfileDetailDrawer', () => {
         (_, res, ctx) => res(ctx.json(ClientIsolationData))
       ),
       rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (_, res, ctx) => res(ctx.json(EthernetPortProfileData))
+        (_, res, ctx) => res(ctx.json(EthernetPortProfileMacData))
       )
     )
   })
 
-  it('Should render correctly for wired client port detail', async () => {
+  it('Should render correctly for wired client port detail by mac based', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const mockedCallBack = jest.fn()
     const apSerialNumber = '123456789012'
     const venueId = '14ef8a8eea324fdb99d3f86390b280cc'
 
+    const portData = {
+      apName: 'AP Name',
+      serialNumber: apSerialNumber,
+      detailVisible: true,
+      portId: '2',
+      venueId: venueId
+    }
+
     render(<Provider>
       <LanPortProfileDetailsDrawer
-        title={'AP Name - LAN 2'}
         visible={true}
-        wiredPortVisible={true}
-        serialNumber={apSerialNumber}
-        venueId={venueId}
-        portId={'2'}
         setVisible={mockedCallBack}
+        portData={portData}
       />
     </Provider>, { route: { params } })
 
@@ -327,43 +311,6 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('Ethernet Port Profile')).toBeInTheDocument()
     expect(await screen.findByRole('link', { name: 'client_visibility_enabled' })).toBeVisible()
     expect(await screen.findByText('802.1X')).toBeInTheDocument()
-    expect(await screen.findByText('Off')).toBeInTheDocument()
-    expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
-    expect(await screen.findByText('IPsec')).toBeInTheDocument()
-    expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
-    expect(await screen.findByText('On')).toBeInTheDocument()
-    expect(await screen.findByText('Client Isolation Allowlist')).toBeInTheDocument()
-    expect(await screen.findByText('Not active')).toBeInTheDocument()
-  })
-
-  it('Should render correctly for ethernet port profile detail', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const mockedCallBack = jest.fn()
-
-    render(<Provider>
-      <LanPortProfileDetailsDrawer
-        title={'Ethernet Port Details:mac_based_client_visibility'}
-        visible={true}
-        wiredPortVisible={false}
-        ethernetPortProfileData={PortProfileViewData}
-        setVisible={mockedCallBack}
-      />
-    </Provider>, { route: { params } })
-
-    expect(
-      await screen.findByText(
-        'Ethernet Port Details:mac_based_client_visibility')).toBeInTheDocument()
-    expect(await screen.findByText('Name')).toBeInTheDocument()
-    expect(await screen.findByText('Port Type')).toBeInTheDocument()
-    expect(await screen.findByText('Access')).toBeInTheDocument()
-    expect(await screen.findByText('VLAN Untag ID')).toBeInTheDocument()
-    expect(await screen.findByText('VLAN Members')).toBeInTheDocument()
-    expect(await screen.findAllByText('1')).toHaveLength(2)
-    expect(await screen.findByText('802.1X')).toBeInTheDocument()
-    expect(await screen.findAllByText('On')).toHaveLength(2)
-    expect(await screen.findAllByText('Off')).toHaveLength(4)
-    expect(await screen.findByText('Client Visibility')).toBeInTheDocument()
     expect(await screen.findByText('802.1X Role')).toBeInTheDocument()
     expect(await screen.findByText('MAC-based Authenticator')).toBeInTheDocument()
     expect(await screen.findByText('Authentication Service')).toBeInTheDocument()
@@ -372,9 +319,67 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('Proxy Service (Accounting)')).toBeInTheDocument()
     expect(await screen.findByText('MAC Auth Bypass')).toBeInTheDocument()
     expect(await screen.findByText('Dynamic VLAN')).toBeInTheDocument()
-    expect(screen.queryByText('SoftGRE Tunnel')).not.toBeInTheDocument()
-    expect(screen.queryByText('IPsec')).not.toBeInTheDocument()
-    expect(screen.queryByText('Client Isolation')).not.toBeInTheDocument()
-    expect(screen.queryByText('Client Isolation Allowlist')).not.toBeInTheDocument()
+    expect(await screen.findByText('Guest VLAN')).toBeInTheDocument()
+    expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
+    expect(await screen.findByText('IPsec')).toBeInTheDocument()
+    expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
+    expect(await screen.findAllByText('On')).toHaveLength(6)
+    expect(await screen.findByText('Client Isolation Allowlist')).toBeInTheDocument()
+    expect(await screen.findByText('Not active')).toBeInTheDocument()
+  })
+
+  it('Should render correctly for wired client port detail by open', async () => {
+    mockServer.use(
+      rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json(EthernetPortProfileOpenData))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    const mockedCallBack = jest.fn()
+    const apSerialNumber = '123456789012'
+    const venueId = '14ef8a8eea324fdb99d3f86390b280cc'
+
+    const portData = {
+      apName: 'AP Name',
+      serialNumber: apSerialNumber,
+      detailVisible: true,
+      portId: '1',
+      venueId: venueId
+    }
+
+    render(<Provider>
+      <LanPortProfileDetailsDrawer
+        visible={true}
+        setVisible={mockedCallBack}
+        portData={portData}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('AP Name - LAN 1')).toBeInTheDocument()
+    expect(await screen.findByText('Ethernet Port Profile')).toBeInTheDocument()
+    expect(await screen.findByText('Port Type')).toBeInTheDocument()
+    expect(await screen.findByText('VLAN Untag ID')).toBeInTheDocument()
+    expect(await screen.findByText('VLAN Members')).toBeInTheDocument()
+    expect(await screen.findAllByText('--')).toHaveLength(5)
+    expect(await screen.findByText('Ethernet Port Profile')).toBeInTheDocument()
+    expect(await screen.findByText('802.1X')).toBeInTheDocument()
+    expect(await screen.findByText('802.1X Role')).toBeInTheDocument()
+    expect(await screen.findByText('Authentication Service')).toBeInTheDocument()
+    expect(await screen.findByText('Proxy Service (Auth)')).toBeInTheDocument()
+    expect(await screen.findByText('Accounting Service')).toBeInTheDocument()
+    expect(await screen.findByText('Proxy Service (Accounting)')).toBeInTheDocument()
+    expect(screen.queryByText('MAC Auth Bypass')).not.toBeInTheDocument()
+    expect(screen.queryByText('Dynamic VLAN')).not.toBeInTheDocument()
+    expect(screen.queryByText('Guest VLAN')).not.toBeInTheDocument()
+    expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'softgre-1' })).toBeVisible()
+    expect(await screen.findByText('IPsec')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'IPsec-1' })).toBeVisible()
+    expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
+    expect(await screen.findAllByText('On')).toHaveLength(2)
+    expect(await screen.findByText('Client Isolation Allowlist')).toBeInTheDocument()
+    expect(await screen.findByText('clientIsolationProfile1')).toBeInTheDocument()
   })
 })
