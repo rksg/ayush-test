@@ -190,10 +190,11 @@ const getItemInfo = (props: {
         key='actionMenu'
         trigger={['click']}
       >
-        <MoreVertical
-          size='sm'
+        <Button
           data-testid='dashboard-more-btn'
-        // onClick={(e) => e.stopPropagation()}
+          type='link'
+          size='small'
+          icon={<MoreVertical size='sm' />}
         />
       </Dropdown>
     </div>}
@@ -205,7 +206,6 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
-  setPreviewId: (id: string) => void,
   handleOpenPreview: (data: DashboardInfo[]) => void
   handleOpenCanvas: (id?: string) => void
 }) => {
@@ -248,7 +248,6 @@ export const DashboardDrawer = (props: {
       default: // view
         const previewDashboard = dashboardList.filter(item => item.id === id)
         props.handleOpenPreview(previewDashboard)
-        props.setPreviewId(id)
         break
     }
   }
