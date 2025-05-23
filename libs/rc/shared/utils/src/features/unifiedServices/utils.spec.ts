@@ -7,7 +7,7 @@ import { generatePolicyListBreadcrumb, generateServiceListBreadcrumb, getPolicyR
 import { ServiceOperation, ServiceType }                                                                                                                                                 from '../../constants'
 import { PolicyOperation, PolicyType, policyTypeDescMapping }                                                                                                                            from '../../types'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                                                                                                                          from './constants'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                                                                                                                                                 from './constants'
 import { buildUnifiedServices, getUnifiedServiceRoute, hasUnifiedServiceCreatePermission, canCreateAnyUnifiedService, isUnifiedServiceAvailable, generateUnifiedServicesBreadcrumb, collectAvailableProductsAndCategories } from './utils'
 
 const mockedHasServicePermission = jest.fn(() => true)
@@ -192,17 +192,20 @@ describe('utils', () => {
         {
           ...baseUnifiedService,
           products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          category: UnifiedServiceCategory.NETWORK_SERVICES,
+          category: UnifiedServiceCategory.NETWORK_SERVICES
         },
         {
           ...baseUnifiedService,
           products: [RadioCardCategory.WIFI],
-          category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-        },
+          category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
+        }
       ]
       const result = collectAvailableProductsAndCategories(services)
       expect(result.products).toEqual([RadioCardCategory.WIFI, RadioCardCategory.EDGE])
-      expect(result.categories).toEqual([UnifiedServiceCategory.NETWORK_SERVICES, UnifiedServiceCategory.AUTHENTICATION_IDENTITY])
+      expect(result.categories).toEqual([
+        UnifiedServiceCategory.NETWORK_SERVICES,
+        UnifiedServiceCategory.AUTHENTICATION_IDENTITY
+      ])
     })
 
     it('should remove duplicates from products and categories', () => {
@@ -210,13 +213,13 @@ describe('utils', () => {
         {
           ...baseUnifiedService,
           products: [RadioCardCategory.WIFI, RadioCardCategory.WIFI],
-          category: UnifiedServiceCategory.NETWORK_SERVICES,
+          category: UnifiedServiceCategory.NETWORK_SERVICES
         },
         {
           ...baseUnifiedService,
           products: [RadioCardCategory.WIFI],
-          category: UnifiedServiceCategory.NETWORK_SERVICES,
-        },
+          category: UnifiedServiceCategory.NETWORK_SERVICES
+        }
       ]
       const result = collectAvailableProductsAndCategories(services)
       expect(result.products).toEqual([RadioCardCategory.WIFI])

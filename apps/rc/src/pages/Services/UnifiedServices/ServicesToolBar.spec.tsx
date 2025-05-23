@@ -1,11 +1,11 @@
 import { cleanup, waitFor } from '@testing-library/react'
 import userEvent            from '@testing-library/user-event'
 
+import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
 import { render, screen }         from '@acx-ui/test-utils'
 
 import { ServicesToolBar, ServiceSortOrder } from './ServicesToolBar'
-import { RadioCardCategory } from '@acx-ui/components'
 
 describe('ServicesToolBar', () => {
   const mockedSetSearchTerm = jest.fn()
