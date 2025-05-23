@@ -78,17 +78,41 @@ describe('ManageCanvasDrawer', () => {
   })
 
   it('should delete a canvas correctly', async () => {
+    const props = {
+      visible: true,
+      onClose: jest.fn(),
+      canvasList: [
+        ...canvasList,
+        {
+          id: '002',
+          name: 'Canvas 2',
+          visible: true,
+          content: ''
+        }
+      ]
+    }
+    render(
+      <Provider>
+        <ManageCanvasDrawer {...props} />
+      </Provider>
+    )
+    expect(screen.getByText('Dashboard Canvas')).toBeVisible()
+    fireEvent.click(screen.getAllByTestId('delete')[0])
+    const deleteBtn = await screen.findByText('Delete Canvas')
+    expect(deleteBtn).toBeVisible()
+    fireEvent.click(deleteBtn)
+    expect(mockedDelete).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not delete the last one canvas', async () => {
     render(
       <Provider>
         <ManageCanvasDrawer {...mockProps} />
       </Provider>
     )
     expect(screen.getByText('Dashboard Canvas')).toBeVisible()
-    fireEvent.click(screen.getByTestId('delete'))
-    const deleteBtn = await screen.findByText('Delete Canvas')
-    expect(deleteBtn).toBeVisible()
-    fireEvent.click(deleteBtn)
-    expect(mockedDelete).toHaveBeenCalledTimes(1)
+    const deleteIcon = screen.getByTestId('delete')
+    expect(deleteIcon).toHaveClass('disabled')
   })
 
   it('should edit a canvas correctly', async () => {

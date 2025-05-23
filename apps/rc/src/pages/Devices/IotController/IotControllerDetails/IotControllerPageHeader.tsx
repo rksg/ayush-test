@@ -49,7 +49,7 @@ function IotControllerPageHeader () {
               type='default'
               onClick={() =>
                 // eslint-disable-next-line max-len
-                window.open('https://' + '' + '/admin',
+                window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
                   '_blank')
               }
             >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,

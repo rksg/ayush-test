@@ -49,7 +49,7 @@ function ApPageHeader () {
     useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
-  const { data } = useApDetailHeaderQuery({ params })
+  const { data } = useApDetailHeaderQuery({ params, enableRbac: isUseRbacApi })
 
   const { data: apCapabilities } = useGetApCapabilities({
     params,
