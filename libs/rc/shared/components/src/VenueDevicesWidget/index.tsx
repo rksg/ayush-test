@@ -1,15 +1,16 @@
-import { Loader }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { useRwgListQuery, useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-import { RolesEnum }                                   from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }             from '@acx-ui/user'
-import { useTrackLoadTime, widgetsMapping }            from '@acx-ui/utils'
+import { Loader }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { useGetIotControllerListQuery, useRwgListQuery, useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
+import { useParams }                                                                 from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                 from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                           from '@acx-ui/user'
+import { useTrackLoadTime, widgetsMapping }                                          from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
   getEdgeDonutChartData,
   getRwgDonutChartData,
+  getIotControllerDonutChartData,
   getVenueSwitchDonutChartData } from '../DevicesWidget/helper'
 import { DevicesWidget } from '../DevicesWidget/index'
 
@@ -36,6 +37,10 @@ export function VenueDevicesWidget () {
   const { data: rwgs } = useRwgListQuery({ params: useParams() },
     { skip: !(showRwgUI && rwgHasPermission) })
 
+  const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
+  const { data: iotControllers } = useGetIotControllerListQuery({ params: useParams() },
+    { skip: !(showIotControllerUI) })
+
   useTrackLoadTime({
     itemName: widgetsMapping.VENUE_DEVICES_WIDGET,
     states: [queryResults],
@@ -49,6 +54,7 @@ export function VenueDevicesWidget () {
         switchData={queryResults.data.switchData}
         edgeData={queryResults.data.edgeData}
         rwgData={getRwgDonutChartData(rwgs?.data || [])}
+        iotControllerData={getIotControllerDonutChartData(iotControllers?.data || [])}
       />
     </Loader>
   )

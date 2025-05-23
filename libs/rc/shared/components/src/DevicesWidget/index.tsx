@@ -13,6 +13,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ChartData,
   CommonRbacUrlsInfo,
+  IotUrlsInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
   WifiRbacUrlsInfo
@@ -46,6 +47,7 @@ export function DevicesWidget (props: {
   switchData: DonutChartData[],
   edgeData: DonutChartData[],
   rwgData: DonutChartData[],
+  iotControllerData: DonutChartData[],
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
@@ -67,6 +69,11 @@ export function DevicesWidget (props: {
     numDonut++
   }
 
+  const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
+  if (showIotControllerUI) {
+    numDonut++
+  }
+
   const { venueId } = useParams()
 
   const getNavigatePath = (deviceType: string) => {
@@ -79,6 +86,7 @@ export function DevicesWidget (props: {
   const clickSwitchHandler = useNavigateToPath(getNavigatePath('switch'))
   const clickSmartEdgeHandler = useNavigateToPath(getNavigatePath('edge'))
   const clickRwgHandler = useNavigateToPath(getNavigatePath('rwg'))
+  const clickIotControllerHandler = useNavigateToPath(getNavigatePath('iotController'))
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
@@ -116,6 +124,15 @@ export function DevicesWidget (props: {
                   title={$t({ defaultMessage: 'RWG' })}
                   data={props.rwgData}/>
               </UI.NavigationContainer>)}
+            { showIotControllerUI && (
+              <UI.NavigationContainer onClick={clickIotControllerHandler}>
+                <DonutChart
+                  key='iot-controller-donutChart'
+                  style={{ width: width/numDonut, height }}
+                  title={$t({ defaultMessage: 'IoT Controller' })}
+                  data={props.iotControllerData}/>
+              </UI.NavigationContainer>)}
+
           </div>
         )}
       </AutoSizer>
@@ -128,10 +145,12 @@ export function DevicesWidgetv2 (props: {
   switchStackedData: ChartData[],
   edgeStackedData: ChartData[],
   rwgStackedData: { chartData: ChartData[], stackedColors: string[] },
+  iotControllerStackedData: { chartData: ChartData[], stackedColors: string[] },
   apTotalCount: number,
   switchTotalCount: number,
   edgeTotalCount: number,
   rwgTotalCount: number,
+  iotControllerTotalCount: number,
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
@@ -142,16 +161,19 @@ export function DevicesWidgetv2 (props: {
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
+  const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
 
   const {
     apStackedData,
     switchStackedData,
     edgeStackedData,
     rwgStackedData,
+    iotControllerStackedData,
     apTotalCount,
     switchTotalCount,
     edgeTotalCount,
-    rwgTotalCount
+    rwgTotalCount,
+    iotControllerTotalCount
   } = props
 
   return (
@@ -322,6 +344,46 @@ export function DevicesWidgetv2 (props: {
                 </GridCol>
               </GridRow>
             }
+            {
+              showIotControllerUI && <GridRow align={'middle'}>
+                <GridCol col={{ span: iotControllerTotalCount ? 9 : 12 }}>
+                  { iotControllerTotalCount > 0
+                    ? $t({ defaultMessage: 'IoT Controllers' })
+                    : $t({ defaultMessage: 'No IoT Controllers' }) }
+                </GridCol>
+                <GridCol col={{ span: iotControllerTotalCount ? 9 : 12 }}>
+                  { iotControllerTotalCount > 0
+                    ? <Space>
+                      <StackedBarChart
+                        key='iotController-stackedBarChart'
+                        animation={false}
+                        style={{
+                          height: height/2 - 30,
+                          width: width/2 - 15
+                        }}
+                        data={iotControllerStackedData.chartData}
+                        showLabels={false}
+                        showTotal={false}
+                        total={iotControllerTotalCount}
+                        barColors={iotControllerStackedData.stackedColors} />
+                      <TenantLink key='iotController-tenantLink' to={'/devices/iotController'}>
+                        {iotControllerTotalCount}
+                      </TenantLink>
+                    </Space>
+                    : <UI.LinkContainer
+                      key='iotController-linkContainer'
+                      style={{ height: (height/2) - 30 }}>
+                      {!isCustomRole && filterByAccess([
+                        <TenantLink to={'/devices/iotController/add'}
+                          rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
+                          {$t({ defaultMessage: 'Add IoT Controller' })}
+                        </TenantLink>])}
+                    </UI.LinkContainer>
+                  }
+                </GridCol>
+              </GridRow>
+            }
+
           </UI.WidgetContainer>
         )}
       </AutoSizer>
