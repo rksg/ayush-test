@@ -284,7 +284,7 @@ export const ApWiredClientTable = (props: {
         />
         {lanPortDrawerState?.detailVisible && <LanPortProfileDetailsDrawer
           visible={lanPortDrawerState?.detailVisible}
-          setVisible={()=>setLanPortDrawerState(lanPortDrawerState)}
+          setVisible={setLanPortDrawerState}
           portData={lanPortDrawerState!}
         />}
       </Loader>
