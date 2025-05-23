@@ -213,19 +213,16 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
               children={transformDisplayOnOff(!!ethernetData?.bypassMacAddressAuthentication)}
             />
 
-            {ethernetData?.authType === EthernetPortAuthType.MAC_BASED &&
-              <>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Dynamic VLAN' })}
-                  children={transformDisplayOnOff(!!ethernetData?.dynamicVlanEnabled)}
-                />
-                { ethernetData?.dynamicVlanEnabled &&
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Guest VLAN' })}
-                    children={ethernetData?.unauthenticatedGuestVlan}
-                  />
-                }
-              </>
+            <Form.Item
+              label={$t({ defaultMessage: 'Dynamic VLAN' })}
+              children={transformDisplayOnOff(!!ethernetData?.dynamicVlanEnabled)}
+            />
+
+            { ethernetData?.dynamicVlanEnabled &&
+              <Form.Item
+                label={$t({ defaultMessage: 'Guest VLAN' })}
+                children={ethernetData?.unauthenticatedGuestVlan}
+              />
             }
           </>
           }
