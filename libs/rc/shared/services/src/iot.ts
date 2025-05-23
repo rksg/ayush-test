@@ -3,7 +3,6 @@ import {
   onActivityMessageReceived,
   ActivePluginsData,
   CommonResult,
-  CommonRbacUrlsInfo,
   TableResult,
   RcapLicenseUtilizationData,
   IotControllerDashboard,
@@ -19,63 +18,14 @@ import {
   ignoreErrorModal
 } from '@acx-ui/utils'
 
-const iotControllerList = {
-  requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
-  response: {
-    data: [{
-      id: 'a48a5d2a-5433-42e9-b370-7d45ed5f4266',
-      name: 'ruckusdemos',
-      inboundAddress: '192.168.1.1',
-      iotSerialNumber: 'rewqfdsafasd',
-      publicAddress: 'ruckusdemos.cloud',
-      publicPort: 443,
-      apiToken: 'xxxxxxxxxxxxxxxxxxx',
-      tenantId: '3f10af1401b44902a88723cb68c4bc77',
-      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
-    }, {
-      id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
-      name: 'iotController1',
-      inboundAddress: '192.168.2.21',
-      iotSerialNumber: '10104820711209934',
-      publicAddress: '35.229.207.4',
-      publicPort: 443,
-      apiToken: 'UYqHZs3ZshQUNjTflYyvLxNLLGHNXqw6e88y6KA8RsuFltcmk09xRk8XYxEZXevH',
-      tenantId: '3f10af1401b44902a88723cb68c4bc77',
-      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
-    }] as IotControllerStatus[]
-  }
-}
-
-
 export const iotApi = baseIotApi.injectEndpoints({
   endpoints: (build) => ({
     getIotControllerList: build.query<TableResult<IotControllerStatus>, RequestPayload>({
       query: ({ payload, params }) => {
-        const req = createHttpRequest(CommonRbacUrlsInfo.getRwgList, params)
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerList, params)
         return {
           ...req,
           body: payload
-        }
-      },
-      transformResponse: ({ response }) => {
-        // const _res: IotControllerStatus[] = response.data.map((controller: IotControllerStatus) => {
-        //   return {
-        //     ...controller,
-        //     rowId: controller.id
-        //   }
-        // })
-        // eslint-disable-next-line max-len
-        const _res: IotControllerStatus[] = iotControllerList.response.data.map((controller: IotControllerStatus) => {
-          return {
-            ...controller,
-            rowId: controller.id
-          }
-        })
-
-        return {
-          data: _res,
-          totalCount: response.totalCount,
-          page: response.page
         }
       },
       keepUnusedDataFor: 0,
@@ -106,16 +56,12 @@ export const iotApi = baseIotApi.injectEndpoints({
         { type: 'IotController', id: 'LIST' }
       ]
     }),
-    getIotController: build.query<IotControllerStatus, RequestPayload>({
+    getIotController: build.query<IotControllerSetting, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonRbacUrlsInfo.getRwgList, params)
-        // const req = createHttpRequest(IotUrlsInfo.getIotController, params)
+        const req = createHttpRequest(IotUrlsInfo.getIotController, params)
         return {
           ...req
         }
-      },
-      transformResponse: () => {
-        return iotControllerList.response.data[1]
       },
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),

@@ -77,7 +77,7 @@ describe('Iot Controller Form', () => {
     initialize()
     mockServer.use(
       rest.post(IotUrlsInfo.getIotControllerList.url,
-        (req, res, ctx) => res(ctx.json(iotControllerList))),
+        (req, res, ctx) => res(ctx.json(iotControllerList.response))),
       rest.post(IotUrlsInfo.addIotController.url,
         (_, res, ctx) => {
           mockedReqFn()

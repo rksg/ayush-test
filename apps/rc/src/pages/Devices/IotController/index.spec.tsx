@@ -72,7 +72,7 @@ describe('Iot Controller Table', () => {
       <Provider>
         <IotController />
       </Provider>, {
-        route: { params, path: '/iots/query' }
+        route: { params, path: '/:tenantId/t/devices/iotController' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

@@ -40,11 +40,6 @@ export function useIotControllerActions () {
         confirmationText: $t({ defaultMessage: 'Delete' })
       },
       onOk: handleOk
-      // onOk: () => {
-      //   invokeDeleteIotController({
-      //     params: { iotId: rows[0].id }
-      //   }).then(callBack)
-      // }
     })
   }
 

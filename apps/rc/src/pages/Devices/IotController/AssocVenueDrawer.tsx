@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-interface AssocVenueDrawerProps {
+export interface AssocVenueDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   usedVenueIds: string[]

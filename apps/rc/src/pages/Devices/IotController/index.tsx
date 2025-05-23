@@ -113,14 +113,6 @@ export function IotController () {
     tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
-  // const rowSelection = () => {
-  //   return {
-  //     getCheckboxProps: (record: IotControllerStatus) => ({
-  //       disabled: false
-  //     })
-  //   }
-  // }
-
   const count = tableQuery?.data?.totalCount || 0
 
   return (

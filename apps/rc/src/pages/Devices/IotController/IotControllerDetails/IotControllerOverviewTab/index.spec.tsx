@@ -59,6 +59,42 @@ const dashboardData = {
   }
 }
 
+const pluginsData = {
+  requestId: '336c8ceb-5a0d-4774-9ab7-9ecc751bdc0f',
+  pluginStatus: [
+    {
+      name: 'assaabloy',
+      running: false,
+      enabled: false
+    },
+    {
+      name: 'ibeacon',
+      running: false,
+      enabled: false
+    },
+    {
+      name: 'eddystone',
+      running: false,
+      enabled: false
+    },
+    {
+      name: 'ctrlDataStream',
+      running: false,
+      enabled: false
+    },
+    {
+      name: 'baas',
+      running: false,
+      enabled: false
+    },
+    {
+      name: 'telkonet',
+      running: false,
+      enabled: false
+    }
+  ]
+}
+
 const params = {
   tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
   venueId: '3f10af1401b44902a88723cb68c4bc77',
@@ -75,6 +111,10 @@ describe('Iot Controller Details Overview', () => {
       rest.get(
         IotUrlsInfo.getIotController.url,
         (req, res, ctx) => res(ctx.json(iotController))
+      ),
+      rest.get(
+        IotUrlsInfo.getIotControllerPlugins.url,
+        (req, res, ctx) => res(ctx.json(pluginsData))
       ),
       rest.get(
         IotUrlsInfo.getIotControllerDashboard.url,
