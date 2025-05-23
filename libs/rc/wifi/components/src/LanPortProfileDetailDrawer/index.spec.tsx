@@ -102,7 +102,9 @@ const EthernetPortProfiles = {
           apSerialNumber: '123456789012',
           portId: 2
         }
-      ]
+      ],
+      authRadiusId: 'f5cf248c518645248c1adafdcb60d99e',
+      accountingRadiusId: 'b91e0a5217ee46a3aa0c1f60a2c86fef'
     }
   ]
 }
@@ -222,9 +224,7 @@ const EthernetPortProfileMacData = {
   isDefault: false,
   authType: 'MAC_BASED_AUTHENTICATOR',
   enableAuthProxy: true,
-  authRadiusId: 'f5cf248c518645248c1adafdcb60d99e',
   enableAccountingProxy: true,
-  accountingRadiusId: 'b91e0a5217ee46a3aa0c1f60a2c86fef',
   bypassMacAddressAuthentication: true,
   dynamicVlanEnabled: true,
   untagId: 1,
@@ -331,7 +331,7 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
     expect(await screen.findByText('IPsec')).toBeInTheDocument()
     expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
-    expect(await screen.findAllByText('On')).toHaveLength(6)
+    expect(await screen.findAllByText('On')).toHaveLength(7)
     expect(await screen.findByText('Client Isolation Allowlist')).toBeInTheDocument()
     expect(await screen.findByText('Not active')).toBeInTheDocument()
   })
@@ -370,7 +370,7 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('Port Type')).toBeInTheDocument()
     expect(await screen.findByText('VLAN Untag ID')).toBeInTheDocument()
     expect(await screen.findByText('VLAN Members')).toBeInTheDocument()
-    expect(await screen.findAllByText('--')).toHaveLength(5)
+    expect(await screen.findAllByText('--')).toHaveLength(6)
     expect(await screen.findByText('Ethernet Port Profile')).toBeInTheDocument()
     expect(await screen.findByText('802.1X')).toBeInTheDocument()
     expect(await screen.findByText('802.1X Role')).toBeInTheDocument()

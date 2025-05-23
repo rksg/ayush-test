@@ -132,7 +132,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
       />
       <Form.Item
         label={$t({ defaultMessage: 'Port Type' })}
-        children={getEthernetPortTypeString(ethernetData?.type) ?? noDataDisplay}
+        children={getEthernetPortTypeString(ethernetData?.type)}
       />
       <Form.Item
         label={$t({ defaultMessage: 'VLAN Untag ID' })}
@@ -150,8 +150,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
             ethernetData?.authType === EthernetPortAuthType.OPEN))
         }
       />
-      {!(ethernetData?.authType === EthernetPortAuthType.DISABLED ||
-       ethernetData?.authType === EthernetPortAuthType.OPEN) &&
+      {!(ethernetData?.authType === EthernetPortAuthType.DISABLED) &&
       <>
         <Divider/>
 
@@ -165,14 +164,14 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           <Form.Item
             label={$t({ defaultMessage: 'Authentication Service' })}
             children={
-              (!ethernetData?.authRadiusId)
+              (!targetLanPort?.authRadiusId)
                 ? noDataDisplay
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetData.authRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetData?.authRadiusId)?.value || noDataDisplay}
+                    policyId: targetLanPort.authRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === targetLanPort?.authRadiusId)?.value || noDataDisplay}
                   </TenantLink>)
             }
           />
@@ -185,14 +184,14 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           <Form.Item
             label={$t({ defaultMessage: 'Accounting Service' })}
             children={
-              (!ethernetData?.accountingRadiusId)
+              (!targetLanPort?.accountingRadiusId)
                 ? noDataDisplay
                 : (
                   <TenantLink to={getPolicyDetailsLink({
                     type: PolicyType.AAA,
                     oper: PolicyOperation.DETAIL,
-                    policyId: ethernetData.accountingRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === ethernetData?.accountingRadiusId)?.value || noDataDisplay}
+                    policyId: targetLanPort.accountingRadiusId })}>
+                    {radiusNameMap.find(radius => radius.key === targetLanPort?.accountingRadiusId)?.value || noDataDisplay}
                   </TenantLink>)
             }
           />
@@ -235,14 +234,13 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           <Form.Item
             label={$t({ defaultMessage: 'SoftGRE Tunnel' })}
             children={
-              (targetLanPort?.softGreProfileName && targetLanPort?.softGreProfileId) &&
               (<FormattedMessage
                 defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
                 values={{
-                  status: transformDisplayOnOff(targetLanPort.softGreEnabled!),
+                  status: transformDisplayOnOff(targetLanPort?.softGreEnabled!),
                   leftQuote: targetLanPort?.ipsecProfileName ? '(' : '',
                   rightQuote: targetLanPort?.ipsecProfileName ? ')' : '',
-                  profileLink: () => targetLanPort.softGreProfileId ?
+                  profileLink: () => targetLanPort?.softGreProfileId ?
                     <TenantLink to={getPolicyDetailsLink({
                       type: PolicyType.SOFTGRE,
                       oper: PolicyOperation.DETAIL,
@@ -256,11 +254,10 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           {targetLanPort?.softGreEnabled && <Form.Item
             label={$t({ defaultMessage: 'IPsec' })}
             children={
-              (targetLanPort?.ipsecProfileName && targetLanPort?.ipsecProfileId) &&
               (<FormattedMessage
                 defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
                 values={{
-                  status: transformDisplayOnOff(targetLanPort.ipsecEnabled!),
+                  status: transformDisplayOnOff(targetLanPort?.ipsecEnabled!),
                   leftQuote: targetLanPort?.ipsecProfileName ? '(' : '',
                   rightQuote: targetLanPort?.ipsecProfileName ? ')' : '',
                   profileLink: () => targetLanPort.ipsecProfileId ?
@@ -276,7 +273,7 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
 
           <Form.Item
             label={$t({ defaultMessage: 'Client Isolation' })}
-            children={transformDisplayOnOff(!!targetLanPort?.clientIsolationEnabled)}
+            children={transformDisplayOnOff(targetLanPort?.clientIsolationEnabled!)}
           />
 
           {targetLanPort?.clientIsolationEnabled && <Form.Item

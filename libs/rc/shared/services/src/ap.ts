@@ -1036,7 +1036,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
-              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni'],
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId'],
               pageSize: 1000
             })
           }
@@ -1057,6 +1057,8 @@ export const apApi = baseApApi.injectEndpoints({
                 let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
                 if (venueTargetPort) {
                   venueTargetPort.ethernetPortProfileId = eth.id
+                  venueTargetPort.authRadiusId = eth.authRadiusId
+                  venueTargetPort.accountingRadiusId = eth.accountingRadiusId
                 }
               }
             }
@@ -1068,6 +1070,8 @@ export const apApi = baseApApi.injectEndpoints({
                   ?.find(l => l.portId === port.portId?.toString())
                 if (targetPort) {
                   targetPort.ethernetPortProfileId = eth.id
+                  targetPort.authRadiusId = eth.authRadiusId
+                  targetPort.accountingRadiusId = eth.accountingRadiusId
                 }
               }
             }
