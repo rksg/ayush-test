@@ -290,11 +290,15 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         showTotal
       />
     } else if(type === 'line') {
-      return <StackedAreaChart
-        style={{ width: width-5, height: height-heightDiff }}
-        data={chartData?.chartOption || []}
-        xAxisType={chartData?.axisType}
-      />
+      if(!chartData?.chartOption) {
+        return <NoDataIcon hideText={true} />
+      } else {
+        return <StackedAreaChart
+          style={{ width: width-5, height: height-heightDiff }}
+          data={chartData?.chartOption || []}
+          xAxisType={chartData?.axisType}
+        />
+      }
     } else if(type === 'bar') {
       if(!chartData?.chartOption?.source) {
         return <NoDataIcon hideText={true} />
@@ -344,40 +348,6 @@ export const WidgetChart: React.FC<WidgetListProps> = (
     }
     return
   }
-  // const queryResults = {
-  //   data: {
-  //     chartOption: [
-  //       {
-  //           "key": "switchId_Total Uplink Traffic (Bytes)",
-  //           "name": "Total Uplink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   278871529
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   46174041
-  //               ]
-  //           ]
-  //       },
-  //       {
-  //           "key": "switchId_Total Downlink Traffic (Bytes)",
-  //           "name": "Total Downlink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   12376117
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   6073197
-  //               ]
-  //           ]
-  //       }
-  //   ]
-  //   }
-  // }
   const isCard = data.type === 'card'
   const chartData = isCard ? queryResults.data : data
   const widgetTitle = chartData?.name && data?.updated

@@ -601,7 +601,7 @@ export function useWifiCalling (notReady: boolean) {
     return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
   }
 
-  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData) => {
+  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData, cloneMode?: boolean) => {
     if (!enableRbac || !networkId) return
 
     const { wifiCallingEnabled = false, wifiCallingIds: newIds = [] }
@@ -611,7 +611,7 @@ export function useWifiCalling (notReady: boolean) {
 
     if (wifiCallingEnabled) {
       if (originalEnabled) {
-        const activateIds = newIds.filter(id => !originalIds.includes(id))
+        const activateIds = cloneMode ? newIds : newIds.filter(id => !originalIds.includes(id))
         const deactivateIds = originalIds.filter(id => !newIds.includes(id))
 
         return Promise.all([

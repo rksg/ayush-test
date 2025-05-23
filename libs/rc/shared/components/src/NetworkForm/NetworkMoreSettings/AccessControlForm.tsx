@@ -152,8 +152,14 @@ export function AccessControlForm () {
     if (!!id) {
       setEnabledProfile(true)
       form.setFieldValue('accessControlProfileEnable', true)
+      form.setFieldValue('accessControlProfileToggleEnable', true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'accessControlProfileId'], id)
     }
+  }
+
+  const enableAccessControlProfile = () => {
+    form.setFieldValue('accessControlProfileToggleEnable', !enabledProfile)
+    setEnabledProfile(!enabledProfile)
   }
 
   return (
@@ -171,7 +177,7 @@ export function AccessControlForm () {
         {!isTemplate && !enabledProfile && <SaveAsAcProfileButton
           modalStatus={modalStatus}
           setModalStatus={setModalStatus} />}
-        {!isTemplate && <Button type='link' onClick={() => setEnabledProfile(!enabledProfile)}>
+        {!isTemplate && <Button type='link' onClick={enableAccessControlProfile}>
           {enabledProfile ? $t({ defaultMessage: 'Select separate profiles' })
             : $t({ defaultMessage: 'Select Access Control profile' })
           }

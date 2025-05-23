@@ -214,6 +214,7 @@ display: flex;
       .newChat {
         &.disabled {
           color: var(--acx-neutrals-50);
+          cursor: not-allowed;
         }
       }
     }
@@ -914,6 +915,10 @@ export const CanvasListItem = styled(AntList.Item)`
     .button {
       margin-left: 16px;
       cursor: pointer;
+      &.disabled {
+        color: var(--acx-neutrals-50);
+        cursor: not-allowed;
+      }
     }
   }
 `

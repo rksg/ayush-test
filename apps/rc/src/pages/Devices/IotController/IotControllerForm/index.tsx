@@ -21,10 +21,12 @@ import {
 import {
   useAddIotControllerMutation,
   useGetIotControllerQuery,
+  useLazyGetIotControllerListQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
 import {
+  checkObjectNotExists,
   redirectPreviousPage,
   IotControllerSetting,
   excludeSpaceRegExp,
@@ -36,6 +38,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
+import { validationMessages }    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -53,7 +56,7 @@ export function IotControllerForm () {
 
   const [form] = Form.useForm()
   const publicEnabled = Form.useWatch('publicEnabled', form)
-  const [ testConnectionIotController, { isLoading: isTesting }] =
+  const [ testConnectionIotController, { isLoading: isConnectionTesting }] =
     useTestConnectionIotControllerMutation()
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
   let currentTestConnectionFun: ReturnType<typeof testConnectionIotController> | undefined
@@ -100,6 +103,20 @@ export function IotControllerForm () {
     setTestConnectionStatus(undefined)
   }
 
+  const [getIotControllerList] = useLazyGetIotControllerListQuery()
+  const nameValidator = async (value: string) => {
+    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+      return Promise.reject($t(validationMessages.name))
+    }
+    try {
+      const list = (await getIotControllerList({ params: { tenantId } })
+        .unwrap()).data?.map(n => ({ name: n.name }))
+      return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
       const formData = { ...values }
@@ -114,7 +131,7 @@ export function IotControllerForm () {
 
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values, id: data?.id } // rwg update API use post method where rwgId is required to pass
+      const formData = { ...values, id: data?.id }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -149,7 +166,7 @@ export function IotControllerForm () {
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToIotController)
         }
-        disabled={isCustomRole}
+        disabled={isCustomRole || isConnectionTesting}
         buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}
@@ -166,7 +183,10 @@ export function IotControllerForm () {
                     initialValue={data?.name}
                     label={$t({ defaultMessage: 'IoT Controller Name' })}
                     rules={[
-                      { type: 'string', required: true }
+                      { type: 'string', required: true },
+                      {
+                        validator: (_, value) => nameValidator(value)
+                      }
                     ]}
                     validateFirst
                     children={<Input />}
@@ -293,8 +313,8 @@ export function IotControllerForm () {
                     <div style={{ textAlign: 'right' }}>
                       <Button
                         htmlType='submit'
-                        disabled={isTesting}
-                        loading={isTesting}
+                        disabled={isConnectionTesting}
+                        loading={isConnectionTesting}
                         onClick={onClickTestConnection}
                       >
                         {$t({ defaultMessage: 'Validate' })}
