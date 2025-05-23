@@ -591,7 +591,7 @@ export function RadioSettings (props: ApEditItemProps) {
         return {
           enable24G: true,
           enable50G: true,
-          enable6G: supportTriRadio, // default enable6G
+          enable6G: true,
           apRadioParams24G: venueRadioParams24G,
           apRadioParams50G: venueRadioParams50G,
           apRadioParamsDual5G: venueRadioParamsDual5G,
