@@ -370,7 +370,7 @@ describe('LanPortProfileDetailDrawer', () => {
     expect(await screen.findByText('Port Type')).toBeInTheDocument()
     expect(await screen.findByText('VLAN Untag ID')).toBeInTheDocument()
     expect(await screen.findByText('VLAN Members')).toBeInTheDocument()
-    expect(await screen.findAllByText('--')).toHaveLength(6)
+    expect(await screen.findAllByText('--')).toHaveLength(5)
     expect(await screen.findByText('Ethernet Port Profile')).toBeInTheDocument()
     expect(await screen.findByText('802.1X')).toBeInTheDocument()
     expect(await screen.findByText('802.1X Role')).toBeInTheDocument()
