@@ -58,7 +58,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-  const isPassphraseEnforcement = useIsSplitOn(Features.PASSPHRASE_ENFORCEMENT)
+  const isPassphraseEnforcement = useIsSplitOn(Features.DPSK_PASSPHRASE_LENGTH_ENFORCEMENT)
   const { data: dpskPoolData } = useGetDpskQuery(
     { params: { serviceId } },
     { skip: !isPassphraseEnforcement }
@@ -253,10 +253,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                   return Promise.resolve()
                 }
                 if (isPassphraseEnforcement) {
-                  if (value.length !== dpskPoolData?.passphraseLength) {
+                  if (dpskPoolData?.passphraseLength &&
+                    value.length < dpskPoolData?.passphraseLength) {
                     throw new Error(
                       // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'Passphrase must be {length} characters' }, { length: dpskPoolData?.passphraseLength })
+                      $t({ defaultMessage: 'Passphrase must be at least {length} characters' }, { length: dpskPoolData?.passphraseLength })
                     )
                   }
                 } else if (value.length < 8 || value.length > 63) {

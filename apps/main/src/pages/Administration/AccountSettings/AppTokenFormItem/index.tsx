@@ -279,7 +279,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col style={{ width: '1200px' }}>
         <Form.Item
-          style={hasAppTokenConfigured ? { marginBottom: '-10px' } : { marginBottom: '10px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '0px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}

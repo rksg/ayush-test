@@ -10,7 +10,7 @@ import { MSPUtils, MspEc }                                   from '@acx-ui/msp/u
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
-import { AccountType }                                       from '@acx-ui/utils'
+import { AccountTier, AccountType }                          from '@acx-ui/utils'
 
 import HspContext                                                                         from '../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
@@ -50,7 +50,8 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
     defaultPayload: {
-      filters: ecFilters,
+      filters: { ...ecFilters },
+      mustNotMatchField: [{ field: 'accountTier', value: AccountTier.CORE }],
       fields: ['id', 'name', 'status', 'streetAddress', 'tenantType']
     },
     search: {

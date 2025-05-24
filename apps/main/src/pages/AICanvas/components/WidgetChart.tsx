@@ -19,9 +19,9 @@ import { noDataDisplay }                                                        
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
 
-import { WidgetProperty }    from './Card'
-import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
-import { ItemTypes }         from './GroupItem'
+import { WidgetProperty }                      from './Card'
+import CustomizeWidgetDrawer, { timeRangeMap } from './CustomizeWidgetDrawer'
+import { ItemTypes }                           from './GroupItem'
 
 
 interface WidgetListProps {
@@ -63,8 +63,12 @@ export const getChartConfig = (data: WidgetListData) => {
           height: 8
         },
         {
-          width: 4,
+          width: 3,
           height: 12
+        },
+        {
+          width: 4,
+          height: 16
         }
       ]
     },
@@ -76,6 +80,10 @@ export const getChartConfig = (data: WidgetListData) => {
         {
           width: 2,
           height: 6
+        },
+        {
+          width: 3,
+          height: 7
         },
         {
           width: 4,
@@ -110,6 +118,10 @@ export const getChartConfig = (data: WidgetListData) => {
         {
           width: 2,
           height: 6
+        },
+        {
+          width: 3,
+          height: 8
         },
         {
           width: 4,
@@ -198,6 +210,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, remove
 
 export const WidgetChart: React.FC<WidgetListProps> = (
   { data, visible, setVisible, changeWidgetProperty }) => {
+  const { $t } = useIntl()
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const queryResults = useGetWidgetQuery({
     customHeaders: { timezone },
@@ -291,27 +304,33 @@ export const WidgetChart: React.FC<WidgetListProps> = (
   }
 
 
-  const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
+  const getChart = (
+    type: string, width:number, height:number, chartData:WidgetListData, isCard: boolean) => {
+    const heightDiff = isCard ? 20 : 5
     if(type === 'pie') {
       return <DonutChart
-        style={{ width: width-5, height: height-5 }}
+        style={{ width: width-5, height: height-heightDiff }}
         size={'medium'}
         data={chartData?.chartOption || []}
         animation={true}
         showTotal
       />
     } else if(type === 'line') {
-      return <StackedAreaChart
-        style={{ width: width-5, height: height-5 }}
-        data={chartData?.chartOption || []}
-        xAxisType={chartData?.axisType}
-      />
+      if(!chartData?.chartOption) {
+        return <NoDataIcon hideText={true} />
+      } else {
+        return <StackedAreaChart
+          style={{ width: width-5, height: height-heightDiff }}
+          data={chartData?.chartOption || []}
+          xAxisType={chartData?.axisType}
+        />
+      }
     } else if(type === 'bar') {
       if(!chartData?.chartOption?.source) {
         return <NoDataIcon hideText={true} />
       } else {
         return <BarChart
-          style={{ width: width-30, height: height-5 }}
+          style={{ width: width-30, height: height-heightDiff }}
           grid={{
             right: '10px',
             top: chartData?.multiseries ? '15%': '0'
@@ -352,55 +371,27 @@ export const WidgetChart: React.FC<WidgetListProps> = (
     }
     return
   }
-  // const queryResults = {
-  //   data: {
-  //     chartOption: [
-  //       {
-  //           "key": "switchId_Total Uplink Traffic (Bytes)",
-  //           "name": "Total Uplink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   278871529
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   46174041
-  //               ]
-  //           ]
-  //       },
-  //       {
-  //           "key": "switchId_Total Downlink Traffic (Bytes)",
-  //           "name": "Total Downlink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   12376117
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   6073197
-  //               ]
-  //           ]
-  //       }
-  //   ]
-  //   }
-  // }
-  const chartData = data.type === 'card' ? queryResults.data : data
-  const widgetTitle = chartData?.name && chartData?.updated //TODO
+  const isCard = data.type === 'card'
+  const chartData = isCard ? queryResults.data : data
+  const widgetTitle = chartData?.name && data?.updated
     ? { title: chartData?.name, icon: <span className='update-indicator' /> }
     : chartData?.name
-
+  const widgetTimeRange = chartData?.timeRange
+    ? $t(timeRangeMap[chartData.timeRange])
+    : (chartData?.defaultTimeRange || '')
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? widgetTitle : ''}
+        title={isCard ? widgetTitle : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
+        {
+          isCard && <div className='sub-title'>{widgetTimeRange}</div>
+        }
         <AutoSizer>
           {({ height, width }) => <div className='chart'>{getChart(
-            data.chartType, width, height, chartData as WidgetListData)}</div>}
+            data.chartType, width, height, chartData as WidgetListData, isCard)}</div>}
         </AutoSizer>
       </UI.Widget>
       {

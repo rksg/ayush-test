@@ -50,9 +50,10 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const tenantType = tenantDetailsData.data?.tenantType
   const canMSPDelegation = isDelegationMode() === false
-  const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
-  const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
+  const isNonDelegatedMspEc =
+    isMspEc && userProfileData?.varTenantId && canMSPDelegation === true
   const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
@@ -69,17 +70,20 @@ const AccountSettings = (props : AccountSettingsProps) => {
     hasAllowedOperations([
       getOpsApi(AdministrationUrlsInfo.getTenantAuthentications)
     ]) : isPrimeAdminUser
+  const isMsp =
+  tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR
+
+  const isRec = tenantType === AccountType.REC
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const showRksSupport = isMspEc === false
+  const showRksSupport = isNonDelegatedMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = hasPermission && isIdmDecoupling && !isDogfood
-    && (canMSPDelegation || ((isLoginSSoMspEcEnabled ? isMspEc : !isMspEc)
-    || (isLoginSSoTechpartnerEnabled && isTechPartner)))
-
+    && !isDelegationMode() && (isMsp || isRec || (isLoginSSoMspEcEnabled && isMspEc)
+    || (isLoginSSoTechpartnerEnabled && isTechPartner))
   const showApiKeySupport = hasPermission && isApiKeyEnabled
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
   const showSoftDeleteButton = (rbacOpsApiEnabled ? hasAllowedOperations([
@@ -126,7 +130,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <>
               <Divider />
               <AccessSupportFormItem
-                hasMSPEcLabel={hasMSPEcLabel}
+                hasMSPEcLabel={isMspEc}
                 canMSPDelegation={canMSPDelegation}
               />
             </>
@@ -153,7 +157,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
               <MFAFormItem
                 mfaTenantDetailsData={mfaTenantDetailsData.data}
                 isPrimeAdminUser={isPrimeAdminUser}
-                isMspEc={isMspEc as boolean}
+                isMspEc={isNonDelegatedMspEc as boolean}
               />
             </>
           )}

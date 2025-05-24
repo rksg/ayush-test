@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { PersonaUrls }                from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { PersonaUrls, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen }          from '@acx-ui/test-utils'
 
 import { mockIdentityGroupQuery } from '../../../__tests__/fixtures'
 import NetworkFormContext         from '../../../NetworkFormContext'
@@ -14,6 +14,10 @@ import { IdentityGroup } from './IdentityGroup'
 describe('IdentityGroup', () => {
   beforeEach(() => {
     mockServer.use(
+      rest.get(
+        WifiUrlsInfo.queryDpskService.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => {
@@ -27,6 +31,10 @@ describe('IdentityGroup', () => {
           }
           return res(ctx.json(mockIdentityGroupQuery))
         }
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })

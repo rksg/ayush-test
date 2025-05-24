@@ -17,7 +17,9 @@ import {
   EdgePortTypeEnum,
   EdgeServiceTypeEnum, EdgeStatusSeverityEnum,
   NodeClusterRoleEnum,
-  EdgeClusterProfileTypeEnum
+  EdgeClusterProfileTypeEnum,
+  EdgeWanLinkHealthStatusEnum,
+  EdgeWanPortRoleStatusEnum
 } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -96,6 +98,11 @@ export interface EdgeDetails {
   updatedDate: string
 }
 
+export interface EdgeNatPool {
+  startIpAddress: string
+  endIpAddress: string
+}
+
 export interface EdgePort {
   id: string
   portType: EdgePortTypeEnum
@@ -107,9 +114,11 @@ export interface EdgePort {
   subnet: string
   gateway: string
   natEnabled: boolean
+  natPools: EdgeNatPool[]
   corePortEnabled: boolean
   interfaceName?: string
   maxSpeedCapa: number
+  accessPortEnabled?: boolean
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -141,9 +150,9 @@ export interface EdgeStaticRouteConfig {
 }
 
 interface EdgeMultiWanStats {
-  wanPortStatus?: string
-  wanLinkStatus?: string    // overall link health status
-  wanLinkTargets?: { ip: string, status: string }[] // per link target health status
+  wanPortStatus?: EdgeWanPortRoleStatusEnum
+  wanLinkStatus?: EdgeWanLinkHealthStatusEnum    // overall link health status
+  wanLinkTargets?: { ip: string, status: EdgeWanLinkHealthStatusEnum }[] // per link target health status
 }
 
 export interface EdgeMultiWanConfigStats extends EdgeMultiWanStats{
@@ -403,7 +412,9 @@ export interface EdgeLag {
     subnet?: string
     gateway?: string
     corePortEnabled: boolean
+    accessPortEnabled?: boolean
     natEnabled: boolean
+    natPools: EdgeNatPool[]
     lagEnabled: boolean
 }
 
@@ -587,7 +598,8 @@ export interface ClusterNetworkSettings {
       }
     }
     loadDistribution: ClusterHaLoadDistributionEnum
-  },
+  }
+  subInterfaceSettings?: NodeSubInterfaces[]
   multiWanSettings?: ClusterNetworkMultiWanSettings
 }
 
@@ -645,6 +657,8 @@ export interface SubInterface {
   ip?: string
   subnet?: string
   interfaceName?: string
+  corePortEnabled?: boolean
+  accessPortEnabled?: boolean
 }
 
 export interface ClusterArpTerminationSettings {

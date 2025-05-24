@@ -41,6 +41,18 @@ describe('RadioCard', () => {
       await screen.findByText('Wi-Fi')
       expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
+    it('should render RadioCard with category icons correctly', async () => {
+      render(<RadioCard
+        value='value'
+        title='title'
+        description='description'
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+        categoryDisplayMode='icon'
+      />)
+      expect(await screen.findByTestId('WiFi')).toBeVisible()
+      expect(await screen.findByTestId('SwitchSolid')).toBeVisible()
+      expect(await screen.findByTestId('SmartEdgeSolid')).toBeVisible()
+    })
   })
   describe('type = radio', () => {
     it('should render', async () => {

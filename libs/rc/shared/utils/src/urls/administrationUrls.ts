@@ -428,6 +428,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updatePrivacySettings: {
     method: 'PATCH',
     url: '/tenants/privacySettings',
+    opsApi: 'PATCH:/tenants/privacySettings',
     newApi: true
   },
   deleteTenant: {
