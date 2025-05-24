@@ -938,9 +938,8 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const mspUrlsInfo = getMspUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(mspUrlsInfo.getMspCustomersList, arg.params),
+          ...createHttpRequest(MspRbacUrlsInfo.getMspCustomersListWithoutDelegations, arg.params),
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
