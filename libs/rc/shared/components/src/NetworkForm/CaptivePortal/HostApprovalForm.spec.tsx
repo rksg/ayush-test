@@ -1,14 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable max-len */
+
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                       from '@acx-ui/components'
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { StepsFormLegacy }                                                  from '@acx-ui/components'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, WifiUrlsInfo, NetworkSaveData, AccessControlUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor }                   from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                     from '@acx-ui/user'
 
+import {
+  enhancedLayer2PolicyListResponse,
+  enhancedLayer3PolicyListResponse,
+  enhancedDevicePolicyListResponse,
+  enhancedAccessControlList
+} from '../../policies/AccessControl/__tests__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -32,7 +41,7 @@ jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
 describe('CaptiveNetworkForm-HostApproval', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Host approval network test'
-    const hostDataRes= { ...networkDeepResponse, enableDhcp: true, type: 'guest',
+    const hostDataRes= { ...networkDeepResponse, enableDhcp: true, type: 'guest' as any,
       guestPortal: hostapprovalData.guestPortal }
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
@@ -48,7 +57,16 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(hostDataRes)))
+        (_, res, ctx) => res(ctx.json(hostDataRes))),
+      // Add missing handlers for enhanced policies
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => res(ctx.json(enhancedAccessControlList)))
     )
   })
 
@@ -59,7 +77,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: false, cloneMode: true, data: hostapprovalData
+            editMode: false, cloneMode: true, data: hostapprovalData, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -101,7 +119,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       <Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: false, cloneMode: false, data: hostapprovalData
+            editMode: false, cloneMode: false, data: hostapprovalData, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -126,6 +144,151 @@ describe('CaptiveNetworkForm-HostApproval', () => {
 
     await screen.findByRole('textbox', {
       name: /walled garden clear/i
+    })
+  })
+
+  describe('RedirectUrlInput functionality', () => {
+    // Mock data for testing
+    const mockNetworkWithRedirectUrl: NetworkSaveData = {
+      type: 'guest' as any,
+      guestPortal: {
+        redirectUrl: 'http://example.com',
+        ...hostapprovalData.guestPortal
+      },
+      tenantId: 'tenant-id',
+      id: 'network-id'
+    }
+
+    const mockNetworkWithoutRedirectUrl: NetworkSaveData = {
+      ...mockNetworkWithRedirectUrl,
+      guestPortal: {
+        ...mockNetworkWithRedirectUrl.guestPortal,
+        redirectUrl: undefined
+      }
+    }
+
+    it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <HostApprovalForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: true,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <HostApprovalForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <HostApprovalForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+
+    it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithoutRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <HostApprovalForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
     })
   })
 })
