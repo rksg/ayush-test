@@ -1,57 +1,41 @@
 import { rest } from 'msw'
 
-import { CommonRbacUrlsInfo, CommonUrlsInfo, RWGRow, RWGStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
+import { venueApi }                         from '@acx-ui/rc/services'
+import { IotUrlsInfo, IotControllerStatus } from '@acx-ui/rc/utils'
+import { Provider, store }                  from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { VenueRWG } from '.'
+import { VenueIotController } from '.'
 
-const rwgList = {
+const iotControllerList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
     data: [{
-      rwgId: 'bbc41563473348d29a36b76e95c50381',
-      rowId: 'bbc41563473348d29a36b76e95c50381',
-      venueId: '3f10af1401b44902a88723cb68c4bc77',
-      venueName: 'My-Venue',
+      id: 'bbc41563473348d29a36b76e95c50381',
       name: 'ruckusdemos',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      status: RWGStatusEnum.ONLINE,
-      isCluster: false
+      inboundAddress: '192.168.1.1',
+      iotSerialNumber: 'rewqfdsafasd',
+      publicAddress: 'ruckusdemos.cloud',
+      publicPort: 443,
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      tenantId: '3f10af1401b44902a88723cb68c4bc77',
+      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
     }, {
-      rwgId: 'bbc41563473348d29a36b76e95c50382',
-      rowId: 'bbc41563473348d29a36b76e95c50382',
-      venueId: '3f10af1401b44902a88723cb68c4bc77',
-      venueName: 'My-Venue',
-      name: 'rwg1',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      status: RWGStatusEnum.OFFLINE,
-      isCluster: false
-    }, {
-      rwgId: 'bbc41563473348d29a36b76e95c50383',
-      rowId: 'bbc41563473348d29a36b76e95c50383',
-      venueId: '3f10af1401b44902a88723cb68c4bc77',
-      venueName: 'My-Venue',
-      name: 'cluster',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      status: RWGStatusEnum.RWG_STATUS_UNKNOWN,
-      isCluster: true,
-      clusterNodes: [{
-        name: 'node1',
-        ip: '4.4.4.4',
-        id: '1'
-      }]
-    }] as RWGRow[]
+      id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
+      name: 'iotController1',
+      inboundAddress: '192.168.2.21',
+      iotSerialNumber: 'jfsdjoiasdfjo',
+      publicAddress: '35.229.207.4',
+      publicPort: 443,
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      tenantId: '3f10af1401b44902a88723cb68c4bc77',
+      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
+    }] as IotControllerStatus[]
   }
 }
 
@@ -62,21 +46,14 @@ jest.mock('react-router-dom', () => ({
 }))
 
 
-describe('Venue RWG Table', () => {
+describe('Venue Iot Controller Table', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(async () => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        CommonRbacUrlsInfo.getRwgList.url,
-        (req, res, ctx) => res(ctx.json(rwgList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.delete(
-        CommonRbacUrlsInfo.deleteGateway.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
+        IotUrlsInfo.getIotControllerList.url,
+        (req, res, ctx) => res(ctx.json(iotControllerList))
       )
     )
     params = {
@@ -88,54 +65,13 @@ describe('Venue RWG Table', () => {
   it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
-        <VenueRWG />
+        <VenueIotController />
       </Provider>, {
-        route: { params, path: '/:tenantId/ruckus-wan-gateway' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/devices/iotController' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('ruckusdemos')
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
-  })
-
-  it('should delete selected row', async () => {
-    render(
-      <Provider>
-        <VenueRWG />
-      </Provider>, {
-        route: { params, path: '/:tenantId/ruckus-wan-gateway' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /rwg1/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
-
-    await screen.findByText('Delete "rwg1"?')
-    const deleteGatewayButton = await screen.findByText('Delete Gateway')
-    fireEvent.click(deleteGatewayButton)
-  })
-
-  it('should edit selected row', async () => {
-    render(
-      <Provider>
-        <VenueRWG />
-      </Provider>, {
-        route: { params, path: '/:tenantId/ruckus-wan-gateway' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /rwg1/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-
-    const editButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(editButton)
-
-    expect(await screen.findByText('rwg1')).toBeInTheDocument()
   })
 
 })

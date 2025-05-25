@@ -1,172 +1,72 @@
-import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ColumnType, Loader, Table, TableProps }                                                              from '@acx-ui/components'
-import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
-import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
-
-
-function useColumns (
-  searchable?: boolean,
-  filterables?: { [key: string]: ColumnType['filterable'] }
-) {
-  const { $t } = useIntl()
-
-  const columns: TableProps<RWGRow>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Gateway' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
-      fixed: 'left',
-      searchable: searchable,
-      defaultSortOrder: 'ascend',
-      render: function (_, row, __, highlightFn) {
-        return row?.isCluster ? highlightFn(row.name) : (
-          <TenantLink
-            to={
-              row?.isNode
-                // eslint-disable-next-line max-len
-                ? `/ruckus-wan-gateway/${row.venueId}/${row.clusterId}/gateway-details/overview/${row.rwgId}`
-                : `/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
-            {highlightFn(row.name)}</TenantLink>
-        )
-      }
-    },{
-      title: $t({ defaultMessage: 'Cluster Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      filterMultiple: false,
-      filterValueNullable: true,
-      filterKey: 'status',
-      filterable: filterables ? filterables['status'] : false,
-      sorter: false,
-      render: function (_, row) {
-        const { name, color } = getRwgStatus(row.status)
-
-        return row.isCluster ?
-          (
-            <span>
-              <Badge
-                color={`var(${color})`}
-                text={transformDisplayText(name)}
-              />
-            </span>
-          ) : <></>
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Gateway Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      filterMultiple: false,
-      filterValueNullable: true,
-      filterKey: 'status',
-      filterable: filterables ? filterables['status'] : false,
-      sorter: false,
-      render: function (_, row) {
-        const { name, color } = getRwgStatus(row.status)
-        return !row.isCluster ? (
-          <span>
-            <Badge
-              color={`var(${color})`}
-              text={transformDisplayText(name)}
-            />
-          </span>
-        ) : <></>
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'FQDN / IP' }),
-      dataIndex: 'hostname',
-      key: 'hostname',
-      filterMultiple: false,
-      sorter: { compare: sortProp('hostname', defaultSort) },
-      render: function (_, row) {
-        return !row.isCluster ? row.hostname : ''
-      }
-    }
-  ]
-
-  return columns
-}
+import { Loader, Table, TableProps }                                 from '@acx-ui/components'
+import { useGetIotControllerListQuery }                              from '@acx-ui/rc/services'
+import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                from '@acx-ui/react-router-dom'
 
 export function VenueIotController () {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const { tenantId, venueId } = useParams()
-  const rwgActions = useRwgActions()
-  const { isCustomRole } = useUserProfileContext()
 
-  const rwgPayload = {
+  const payload = {
     filters: {}
   }
-
-  const settingsId = 'venue-rwg-table'
+  const settingsId = 'venue-iot-controller-table'
   const tableQuery = useTableQuery({
-    useQuery: useRwgListQuery,
-    defaultPayload: rwgPayload,
+    useQuery: useGetIotControllerListQuery,
+    defaultPayload: payload,
     pagination: { settingsId },
     search: {
       searchTargetFields: ['name']
     }
   })
 
+  function useColumns (
+    searchable?: boolean
+  ) {
+    const { $t } = useIntl()
 
-  const { venueFilterOptions } = useGetVenuesQuery({ params: useParams(), payload: {
-    fields: ['name', 'rwgId'],
-    sortField: 'name',
-    sortOrder: 'ASC',
-    page: 1,
-    pageSize: 2048
-  } }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data?.map(v =>({
-        key: v.name,
-        value: v.name
-      })) || true
-    })
-  })
-
-  const columns = useColumns(true, { venueName: venueFilterOptions,
-    status: seriesMappingRWG().map(({ key, name }) => {
-      return {
-        key,
-        value: name
-      }
-    }) })
-
-  const basePath = useTenantLink(`/ruckus-wan-gateway/${venueId}/`)
-
-  const rowActions: TableProps<RWGRow>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1 && !selectedRows[0].isCluster,
-    label: $t({ defaultMessage: 'Edit' }),
-    onClick: (selectedRows) => {
-      navigate({ ...basePath,
-        pathname: `${basePath.pathname}/${selectedRows[0].rwgId}/edit`
+    const columns: TableProps<IotControllerStatus>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'IoT Controller' }),
+        key: 'name',
+        dataIndex: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
+        fixed: 'left',
+        searchable: searchable,
+        defaultSortOrder: 'ascend',
+        render: function (_, row, __, highlightFn) {
+          return (
+            <TenantLink
+              to={`/devices/iotController/${row.id}/details/overview`}>
+              {highlightFn(row.name)}</TenantLink>
+          )
+        }
+      },{
+        title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
+        dataIndex: 'inboundAddress',
+        key: 'inboundAddress'
       },
-      { replace: false })
-    }
-  },
-  {
-    visible: (selectedRows) => selectedRows.length === 1,
-    label: $t({ defaultMessage: 'Configure' }),
-    onClick: (selectedRows) => {
-      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
-        '_blank')
-    }
-  },
-  {
-    label: $t({ defaultMessage: 'Delete' }),
-    onClick: (rows, clearSelection) => {
-      rwgActions.deleteGateways(rows, tenantId, clearSelection)
-    }
-  }]
+      {
+        title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
+        dataIndex: 'publicAddress',
+        key: 'publicAddress',
+        render: function (_, row) {
+          return row.publicAddress + ':' + row.publicPort
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
+        dataIndex: 'venueCount',
+        key: 'venueCount'
+      }
+    ]
 
-  const handleTableChange: TableProps<RWGRow>['onChange'] = (
+    return columns
+  }
+
+  const columns = useColumns(true)
+
+  const handleTableChange: TableProps<IotControllerStatus>['onChange'] = (
     pagination, filters, sorter, extra
   ) => {
     tableQuery.setPayload({
@@ -175,28 +75,17 @@ export function VenueIotController () {
     tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
-  const rowSelection = () => {
-    return {
-      getCheckboxProps: (record: RWGRow) => ({
-        disabled: !!record.isNode
-      })
-    }
-  }
-
-
   return (
     <Loader states={[
       tableQuery
     ]}>
-      <Table
+      <Table<IotControllerStatus>
         settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={{ total: tableQuery?.data?.totalCount }}
         onFilterChange={tableQuery.handleFilterChange}
-        rowKey='rowId'
-        rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { ...rowSelection() }}
+        rowKey={(row: IotControllerStatus) => (row.id ?? `c-${row.id}`)}
         onChange={handleTableChange}
       />
     </Loader>

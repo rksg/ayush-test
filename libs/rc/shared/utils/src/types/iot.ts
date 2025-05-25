@@ -10,7 +10,7 @@ export interface IotControllerStatus {
   apiToken: string
   tenantId: string
   assocVenueIds?: string[]
-  status?: IotControllerStatusEnum
+  status: IotControllerStatusEnum
 }
 
 export interface IotControllerSetting {

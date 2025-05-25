@@ -195,7 +195,7 @@ export function DevicesWidgetv2 (props: {
                       key='ap-stackedBarChart'
                       animation={false}
                       style={{
-                        height: height/2 - 30,
+                        height: height/2 - 40,
                         width: width/2 - 15
                       }}
                       data={apStackedData}
@@ -207,7 +207,7 @@ export function DevicesWidgetv2 (props: {
                       {apTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 30 }}>
+                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 40 }}>
                     {filterByAccess([
                       <TenantLink
                         scopeKey={[WifiScopes.CREATE]}
@@ -233,7 +233,7 @@ export function DevicesWidgetv2 (props: {
                       key='switch-stackedBarChart'
                       animation={false}
                       style={{
-                        height: height/2 - 30,
+                        height: height/2 - 40,
                         width: width/2 - 15
                       }}
                       data={switchStackedData}
@@ -247,7 +247,7 @@ export function DevicesWidgetv2 (props: {
                   </Space>
                   : <UI.LinkContainer
                     key='switch-linkContainer'
-                    style={{ height: (height/2) - 30 }}>
+                    style={{ height: (height/2) - 40 }}>
                     {filterByAccess([
                       <TenantLink
                         to={'/devices/switch/add'}
@@ -274,7 +274,7 @@ export function DevicesWidgetv2 (props: {
                         key='edge-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 30,
+                          height: height/2 - 40,
                           width: width/2 - 15
                         }}
                         data={edgeStackedData}
@@ -288,7 +288,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='edge-linkContainer'
-                      style={{ height: (height/2) - 30 }}>
+                      style={{ height: (height/2) - 40 }}>
                       {filterByAccess([<TenantLink
                         scopeKey={[EdgeScopes.CREATE]}
                         rbacOpsIds={[
@@ -319,7 +319,7 @@ export function DevicesWidgetv2 (props: {
                         key='rwg-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 30,
+                          height: height/2 - 40,
                           width: width/2 - 15
                         }}
                         data={rwgStackedData.chartData}
@@ -333,7 +333,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='rwg-linkContainer'
-                      style={{ height: (height/2) - 30 }}>
+                      style={{ height: (height/2) - 40 }}>
                       {!isCustomRole && filterByAccess([
                         <TenantLink to={'/ruckus-wan-gateway/add'}
                           rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
@@ -358,7 +358,7 @@ export function DevicesWidgetv2 (props: {
                         key='iotController-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 30,
+                          height: height/2 - 40,
                           width: width/2 - 15
                         }}
                         data={iotControllerStackedData.chartData}
@@ -372,7 +372,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='iotController-linkContainer'
-                      style={{ height: (height/2) - 30 }}>
+                      style={{ height: (height/2) - 40 }}>
                       {!isCustomRole && filterByAccess([
                         <TenantLink to={'/devices/iotController/add'}
                           rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
