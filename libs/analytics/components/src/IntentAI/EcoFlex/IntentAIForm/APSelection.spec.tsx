@@ -1,5 +1,3 @@
-import { data } from 'msw/lib/types/context'
-
 import { defaultNetworkPath }      from '@acx-ui/analytics/utils'
 import { get }                     from '@acx-ui/config'
 import { NetworkNode, NodeFilter } from '@acx-ui/utils'
