@@ -47,7 +47,8 @@ export const edgePhysicalPortInitialConfigs = {
   gateway: '',
   enabled: true,
   natEnabled: true,
-  corePortEnabled: false
+  corePortEnabled: false,
+  natPools: []
 }
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
@@ -373,15 +374,6 @@ export const poolRangeOverlapValidator = async (pools:
   // loop to check if range overlap
   for (let i=0; i < pools.length; i++) {
     if (!pools[i]) continue
-
-    const start = convertIpToLong(pools[i].startIpAddress)
-    const end = convertIpToLong(pools[i].endIpAddress)
-
-    // check if the range is valid (ascending)
-    if (start >= end) {
-      // eslint-disable-next-line max-len
-      return Promise.reject($t({ defaultMessage: 'Invalid NAT pool start IP and end IP' }))
-    }
 
     for (let j=i+1; j < pools.length; j++) {
       if (i === pools.length - 1) break
