@@ -8781,7 +8781,7 @@ h5.c6.ant-typography {
                               <span
                                 class="ant-select-selection-placeholder"
                               >
-                                Select Venue / APs to exclude
+                                Please select APs to exclude
                               </span>
                             </div>
                           </div>

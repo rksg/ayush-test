@@ -5,10 +5,10 @@ import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { defaultNetworkPath, nodeTypes }                  from '@acx-ui/analytics/utils'
-import { CascaderOption, Loader }                         from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
-import {  DateRange, PathNode, NetworkPath, NetworkNode } from '@acx-ui/utils'
+import { defaultNetworkPath, nodeTypes }                                       from '@acx-ui/analytics/utils'
+import { CascaderOption, Loader }                                              from '@acx-ui/components'
+import { get }                                                                 from '@acx-ui/config'
+import {  DateRange, PathNode, NetworkPath, NetworkNode, NodeFilter, getIntl } from '@acx-ui/utils'
 
 import { APsSelectionInput }                                                    from '../../../APsSelectionInput'
 import { getNetworkFilterData }                                                 from '../../../NetworkFilter'
@@ -132,20 +132,51 @@ function useOptions () {
   return get('IS_MLISA_SA') ? SAOptions : R1Options
 }
 
+export const validateSelectingAllAPs = (
+  selectedValue: NodeFilter[],
+  apDataResponse: { data: unknown }
+) => {
+  const { $t } = getIntl()
+  if (!selectedValue.length) return Promise.resolve()
+  let isSelectAllAPs = false
+  if (get('IS_MLISA_SA')) {
+    const data = apDataResponse.data as unknown as {
+        name: string, type: string, children: NetworkNode[]
+      }
+    const totalApGroups = data?.children?.length ?? 0
+    isSelectAllAPs = totalApGroups > 0
+        && selectedValue.length === totalApGroups
+        && selectedValue.every(group => group.length === 1)
+  } else {
+    // When selecting all APs in a zone in R1, the component will return [[{ type: 'zone', name: 'zone1' }]]
+    isSelectAllAPs = selectedValue.length === 1 && selectedValue.every(
+      group => group.length === 1 && group[0].type === 'zone')
+  }
+  return isSelectAllAPs
+    ? Promise.reject($t({ defaultMessage: 'Cannot exclude all APs.' }))
+    : Promise.resolve()
+}
+
 export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
   const { $t } = useIntl()
   const response = useOptions()
+  const raiMsg = defineMessage({ defaultMessage: 'Please select AP Groups / APs to exclude' })
+  const r1Msg = defineMessage({ defaultMessage: 'Please select APs to exclude' })
   return <Loader
     states={[_.omit(response, ['options'])]}
     style={{ height: 'auto', minHeight: 200 }}
   >
     <Form.Item
       name={name as unknown as NamePath}
+      rules={[{
+        required: !isDisabled,
+        message: get('IS_MLISA_SA') ? $t(raiMsg) : $t(r1Msg)
+      }, {
+        validator: (_, value) => validateSelectingAllAPs(value, response)
+      }]}
       children={<APsSelectionInput
         disabled={isDisabled}
-        placeholder={get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'Select AP Groups / APs to exclude' })
-          : $t({ defaultMessage: 'Select <VenueSingular></VenueSingular> / APs to exclude' })}
+        placeholder={get('IS_MLISA_SA') ? $t(raiMsg) : $t(r1Msg)}
         options={response.options?.map(o => ({ ...o, disabled: isDisabled }))}
       />}
     />
