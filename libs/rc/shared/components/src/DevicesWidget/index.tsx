@@ -59,20 +59,14 @@ export function DevicesWidget (props: {
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
-
-  let numDonut = 2
-  if (isEdgeEnabled) {
-    numDonut++
-  }
-
-  if (showRwgUI && rwgHasPermission) {
-    numDonut++
-  }
-
   const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
-  if (showIotControllerUI) {
-    numDonut++
-  }
+
+  // `2` refers to the AP and Switch
+  const numDonut = [
+    isEdgeEnabled,
+    showRwgUI && rwgHasPermission,
+    showIotControllerUI
+  ].filter(Boolean).length + 2
 
   const { venueId } = useParams()
 
@@ -176,6 +170,13 @@ export function DevicesWidgetv2 (props: {
     iotControllerTotalCount
   } = props
 
+  const numRow = [
+    isEdgeEnabled,
+    showRwgUI && rwgHasPermission,
+    showIotControllerUI
+  ].filter(Boolean).length + 2
+
+
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
@@ -195,7 +196,7 @@ export function DevicesWidgetv2 (props: {
                       key='ap-stackedBarChart'
                       animation={false}
                       style={{
-                        height: height/2 - 40,
+                        height: height/2 - (10 * (numRow - 1)),
                         width: width/2 - 15
                       }}
                       data={apStackedData}
@@ -207,7 +208,8 @@ export function DevicesWidgetv2 (props: {
                       {apTotalCount}
                     </TenantLink>
                   </Space>
-                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 40 }}>
+                  // eslint-disable-next-line max-len
+                  : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - (10 * (numRow - 1)) }}>
                     {filterByAccess([
                       <TenantLink
                         scopeKey={[WifiScopes.CREATE]}
@@ -233,7 +235,7 @@ export function DevicesWidgetv2 (props: {
                       key='switch-stackedBarChart'
                       animation={false}
                       style={{
-                        height: height/2 - 40,
+                        height: height/2 - (10 * (numRow - 1)),
                         width: width/2 - 15
                       }}
                       data={switchStackedData}
@@ -247,7 +249,7 @@ export function DevicesWidgetv2 (props: {
                   </Space>
                   : <UI.LinkContainer
                     key='switch-linkContainer'
-                    style={{ height: (height/2) - 40 }}>
+                    style={{ height: (height/2) - (10 * (numRow - 1)) }}>
                     {filterByAccess([
                       <TenantLink
                         to={'/devices/switch/add'}
@@ -274,7 +276,7 @@ export function DevicesWidgetv2 (props: {
                         key='edge-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 40,
+                          height: height/2 - (10 * (numRow - 1)),
                           width: width/2 - 15
                         }}
                         data={edgeStackedData}
@@ -288,7 +290,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='edge-linkContainer'
-                      style={{ height: (height/2) - 40 }}>
+                      style={{ height: (height/2) - (10 * (numRow - 1)) }}>
                       {filterByAccess([<TenantLink
                         scopeKey={[EdgeScopes.CREATE]}
                         rbacOpsIds={[
@@ -319,7 +321,7 @@ export function DevicesWidgetv2 (props: {
                         key='rwg-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 40,
+                          height: height/2 - (10 * (numRow - 1)),
                           width: width/2 - 15
                         }}
                         data={rwgStackedData.chartData}
@@ -333,7 +335,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='rwg-linkContainer'
-                      style={{ height: (height/2) - 40 }}>
+                      style={{ height: (height/2) - (10 * (numRow - 1)) }}>
                       {!isCustomRole && filterByAccess([
                         <TenantLink to={'/ruckus-wan-gateway/add'}
                           rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
@@ -358,7 +360,7 @@ export function DevicesWidgetv2 (props: {
                         key='iotController-stackedBarChart'
                         animation={false}
                         style={{
-                          height: height/2 - 40,
+                          height: height/2 - (10 * (numRow - 1)),
                           width: width/2 - 15
                         }}
                         data={iotControllerStackedData.chartData}
@@ -372,7 +374,7 @@ export function DevicesWidgetv2 (props: {
                     </Space>
                     : <UI.LinkContainer
                       key='iotController-linkContainer'
-                      style={{ height: (height/2) - 40 }}>
+                      style={{ height: (height/2) - (10 * (numRow - 1)) }}>
                       {!isCustomRole && filterByAccess([
                         <TenantLink to={'/devices/iotController/add'}
                           rbacOpsIds={[getOpsApi(IotUrlsInfo.addIotController)]}>
