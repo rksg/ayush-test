@@ -104,6 +104,7 @@ export interface Venue extends EnforceableFields {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
+  apWiredClients?: number
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only

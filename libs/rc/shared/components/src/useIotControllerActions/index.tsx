@@ -17,6 +17,18 @@ export function useIotControllerActions () {
 
   // eslint-disable-next-line max-len
   const deleteIotController = async ( rows: IotControllerStatus[], tenantId?: string, callBack?: ()=>void ) => {
+    const handleOk = () => {
+      const requests = []
+      for(let item of rows) {
+        requests.push(invokeDeleteIotController({
+          params: {
+            iotId: item.id
+          }
+        }))
+      }
+      Promise.all(requests).then(() => callBack?.())
+    }
+
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -27,11 +39,7 @@ export function useIotControllerActions () {
         numOfEntities: rows.length,
         confirmationText: $t({ defaultMessage: 'Delete' })
       },
-      onOk: () => {
-        invokeDeleteIotController({
-          params: { iotId: rows[0].id }
-        }).then(callBack)
-      }
+      onOk: handleOk
     })
   }
 

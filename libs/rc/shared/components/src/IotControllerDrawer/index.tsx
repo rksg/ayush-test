@@ -66,7 +66,7 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
       render: function (_, row, __, highlightFn) {
         return (
           <TenantLink
-            to={`/iots/${row.serialNumber}/details/overview`}>
+            to={`/iots/${row.id}/details/overview`}>
             {highlightFn(row.name)}</TenantLink>
         )
       }

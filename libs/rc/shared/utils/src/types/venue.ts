@@ -58,7 +58,8 @@ export interface VenueDetailHeader {
 		totalCount: number
 	},
 	edges: EdgeStatusSeverityStatistic,
-	totalClientCount: string
+	totalClientCount: string,
+	totalApWiredClientCount?: string,
 	venue: VenueDetail
 }
 

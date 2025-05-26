@@ -123,6 +123,7 @@ export interface NewAPModel {
   status?: ApDeviceStatusEnum
   meshRole?: string
   clientCount?: number
+  apWiredClientCount?: number
   networkStatus?: NewApNetworkStatus
   lanPortStatuses?: {
     id: string
@@ -393,6 +394,7 @@ export interface ApDetailHeader {
   headers: {
     overview: string,
     clients: number,
+    apWiredClients?: number,
     networks: number,
     services: number
   }
@@ -495,12 +497,17 @@ export interface LanPort {
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
   ethernetPortProfileId?: string,
+  authRadiusId?: string,
+  accountingRadiusId?: string,
   softGreProfileId?: string,
+  softGreProfileName?: string,
   softGreEnabled?: boolean,
   ipsecProfileId?: string,
+  ipsecProfileName?: string,
   ipsecEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
+  clientIsolationProfileName?: string,
   clientIsolationEnabled?: boolean,
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
