@@ -1,9 +1,9 @@
 
 import { useEffect } from 'react'
 
-import { Form, Radio, Space } from 'antd'
-import { useIntl }            from 'react-intl'
-import { useLocation, useNavigate }        from 'react-router-dom'
+import { Form, Radio, Space }       from 'antd'
+import { useIntl }                  from 'react-intl'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'

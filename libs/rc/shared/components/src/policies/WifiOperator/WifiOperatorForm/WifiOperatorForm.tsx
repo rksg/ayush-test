@@ -25,7 +25,7 @@ import {
   usePolicyPreviousPath,
   useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { CommonResult }  from '@acx-ui/user'
+import { CommonResult } from '@acx-ui/user'
 
 import WifiOperatorSettingForm from './WifiOperatorSettingForm'
 
