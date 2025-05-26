@@ -12,32 +12,28 @@ import { Subtitle, Tooltip }                                                    
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { AAAInstance }    from '../AAAInstance'
-import NetworkFormContext from '../NetworkFormContext'
-import * as UI            from '../styledComponents'
+import { AAAInstance }    from '../../../AAAInstance'
+import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../styledComponents'
 
 
 const { useWatch } = Form
 
-interface CloudpathServerFormProps {
+interface RadiusSettingsProps {
   dpskWlanSecurity?: WlanSecurityEnum
 }
 
 /*
- * There have RadiusSettings forked from this file and remove setData,
- * This file still be used for OpenSettingsForm and use setData in each UI action.
- * If you want to modify this file please also reflect to RadiusSettings
- * Once we can refactor OpenSettingsForm, we could reuse the RadiusSettings
+ * This component forked from CloudpathServerForm and remove setData actions,
+ * If you want to modify this file please also reflect to CloudpathServerForm and modify it
+ * Once we can refactor OpenSettingsForm from setData, then we can reuse this component and remove CloudpathServerForm
  */
-export function CloudpathServerForm (props: CloudpathServerFormProps) {
+export function RadiusSettings (props: RadiusSettingsProps) {
   const labelWidth = '250px'
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data, setData } = useContext(NetworkFormContext)
+  const { data } = useContext(NetworkFormContext)
   const { dpskWlanSecurity } = props
-  const onProxyChange = (value: boolean, fieldName: string) => {
-    setData && setData({ ...data, [fieldName]: value })
-  }
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
@@ -46,15 +42,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
   const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const isNonProxyAcctDpskFFEnabled = useIsSplitOn(Features.ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE)
-
-  // TODO: Remove deprecated codes below when RadSec feature is delivery
-  useEffect(()=>{
-    !supportRadsec && form.setFieldsValue({ ...data })
-  },[supportRadsec, data])
-
-  useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data })
-  },[supportRadsec, data?.id])
 
   useEffect(() => {
     if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
@@ -115,7 +102,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
   if (isNonProxyAcctDpskFFEnabled) {
     accountingProxyNetworkTypes.push(NetworkTypeEnum.DPSK)
   }
-
   return (
     <Space direction='vertical' size='middle'>
       <div>
@@ -140,7 +126,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
             initialValue={false}
             children={<Switch
               data-testid='enable-auth-proxy'
-              onChange={(value) => onProxyChange(value,'enableAuthProxy')}
               disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}
             />}
           />
@@ -154,9 +139,7 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
             valuePropName='checked'
             style={{ marginTop: '-5px', marginBottom: '0' }}
             initialValue={false}
-            children={<Switch
-              onChange={(value) => onProxyChange(value,'enableAccountingService')}
-            />}
+            children={<Switch />}
           />
         </UI.FieldLabel>
         {enableAccountingService && <>
@@ -182,7 +165,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
               initialValue={false}
               children={<Switch
                 data-testid='enable-accounting-proxy'
-                onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
                 disabled={
                   (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled)
                 }
