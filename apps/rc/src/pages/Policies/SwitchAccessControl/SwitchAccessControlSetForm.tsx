@@ -18,7 +18,6 @@ import {
   useUpdateSwitchAccessControlSetMutation
 } from '@acx-ui/rc/services'
 import {
-  getPolicyRoutePath,
   MacAcl,
   PolicyOperation,
   PolicyType,
@@ -27,7 +26,7 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { SwitchLayer2ACLForm } from './SwitchLayer2/SwitchLayer2ACLForm'
 

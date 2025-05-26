@@ -3,18 +3,15 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { cloneDeep }                                                               from 'lodash'
 import { useIntl }                                                                 from 'react-intl'
-import { useLocation, useNavigate }                                                from 'react-router-dom'
+import { useNavigate }                                                             from 'react-router-dom'
 
 import { Alert, PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
   WifiNetworkMessages,
   checkVlanMember,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   EthernetPortAuthType,
   EthernetPortSupplicantType,
   EthernetPortProfileMessages,
@@ -27,11 +24,9 @@ import {
   usePolicyPageHeaderTitle,
   useConfigTemplate,
   usePoliciesBreadcrumb,
-  useIsNewServicesCatalogEnabled,
   useAfterPolicySaveRedirectPath,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { EthernetPortAAASettings } from '../AAASettings/EthernetPortAAASettings'
 
@@ -80,10 +75,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const breadcrumb = (isSwitchPortProfileEnabled && !isTemplate)? switchBreadcrumb : wifiBreadcrumb
   const pageTitle = usePolicyPageHeaderTitle(isEditMode, PolicyType.ETHERNET_PORT_PROFILE)
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.ETHERNET_PORT_PROFILE,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
   const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.ETHERNET_PORT_PROFILE)
   const previousPath = usePolicyPreviousPath(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.LIST)

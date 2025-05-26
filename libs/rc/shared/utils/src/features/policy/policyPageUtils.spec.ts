@@ -85,6 +85,7 @@ describe('policyPageUtils', () => {
   })
 
   describe('useAfterPolicySaveRedirectPath', () => {
+    // eslint-disable-next-line max-len
     it('should return routeToList when isNewServiceCatalogEnabled is true and isTemplate is false', () => {
       mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
@@ -97,6 +98,7 @@ describe('policyPageUtils', () => {
       expect(result.current).toBe(routeToList)
     })
 
+    // eslint-disable-next-line max-len
     it('should return previousPath when isNewServiceCatalogEnabled is true and isTemplate is true', () => {
       mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -108,6 +110,7 @@ describe('policyPageUtils', () => {
       expect(result.current).toBe(generalPreviousPath)
     })
 
+    // eslint-disable-next-line max-len
     it('should return previousPath when isNewServiceCatalogEnabled is false and isTemplate is true', () => {
       mockedUseIsNewServicesCatalogEnabled.mockReturnValue(false)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -119,6 +122,7 @@ describe('policyPageUtils', () => {
       expect(result.current).toBe(generalPreviousPath)
     })
 
+    // eslint-disable-next-line max-len
     it('should return routeToList when isNewServiceCatalogEnabled is false and isTemplate is false', () => {
       mockedUseIsNewServicesCatalogEnabled.mockReturnValue(false)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })

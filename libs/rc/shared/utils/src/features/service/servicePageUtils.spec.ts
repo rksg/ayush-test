@@ -87,6 +87,7 @@ describe('servicePageUtils', () => {
   describe('useAfterServiceSaveRedirectPath', () => {
     it('should return routeToList when isTemplate is false', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      // eslint-disable-next-line max-len
       const routeToList = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
 
       const { result } = renderHook(() =>
