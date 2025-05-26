@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
-import { Form, Switch, Row, Col, Space, Input } from 'antd'
-import { isEmpty }                              from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Button, Form, Switch, Row, Col, Space, Input } from 'antd'
+import { isEmpty }                                      from 'lodash'
+import { useIntl }                                      from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
 import {
@@ -11,9 +11,13 @@ import {
   StepsFormLegacyInstance,
   AnchorContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
+import {
+  IotControllerDrawer
+} from '@acx-ui/rc/components'
 import {
   useGetApIotQuery,
   useLazyGetVenueIotQuery,
@@ -39,6 +43,8 @@ export function IotController (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { isAllowEdit=true } = props
+  const isIotV2Enabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const {
     editContextData,
@@ -200,6 +206,10 @@ export function IotController (props: ApEditItemProps) {
     setIotEnabled(checked)
   }
 
+  const handleIotController = () => {
+    setDrawerVisible(true)
+  }
+
   return (
     <Loader
       states={[
@@ -209,91 +219,121 @@ export function IotController (props: ApEditItemProps) {
         }
       ]}
     >
-      <StepsFormLegacy formRef={formRef} onFormChange={handleChange}>
-        <StepsFormLegacy.StepForm initialValues={initData}>
-          <VenueSettingsHeader
-            venue={venueData}
-            disabled={!isAllowEdit}
-            isUseVenueSettings={isUseVenueSettings}
-            handleVenueSetting={handleVenueSetting}
-          />
-
-          <Row gutter={0}>
-            <Col span={colSpan}>
-              <FieldLabel width='200px'>
-                <Space>
-                  {$t({ defaultMessage: 'Enable IoT Controller' })}
-                </Space>
-                <Form.Item
-                  name={iotEnabledFieldName}
-                  valuePropName={'checked'}
-                  initialValue={false}
-                  children={
-                    isUseVenueSettings ? (
-                      <span data-testid={'enabled-span'}>
-                        {transformDisplayOnOff(venueIot?.enabled ?? false)}
-                      </span>
-                    ) : (
-                      <Switch
-                        disabled={!isAllowEdit}
-                        checked={iotEnabled}
-                        onChange={handleChange}
-                        onClick={toggleIot}
-                      />
-                    )
-                  }
-                />
-              </FieldLabel>
-            </Col>
-          </Row>
-          {iotEnabled && (
+      { isIotV2Enabled ? (
+        <StepsFormLegacy formRef={formRef} onFormChange={handleChange}>
+          <StepsFormLegacy.StepForm initialValues={initData}>
+            <VenueSettingsHeader
+              venue={venueData}
+              disabled={!isAllowEdit}
+              isUseVenueSettings={isUseVenueSettings}
+              handleVenueSetting={handleVenueSetting}
+            />
             <Row>
-              <Space size={40}>
-                <Form.Item
-                  name={iotMqttBrokerAddressFieldName}
-                  style={{ display: 'inline-block', width: '230px' }}
-                  // noStyle
-                  rules={[
-                    { required: true,
-                      // eslint-disable-next-line max-len
-                      message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
-                    },
-                    { validator: (_, value) => domainNameRegExp(value),
-                      message: $t(validationMessages.validDomain)
-                    }
-                  ]}
-                  label={
-                    <>
-                      {$t({ defaultMessage: 'VRIoT  IP Address/FQDN' })}
-                      <Tooltip
-                        // eslint-disable-next-line max-len
-                        title={$t({ defaultMessage: 'This is the MQTT address of the VRIoT Controller' })}
-                        placement='bottom'
-                      >
-                        <QuestionMarkCircleOutlined/>
-                      </Tooltip>
-                    </>
-                  }
-                  initialValue={''}
-                  children={
-                    isUseVenueSettings ? (
-                      <span data-testid={'mqttBrokerAddress-span'}>
-                        {formRef?.current?.getFieldValue(
-                          iotMqttBrokerAddressFieldName
-                        )}
-                      </span>
-                    ) : (
-                      <Input disabled={!isAllowEdit}
-                        onChange={handleChange}
-                      />
-                    )
-                  }
-                />
-              </Space>
+              <Col span={colSpan}>
+                <Space>
+                  <Button
+                    type='link'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleIotController}
+                  >
+                    {$t({ defaultMessage: 'Associate IoT Controller' })}
+                  </Button>
+                </Space>
+              </Col>
             </Row>
-          )}
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+            { drawerVisible && <IotControllerDrawer
+              visible={drawerVisible}
+              setVisible={setDrawerVisible}
+            /> }
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      ) : (
+        <StepsFormLegacy formRef={formRef} onFormChange={handleChange}>
+          <StepsFormLegacy.StepForm initialValues={initData}>
+            <VenueSettingsHeader
+              venue={venueData}
+              disabled={!isAllowEdit}
+              isUseVenueSettings={isUseVenueSettings}
+              handleVenueSetting={handleVenueSetting}
+            />
+
+            <Row gutter={0}>
+              <Col span={colSpan}>
+                <FieldLabel width='200px'>
+                  <Space>
+                    {$t({ defaultMessage: 'Enable IoT Controller' })}
+                  </Space>
+                  <Form.Item
+                    name={iotEnabledFieldName}
+                    valuePropName={'checked'}
+                    initialValue={false}
+                    children={
+                      isUseVenueSettings ? (
+                        <span data-testid={'enabled-span'}>
+                          {transformDisplayOnOff(venueIot?.enabled ?? false)}
+                        </span>
+                      ) : (
+                        <Switch
+                          disabled={!isAllowEdit}
+                          checked={iotEnabled}
+                          onChange={handleChange}
+                          onClick={toggleIot}
+                        />
+                      )
+                    }
+                  />
+                </FieldLabel>
+              </Col>
+            </Row>
+            {iotEnabled && (
+              <Row>
+                <Space size={40}>
+                  <Form.Item
+                    name={iotMqttBrokerAddressFieldName}
+                    style={{ display: 'inline-block', width: '230px' }}
+                    // noStyle
+                    rules={[
+                      { required: true,
+                        // eslint-disable-next-line max-len
+                        message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
+                      },
+                      { validator: (_, value) => domainNameRegExp(value),
+                        message: $t(validationMessages.validDomain)
+                      }
+                    ]}
+                    label={
+                      <>
+                        {$t({ defaultMessage: 'VRIoT  IP Address/FQDN' })}
+                        <Tooltip
+                          // eslint-disable-next-line max-len
+                          title={$t({ defaultMessage: 'This is the MQTT address of the VRIoT Controller' })}
+                          placement='bottom'
+                        >
+                          <QuestionMarkCircleOutlined/>
+                        </Tooltip>
+                      </>
+                    }
+                    initialValue={''}
+                    children={
+                      isUseVenueSettings ? (
+                        <span data-testid={'mqttBrokerAddress-span'}>
+                          {formRef?.current?.getFieldValue(
+                            iotMqttBrokerAddressFieldName
+                          )}
+                        </span>
+                      ) : (
+                        <Input disabled={!isAllowEdit}
+                          onChange={handleChange}
+                        />
+                      )
+                    }
+                  />
+                </Space>
+              </Row>
+            )}
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      )}
     </Loader>
   )
 

@@ -31,6 +31,9 @@ export interface ApNetworkControlContext {
   updateApSnmp?: (data?: unknown) => void | Promise<void>
   discardApSnmpChanges?: (data?: unknown) => void | Promise<void>
 
+  updateApIotController?: (data?: unknown) => void | Promise<void>
+  discardApIotControllerChanges?: (data?: unknown) => void | Promise<void>
+
   updateApIot?: (data?: unknown) => void | Promise<void>
   discardApIotChanges?: (data?: unknown) => void | Promise<void>
 }
@@ -120,6 +123,8 @@ export function NetworkControlTab () {
       delete newData.discardMdnsProxyChanges
       delete newData.updateApSnmp
       delete newData.discardApSnmpChanges
+      delete newData.updateApIotController
+      delete newData.discardApIotControllerChanges
       delete newData.updateApIot
       delete newData.discardApIotChanges
 
@@ -132,6 +137,7 @@ export function NetworkControlTab () {
     try {
       await editNetworkControlContextData.updateMdnsProxy?.()
       await editNetworkControlContextData.updateApSnmp?.()
+      await editNetworkControlContextData.updateApIotController?.()
       await editNetworkControlContextData.updateApIot?.()
 
       resetEditContextData()
@@ -151,6 +157,7 @@ export function NetworkControlTab () {
     try {
       await editNetworkControlContextData.discardMdnsProxyChanges?.()
       await editNetworkControlContextData.discardApSnmpChanges?.()
+      await editNetworkControlContextData.discardApIotControllerChanges?.()
       await editNetworkControlContextData.discardApIotChanges?.()
 
       resetEditContextData()

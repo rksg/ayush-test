@@ -37,6 +37,8 @@ export interface ServerSettingContext {
   discardMdnsFencing?: (() => void),
   updateVenueApSnmp?: (() => void),
   discardVenueApSnmp?: (() => void),
+  updateVenueIotController?: (() => void),
+  discardVenueIotController?: (() => void),
   updateVenueIot?: (() => void),
   discardVenueIot?: (() => void),
   updateVenueLbs?: (() => void),
@@ -131,6 +133,7 @@ export function ServerTab () {
       await editServerContextData?.updateSyslog?.()
       await editServerContextData?.updateMdnsFencing?.()
       await editServerContextData?.updateVenueApSnmp?.()
+      await editServerContextData?.updateVenueIotController?.()
       await editServerContextData?.updateVenueIot?.()
       await editServerContextData?.updateVenueLbs?.()
 
@@ -145,6 +148,7 @@ export function ServerTab () {
         delete newData.updateSyslog
         delete newData.updateMdnsFencing
         delete newData.updateVenueApSnmp
+        delete newData.updateVenueIotController
         delete newData.updateVenueIot
         delete newData.updateVenueLbs
 

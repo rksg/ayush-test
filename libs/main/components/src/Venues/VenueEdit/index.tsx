@@ -302,6 +302,7 @@ function processWifiTab (props: VenueEditContextProps) {
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateMdnsFencing?.()
       editServerContextData?.updateVenueApSnmp?.()
+      editServerContextData?.updateVenueIotController?.()
       editServerContextData?.updateVenueIot?.()
       break
   }
@@ -393,6 +394,7 @@ export function showUnsavedModal (props: VenueEditContextProps & {
         editServerContextData?.discardSyslog?.()
         editServerContextData?.discardVenueLbs?.()
         editServerContextData?.discardMdnsFencing?.()
+        editServerContextData?.discardVenueIotController?.()
         editServerContextData?.discardVenueIot?.()
         setEditContextData({
           ...editContextData,
