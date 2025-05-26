@@ -1,21 +1,33 @@
 import { useParams } from 'react-router-dom'
 
 import { CustomButtonProps, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { goToNotFound }                       from '@acx-ui/user'
 import { getIntl }                            from '@acx-ui/utils'
 
-import { ApGroupEditPageHeader }                              from './ApGroupEditPageHeader'
-import { ApGroupGeneralTab }                                  from './ApGroupGeneralTab'
-import { ApGroupVlanRadioTab }                                from './ApGroupVlanRadioTab'
-import { ApGroupEditContextProvider, ApGroupEditContextType } from './context'
+import { ApGroupEditPageHeader }                                                   from './ApGroupEditPageHeader'
+import { ApGroupGeneralTab }                                                       from './ApGroupGeneralTab'
+import { ApGroupRadioTab }                                                         from './ApGroupRadioTab'
+import { ApGroupVlanRadioTab }                                                     from './ApGroupVlanRadioTab'
+import { ApGroupEditContextProvider, ApGroupEditContextType, ApGroupRadioContext } from './context'
 
-const tabs = {
-  general: ApGroupGeneralTab,
-  vlanRadio: ApGroupVlanRadioTab
+
+export type ApGroupRadioConfigItemProps = {
+  isAllowEdit?: boolean
 }
 
 export function ApGroupEdit () {
   const { activeTab = 'general' } = useParams()
+  // eslint-disable-next-line max-len
+  const isApGroupMoreParameterPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
+  const tabs = {
+    general: ApGroupGeneralTab,
+    ...(isApGroupMoreParameterPhase1Enabled
+      ? { radio: ApGroupRadioTab }
+      : { vlanRadio: ApGroupVlanRadioTab }
+    )
+  }
+
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return (
@@ -28,32 +40,63 @@ export function ApGroupEdit () {
 
 type ApGroupEditSettingsProps = {
   editContextData: ApGroupEditContextType
-  setEditContextData:(data: ApGroupEditContextType) => void
+  setEditContextData:(data: ApGroupEditContextType) => void,
+  editRadioContextData: ApGroupRadioContext,
+  setEditRadioContextData: (data: ApGroupRadioContext) => void
 }
 
-const processApGroupEditSettings = (props: { editContextData: ApGroupEditContextType }) => {
-  const { editContextData } = props
+const processApGroupEditSettings = (props: {
+  editContextData: ApGroupEditContextType,
+  editRadioContextData: ApGroupRadioContext
+}) => {
+  const { editContextData, editRadioContextData } = props
   editContextData?.updateChanges?.()
+
+  switch (editContextData?.unsavedTabKey) {
+    case 'radio':
+      editRadioContextData.updateWifiRadio?.()
+      break
+  }
 }
 
-const discardApGroupEditSettings = (props: { editContextData: ApGroupEditContextType }) => {
-  const { editContextData } = props
+const discardApGroupEditSettings = (props: {
+  editContextData: ApGroupEditContextType,
+  editRadioContextData: ApGroupRadioContext
+}) => {
+  const { editContextData, editRadioContextData } = props
   editContextData?.discardChanges?.()
+
+  switch (editContextData?.unsavedTabKey) {
+    case 'radio':
+      editRadioContextData.discardWifiRadioChanges?.()
+      break
+  }
 }
 
 const resetApGroupEditContextData = (props: ApGroupEditSettingsProps) => {
-  const { editContextData, setEditContextData } = props
+  const {
+    editContextData, setEditContextData,
+    editRadioContextData, setEditRadioContextData
+  } = props
 
   setEditContextData({
     tabTitle: editContextData.tabTitle,
     unsavedTabKey: editContextData.unsavedTabKey,
     isDirty: false
   })
+
+  switch (editContextData?.unsavedTabKey) {
+    case 'radio':
+      setEditRadioContextData({ ...editRadioContextData })
+      break
+  }
 }
 
 export function showUnsavedModal (
   editContextData: ApGroupEditContextType,
   setEditContextData: (data: ApGroupEditContextType) => void,
+  editRadioContextData: ApGroupRadioContext,
+  setEditRadioContextData: (data: ApGroupRadioContext) => void,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -74,10 +117,12 @@ export function showUnsavedModal (
     key: 'discard',
     closeAfterAction: true,
     handler: async () => {
-      discardApGroupEditSettings({ editContextData })
+      discardApGroupEditSettings({ editContextData, editRadioContextData })
       resetApGroupEditContextData({
         editContextData,
-        setEditContextData
+        setEditContextData,
+        editRadioContextData,
+        setEditRadioContextData
       })
 
       callback?.()
@@ -88,11 +133,13 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      processApGroupEditSettings({ editContextData })
+      processApGroupEditSettings({ editContextData, editRadioContextData })
 
       resetApGroupEditContextData({
         editContextData,
-        setEditContextData
+        setEditContextData,
+        editRadioContextData,
+        setEditRadioContextData
       })
 
       callback?.()

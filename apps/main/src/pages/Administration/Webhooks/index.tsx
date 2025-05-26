@@ -130,7 +130,9 @@ const R1Webhooks = () => {
       columns={columns}
       dataSource={tableQuery.data?.data}
       actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
-      rowActions={rowActions}
+      rowActions={hasRowPermissions
+        ? filterByAccess(rowActions)
+        : undefined}
       rowSelection={hasRowPermissions && {
         type: 'radio'
       }}

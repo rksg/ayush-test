@@ -36,7 +36,34 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
-
+  getApBandModeSettingsV1Dot1: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApBandModeSettingsV1Dot1: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  getApGroupBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateApGroupBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
   getVenueRadioCustomization: {
     method: 'get',
     url: '/venues/:venueId/apRadioSettings',
@@ -48,6 +75,35 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apRadioSettings',
     opsApi: 'PUT:/venues/{id}/apRadioSettings',
     newApi: true
+  },
+  getApGroupRadioCustomization: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/radioSettings',
+    opsApi: 'GET:/venues/{id}/apGroups/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateApGroupRadioCustomization: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/radioSettings',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getApGroupDefaultRegulatoryChannels: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/wifiAvailableChannels',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getApRadioCustomization: {
     method: 'get',
@@ -62,6 +118,26 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/radioSettings',
     opsApi: 'PUT:/venues/{id}/aps/{id}/radioSettings',
     newApi: true
+  },
+  getApRadioCustomizationV1Dot1: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
+    opsApi: 'GET:/venues/{id}/aps/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApRadioCustomizationV1Dot1: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/radioSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
 
   // ===== Load Balancing =====
