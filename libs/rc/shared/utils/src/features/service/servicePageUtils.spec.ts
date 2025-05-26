@@ -3,7 +3,7 @@ import { renderHook }       from '@acx-ui/test-utils'
 
 import { ServiceOperation, ServiceType } from '../../constants'
 
-import { getServiceListRoutePath, getServiceRoutePath, useServiceListBreadcrumb, useServicePageHeaderTitle } from '.'
+import { getServiceListRoutePath, getServiceRoutePath, useAfterServiceSaveRedirectPath, useServiceListBreadcrumb, useServicePageHeaderTitle } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
@@ -12,10 +12,12 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedLocationFrom = { pathname: '/test' }
+const generalPreviousPath = '/test'
+const mockedLocationFrom = { pathname: generalPreviousPath }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useLocation: () => ({ state: { from: mockedLocationFrom } })
+  useLocation: () => ({ state: { from: mockedLocationFrom } }),
+  useTenantLink: (path: string) => path
 }))
 
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
@@ -80,5 +82,32 @@ describe('servicePageUtils', () => {
 
     // eslint-disable-next-line max-len
     expect(mockedGenerateUnifiedServicesBreadcrumb).toHaveBeenCalledWith(mockedLocationFrom)
+  })
+
+  describe('useAfterServiceSaveRedirectPath', () => {
+    it('should return routeToList when isTemplate is false', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      const routeToList = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+
+      const { result } = renderHook(() =>
+        useAfterServiceSaveRedirectPath(ServiceType.DPSK)
+      )
+
+      expect(result.current).toBe(routeToList)
+    })
+
+    it('should return previousPath when isTemplate is true', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() =>
+        useAfterServiceSaveRedirectPath(ServiceType.DPSK)
+      )
+
+      expect(result.current).toEqual({
+        hash: '',
+        search: '',
+        pathname: generalPreviousPath
+      })
+    })
   })
 })

@@ -26,7 +26,10 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPageHeaderTitle,
   useConfigTemplate,
-  usePoliciesBreadcrumb
+  usePoliciesBreadcrumb,
+  useIsNewServicesCatalogEnabled,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -82,10 +85,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     oper: PolicyOperation.LIST
   })
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
-  const linkToTableViewWithSwitch = useTenantLink('/policies/portProfile/wifi')
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.ETHERNET_PORT_PROFILE)
+  const previousPath = usePolicyPreviousPath(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.LIST)
 
   const handleFinish = async () => {
     try{
@@ -94,12 +95,11 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       console.log(error) // eslint-disable-line no-console
     }
 
-    handleCancel()
+    handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = () => {
-    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath,
-      isSwitchPortProfileEnabled ? linkToTableViewWithSwitch : linkToTableView)
+  const handleCancel = (prev = previousPath) => {
+    (onCancel) ? onCancel() : navigate(prev, { replace: true })
   }
 
   // const ethernetPortProfileListPayload = {

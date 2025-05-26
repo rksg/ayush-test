@@ -23,6 +23,7 @@ import {
   PolicyOperation,
   PolicyType,
   SwitchAccessControl,
+  useAfterPolicySaveRedirectPath,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
@@ -79,12 +80,8 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const [layer2AclDrawerId, setLayer2AclDrawerId] = useState('')
 
   const previousPath = usePolicyPreviousPath(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.LIST)
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.SWITCH_ACCESS_CONTROL,
-    oper: PolicyOperation.LIST
-  })
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SWITCH_ACCESS_CONTROL)
 
-  const switchAccessControlLink = useTenantLink(tablePath)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   const pageTitle = editMode ? $t({ defaultMessage: 'Edit Switch Access Control' }) :
     $t({ defaultMessage: 'Add Switch Access Control' })
@@ -171,7 +168,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     } else {
       await addAccessControl({ payload }).unwrap()
     }
-    navigate(switchAccessControlLink, { replace: false })
+    navigate(redirectPathAfterSave, { replace: false })
   }
 
   return (
