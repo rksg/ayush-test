@@ -430,7 +430,9 @@ export function AddPrivilegeGroup () {
               ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
               type='link'
               onClick={onClickSelectCustomer}
-            >Select customers</Button>
+            >
+              {intl.$t({ defaultMessage: 'Select customers' })}
+            </Button>
           </Space>
         </Radio.Group>
       </Form.Item>

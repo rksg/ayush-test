@@ -245,7 +245,9 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeleteAdminUpdating
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       <DndProvider backend={HTML5Backend} >
         <Table style={{ paddingBottom: '40px' }}
           columns={columns}
