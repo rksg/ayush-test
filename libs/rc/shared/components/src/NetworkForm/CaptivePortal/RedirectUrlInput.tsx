@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Checkbox,
@@ -20,7 +20,8 @@ export function RedirectUrlInput () {
   const {
     data,
     setData,
-    editMode
+    editMode,
+    cloneMode
   } = useContext(NetworkFormContext)
 
   const REDIRECT_TOOLTIP =
@@ -40,6 +41,14 @@ export function RedirectUrlInput () {
     useWatch(['guestPortal','redirectUrl'])
   ]
   const [redirectUrlValue, setRedirectUrlValue] = useState('')
+
+  useEffect(() => {
+    if((editMode || cloneMode) && data){
+      if(data.guestPortal?.redirectUrl){
+        form.setFieldValue('redirectCheckbox',true)
+      }
+    }
+  }, [data])
 
   const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked) {

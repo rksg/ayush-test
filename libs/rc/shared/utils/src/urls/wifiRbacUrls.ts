@@ -105,6 +105,15 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelCapabilities',
     newApi: true
   },
+  getApGroupApCapabilities: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelCapabilities',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getAp: {
     method: 'get',
     // url: '/venues/aps/:serialNumber?operational=false',

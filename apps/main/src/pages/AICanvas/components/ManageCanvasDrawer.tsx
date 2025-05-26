@@ -71,9 +71,9 @@ export default function ManageCanvasDrawer (props: DrawerProps) {
             onClick={()=> { onEdit(item) }}>
             <EditOutlined size='sm' />
           </div>
-          <div className='button'
+          <div className={'button' + (canvasList.length == 1 ? ' disabled': '')}
             data-testid='delete'
-            onClick={()=> { onDelete(item) }}>
+            onClick={()=> { canvasList.length > 1 && onDelete(item) }}>
             <DeleteOutlined size='sm' />
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
   useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
 import {
+  AvailableMspRecCustomers,
   MSPUtils,
   MspRecCustomer
 } from '@acx-ui/msp/utils'
@@ -42,7 +43,34 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     useIsSplitOn(Features.DURGA_TENANT_CONVERSION_REC_TO_MSP_REC)
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
-    enableRbac: isRbacEnabled })
+    enableRbac: isRbacEnabled },
+  {
+    selectFromResult: ({ data, ...rest }) => {
+
+      if (!isRecToMspREcConversionEnabled) {
+        return {
+          data,
+          ...rest
+        }
+      }
+
+      const _childAccounts = (data as AvailableMspRecCustomers)?.child_accounts?.map((account) => {
+        return (!account?.is_tenant_onboarded)
+          ? { ...account, account_name: '* ' + account.account_name }
+          : account
+      }).sort((a,b) => {
+        if(a.account_name < b.account_name) { return -1 }
+        if(a.account_name > b.account_name) { return 1 }
+        return 0
+      })
+
+      return {
+        data: { ...data, child_accounts: _childAccounts },
+        ...rest
+      }
+    }
+  }
+  )
 
   const onClose = () => {
     setVisible(false)

@@ -22,6 +22,10 @@ jest.mock('./RadioSettings/RadioSettings', () => ({
   RadioSettings: () => <div data-testid={'radioSettings'}></div>
 }))
 
+jest.mock('./RadioSettings/RadioSettingsV1Dot1', () => ({
+  RadioSettingsV1Dot1: () => <div data-testid={'radioSettings'}></div>
+}))
+
 jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () => ({
   ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
 }))
@@ -104,5 +108,66 @@ describe('AP Radio Tab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(mockUpdateWifiRadio).toBeCalled()
 
+  })
+
+  it('cancel data after config changed', async () => {
+    const mockUpdateWifiRadio = jest.fn()
+
+    const newEditContextData = {
+      tabTitle: 'Radio',
+      unsavedTabKey: 'radio',
+      isDirty: true
+    }
+
+    const newEditRadioContextData = {
+      updateWifiRadio: mockUpdateWifiRadio,
+      discardWifiRadioChanges: jest.fn()
+    }
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: newEditContextData,
+          setEditContextData: jest.fn(),
+          editRadioContextData: newEditRadioContextData,
+          setEditNetworkControlContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
+        }} >
+          <ApDataContext.Provider value={{
+            apData: ApData_T750SE,
+            apCapabilities: ApCap_T750SE }} >
+            <RadioTab />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
+      }
+    )
+
+    expect(await screen.findByTestId('ExternalAntennaSettings')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+})
+
+describe('AP Radio Tab Radio Settings', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
+  it('should render correctly',async () => {
+    render(
+      <Provider>
+        <ApDataContext.Provider value={{
+          apData: ApData_T750SE,
+          apCapabilities: ApCap_T750SE }} >
+          <RadioTab />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
+      }
+    )
+
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
+    expect(await screen.findByTestId('radioSettings')).toBeVisible()
   })
 })
