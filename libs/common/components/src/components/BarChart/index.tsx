@@ -33,6 +33,7 @@ export interface BarChartProps
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
   tooltip?: object
+  silent?: boolean
   labelRichStyle?: object
   onClick?: (params: EventParams) => void
   yAxisType?: 'time' & 'category',
@@ -77,6 +78,7 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   tooltip,
+  silent,
   labelRichStyle,
   barColors,
   barWidth,
@@ -161,7 +163,7 @@ export function BarChart<TChartData extends BarChartData>
       }
     },
     series: getSeries(
-      data, barColors as string[], labelFormatter, labelRichStyle, !!onClick, !tooltip
+      data, barColors as string[], labelFormatter, labelRichStyle, !!onClick, silent
     )
   }
 

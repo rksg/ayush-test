@@ -317,6 +317,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
           labelRichStyle={richStyle()}
           yAxisType={chartData?.axisType}
           tooltipFormatter={tooltipFormatter}
+          silent={false}
           tooltip={{
             trigger: 'item'
           }}
