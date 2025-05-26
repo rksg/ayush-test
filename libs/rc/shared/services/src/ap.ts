@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }             from '@acx-ui/components'
+import { Filter } from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -96,7 +96,8 @@ import {
   mergeLanPortSettings,
   IpsecUrls,
   IpsecViewData,
-  ApExternalAntennaSettings
+  ApExternalAntennaSettings,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -633,10 +634,67 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
-        return {
-          ...req
+      async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (enableRbac) {
+          const apSerialNumber = params?.serialNumber
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const apListQueryPayload = {
+            fields: ['name', 'status', 'serialNumber', 'apGroupId', 'clientCount', 'apWiredClientCount'],
+            page: 1,
+            pageSize: 10
+          }
+
+          const apListReq = {
+            ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
+            body: JSON.stringify({
+              ...apListQueryPayload,
+              filters: {
+                serialNumber: [apSerialNumber]
+              }
+            })
+          }
+
+          const apListQuery = await fetchWithBQ(apListReq)
+          const apList = apListQuery.data as TableResult<NewAPModelExtended>
+          const currentAp = apList?.data?.[0]
+          const { name, status, apGroupId, clientCount=0, apWiredClientCount=0 } = currentAp || {}
+
+          const wifiNetworksReq = {
+            ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, customHeaders),
+            body: JSON.stringify({
+              fields: ['name'],
+              page: 1,
+              pageSize: 10,
+              filters: {
+                'venueApGroups.apGroupIds': [apGroupId]
+              }
+            })
+          }
+          const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq)
+          const wifiNetworksData = wifiNetworksQuery.data as TableResult<WifiNetwork>
+
+          const apDetailHeader = {
+            title: name,
+            headers: {
+              overview: status,
+              clients: clientCount,
+              apWiredClients: apWiredClientCount,
+              networks: wifiNetworksData?.totalCount ?? 0
+            }
+          }as ApDetailHeader
+
+          return { data: apDetailHeader }
+
+        } else {
+          const apHeaderReq = createHttpRequest(
+            CommonUrlsInfo.getApDetailHeader,
+            params)
+
+          const apDetailHeaderQuery = await fetchWithBQ(apHeaderReq)
+
+          return apDetailHeaderQuery as QueryReturnValue<ApDetailHeader,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
@@ -978,7 +1036,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
-              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni'],
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni', 'authRadiusId', 'accountingRadiusId'],
               pageSize: 1000
             })
           }
@@ -999,6 +1057,8 @@ export const apApi = baseApApi.injectEndpoints({
                 let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
                 if (venueTargetPort) {
                   venueTargetPort.ethernetPortProfileId = eth.id
+                  venueTargetPort.authRadiusId = eth.authRadiusId
+                  venueTargetPort.accountingRadiusId = eth.accountingRadiusId
                 }
               }
             }
@@ -1010,6 +1070,8 @@ export const apApi = baseApApi.injectEndpoints({
                   ?.find(l => l.portId === port.portId?.toString())
                 if (targetPort) {
                   targetPort.ethernetPortProfileId = eth.id
+                  targetPort.authRadiusId = eth.authRadiusId
+                  targetPort.accountingRadiusId = eth.accountingRadiusId
                 }
               }
             }
@@ -1033,6 +1095,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let softGre of softGreList.data) {
               findTargetLanPorts(apLanPorts, softGre.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.softGreProfileId = softGre.id
+                targetPort.softGreProfileName = softGre.name
               })
             }
           }
@@ -1055,6 +1118,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let ipsec of ipsecList.data) {
               findTargetLanPorts(apLanPorts, ipsec.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.ipsecProfileId = ipsec.id
+                targetPort.ipsecProfileName = ipsec.name
                 targetPort.ipsecEnabled = true
               })
             }
@@ -1078,6 +1142,7 @@ export const apApi = baseApApi.injectEndpoints({
             for (let clientIsolation of clientIsolationList.data) {
               findTargetLanPorts(apLanPorts, clientIsolation.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.clientIsolationProfileId = clientIsolation.id
+                targetPort.clientIsolationProfileName = clientIsolation.name
               })
             }
           }

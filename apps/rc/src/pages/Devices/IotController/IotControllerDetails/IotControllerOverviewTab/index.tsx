@@ -5,6 +5,7 @@ import {
 
 import { ActivePluginsByRadio }   from './ActivePluginsByRadio'
 import { ActivePluginsWidget }    from './ActivePluginsWidget'
+import { AssociatedVenues }       from './AssociatedVenues'
 import { IotApsWidget }           from './IotApsWidget'
 import { RcapLicenseUtilization } from './RcapLicenseUtilization'
 
@@ -21,7 +22,7 @@ export function IotControllerOverviewTab () {
             <RcapLicenseUtilization />
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <IotApsWidget />
+            <AssociatedVenues />
           </GridCol>
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
