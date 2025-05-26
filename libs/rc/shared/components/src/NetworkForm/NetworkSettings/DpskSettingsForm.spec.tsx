@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, screen }                      from '@acx-ui/test-utils'
@@ -13,7 +13,8 @@ import {
   venueListResponse,
   dpskListResponse,
   partialDpskNetworkEntity,
-  mockAAAPolicyListResponse
+  mockAAAPolicyListResponse,
+  partialDpskNetworkEntity2
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -89,6 +90,7 @@ describe('DpskSettingsForm', () => {
         <NetworkFormContext.Provider value={{
           editMode: true,
           cloneMode: false,
+          isRuckusAiMode: false,
           data: partialDpskNetworkEntity,
           setData: jest.fn()
         }}>
@@ -171,6 +173,7 @@ describe('DpskSettingsForm', () => {
         <NetworkFormContext.Provider value={{
           editMode: false,
           cloneMode: false,
+          isRuckusAiMode: false,
           data: { ...partialDpskNetworkEntity, enableAuthProxy: true },
           setData: jest.fn()
         }}>
@@ -190,6 +193,45 @@ describe('DpskSettingsForm', () => {
     await userEvent.click(screen.getByRole('radio', { name: 'Use RADIUS Server' }))
     expect(screen.getByRole('radio', { name: 'Use RADIUS Server' })).toBeChecked()
     expect(screen.getByTestId('enable-auth-proxy')).toBeChecked()
+  })
+
+  it('should set dpskProfileId when clone mode', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff !== Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE
+    )
+
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: false,
+          cloneMode: true,
+          isRuckusAiMode: true,
+          data: { ...partialDpskNetworkEntity2 },
+          setData: jest.fn()
+        }}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn
+          }}>
+            <Form>
+              <DpskSettingsForm />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    expect(await screen.findByText('DPSK Service 3')).toBeVisible()
+
+    const securityCombo = screen.getByRole('combobox', { name: 'Security Protocol' })
+    await userEvent.click(securityCombo)
+    await userEvent.click((await screen.findByText('WPA2/WPA3 mixed mode')))
+
+    expect(await screen.findByLabelText('Use the DPSK Service')).toBeChecked()
   })
 
 })

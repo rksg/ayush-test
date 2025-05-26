@@ -10,6 +10,9 @@ import {
   VenueDetailHeader,
   EdgeStatusSeverityStatistic,
   transformSwitchStatus,
+  IotControllerStatusEnum,
+  getIotControllerStatus,
+  IotControllerStatus,
   RWGStatusEnum,
   getRwgStatus,
   RWGRow
@@ -384,8 +387,6 @@ export const getRwgDonutChartData =
   return chartData
 }
 
-
-
 export const getRwgStackedBarChartData =
 (rwgList: RWGRow[]): { chartData: ChartData[], stackedColors: string[] } => {
   let map = new Map(rwgList?.map(({ status }) =>
@@ -412,3 +413,53 @@ export const getRwgStackedBarChartData =
     stackedColors: colors
   }
 }
+
+export const getIotControllerDonutChartData =
+(iotControllers: IotControllerStatus[]): DonutChartData[] => {
+  const chartData: DonutChartData[] = []
+
+  const rwgMap = new Map<IotControllerStatusEnum, number>(iotControllers?.map(({ status }) =>
+    [status, 0]))
+
+  for (let { status } of iotControllers as IotControllerStatus[]) {
+    if (rwgMap) {
+      const value: number = rwgMap.get(status) as number
+      rwgMap.set(status, value + 1)
+    }
+  }
+
+  Array.from(rwgMap).forEach(([status, value]) => {
+    const { name, color } = getIotControllerStatus(status)
+    chartData.push({ name, value, color: cssStr(color) })
+  })
+
+  return chartData
+}
+
+export const getIotControllerStackedBarChartData =
+(iotControllers: IotControllerStatus[]): { chartData: ChartData[], stackedColors: string[] } => {
+  let map = new Map(iotControllers?.map(({ status }) =>
+    [status, { name: getIotControllerStatus(status).name, value: 0 }]))
+  for (let { status } of iotControllers as IotControllerStatus[]) {
+    if (map && map.get(status)) {
+      (map.get(status) as { name: string; value: number }).value++
+    }
+  }
+
+  const result = Array.from(map.values())
+
+  let colors: string[] = []
+
+  Array.from(map.keys()).map(status => {
+    colors.push(cssStr(getIotControllerStatus(status).color))
+  })
+
+  return {
+    chartData: [{
+      category: '',
+      series: result
+    }],
+    stackedColors: colors
+  }
+}
+

@@ -544,6 +544,11 @@ export const Canvas = styled.div`
     border-bottom-right-radius: 24px;
     height: calc(100vh - 130px);
   }
+  .ant-card {
+    &:hover {
+      border: 1px solid var(--acx-neutrals-40) !important;
+    }
+  }
 `
 
 export const Visibility = styled.div`
@@ -608,6 +613,7 @@ overflow: auto;
     padding: 8px;
     border-radius: 4px;
     margin: 8px;
+    gap: 4px;
     .icon{
       cursor: pointer;
       margin: 4px;
@@ -651,8 +657,11 @@ overflow: auto;
     color: var(--acx-primary-white);
     border-radius: 0 0 4px 4px;
     opacity: 0.9;
-    pointer-events: none;
     padding: 0 5%;
+    cursor: default;
+    .slider-mark {
+      padding-bottom: 4px;
+    }
     .slider{
       cursor: pointer;
       margin: 0 min(6%, 24px);
@@ -665,6 +674,27 @@ overflow: auto;
       }
       .ant-slider-handle::before {
         display: none !important;
+      }
+      .ant-slider-step {
+        top: 3px;
+      }
+      .ant-slider-rail {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 24px;
+        width: calc(100% + 14px);
+        left: -7px;
+        top: -7px;
+        background-color: transparent;
+        &:after {
+          content: '';
+          display: block;
+          width: calc(100% - 10px);
+          height: 2px;
+          background-color: yellow;
+          background-color: var(--slider-inactive-color);
+        }
       }
       .ant-slider-dot {
         display: block;
@@ -743,6 +773,7 @@ ${props => props.$type === 'pageview' && css`
 `
 
 export const Widget = styled(Card)`
+  transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;
     /* width */

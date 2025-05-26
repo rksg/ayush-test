@@ -178,6 +178,12 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
     useDpskService: !!data.dpskServiceProfileId
   }
 
+  if(saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
+    saveData.isCloudpathEnabled){
+    saveData.enableAuthProxy = false
+    saveData.enableAccountingProxy = false
+  }
+
   if (data.dpskServiceProfileId === '') {
     delete saveData.dpskServiceProfileId
   }
@@ -316,6 +322,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
   }
 
   // accessControlForm
+  if (get(data, 'accessControlProfileToggleEnable')) {
+    advancedCustomization.devicePolicyId = null
+    advancedCustomization.applicationPolicyId = null
+    advancedCustomization.l2AclPolicyId = null
+    advancedCustomization.l3AclPolicyId = null
+  }
   if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
     advancedCustomization.devicePolicyId = null
   }

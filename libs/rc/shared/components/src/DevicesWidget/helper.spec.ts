@@ -5,6 +5,8 @@ import {
   EdgeStatusSeverityStatistic,
   RWGRow,
   RWGStatusEnum,
+  IotControllerStatus,
+  IotControllerStatusEnum,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 
@@ -17,8 +19,28 @@ import {
   getApStackedBarChartData,
   getEdgeStackedBarChartData,
   getRwgStackedBarChartData,
-  getRwgDonutChartData
+  getRwgDonutChartData,
+  getIotControllerStackedBarChartData,
+  getIotControllerDonutChartData
 } from './helper'
+
+const iotControllerList = {
+  requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
+  response: {
+    data: [{
+      id: 'bbc41563473348d29a36b76e95c50381',
+      name: 'ruckusdemos',
+      inboundAddress: '192.168.1.1',
+      iotSerialNumber: 'rewqfdsafasd',
+      publicAddress: 'ruckusdemos.cloud',
+      publicPort: 443,
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      tenantId: '3f10af1401b44902a88723cb68c4bc77',
+      status: IotControllerStatusEnum.OFFLINE,
+      assocVenueIds: ['db2b80ba868c419fb5c1732575160808', 'e54374d158664f9295c4d7508225c582']
+    }]
+  }
+}
 
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
@@ -329,5 +351,27 @@ describe('getRwgDonutChartData', () => {
   })
   it('should return empty array if no data', ()=>{
     expect(getRwgDonutChartData([] as RWGRow[])).toEqual([])
+  })
+})
+
+describe('getIotControllerStackedBarChartData', () => {
+  it('should return correct formatted data', async () => {
+    expect(getIotControllerStackedBarChartData(iotControllerList.response.data)).toMatchSnapshot()
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getIotControllerStackedBarChartData([])).toMatchSnapshot()
+  })
+})
+
+describe('getIotControllerDonutChartData', () => {
+  it('should return correct formatted data', async () => {
+    expect(getIotControllerDonutChartData(iotControllerList.response.data)).toEqual([{
+      color: '#ED1C24',
+      name: 'Offline',
+      value: 1
+    }])
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getIotControllerDonutChartData([] as IotControllerStatus[])).toEqual([])
   })
 })
