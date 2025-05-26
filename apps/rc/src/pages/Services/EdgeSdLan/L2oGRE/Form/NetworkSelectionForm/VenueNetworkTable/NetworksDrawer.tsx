@@ -124,11 +124,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     const targetVenueData = cloneUpdateContent[venueId]
     const targetNetworkData = find(targetVenueData, { networkId: data.id })
     assign(targetNetworkData, { tunnelProfileId })
-    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
-      checkCaptivePortalConflict(data, tunnelProfileId)
-    } else {
-      setUpdateContent(cloneUpdateContent)
-    }
+    checkCaptivePortalConflict(data, tunnelProfileId)
   }
 
   const handleSubmit = async () => {
