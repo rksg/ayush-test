@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { cloneDeep }                                                               from 'lodash'
 import { useIntl }                                                                 from 'react-intl'
-import { useNavigate }                                                             from 'react-router-dom'
+import { Path, useNavigate }                                                       from 'react-router-dom'
 
 import { Alert, PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
@@ -89,8 +89,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = (prev = previousPath) => {
-    (onCancel) ? onCancel() : navigate(prev, { replace: true })
+  const handleCancel = (prev: string | Path) => {
+    (onCancel) ? onCancel() : navigate(prev)
   }
 
   // const ethernetPortProfileListPayload = {
@@ -198,7 +198,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>
