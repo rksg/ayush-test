@@ -626,6 +626,11 @@ export interface ApBandModeSettings {
   useVenueSettings: boolean
 }
 
+export interface ApBandModeSettingsV1Dot1 {
+  bandMode: BandModeEnum,
+  useVenueOrApGroupSettings: boolean
+}
+
 export type ApExternalAntennaSettings = {
   externalAntenna: ExternalAntenna,
   useVenueSettings: boolean

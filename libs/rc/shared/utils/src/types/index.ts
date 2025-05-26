@@ -19,6 +19,7 @@ import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
+export * from './apGroup'
 export * from './venue'
 export * from './network'
 export * from './any-network'
