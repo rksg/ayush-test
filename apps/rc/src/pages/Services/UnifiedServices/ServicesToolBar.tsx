@@ -42,11 +42,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
   // eslint-disable-next-line max-len
   const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder , availableFilters = {} } = props
   const {
-    products = [
-      RadioCardCategory.WIFI,
-      RadioCardCategory.SWITCH,
-      RadioCardCategory.EDGE
-    ],
+    products = Object.values(RadioCardCategory),
     categories = [
       UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
       UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
