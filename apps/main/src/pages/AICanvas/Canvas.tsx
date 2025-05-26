@@ -145,7 +145,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [nameFieldError, setNameFieldError] = useState('')
   const [canvasDisplayName, setCanvasDisplayName] = useState('')
 
-  const [getCanvasById] = useLazyGetCanvasByIdQuery()
+  const [getCanvasById, { isLoading: isCanvasLoading }] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
@@ -188,7 +188,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(editCanvasId && isEditInit) {
+    if(editCanvasId && !isCanvasLoading && isEditInit) {
       // Avoid overwriting canvas data
       setIsEditInit(false)
       return
