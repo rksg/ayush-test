@@ -236,23 +236,13 @@ export const WidgetChart: React.FC<WidgetListProps> = (
     }
   })
 
-  const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-    const yIndex = Array.isArray(params) && params[0]?.encode?.y?.length ?
-      params[0]?.encode?.y[0] : 0
-    const xIndex = Array.isArray(params) && params[0]?.encode?.x?.length ?
-      params[0]?.encode?.x[0] : 1
-    const y = Array.isArray(params) && Array.isArray(params[0].data) ?
-      params[0].data[yIndex] : ''
-    const x = Array.isArray(params) && Array.isArray(params[0].dimensionNames) ?
-      params[0].dimensionNames[xIndex] : ''
-    const value = Array.isArray(params) && Array.isArray(params[0].data) ?
-      params[0].data[xIndex] : ''
-    const color = Array.isArray(params) ? params[0].color : ''
+  const tooltipFormatter = (callbackParams: TooltipComponentFormatterCallbackParams) => {
+    const params = Array.isArray(callbackParams) ? callbackParams : [callbackParams]
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
     let maps = [] as BarChartTooltip[]
     if(Array.isArray(params)) {
       //@ts-ignore
-      maps =params.map(p => {
+      maps = params.map(p => {
         const yIndex = p?.encode?.y?.length ? p.encode.y[0] : 0
         const xIndex = p?.encode?.x?.length ? p.encode.x[0] : 1
         return {
@@ -263,7 +253,7 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         }})
     }
 
-    return Array.isArray(params) ? renderToString(
+    return renderToString(
       <TooltipWrapper>
         <div>
           {
@@ -284,22 +274,6 @@ export const WidgetChart: React.FC<WidgetListProps> = (
           }
         </div>
       </TooltipWrapper>
-    ) : renderToString(
-      <TooltipWrapper>
-        <div>
-          <b>{chartData?.axisType === 'time' ?
-            formatter(DateFormatEnum.DateTimeFormat)(y) : y as string}</b>
-          <p>
-            {
-              color ? <UI.Badge
-                className='acx-chart-tooltip'
-                color={color as string}
-                text={x}
-              />: x
-            } : <b> {formatter(unit)(value) as string}</b>
-          </p>
-        </div>
-      </TooltipWrapper>
     )
   }
 
@@ -316,11 +290,15 @@ export const WidgetChart: React.FC<WidgetListProps> = (
         showTotal
       />
     } else if(type === 'line') {
-      return <StackedAreaChart
-        style={{ width: width-5, height: height-heightDiff }}
-        data={chartData?.chartOption || []}
-        xAxisType={chartData?.axisType}
-      />
+      if(!chartData?.chartOption) {
+        return <NoDataIcon hideText={true} />
+      } else {
+        return <StackedAreaChart
+          style={{ width: width-5, height: height-heightDiff }}
+          data={chartData?.chartOption || []}
+          xAxisType={chartData?.axisType}
+        />
+      }
     } else if(type === 'bar') {
       if(!chartData?.chartOption?.source) {
         return <NoDataIcon hideText={true} />
@@ -339,6 +317,10 @@ export const WidgetChart: React.FC<WidgetListProps> = (
           labelRichStyle={richStyle()}
           yAxisType={chartData?.axisType}
           tooltipFormatter={tooltipFormatter}
+          silent={false}
+          tooltip={{
+            trigger: 'item'
+          }}
         />
       }
     } else if(type === 'table') {
@@ -367,40 +349,6 @@ export const WidgetChart: React.FC<WidgetListProps> = (
     }
     return
   }
-  // const queryResults = {
-  //   data: {
-  //     chartOption: [
-  //       {
-  //           "key": "switchId_Total Uplink Traffic (Bytes)",
-  //           "name": "Total Uplink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   278871529
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   46174041
-  //               ]
-  //           ]
-  //       },
-  //       {
-  //           "key": "switchId_Total Downlink Traffic (Bytes)",
-  //           "name": "Total Downlink Traffic (Bytes)",
-  //           "data": [
-  //               [
-  //                   "D4:C1:9E:15:E9:21",
-  //                   12376117
-  //               ],
-  //               [
-  //                   "58:FB:96:0E:81:B2",
-  //                   6073197
-  //               ]
-  //           ]
-  //       }
-  //   ]
-  //   }
-  // }
   const isCard = data.type === 'card'
   const chartData = isCard ? queryResults.data : data
   const widgetTitle = chartData?.name && data?.updated

@@ -83,5 +83,14 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getApGroupDefaultRegulatoryChannels: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apGroups/:apGroupId/wifiAvailableChannels',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

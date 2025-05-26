@@ -28,6 +28,7 @@ export const iotApi = baseIotApi.injectEndpoints({
           body: payload
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'IotController', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -65,10 +66,11 @@ export const iotApi = baseIotApi.injectEndpoints({
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),
     updateIotController: build.mutation<IotControllerSetting, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(IotUrlsInfo.updateIotController, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
