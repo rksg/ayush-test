@@ -20,6 +20,7 @@ import {
   PropertyUrlsInfo,
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo,
+  SamlIdpProfileUrls,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -157,6 +158,15 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: ['PUT:/switchAccessControlProfiles/{id}'],
     [PolicyOperation.DELETE]: ['DELETE:/switchAccessControlProfiles/{id}'],
     [PolicyOperation.LIST]: ['POST:/switchAccessControlProfiles/query']
+  },
+  [PolicyType.ACCESS_CONTROL_CONSOLIDATION]: {
+    [PolicyOperation.CREATE]: ['POST:/accessControlProfiles', 'POST:/switchAccessControlProfiles'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.EDIT]: ['PUT:/accessControlProfiles/{id}', 'PUT:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.DELETE]: ['DELETE:/accessControlProfiles/{id}', 'DELETE:/switchAccessControlProfiles/{id}'],
+    // eslint-disable-next-line max-len
+    [PolicyOperation.LIST]: ['POST:/accessControlProfiles/query', 'POST:/switchAccessControlProfiles/query']
   },
   [PolicyType.LAYER_2_POLICY]: {
     [PolicyOperation.CREATE]: ['POST:/l2AclPolicies'],
@@ -298,9 +308,22 @@ export const policyAllowedOperationMap = {
     /* eslint-disable max-len */
     [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.generateCertificate), getOpsApi(CertificateUrls.generateCertificatesToIdentity), getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
     /* eslint-disable max-len */
-    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
+  },
+  [PolicyType.SERVER_CERTIFICATES]: {
+    /* eslint-disable max-len */
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.updateServerCertificate)],
+    [PolicyOperation.DELETE]: [getOpsApi(CertificateUrls.deleteServerCertificate)],
+    [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getServerCertificates), getOpsApi(CertificateUrls.getCertificateList)]
+  },
+  [PolicyType.SAML_IDP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SamlIdpProfileUrls.createSamlIdpProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SamlIdpProfileUrls.updateSamlIdpProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SamlIdpProfileUrls.deleteSamlIdpProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SamlIdpProfileUrls.getSamlIdpProfileViewDataList)]
   },
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],

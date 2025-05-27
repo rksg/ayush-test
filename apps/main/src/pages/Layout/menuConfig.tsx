@@ -27,8 +27,8 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { useIsEdgeReady }  from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
+import { useIsEdgeReady }          from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -37,7 +37,8 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab,
   MigrationUrlsInfo,
-  LicenseUrlsInfo
+  LicenseUrlsInfo,
+  useIsNewServicesCatalogEnabled
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -75,9 +76,11 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [
@@ -163,10 +166,18 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
-            {
-              uri: '/users/switch/clients',
-              label: $t({ defaultMessage: 'Wired Clients List' })
-            }
+            ...(!isSupportWifiWiredClient? [
+              {
+                uri: '/users/switch/clients',
+                label: $t({ defaultMessage: 'Wired Clients List' })
+              }
+            ] : [{
+              uri: '/users/wired/switch/clients',
+              label: $t({ defaultMessage: 'Switch Clients List' })
+            }, {
+              uri: '/users/wired/wifi/clients',
+              label: $t({ defaultMessage: 'AP Clients List' })
+            }])
           ]
         },
         ...(isCloudpathBetaEnabled ? [{
@@ -319,7 +330,22 @@ export function useMenuConfig () {
       ]
     }] : []
     ),
-    {
+    ...(isNewServiceCatalogEnabled ? [{
+      label: $t({ defaultMessage: 'Network Control' }),
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid,
+      children: [
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
+    }] : [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -337,7 +363,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Policies & Profiles' })
         }
       ]
-    },
+    }]),
     ...(isCore && !isSupportUser ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),

@@ -94,7 +94,7 @@ export const DashboardItem = styled.div`
   display: flex;
   align-items: center;
   height: 76px;
-  padding: 0 20px 0 12px;
+  padding: 0 16px 0 12px;
   border-radius: 8px;
   border: 1px solid var(--acx-neutrals-20);
   background: var(--acx-neutrals-10);
@@ -164,20 +164,40 @@ export const DashboardItem = styled.div`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
     }
     .name {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    button {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: transparent;
+      justify-content: center;
+      transition: .2s;
+      &:hover {
+        color: var( --acx-neutrals-70);
+        background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
+      }
+    }
     svg {
+      width: 100%;
       path {
         color: var( --acx-neutrals-70);
       }
@@ -234,8 +254,7 @@ export const CanvasListItem = styled(AntList.Item)`
   border: 1px solid var(--acx-neutrals-20) !important;
   background: var(--acx-neutrals-10);
   margin-bottom: 6px;
-  padding: 12px 15px !important;
-
+  padding: 12px 16px 12px 15px !important;
   .ant-checkbox-inner {
     background: var(--acx-primary-white);
   }
@@ -300,19 +319,40 @@ export const CanvasListItem = styled(AntList.Item)`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
       margin-right: 4px;
     }
     .name {
-      text-overflow: ellipsis;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
     display: inline-flex;
     align-items: center;
+    button {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: transparent;
+      justify-content: center;
+      transition: .2s;
+      &:hover {
+        color: var( --acx-neutrals-70);
+        background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
+      }
+    }
     svg {
+      width: 100%;
       path {
         color: var( --acx-neutrals-70);
       }

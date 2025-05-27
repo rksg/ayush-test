@@ -1,9 +1,9 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Form }                   from 'antd'
-import _, { get }                 from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form }                           from 'antd'
+import { get, reduce, debounce, isEqual } from 'lodash'
+import { useIntl }                        from 'react-intl'
+import { useNavigate, useParams }         from 'react-router-dom'
 
 import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
@@ -13,7 +13,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
-  convertEdgeNetworkIfConfigToApiPayload,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeNodesPortsInfo,
@@ -40,7 +39,9 @@ import { Summary }                         from './Summary'
 import {
   CompatibilityCheckResult,
   InterfacePortFormCompatibility,
-  InterfaceSettingsFormType
+  InterfaceSettingsFormStepProps,
+  InterfaceSettingsFormType,
+  InterfaceSettingsTypeEnum
 } from './types'
 import {
   getAllInterfaceAsPortInfoFromForm,
@@ -56,15 +57,6 @@ import { VirtualIpForm } from './VirtualIpForm'
 const lagCompatibleErrorFields = getLagFormCompatibilityFields()
 const portCompatibleErrorFields = getPortFormCompatibilityFields()
 const subInterfaceCompatibleErrorFields = getSubInterfaceCompatibilityFields()
-
-const enum InterfaceSettingsTypeEnum {
-  LAGS = 'lagSettings',
-  PORTS = 'portSettings',
-  SUB_INTERFACE = 'subInterfaceSettings',
-  DUAL_WAN = 'dualWanSettings',
-  VIRTUAL_IP = 'virtualIpSettings',
-  HA_SETTING = 'haSettings'
-}
 
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
@@ -89,6 +81,7 @@ export const InterfaceSettings = () => {
   })
   // eslint-disable-next-line max-len
   const [dynamicStepsVisible, setDynamicStepsVisible] = useState<{ [k in string]: boolean }>({ dualWanSettings: false })
+  const validateResultRef = useRef<boolean>(true)
 
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
@@ -101,26 +94,26 @@ export const InterfaceSettings = () => {
   }
 
   const getCompatibleCheckResult = useCallback((typeKey: string): CompatibilityCheckResult => {
-    const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
+    const formData = get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
       checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
     } else if (typeKey === InterfaceSettingsTypeEnum.SUB_INTERFACE) {
       const allInterfaces = getAllInterfaceAsPortInfoFromForm(configWizardForm)
       checkResult = subInterfaceCompatibleCheck(
-        _.get(configWizardForm.getFieldsValue(true), 'portSubInterfaces'),
-        _.get(configWizardForm.getFieldsValue(true), 'lagSubInterfaces'),
+        get(configWizardForm.getFieldsValue(true), 'portSubInterfaces'),
+        get(configWizardForm.getFieldsValue(true), 'lagSubInterfaces'),
         clusterInfo?.edgeList,
-        _.reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
+        reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
           result[serialNumber] = interfaces.filter((item) => !item.isLag)
           return result
         }, {} as EdgeNodesPortsInfo),
-        _.reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
+        reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
           result[serialNumber] = interfaces.filter((item) => item.isLag)
           return result
         }, {} as EdgeNodesPortsInfo)) as unknown as CompatibilityCheckResult
     } else {
-      const lagFormData = _.get(configWizardForm.getFieldsValue(true), 'lagSettings')
+      const lagFormData = get(configWizardForm.getFieldsValue(true), 'lagSettings')
       checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
     }
 
@@ -197,13 +190,25 @@ export const InterfaceSettings = () => {
     }
   }
 
-  // only active-standby cluster and 2 WAN ports are configured
   const getShouldRenderDualWan = () => {
-    const shouldDualWanVisible = get(dynamicStepsVisible, 'dualWanSettings')
-    return shouldDualWanVisible && isSingleNode
+    return get(dynamicStepsVisible, 'dualWanSettings')
   }
 
-  const handleValuesChange = useCallback(_.debounce((
+  const updateDynamicStepsDualWan = useCallback((ports: EdgePort[], lags: EdgeLag[]) => {
+    // check if has multi WAN
+    const wanCount = getEdgeWanInterfaceCount(ports, lags)
+    // valid Dual WAN: single-node cluster and 2 WAN ports are configured
+    const isDualWan = isSingleNode && wanCount > 1
+
+    setDynamicStepsVisible((prevState) => {
+      return {
+        ...prevState,
+        dualWanSettings: isDualWan
+      }
+    })
+  }, [isSingleNode])
+
+  const handleValuesChange = useCallback(debounce((
     typeKey: string,
     changedValues: Partial<InterfaceSettingsFormType>
   ) => {
@@ -212,150 +217,103 @@ export const InterfaceSettings = () => {
     }
 
     // check if has multi WAN
-    if (isSingleNode) {
-      const nodeSn = Object.keys(configWizardForm.getFieldValue('portSettings'))[0]
-      // eslint-disable-next-line max-len
-      const ports = Object.values((configWizardForm.getFieldValue('portSettings')[nodeSn]) as { [portId:string]: EdgePort[] })
-        .flat()
-      const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
-      // eslint-disable-next-line max-len
-      const wanCount = getEdgeWanInterfaceCount(ports as EdgePort[], lags as EdgeLag[])
-      const isDualWan = wanCount > 1
-      setDynamicStepsVisible({ dualWanSettings: isDualWan })
-    }
+    const nodeSn = Object.keys(configWizardForm.getFieldValue('portSettings'))[0]
+    // eslint-disable-next-line max-len
+    const ports = Object.values((configWizardForm.getFieldValue('portSettings')[nodeSn]) as { [portId:string]: EdgePort[] })
+      .flat()
+    const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
+    updateDynamicStepsDualWan(ports, lags)
 
     configWizardForm.validateFields()
       .catch(() => {/* do nothing */})
       .finally(() => doCompatibleCheck(typeKey))
-  }, 1000), [configWizardForm])
+  }, 1000), [configWizardForm, updateDynamicStepsDualWan])
 
-  // initial Dual WAN check when clusterNetworkSettingsFormData is ready
+  // initial Dual WAN check when clusterNetworkSettings is ready
   useEffect(() => {
     // eslint-disable-next-line max-len
-    const wanCount = getEdgeWanInterfaceCount(clusterNetworkSettings?.portSettings[0].ports as EdgePort[], clusterNetworkSettings?.lagSettings[0].lags as EdgeLag[])
-    setDynamicStepsVisible({ dualWanSettings: wanCount > 1 })
-  }, [clusterNetworkSettings])
+    updateDynamicStepsDualWan(clusterNetworkSettings?.portSettings[0].ports as EdgePort[], clusterNetworkSettings?.lagSettings[0].lags as EdgeLag[])
+  }, [clusterNetworkSettings, updateDynamicStepsDualWan])
 
-  const steps = useMemo(() => [
-    {
-      title: $t({ defaultMessage: 'LAG' }),
-      id: InterfaceSettingsTypeEnum.LAGS,
-      content: <LagForm
-        onInit={() => {
-          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.LAGS)
-          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.LAGS)
-        }}
-      />,
-      onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
-      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = isStepsFormBackStepClicked(event)
-
-        const checkResult = getCompatibleCheckResult(typeKey)
-        if (isBackBtn) {
-          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
-          return true
-        } else {
-          updateAlertMessage(checkResult, typeKey)
-          return !checkResult.isError
-        }
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Port General' }),
-      id: InterfaceSettingsTypeEnum.PORTS,
-      content: <PortForm
-        onInit={() => {
-          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.PORTS)
-          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.PORTS)
-        }}
-      />,
-      onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
-      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = isStepsFormBackStepClicked(event)
-        if (isBackBtn) {
-          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
-          return true
-        }
-
-        // eslint-disable-next-line max-len
-        const allValues = (configWizardForm.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']) ?? {}
-
-        for (let nodeSN in allValues) {
-          for (let portIfName in allValues[nodeSN]) {
-            allValues[nodeSN][portIfName].forEach((item, idx) => {
-              // eslint-disable-next-line max-len
-              allValues[nodeSN][portIfName][idx] = convertEdgeNetworkIfConfigToApiPayload(item) as EdgePort
-            })
-          }
-        }
-        configWizardForm.setFieldValue(['portSettings'], allValues)
-
-        const checkResult = getCompatibleCheckResult(typeKey)
-        updateAlertMessage(checkResult, typeKey)
-
-        // dual WAN check
-        if (isEdgeDualWanEnabled) {
-          // clear dualWanSettings if cluster is multi-nodes
-          const configWizardFormData = configWizardForm.getFieldsValue(true)
-          // eslint-disable-next-line max-len
-          configWizardForm.setFieldValue(['multiWanSettings'], getDualWanDataFromClusterWizard(configWizardFormData))
-        }
-
-        return !checkResult.isError
-      }
-    },
-    ...(
-      isEdgeCoreAccessSeparationReady ?
-        [{
-          title: $t({ defaultMessage: 'Sub-interface Settings' }),
-          id: InterfaceSettingsTypeEnum.SUB_INTERFACE,
-          content: <SubInterfaceForm />,
-          onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-            handleValuesChange(InterfaceSettingsTypeEnum.SUB_INTERFACE, changedValues),
-          onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-            const isBackBtn = isStepsFormBackStepClicked(event)
-
-            const checkResult = getCompatibleCheckResult(typeKey)
-            if (isBackBtn) {
-              updateAlertMessage({ isError: false } as CompatibilityCheckResult)
-              return true
-            } else {
-              updateAlertMessage(checkResult, typeKey)
-              return !checkResult.isError
-            }
-          }
-        }] : []
-    ),
-    ...(
-      (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
-        [{
-          title: $t({ defaultMessage: 'Dual WAN' }),
-          id: InterfaceSettingsTypeEnum.DUAL_WAN,
-          content: <DualWanForm />
-        }]:[]
-    ),
-    ...(
-      isEdgeHaAaOn &&
-      clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
-        [{
-          title: $t({ defaultMessage: 'HA Settings' }),
-          id: InterfaceSettingsTypeEnum.HA_SETTING,
-          content: <HaSettingForm />
-        }]:
-        [{
-          title: $t({ defaultMessage: 'Cluster Virtual IP' }),
-          id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
-          content: <VirtualIpForm />
-        }]
-    ),
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      id: 'summary',
-      content: <Summary />
+  const onPortStepFinish = useCallback(async () => {
+    // dual WAN check
+    if (isEdgeDualWanEnabled) {
+      // clear dualWanSettings if cluster is multi-nodes
+      const configWizardFormData = configWizardForm.getFieldsValue(true)
+      // eslint-disable-next-line max-len
+      configWizardForm.setFieldValue(['multiWanSettings'], getDualWanDataFromClusterWizard(configWizardFormData))
     }
-  ], [configWizardForm, getCompatibleCheckResult, handleValuesChange, dynamicStepsVisible])
+  }, [configWizardForm, isEdgeDualWanEnabled])
+
+  const steps = useMemo(() => {
+    return [
+      {
+        title: $t({ defaultMessage: 'LAG' }),
+        id: InterfaceSettingsTypeEnum.LAGS,
+        content: <LagForm
+          onInit={() => {
+            const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.LAGS)
+            updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.LAGS)
+          }}
+        />,
+        onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
+          handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
+        onFinish: true
+      },
+      {
+        title: $t({ defaultMessage: 'Port General' }),
+        id: InterfaceSettingsTypeEnum.PORTS,
+        content: <PortForm
+          onInit={() => {
+            const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.PORTS)
+            updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.PORTS)
+          }}
+        />,
+        onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
+          handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
+        onFinish: onPortStepFinish
+      },
+      ...(
+        isEdgeCoreAccessSeparationReady ?
+          [{
+            title: $t({ defaultMessage: 'Sub-interface Settings' }),
+            id: InterfaceSettingsTypeEnum.SUB_INTERFACE,
+            content: <SubInterfaceForm />,
+            onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
+              handleValuesChange(InterfaceSettingsTypeEnum.SUB_INTERFACE, changedValues),
+            onFinish: true
+          }] : []
+      ),
+      ...(
+        (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
+          [{
+            title: $t({ defaultMessage: 'Dual WAN' }),
+            id: InterfaceSettingsTypeEnum.DUAL_WAN,
+            content: <DualWanForm />
+          }]:[]
+      ),
+      ...(
+        isEdgeHaAaOn &&
+      clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
+          [{
+            title: $t({ defaultMessage: 'HA Settings' }),
+            id: InterfaceSettingsTypeEnum.HA_SETTING,
+            content: <HaSettingForm />
+          }]:
+          [{
+            title: $t({ defaultMessage: 'Cluster Virtual IP' }),
+            id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
+            content: <VirtualIpForm />
+          }]
+      ),
+      {
+        title: $t({ defaultMessage: 'Summary' }),
+        id: 'summary',
+        content: <Summary />
+      }
+    ] as InterfaceSettingsFormStepProps[]
+  // eslint-disable-next-line max-len
+  }, [configWizardForm, getCompatibleCheckResult, handleValuesChange, onPortStepFinish, dynamicStepsVisible])
 
   const invokeUpdateApi = async (
     value: InterfaceSettingsFormType,
@@ -406,7 +364,7 @@ export const InterfaceSettings = () => {
   }
 
   const isVipConfigChanged = (config: VirtualIpFormType['vipConfig']) => {
-    return !_.isEqual(config, clusterNetworkSettingsFormData.vipConfig)
+    return !isEqual(config, clusterNetworkSettingsFormData.vipConfig)
   }
 
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
@@ -425,6 +383,34 @@ export const InterfaceSettings = () => {
 
   const handleCancel = () => {
     navigate(clusterListPage)
+  }
+
+  const handleStepFinish = async (
+    item: InterfaceSettingsFormStepProps,
+    event?: React.MouseEvent
+  ) => {
+    const isBackBtn = isStepsFormBackStepClicked(event)
+    if (isBackBtn) {
+      updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+      return Promise.resolve(true)
+    }
+
+    const typeKey = item.id as InterfaceSettingsTypeEnum
+    const checkResult = getCompatibleCheckResult(typeKey)
+    updateAlertMessage(checkResult, typeKey)
+
+    // if current step has invalid fields, do not allow to go to next step
+    if (!validateResultRef.current) {
+      return Promise.resolve(false)
+    }
+
+    validateResultRef.current = true
+
+    if (typeof item.onFinish === 'function') {
+      await item.onFinish?.(item.id, event)
+    }
+
+    return Promise.resolve(!checkResult.isError)
   }
 
   const hasUpdatePermission = hasPermission({
@@ -453,8 +439,11 @@ export const InterfaceSettings = () => {
             name={index.toString()}
             title={item.title}
             onFinish={item.onFinish
-              ? (_, e?: React.MouseEvent) => item.onFinish?.(item.id, e)
+              ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
               : undefined}
+            onFinishFailed={() => {
+              validateResultRef.current = false
+            }}
             onValuesChange={
               item.onValuesChange
                 // eslint-disable-next-line max-len

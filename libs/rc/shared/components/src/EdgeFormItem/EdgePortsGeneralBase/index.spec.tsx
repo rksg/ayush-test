@@ -14,6 +14,7 @@ import {
   VirtualIpSetting,
   getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -400,6 +401,19 @@ describe('EditEdge ports - ports general', () => {
         expect(screen.getByRole('checkbox', { name: 'Core port' })).toBeVisible()
         expect(screen.getByRole('checkbox', { name: 'Access port' })).toBeVisible()
       })
+
+      it('should show gateway field when access port is checked', async () => {
+        render(<MockedComponent />)
+
+        await screen.findByText(/00:0c:29:b6:ad:04/i)
+        // disabled WAN port
+        await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+        await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Access port' }))
+        await userEvent.click(await screen.findByRole('radio', { name: 'Static/Manual' }))
+        expect(await screen.findByRole('textbox', { name: 'Gateway' })).toBeVisible()
+      })
     })
   })
 })
@@ -567,17 +581,19 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
   const MockedComponentTestNatPool = ({ initVals, otherProps }:
     { initVals?: unknown, otherProps?:unknown })=> {
 
-    return <Form
-      initialValues={initVals ?? mockNatFormEdgePortConfig}
-      onFinish={formOnFinish}
-    >
-      <EdgePortsGeneralBase
-        {...mockedProps}
-        clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
-        {...(otherProps ?? {})}
-      />
-      <button data-testid='rc-submit'>Submit</button>
-    </Form>
+    return <Provider>
+      <Form
+        initialValues={initVals ?? mockNatFormEdgePortConfig}
+        onFinish={formOnFinish}
+      >
+        <EdgePortsGeneralBase
+          {...mockedProps}
+          clusterInfo={{ highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY }}
+          {...(otherProps ?? {})}
+        />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>
+    </Provider>
   }
 
   beforeEach(() => {
@@ -594,51 +610,47 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
     const natSwitch = screen.getByRole('switch', { name: 'Use NAT Service' })
     await userEvent.click(natSwitch)
     expect(natSwitch).toBeChecked()
-    await screen.findByText('NAT IP Addresses Range')
+    const natPoolTitle = await screen.findByText('NAT IP Addresses Range')
+    // eslint-disable-next-line testing-library/no-node-access
+    const natPoolFormItem = natPoolTitle.closest('.ant-form-item')
+    const inputs = within(natPoolFormItem as HTMLElement).getAllByRole('textbox')
+    return { startInput: inputs[0], endInput: inputs[1] }
   }
 
   it('should correctly renders NAT IP Addresses Range when multi NAT IP enable', async () => {
     render(<MockedComponentTestNatPool />)
 
-    await natPoolTestPreparation()
-    const startIp = screen.getByRole('textbox', { name: 'Start' })
-    const endIp = screen.getByRole('textbox', { name: 'End' })
+    const { startInput, endInput } = await natPoolTestPreparation()
 
-    await userEvent.type(startIp, '1.1.1.10')
-    await userEvent.type(endIp, '1.1.1.30')
+    await userEvent.type(startInput, '1.1.1.10')
+    await userEvent.type(endInput, '1.1.1.30')
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
     expect(formOnFinish).toBeCalled()
-    expect(screen.queryAllByRole('alert').length).toEqual(0)
+    await waitFor(() => expect(screen.queryAllByRole('alert').length).toEqual(0))
   })
 
   it('correctly block when pool range is invalid', async () => {
     render(<MockedComponentTestNatPool />)
 
-    await natPoolTestPreparation()
-    const startIp = screen.getByRole('textbox', { name: 'Start' })
-    const endIp = screen.getByRole('textbox', { name: 'End' })
+    const { startInput, endInput } = await natPoolTestPreparation()
 
-    await userEvent.type(startIp, '1.1.1.100')
-    await userEvent.type(endIp, '1.1.1.1')
+    await userEvent.type(startInput, '1.1.1.100')
+    await userEvent.type(endInput, '1.1.1.1')
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-    const alertMsg = await screen.findByRole('alert')
-    expect(alertMsg).toBeInTheDocument()
-    expect(alertMsg.textContent).toEqual('Invalid NAT pool start IP and end IP')
+    await screen.findByRole('alert')
+    await screen.findByText('Invalid NAT pool start or end IP')
   })
 
   it('correctly block when pool range size > over maximum', async () => {
     render(<MockedComponentTestNatPool />)
 
-    await natPoolTestPreparation()
-    const startIp = screen.getByRole('textbox', { name: 'Start' })
-    const endIp = screen.getByRole('textbox', { name: 'End' })
+    const { startInput, endInput } = await natPoolTestPreparation()
 
-    await userEvent.type(startIp, '1.1.1.5')
-    await userEvent.type(endIp, '1.1.1.200')
+    await userEvent.type(startInput, '1.1.1.5')
+    await userEvent.type(endInput, '1.1.1.200')
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-    const alertMsg = await screen.findByRole('alert')
-    expect(alertMsg).toBeInTheDocument()
-    expect(alertMsg.textContent).toEqual('NAT IP address range exceeds maximum size 128')
+    await screen.findByRole('alert')
+    await screen.findByText(/NAT IP address range exceeds maximum size 128/)
   })
 
   it('correctly block when pool ranges are overlapped', async () => {
@@ -653,16 +665,13 @@ describe('EditEdge ports - ports general - multi NAT pools', () => {
       initVals={mock2WanPorts}
     />)
 
-    await natPoolTestPreparation()
-    const startIp = screen.getByRole('textbox', { name: 'Start' })
-    const endIp = screen.getByRole('textbox', { name: 'End' })
+    const { startInput, endInput } = await natPoolTestPreparation()
 
-    await userEvent.type(startIp, '1.1.1.10')
-    await userEvent.type(endIp, '1.1.1.20')
+    await userEvent.type(startInput, '1.1.1.10')
+    await userEvent.type(endInput, '1.1.1.20')
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
-    const alertMsg = await screen.findByRole('alert')
-    expect(alertMsg).toBeInTheDocument()
-    expect(alertMsg.textContent).toEqual('The selected NAT pool overlaps with other NAT pools')
+    await screen.findByRole('alert')
+    await screen.findByText('The selected NAT pool overlaps with other NAT pools')
     jest.resetAllMocks()
   })
 })

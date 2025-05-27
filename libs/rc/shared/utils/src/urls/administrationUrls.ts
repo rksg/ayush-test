@@ -224,6 +224,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTenantAuthentications: {
     method: 'get',
     url: '/tenants/authentications',
+    opsApi: 'GET:/tenants/authentications',
     newApi: true
   },
   addTenantAuthentications: {
@@ -246,6 +247,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteTenantAuthentications: {
     method: 'delete',
     url: '/tenants/authentications/:authenticationId',
+    opsApi: 'DELETE:/tenants/authentications/{id}',
     newApi: true
   },
   // acceptRejectInvitation: {
@@ -432,6 +434,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteTenant: {
     method: 'delete',
     url: '/nuketenant/:tenantId',
+    opsApi: 'DELETE:/nuketenant/:tenantId',
     newApi: true
   }
 }

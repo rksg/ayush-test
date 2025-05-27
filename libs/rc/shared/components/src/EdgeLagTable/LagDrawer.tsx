@@ -74,6 +74,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const { $t } = useIntl()
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
@@ -90,15 +92,16 @@ export const LagDrawer = (props: LagDrawerProps) => {
     return [
       // eslint-disable-next-line max-len
       ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
-        .map(port => ({ ip: port.ip, subnetMask: port.subnet })),
+        .map(port => ({ id: port.id, ip: port.ip, subnetMask: port.subnet })),
       // eslint-disable-next-line max-len
       ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
-        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+        .map(lag => ({ id: lag.id, ip: lag.ip!, subnetMask: lag.subnet! })),
       // eslint-disable-next-line max-len
       ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
-          ip: subInterface.ip ?? '',
-          subnetMask: subInterface.subnet ?? ''
+          id: subInterface.id ?? '',
+          ip: subInterface.ip!,
+          subnetMask: subInterface.subnet!
         }))
     ]
   }, [portList, existedLagList, subInterfaceList])
@@ -180,7 +183,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     try {
       const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
-      const payload = convertEdgeNetworkIfConfigToApiPayload(formData) as EdgeLag
+      // eslint-disable-next-line max-len
+      const payload = convertEdgeNetworkIfConfigToApiPayload(formData, isEdgeCoreAccessSeparationReady) as EdgeLag
 
       if(data) {
         await onEdit(serialNumber, payload)
@@ -342,9 +346,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
         return <EdgePortCommonForm
           formRef={form}
-          fieldHeadPath={[]}
-          portsDataRootPath={[]}
-          formListItemKey=''
           portsData={portList}
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}

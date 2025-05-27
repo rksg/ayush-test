@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { render, screen }              from '@testing-library/react'
 import { IntlProvider }                from 'react-intl'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -19,9 +17,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
   Features: {
     ETHERNET_PORT_PROFILE_TOGGLE: 'ETHERNET_PORT_PROFILE_TOGGLE',
     SWITCH_CONSUMER_PORT_PROFILE_TOGGLE: 'SWITCH_CONSUMER_PORT_PROFILE_TOGGLE'
+  },
+  TierFeatures: {
+    SERVICE_CATALOG_UPDATED: 'SERVICE_CATALOG_UPDATED'
   }
 }))
 

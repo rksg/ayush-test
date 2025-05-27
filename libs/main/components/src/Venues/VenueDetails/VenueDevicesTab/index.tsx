@@ -7,10 +7,11 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }       from '@acx-ui/user'
 
-import { VenueEdge }   from './VenueEdge'
-import { VenueRWG }    from './VenueRWG'
-import { VenueSwitch } from './VenueSwitch'
-import { VenueWifi }   from './VenueWifi'
+import { VenueEdge }          from './VenueEdge'
+import { VenueIotController } from './VenueIotController'
+import { VenueRWG }           from './VenueRWG'
+import { VenueSwitch }        from './VenueSwitch'
+import { VenueWifi }          from './VenueWifi'
 
 
 export function VenueDevicesTab () {
@@ -53,6 +54,12 @@ export function VenueDevicesTab () {
         label: $t({ defaultMessage: 'RWG' }),
         value: 'rwg',
         children: <VenueRWG />
+      }]: []),
+    ...(useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
+      ? [{
+        label: $t({ defaultMessage: 'IoT Controller' }),
+        value: 'iotController',
+        children: <VenueIotController />
       }]: [])
   ]
 

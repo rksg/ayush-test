@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useIntl }      from 'react-intl'
 
 import {
   Button,
@@ -17,6 +18,7 @@ import { Canvas } from '@acx-ui/rc/utils'
 import { CardInfo, layoutConfig, Section, Group } from './Canvas'
 import Layout                                     from './components/Layout'
 import {
+  DEFAULT_DASHBOARD_ID,
   getCalculatedColumnWidth,
   getCanvasData,
   getMenuWidth,
@@ -28,14 +30,18 @@ export const PreviewDashboardModal = (props: {
   data: Canvas[]
   visible: boolean
   setVisible: (visible: boolean) => void
+  DefaultDashboard?: React.FC
 }) => {
-  const { data, visible, setVisible } = props
+  const { $t } = useIntl()
+  const { data, visible, setVisible, DefaultDashboard } = props
   const { menuCollapsed } = useLayoutContext()
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
+  const previewId = data?.[0]?.id
+  const isDefaultDashboard = previewId === DEFAULT_DASHBOARD_ID
   const menuWidth = getMenuWidth(menuCollapsed)
   const modalDefaultWidth = document.documentElement.clientWidth - menuWidth
   const [isFullmode, setIsFullmode] = useState(false)
@@ -60,18 +66,22 @@ export const PreviewDashboardModal = (props: {
   }, [menuCollapsed, isFullmode])
 
   useEffect(() => {
-    if (visible) {
-      const { canvasId, sections, groups } = getCanvasData(data)
-      if (canvasId && sections) {
-        setCanvasId(canvasId)
-        setSections(sections)
-        setGroups(groups)
-        setTimeout(() => {
-          const modalBody = document.querySelector('.ant-modal-body')
-          if (modalBody) {
-            modalBody.scrollTop = 0
-          }
-        }, 50)
+    if (visible && previewId) {
+      if (!isDefaultDashboard) {
+        const { canvasId, sections, groups } = getCanvasData(data)
+        if (canvasId && sections) {
+          setCanvasId(canvasId)
+          setSections(sections)
+          setGroups(groups)
+          setTimeout(() => {
+            const modalBody = document.querySelector('.ant-modal-body')
+            if (modalBody) {
+              modalBody.scrollTop = 0
+            }
+          }, 50)
+        }
+      } else {
+        setCanvasId(previewId)
       }
     } else {
       setCanvasId('')
@@ -82,7 +92,7 @@ export const PreviewDashboardModal = (props: {
     title=''
     centered
     closable={false}
-    zIndex={9999}
+    zIndex={1001}
     footer={[]}
     visible={visible && !!canvasId}
     width={modalWidth}
@@ -92,7 +102,10 @@ export const PreviewDashboardModal = (props: {
   >
     { visible && !!canvasId && <>
       <div className='header'>
-        <div className='title'>{ data[0]?.name }</div>
+        <div className='title'>{ isDefaultDashboard
+          ? $t({ defaultMessage: 'RUCKUS One Default Dashboard' })
+          : data[0]?.name }
+        </div>
         <div className='action'>
           {isFullmode
             ? <Button
@@ -117,25 +130,28 @@ export const PreviewDashboardModal = (props: {
             </>}
         </div>
       </div>
-      <DndProvider backend={HTML5Backend}>
-        <div className='grid'>
-          <UI.Grid $type='pageview'>
-            <Layout
-              readOnly={true}
-              sections={sections}
-              groups={groups}
-              setGroups={setGroups}
-              compactType={'horizontal'}
-              layout={layout}
-              setLayout={setLayout}
-              canvasId={canvasId}
-              shadowCard={shadowCard}
-              setShadowCard={setShadowCard}
-              containerId='preview-container'
-            />
-          </UI.Grid>
-        </div>
-      </DndProvider>
+      { isDefaultDashboard && DefaultDashboard
+        ? <div style={{ padding: '10px 36px 40px' }}><DefaultDashboard /></div>
+        : <DndProvider backend={HTML5Backend}>
+          <div className='grid'>
+            <UI.Grid $type='pageview'>
+              <Layout
+                readOnly={true}
+                sections={sections}
+                groups={groups}
+                setGroups={setGroups}
+                compactType={'horizontal'}
+                layout={layout}
+                setLayout={setLayout}
+                canvasId={canvasId}
+                shadowCard={shadowCard}
+                setShadowCard={setShadowCard}
+                containerId='preview-container'
+              />
+            </UI.Grid>
+          </div>
+        </DndProvider>
+      }
     </>}
   </UI.PreviewModal>
 }
