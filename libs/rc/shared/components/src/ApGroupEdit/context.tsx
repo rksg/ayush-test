@@ -84,7 +84,7 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
 
   const { data: apGroupApCaps } = useGetApGroupApCapabilitiesQuery({
     params: { venueId, apGroupId }
-  }, { skip: !venueId && !isWifiApGroupMoreParamPhase1Enabled } )
+  }, { skip: !venueId || !isWifiApGroupMoreParamPhase1Enabled } )
 
   const { data: venueData } = useGetVenueQuery({
     params: { venueId }
