@@ -1,6 +1,7 @@
-import { useCallback, useLayoutEffect } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 
 import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Space, Switch } from 'antd'
+import { CheckboxChangeEvent }                                                              from 'antd/lib/checkbox'
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
@@ -12,6 +13,8 @@ import {
   EdgeLag,
   EdgePort,
   EdgePortTypeEnum,
+  IncompatibilityFeatures,
+  SubInterface,
   edgePortIpValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
@@ -21,8 +24,10 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }  from '../../useEdgeActions'
-import { getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
+import { ApCompatibilityToolTip }                           from '../../ApCompatibility'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType }   from '../../Compatibility'
+import { useIsEdgeFeatureReady }                            from '../../useEdgeActions'
+import { getEnabledAccessPortInfo, getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
 import { EdgeNatFormItems }    from './NatFormItems'
 import * as UI                 from './styledComponents'
@@ -40,6 +45,8 @@ export interface EdgePortCommonFormProps {
   formFieldsProps?: formFieldsPropsType
   subnetInfoForValidation?: { id: string | number | undefined, ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
+  subInterfaceList?: SubInterface[]
+  isSupportAccessPort?: boolean
 }
 
 const { useWatch } = Form
@@ -49,18 +56,27 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     fieldHeadPath = [],
     isEdgeSdLanRun,
     portsData,
-    lagData,
+    lagData = [],
     isListForm = true,
     formListItemKey = '0',
     formFieldsProps,
     subnetInfoForValidation = [],
-    clusterInfo
+    clusterInfo,
+    subInterfaceList = [],
+    isSupportAccessPort
   } = props
 
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
+
+  const handleCorePortChange = (e: CheckboxChangeEvent) => {
+    if(!isSupportAccessPort) {
+      form.setFieldValue('accessPortEnabled', e.target.checked)
+    }
+  }
 
   const getFieldPathBaseFormList = useCallback((fieldName: string) => {
     return isListForm
@@ -83,8 +99,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
   const accessPortEnabled = useWatch(getFieldFullPath('accessPortEnabled'), form)
 
-  const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList)
   const hasCorePortEnabled = !!corePortInfo.key
+  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList)
+  const hasAccessPortEnabled = !!accessPortInfo.key
   const existingLagMember = lagData?.flatMap(lag => lag.lagMembers
     ?.map(member => member?.portId)) ?? []
 
@@ -260,7 +278,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           return <Select.Option
             key={item.value}
             value={item.value}
-            disabled={hasCorePortLimitation && item.value === EdgePortTypeEnum.WAN}
+            disabled={
+              (hasAccessPortEnabled || hasCorePortLimitation) &&
+              item.value === EdgePortTypeEnum.WAN
+            }
           >
             {item.label}
           </Select.Option>
@@ -294,17 +315,34 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                         >
                           <Checkbox
                             children={$t({ defaultMessage: 'Core port' })}
+                            onChange={handleCorePortChange}
+                            disabled={
+                              hasWANPort || (hasCorePortEnabled && !corePortEnabled) ||
+                              isEdgeSdLanRun
+                            }
                           />
                         </Form.Item>
-                        <Form.Item
-                          name={getFieldPathBaseFormList('accessPortEnabled')}
-                          valuePropName='checked'
-                          noStyle
-                        >
-                          <Checkbox
-                            children={$t({ defaultMessage: 'Access port' })}
+                        <Space size={0}>
+                          <Form.Item
+                            name={getFieldPathBaseFormList('accessPortEnabled')}
+                            valuePropName='checked'
+                            noStyle
+                          >
+                            <Checkbox
+                              children={$t({ defaultMessage: 'Access port' })}
+                              disabled={
+                                hasWANPort || (hasAccessPortEnabled && !accessPortEnabled) ||
+                              isEdgeSdLanRun || !isSupportAccessPort
+                              }
+                            />
+                          </Form.Item>
+                          <ApCompatibilityToolTip
+                            title=''
+                            showDetailButton
+                            // eslint-disable-next-line max-len
+                            onClick={() => setEdgeFeatureName(IncompatibilityFeatures.CORE_ACCESS_SEPARATION)}
                           />
-                        </Form.Item>
+                        </Space>
                       </Space>
                     }
                   /> :
@@ -364,5 +402,12 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             </>): null
       }}
     </Form.Item>
+    <EdgeCompatibilityDrawer
+      visible={!!edgeFeatureName}
+      type={EdgeCompatibilityType.ALONE}
+      title={$t({ defaultMessage: 'Compatibility Requirement' })}
+      featureName={edgeFeatureName}
+      onClose={() => setEdgeFeatureName(undefined)}
+    />
   </>
 }
