@@ -9,9 +9,9 @@ import {
   AttributeMapping,
   IdentityAttributeMappingNameType,
   getIdentityAttributeMappingNameTypeOptions,
-  getValueFromMapping
+  getValueFromMapping,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
-import { noDataDisplay } from '@acx-ui/utils'
 
 import { FieldLabel }  from '../../NetworkForm/styledComponents'
 import { Description } from '../CertificateTemplate/styledComponents'
@@ -82,7 +82,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
       initialValue={$t({ defaultMessage: 'displayName' })}
       rules={[{ max: 255 }]}
     >
-      {readMode? (identityName || noDataDisplay) : <Input />}
+      {readMode? transformDisplayText(identityName) : <Input />}
     </Form.Item>
     <Form.Item
       name='identityEmail'
@@ -90,7 +90,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
       initialValue={$t({ defaultMessage: 'email' })}
       rules={[{ max: 255 }]}
     >
-      {readMode? (identityEmail || noDataDisplay) : <Input />}
+      {readMode? transformDisplayText(identityEmail) : <Input />}
     </Form.Item>
     <Form.Item
       name='identityPhone'
@@ -98,7 +98,7 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
       initialValue={$t({ defaultMessage: 'phone' })}
       rules={[{ max: 255 }]}
     >
-      {readMode? (identityPhone || noDataDisplay) : <Input />}
+      {readMode? transformDisplayText(identityPhone) : <Input />}
     </Form.Item>
     {!readMode &&
       <Form.List name='attributeMappings'>
@@ -124,7 +124,10 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
                     <Form.Item
                       name={[index, 'name']}
                       label={$t({ defaultMessage: 'Attribute Type' })}
-                      rules={[{ required: true }]}
+                      rules={[{ required: true,
+                        message: $t({ defaultMessage:
+                          'Please select Attribute Type' })
+                      }]}
                     >
                       <Select
                         options={
@@ -150,7 +153,12 @@ export const IdentityAttributesInput = (props: IdentityAttributesInputProps) => 
                       {...field}
                       name={[index, 'mappedByName']}
                       label={$t({ defaultMessage: 'Claim Name' })}
-                      rules={[{ required: true }, { min: 1, max: 255 }]}
+                      rules={[
+                        { required: true,
+                          message: $t({ defaultMessage:
+                            'Please enter Claim Name' })
+                        },
+                        { min: 1, max: 255 }]}
                     >
                       <Input />
                     </Form.Item>

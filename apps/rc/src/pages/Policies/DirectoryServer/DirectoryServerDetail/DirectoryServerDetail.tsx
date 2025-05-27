@@ -14,7 +14,8 @@ import {
   PolicyOperation,
   PolicyType,
   AttributeMapping,
-  IdentityAttributeMappingNameType
+  IdentityAttributeMappingNameType,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -103,10 +104,11 @@ function DirectoryServerOverview (props: DirectoryServerOverviewProps) {
       visible: isSupportIdentityAttribute,
       content: () => {
         return (
-          data?.attributeMappings?.find(
-            (mapping: AttributeMapping) =>
-              mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
-          )?.mappedByName || noDataDisplay
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
+            )?.mappedByName)
         )
       }
     }, {
@@ -114,10 +116,11 @@ function DirectoryServerOverview (props: DirectoryServerOverviewProps) {
       visible: isSupportIdentityAttribute,
       content: () => {
         return (
-          data?.attributeMappings?.find(
-            (mapping: AttributeMapping) =>
-              mapping.name === IdentityAttributeMappingNameType.EMAIL
-          )?.mappedByName || noDataDisplay
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.EMAIL
+            )?.mappedByName)
         )
       }
     }, {
@@ -125,10 +128,11 @@ function DirectoryServerOverview (props: DirectoryServerOverviewProps) {
       visible: isSupportIdentityAttribute,
       content: () => {
         return (
-          data?.attributeMappings?.find(
-            (mapping: AttributeMapping) =>
-              mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
-          )?.mappedByName || noDataDisplay
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
+            )?.mappedByName)
         )
       }
     }
