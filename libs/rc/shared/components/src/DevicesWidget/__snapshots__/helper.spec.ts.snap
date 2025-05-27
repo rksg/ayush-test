@@ -156,6 +156,37 @@ Array [
 ]
 `;
 
+exports[`getIotControllerStackedBarChartData should return correct formatted data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [
+        Object {
+          "name": "Offline",
+          "value": 1,
+        },
+      ],
+    },
+  ],
+  "stackedColors": Array [
+    "#ED1C24",
+  ],
+}
+`;
+
+exports[`getIotControllerStackedBarChartData should return empty array if no data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [],
+    },
+  ],
+  "stackedColors": Array [],
+}
+`;
+
 exports[`getRwgStackedBarChartData should return correct formatted data 1`] = `
 Object {
   "chartData": Array [

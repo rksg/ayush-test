@@ -92,15 +92,16 @@ export const LagDrawer = (props: LagDrawerProps) => {
     return [
       // eslint-disable-next-line max-len
       ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
-        .map(port => ({ ip: port.ip, subnetMask: port.subnet })),
+        .map(port => ({ id: port.id, ip: port.ip, subnetMask: port.subnet })),
       // eslint-disable-next-line max-len
       ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
-        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+        .map(lag => ({ id: lag.id, ip: lag.ip!, subnetMask: lag.subnet! })),
       // eslint-disable-next-line max-len
       ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
-          ip: subInterface.ip ?? '',
-          subnetMask: subInterface.subnet ?? ''
+          id: subInterface.id ?? '',
+          ip: subInterface.ip!,
+          subnetMask: subInterface.subnet!
         }))
     ]
   }, [portList, existedLagList, subInterfaceList])
@@ -345,9 +346,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
         return <EdgePortCommonForm
           formRef={form}
-          fieldHeadPath={[]}
-          portsDataRootPath={[]}
-          formListItemKey=''
           portsData={portList}
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}

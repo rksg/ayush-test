@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -81,6 +81,11 @@ jest.mock('./pages/Policies/MyPolicies', () => () => {
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
   return <div data-testid='SelectServiceForm' />
 })
+
+jest.mock('./pages/Services/UnifiedServices', () => ({
+  MyServices: () => <div data-testid='MyServicesNew' />,
+  ServiceCatalog: () => <div data-testid='ServiceCatalogNew' />
+}))
 
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => {
   return <div data-testid='MdnsProxyForm' />
@@ -432,7 +437,10 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
 })
 
 describe('RcRoutes: Devices', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+  })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -662,34 +670,63 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Services', () => {
-    test('should navigate to service list', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceListRoutePath(),
-          wrapRoutes: false
-        }
+    describe('My Services and Service Catalog', () => {
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServices')).toBeVisible()
       })
-      expect(screen.getByTestId('MyServices')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
+      })
+
+      test('should navigate to select service page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getSelectServiceRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+      })
     })
 
-    test('should navigate to service catalog', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceCatalogRoutePath(),
-          wrapRoutes: false
-        }
+    describe('New - My Services and Service Catalog', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
       })
-      expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
-    })
 
-    test('should navigate to select service page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getSelectServiceRoutePath(),
-          wrapRoutes: false
-        }
+      test('should navigate to service list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceListRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MyServicesNew')).toBeVisible()
       })
-      expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+
+      test('should navigate to service catalog', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('ServiceCatalogNew')).toBeVisible()
+      })
     })
 
     test('should navigate to create MdnsProxy page', async () => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 
 import {
   Divider,
@@ -10,20 +10,23 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useGetDirectoryServerViewDataListQuery
 }                           from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   GuestNetworkTypeEnum,
-  NetworkTypeEnum
-}                                                   from '@acx-ui/rc/utils'
+  NetworkTypeEnum,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
 import DirectoryServerDrawer       from '../../policies/DirectoryServer/DirectoryServerForm/DirectoryServerDrawer'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { IdentityGroup }           from '../NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
@@ -58,6 +61,12 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
   const [ directoryServerData, setDirectoryServerData] =
     useState<{ id:string, name:string }>({ id: '', name: '' })
   const [ directoryServerList, setDirectoryServerList] = useState<DefaultOptionType[]>([])
+  const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isDirectoryReuseComponentEnable = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+
   const { data: directoryServerListFromServer } =
     useGetDirectoryServerViewDataListQuery({ payload: defaultPayload })
 
@@ -119,9 +128,6 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
     }
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
     }
 
   }, [directoryServerListFromServer, data])
@@ -172,6 +178,10 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
             </Button>
           </UI.TypeSpace>
         </UI.FieldSpace>
+        { isWifiIdentityManagementEnable &&
+          isDirectoryReuseComponentEnable &&
+          !isTemplate &&
+          <IdentityGroup />}
         <WlanSecurityFormItems />
         <RedirectUrlInput />
         <DhcpCheckbox />

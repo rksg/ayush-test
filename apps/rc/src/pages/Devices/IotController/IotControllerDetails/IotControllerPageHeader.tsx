@@ -7,7 +7,8 @@ import { useIotControllerActions }  from '@acx-ui/rc/components'
 import { useGetIotControllerQuery } from '@acx-ui/rc/services'
 import { IotControllerSetting }     from '@acx-ui/rc/utils'
 import {
-  useParams
+  useParams,
+  TenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
@@ -47,16 +48,16 @@ function IotControllerPageHeader () {
             : [<Button
               type='default'
               onClick={() =>
-                window.open('https://' + '' + '/admin',
+                // eslint-disable-next-line max-len
+                window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
                   '_blank')
               }
             >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,
-            <Button
-              type='primary'
-              onClick={() =>
-                iotControllerActions.refreshIotController()
-              }
-            >{$t({ defaultMessage: 'Configure' })}</Button>])])
+            <TenantLink
+              to={`/devices/iotController/${iotControllerData?.id}/edit`}
+            >
+              <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            </TenantLink>])])
       ]}
       // eslint-disable-next-line max-len
       footer={<IotControllerTabs iotControllerSetting={iotControllerSettingData as IotControllerSetting} />}

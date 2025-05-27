@@ -6,8 +6,7 @@ import { useGetConnectionMeteringByIdQuery }                                from
 import {
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType
@@ -47,19 +46,7 @@ export default function ConnectionMeteringDetail () {
     <Loader states={[profileQuery]}>
       <PageHeader
         title={profileQuery.data?.name}
-        breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Data Usage Metering' }),
-            link: getPolicyRoutePath({
-              type: PolicyType.CONNECTION_METERING,
-              oper: PolicyOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.CONNECTION_METERING)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(

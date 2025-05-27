@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm }                                                                        from '@acx-ui/components'
-import { useGenerateCertificateToIdentityMutation }                                                     from '@acx-ui/rc/services'
-import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, PolicyOperation, CertificateFormData } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                                   from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                         from '@acx-ui/components'
+import { useGenerateCertificateToIdentityMutation }                                                      from '@acx-ui/rc/services'
+import { usePolicyListBreadcrumb, getPolicyRoutePath, PolicyType, PolicyOperation, CertificateFormData } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                                    from '@acx-ui/react-router-dom'
 
 import { Title } from '../../styledComponents'
 
@@ -35,18 +35,7 @@ export function CertificateForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Generate Certificate' })}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        }, {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }, {
-          text: $t({ defaultMessage: 'Certificate Template' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.CERTIFICATE,
-            oper: PolicyOperation.LIST
-          })
-        }]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.CERTIFICATE)}
       />
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Generate' }) }}

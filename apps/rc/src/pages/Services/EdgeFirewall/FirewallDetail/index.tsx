@@ -12,8 +12,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -80,17 +79,7 @@ const FirewallDetail = () => {
     <>
       <PageHeader
         title={edgeFirewallData.firewallName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Firewall' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_FIREWALL,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_FIREWALL)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceDetailsLink({
