@@ -351,7 +351,8 @@ export enum Features {
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
-  SSO_GROUP_LIMIT100 = 'sso-group-limit100'
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100',
+  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

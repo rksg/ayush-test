@@ -58,6 +58,7 @@ export function SwitchPortTable (props: {
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -131,6 +132,11 @@ export function SwitchPortTable (props: {
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
+  ]
+
+  const poeCapabilityFilterOptions = [
+    { key: 'true', value: $t({ defaultMessage: 'PoE' }) },
+    { key: 'false', value: $t({ defaultMessage: 'Non-PoE' }) }
   ]
 
   const queryFields = SwitchPortViewModelQueryFields
@@ -316,7 +322,31 @@ export function SwitchPortTable (props: {
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
       <UI.TagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
     </Space>
-  }, {
+  },
+  ...(isSwitchTimeBasedPoeEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10010gCd1Or10020bCd1(switchFirmware))
+    ? [{
+      key: 'poeScheduleEnabled',
+      title: $t({ defaultMessage: 'PoE Schedule' }),
+      dataIndex: 'poeScheduleEnabled',
+      sorter: true,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.poeScheduleEnabled ? $t({ defaultMessage: 'Custom Schedule' }) : noDataDisplay
+      }
+    },{
+      key: 'poeCapability',
+      title: $t({ defaultMessage: 'PoE Capability' }),
+      dataIndex: 'poeCapability',
+      sorter: true,
+      show: false,
+      filterMultiple: false,
+      filterable: poeCapabilityFilterOptions,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.poeScheduleEnabled ? $t({ defaultMessage: 'Custom Schedule' }) : noDataDisplay
+      }
+    }] : []),
+  {
     key: 'signalIn',
     title: $t({ defaultMessage: 'Bandwidth IN (%)' }),
     dataIndex: 'signalIn',
