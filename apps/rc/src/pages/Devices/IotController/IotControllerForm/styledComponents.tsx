@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import { Space } from 'antd'
+import styled    from 'styled-components'
 
 import { Check } from '@acx-ui/icons'
 
@@ -12,4 +13,12 @@ font-size: var(--acx-body-4-font-size);
 export const CheckMarkIcon = styled(Check)`
   width: 18px;
   height: 18px;
+`
+
+export const SpaceWrapper = styled(Space)`
+  width: 100%;
+
+  & .ant-space-item:first-child {
+    width: 100%;
+  }
 `

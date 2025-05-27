@@ -36,7 +36,7 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
+  useServicesBreadcrumb,
   getServiceRoutePath,
   IncompatibilityFeatures,
   PersonalIdentityNetworksViewData,
@@ -376,10 +376,7 @@ const PersonalIdentityNetworkTableEnhanced = () => {
           $t({ defaultMessage: 'Personal Identity Network ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink state={{ from: location }}
             to={getServiceRoutePath({

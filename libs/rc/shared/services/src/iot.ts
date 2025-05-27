@@ -1,11 +1,14 @@
 import {
   onSocketActivityChanged,
   onActivityMessageReceived,
+  ActivePluginsData,
   CommonResult,
   TableResult,
+  RcapLicenseUtilizationData,
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotSerialNumberResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -25,6 +28,7 @@ export const iotApi = baseIotApi.injectEndpoints({
           body: payload
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'IotController', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -62,10 +66,11 @@ export const iotApi = baseIotApi.injectEndpoints({
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),
     updateIotController: build.mutation<IotControllerSetting, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(IotUrlsInfo.updateIotController, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
@@ -79,7 +84,7 @@ export const iotApi = baseIotApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
     }),
-    testConnectionIotController: build.mutation<CommonResult, RequestPayload>({
+    testConnectionIotController: build.mutation<IotSerialNumberResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(IotUrlsInfo.testConnectionIotController,
           undefined,
@@ -95,12 +100,30 @@ export const iotApi = baseIotApi.injectEndpoints({
       queryFn: async () => {
         return { data: undefined }
       },
-      invalidatesTags: [{ type: 'IotController', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerLicenseStatus: build.query<RcapLicenseUtilizationData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerLicenseStatus, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
     iotControllerDashboard: build.query<IotControllerDashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerDashboard, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerPlugins: build.query<ActivePluginsData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerPlugins, params),
           body: payload
         }
       },
@@ -119,5 +142,7 @@ export const {
   useDeleteIotControllerMutation,
   useTestConnectionIotControllerMutation,
   useRefreshIotControllerMutation,
-  useIotControllerDashboardQuery
+  useIotControllerLicenseStatusQuery,
+  useIotControllerDashboardQuery,
+  useIotControllerPluginsQuery
 } = iotApi

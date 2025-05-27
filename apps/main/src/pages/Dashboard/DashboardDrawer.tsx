@@ -111,10 +111,10 @@ const getActionMenu = (
     label: $t({ defaultMessage: 'Set as Landing Page' }),
     key: getKey('landing'),
     visible: !isLanding
-  }, { //TODO: can view default dashboard
+  }, {
     label: $t({ defaultMessage: 'View' }),
     key: getKey('view'),
-    visible: !isDefault
+    visible: true
   }, {
     label: $t({ defaultMessage: 'Edit in Canvas Editor' }),
     key: getKey('edit'),
@@ -148,7 +148,10 @@ const getItemInfo = (props: {
     <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
       item?.isLanding
       // eslint-disable-next-line max-len
-        ? <Tooltip title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}>
+        ? <Tooltip
+          title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}
+          overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
+        >
           <PentagramSolid />
         </Tooltip>
         : <MoveSolid />
@@ -169,8 +172,14 @@ const getItemInfo = (props: {
           moment(item.updatedDate).format('YYYY/MM/DD')
         }</span> }
         { item.authorId && <span className='author'>
-          <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name' title={authorName}>{ authorName }</span>
+          <Tooltip
+            title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+            placement='bottom'
+            overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
+          >
+            <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
+            <span className='name'>{ authorName }</span>
+          </Tooltip>
         </span>
         }
       </div>}
@@ -181,10 +190,11 @@ const getItemInfo = (props: {
         key='actionMenu'
         trigger={['click']}
       >
-        <MoreVertical
-          size='sm'
+        <Button
           data-testid='dashboard-more-btn'
-        // onClick={(e) => e.stopPropagation()}
+          type='link'
+          size='small'
+          icon={<MoreVertical size='sm' />}
         />
       </Dropdown>
     </div>}
@@ -345,6 +355,8 @@ export const DashboardDrawer = (props: {
     zIndex={999}
     forceRender={true}
     destroyOnClose={false}
+    mask={true}
+    maskClosable={true}
     children={props.visible && <DndProvider backend={HTML5Backend}>
       <FallbackDropZone />
       <UI.DashboardList className={isDraggingItemRef.current ? 'dragging' : ''}>

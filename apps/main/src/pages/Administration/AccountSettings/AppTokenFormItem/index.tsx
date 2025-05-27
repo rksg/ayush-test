@@ -17,10 +17,10 @@ import {
   roleDisplayText,
   AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { store }                                                        from '@acx-ui/store'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { filterByOperations, getUserProfile, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi }                                                    from '@acx-ui/utils'
+import { store }                                                                              from '@acx-ui/store'
+import { RolesEnum }                                                                          from '@acx-ui/types'
+import { filterByOperations, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                                                          from '@acx-ui/utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -78,7 +78,10 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
                 style={{ marginLeft: '290px', marginTop: '17px' }}
                 type='link'
                 key='viewxml'
-                disabled={!hasCrossVenuesPermission()}
+                disabled={rbacOpsApiEnabled
+                  ? !hasAllowedOperations([
+                    getOpsApi(AdministrationUrlsInfo.addTenantAuthentications)])
+                  : !hasCrossVenuesPermission()}
                 onClick={() => {onAddAppToken()}}>
                 {$t({ defaultMessage: 'Add Application Token' })}
               </Button>
@@ -182,6 +185,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     },
     {
       label: $t({ defaultMessage: 'Revoke' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)],
       visible: (selectedRows) => {
         if(selectedRows[0] &&
             (selectedRows[0].clientIDStatus === ApplicationAuthenticationStatus.ACTIVE )) {
@@ -221,6 +225,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     },
     {
       label: $t({ defaultMessage: 'Activate' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)],
       visible: (selectedRows) => {
         if(selectedRows[0] &&
             (selectedRows[0].clientIDStatus !== ApplicationAuthenticationStatus.ACTIVE)) {
@@ -242,6 +247,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteTenantAuthentications)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -273,7 +279,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col style={{ width: '1200px' }}>
         <Form.Item
-          style={hasAppTokenConfigured ? { marginBottom: '-10px' } : { marginBottom: '10px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '0px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}

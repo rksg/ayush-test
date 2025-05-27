@@ -3,8 +3,11 @@ import {
   GridCol
 } from '@acx-ui/components'
 
-import { ActivePluginsWidget } from './ActivePluginsWidget'
-import { IotApsWidget }        from './IotApsWidget'
+import { ActivePluginsByRadio }   from './ActivePluginsByRadio'
+import { ActivePluginsWidget }    from './ActivePluginsWidget'
+import { AssociatedVenues }       from './AssociatedVenues'
+import { IotApsWidget }           from './IotApsWidget'
+import { RcapLicenseUtilization } from './RcapLicenseUtilization'
 
 export function IotControllerOverviewTab () {
 
@@ -16,15 +19,15 @@ export function IotControllerOverviewTab () {
             <IotApsWidget />
           </GridCol>
           <GridCol col={{ span: 6 }} style={{ height: '200px' }}>
-            <IotApsWidget />
+            <RcapLicenseUtilization />
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <IotApsWidget />
+            <AssociatedVenues />
           </GridCol>
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
           <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
-            <IotApsWidget />
+            <ActivePluginsByRadio />
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
             <ActivePluginsWidget />

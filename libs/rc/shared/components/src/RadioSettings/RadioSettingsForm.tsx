@@ -96,8 +96,7 @@ export function RadioSettingsForm (props:{
 
   const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
   const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
-
-  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && context === 'venue') ?
+  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && (context === 'venue' || context ==='apGroup')) ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions

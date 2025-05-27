@@ -94,3 +94,44 @@ export const mockedIntentEcoFlex = {
     isHotTierData: true
   }
 } as unknown as IntentDetail
+
+export const mockedIntentAIPowerSavePlan = {
+  apPowerSaveDistribution: [
+    {
+      date: '2025-05-09T02:15:52Z',
+      name: null,
+      mac: '00:00:00:00:00:04',
+      model: null,
+      powerSave: 'On',
+      wakeupTime: '2025-05-16T03:00:000Z',
+      status: 'scheduled'
+    },
+    {
+      date: '2025-05-09T02:15:52Z',
+      name: 'floor3',
+      mac: '00:00:00:00:00:03',
+      model: 'R712',
+      powerSave: 'On',
+      wakeupTime: '2025-05-16T03:00:000Z',
+      status: 'scheduled'
+    },
+    {
+      date: '2025-05-09T02:15:52Z',
+      name: 'floor2',
+      mac: '00:00:00:00:00:02',
+      model: 'R712',
+      powerSave: 'On',
+      wakeupTime: '2025-04-16T03:00:000Z',
+      status: 'scheduled'
+    },
+    {
+      date: '2025-05-09T02:15:52Z',
+      name: 'floor1',
+      mac: '00:00:00:00:00:01',
+      model: 'R711',
+      powerSave: 'On',
+      wakeupTime: '2025-04-16T03:00:000Z',
+      status: 'scheduled'
+    }
+  ]
+}
