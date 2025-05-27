@@ -1,40 +1,37 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Space, Switch } from 'antd'
-import { useIntl }                              from 'react-intl'
-import { useParams }                            from 'react-router-dom'
+import { Button,Col, Form, Row, Space } from 'antd'
+import { useIntl }                      from 'react-intl'
+import { useParams }                    from 'react-router-dom'
 
-import { Tooltip } from '@acx-ui/components'
 import {
   AnchorContext,
   Loader
 } from '@acx-ui/components'
 import {
-  QuestionMarkCircleOutlined
-} from '@acx-ui/icons'
+  IotControllerDrawer
+} from '@acx-ui/rc/components'
 import {
   useGetVenueIotQuery,
   useUpdateVenueIotMutation,
   useGetVenueTemplateApIotSettingsQuery,
   useUpdateVenueTemplateApIotSettingsMutation
 } from '@acx-ui/rc/services'
-import { domainNameRegExp, VenueIot } from '@acx-ui/rc/utils'
-import { validationMessages }         from '@acx-ui/utils'
+import { VenueIot } from '@acx-ui/rc/utils'
 
 import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
-import { FieldLabel } from '../../styledComponents'
 
 
-export function IotController (props: VenueWifiConfigItemProps) {
+export function IotControllerV2 (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isAllowEdit=true } = props
-  const [iotEnabled, setIotEnabled] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const {
     editContextData,
@@ -62,8 +59,6 @@ export function IotController (props: VenueWifiConfigItemProps) {
     if (venueApIotData) {
       form.setFieldsValue({ iot: venueApIotData })
 
-      setIotEnabled(venueApIotData.enabled)
-
       setReadyToScroll?.((r) => [...new Set(r.concat('IoT-Controller'))])
     }
   }, [form, venueApIot, setReadyToScroll])
@@ -90,7 +85,6 @@ export function IotController (props: VenueWifiConfigItemProps) {
     const venueApIotData = venueApIot.data
     if (venueApIotData) {
       form.setFieldsValue({ iot: venueApIotData })
-      setIotEnabled(venueApIotData.enabled)
     }
   }
 
@@ -109,13 +103,11 @@ export function IotController (props: VenueWifiConfigItemProps) {
     })
   }
 
-  const toggleIot = (checked: boolean) => {
-    setIotEnabled(checked)
-  }
-
-  const iotEnabledFieldName = ['iot', 'enabled']
   const iotMqttBrokerAddressFieldName = ['iot', 'mqttBrokerAddress']
 
+  const handleIotController = () => {
+    setDrawerVisible(true)
+  }
 
   return (
     <Loader
@@ -126,67 +118,68 @@ export function IotController (props: VenueWifiConfigItemProps) {
         }
       ]}
     >
-      <Row gutter={0}>
-        <Col span={colSpan}>
-          <FieldLabel width='200px'>
-            <Space>
-              {$t({ defaultMessage: 'Enable IoT Controller' })}
-            </Space>
-            <Form.Item
-              name={iotEnabledFieldName}
-              valuePropName={'checked'}
-              initialValue={false}
-              children={
-                <Switch
-                  data-testid='iot-switch'
-                  disabled={!isAllowEdit}
-                  onChange={handleChanged}
-                  onClick={toggleIot}
-                />
-              }
-            />
-          </FieldLabel>
-        </Col>
-      </Row>
-      {iotEnabled && (
+      {venueApIot?.data?.enabled ? (
         <Row>
-          <Space size={40}>
+          <Col span={colSpan}>
             <Form.Item
               name={iotMqttBrokerAddressFieldName}
               style={{ display: 'inline-block', width: '230px' }}
-              // noStyle
-              rules={[
-                { required: true,
-                  // eslint-disable-next-line max-len
-                  message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
-                },
-                { validator: (_, value) => domainNameRegExp(value),
-                  message: $t(validationMessages.validDomain)
-                }
-              ]}
-              label={
-                <>
-                  {$t({ defaultMessage: 'VRIoT  IP Address/FQDN' })}
-                  <Tooltip
-                    // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'This is the MQTT address of the VRIoT Controller' })}
-                    placement='bottom'
-                  >
-                    <QuestionMarkCircleOutlined/>
-                  </Tooltip>
-                </>
-              }
-              initialValue={''}
+              label={$t({ defaultMessage: 'IoT Controller Name' })}
               children={
-                <Input
-                  disabled={!isAllowEdit}
-                  onChange={handleChanged}
-                />
+                <span>{venueApIot?.data?.enabled}</span>
               }
             />
-          </Space>
+            <Form.Item
+              name={iotMqttBrokerAddressFieldName}
+              style={{ display: 'inline-block', width: '230px' }}
+              label={$t({ defaultMessage: 'FQDN / IP' })}
+              children={
+                <span>{venueApIot?.data?.mqttBrokerAddress}</span>
+              }
+            />
+          </Col>
+          { isAllowEdit &&
+          <Col span={colSpan}>
+            <Space>
+              <Button
+                type='link'
+                style={{ marginLeft: '20px' }}
+                onClick={handleIotController}
+              >
+                {$t({ defaultMessage: 'Change' })}
+              </Button>
+              <Button
+                type='link'
+                style={{ marginLeft: '20px' }}
+                onClick={handleIotController}
+              >
+                {$t({ defaultMessage: 'Remove' })}
+              </Button>
+            </Space>
+          </Col>
+          }
+        </Row>
+      ) : (
+        isAllowEdit &&
+        <Row>
+          <Col span={colSpan}>
+            <Space>
+              <Button
+                type='link'
+                style={{ marginLeft: '20px' }}
+                onClick={handleIotController}
+              >
+                {$t({ defaultMessage: 'Associate IoT Controller' })}
+              </Button>
+            </Space>
+          </Col>
         </Row>
       )}
+      { drawerVisible && <IotControllerDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        applyIotController={handleChanged}
+      /> }
     </Loader>
   )
 }

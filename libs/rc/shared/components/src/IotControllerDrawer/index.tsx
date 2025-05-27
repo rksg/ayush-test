@@ -25,11 +25,12 @@ import { filterByAccess } from '@acx-ui/user'
 interface IotControllerDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  applyIotController: () => void
 }
 
 export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, applyIotController } = props
 
   const payload = {
     filters: {}
@@ -48,6 +49,9 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
     setVisible(false)
   }
 
+  const onApply = () => {
+    applyIotController()
+  }
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   // eslint-disable-next-line max-len
@@ -95,7 +99,7 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
       <Button
         key='okBtn'
         type='primary'
-        onClick={onClose}>
+        onClick={onApply}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
     </Space>
