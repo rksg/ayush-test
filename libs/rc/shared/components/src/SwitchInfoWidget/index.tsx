@@ -154,7 +154,7 @@ export function SwitchInfoWidget (props:{
           onActionClick: onMoreAction
         }}
       >
-        <GridRow style={{ flexGrow: '1' }}>
+        <GridRow style={{ flexGrow: '0' }}>
           <GridCol col={{ span: 1 }} />
           <GridCol col={{ span: isCore ? 5 : 4 }}>
             <UI.Wrapper>

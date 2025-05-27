@@ -65,12 +65,12 @@ import {
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { store }              from '@acx-ui/store'
-import { MacACLDrawer }       from '@acx-ui/switch/components'
-import { SwitchScopes }       from '@acx-ui/types'
-import { hasPermission }      from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { store }                             from '@acx-ui/store'
+import { MacACLDrawer, PoeSchedule }         from '@acx-ui/switch/components'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import {
   AuthenticationType,
@@ -320,6 +320,7 @@ export function EditPortDrawer ({
   const [drawerMACAclVisible, setDrawerMACAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
   const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
+  const [drawerPoeSchedule, setDrawerPoeSchedule] = useState(false)
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -2181,6 +2182,24 @@ export function EditPortDrawer ({
           />
         })}
 
+        <UI.PoeCardWrapper>
+          <Form.Item
+            label={$t({ defaultMessage: 'PoE Schedule' })}
+            labelCol={{ span: 24 }}
+            children={<Space style={{ fontSize: '12px' }}>
+              <span>{noDataDisplay}</span>
+              <Button
+                type='link'
+                data-testid='edit-poe-schedule'
+                onClick={() => { setDrawerPoeSchedule(true) }}  // eslint-disable-line
+              >
+                {$t({ defaultMessage: 'Edit' })}
+              </Button>
+            </Space>
+            }
+          />
+        </UI.PoeCardWrapper>
+
         { getFieldTemplate({
           field: 'poeClass',
           content: <Form.Item
@@ -2762,7 +2781,15 @@ export function EditPortDrawer ({
         vlansOptions={vlansOptions}
       />}
 
-
+      { drawerPoeSchedule &&
+        <PoeSchedule
+          visible={drawerPoeSchedule}
+          setVisible={setDrawerPoeSchedule}
+          venueId={switchDetail?.venueId}
+          form={form}
+          readonly={false}
+        />
+      }
       {/* { // TODO: enhance ^_^?
         addProfileDrawerVisible && <Drawer
         title={$t({ defaultMessage: 'Add Profile' })}
