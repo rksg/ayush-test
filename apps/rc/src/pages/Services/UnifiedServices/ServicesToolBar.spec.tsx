@@ -1,6 +1,7 @@
 import { cleanup, waitFor } from '@testing-library/react'
 import userEvent            from '@testing-library/user-event'
 
+import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
 import { render, screen }         from '@acx-ui/test-utils'
 
@@ -94,5 +95,35 @@ describe('ServicesToolBar', () => {
     renderToolbar()
     cleanup()
     expect(cancelFn).toHaveBeenCalled()
+  })
+
+  it('should render correctly when availableFilters is given', async () => {
+    render(
+      <ServicesToolBar
+        setSearchTerm={mockedSetSearchTerm}
+        setFilters={mockedSetFilters}
+        setSortOrder={mockedSetSortOrder}
+        availableFilters={{
+          products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          categories: [
+            UnifiedServiceCategory.NETWORK_SERVICES,
+            UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+            UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
+          ]
+        }}
+      />
+    )
+
+    await userEvent.click(screen.getByText('Product'))
+    expect(screen.getByText('Wi-Fi')).toBeInTheDocument()
+    expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
+    expect(screen.queryByText('Switch')).toBeNull()
+
+    await userEvent.click(screen.getByText('Category'))
+    expect(screen.getByText('Authentication & Identity Management')).toBeInTheDocument()
+    expect(screen.getByText('Network Configuration & Services')).toBeInTheDocument()
+    expect(screen.getByText('User Experience & Portals')).toBeInTheDocument()
+    expect(screen.queryByText('Security & Access Control')).toBeNull()
+    expect(screen.queryByText('Monitoring & Troubleshooting')).toBeNull()
   })
 })
