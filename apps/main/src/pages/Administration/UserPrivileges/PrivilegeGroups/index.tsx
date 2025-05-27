@@ -125,7 +125,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       filterable: customRoleOption?.map(role => ({
         key: role as string,
         value: roleStringMap[role as RolesEnum]
-          ? $t(roleStringMap[role as RolesEnum]) : role as string })),
+          ? $t(roleStringMap[role as RolesEnum]) : role as string }))
+        ?.sort(sortProp('value', defaultSort)),
       render: (_, row) => {
         return roleStringMap[row.roleName as RolesEnum]
           ? $t(roleStringMap[row.roleName as RolesEnum]) : row.roleName
@@ -236,7 +237,9 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeletePrivilegeGroupUpdating
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       <Table
         columns={columns}
         dataSource={privilegeGroupData}
