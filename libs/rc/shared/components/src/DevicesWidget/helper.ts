@@ -191,7 +191,7 @@ export const getVenueSwitchDonutChartData =
   return chartData
 }
 
-export const seriesMappingAP = () => [
+export const seriesMappingAP = (combineInSetupPhaseAndOffline:boolean = false) => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
@@ -204,6 +204,9 @@ export const seriesMappingAP = () => [
   { key: ApVenueStatusEnum.OFFLINE,
     name: getAPStatusDisplayName(ApVenueStatusEnum.OFFLINE, false),
     color: cssStr('--acx-neutrals-50') },
+  ...(!combineInSetupPhaseAndOffline? [] : [{ key: ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE, false),
+    color: cssStr('--acx-neutrals-50') }]),
   { key: ApVenueStatusEnum.OPERATIONAL,
     name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
     color: cssStr('--acx-semantics-green-50') }
@@ -280,14 +283,8 @@ export const getApStackedBarChartData =
   ] as string[]
 
   const series = _getApStackedBarChartData(apsSummary)
-  const combineSeriesMappingAP = [
-    ...seriesMappingAP(),
-    [{ key: ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE,
-      name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE, false),
-      color: cssStr('--acx-neutrals-50') }]
-  ] as Array<{ key: string, name: string, color: string }>
 
-  const finalSeries = combineSeriesMappingAP
+  const finalSeries = seriesMappingAP(true)
     .filter(status=>(!excludingApStatus.includes(status.key)))
     .map(status=>{
       const matched=series.filter(item=>item.name===status.name)
