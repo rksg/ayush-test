@@ -22,10 +22,10 @@ import {
   useDeleteAdminGroupsMutation,
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
-import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import { AdminGroup, sortProp, defaultSort, AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { RolesEnum }                                                                                  from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, roleStringMap, hasAllowedOperations, getUserProfile } from '@acx-ui/user'
+import { AccountType, getOpsApi }                                                                     from '@acx-ui/utils'
 
 import { ShowMembersDrawer } from '../../Administrators/AdminGroups/ShowMembersDrawer'
 
@@ -104,6 +104,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const [editingRowKey, setEditingRowKey] = useState('')
   const [isPriorityChangeLoading, setIsPriorityChangeLoading] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const MAX_SSO_GROUP_ALLOWED = isSSOLimit100Toggle ? 100 : 20
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
@@ -219,6 +220,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
         }
       },
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateAdminGroups)],
       onClick: (selectedRows) => {
         // show edit dialog
         setEditData(selectedRows[0])
@@ -228,6 +230,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteAdminGroups)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -263,13 +266,19 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   }
 
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC &&
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.addAdminGroups)])
+    : isPrimeAdminUser
+  if (hasPermission && tenantType !== AccountType.MSP_REC &&
     (adminList && adminList.length < MAX_SSO_GROUP_ALLOWED)) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add SSO Group' }),
       onClick: handleClickAdd
     })
   }
+
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : isPrimeAdminUser
 
   // @ts-ignore
   const DraggableRow = (props) => {
@@ -330,10 +339,10 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
           columns={columns}
           dataSource={adminList}
           rowKey='id'
-          rowActions={isPrimeAdminUser
+          rowActions={hasRowPermissions
             ? filterByAccess(rowActions)
             : undefined}
-          rowSelection={isPrimeAdminUser ? {
+          rowSelection={hasRowPermissions ? {
             type: 'checkbox'//,
           // onSelect: handleRowSelectChange
           } : undefined}

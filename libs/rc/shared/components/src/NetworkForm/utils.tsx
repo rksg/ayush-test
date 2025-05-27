@@ -655,15 +655,23 @@ export function useCertificateTemplateActivation () {
     }
 
   const updateCertificateTemplateActivation =
-    async (networkId?: string, newIds: string[] = [], existingIds: string[] = []) => {
-      const requests = []
-      const activateIds = _.difference(newIds, existingIds)
-      const deactivateIds = _.difference(existingIds, newIds)
+    async (networkId?: string, formIds?: string[], existingIds: string[] = []) => {
+      if (!formIds) return  // no updated
 
-      requests.push(...deactivateIds.map(id => deactivateCertificateTemplate(id, networkId)))
-      requests.push(...activateIds.map(id => activateCertificateTemplate(id, networkId)))
+      const activateIds = _.difference(formIds, existingIds)
+      const deactivateIds = _.difference(existingIds, formIds)
 
-      return await Promise.all(requests)
+      const [preserveDeactivateId, ...restDeactivate] = deactivateIds
+      const [preserveActivateId, ...restActivate] = activateIds
+
+      await Promise.all(restDeactivate.map(id => deactivateCertificateTemplate(id, networkId)))
+      await Promise.all(restActivate.map(id => activateCertificateTemplate(id, networkId)))
+      if (preserveDeactivateId) {
+        await deactivateCertificateTemplate(preserveDeactivateId, networkId)
+      }
+      if (preserveActivateId) {
+        await activateCertificateTemplate(preserveActivateId, networkId)
+      }
     }
 
   return { activateCertificateTemplate, updateCertificateTemplateActivation }

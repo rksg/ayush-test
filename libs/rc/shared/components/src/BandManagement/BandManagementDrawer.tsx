@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Form, FormItemProps }                       from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Drawer, Select, cssStr }                     from '@acx-ui/components'
-import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
+import { Drawer, Select, cssStr }                from '@acx-ui/components'
+import { BandModeEnum, ApModelBandModeSettings } from '@acx-ui/rc/utils'
 
 const DrawerFormItem = (props: FormItemProps) => {
   return (
@@ -21,24 +21,24 @@ const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
   [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
 }
 
-interface VenueBandManagementDrawerProps {
+interface BandManagementDrawerProps {
   visible: boolean
   setVisible: React.Dispatch<React.SetStateAction<boolean>>
-  onAddOrEdit: (item: VenueApModelBandModeSettings) => void
-  initialData?: VenueApModelBandModeSettings
+  onAddOrEdit: (item: ApModelBandModeSettings) => void
+  initialData?: ApModelBandModeSettings
   tableDataModels: string[]
   triBandApModels: string[]
   dual5gApModels: string[]
   bandModeCaps: Record<string, BandModeEnum[]>
 }
 
-export const VenueBandManagementDrawer = ({ visible, setVisible,
+export const BandManagementDrawer = ({ visible, setVisible,
   onAddOrEdit, initialData, tableDataModels,
-  triBandApModels, dual5gApModels, bandModeCaps }: VenueBandManagementDrawerProps) => {
+  triBandApModels, dual5gApModels, bandModeCaps }: BandManagementDrawerProps) => {
 
   const { $t } = useIntl()
 
-  const [form] = Form.useForm<VenueApModelBandModeSettings>()
+  const [form] = Form.useForm<ApModelBandModeSettings>()
   const selectedModel = Form.useWatch<string>('model', form)
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const VenueBandManagementDrawer = ({ visible, setVisible,
   }
 
   const onSubmit = () => {
-    onAddOrEdit(form.getFieldsValue(true) as VenueApModelBandModeSettings)
+    onAddOrEdit(form.getFieldsValue(true) as ApModelBandModeSettings)
     onClose()
   }
 
@@ -70,6 +70,7 @@ export const VenueBandManagementDrawer = ({ visible, setVisible,
         message: $t({ defaultMessage: 'Please select a model from the list' })
       }]}
       children={<Select
+        data-testid='model-select'
         style={{ width: '100%' }}
         disabled={!!initialData?.model}
         options={[

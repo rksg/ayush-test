@@ -6,7 +6,15 @@ import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils
 import { Provider, store  }                               from '@acx-ui/store'
 import { mockServer, render, screen }                     from '@acx-ui/test-utils'
 
-import { apDetailData, apDetails, apLanPorts, apRadio, apViewModel } from '../__tests__/fixtures'
+import {
+  apDetailData,
+  apDetails,
+  apLanPorts,
+  apPhoto,
+  apPhotoFromRbacApi,
+  apRadio,
+  apViewModel
+} from '../__tests__/fixtures'
 
 import { ApOverviewTab } from '.'
 
@@ -42,21 +50,15 @@ describe('ApOverviewTab', () => {
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
         (_, res, ctx) => res(ctx.json(apDetailData))
-      )
-    )
-    mockServer.use(
+      ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apViewModel))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetails))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json({
@@ -65,9 +67,7 @@ describe('ApOverviewTab', () => {
             longitude: -122.0191908
           }
         }))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         WifiUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(apLanPorts))
@@ -75,18 +75,24 @@ describe('ApOverviewTab', () => {
       rest.get(
         WifiRbacUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(apLanPorts))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         WifiUrlsInfo.getApRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(apRadio))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApPhoto.url,
+        (_, res, ctx) => res(ctx.json(apPhoto))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApPhoto.url,
+        (_, res, ctx) => res(ctx.json(apPhotoFromRbacApi))
       )
     )
   })
 
 
-  it.skip('renders correctly', async () => {
+  it('renders correctly', async () => {
     render(<Provider><ApOverviewTab /></Provider>, { route: { params } })
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(2)

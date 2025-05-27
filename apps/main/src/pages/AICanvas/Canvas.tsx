@@ -150,7 +150,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
   const [form] = Form.useForm()
-  const { data: canvasList, isFetching: isCanvasFetching } = getCanvasQuery
+  const {
+    data: canvasList,
+    isFetching: isCanvasFetching,
+    isLoading: isCanvasLoading
+  } = getCanvasQuery
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -188,7 +192,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(editCanvasId && isEditInit) {
+    if(editCanvasId && !isCanvasLoading && isEditInit) {
       // Avoid overwriting canvas data
       setIsEditInit(false)
       return

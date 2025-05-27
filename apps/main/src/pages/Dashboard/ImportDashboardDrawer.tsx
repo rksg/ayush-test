@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
-import { Checkbox, List, Dropdown, Menu, Space, MenuProps } from 'antd'
-import _                                                    from 'lodash'
-import moment                                               from 'moment-timezone'
-import { useIntl }                                          from 'react-intl'
+import { Checkbox, List, Dropdown, Menu, Space, MenuProps, Tooltip } from 'antd'
+import _                                                             from 'lodash'
+import moment                                                        from 'moment-timezone'
+import { useIntl }                                                   from 'react-intl'
 
 import { Button, Drawer, Loader, Tabs, showActionModal } from '@acx-ui/components'
 import { SearchOutlined }                                from '@acx-ui/icons'
@@ -264,8 +264,14 @@ export const ImportDashboardDrawer = (props: {
                     moment(item.updatedDate).format('YYYY/MM/DD')
                   }</span> }
                   { !item?.owned && <span className='author'>
-                    <AccountCircleSolid size='sm' />
-                    <span className='name' title={authorName}>{ authorName }</span>
+                    <Tooltip
+                      title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+                      placement='bottom'
+                      overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
+                    >
+                      <AccountCircleSolid size='sm' />
+                      <span className='name'>{ authorName }</span>
+                    </Tooltip>
                   </span>
                   }
                 </div>
