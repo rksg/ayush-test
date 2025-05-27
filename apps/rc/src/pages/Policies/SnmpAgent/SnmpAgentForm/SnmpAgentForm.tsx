@@ -134,7 +134,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         <StepsForm<ApSnmpPolicy>
           form={form}
           editMode={editMode}
-          onCancel={() => navigate(previousPath)}
+          onCancel={() => navigate(previousPath, { replace: true })}
           onFinish={handleSaveApSnmpAgentPolicy}
         >
           <StepsForm.StepForm>

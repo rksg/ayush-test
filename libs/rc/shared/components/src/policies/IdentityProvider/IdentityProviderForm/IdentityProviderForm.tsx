@@ -196,7 +196,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       <StepsForm<IdentityProvider>
         form={form}
         editMode={editMode}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath, { replace: true })}
         onFinish={editMode? handleEditIdentityProvider : handleAddIdentityProvider}
       >
         <StepsForm.StepForm
