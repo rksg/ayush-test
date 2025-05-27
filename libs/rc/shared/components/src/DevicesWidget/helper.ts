@@ -1,4 +1,4 @@
-import _, { find } from 'lodash'
+import { find, get } from 'lodash'
 
 import { cssStr, DonutChartData } from '@acx-ui/components'
 import {
@@ -107,7 +107,7 @@ export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): Do
     seriesMappingSwitch().forEach(({ key, name, color }) => {
       // ES response has different case (dev is upper case, qa is lower case)
       // eslint-disable-next-line max-len
-      const count = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
+      const count = switchesSummary[key as SwitchStatusEnum]! || get(switchesSummary, key.toLowerCase())
       const value = parseInt(count, 10)
 
       if (value) {
@@ -173,7 +173,7 @@ export const getVenueSwitchDonutChartData =
     seriesMappingSwitch().forEach(({ key, name, color }) => {
       // ES response has different case (dev is upper case, qa is lower case)
       // eslint-disable-next-line max-len
-      const value = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
+      const value = switchesSummary[key as SwitchStatusEnum]! || get(switchesSummary, key.toLowerCase())
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
           name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
