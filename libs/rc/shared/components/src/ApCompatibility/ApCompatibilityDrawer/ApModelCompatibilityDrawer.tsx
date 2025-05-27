@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
-import { Form }                      from 'antd'
+import { Divider, Form }             from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Drawer,  Loader }                        from '@acx-ui/components'
@@ -245,7 +245,9 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
 
   const getItems = (items: Compatibility[]) => items?.map((item: Compatibility, index) => {
     const { incompatibleFeatures } = item
-    return incompatibleFeatures?.map((itemDetail) => (
+    return incompatibleFeatures?.map((itemDetail, id: number) => (
+      <>
+      {isRequirement && (id !== 0) && <Divider/>}
       <div key={`incompatibleFeatures_${item.id}`}>
         {isMultiple &&
           <Form.Item>
@@ -286,6 +288,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           ))}
         </SpaceWrapper>
       </div>
+      </>
     ))
   })
 
