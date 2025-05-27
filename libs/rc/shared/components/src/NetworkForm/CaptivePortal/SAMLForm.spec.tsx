@@ -121,6 +121,16 @@ describe('CaptiveNetworkForm - SAML', () => {
             }
           }))
         }
+      ),
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (req, res, ctx) => {
+          return res(ctx.json({
+            name: '__samlIdpProfile_Name__',
+            metadata: Buffer.from('xmlContent').toString('base64'),
+            authenticationRequestSignedEnabled: true
+          }))
+        }
       )
     )
   })

@@ -15,7 +15,7 @@ import {
   resultOfUpdateApSnmpAgentSettings,
   resultOfGetApSnmpAgentProfiles,
   venueData } from '../../../../__tests__/fixtures'
-import { apDetails } from '../../../ApDetails/__tests__/fixtures'
+import { apDetails, apDetailsCustomize } from '../../../ApDetails/__tests__/fixtures'
 
 import { ApSnmp } from './index'
 
@@ -142,5 +142,43 @@ describe('Ap Snmp', () => {
     expect(await screen.findByRole('switch')).toBeEnabled()
     await userEvent.click(await screen.findByRole('switch'))
     expect(await screen.findByRole('switch')).not.toBeChecked()
+  })
+
+  it('Should Be Able To Handle AP SNMP Switch Turn On/Off with customize', async () => {
+    mockServer.use(
+      rest.get(ApSnmpUrls.getApSnmpSettings.url, (req, res, ctx) => {
+        return res(ctx.json({
+          apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+          useVenueSettings: false,
+          enableApSnmp: true
+        }))
+      })
+    )
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          setEditNetworkControlContextData: jest.fn()
+        }}>
+          <ApDataContext.Provider value={{ apData: apDetailsCustomize, venueData }}>
+            <ApSnmp />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networkControl' }
+      })
+
+    const useVenueButton = await screen.findByRole('button', { name: 'Use Venue Settings' })
+    await userEvent.click(useVenueButton)
+    const customizeButton = await screen.findByRole('button', { name: 'Customize' })
+    expect(customizeButton).toBeTruthy()
   })
 })
