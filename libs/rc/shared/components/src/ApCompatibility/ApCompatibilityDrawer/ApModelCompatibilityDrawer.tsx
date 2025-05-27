@@ -247,16 +247,16 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     const { incompatibleFeatures } = item
     return incompatibleFeatures?.map((itemDetail, id: number) => (
       <>
-      {isRequirement && (id !== 0) && <Divider/>}
-      <div key={`incompatibleFeatures_${item.id}`}>
-        {isMultiple &&
+        {isRequirement && (id !== 0) && <Divider/>}
+        <div key={`incompatibleFeatures_${item.id}`}>
+          {isMultiple &&
           <Form.Item>
             <StyledFeatureName>
               {itemDetail?.featureName}
             </StyledFeatureName>
           </Form.Item>
-        }
-        {!apName && currentType !== ApCompatibilityType.ALONE &&
+          }
+          {!apName && currentType !== ApCompatibilityType.ALONE &&
           <StyledFormItem
             label={$t({
               defaultMessage: 'Incompatible Access Points (Currently)'
@@ -264,30 +264,30 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           >
             {`${item?.incompatible}`}
           </StyledFormItem>
-        }
+          }
 
-        <SpaceWrapper size={8} direction='vertical' fullWidth>
-          {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
-            <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
-              <StyledFormItem
-                label={$t({ defaultMessage: 'Minimum required version' })}
-              >
-                {requirement?.firmware}
-              </StyledFormItem>
-              <StyledFormItem
-                label={$t({ defaultMessage: 'Supported AP Models' })}
-              >
-                {apModelFamilies && requirement?.models &&
+          <SpaceWrapper size={8} direction='vertical' fullWidth>
+            {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
+              <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
+                <StyledFormItem
+                  label={$t({ defaultMessage: 'Minimum required version' })}
+                >
+                  {requirement?.firmware}
+                </StyledFormItem>
+                <StyledFormItem
+                  label={$t({ defaultMessage: 'Supported AP Models' })}
+                >
+                  {apModelFamilies && requirement?.models &&
                 <ApModelFamiliesItem
                   apModelFamilies={apModelFamilies}
                   models={requirement.models}
                 />
-                }
-              </StyledFormItem>
-            </StyledRequirementWrapper>
-          ))}
-        </SpaceWrapper>
-      </div>
+                  }
+                </StyledFormItem>
+              </StyledRequirementWrapper>
+            ))}
+          </SpaceWrapper>
+        </div>
       </>
     ))
   })
