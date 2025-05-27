@@ -204,7 +204,7 @@ export function VideoCallQoeTable () {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
       rbacOpsIds: [aiOpsApis.deleteVideoCallQoe],
-      onClick: ([{ name, id }], clearSelection) => {
+      onClick: ([{ name, testId }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -213,7 +213,7 @@ export function VideoCallQoeTable () {
             entityValue: name
           },
           onOk: async () => {
-            const deleteResponse = await deleteCallQoeTest({ id }).unwrap()
+            const deleteResponse = await deleteCallQoeTest({ id: testId }).unwrap()
             if (deleteResponse) {
               showToast({ type: 'success', content: $t(messageMapping.TEST_DELETE_SUCCESS) })
             } else {
