@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InentAI Settings should handle error on save settings 1`] = `
+Object {
+  "enabled-intent-features": "[\\"Energy Saving\\"]",
+}
+`;

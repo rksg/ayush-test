@@ -4,7 +4,7 @@ import { Checkbox, Form, Typography } from 'antd'
 import { defineMessage, useIntl }     from 'react-intl'
 
 import { useUpdateTenantSettingsMutation }               from '@acx-ui/analytics/services'
-import { Drawer, Button, Loader, Transfer }              from '@acx-ui/components'
+import { Drawer, Button, Loader, Transfer, showToast }   from '@acx-ui/components'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
@@ -29,18 +29,29 @@ export function Settings ({ settings }: { settings: string }) {
   const [form] = Form.useForm()
 
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
-  const saveSettings = useCallback(async () => {
-    await updateSettings({
+  const saveSettings = useCallback(() => {
+    return updateSettings({
       'enabled-intent-features': JSON.stringify(targetKeys)
     })
-  }, [targetKeys, updateSettings])
+      .unwrap()
+      .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Subscriptions saved successfully!' })
+        })
+        closeDrawer(undefined)
+      })
+      .catch((error) => {
+        showToast({ type: 'error', content: JSON.stringify(error) })
+      })
+  }, [targetKeys, updateSettings, showToast])
 
   useEffect(() => {
     setTargetKeys(JSON.parse(settings))
   }, [settings])
 
-  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
-    e.stopPropagation()
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent | undefined) => {
+    e?.stopPropagation()
     setTargetKeys(JSON.parse(settings))
     setVisible(false)
   }
@@ -70,7 +81,7 @@ export function Settings ({ settings }: { settings: string }) {
         </Button></div>}
     > <Loader states={[result]}>
         <Form
-          style={{ width: '50%' }}
+          style={{ width: '55%' }}
           layout='vertical'
           form={form}>
           <div style={{ display: 'flex' }}>
@@ -83,8 +94,8 @@ export function Settings ({ settings }: { settings: string }) {
           <Form.Item>
             <Transfer
               listStyle={{
-                width: 250,
-                height: 275
+                width: 245,
+                height: 200
               }}
               showSelectAll={false}
               dataSource={aiFeatures}
@@ -93,6 +104,7 @@ export function Settings ({ settings }: { settings: string }) {
                 $t({ defaultMessage: 'Available Intents' }),
                 $t({ defaultMessage: 'Subscribed Intents' })
               ]}
+              operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
               render={(item) =>
                 <FeatureIcon>{iconMap[item.key as keyof typeof iconMap]} {item.name}</FeatureIcon>
               }
