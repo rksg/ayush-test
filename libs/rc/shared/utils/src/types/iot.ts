@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 export interface IotControllerStatus {
   id: string
   name: string
@@ -8,6 +10,7 @@ export interface IotControllerStatus {
   apiToken: string
   tenantId: string
   assocVenueIds?: string[]
+  status: IotControllerStatusEnum
 }
 
 export interface IotControllerSetting {
@@ -82,3 +85,12 @@ export interface RcapLicenseUtilizationData {
   requestId?: string
 }
 
+export enum IotControllerStatusEnum {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
+export const IotControllerStatusMap = {
+  [IotControllerStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
+  [IotControllerStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Offline' })
+}
