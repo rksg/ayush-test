@@ -145,12 +145,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [nameFieldError, setNameFieldError] = useState('')
   const [canvasDisplayName, setCanvasDisplayName] = useState('')
 
-  const [getCanvasById, { isLoading: isCanvasLoading }] = useLazyGetCanvasByIdQuery()
+  const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
   const [form] = Form.useForm()
-  const { data: canvasList, isFetching: isCanvasFetching } = getCanvasQuery
+  const {
+    data: canvasList,
+    isFetching: isCanvasFetching,
+    isLoading: isCanvasLoading
+  } = getCanvasQuery
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
