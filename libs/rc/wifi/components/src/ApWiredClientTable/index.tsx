@@ -1,8 +1,10 @@
+import { useState } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
-import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
+import { Button, ColumnType, Loader, Table, TableHighlightFnArgs, TableProps, Tooltip } from '@acx-ui/components'
+import { useApListQuery, useGetApWiredClientsQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
 import {
   getDeviceTypeIcon,
   getOsTypeIcon,
@@ -13,6 +15,8 @@ import {
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
+
+import LanPortProfileDetailsDrawer, { LanPortDetailState } from '../LanPortProfileDetailDrawer'
 
 import * as UI from './styledComponents'
 
@@ -73,6 +77,7 @@ export const ApWiredClientTable = (props: {
 }) => {
   const params = useParams()
   const { searchable, settingsId = 'ap-wired-clients-table' } = props
+  const [lanPortDrawerState, setLanPortDrawerState] = useState<LanPortDetailState>()
 
   defaultApWiredClientPayload.filters =
   params.venueId ? { venueId: [params.venueId] } :
@@ -206,8 +211,19 @@ export const ApWiredClientTable = (props: {
       title: intl.$t({ defaultMessage: 'LAN Port' }),
       dataIndex: 'portNumber',
       sorter: true,
-      render: (_, { portNumber }) => {
-        return portNumber ? `LAN ${portNumber}` : noDataDisplay
+      render: (_: React.ReactNode, row: ApWiredClientInfo) => {
+        const { portNumber } = row
+        return portNumber ? <Button type='link'
+          onClick={()=> {
+            setLanPortDrawerState({
+              detailVisible: true,
+              serialNumber: row.apId,
+              apName: row.apName,
+              venueId: row.venueId,
+              portId: portNumber?.toString()
+            })}}>
+          {$t({ defaultMessage: 'LAN {portNumber}' }, { portNumber })}
+        </Button> : noDataDisplay
       }
     }, {
       key: 'vlanId',
@@ -266,6 +282,11 @@ export const ApWiredClientTable = (props: {
           rowKey='macAddress'
           filterPersistence={true}
         />
+        {lanPortDrawerState?.detailVisible && <LanPortProfileDetailsDrawer
+          visible={lanPortDrawerState?.detailVisible}
+          setVisible={setLanPortDrawerState}
+          portData={lanPortDrawerState!}
+        />}
       </Loader>
     </div>
   )

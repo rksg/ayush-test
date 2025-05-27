@@ -4,7 +4,7 @@ import { showActionModal }       from '@acx-ui/components'
 import { EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
 import { getIntl }               from '@acx-ui/utils'
 
-interface ShowSdLanCaptivePortalConflictProps {
+interface ShowSdLanNetworksTunnelConflictProps {
   currentNetworkVenueId: string
   currentNetworkId: string
   currentNetworkName?: string
@@ -13,7 +13,8 @@ interface ShowSdLanCaptivePortalConflictProps {
   onOk: (impactVenueIds: string[]) => Promise<void> | void
   onCancel?: () => void
 }
-export const showSdLanCaptivePortalConflictModal = (props: ShowSdLanCaptivePortalConflictProps) => {
+export const showSdLanNetworksTunnelConflictModal =
+(props: ShowSdLanNetworksTunnelConflictProps) => {
   const {
     currentNetworkVenueId,
     currentNetworkId,

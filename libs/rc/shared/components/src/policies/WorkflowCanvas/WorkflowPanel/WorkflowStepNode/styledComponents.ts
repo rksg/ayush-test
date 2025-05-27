@@ -1,8 +1,6 @@
-import { Typography }            from 'antd'
+import { Menu, Typography }      from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
-
-import { Button } from '@acx-ui/components'
 
 
 export const StepNode = styled.div<{ selected?: boolean }>`
@@ -168,20 +166,6 @@ export const EditorToolbarIcon = styled.div`
   }
 `
 
-export const WhiteTextButton = styled(Button)`
-  color: var(--acx-primary-white);
-  text-decoration: none;
-  :after {
-    content: '';
-    display: block;
-  }
-  transition: all 0s;
-  
-  :hover, :focus, :active {
-    color: var(--acx-accents-orange-50) !important;
-  }
-`
-
 // this styles the label of the popover
 export const Popover = styled(AntPopover)`
     color: var(--acx-accents-blue-50);
@@ -204,4 +188,23 @@ export const PopoverContent = styled(Typography.Text)`
   color: var(--acx-primary-white);
   font-size: var(--acx-body-3-font-size);
   padding-bottom: 20px;
+`
+
+export const DeleteMenu = styled(Menu)`
+  .ant-menu-item:hover, .ant-menu-item-active {
+    color: var(--acx-primary-white);
+    background-color: var(--acx-neutrals-70);
+  }
+
+  .ant-menu-item {
+      line-height: 2;
+      height: auto;
+      color: var(--acx-primary-white);
+      padding: 0 0.5rem !important;
+      margin: 0 !important;
+      font-size: 12px;
+  }
+
+  padding-bottom: 0px !important;
+  user-select: none;
 `

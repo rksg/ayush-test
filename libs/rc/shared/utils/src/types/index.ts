@@ -19,6 +19,7 @@ import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
+export * from './apGroup'
 export * from './venue'
 export * from './network'
 export * from './any-network'
@@ -103,6 +104,7 @@ export interface Venue extends EnforceableFields {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
+  apWiredClients?: number
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
