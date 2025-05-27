@@ -141,7 +141,10 @@ export function DonutChart ({
 }: DonutChartProps) {
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
 
-  const chartData = data.length !== 1 ? data.filter(item => item.value) : data
+  const hasMultipleItems = data.length > 1
+  const hasNonZeroValues = data.some(item => item.value)
+  const shouldFilterData = hasMultipleItems && hasNonZeroValues
+  const chartData = shouldFilterData ? data.filter(item => item.value) : data
   const sum = chartData.reduce((acc, cur) => acc + cur.value, 0)
   const colors = chartData.map(series => series.color) as ZRColor[]
   const isEmpty = chartData.length === 0
