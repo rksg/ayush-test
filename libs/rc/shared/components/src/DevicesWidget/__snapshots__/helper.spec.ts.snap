@@ -6,7 +6,7 @@ Array [
     "category": "",
     "series": Array [
       Object {
-        "name": "<0>In Setup Phase",
+        "name": "<0>In Setup Phase & Offline",
         "value": 8,
       },
       Object {
@@ -32,7 +32,7 @@ Array [
     "category": "",
     "series": Array [
       Object {
-        "name": "<0>In Setup Phase",
+        "name": "<0>In Setup Phase & Offline",
         "value": 3,
       },
       Object {
@@ -58,7 +58,7 @@ Array [
     "category": "",
     "series": Array [
       Object {
-        "name": "<0>In Setup Phase",
+        "name": "<0>In Setup Phase & Offline",
         "value": 0,
       },
       Object {
