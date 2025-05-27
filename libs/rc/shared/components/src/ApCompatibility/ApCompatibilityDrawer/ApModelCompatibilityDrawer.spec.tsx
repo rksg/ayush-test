@@ -69,7 +69,7 @@ describe('ApModelCompatibilityDrawer', () => {
             visible={true}
             type={ApCompatibilityType.VENUE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.BETA_DPSK3}
+            featureNames={[InCompatibilityFeatures.BETA_DPSK3]}
             venueName={venueName}
             onClose={mockedCloseDrawer}
           /></Form>
@@ -110,7 +110,7 @@ describe('ApModelCompatibilityDrawer', () => {
           <ApModelCompatibilityDrawer
             visible={true}
             type={ApCompatibilityType.ALONE}
-            featureName={InCompatibilityFeatures.BETA_DPSK3}
+            featureNames={[InCompatibilityFeatures.BETA_DPSK3]}
             onClose={mockedCloseDrawer}
           /></Form>
       </Provider>, {
@@ -130,7 +130,7 @@ describe('ApModelCompatibilityDrawer', () => {
             visible={true}
             type={ApCompatibilityType.VENUE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.BETA_DPSK3}
+            featureNames={[InCompatibilityFeatures.BETA_DPSK3]}
             venueName={venueName}
             onClose={mockedCloseDrawer}
           /></Form>

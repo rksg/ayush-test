@@ -104,9 +104,9 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const currentType = isTemplate ? ApCompatibilityType.ALONE : type
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
-  const title = (isMultiple && apNameTitle)
-    ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
-    : $t({ defaultMessage: 'Compatibility Requirement' })
+  const title = (!isMultiple || isRequirement)
+    ? $t({ defaultMessage: 'Compatibility Requirement' })
+    : ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
 
   const multipleFromAp = <FormattedMessage
     defaultMessage={
