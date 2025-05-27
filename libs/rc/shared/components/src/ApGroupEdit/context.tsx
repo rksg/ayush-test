@@ -56,6 +56,8 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
   const isApGroupTableFlag = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isWifiApGroupMoreParamPhase1Enabled = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const { apGroupId, action } = useParams()
   const { isTemplate } = useConfigTemplate()
@@ -82,7 +84,7 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
 
   const { data: apGroupApCaps } = useGetApGroupApCapabilitiesQuery({
     params: { venueId, apGroupId }
-  }, { skip: !venueId })
+  }, { skip: !venueId && !isWifiApGroupMoreParamPhase1Enabled } )
 
   const { data: venueData } = useGetVenueQuery({
     params: { venueId }
