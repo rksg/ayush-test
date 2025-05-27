@@ -87,7 +87,7 @@ const Mesh6GhzInfoIcon = (props: MeshCompatibilityProps) => {
         visible={mesh5g6gOnlyDrawerVisible}
         type={ApCompatibilityType.VENUE}
         venueId={venueId}
-        featureName={InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY}
+        featureNames={[InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY]}
         onClose={() => setMesh5g6gOnlyDrawerVisible(false)}
       />
     </>
@@ -129,7 +129,7 @@ const Mesh5GhzInfoIcon = (props: MeshCompatibilityProps) => {
         visible={mesh5g6gOnlyDrawerVisible}
         type={ApCompatibilityType.VENUE}
         venueId={venueId}
-        featureName={InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY}
+        featureNames={[InCompatibilityFeatures.MESH_5G_ONLY_6G_ONLY]}
         onClose={() => setMesh5g6gOnlyDrawerVisible(false)}
       />
     </>

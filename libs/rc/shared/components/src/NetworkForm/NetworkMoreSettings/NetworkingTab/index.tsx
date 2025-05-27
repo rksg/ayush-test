@@ -324,11 +324,12 @@ export function NetworkingTab (props: {
               placement='right'
               onClick={() => setAirtimeDrawerVisible(true)}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={airtimeDrawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={wlanData?.id}
-              featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
+              featureNames={[InCompatibilityFeatures.AIRTIME_DECONGESTION]}
               onClose={() => setAirtimeDrawerVisible(false)}
             />}
           </Space> :
@@ -356,11 +357,12 @@ export function NetworkingTab (props: {
                 placement='right'
                 onClick={() => setJoinRssiDrawerVisible(true)}
               />}
-              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              {isR370UnsupportedFeatures &&
+              <ApCompatibilityDrawer
                 visible={joinRssiDrawerVisible}
                 type={ApCompatibilityType.ALONE}
                 networkId={wlanData?.id}
-                featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
+                featureNames={[InCompatibilityFeatures.JOIN_RSSI_THRESHOLD]}
                 onClose={() => setJoinRssiDrawerVisible(false)}
               />}
             </Space> :
@@ -570,11 +572,12 @@ export function NetworkingTab (props: {
               placement='right'
               onClick={() => setBssPriorityDrawerVisible(true)}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={bssPriorityDrawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={wlanData?.id}
-              featureName={InCompatibilityFeatures.BSS_PRIORITY}
+              featureNames={[InCompatibilityFeatures.BSS_PRIORITY]}
               onClose={() => setBssPriorityDrawerVisible(false)}
             />}
           </>}
