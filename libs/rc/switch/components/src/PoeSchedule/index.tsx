@@ -67,9 +67,8 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
   useEffect(() => {
     if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
-      const scheduler = parseNetworkVenueScheduler({ ...poeScheduler })
       setHidden(false)
-      setSchedule(scheduler)
+      setSchedule(poeScheduler)
       form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
     }
 
