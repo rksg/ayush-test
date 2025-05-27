@@ -1,10 +1,9 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
-import { Form, Switch, Row, Col, Space, Input } from 'antd'
-import { isEmpty }                              from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Button, Form, Row, Col, Space } from 'antd'
+import { isEmpty }                       from 'lodash'
+import { useIntl }                       from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
 import {
   Loader,
   StepsFormLegacy,
@@ -12,29 +11,23 @@ import {
   AnchorContext
 } from '@acx-ui/components'
 import {
-  QuestionMarkCircleOutlined
-} from '@acx-ui/icons'
+  IotControllerDrawer
+} from '@acx-ui/rc/components'
 import {
   useGetApIotQuery,
   useLazyGetVenueIotQuery,
-  useUpdateApIotMutation
+  useUpdateApIotV2Mutation
 } from '@acx-ui/rc/services'
-import {
-  domainNameRegExp,
-  transformDisplayOnOff
-} from '@acx-ui/rc/utils'
 import { ApIot, VenueIot } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
-import { FieldLabel }                                    from '../../styledComponents'
 import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function IotController (props: ApEditItemProps) {
+export function IotControllerV2 (props: ApEditItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
@@ -59,7 +52,7 @@ export function IotController (props: ApEditItemProps) {
   )
 
   const [updateApIot, { isLoading: isUpdatingApIot }] =
-    useUpdateApIotMutation()
+    useUpdateApIotV2Mutation()
 
   const [getVenueIot] = useLazyGetVenueIotQuery()
 
@@ -74,8 +67,6 @@ export function IotController (props: ApEditItemProps) {
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
   const [formInitializing, setFormInitializing] = useState(true)
-
-  const [iotEnabled, setIotEnabled] = useState(false)
 
   useEffect(() => {
     const iotData = iot?.data
@@ -92,7 +83,6 @@ export function IotController (props: ApEditItemProps) {
         setVenueIot(venueIotData)
         setIsUseVenueSettings(iotData.useVenueSettings)
         isUseVenueSettingsRef.current = iotData.useVenueSettings
-        setIotEnabled(iotData.enabled)
 
         if (formInitializing) {
           setInitData(iotData)
@@ -125,13 +115,10 @@ export function IotController (props: ApEditItemProps) {
           useVenueSettings: true
         }
         formRef?.current?.setFieldsValue(data)
-
-        setIotEnabled(venueIot.enabled)
       }
     } else {
       if (!isEmpty(apIot)) {
         formRef?.current?.setFieldsValue(apIot)
-        setIotEnabled(apIot.enabled)
       }
     }
 
@@ -193,11 +180,12 @@ export function IotController (props: ApEditItemProps) {
     updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
-  const iotEnabledFieldName = 'enabled'
   const iotMqttBrokerAddressFieldName = 'mqttBrokerAddress'
 
-  const toggleIot = (checked: boolean) => {
-    setIotEnabled(checked)
+  const [drawerVisible, setDrawerVisible] = useState(false)
+
+  const handleIotController = () => {
+    setDrawerVisible(true)
   }
 
   return (
@@ -217,81 +205,67 @@ export function IotController (props: ApEditItemProps) {
             isUseVenueSettings={isUseVenueSettings}
             handleVenueSetting={handleVenueSetting}
           />
-
-          <Row gutter={0}>
-            <Col span={colSpan}>
-              <FieldLabel width='200px'>
-                <Space>
-                  {$t({ defaultMessage: 'Enable IoT Controller' })}
-                </Space>
-                <Form.Item
-                  name={iotEnabledFieldName}
-                  valuePropName={'checked'}
-                  initialValue={false}
-                  children={
-                    isUseVenueSettings ? (
-                      <span data-testid={'enabled-span'}>
-                        {transformDisplayOnOff(venueIot?.enabled ?? false)}
-                      </span>
-                    ) : (
-                      <Switch
-                        disabled={!isAllowEdit}
-                        checked={iotEnabled}
-                        onChange={handleChange}
-                        onClick={toggleIot}
-                      />
-                    )
-                  }
-                />
-              </FieldLabel>
-            </Col>
-          </Row>
-          {iotEnabled && (
+          {apIot?.mqttBrokerAddress?.length > 0 ? (
             <Row>
-              <Space size={40}>
+              <Col span={colSpan}>
                 <Form.Item
                   name={iotMqttBrokerAddressFieldName}
                   style={{ display: 'inline-block', width: '230px' }}
-                  // noStyle
-                  rules={[
-                    { required: true,
-                      // eslint-disable-next-line max-len
-                      message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
-                    },
-                    { validator: (_, value) => domainNameRegExp(value),
-                      message: $t(validationMessages.validDomain)
-                    }
-                  ]}
-                  label={
-                    <>
-                      {$t({ defaultMessage: 'VRIoT  IP Address/FQDN' })}
-                      <Tooltip
-                        // eslint-disable-next-line max-len
-                        title={$t({ defaultMessage: 'This is the MQTT address of the VRIoT Controller' })}
-                        placement='bottom'
-                      >
-                        <QuestionMarkCircleOutlined/>
-                      </Tooltip>
-                    </>
-                  }
-                  initialValue={''}
+                  label={$t({ defaultMessage: 'IoT Controller Name' })}
                   children={
-                    isUseVenueSettings ? (
-                      <span data-testid={'mqttBrokerAddress-span'}>
-                        {formRef?.current?.getFieldValue(
-                          iotMqttBrokerAddressFieldName
-                        )}
-                      </span>
-                    ) : (
-                      <Input disabled={!isAllowEdit}
-                        onChange={handleChange}
-                      />
-                    )
+                    <span>{apIot?.mqttBrokerAddress}</span>
                   }
                 />
-              </Space>
+                <Form.Item
+                  name={iotMqttBrokerAddressFieldName}
+                  style={{ display: 'inline-block', width: '230px' }}
+                  label={$t({ defaultMessage: 'FQDN / IP' })}
+                  children={
+                    <span>{apIot?.mqttBrokerAddress}</span>
+                  }
+                />
+              </Col>
+              {!isUseVenueSettings &&
+              <Col span={colSpan}>
+                <Space>
+                  <Button
+                    type='link'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleIotController}
+                  >
+                    {$t({ defaultMessage: 'Change' })}
+                  </Button>
+                  <Button
+                    type='link'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleIotController}
+                  >
+                    {$t({ defaultMessage: 'Remove' })}
+                  </Button>
+                </Space>
+              </Col>
+              }
+            </Row>
+          ) : (
+            !isUseVenueSettings &&
+            <Row>
+              <Col span={colSpan}>
+                <Space>
+                  <Button
+                    type='link'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleIotController}
+                  >
+                    {$t({ defaultMessage: 'Associate IoT Controller' })}
+                  </Button>
+                </Space>
+              </Col>
             </Row>
           )}
+          { drawerVisible && <IotControllerDrawer
+            visible={drawerVisible}
+            setVisible={setDrawerVisible}
+          /> }
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </Loader>
