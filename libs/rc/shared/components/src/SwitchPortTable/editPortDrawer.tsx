@@ -63,7 +63,8 @@ import {
   SwitchUrlsInfo,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  useTableQuery
+  useTableQuery,
+  SchedulerTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { store }                             from '@acx-ui/store'
@@ -232,7 +233,8 @@ export function EditPortDrawer ({
     authTimeoutAction,
     authTimeoutActionCheckbox,
     criticalVlanCheckbox,
-    portSecurity
+    portSecurity,
+    poeScheduler
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -2176,9 +2178,6 @@ export function EditPortDrawer ({
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
                   </Form.Item>
-                  { isSwitchTimeBasedPoeEnabled &&
-                    <Form.Item name='poeScheduler' />
-                  }
                 </Space>
               </Tooltip>
 
@@ -2187,12 +2186,13 @@ export function EditPortDrawer ({
         })}
 
         {isSwitchTimeBasedPoeEnabled &&
-          <UI.PoeCardWrapper>
+          <>
             <Form.Item
               label={$t({ defaultMessage: 'PoE Schedule' })}
               labelCol={{ span: 24 }}
               children={<Space style={{ fontSize: '12px' }}>
-                <span>{noDataDisplay}</span>
+                <span>{poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
+                  noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
                 <Button
                   type='link'
                   data-testid='edit-poe-schedule'
@@ -2203,7 +2203,8 @@ export function EditPortDrawer ({
               </Space>
               }
             />
-          </UI.PoeCardWrapper>
+            <Form.Item name='poeScheduler' hidden/>
+          </>
         }
 
         { getFieldTemplate({

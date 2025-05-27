@@ -219,19 +219,3 @@ export const FieldTemplateTooltip = styled.div`
     width: 16px;
   }
 `
-
-export const PoeCardWrapper = styled.div`
-  .ant-card {
-    width: 250px;
-    height: 64px;
-    margin-bottom: 20px;
-    .ant-card-head-title div {
-      font-weight: 400;
-      font-size: 12px;
-      color: var(--acx-neutrals-60);
-    }
-    .ant-card-body {
-      height: 64px;
-    }
-  }
-`

@@ -61,13 +61,16 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   const [getTimezone] = useLazyGetTimezoneQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [venueData, setVenueData] = useState<ScheduleVenue>()
+  const [schedule, setSchedule] = useState<Scheduler | undefined>(undefined)
 
   const poeScheduler = useWatch('poeScheduler', form)
 
   useEffect(() => {
-    if(poeScheduler === SchedulerTypeEnum.NO_SCHEDULE){
+    if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
       const scheduler = parseNetworkVenueScheduler({ ...poeScheduler })
-      form.setFieldValue('poeScheduler', scheduler)
+      setHidden(false)
+      setSchedule(scheduler)
+      form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
     }
 
     const fetchVenueData = async () => {
@@ -191,7 +194,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
             <Col span={24} key={'col1'}>
               {!hidden && <ScheduleCard
                 type={'CUSTOM'}
-                scheduler={undefined}
+                scheduler={schedule}
                 lazyQuery={isMapEnabled ? getTimezone : undefined}
                 form={form}
                 fieldNamePath={['scheduler']}
@@ -203,7 +206,6 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 prefix={false}
                 timelineLabelTop={false}
                 isShowTimezone={true}
-                readonly={false}
                 venue={venueData}
               />
               }
