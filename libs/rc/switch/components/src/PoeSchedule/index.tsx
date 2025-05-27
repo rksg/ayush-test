@@ -18,10 +18,9 @@ import { Scheduler }                                     from '@acx-ui/types'
 import * as UI from './styledComponents'
 
 interface ScheduleWeeklyProps {
+  form: FormInstance
   visible: boolean
   setVisible: (visible: boolean) => void
-  form: FormInstance
-  readonly: boolean
   venueId?: string
 }
 
@@ -54,7 +53,7 @@ export const buildExcludedHours = (hours?:Record<string, number[]>):Scheduler | 
 }
 
 export const PoeSchedule = (props:ScheduleWeeklyProps) => {
-  const { visible, setVisible, form, readonly, venueId } = props
+  const { visible, setVisible, form, venueId } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
@@ -68,7 +67,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   useEffect(() => {
     if(poeScheduler === SchedulerTypeEnum.NO_SCHEDULE){
       const scheduler = parseNetworkVenueScheduler({ ...poeScheduler })
-      form.setFieldValue('scheduler', scheduler)
+      form.setFieldValue('poeScheduler', scheduler)
     }
 
     const fetchVenueData = async () => {
@@ -115,15 +114,20 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   }
 
   const onApply = () => {
-    const { scheduler, poeScheduler } = form.getFieldsValue()
+    const { scheduler, poeSchedulerType } = form.getFieldsValue()
     const { type, ...weekDays } = scheduler || {}
 
-    if (poeScheduler === SchedulerTypeEnum.NO_SCHEDULE) {
-      form.submit()
-    } else if (poeScheduler === SchedulerTypeEnum.CUSTOM) {
-      form.setFieldValue('poeScheduler',
-        { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) })
+    if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
+      form.setFieldsValue({
+        ...form.getFieldsValue(),
+        poeScheduler: { type: SchedulerTypeEnum.NO_SCHEDULE }
+      })
+    } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
+      form.setFieldsValue({
+        ...form.getFieldsValue(),
+        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
+    setVisible(false)
   }
 
   const onClose = () => {
@@ -149,7 +153,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Poe Schedule ' })}
+      title={$t({ defaultMessage: 'PoE Schedule ' })}
       visible={visible}
       width={800}
       footer={footer}
@@ -167,7 +171,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
             <Col span={8} key={'col1'}>
               <div style={{ marginTop: '1em' }}>
                 <Form.Item
-                  name={'poeScheduler'}
+                  name={'poeSchedulerType'}
                   initialValue={SchedulerTypeEnum.NO_SCHEDULE}
                 >
                   <Radio.Group onChange={onTypeChange}>
@@ -199,7 +203,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 prefix={false}
                 timelineLabelTop={false}
                 isShowTimezone={true}
-                readonly={readonly}
+                readonly={false}
                 venue={venueData}
               />
               }

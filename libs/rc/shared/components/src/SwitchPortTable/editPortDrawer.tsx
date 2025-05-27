@@ -247,6 +247,7 @@ export function EditPortDrawer ({
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -2175,6 +2176,9 @@ export function EditPortDrawer ({
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
                   </Form.Item>
+                  { isSwitchTimeBasedPoeEnabled &&
+                    <Form.Item name='poeScheduler' />
+                  }
                 </Space>
               </Tooltip>
 
@@ -2182,23 +2186,25 @@ export function EditPortDrawer ({
           />
         })}
 
-        <UI.PoeCardWrapper>
-          <Form.Item
-            label={$t({ defaultMessage: 'PoE Schedule' })}
-            labelCol={{ span: 24 }}
-            children={<Space style={{ fontSize: '12px' }}>
-              <span>{noDataDisplay}</span>
-              <Button
-                type='link'
-                data-testid='edit-poe-schedule'
-                onClick={() => { setDrawerPoeSchedule(true) }}  // eslint-disable-line
-              >
-                {$t({ defaultMessage: 'Edit' })}
-              </Button>
-            </Space>
-            }
-          />
-        </UI.PoeCardWrapper>
+        {isSwitchTimeBasedPoeEnabled &&
+          <UI.PoeCardWrapper>
+            <Form.Item
+              label={$t({ defaultMessage: 'PoE Schedule' })}
+              labelCol={{ span: 24 }}
+              children={<Space style={{ fontSize: '12px' }}>
+                <span>{noDataDisplay}</span>
+                <Button
+                  type='link'
+                  data-testid='edit-poe-schedule'
+                  onClick={() => { setDrawerPoeSchedule(true) }}  // eslint-disable-line
+                >
+                  {$t({ defaultMessage: 'Edit' })}
+                </Button>
+              </Space>
+              }
+            />
+          </UI.PoeCardWrapper>
+        }
 
         { getFieldTemplate({
           field: 'poeClass',
@@ -2783,11 +2789,10 @@ export function EditPortDrawer ({
 
       { drawerPoeSchedule &&
         <PoeSchedule
+          form={form}
           visible={drawerPoeSchedule}
           setVisible={setDrawerPoeSchedule}
           venueId={switchDetail?.venueId}
-          form={form}
-          readonly={false}
         />
       }
       {/* { // TODO: enhance ^_^?
