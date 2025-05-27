@@ -192,4 +192,29 @@ describe('ApModelCompatibilityDrawer', () => {
     await userEvent.click(icon)
     expect(mockedCloseDrawer).toBeCalledTimes(1)
   })
+
+  it('should render multiple features requirements correctly', async () => {
+    render(
+      <Provider>
+        <Form>
+          <ApModelCompatibilityDrawer
+            isMultiple
+            isRequirement
+            visible={true}
+            type={ApCompatibilityType.VENUE}
+            venueId={venueId}
+            featureNames={[
+              InCompatibilityFeatures.AFC,
+              InCompatibilityFeatures.AUTO_CELL_SIZING
+            ]}
+            venueName={venueName}
+            onClose={mockedCloseDrawer}
+          /></Form>
+      </Provider>, {
+        route: { params: { tenantId, venueId }, path: '/:tenantId' }
+      })
+    expect(await screen.findByText('Compatibility Requirement')).toBeInTheDocument()
+    expect(await screen.findByText(/Please ensure that the access points in the venue/)).toBeInTheDocument()
+    expect(await screen.findByText(/AFC and Auto Cell Sizing/)).toBeInTheDocument()
+  })
 })
