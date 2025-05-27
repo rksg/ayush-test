@@ -324,7 +324,6 @@ export function SwitchPortTable (props: {
     </Space>
   },
   ...(isSwitchTimeBasedPoeEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10010gCd1Or10020bCd1(switchFirmware))
     ? [{
       key: 'poeScheduleEnabled',
       title: $t({ defaultMessage: 'PoE Schedule' }),
