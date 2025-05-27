@@ -243,11 +243,53 @@ export const getApDonutChartData =
   return chartData
 }
 
+const _getApStackedBarChartData =
+(apsSummary: VenueDetailHeader['aps']['summary'] | undefined): DonutChartData[] => {
+  const chartData: DonutChartData[] = []
+  if (apsSummary) {
+    let inSetupPhaseAndOfflineCount = 0
+    let offlineColor = ''
+    seriesMappingAP().forEach(({ key, name, color }) => {
+      const value = apsSummary[key as ApVenueStatusEnum]
+      if (value) {
+        // combine the InSetupPhase and Offline count
+        if (key === ApVenueStatusEnum.OFFLINE || key === ApVenueStatusEnum.IN_SETUP_PHASE) {
+          inSetupPhaseAndOfflineCount = inSetupPhaseAndOfflineCount + value
+          offlineColor = color
+        }
+        else {
+          chartData.push({ name, value, color })
+        }
+      }
+    })
+    if (inSetupPhaseAndOfflineCount > 0) {
+      chartData.push({
+        name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE, false),
+        value: inSetupPhaseAndOfflineCount,
+        color: offlineColor })
+    }
+  }
+  return chartData
+}
+
 export const getApStackedBarChartData =
 (apsSummary: VenueDetailHeader['aps']['summary'] | undefined): ChartData[] => {
-  const series = getApDonutChartData(apsSummary,false)
-  const finalSeries=seriesMappingAP()
-    .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
+  const excludingApStatus = [
+    ApVenueStatusEnum.OFFLINE,
+    ApVenueStatusEnum.IN_SETUP_PHASE
+  ] as string[]
+
+  const series = _getApStackedBarChartData(apsSummary)
+  const combineSeriesMappingAP = [
+    ...seriesMappingAP(),
+    [{ key: ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE,
+      name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE, false),
+      color: cssStr('--acx-neutrals-50') }]
+  ] as Array<{ key: string, name: string, color: string }>
+
+  const finalSeries = combineSeriesMappingAP
+    .filter(status=>(!excludingApStatus.includes(status.key)))
+    .map(status=>{
       const matched=series.filter(item=>item.name===status.name)
       let value=0
       if(matched.length){
@@ -263,7 +305,7 @@ export const getApStackedBarChartData =
           return { name: `<2>${status.name}`, value }
         case ApVenueStatusEnum.REQUIRES_ATTENTION:
           return { name: `<1>${status.name}`, value }
-        case ApVenueStatusEnum.IN_SETUP_PHASE:
+        case ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE:
           return { name: `<0>${status.name}`, value }
         default:
           return { name: `<4>${status.name}`, value }
