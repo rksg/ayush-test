@@ -1,15 +1,28 @@
 import { useEffect } from 'react'
 
-import { Select, Space } from 'antd'
-import { debounce }      from 'lodash'
-import { useIntl }       from 'react-intl'
+import { Select, Space }                             from 'antd'
+import { debounce }                                  from 'lodash'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { RadioCardCategory, Table } from '@acx-ui/components'
-import { UnifiedServiceCategory }   from '@acx-ui/rc/utils'
+import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
+import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
 
 export enum ServiceSortOrder {
   ASC,
   DESC,
+}
+
+const unifiedServiceCategoriesMap: Record<UnifiedServiceCategory, MessageDescriptor> = {
+  // eslint-disable-next-line max-len
+  [UnifiedServiceCategory.AUTHENTICATION_IDENTITY]: defineMessage({ defaultMessage: 'Authentication & Identity Management' }),
+  // eslint-disable-next-line max-len
+  [UnifiedServiceCategory.SECURITY_ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Security & Access Control' }),
+  // eslint-disable-next-line max-len
+  [UnifiedServiceCategory.NETWORK_SERVICES]: defineMessage({ defaultMessage: 'Network Configuration & Services' }),
+  // eslint-disable-next-line max-len
+  [UnifiedServiceCategory.MONITORING_TROUBLESHOOTING]: defineMessage({ defaultMessage: 'Monitoring & Troubleshooting' }),
+  // eslint-disable-next-line max-len
+  [UnifiedServiceCategory.USER_EXPERIENCE_PORTALS]: defineMessage({ defaultMessage: 'User Experience & Portals' })
 }
 
 export interface ServiceFiltersConfig {
@@ -20,12 +33,24 @@ export interface ServiceFiltersConfig {
 export interface ServicesToolBarProps {
   setSearchTerm: (searchTerm: string) => void
   setFilters: React.Dispatch<React.SetStateAction<ServiceFiltersConfig>>
+  availableFilters?: ServiceFiltersConfig
   defaultSortOrder?: ServiceSortOrder
   setSortOrder: (sort: ServiceSortOrder) => void
 }
 
 export function ServicesToolBar (props: ServicesToolBarProps) {
-  const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder } = props
+  // eslint-disable-next-line max-len
+  const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder , availableFilters = {} } = props
+  const {
+    products = Object.values(RadioCardCategory),
+    categories = [
+      UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+      UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
+      UnifiedServiceCategory.NETWORK_SERVICES,
+      UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+      UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
+    ]
+  } = availableFilters
   const { $t } = useIntl()
 
   const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,12 +58,12 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
   }, 500)
 
 
-  const handleProductFilterChange = (value: RadioCardCategory[]) => {
-    setFilters(filters => ({ ...filters, products: value }))
+  const handleProductFilterChange = (value: RadioCardCategory) => {
+    setFilters(filters => ({ ...filters, products: value !== undefined ? [value] : [] }))
   }
 
-  const handleCategoryFilterChange = (value: UnifiedServiceCategory[]) => {
-    setFilters(filters => ({ ...filters, categories: value }))
+  const handleCategoryFilterChange = (value: UnifiedServiceCategory) => {
+    setFilters(filters => ({ ...filters, categories: value !== undefined ? [value] : [] }))
   }
 
   const handleSortOrderChange = (value: ServiceSortOrder) => {
@@ -59,8 +84,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         maxLength={64}
         allowClear
       />
-      <Select<RadioCardCategory[]>
-        mode='multiple'
+      <Select<RadioCardCategory>
         key='product'
         onChange={handleProductFilterChange}
         placeholder={$t({ defaultMessage: 'Product' })}
@@ -69,14 +93,12 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         style={{ width: 160 }}
         showSearch={false}
         maxTagCount='responsive'
-        options={[
-          { label: $t({ defaultMessage: 'Wi-Fi' }), value: RadioCardCategory.WIFI },
-          { label: $t({ defaultMessage: 'Switch' }), value: RadioCardCategory.SWITCH },
-          { label: $t({ defaultMessage: 'RUCKUS Edge' }), value: RadioCardCategory.EDGE }
-        ]}
+        options={products.map((product: RadioCardCategory) => ({
+          label: $t(categoryMapping[product].text),
+          value: product
+        }))}
       />
-      <Select<UnifiedServiceCategory[]>
-        mode='multiple'
+      <Select<UnifiedServiceCategory>
         key='category'
         onChange={handleCategoryFilterChange}
         placeholder={$t({ defaultMessage: 'Category' })}
@@ -85,28 +107,10 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         style={{ width: 260 }}
         showSearch={true}
         maxTagCount='responsive'
-        options={[
-          {
-            label: $t({ defaultMessage: 'Authentication & Identity Management' }),
-            value: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
-          },
-          {
-            label: $t({ defaultMessage: 'Security & Access Control' }),
-            value: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL
-          },
-          {
-            label: $t({ defaultMessage: 'Network Configuration & Services' }),
-            value: UnifiedServiceCategory.NETWORK_SERVICES
-          },
-          {
-            label: $t({ defaultMessage: 'Monitoring & Troubleshooting' }),
-            value: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING
-          },
-          {
-            label: $t({ defaultMessage: 'User Experience & Portals' }),
-            value: UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
-          }
-        ]}
+        options={categories.map((category: UnifiedServiceCategory) => ({
+          label: $t(unifiedServiceCategoriesMap[category]),
+          value: category
+        }))}
       />
       <Select<ServiceSortOrder>
         key='sort'

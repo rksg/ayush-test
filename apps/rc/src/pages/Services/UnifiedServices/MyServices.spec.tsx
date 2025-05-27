@@ -64,4 +64,19 @@ describe('<MyServices />', () => {
     expect(screen.getByText(`ServiceCard: ${targetService1.type}`)).toBeInTheDocument()
     expect(screen.getByText(`ServiceCard: ${targetService2.type}`)).toBeInTheDocument()
   })
+
+  it('renders skeleton loading when isFetching', () => {
+    mockUseUnifiedServiceListWithTotalCount.mockReturnValue({
+      unifiedServiceListWithTotalCount: [],
+      isFetching: true
+    })
+
+    render(<MyServices />, { route: { params, path } })
+
+    const skeletonLoadingElements = screen.getAllByRole('list')
+      .filter(el => el.classList.contains('ant-skeleton-paragraph'))
+
+
+    expect(skeletonLoadingElements.length).toBe(4)
+  })
 })
