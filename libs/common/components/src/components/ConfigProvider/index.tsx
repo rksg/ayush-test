@@ -18,7 +18,7 @@ import {
   getReSkinningElements
 } from '@acx-ui/utils'
 
-const getAntdPopupContainer = (triggerNode: HTMLElement | undefined) => {
+export const getAntdPopupContainer = (triggerNode: HTMLElement | undefined) => {
   if (triggerNode?.closest('.ant-select-selector')) {
     return triggerNode.parentElement ?? document.body
   }
