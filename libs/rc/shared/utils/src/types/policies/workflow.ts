@@ -136,7 +136,7 @@ enum StepStatusCodes {
 }
 
 export interface StepStatusReason {
-    statusCode: StepStatusCodes,
+  statusCode: StepStatusCodes,
   statusReason: string
 }
 
