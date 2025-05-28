@@ -34,11 +34,11 @@ const mockInvalidNodeProps: NodeProps<WorkflowStep> = {
   id: 'mock-step-id',
   type: 'AUP' as ActionType,
   data: {
-    id: '',
     enrollmentActionId: 'mock-enrollment-action-id',
     actionType: ActionType.AUP,
     status: 'INVALID',
-    statusReasons: [{ statusCode: 'incorrect.onboarding.count', statusReason: 'Test Status Reason 1234' }]
+    statusReasons: [{ statusCode: 'multiple.onboarding.steps',
+      statusReason: 'Test Status Reason 1234' }]
   } as WorkflowStep,
   selected: false,
   dragging: false,

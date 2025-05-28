@@ -129,10 +129,9 @@ export interface WorkflowActionDefinition {
 }
 
 enum StepStatusCodes {
-  IncorrectOnboarding = 'incorrect.onboarding.count',
-  MissingRequiredCount = 'missing.required.count',
-  DisconnctedSteps = 'disconnected.steps',
-  InvalidStepsOrDependencies = 'invalid.steps.or.dependencies'
+    InvalidAction = 'invalid.action',
+    MultipleOnboardingSteps = 'multiple.onboarding.steps',
+    DisconnectedStep = 'disconnected.step'
 }
 
 export interface StepStatusReason {
