@@ -4,8 +4,8 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
@@ -26,10 +26,11 @@ import {
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  PoeSchedulerType
 } from '@acx-ui/rc/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
+import { ErrorDisableRecoveryDrawer, PoeSchedule }                     from '@acx-ui/switch/components'
 import { SwitchScopes }                                                from '@acx-ui/types'
 import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
@@ -65,7 +66,9 @@ export function SwitchPortTable (props: {
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [recoveryDrawerVisible, setRecoveryDrawerVisible] = useState(false)
   const [switchSupportErrorRecovery, setSwitchSupportErrorRecovery] = useState(false)
+  const [poeSchedulerModalVisible, setPoeSchedulerModalVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
+  const [poeScheduleData, setPoeScheduleData] = useState({} as PoeSchedulerType)
 
   const switchFirmware = switchDetail?.firmware
 
@@ -331,7 +334,20 @@ export function SwitchPortTable (props: {
       sorter: true,
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
-        return row.poeScheduleEnabled ? $t({ defaultMessage: 'Custom Schedule' }) : noDataDisplay
+        return row.poeScheduleEnabled ?
+          <>{$t({ defaultMessage: 'Custom Schedule' })}
+            <Button
+              type='link'
+              data-testid='edit-poe-schedule'
+              onClick={() => {
+                setPoeScheduleData(row?.poeScheduler || {})
+                setPoeSchedulerModalVisible(true)
+              }}
+              style={{ paddingLeft: '10px' }}
+            >
+              {$t({ defaultMessage: 'Preview' })}
+            </Button></> :
+          noDataDisplay
       }
     },{
       key: 'isPoeSupported',
@@ -538,6 +554,16 @@ export function SwitchPortTable (props: {
       switchList={switchList?.data}
       authProfiles={authenticationProfiles}
     />}
+
+    { poeSchedulerModalVisible &&
+      <PoeSchedule
+        visible={poeSchedulerModalVisible}
+        setVisible={setPoeSchedulerModalVisible}
+        venueId={switchDetail?.venueId}
+        poeScheduler={poeScheduleData}
+        readOnly={true}
+      />
+    }
 
   </Loader>
 }

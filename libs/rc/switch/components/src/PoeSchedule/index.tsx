@@ -17,11 +17,12 @@ import { Scheduler }                                     from '@acx-ui/types'
 import * as UI from './styledComponents'
 
 interface ScheduleWeeklyProps {
-  form: FormInstance
+  form?: FormInstance
   visible: boolean
   setVisible: (visible: boolean) => void
   venueId?: string
   poeScheduler: PoeSchedulerType
+  readOnly?: boolean
 }
 
 interface ScheduleVenue {
@@ -53,7 +54,7 @@ export const buildExcludedHours = (hours?:Record<string, number[]>):Scheduler | 
 }
 
 export const PoeSchedule = (props:ScheduleWeeklyProps) => {
-  const { visible, setVisible, form, venueId, poeScheduler } = props
+  const { visible, setVisible, form, venueId, poeScheduler, readOnly } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
@@ -68,7 +69,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       setHidden(false)
       const schedulerData = parseNetworkVenueScheduler({ ...poeScheduler })
       setSchedule(schedulerData)
-      form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
+      form?.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
     }
 
     const fetchVenueData = async () => {
@@ -114,29 +115,38 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   }
 
   const onApply = () => {
-    const { scheduler, poeSchedulerType } = form.getFieldsValue()
+    const { scheduler, poeSchedulerType } = form?.getFieldsValue()
     const { type, ...weekDays } = scheduler || {}
 
     if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
-      form.setFieldsValue({
-        ...form.getFieldsValue(),
+      form?.setFieldsValue({
+        ...form?.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.NO_SCHEDULE }
       })
     } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
-      form.setFieldsValue({
-        ...form.getFieldsValue(),
+      form?.setFieldsValue({
+        ...form?.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
     setVisible(false)
   }
 
   const onClose = () => {
-    form.resetFields()
+    form?.resetFields()
     setVisible(false)
   }
 
   const footer = (
-    <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    readOnly ? <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button
+        data-testid='addButton'
+        key='okBtn'
+        type='primary'
+        onClick={onClose}
+      >
+        {$t({ defaultMessage: 'OK' })}
+      </Button>
+    </Space> : <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -153,7 +163,9 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'PoE Schedule ' })}
+      title={readOnly ?
+        $t({ defaultMessage: 'Preview PoE Schedule' }) :
+        $t({ defaultMessage: 'PoE Schedule ' })}
       visible={visible}
       width={850}
       footer={footer}
@@ -170,7 +182,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
         <UI.ScheduleWrapper>
           <Row gutter={10} key={'row1'}>
             <Col span={6} key={'col1'}>
-              <div style={{ marginTop: '1em' }}>
+              <div style={{ marginTop: '1em', display: readOnly ? 'none' : 'block' }}>
                 <Form.Item
                   name={'poeSchedulerType'}
                   initialValue={SchedulerTypeEnum.NO_SCHEDULE}
@@ -194,17 +206,19 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 type={'CUSTOM'}
                 scheduler={schedule}
                 lazyQuery={isMapEnabled ? getTimezone : undefined}
-                form={form}
+                form={form!}
                 fieldNamePath={['scheduler']}
                 intervalUnit={60}
-                title={$t({ defaultMessage: 'Mark/ unmark areas to change PoE availability' })}
-                disabled={false}
+                title={readOnly ? '' :
+                  $t({ defaultMessage: 'Mark/ unmark areas to change PoE availability' })}
                 loading={false}
-                isShowTips={true}
+                isShowTips={readOnly ? false : true}
                 prefix={true}
                 timelineLabelTop={false}
                 isShowTimezone={true}
                 venue={venueData}
+                readonly={readOnly}
+                disabled={readOnly || true}
               />
               }
             </Col>

@@ -2826,6 +2826,7 @@ export function EditPortDrawer ({
           setVisible={setDrawerPoeSchedule}
           venueId={switchDetail?.venueId}
           poeScheduler={poeScheduleData}
+          readOnly={false}
         />
       }
       {/* { // TODO: enhance ^_^?
