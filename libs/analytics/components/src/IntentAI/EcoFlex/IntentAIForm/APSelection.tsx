@@ -153,7 +153,10 @@ export const validateSelectingAllAPs = (
       group => group.length === 1 && group[0].type === 'zone')
   }
   return isSelectAllAPs
-    ? Promise.reject($t({ defaultMessage: 'Cannot exclude all APs.' }))
+    ? Promise.reject($t({
+      defaultMessage:
+        'Cannot exclude all APs. Please pause Energy Saving if you want to exclude all APs.'
+    }))
     : Promise.resolve()
 }
 
