@@ -118,7 +118,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
 
   const handleCorePortChange = (e: CheckboxChangeEvent) => {
-    if(!isSupportAccessPort && hasAccessPortEnabled && accessPortEnabled) {
+    if(!isSupportAccessPort) {
       form.setFieldValue(getFieldFullPath('accessPortEnabled'), e.target.checked)
     }
   }
