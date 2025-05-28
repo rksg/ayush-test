@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Space, Switch } from 'antd'
 import { CheckboxChangeEvent }                                                              from 'antd/lib/checkbox'
@@ -91,8 +91,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       : [fieldName]
   }, [isListForm, fieldHeadPath])
 
-  const id = useWatch(getFieldFullPath('id'), form)
-  const mac = useWatch(getFieldFullPath('mac'), form)
+  const id = useWatch(getFieldFullPath('id'), form) || form.getFieldValue(getFieldFullPath('id'))
   const portType = useWatch(getFieldFullPath('portType'), form)
   // eslint-disable-next-line max-len
   const portEnabled = useWatch(getFieldFullPath((_.get(formFieldsProps, 'enabled')?.name as string) ?? 'enabled'), form)
@@ -245,10 +244,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       </>
     )
   }
-
-  useLayoutEffect(() => {
-    form.validateFields()
-  }, [mac, form])
 
   return <>
     <Form.Item
