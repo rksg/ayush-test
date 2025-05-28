@@ -334,15 +334,16 @@ export function SwitchPortTable (props: {
         return row.poeScheduleEnabled ? $t({ defaultMessage: 'Custom Schedule' }) : noDataDisplay
       }
     },{
-      key: 'poeCapability',
+      key: 'isPoeSupported',
       title: $t({ defaultMessage: 'PoE Capability' }),
-      dataIndex: 'poeCapability',
+      dataIndex: 'isPoeSupported',
       sorter: true,
       show: false,
       filterMultiple: false,
       filterable: poeCapabilityFilterOptions,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
-        return row.poeScheduleEnabled ? $t({ defaultMessage: 'Custom Schedule' }) : noDataDisplay
+        return row.isPoeSupported === 'true'
+          ? $t({ defaultMessage: 'PoE' }) : $t({ defaultMessage: 'Non-PoE' })
       }
     }] : []),
   {

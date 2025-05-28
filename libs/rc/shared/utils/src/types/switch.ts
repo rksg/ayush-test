@@ -558,6 +558,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stackingNeighborPort?: string
   poeCapability?: boolean
   poeScheduleEnabled?: boolean
+  isPoeSupported?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
