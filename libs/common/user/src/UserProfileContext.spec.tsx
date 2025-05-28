@@ -146,11 +146,20 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(UserUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(fakedVenueList))),
-      rest.get(UserRbacUrlsInfo.getAccountTier.url.split('?')[0],
-        (_req, res, ctx) => res(ctx.json({ acx_account_tier: 'Gold' }))
-      ),
       rest.get(UserRbacUrlsInfo.getAllowedOperations.url,
         (_req, res, ctx) => res(ctx.json(mockAllowedOperations))
+      ),
+      rest.get(UserRbacUrlsInfo.getEarlyAccess.url.split('?')[0],
+        (_req, res, ctx) => {
+          if (_req.url.searchParams.has('accountTier')) {
+            return res(ctx.json({ acx_account_tier: 'Gold' }))
+          } else if (_req.url.searchParams.has('earlyAccess')) {
+            return res(ctx.json({
+              betaStatus: false,
+              alphaStatus: false
+            }))
+          }
+        }
       )
     )
   })
@@ -222,8 +231,8 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile beta enabled case', async () => {
-    services.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
-      return { data: { enabled: 'true' } }
+    services.useGetEarlyAccessQuery = jest.fn().mockImplementation(() => {
+      return { data: { betaStatus: true, alphaStatus: true } }
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {

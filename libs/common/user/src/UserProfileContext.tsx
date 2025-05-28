@@ -8,11 +8,11 @@ import { useTenantId }       from '@acx-ui/utils'
 import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
   useGetAccountTierQuery,
-  useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
+  useGetEarlyAccessQuery,
   useGetAllowedOperationsQuery
 } from './services'
 import { FeatureAPIResults, UserProfile }      from './types'
@@ -27,6 +27,7 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
+  alphaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
@@ -76,10 +77,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   activityAllVenuesEnabled = featureFlagStates?.[activityAllVenuesFF] ?? false
   const selectedBetaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
-  const { data: beta } = useGetBetaStatusQuery(
-    { params: { tenantId }, enableRbac: abacEnabled },
-    { skip: !Boolean(profile) })
-  const betaEnabled = beta?.enabled === 'true'
   const { data: accTierResponse } = useGetAccountTierQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
     { skip: !Boolean(profile) })
@@ -113,8 +110,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
+  const { data: earlyAcessStatus } = useGetEarlyAccessQuery({ params })
+  const betaStatus = earlyAcessStatus?.betaStatus
+  const alphaStatus = earlyAcessStatus?.alphaStatus
+
   const { data: features } = useGetBetaFeatureListQuery({ params },
-    { skip: !(beta?.enabled === 'true') || !selectedBetaListEnabled })
+    { skip: !(betaStatus) || !selectedBetaListEnabled })
 
   const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
@@ -133,7 +134,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       profile: userProfile,
       allowedOperations,
       accountTier,
-      betaEnabled,
+      betaEnabled: betaStatus,
+      alphaEnabled: alphaStatus,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
@@ -155,7 +157,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaEnabled,
+      betaEnabled: betaStatus,
+      alphaEnabled: alphaStatus,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
