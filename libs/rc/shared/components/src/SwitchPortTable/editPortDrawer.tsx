@@ -163,7 +163,7 @@ export const allMultipleEditableFields = [
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl'
+  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
 ]
 
 interface ProfileVlans {
@@ -235,7 +235,8 @@ export function EditPortDrawer ({
     authTimeoutActionCheckbox,
     criticalVlanCheckbox,
     portSecurity,
-    poeScheduler
+    poeScheduler,
+    poeSchedulerCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -344,7 +345,8 @@ export function EditPortDrawer ({
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity,
+    poeScheduler
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -880,6 +882,8 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !checkboxEnabled) ||
             getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
               flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+      case 'poeScheduler':
+        return (isMultipleEdit && !poeSchedulerCheckbox) || disablePoeCapability
       default:
         return isMultipleEdit && !checkboxEnabled
     }
@@ -941,6 +945,7 @@ export function EditPortDrawer ({
         return !isFirmwareAbove10010gCd1Or10020bCd1
       case 'switchMacAcl':
         return !isFirmwareAbove10010gCd1Or10020bCd1 || isCloudPort
+      case 'poeScheduler': return disablePoeCapability
       default: return false
     }
   }
@@ -2188,27 +2193,49 @@ export function EditPortDrawer ({
           />
         })}
 
-        {isSwitchTimeBasedPoeEnabled &&
-          <>
-            <Form.Item
-              label={$t({ defaultMessage: 'PoE Schedule' })}
-              labelCol={{ span: 24 }}
-              children={<Space style={{ fontSize: '12px' }}>
-                <span>{poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
-                  noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
-                <Button
-                  type='link'
-                  data-testid='edit-poe-schedule'
-                  onClick={() => { setDrawerPoeSchedule(true) }}
-                  disabled={getFieldDisabled('poeEnable')}
-                >
-                  {$t({ defaultMessage: 'Edit' })}
-                </Button>
-              </Space>
+        {isSwitchTimeBasedPoeEnabled && <>
+          {getFieldTemplate({
+            field: 'poeScheduler',
+            extraLabel: isMultipleEdit ? true : false,
+            content: <Form.Item
+              noStyle
+              children={isMultipleEdit ?
+                <>
+                  <MultipleText />
+                  <Button
+                    hidden={!poeSchedulerCheckbox}
+                    type='link'
+                    data-testid='edit-poe-schedule'
+                    onClick={() => { setDrawerPoeSchedule(true) }}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    {$t({ defaultMessage: 'Edit' })}
+                  </Button>
+                </>
+                : <Space>
+                  <Form.Item
+                    label={$t({ defaultMessage: 'PoE Schedule' })}
+                    labelCol={{ span: 24 }}
+                    children={<Space style={{ fontSize: '12px' }}>
+                      <span>{poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
+                        noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
+                      <Button
+                        type='link'
+                        data-testid='edit-poe-schedule'
+                        onClick={() => { setDrawerPoeSchedule(true) }}
+                        disabled={getFieldDisabled('poeEnable') && getFieldDisabled('poeScheduler')}
+                      >
+                        {$t({ defaultMessage: 'Edit' })}
+                      </Button>
+                    </Space>
+                    }
+                  />
+                </Space>
               }
             />
-            <Form.Item name='poeScheduler' hidden/>
-          </>
+          })}
+          <Form.Item name='poeScheduler' hidden/>
+        </>
         }
 
         { getFieldTemplate({

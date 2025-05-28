@@ -64,7 +64,8 @@ export const FIELD_LABEL: Record<string, MessageDescriptor> = {
   portProfile: defineMessage({ defaultMessage: 'Port Profile' }),
   switchMacAcl: defineMessage({ defaultMessage: 'MAC ACL' }),
   portSecurity: defineMessage({ defaultMessage: 'Port MAC Security' }),
-  portSecurityMaxEntries: defineMessage({ defaultMessage: 'Sticky MAC List Size Limit' })
+  portSecurityMaxEntries: defineMessage({ defaultMessage: 'Sticky MAC List Size Limit' }),
+  poeScheduler: defineMessage({ defaultMessage: 'Poe Schedule' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

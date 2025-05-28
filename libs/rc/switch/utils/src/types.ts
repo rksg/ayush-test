@@ -630,6 +630,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stackingNeighborPort?: string
   poeCapability?: boolean
   poeScheduleEnabled?: boolean
+  poeScheduler?: PoeSchedulerType
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1195,4 +1196,15 @@ export interface MacAcl {
 	switchId?: string,
   customized?: boolean,
   sharedWithPolicyAndProfile?: boolean
+}
+
+interface PoeSchedulerType {
+  type?: string
+  sun?: string
+  mon?: string
+  tue?: string
+  wed?: string
+  thu?: string
+  fri?: string
+  sat?: string
 }

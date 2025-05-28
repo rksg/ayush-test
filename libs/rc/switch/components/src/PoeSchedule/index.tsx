@@ -106,10 +106,10 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
     Object.keys(data).forEach((day) => {
       transformedData[day] = ''
       for (let i = 0; i < 24; i++) {
-        transformedData[day] += data[day].includes(i.toString()) ? '1' : '0'
+        transformedData[day] += data[day].filter(
+          (hour) => hour.split('_')[1] === i.toString()).length > 0 ? '1' : '0'
       }
     })
-
     return transformedData
   }
 
