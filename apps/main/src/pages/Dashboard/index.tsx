@@ -182,6 +182,10 @@ export default function Dashboard () {
           setGroups(groups)
         }
       }
+    } else {
+      setCanvasId('')
+      setSections([])
+      setGroups([])
     }
   }, [dashboardId, dashboardList])
 
