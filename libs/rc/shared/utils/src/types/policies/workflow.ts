@@ -82,13 +82,17 @@ interface StepState {
   mode?: WorkflowPanelMode
 }
 
+export type ValidationStatus = 'VALID' | 'INVALID' | 'UNDEFINED'
+
 interface BaseStep extends StepState {
   id: string,
   type?: StepType,
   actionType?: ActionType,
   actionDefinitionId?: string,
   priorStepId?: string,
-  splitOptionId?: string
+  splitOptionId?: string,
+  status?: ValidationStatus,
+  statusReasons?: StepStatusReason[]
 }
 
 interface Step extends BaseStep {
@@ -124,7 +128,19 @@ export interface WorkflowActionDefinition {
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
 
-enum StatusCodes {
+enum StepStatusCodes {
+  IncorrectOnboarding = 'incorrect.onboarding.count',
+  MissingRequiredCount = 'missing.required.count',
+  DisconnctedSteps = 'disconnected.steps',
+  InvalidStepsOrDependencies = 'invalid.steps.or.dependencies'
+}
+
+export interface StepStatusReason {
+    statusCode: StepStatusCodes,
+  statusReason: string
+}
+
+enum WorkflowStatusCodes {
   IncorrectOnboarding = 'incorrect.onboarding.count',
   MissingRequiredCount = 'missing.required.count',
   DisconnctedSteps = 'disconnected.steps',
@@ -132,6 +148,6 @@ enum StatusCodes {
 }
 
 export interface StatusReason {
-  statusCode: StatusCodes,
+  statusCode: WorkflowStatusCodes,
   statusReason: string
 }

@@ -1,12 +1,12 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Popover, Space }                                   from 'antd'
+import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
-import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
+import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls } from '@acx-ui/rc/utils'
@@ -174,7 +174,8 @@ export default function BaseStepNode (props: NodeProps
 
 
   return (
-    <UI.StepNode selected={props.selected}>
+    <UI.StepNode selected={props.selected}
+      invalid={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
       <Loader states={[
         { isLoading: false, isFetching: (isDeleteStepLoading
           || isDeleteDetachStepLoading || isDeleteStepDescendantsLoading) }
@@ -232,14 +233,29 @@ export default function BaseStepNode (props: NodeProps
         position={Position.Bottom}
       />
 
+      {(props.data?.status === 'INVALID' && workflowValidationEnhancementFFToggle) &&
+        <Tooltip
+          showArrow={false}
+          // @ts-ignore
+          title={props.data?.statusReasons?.map(reason =>
+            <Row>{ reason.statusReason }</Row>)}>
+          <UI.InvalidIcon>
+            <WarningCircleSolid />
+          </UI.InvalidIcon>
+        </Tooltip>
+
+      }
+
       {props.data.isStart &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
           <StartFlag />
         </UI.FlagIcon>
       }
 
       {props.data.isEnd &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
           <EndFlag />
         </UI.FlagIcon>
       }
