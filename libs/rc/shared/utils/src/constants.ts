@@ -127,7 +127,8 @@ export enum ServiceType {
   EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
   EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management',
   EDGE_OLT = 'Nokia GPON',
-  PORTAL_PROFILE = 'PORTAL_PROFILE'
+  PORTAL_PROFILE = 'PORTAL_PROFILE',
+  MDNS_PROXY_CONSOLIDATION = 'mDNS Proxy Consolidation'
 }
 
 export enum ServiceOperation {

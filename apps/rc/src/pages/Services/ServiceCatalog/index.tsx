@@ -14,7 +14,8 @@ import {
   isServiceCardEnabled,
   isServiceCardSetEnabled,
   serviceTypeLabelMapping,
-  serviceTypeDescMapping
+  serviceTypeDescMapping,
+  useIsMdnsProxyConsolidationEnabled
 } from '@acx-ui/rc/utils'
 import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
@@ -23,7 +24,7 @@ import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
-interface ServiceCardItem {
+export interface ServiceCardItem {
   title: string
   items: {
     type: ServiceType
@@ -54,6 +55,7 @@ export default function ServiceCatalog () {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
+  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -116,17 +118,26 @@ export default function ServiceCatalog () {
     {
       title: $t({ defaultMessage: 'Application' }),
       items: [
-        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.MDNS_PROXY,
+          categories: [RadioCardCategory.WIFI],
+          disabled: isMdnsProxyConsolidationEnabled
+        },
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady,
+          disabled: !isEdgeMdnsReady || isMdnsProxyConsolidationEnabled,
           helpIcon: <ApCompatibilityToolTip
             title=''
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
           />,
           isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+        },
+        {
+          type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !isMdnsProxyConsolidationEnabled
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,

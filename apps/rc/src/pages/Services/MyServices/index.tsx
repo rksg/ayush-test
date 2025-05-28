@@ -25,12 +25,14 @@ import {
   hasSomeServicesPermission,
   isServiceCardEnabled,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useIsMdnsProxyConsolidationEnabled
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
-import { ServiceCard } from '../ServiceCard'
+import { ServiceCard }                         from '../ServiceCard'
+import { useMdnsProxyConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
 
 const defaultPayload = {
   fields: ['id']
@@ -55,6 +57,7 @@ export default function MyServices () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
 
   const services = [
     {
@@ -62,7 +65,8 @@ export default function MyServices () {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedMdnsProxyListQuery({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }).data?.totalCount,
+      disabled: isMdnsProxyConsolidationEnabled
     },
     {
       type: ServiceType.EDGE_MDNS_PROXY,
@@ -72,8 +76,16 @@ export default function MyServices () {
       }, {
         skip: !isEdgeMdnsReady
       }).data?.totalCount,
-      disabled: !isEdgeMdnsReady,
+      disabled: !isEdgeMdnsReady || isMdnsProxyConsolidationEnabled,
       isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+    },
+    {
+      type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: useMdnsProxyConsolidationTotalCount({
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
+      }, !isMdnsProxyConsolidationEnabled).data?.totalCount,
+      disabled: !isMdnsProxyConsolidationEnabled
     },
     {
       type: ServiceType.DHCP,

@@ -10,6 +10,7 @@ import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
+import { useIsMdnsProxyConsolidationEnabled }    from '../service'
 
 import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                from './constants'
 import { buildUnifiedServices, isUnifiedServiceAvailable, useIsNewServicesCatalogEnabled } from './utils'
@@ -66,6 +67,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
+
 
   return useMemo<Array<BaseAvailableUnifiedService>>(() => {
     const baseUnifiedServiceList = [
@@ -281,14 +284,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
       },
       {
-        type: ServiceType.EDGE_MDNS_PROXY,
-        sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !isEdgeMdnsReady,
-        isBetaFeature: isEdgeMdnsBetaEnabled
-      },
-      {
         type: ServiceType.EDGE_OLT,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
@@ -311,10 +306,26 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         disabled: !isEdgeTnmServiceReady
       },
       {
+        type: ServiceType.EDGE_MDNS_PROXY,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: !isEdgeMdnsReady || isMdnsProxyConsolidationEnabled,
+        isBetaFeature: isEdgeMdnsBetaEnabled
+      },
+      {
         type: ServiceType.MDNS_PROXY,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
-        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: isMdnsProxyConsolidationEnabled
+      },
+      {
+        type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+        sourceType: UnifiedServiceSourceType.SERVICE,
+        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
+        disabled: !isMdnsProxyConsolidationEnabled
       },
       {
         type: ServiceType.PIN,

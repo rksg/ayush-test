@@ -40,7 +40,7 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const settingsId = 'services-edge-mdns-proxy-table'
-export function EdgeMdnsProxyTable () {
+export function EdgeMdnsProxyTable ({ hideHeader = false } : { hideHeader?: boolean }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
@@ -109,15 +109,16 @@ export function EdgeMdnsProxyTable () {
   const compatibilityData = useEdgeMdnssCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
-      <PageHeader
+      {!hideHeader && <PageHeader
         title={
           $t({ defaultMessage: 'mDNS Proxy for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
@@ -130,7 +131,7 @@ export function EdgeMdnsProxyTable () {
               {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
       <Loader states={[tableQuery, { isLoading: false, isFetching: isDeleting }]}>
         <ToolTipTableStyle.ToolTipStyle/>
         <Table

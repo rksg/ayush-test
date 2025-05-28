@@ -73,7 +73,8 @@ import {
   ServiceType,
   IdentityProviderTabType,
   PersonaUrls,
-  useIsNewServicesCatalogEnabled
+  useIsNewServicesCatalogEnabled,
+  useIsMdnsProxyConsolidationEnabled
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -193,6 +194,8 @@ import EditEdgeMdnsProxy                     from './pages/Services/MdnsProxy/Ed
 import MdnsProxyDetail                       from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                        from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MdnsProxyConsolidation                from './pages/Services/MdnsProxyConsolidation'
+import CreateMdnsProxyService                from './pages/Services/MdnsProxyConsolidation/create'
 import MyServices                            from './pages/Services/MyServices'
 import NetworkSegAuthDetail                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm                    from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -691,6 +694,7 @@ function ServiceRoutes () {
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -720,6 +724,28 @@ function ServiceRoutes () {
           <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
         </>
       }
+      {isMdnsProxyConsolidationEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/edge'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/mdnsProxyConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={'services/mdnsProxyConsolidation/list/:activeTab'}
+          element={<MdnsProxyConsolidation />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.CREATE })}
+          element={<CreateMdnsProxyService />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={

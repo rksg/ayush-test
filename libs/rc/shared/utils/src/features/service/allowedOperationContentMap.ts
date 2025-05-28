@@ -113,6 +113,16 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.EDIT]: [getOpsApi(PropertyUrlsInfo.patchResidentPortal)],
     [ServiceOperation.DELETE]: [getOpsApi(PropertyUrlsInfo.deleteResidentPortals)],
     [ServiceOperation.LIST]: [getOpsApi(PropertyUrlsInfo.getResidentPortalsQuery)]
+  },
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: {
+    [ServiceOperation.CREATE]: [
+      'POST:/multicastDnsProxyProfiles',
+      getOpsApi(EdgeMdnsProxyUrls.addEdgeMdnsProxy)
+    ],
+    [ServiceOperation.LIST]: [
+      'POST:/multicastDnsProxyProfiles/query',
+      getOpsApi(EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList)
+    ]
   }
 }
 
