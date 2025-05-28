@@ -34,7 +34,8 @@ export const SubInterfaces = () => {
     isPortDataFetching,
     isPortStatusFetching,
     isLagStatusFetching,
-    isClusterFormed
+    isClusterFormed,
+    isSupportAccessPort
   } = useContext(EditEdgeDataContext)
 
   const handleTabChange = (activeKey: string) => {
@@ -98,6 +99,7 @@ export const SubInterfaces = () => {
                         ip={item.ip!}
                         mac={item.mac}
                         portId={portId}
+                        isSupportAccessPort={isSupportAccessPort}
                       />
                     }
                     disabled={item.isLagMember}
@@ -117,6 +119,7 @@ export const SubInterfaces = () => {
                         ip={item.ip ?? ''}
                         mac={item.mac ?? ''}
                         lagId={item.lagId}
+                        isSupportAccessPort={isSupportAccessPort}
                       />
                     }
                   />
