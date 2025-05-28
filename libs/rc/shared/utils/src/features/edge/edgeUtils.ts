@@ -586,7 +586,7 @@ const validateGatewayCount = (
     return Promise.reject($t({
       defaultMessage: 'At least one port must be enabled and configured to WAN or {corePortType} port to form a cluster.'
     }, {
-      corePortType: isCoreAccessEnabled ? 'Access' : 'Core'
+      corePortType: isCoreAccessEnabled ? $t({ defaultMessage: 'Access' }) : $t({ defaultMessage: 'Core' })
     }))
   } else if (isDualWanCase && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
@@ -607,14 +607,8 @@ export const validateEdgeClusterLevelGateway = async (
   portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
   edgeNodes: EdgeStatus[], isDualWanEnabled: boolean, isCoreAccessEnabled: boolean
 ) => {
-
   try {
     await validateGatewayType(portsData, lagData, subInterfaceData, isCoreAccessEnabled)
-  } catch (error) {
-    return Promise.reject(error)
-  }
-
-  try {
     await validateClusterLevelGatewayCount(portsData, lagData, subInterfaceData, edgeNodes, isDualWanEnabled, isCoreAccessEnabled)
   } catch (error) {
     return Promise.reject(error)
@@ -666,7 +660,7 @@ const validateClusterLevelGatewayCount = (
     return Promise.reject($t({
       defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or {corePortType} port to form a cluster.'
     }, {
-      corePortType: isCoreAccessEnabled ? 'Access' : 'Core'
+      corePortType: isCoreAccessEnabled ? $t({ defaultMessage: 'Access' }) : $t({ defaultMessage: 'Core' })
     }))
   } else if (isDualWanCase && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
