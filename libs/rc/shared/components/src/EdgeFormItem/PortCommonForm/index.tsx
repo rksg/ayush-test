@@ -72,12 +72,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
 
-  const handleCorePortChange = (e: CheckboxChangeEvent) => {
-    if(!isSupportAccessPort) {
-      form.setFieldValue('accessPortEnabled', e.target.checked)
-    }
-  }
-
   const getFieldPathBaseFormList = useCallback((fieldName: string) => {
     return isListForm
       ? [formListItemKey, fieldName]
@@ -122,6 +116,12 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const hasWANPort = wanPortsInfo.length > 0 && !isExistingWanPortInLagMember
 
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+
+  const handleCorePortChange = (e: CheckboxChangeEvent) => {
+    if(!isSupportAccessPort && hasAccessPortEnabled && accessPortEnabled) {
+      form.setFieldValue(getFieldFullPath('accessPortEnabled'), e.target.checked)
+    }
+  }
 
   const getCurrentSubnetInfo = () => {
     return {
