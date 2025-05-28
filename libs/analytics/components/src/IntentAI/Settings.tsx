@@ -9,7 +9,7 @@ import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
-import { intentSummaryProps, intentSummaryConfig }        from './Table'
+import { IntentSummaryProps, intentSummaryConfig }        from './Table'
 
 const iconMap = {
   [AiFeatures.RRM]: <AIDrivenRRM />,
@@ -18,7 +18,7 @@ const iconMap = {
   [AiFeatures.EcoFlex]: <EcoFlexAI />
 }
 const subscribedIntents = defineMessage({ defaultMessage: 'Subscribed Intents' })
-const unSubscribedIntents = defineMessage({ defaultMessage: 'Unsubscribed Intents' })
+const unsubscribedIntents = defineMessage({ defaultMessage: 'Unsubscribed Intents' })
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const aiFeatures = Object.entries(aiFeaturesLabel)
@@ -117,7 +117,7 @@ export function Settings ({ settings }: { settings: string }) {
               color: 'var(--acx-neutrals-60)'
             }}
             // eslint-disable-next-line max-len
-          ><b>{$t(subscribedIntents)} </b>{$t({ defaultMessage: ' are handled automatically by InentAI after a onte-time confirmation, with ongoing adjustments as needed. ' })} <b>{$t(unSubscribedIntents)} </b>{$t({ defaultMessage: ' are pause automation and retain their current settings for manual control via the controller.' })}
+          ><b>{$t(subscribedIntents)} </b>{$t({ defaultMessage: ' are handled automatically by IntentAI after a one-time confirmation, with ongoing adjustments as needed. ' })} <b>{$t(unsubscribedIntents)} </b>{$t({ defaultMessage: ' pause automation and retain their current settings for manual control via the controller.' })}
           </Typography.Text>
           <br/><br/>
           <Typography.Text strong>{$t({ defaultMessage: 'Notifications' })}</Typography.Text>
@@ -139,7 +139,7 @@ export function Settings ({ settings }: { settings: string }) {
   </Button>
 }
 
-const IntentSummaryBlock = (props: intentSummaryProps) => {
+const IntentSummaryBlock = (props: IntentSummaryProps) => {
   const { $t } = useIntl()
   const title = $t(props.title)
   const subTitleLeft = $t(props.subTitleLeft)
@@ -175,7 +175,8 @@ function AboutIntentsDrawer () {
   }
   return <Button
     onClick={() => setVisible(true)}
-    style={{ border: 'none', padding: '0', margin: '0 0 0 auto' }}
+    type='link'
+    style={{ margin: '0 0 0 auto', alignSelf: 'end' }}
     data-testid='about-intents'
   ><Typography.Text
       style={{
@@ -193,7 +194,7 @@ function AboutIntentsDrawer () {
     >
       {
         Object.entries(intentSummaryConfig).map(
-          ([key, value]: [string, intentSummaryProps]) =>
+          ([key, value]: [string, IntentSummaryProps]) =>
             <IntentSummaryBlock key={key} {...value} />
         )
       }

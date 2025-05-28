@@ -36,7 +36,7 @@ const useTabs = () : Tab[] => {
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
   }
   const tabs = [incidentsTab]
-  const isIntentAITabVisisble = get('IS_MLISA_SA')
+  const isIntentAITabVisible = get('IS_MLISA_SA')
     ? hasPermission({ permission: 'READ_INTENT_AI' })
     : true
 
@@ -70,7 +70,7 @@ const useTabs = () : Tab[] => {
     headerExtra: intentTabHeaderExtra
   }
 
-  isIntentAITabVisisble && tabs.push(intentAITab)
+  isIntentAITabVisible && tabs.push(intentAITab)
   return tabs
 }
 

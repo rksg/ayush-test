@@ -12,7 +12,7 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
-describe('InentAI Settings', () => {
+describe('IntentAI Settings', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text('Updated')))

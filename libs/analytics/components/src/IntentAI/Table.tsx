@@ -34,7 +34,7 @@ import { Actions, getDefaultTime, isVisibleByAction } from './utils'
 
 import type { Filters } from './services'
 
-export type intentSummaryProps = {
+export type IntentSummaryProps = {
   title: MessageDescriptor
   subTitleLeft: MessageDescriptor
   subTitleMiddle: MessageDescriptor
@@ -43,7 +43,7 @@ export type intentSummaryProps = {
   icon: JSX.Element
 }
 
-const IconTooltip = (props: intentSummaryProps) => {
+const IconTooltip = (props: IntentSummaryProps) => {
   const { $t } = useIntl()
   const title = $t(props.title)
   const subTitleLeft = $t(props.subTitleLeft)

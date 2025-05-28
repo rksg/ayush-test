@@ -5,3 +5,9 @@ Object {
   "enabled-intent-features": "[\\"Energy Saving\\"]",
 }
 `;
+
+exports[`IntentAI Settings should handle error on save settings 1`] = `
+Object {
+  "enabled-intent-features": "[\\"Energy Saving\\"]",
+}
+`;
