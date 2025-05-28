@@ -354,8 +354,8 @@ display: flex;
         align-self: flex-end;
       }
       .chat-bubble {
-        background: linear-gradient(264deg, #0CC3EC -25.46%,
-           #A560FF 39.27%, #EC4C9A 88.67%, #F65650 119.35%);
+        background: linear-gradient(94deg, #E550A9 -5.07%,
+          #C54DA9 21.24%, #9355C1 49.19%, #2987DF 90.85%);
         color: var(--acx-primary-white);
         width: fit-content;
         max-width: 90%;
@@ -364,6 +364,7 @@ display: flex;
         margin: 7px;
         margin-left: 10px;
         font-weight: 600;
+        line-height: 18px;
       }
       .chat-bubble {
         align-self: flex-start;
@@ -423,7 +424,7 @@ display: flex;
         }
       }
       .timestamp {
-        color: var(--acx-neutrals-70);
+        color: var(--acx-neutrals-80);
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
