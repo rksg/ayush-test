@@ -147,6 +147,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
           <Form.Item
             name={radiusIdName}
             noStyle
+            label={serverLabel}
             rules={[
               { required: true }
             ]}
