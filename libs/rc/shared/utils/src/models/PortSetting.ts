@@ -47,6 +47,7 @@ export class PortSettingModel {
   switchPortProfileId?: string
   portSecurity?: boolean
   portSecurityMaxEntries?: number
+  poeScheduler?: PoeSchedulerType
 
   constructor () {
     this.dhcpSnoopingTrust = false
@@ -75,6 +76,7 @@ export class PortSettingModel {
     this.egressAcl = ''
     this.ingressAcl = ''
     this.switchSerialNumber = ''
+    this.poeScheduler = {}
   }
 }
 
@@ -102,4 +104,15 @@ export class LldpQosModel {
   vlanId?: number = 0
   priority?: number = 0
   dscp: number = 0
+}
+
+export interface PoeSchedulerType {
+  type?: string
+  sun?: string
+  mon?: string
+  tue?: string
+  wed?: string
+  thu?: string
+  fri?: string
+  sat?: string
 }

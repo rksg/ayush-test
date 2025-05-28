@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 
 import { Button, Col, Form, FormInstance, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useWatch }                                                             from 'antd/lib/form/Form'
 import { useIntl }                                                              from 'react-intl'
 
 import {
   Modal,
+  parseNetworkVenueScheduler,
   ScheduleCard
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 import { useLazyGetTimezoneQuery, useLazyGetVenueQuery } from '@acx-ui/rc/services'
-import { SchedulerTypeEnum }                             from '@acx-ui/rc/utils'
+import { SchedulerTypeEnum, PoeSchedulerType }           from '@acx-ui/rc/utils'
 import { useParams }                                     from '@acx-ui/react-router-dom'
 import { Scheduler }                                     from '@acx-ui/types'
 
@@ -21,6 +21,7 @@ interface ScheduleWeeklyProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   venueId?: string
+  poeScheduler: PoeSchedulerType
 }
 
 interface ScheduleVenue {
@@ -52,7 +53,7 @@ export const buildExcludedHours = (hours?:Record<string, number[]>):Scheduler | 
 }
 
 export const PoeSchedule = (props:ScheduleWeeklyProps) => {
-  const { visible, setVisible, form, venueId } = props
+  const { visible, setVisible, form, venueId, poeScheduler } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
@@ -62,12 +63,11 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   const [venueData, setVenueData] = useState<ScheduleVenue>()
   const [schedule, setSchedule] = useState<Scheduler | undefined>(undefined)
 
-  const poeScheduler = useWatch('poeScheduler', form)
-
   useEffect(() => {
     if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
       setHidden(false)
-      setSchedule(poeScheduler)
+      const schedulerData = parseNetworkVenueScheduler({ ...poeScheduler })
+      setSchedule(schedulerData)
       form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
     }
 
@@ -201,7 +201,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 disabled={false}
                 loading={false}
                 isShowTips={true}
-                prefix={false}
+                prefix={true}
                 timelineLabelTop={false}
                 isShowTimezone={true}
                 venue={venueData}

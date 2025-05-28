@@ -64,7 +64,8 @@ import {
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   useTableQuery,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  PoeSchedulerType
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { store }                             from '@acx-ui/store'
@@ -324,6 +325,7 @@ export function EditPortDrawer ({
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
   const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
   const [drawerPoeSchedule, setDrawerPoeSchedule] = useState(false)
+  const [poeScheduleData, setPoeScheduleData] = useState({} as PoeSchedulerType)
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -668,6 +670,7 @@ export function EditPortDrawer ({
     setCyclePoeEnable(portSetting.poeEnable)
     setAggregatePortsData(aggregatedData as AggregatePortSettings)
     setIsAppliedAuthProfile(!!portSetting.authenticationProfileId)
+    setPoeScheduleData(portSetting?.poeScheduler || {})
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -2794,6 +2797,7 @@ export function EditPortDrawer ({
           visible={drawerPoeSchedule}
           setVisible={setDrawerPoeSchedule}
           venueId={switchDetail?.venueId}
+          poeScheduler={poeScheduleData}
         />
       }
       {/* { // TODO: enhance ^_^?
