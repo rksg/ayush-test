@@ -2199,7 +2199,8 @@ export function EditPortDrawer ({
                 <Button
                   type='link'
                   data-testid='edit-poe-schedule'
-                  onClick={() => { setDrawerPoeSchedule(true) }}  // eslint-disable-line
+                  onClick={() => { setDrawerPoeSchedule(true) }}
+                  disabled={getFieldDisabled('poeEnable')}
                 >
                   {$t({ defaultMessage: 'Edit' })}
                 </Button>

@@ -155,7 +155,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
     <Modal
       title={$t({ defaultMessage: 'PoE Schedule ' })}
       visible={visible}
-      width={800}
+      width={850}
       footer={footer}
       maskClosable={true}
       destroyOnClose={true}
@@ -169,7 +169,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       >
         <UI.ScheduleWrapper>
           <Row gutter={10} key={'row1'}>
-            <Col span={8} key={'col1'}>
+            <Col span={6} key={'col1'}>
               <div style={{ marginTop: '1em' }}>
                 <Form.Item
                   name={'poeSchedulerType'}
