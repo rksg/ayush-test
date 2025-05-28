@@ -150,11 +150,12 @@ export const BandManagement = ({ style, disabled, showTitle = true,
             placement='right'
             onClick={() => setRfDrawerVisible(true)}
           />}
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
             visible={rfDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.BAND_MANAGEMENT}
+            featureNames={[InCompatibilityFeatures.BAND_MANAGEMENT]}
             onClose={() => setRfDrawerVisible(false)}
           />}
         </Space>

@@ -11,8 +11,7 @@ import {
   PolicyType,
   DirectoryServer,
   usePolicyListBreadcrumb,
-  IdentityAttributeMappingNameType,
-  AttributeMapping,
+  combineAttributeMappingsToData,
   usePolicyPageHeaderTitle,
   useAfterPolicySaveRedirectPath,
   usePolicyPreviousPath
@@ -46,20 +45,7 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
     const { ...result } = cloneDeep(data)
 
     if(isSupportIdentityAttribute) {
-      //Add three identity attributes to attributeMappings
-      const identityMappings = [
-        // eslint-disable-next-line max-len
-        result.identityName && { name: IdentityAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
-        // eslint-disable-next-line max-len
-        result.identityEmail && { name: IdentityAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
-        // eslint-disable-next-line max-len
-        result.identityPhone && { name: IdentityAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
-      ].filter(Boolean) as AttributeMapping[]
-
-      result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
-      delete result.identityName
-      delete result.identityEmail
-      delete result.identityPhone
+      Object.assign(result, combineAttributeMappingsToData(result))
     }
 
     return result
