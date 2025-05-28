@@ -188,7 +188,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const handleTunnelTypeChange = (e: RadioChangeEvent) => {
     if (e.target.value === TunnelTypeEnum.L2GRE) {
       form.setFieldsValue({
-        tuType: MtuTypeEnum.MANUAL,
+        mtuType: MtuTypeEnum.MANUAL,
         type: NetworkSegmentTypeEnum.VLAN_VXLAN
       })
     }
