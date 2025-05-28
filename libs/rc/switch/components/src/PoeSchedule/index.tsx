@@ -6,7 +6,6 @@ import { useIntl }                                                              
 
 import {
   Modal,
-  parseNetworkVenueScheduler,
   ScheduleCard
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
@@ -83,7 +82,6 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       }
     }
     fetchVenueData()
-
   }, [getVenue, tenantId, venueId, poeScheduler])
 
   const onTypeChange = (e: RadioChangeEvent) => {
@@ -163,6 +161,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       destroyOnClose={true}
       keyboard={false}
       closable={true}
+      onCancel={onClose}
     ><Form
         form={form}
         layout='horizontal'
