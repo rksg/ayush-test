@@ -170,22 +170,24 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
-      if (selectedDashboard) {
-        const { canvasId, sections, groups } = getCanvasData(
-          selectedDashboard as unknown as Canvas[]
-        )
-        if (canvasId && sections) {
-          setCanvasId(canvasId)
-          setSections(sections)
-          setGroups(groups)
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardList.length) {
+      if (dashboardId !== DEFAULT_DASHBOARD_ID) {
+        const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
+        if (selectedDashboard) {
+          const { canvasId, sections, groups } = getCanvasData(
+            selectedDashboard as unknown as Canvas[]
+          )
+          if (canvasId && sections) {
+            setCanvasId(canvasId)
+            setSections(sections)
+            setGroups(groups)
+          }
         }
+      } else if (canvasId) {
+        setCanvasId('')
+        setSections([])
+        setGroups([])
       }
-    } else {
-      setCanvasId('')
-      setSections([])
-      setGroups([])
     }
   }, [dashboardId, dashboardList])
 
