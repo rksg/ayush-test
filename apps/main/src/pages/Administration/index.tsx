@@ -27,6 +27,7 @@ import FWVersionMgmt                                                            
 import LocalRadiusServer                                                                    from './LocalRadiusServer'
 import Notifications                                                                        from './Notifications'
 import OnpremMigration                                                                      from './OnpremMigration'
+import PendingAssets                                                                        from './PendingAssets'
 import Privacy                                                                              from './Privacy'
 import Subscriptions                                                                        from './Subscriptions'
 import { AdminsTabTitleWithCount, NotificationTabTitleWithCount, WebhookTabTitleWithCount } from './TabTitleWithCount'
@@ -44,6 +45,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
   return [
@@ -96,6 +98,11 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
         title: $t({ defaultMessage: 'Subscriptions' }),
         component: <Subscriptions />
       }]: []),
+    ...(isDeviceProvisionMgmtEnabled?[{
+      key: 'pendingAssets',
+      title: $t({ defaultMessage: 'Pending Assets' }),
+      component: <PendingAssets />
+    }]:[]),
     {
       key: 'fwVersionMgmt',
       title: $t({ defaultMessage: 'Version Management' }),
