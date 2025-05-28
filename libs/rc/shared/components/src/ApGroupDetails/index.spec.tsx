@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { apApi, networkApi }                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { AnalyticsFilter }                          from '@acx-ui/utils'
+import { apApi, networkApi }                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
+import { AnalyticsFilter }                                from '@acx-ui/utils'
 
 import {
   apGroupMembers,
@@ -63,6 +63,10 @@ describe('ApGroupDetails', () => {
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepList.response))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepList.response))
       ),
       rest.get(

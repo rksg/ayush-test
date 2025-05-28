@@ -5,7 +5,10 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                 from '@acx-ui/components'
+import {
+  Drawer,
+  Tooltip
+} from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   DHCPPool,
@@ -113,7 +116,7 @@ export default function DHCPPoolTable ({
   const [visible, setVisible] = useState(false)
   const [vlanEnable, setVlanEnable] = useState(true)
   const [leaseUnit, setLeaseUnit] = useState(LeaseUnit.HOURS)
-  const [previousVal, setPreviousVal] = useState(300)
+  const [previousVal, setPreviousVal] = useState(initPoolData.vlanId)
   const values = () => Object.values(valueMap.current)
 
   const handleChanged = () => onChange?.(values())
@@ -152,6 +155,7 @@ export default function DHCPPoolTable ({
 
   const onClose = () => {
     setVisible(false)
+    setVlanEnable(true)
   }
 
   const isEdit = () => form.getFieldValue('id')!=='0' && !_.isUndefined(form.getFieldValue('id'))
@@ -192,10 +196,13 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'Allow AP wired clients' })}
           valuePropName='checked'
           children={<Switch
+            disabled={dhcpMode === DHCPConfigTypeEnum.MULTIPLE}
             onChange={(checked: boolean)=>{
               if(checked){
-                form.setFieldsValue({ vlanId: 1 })
-                setVlanEnable(false)
+                if (dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL) {
+                  form.setFieldsValue({ vlanId: 1 })
+                  setVlanEnable(false)
+                }
               } else {
                 form.setFieldsValue({ vlanId: previousVal })
                 setVlanEnable(true)
@@ -243,7 +250,20 @@ export default function DHCPPoolTable ({
         />
         <Form.Item
           name='endIpAddress'
-          label={$t({ defaultMessage: 'End Host Address' })}
+          label={<>{$t({ defaultMessage: 'End Host Address' })}
+            {showWarning && dhcpMode === DHCPConfigTypeEnum.MULTIPLE &&
+            <Tooltip.Question
+              title={$t({ defaultMessage:
+                // eslint-disable-next-line max-len
+                'An additional 10 IPs on top of the number of clients desired are needed for the DHCP servers and gateways used in multiple mode' })}
+              placement='right'
+              overlayStyle={{ maxWidth: '400px' }}
+              iconStyle={{
+                width: 16,
+                height: 16
+              }}
+            />}
+          </>}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },

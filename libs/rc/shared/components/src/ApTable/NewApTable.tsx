@@ -53,7 +53,6 @@ import {
   SEARCH,
   TableQuery,
   TableResult,
-  transformDisplayNumber,
   transformDisplayText,
   usePollingTableQuery,
   PowerSavingStatusEnum,
@@ -94,7 +93,7 @@ export const newDefaultApPayload = {
   searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
-    'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
+    'switchName', 'meshRole', 'clientCount', 'apWiredClientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
     'powerSavingStatus'
@@ -144,6 +143,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   // old API
@@ -175,8 +175,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     useTemplateQueryFn: useGetApGroupsTemplateListQuery,
     payload: {
       searchString: '',
+      fields: [ 'id', 'venueId'],
       pageSize: 10000
-    }
+    },
+    enableRbac: true
   })
 
   const tableQuery = props.tableQuery || apListTableQuery
@@ -470,8 +472,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'clientCount',
       align: 'center',
       render: (_: ReactNode, row: NewAPModelExtended) => {
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clientCount)}
+        const { serialNumber, clientCount=0, apWiredClientCount=0 } = row
+        const count = isSupportWifiWiredClient? (clientCount + apWiredClientCount) : clientCount
+        return <TenantLink to={`/devices/wifi/${serialNumber}/details/clients`}>
+          {count}
         </TenantLink>
       }
     },

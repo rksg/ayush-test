@@ -83,7 +83,7 @@ const defaultEditEdgeDataContextData = {
   portStatus: mockEdgePortStatus,
   lagData: mockedEdgeLagList.content,
   isFetching: false,
-  isCluster: false
+  isClusterFormed: false
 } as unknown as EditEdgeDataContextType
 
 const MockedComponent = (props: {
@@ -144,7 +144,7 @@ describe('EditEdge - Ports', () => {
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
               isFetching: false,
-              isCluster: true
+              isClusterFormed: true
             } as unknown as EditEdgeDataContextType}
           >
             <Ports />
@@ -175,7 +175,7 @@ describe('EditEdge - Ports', () => {
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
               isFetching: false,
-              isCluster: false
+              isClusterFormed: false
             } as unknown as EditEdgeDataContextType}
           >
             <Ports />
@@ -343,7 +343,7 @@ describe('EditEdge - Ports', () => {
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
               isFetching: false,
-              isCluster: false
+              isClusterFormed: false
             } as unknown as EditEdgeDataContextType}
           >
             <Ports />

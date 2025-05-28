@@ -23,7 +23,8 @@ import {
   useGetUnitsLinkedIdentitiesQuery,
   useSearchIdentityClientsQuery,
   useSearchExternalIdentitiesQuery,
-  useLazyGetSamlIdpProfileByIdQuery
+  useLazyGetSamlIdpProfileByIdQuery,
+  useLazyGetDirectoryServerByIdQuery
 } from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, Persona, PersonaGroup, PersonaUrls, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
@@ -139,15 +140,31 @@ export function PersonaOverview (props:
   )
 
   const authServicePolicyMapping: Record<string, PolicyType> = {
-    SAML: PolicyType.SAML_IDP
+    SAML: PolicyType.SAML_IDP,
+    AD: PolicyType.DIRECTORY_SERVER,
+    LDAP: PolicyType.DIRECTORY_SERVER
   }
 
   const [getSamlProfileById] = useLazyGetSamlIdpProfileByIdQuery()
+  const [getDirectoryServerProfileById] = useLazyGetDirectoryServerByIdQuery()
   useEffect(()=> {
     if (!externalIdentityData) return
     if (externalIdentityData.identityProviderType === 'SAML') {
       getSamlProfileById({
         params: { id: externalIdentityData.identityProviderId },
+        customHeaders: { ...ignoreErrorModal }
+      })
+        .unwrap()
+        .then((res)=> {
+          if (res) {
+            setAuthServiceExists(true)
+          }
+        })
+        .catch(()=> {})
+    //eslint-disable-next-line max-len
+    } else if (externalIdentityData.identityProviderType === 'AD' || externalIdentityData.identityProviderType === 'LDAP') {
+      getDirectoryServerProfileById({
+        params: { policyId: externalIdentityData.identityProviderId },
         customHeaders: { ...ignoreErrorModal }
       })
         .unwrap()

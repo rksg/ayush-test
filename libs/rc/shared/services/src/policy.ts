@@ -1973,6 +1973,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
               searchString: tableChangePayload.searchVenueNameString,
               searchTargetFields: ['name', 'addressLine', 'tagList']
             } : {}),
+            ...(tableChangePayload.sortField ? {
+              sortField: tableChangePayload.sortField === 'venueName' ? 'name' : tableChangePayload.sortField,
+              sortOrder: tableChangePayload.sortOrder
+            } : {}),
             page: 1,
             pageSize: 10000
           }
@@ -2094,16 +2098,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
             }
           })
 
-          venueData.data.forEach(venue => {
-            if (venuesMap[venue.id]) {
-              venuesMap[venue.id].venueName = venue.name
-              venuesMap[venue.id].address = venue.addressLine
-              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
-              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
-            }
-          })
+          // ACX-85105: Preserve the original data order from venueData to support sorting behavior in venues query
+          const resolvedData: VenueUsageByClientIsolation[] = venueData.data.map(venue => {
+            if (!venuesMap[venue.id]) return null
 
-          const result = { data: Object.values(venuesMap), page: 1, totalCount: Object.values(venuesMap).length }
+            return {
+              ...venuesMap[venue.id],
+              venueName: venue.name,
+              address: venue.addressLine,
+              apCount: apsGroupByVenueData[venue.id]?.size || 0,
+              apNames: Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
+            }
+          }).filter((venue): venue is VenueUsageByClientIsolation => venue !== null)
+
+          const result = { data: resolvedData, page: 1, totalCount: Object.values(venuesMap).length }
           return { data: result as unknown as TableResult<VenueUsageByClientIsolation> }
         } else {
           const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
@@ -2662,7 +2670,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
 
           const apSnmpViewModelData = rbacApSnmpViewModels.map((profile) => {
-            const { communityNames, userNames, venueIds, apNames } = profile
+            const { communityNames, userNames, venueIds, apNames, apActivations } = profile
             const venueNames: string[] = []
             venueIds?.forEach(venueId => {
               const venueName = venueId && venueIdNameMap.get(venueId)
@@ -2677,7 +2685,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
               v2Agents: convertToCountAndNumber(communityNames),
               v3Agents: convertToCountAndNumber(userNames),
               venues: convertToCountAndNumber(venueNames),
-              aps: convertToCountAndNumber(apNames)
+              aps: convertToCountAndNumber(apNames),
+              venueIds: venueIds,
+              apActivations: apActivations
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>
@@ -3732,6 +3742,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     }),
+    deleteServerCertificate: build.mutation<ServerCertificate, RequestPayload>({
+      query: ({ params }) => {
+        const headers = { ...defaultCertTempVersioningHeaders }
+        const req = createHttpRequest(CertificateUrls.deleteServerCertificate, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
     downloadServerCertificate: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -4038,6 +4058,7 @@ export const {
   useGenerateCertificateToIdentityMutation,
   useGetServerCertificatesQuery,
   useUpdateServerCertificateMutation,
+  useDeleteServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
   useGenerateClientServerCertificatesMutation,

@@ -16,11 +16,12 @@ import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { useGetPrivacySettingsQuery }       from '@acx-ui/rc/services'
 import { PrivacyFeatureName }               from '@acx-ui/rc/utils'
-import { getJwtTokenPayload }               from '@acx-ui/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
+
 
 const CHART_MARGIN = '10px 0px'
 const CHART_HEIGHT_OFFSET = 30
@@ -45,15 +46,12 @@ const transformChartData = (data: HierarchyNodeData | undefined): DonutChartData
 
 export const dataFormatter = (value: unknown): string => formatter('bytesFormat')(value)
 
-const useAppVisibility = (tenantId: string) => {
+const useAppVisibility = (tenantId: string | undefined) => {
   const isRA = Boolean(get('IS_MLISA_SA'))
-  const isAppPrivacyFFEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+  const isAppPrivacyFFEnabled = useIsSplitOn(Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   const { data: privacySettings } = useGetPrivacySettingsQuery({
-    params: { tenantId },
-    customHeaders: { 'x-rks-tenantid': tenantId },
-    payload: { ignoreDelegation: true }
+    params: { tenantId }
   })
 
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
@@ -67,7 +65,12 @@ const useAppVisibility = (tenantId: string) => {
     if (privacySettings) {
       const privacyVisibilitySetting = privacySettings
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
-      setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
+      // For privacy settings: if enforceDefault is true, ignore isEnabled
+      // if enforceDefault is false, use isEnabled value
+      setIsAppVisibilityEnabled(
+        Boolean(privacyVisibilitySetting?.enforceDefault ||
+        privacyVisibilitySetting?.isEnabled)
+      )
     }
   }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
@@ -92,7 +95,7 @@ export function TopAppsByTraffic ({ filters }: { filters: AnalyticsFilter }) {
   const { $t } = useIntl()
   const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-  const { tenantId } = getJwtTokenPayload()
+  const { tenantId } = useParams()
 
   const isAppVisibilityEnabled = useAppVisibility(tenantId)
   const { data: chartData, ...queryResults } = useTopAppsByTrafficQuery(filters)

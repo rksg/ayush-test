@@ -9,7 +9,8 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -162,7 +163,7 @@ export function AddPrivilegeGroup () {
             ec.allVenues = true
           }
           const venueIds = ec.allVenues ? []
-            : ec.children.filter(v => v.selected).map(venue => venue.id)
+            : ec.children?.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -191,16 +192,28 @@ export function AddPrivilegeGroup () {
     return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
       marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
-        {firstVenue.name}
+        <Typography.Text
+          title={firstVenue.name}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstVenue.name}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectVenue}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restVenue.map(venue =>
         <UI.VenueList key={venue.id}>
-          {venue.name}
+          <Typography.Text
+            title={venue.name}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {venue.name}
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }
@@ -208,24 +221,40 @@ export function AddPrivilegeGroup () {
   const DisplaySelectedCustomers = () => {
     const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
+    const firstCustomerWithVenues = `${firstCustomer.name} (${firstCustomer.allVenues ?
+      intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+      intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+        { count: firstCustomer.children?.filter(v => v.selected).length })})`
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({firstCustomer.allVenues ?
-          intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
-          intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-            { count: firstCustomer.children.filter(v => v.selected).length })})
+        <Typography.Text
+          title={firstCustomerWithVenues}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstCustomerWithVenues}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectCustomer}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({ec.allVenues ?
-            intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
-            intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-              { count: ec.children.filter(v => v.selected).length })})
+          <Typography.Text
+            title={`${ec.name} (${ec.allVenues ?
+              intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.children?.filter(v => v.selected).length })})`}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {ec.name} ({ec.allVenues ?
+              intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.children?.filter(v => v.selected).length })})
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }
@@ -371,7 +400,7 @@ export function AddPrivilegeGroup () {
               ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
               type='link'
               onClick={onClickSelectCustomer}
-            >Select customers</Button>
+            >{intl.$t({ defaultMessage: 'Select customers' })}</Button>
           </Space>
         </Radio.Group>
       </Form.Item>
@@ -430,7 +459,9 @@ export function AddPrivilegeGroup () {
               ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
               type='link'
               onClick={onClickSelectCustomer}
-            >Select customers</Button>
+            >
+              {intl.$t({ defaultMessage: 'Select customers' })}
+            </Button>
           </Space>
         </Radio.Group>
       </Form.Item>

@@ -3,6 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Loader, showToast, Table, TableProps }   from '@acx-ui/components'
 import { get }                                    from '@acx-ui/config'
 import { DateFormatEnum, formatter }              from '@acx-ui/formatter'
+import { doProfileDelete }                        from '@acx-ui/rc/services'
 import { useTableQuery }                          from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
@@ -15,15 +16,17 @@ import {
 
 import {
   useDataConnectorQuery,
+  useDeleteDataConnectorMutation,
   usePatchDataConnectorMutation
 } from './services'
-import { DataConnector, Frequency }                            from './types'
-import { Actions, frequencyMap, getUserId, isVisibleByAction } from './utils'
+import { DataConnector, Frequency }                                                from './types'
+import { Actions, frequencyMap, getUserId, isVisibleByAction, canDeleteConnector } from './utils'
 
 export function DataConnectorTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataConnector')
+  const [deleteDataConnector] = useDeleteDataConnectorMutation()
   const [patchDataConnector] = usePatchDataConnectorMutation()
   const userId = getUserId()
 
@@ -136,7 +139,7 @@ export function DataConnectorTable () {
     {
       key: getShowWithoutRbacCheckKey(Actions.Resume),
       label: $t({ defaultMessage: 'Resume' }),
-      visible: rows => isVisibleByAction(rows, Actions.Resume),
+      visible: rows => isVisibleByAction(rows, Actions.Resume, userId),
       onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
           ids: selectedRows.map(row => row.id),
@@ -157,7 +160,7 @@ export function DataConnectorTable () {
     {
       key: getShowWithoutRbacCheckKey(Actions.Pause),
       label: $t({ defaultMessage: 'Pause' }),
-      visible: rows => isVisibleByAction(rows, Actions.Pause),
+      visible: rows => isVisibleByAction(rows, Actions.Pause, userId),
       onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
           ids: selectedRows.map(row => row.id),
@@ -178,7 +181,7 @@ export function DataConnectorTable () {
     {
       key: getShowWithoutRbacCheckKey(Actions.Edit),
       label: $t({ defaultMessage: 'Edit' }),
-      visible: rows => isVisibleByAction(rows, Actions.Edit),
+      visible: rows => isVisibleByAction(rows, Actions.Edit, userId),
       onClick: (selectedRows: DataConnector[]) => {
         const row = selectedRows[0]
         const editPath = `edit/${row.id}`
@@ -187,9 +190,41 @@ export function DataConnectorTable () {
           pathname: `${basePath.pathname}/${editPath}`
         })
       }
+    },
+    // Delete button only visible for the Prime Admin role
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Delete),
+      label: $t({ defaultMessage: 'Delete' }),
+      visible: rows => isVisibleByAction(rows, Actions.Delete, userId),
+      onClick: (selectedRows: DataConnector[], clearSelection) => {
+        doDelete(selectedRows, clearSelection)
+      }
     }
-    // Remove delete button to preserve quota usage for phase 1
   ]
+
+  const deleteConnectorWithToast =
+    async (selectedRows: DataConnector[], callback: () => void) => {
+      deleteDataConnector({ payload: selectedRows.map(row => row.id) }).unwrap()
+        .then(() => {
+          showToastByAction(true, Actions.Delete, selectedRows.length)
+          callback()
+        })
+        .catch(() => showToastByAction(false, Actions.Delete, selectedRows.length))
+    }
+
+  const doDelete = (selectedRows: DataConnector[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t(
+        { defaultMessage: `{deleteCount, plural, 
+        one {Data Connector} other {Data Connectors}}` },
+        { deleteCount: selectedRows.length }),
+      selectedRows[0].name,
+      // no need to check the relation fields
+      [],
+      async () => deleteConnectorWithToast(selectedRows, callback)
+    )
+  }
 
   const hasDataPermission = get('IS_MLISA_SA')
     ? hasPermission({ permission: 'WRITE_DATA_CONNECTOR' })
@@ -211,7 +246,7 @@ export function DataConnectorTable () {
         hasDataPermission && allowedRowActions.length > 0 && {
           type: 'checkbox',
           getCheckboxProps: (record: DataConnector) => ({
-            disabled: record.userId !== userId
+            disabled: record.userId !== userId && !canDeleteConnector()
           })
         }
       }

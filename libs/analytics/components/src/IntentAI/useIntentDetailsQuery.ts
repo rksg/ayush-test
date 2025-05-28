@@ -1,7 +1,9 @@
-import { gql }               from 'graphql-request'
-import _                     from 'lodash'
-import moment                from 'moment-timezone'
-import { MessageDescriptor } from 'react-intl'
+import { useEffect, useState } from 'react'
+
+import { gql }                              from 'graphql-request'
+import _                                    from 'lodash'
+import moment                               from 'moment-timezone'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { kpiDelta, TrendTypeEnum } from '@acx-ui/analytics/utils'
 import { formatter }               from '@acx-ui/formatter'
@@ -20,6 +22,38 @@ export type IntentKPIConfig = {
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: ReturnType<typeof formatter>;
+}
+
+export type KpiResultExtend = {
+  projectedPowerSaving?: number
+  enabled?: number
+  disabled?: number
+  unsupported?: number
+  powerConsumption?: number
+  maxApPower?: number
+  minApPower?: number
+  apTotalCount?: number
+}
+
+export type KpiValuesExtend = {
+  value?: number
+  previous?: number
+  total?: number
+  isShowPreviousSpan?: boolean
+  isPill?: boolean
+}
+
+export type IntentKPIConfigExtend = {
+  key: string
+  label: ReturnType<typeof defineMessage>
+  format: ReturnType<typeof formatter>
+  deltaSign: '+' | '-' | 'none';
+  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) => KpiValuesExtend
+  valueFormatter?: ReturnType<typeof formatter>
+  valueMessage: ReturnType<typeof defineMessage>
+  valueSuffixMessage?: ReturnType<typeof defineMessage>
+  valueSuffixClass?: string
+  tooltip?: ReturnType<typeof defineMessage>
 }
 
 export type IntentKPI = Record<`kpi_${string}`, {
@@ -61,6 +95,17 @@ export const useIntentParams = () => {
     sliceId: IntentDetail['sliceId']
     code: string
   }
+}
+
+export const useDownloadUrl = (data: unknown, type: string) => {
+  const [url, setUrl] = useState<string>()
+  useEffect(() => {
+    if (!data) return
+    const url = URL.createObjectURL(new Blob([data as BlobPart], { type }))
+    setUrl(url)
+    return () => URL.revokeObjectURL(url!)
+  }, [data, type])
+  return url
 }
 
 export function intentState (intent: IntentDetail) {

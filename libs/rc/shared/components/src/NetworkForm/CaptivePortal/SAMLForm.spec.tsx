@@ -10,13 +10,14 @@ import {
   GuestNetworkTypeEnum,
   WifiUrlsInfo,
   SamlIdpProfileUrls,
-  CertificateUrls
+  CertificateUrls,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
 
-import { certList } from '../../policies/SamlIdp/__tests__/fixtures'
+import { certList }     from '../../policies/SamlIdp/__tests__/fixtures'
 import {
   cloudPathDataNone,
   mockAAAPolicyListResponse,
@@ -29,7 +30,9 @@ import {
   venuesResponse,
   mockSAMLIdpQuery,
   mockSamlA7,
-  mockedNetworkId
+  mockedNetworkId,
+  mockedMetadata,
+  mockSamlProfileA7Id
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -39,6 +42,7 @@ import { SAMLForm } from './SAMLForm'
 
 describe('CaptiveNetworkForm - SAML', () => {
   const SAMLQueryAPI = jest.fn()
+  const mockCreateSamlIdpProfile = jest.fn()
   beforeEach(() => {
     networkDeepResponse.name = 'SAML network test'
     SAMLQueryAPI.mockClear()
@@ -106,6 +110,27 @@ describe('CaptiveNetworkForm - SAML', () => {
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (_, res, ctx) => res(ctx.json(certList))
+      ),
+      rest.post(
+        SamlIdpProfileUrls.createSamlIdpProfile.url,
+        (_, res, ctx) => {
+          mockCreateSamlIdpProfile()
+          return res(ctx.json({
+            response: {
+              id: mockSamlProfileA7Id
+            }
+          }))
+        }
+      ),
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (req, res, ctx) => {
+          return res(ctx.json({
+            name: '__samlIdpProfile_Name__',
+            metadata: Buffer.from('xmlContent').toString('base64'),
+            authenticationRequestSignedEnabled: true
+          }))
+        }
       )
     )
   })
@@ -379,15 +404,186 @@ describe('CaptiveNetworkForm - SAML', () => {
     const addButton = screen.getByTestId('saml-idp-profile-add-button')
     await userEvent.click(addButton)
 
-    // wait for "Add SAML IdP Profile" in the screen
-    const drawerTitle = await screen.findByText('Add SAML Identity Provider')
-    expect(drawerTitle).toBeInTheDocument()
-
+    // test Close button
     const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
 
+    // test Cancel button
     await userEvent.click(addButton)
     const cancelButton = (await screen.findAllByRole('button', { name: 'Cancel' }))[1]
     await userEvent.click(cancelButton)
+
+    //Test callback function
+    await userEvent.click(addButton)
+    // wait for "Add SAML IdP Profile" in the screen
+    const drawerTitle = await screen.findByText('Add SAML Identity Provider')
+    expect(drawerTitle).toBeInTheDocument()
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await userEvent.type(policyNameField, 'Test Profile Name')
+
+    // Find metadata textarea and input
+    const metadataField = screen.getByTestId('metadata-textarea')
+    await userEvent.type(metadataField, mockedMetadata)
+    // find all add button
+    const drawerAddButton = (await screen.findAllByRole('button', { name: 'Add' }))[2]
+    await userEvent.click(drawerAddButton)
+
+    await waitFor(() => expect(mockCreateSamlIdpProfile).toHaveBeenCalled())
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalledTimes(3))
+
+    expect(await screen.findByText('SAML-A7')).toBeInTheDocument()
+  })
+
+  describe('RedirectUrlInput functionality', () => {
+    // Mock data for testing
+    const mockNetworkWithRedirectUrl: NetworkSaveData = {
+      type: 'guest',
+      guestPortal: {
+        redirectUrl: 'http://example.com',
+        guestNetworkType: GuestNetworkTypeEnum.SAML
+      },
+      tenantId: 'tenant-id',
+      id: 'network-id'
+    }
+
+    const mockNetworkWithoutRedirectUrl: NetworkSaveData = {
+      ...mockNetworkWithRedirectUrl,
+      guestPortal: {
+        ...mockNetworkWithRedirectUrl.guestPortal,
+        redirectUrl: undefined
+      }
+    }
+
+    it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider
+              value={{
+                isDisableMLO: false,
+                disableMLO: jest.fn()
+              }}
+            >
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SAMLForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+    // eslint-disable-next-line max-len
+    it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: true,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider
+              value={{
+                isDisableMLO: false,
+                disableMLO: jest.fn()
+              }}
+            >
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SAMLForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider
+              value={{
+                isDisableMLO: false,
+                disableMLO: jest.fn()
+              }}
+            >
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SAMLForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+    // eslint-disable-next-line max-len
+    it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithoutRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider
+              value={{
+                isDisableMLO: false,
+                disableMLO: jest.fn()
+              }}
+            >
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <SAMLForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
   })
 })
