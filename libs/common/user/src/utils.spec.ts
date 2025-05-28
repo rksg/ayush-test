@@ -1,10 +1,13 @@
+import { AccountTier } from '@acx-ui/utils'
+
 import {
   getUserSettingsByPath,
   setDeepUserSettings,
   getProductKey,
   goToNotFound,
   goToNoPermission,
-  isCoreTier
+  isCoreTier,
+  isProfessionalTier
 } from './utils'
 
 
@@ -94,16 +97,31 @@ describe('user settings utility', () => {
 
   describe('isCoreTier', () => {
     it('should return true if tier is CORE', () => {
-      expect(isCoreTier('Silver')).toBe(true)
+      expect(isCoreTier(AccountTier.CORE)).toBe(true)
     })
 
     it('should return false if tier is not CORE', () => {
-      expect(isCoreTier('PLATINUM')).toBe(false)
-      expect(isCoreTier('GOLD')).toBe(false)
+      expect(isCoreTier(AccountTier.PLATINUM)).toBe(false)
+      expect(isCoreTier(AccountTier.GOLD)).toBe(false)
     })
 
     it('should return false if tier is undefined', () => {
       expect(isCoreTier(undefined)).toBe(false)
+    })
+  })
+
+  describe('isProfessionalTier', () => {
+    it('should return true if tier is PLATINUM', () => {
+      expect(isProfessionalTier(AccountTier.PLATINUM)).toBe(true)
+    })
+
+    it('should return false if tier is not PLATINUM', () => {
+      expect(isProfessionalTier(AccountTier.GOLD)).toBe(false)
+      expect(isProfessionalTier(AccountTier.CORE)).toBe(false)
+    })
+
+    it('should return false if tier is undefined', () => {
+      expect(isProfessionalTier(undefined)).toBe(false)
     })
   })
 })

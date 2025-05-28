@@ -19,6 +19,7 @@ export enum InCompatibilityFeatures {
   BANDWIDTH_320MHZ = 'WIFI7 320MHz',
   BETA_DPSK3 = 'DSAE',
   AUTO_CELL_SIZING = 'Auto Cell Sizing',
+  AGGRESSIVE_TX_POWER = 'Aggressive Power Reduction with Per MCS TX Power Control',
   AIRTIME_DECONGESTION = 'Airtime Decongestion',
   AP_NEIGHBORS = 'AP Neighbors',
   BSS_COLORING = 'BSS Coloring',
