@@ -128,9 +128,11 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
 
     const currentNetworkId = venue1network4.networkId
     const currentNetworkVenueId = venue1network4.venueId
+    const currentFwdTunnelType = venue1network4.forwardingTunnelType
     const defaultArgs = {
       currentNetworkVenueId,
       currentNetworkId,
+      currentFwdTunnelType,
       activatedDmz: true,
       onOk: mockOkFn,
       isL2oGreReady: true
@@ -163,14 +165,14 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
       const tunnelingL2greNetwork = {
         ...anotherVenueNetwork,
         forwardingTunnelType: TunnelTypeEnum.L2GRE,
-        forwardingTunnelProfileId: 'mocked_l2gre_profile_id'
+        forwardingTunnelProfileId: 'mocked_l2gre_profile_id1'
       }
       const tunnelingCorePortNetwork = {
         ...anotherVenueNetwork,
         venueId: 'a307d7077410456f8f1a4fc41d861564',
         venueName: 'Mocked-Venue-4',
-        forwardingTunnelType: '',
-        forwardingTunnelProfileId: ''
+        forwardingTunnelType: TunnelTypeEnum.L2GRE,
+        forwardingTunnelProfileId: 'mocked_l2gre_profile_id2'
       }
       const otherNetworks = [
         tunnelingL2greNetwork,
@@ -195,7 +197,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
       const mockData = cloneDeep(mockedSdLanNoGuestFwd)
       const tunnelingDmzNetwork = {
         ...anotherVenueNetwork,
-        forwardingTunnelType: TunnelTypeEnum.VXLAN_GPE,
+        forwardingTunnelType: '',
         forwardingTunnelProfileId: 'mocked_gpe_profile_id'
       }
       mockData.tunneledWlans?.push(tunnelingDmzNetwork)

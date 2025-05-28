@@ -1597,6 +1597,7 @@ export const dpskListResponse = {
   },
   sort: []
 }
+export const mockedDpskNetworkName = '__mockedDpskNetworkName__'
 
 export const partialDpskNetworkEntity: NetworkSaveData = {
   type: NetworkTypeEnum.DPSK,
@@ -1608,6 +1609,20 @@ export const partialDpskNetworkEntity: NetworkSaveData = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
   dpskServiceProfileId: dpskListResponse.content[1].id,
   name: 'JackyDPSK',
+  id: '1887fef21cdf485cbe2583b8c5ec97f1'
+}
+
+export const partialDpskNetworkEntity2: NetworkSaveData = {
+  type: NetworkTypeEnum.DPSK,
+  isCloudpathEnabled: false,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    vlanId: 1,
+    ssid: mockedDpskNetworkName
+  },
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  dpskServiceProfileId: dpskListResponse.content[2].id,
+  name: mockedDpskNetworkName,
   id: '1887fef21cdf485cbe2583b8c5ec97f1'
 }
 
@@ -2089,6 +2104,21 @@ export const mockPolicySetList = {
   ]
 }
 
+export const mockedRadsecAAA = {
+  id: '3',
+  name: 'RadSec AAA',
+  primary: {
+    ip: '123.123.123.2',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
+  },
+  type: 'AUTHENTICATION'
+}
+
 export const mockAAAPolicyListResponse = {
   page: 1,
   totalCount: 3,
@@ -2106,20 +2136,7 @@ export const mockAAAPolicyListResponse = {
       secondary: '2.3.3.4:1187',
       id: '2'
     },
-    {
-      id: '3',
-      name: 'RadSec AAA',
-      primary: {
-        ip: '123.123.123.2',
-        port: 2083
-      },
-      radSecOptions: {
-        tlsEnabled: true,
-        cnSanIdentity: 'cnSan',
-        ocspUrl: 'aaa.com'
-      },
-      type: 'AUTHENTICATION'
-    }
+    mockedRadsecAAA
   ]
 }
 

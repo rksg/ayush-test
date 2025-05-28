@@ -12,8 +12,8 @@ import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 import { useIsMdnsProxyConsolidationEnabled }    from '../service'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                from './constants'
-import { buildUnifiedServices, isUnifiedServiceAvailable, useIsNewServicesCatalogEnabled } from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
 
 
 type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
@@ -375,9 +375,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
-  return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+  return buildUnifiedServices(baseUnifiedServiceList)
     .sort((a, b) => a.label.localeCompare(b.label))
 }

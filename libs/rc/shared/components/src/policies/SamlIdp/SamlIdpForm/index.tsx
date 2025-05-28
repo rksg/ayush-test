@@ -22,8 +22,7 @@ import {
   ServerCertificate,
   KeyUsageType,
   HttpURLRegExp,
-  AttributeMapping,
-  IdentityAttributeMappingNameType
+  combineAttributeMappingsToData
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -354,7 +353,6 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
           <Row>
             <Col span={fieldColSpan}>
               <IdentityAttributesInput
-                form={formRef}
                 fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
                 description={$t(SamlIdpMessages.IDENTITY_DESCRIPTION)}
               />
@@ -393,20 +391,6 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   }
   delete result.metadataContent
 
-  //Add three identity attributes to attributeMappings
-  const identityMappings = [
-    // eslint-disable-next-line max-len
-    result.identityName && { name: IdentityAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
-    // eslint-disable-next-line max-len
-    result.identityEmail && { name: IdentityAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
-    // eslint-disable-next-line max-len
-    result.identityPhone && { name: IdentityAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
-  ].filter(Boolean) as AttributeMapping[]
+  return combineAttributeMappingsToData(result)
 
-  result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
-  delete result.identityName
-  delete result.identityEmail
-  delete result.identityPhone
-
-  return result
 }

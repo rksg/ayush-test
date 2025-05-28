@@ -352,7 +352,9 @@ export enum Features {
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
   SSO_GROUP_LIMIT100 = 'sso-group-limit100',
-  MDNS_PROXY_CONSOLIDATION = 'acx-ui-consolidated-mdns-proxy-toggle'
+  MDNS_PROXY_CONSOLIDATION = 'acx-ui-consolidated-mdns-proxy-toggle',
+  RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
+  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

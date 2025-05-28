@@ -223,7 +223,7 @@ describe('ApWiredClientTable', () => {
     expect(await screen.findByText('Authentication Service')).toBeInTheDocument()
     expect(await screen.findByText('Proxy Service (Auth)')).toBeInTheDocument()
     expect(await screen.findByText('Accounting Service')).toBeInTheDocument()
-    expect(await screen.findByText('Proxy Service (Accounting)')).toBeInTheDocument()
+    expect(screen.queryByText('Proxy Service (Accounting)')).not.toBeInTheDocument()
     expect(await screen.findByText('SoftGRE Tunnel')).toBeInTheDocument()
     expect(await screen.findByText('Client Isolation')).toBeInTheDocument()
   })

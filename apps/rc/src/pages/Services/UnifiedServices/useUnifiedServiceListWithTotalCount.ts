@@ -45,6 +45,8 @@ export function useUnifiedServiceListWithTotalCount (): {
   const { typeToTotalCountQuery: typeToTotalCount, isFetching } = useUnifiedServiceTotalCountMap(availableServiceTypeSet)
 
   useEffect(() => {
+    if (isFetching) return
+
     const updatedList = availableUnifiedServiceList.map((service: UnifiedService) => ({
       ...service,
       totalCount: typeToTotalCount[service.type]?.data?.totalCount
@@ -54,7 +56,7 @@ export function useUnifiedServiceListWithTotalCount (): {
 
     setResult(updatedList)
 
-  }, [availableUnifiedServiceList, typeToTotalCount])
+  }, [availableUnifiedServiceList, typeToTotalCount, isFetching])
 
   return {
     unifiedServiceListWithTotalCount: result,
