@@ -362,7 +362,7 @@ export const ImportDashboardDrawer = (props: {
           onClick={() => props.handleOpenCanvas()}
           type='primary'
         >
-          {$t({ defaultMessage: 'Canvas Editor' })}
+          {$t({ defaultMessage: 'Canvas Creator' })}
         </Button>
         <div>
           <Button onClick={props.onBackClick}>

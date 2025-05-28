@@ -424,7 +424,7 @@ describe('Dashboard', () => {
       await userEvent.click(await screen.findByTestId('close-button'))
     })
 
-    it('should open canvas editor correctly', async () => {
+    it('should open canvas creator correctly', async () => {
       render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
       expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
 
@@ -441,7 +441,7 @@ describe('Dashboard', () => {
       expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
 
       await userEvent.click(
-        await within(canvasDrawer).findByRole('button', { name: 'Canvas Editor' })
+        await within(canvasDrawer).findByRole('button', { name: 'Canvas Creator' })
       )
       expect(await screen.findByTestId('canvas-editor')).toBeVisible()
     })
