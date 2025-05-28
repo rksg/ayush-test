@@ -36,6 +36,10 @@ const apStatusMap = {
   [ApVenueStatusEnum.OFFLINE]: defineMessage({
     defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline',
     description: 'Translation string - Offline'
+  }),
+  [ApVenueStatusEnum.IN_SETUP_PHASE_AND_OFFLINE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase & Offline',
+    description: 'Translation string - In Setup Phase & Offline'
   })
 }
 

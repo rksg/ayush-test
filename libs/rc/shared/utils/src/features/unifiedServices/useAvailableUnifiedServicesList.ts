@@ -364,9 +364,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
-  return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+  return buildUnifiedServices(baseUnifiedServiceList)
     .sort((a, b) => a.label.localeCompare(b.label))
 }

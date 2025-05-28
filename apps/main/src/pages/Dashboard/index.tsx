@@ -230,7 +230,6 @@ function DashboardPageHeader (props: {
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
-  const [previewId, setPreviewId] = useState('')
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
@@ -441,13 +440,13 @@ function DashboardPageHeader (props: {
           maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
+      style={{ marginBottom: '12px' }}
     />
 
     { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
-        setPreviewId={setPreviewId}
         handleOpenPreview={handleOpenPreview}
         handleOpenCanvas={handleOpenCanvas}
         onClose={() => {
@@ -480,7 +479,6 @@ function DashboardPageHeader (props: {
 
       <PreviewDashboardModal
         data={previewData}
-        previewId={previewId}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
         DefaultDashboard={DefaultDashboard}
@@ -759,7 +757,7 @@ function CanvasDashboard (props: {
   }, [menuCollapsed])
 
   return <DndProvider backend={HTML5Backend}>
-    <div className='grid'>
+    <div className='grid' style={{ marginTop: '-10px' }}>
       <CanvasUI.Grid $type='pageview'>
         <Layout
           readOnly={true}
