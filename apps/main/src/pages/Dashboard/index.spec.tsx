@@ -621,5 +621,50 @@ describe('Dashboard', () => {
       await userEvent.click(importBtn)
       expect(mockUpdateDashboard).toBeCalled()
     })
+
+    it('should display the disabled import canvas tooltip correctly', async () => {
+      mockServer.use(
+        rest.get(
+          RuckusAiChatUrlInfo.getDashboards.url,
+          (req, res, ctx) => res(ctx.json([
+            dashboardList[0],
+            ...Array.from({ length: 8 }).map((_, index) => {
+              return {
+                ...dashboardList[1],
+                id: index
+              }
+            })
+          ]))
+        )
+      )
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+      expect(await screen.findByText('RUCKUS One Default Dashboard')).toBeVisible()
+
+      await userEvent.click(await screen.findByTestId('setting-button'))
+      const dashboardDrawer = await screen.findByRole('dialog')
+      expect(dashboardDrawer).toBeVisible()
+      expect(await within(dashboardDrawer).findByText('My Dashboards (9)')).toBeVisible()
+
+      await userEvent.click(
+        await within(dashboardDrawer).findByText('Import Dashboard')
+      )
+      const drawers = await screen.findAllByRole('dialog')
+      const canvasDrawer = drawers[1]
+      expect(await within(canvasDrawer).findByText('My Canvases')).toBeVisible()
+      expect(await screen.findByRole('button', { name: 'Import (0)' })).toBeDisabled()
+
+      const checkbox = await screen.findAllByRole('checkbox')
+
+      await userEvent.click(checkbox[0])
+
+      const importBtn = await screen.findByRole('button', { name: 'Import (1)' })
+      expect(importBtn).toBeVisible()
+      const disabledCheckbox = checkbox[1]
+      expect(disabledCheckbox).toBeVisible()
+      await userEvent.hover(disabledCheckbox)
+      expect(
+        await screen.findByRole('tooltip')
+      ).toHaveTextContent(/Maximum of 10 dashboards reached/)
+    })
   })
 })

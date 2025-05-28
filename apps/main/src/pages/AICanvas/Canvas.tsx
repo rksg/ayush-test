@@ -501,7 +501,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                         },
                         {
                           key: 'New_Canvas',
-                          label: $t({ defaultMessage: 'New Canvas' }),
+                          label: <>
+                            {
+                              canvasList.length >= 10 ? (
+                                <Tooltip
+                                  title={$t({ defaultMessage: 'Maximum of 10 canvases reached.' })}
+                                  placement='bottom'>
+                                  <span style={{
+                                    display: 'inline-block', width: '100%'
+                                  }}>{$t({ defaultMessage: 'New Canvas' })}</span>
+                                </Tooltip>
+                              ) : (
+                                <span>{$t({ defaultMessage: 'New Canvas' })}</span>
+                              )
+                            }
+                          </>,
                           disabled: canvasList.length >= 10
                         },
                         {
