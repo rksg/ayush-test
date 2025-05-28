@@ -41,11 +41,11 @@ export const getEnabledCorePortInfo = (
   const subInterfaceCorePort = subInterfaceData.find(item =>
     item.corePortEnabled && item.portType === EdgePortTypeEnum.LAN)
   const lagCorePortEnabled = lagCorePort[0]?.id !== undefined
-  const corePortKey = physicalCorePort[0]?.interfaceName || lagCorePort[0]?.id ||
+  const corePortKey = physicalCorePort[0]?.interfaceName ||
+    (lagCorePort[0]?.id !== undefined && lagCorePort[0]?.id + '') ||
     subInterfaceCorePort?.interfaceName
   const isLag = physicalCorePort[0]?.interfaceName ? false : lagCorePort[0]?.id !== undefined
   const physicalCorePortId = isLag ? undefined : physicalCorePort[0]?.id
-
   const isExistingCorePortInLagMember = lagData?.some(lag => lag.lagMembers
     ? lag.lagMembers.filter(member => member?.portId === physicalCorePortId).length > 0
     : false) ?? false
@@ -53,7 +53,7 @@ export const getEnabledCorePortInfo = (
   return {
     key: isExistingCorePortInLagMember
       ? (lagCorePortEnabled ? (lagCorePort[0].id + '') : undefined)
-      : (corePortKey !== undefined ? (corePortKey+'') : corePortKey),
+      : corePortKey,
     isLag: isExistingCorePortInLagMember ? lagCorePortEnabled : isLag,
     physicalPortId: isExistingCorePortInLagMember ? undefined : physicalCorePortId,
     isExistingCorePortInLagMember
