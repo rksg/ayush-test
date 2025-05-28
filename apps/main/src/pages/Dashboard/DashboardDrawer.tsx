@@ -24,8 +24,8 @@ import { noDataDisplay } from '@acx-ui/utils'
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
 
-import { formatDashboardList } from './index.utils'
-import * as UI                 from './styledComponents'
+import { formatDashboardList, tooltipConfig } from './index.utils'
+import * as UI                                from './styledComponents'
 
 
 type ListItemProps = {
@@ -173,11 +173,15 @@ const getItemInfo = (props: {
         }</span> }
         { item.authorId && <span className='author'>
           <Tooltip
+            {...tooltipConfig}
             title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
-            placement='bottom'
-            overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
           >
             <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
+          </Tooltip>
+          <Tooltip
+            {...tooltipConfig}
+            title={authorName}
+          >
             <span className='name'>{ authorName }</span>
           </Tooltip>
         </span>

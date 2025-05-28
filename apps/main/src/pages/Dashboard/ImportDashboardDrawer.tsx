@@ -28,7 +28,8 @@ import {
   MAXIMUM_DASHBOARD
 } from '../AICanvas/index.utils'
 
-import * as UI from './styledComponents'
+import { tooltipConfig } from './index.utils'
+import * as UI           from './styledComponents'
 
 enum TabKey {
   Owned = 'owned',
@@ -265,11 +266,15 @@ export const ImportDashboardDrawer = (props: {
                   }</span> }
                   { !item?.owned && <span className='author'>
                     <Tooltip
+                      {...tooltipConfig}
                       title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
-                      placement='bottom'
-                      overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
                     >
                       <AccountCircleSolid size='sm' />
+                    </Tooltip>
+                    <Tooltip
+                      {...tooltipConfig}
+                      title={authorName}
+                    >
                       <span className='name'>{ authorName }</span>
                     </Tooltip>
                   </span>
