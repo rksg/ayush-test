@@ -1,4 +1,5 @@
-import { TooltipProps }  from '@acx-ui/components'
+import { defineMessage } from 'react-intl'
+
 import { DashboardInfo } from '@acx-ui/rc/utils'
 
 import { DEFAULT_DASHBOARD_ID } from '../AICanvas/index.utils'
@@ -14,7 +15,6 @@ export const formatDashboardList = (list: DashboardInfo[]) => {
   })
 }
 
-export const tooltipConfig: TooltipProps = {
-  placement: 'bottom',
-  overlayInnerStyle: { fontSize: '12px', minHeight: '28px' }
+export const DashboardMessages = {
+  authorTooltip: defineMessage({ defaultMessage: 'The creator or owner of this canvas.' })
 }

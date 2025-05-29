@@ -28,8 +28,8 @@ import {
   MAXIMUM_DASHBOARD
 } from '../AICanvas/index.utils'
 
-import { tooltipConfig } from './index.utils'
-import * as UI           from './styledComponents'
+import { DashboardMessages } from './index.utils'
+import * as UI               from './styledComponents'
 
 enum TabKey {
   Owned = 'owned',
@@ -272,15 +272,12 @@ export const ImportDashboardDrawer = (props: {
                   }</span> }
                   { !item?.owned && <span className='author'>
                     <Tooltip
-                      {...tooltipConfig}
-                      title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+                      title={$t(DashboardMessages.authorTooltip)}
+                      placement='bottom'
                     >
                       <AccountCircleSolid size='sm' />
                     </Tooltip>
-                    <Tooltip
-                      {...tooltipConfig}
-                      title={authorName}
-                    >
+                    <Tooltip title={authorName} placement='bottom'>
                       <span className='name'>{ authorName }</span>
                     </Tooltip>
                   </span>
