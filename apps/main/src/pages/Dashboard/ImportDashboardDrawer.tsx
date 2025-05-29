@@ -246,47 +246,48 @@ export const ImportDashboardDrawer = (props: {
           const checkboxDisabled = !selectedCanvases.includes(item.id)
             && selectedCanvases.length === maximumImportCount
           return <UI.CanvasListItem>
-            <Tooltip title={checkboxDisabled ?
-              $t({ defaultMessage: 'Maximum of {maximum} dashboards reached, import unavailable' },
-                { maximum: MAXIMUM_DASHBOARD }) : ''}
-            placement='right'>
-              <Checkbox
-                checked={selectedCanvases.includes(item.id)}
-                onChange={e => handleCheck(e.target.checked, item.id)}
-                disabled={checkboxDisabled}
-              >
-                <div className='info'>
-                  <div className='title'>
-                    <span className='name' title={item.name}>{ item.name }</span>
-                    { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
-                  </div>
-                  <div className='desp'>
-                    <span className='count'>{
-                      $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
-                    }</span>
-                    { item?.updatedDate && <span className='date'>{
-                      moment(item.updatedDate).format('YYYY/MM/DD')
-                    }</span> }
-                    { !item?.owned && <span className='author'>
-                      <Tooltip
-                        {...tooltipConfig}
-                        title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
-                      >
-                        <AccountCircleSolid size='sm' />
-                      </Tooltip>
-                      <Tooltip
-                        {...tooltipConfig}
-                        title={authorName}
-                      >
-                        <span className='name'>{ authorName }</span>
-                      </Tooltip>
-                    </span>
-                    }
-                  </div>
+            <div className='checkbox-container'>
+              <Tooltip title={checkboxDisabled ?
+              // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Maximum of {maximum} dashboards reached, import unavailable' },
+                  { maximum: MAXIMUM_DASHBOARD }) : ''}
+              placement='right'>
+                <Checkbox
+                  checked={selectedCanvases.includes(item.id)}
+                  onChange={e => handleCheck(e.target.checked, item.id)}
+                  disabled={checkboxDisabled}
+                />
+              </Tooltip>
+              <div className='info'>
+                <div className='title'>
+                  <span className='name' title={item.name}>{ item.name }</span>
+                  { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
                 </div>
-              </Checkbox>
-            </Tooltip>
-
+                <div className='desp'>
+                  <span className='count'>{
+                    $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
+                  }</span>
+                  { item?.updatedDate && <span className='date'>{
+                    moment(item.updatedDate).format('YYYY/MM/DD')
+                  }</span> }
+                  { !item?.owned && <span className='author'>
+                    <Tooltip
+                      {...tooltipConfig}
+                      title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+                    >
+                      <AccountCircleSolid size='sm' />
+                    </Tooltip>
+                    <Tooltip
+                      {...tooltipConfig}
+                      title={authorName}
+                    >
+                      <span className='name'>{ authorName }</span>
+                    </Tooltip>
+                  </span>
+                  }
+                </div>
+              </div>
+            </div>
             <div className='action'>
               <Dropdown overlay={getActionMenu(item)} trigger={['click']} key='actionMenu'>
                 <Button
@@ -300,7 +301,6 @@ export const ImportDashboardDrawer = (props: {
                 />
               </Dropdown>
             </div>
-
           </UI.CanvasListItem>
         }}
       />
