@@ -245,7 +245,7 @@ export const mockDhcpStatsData = {
       ]
     },{
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
-      id: '3',
+      id: '6',
       serviceName: 'TestDHCP-6',
       serviceType: 'DHCP',
       dhcpRelay: 'false',
