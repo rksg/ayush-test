@@ -219,6 +219,51 @@ export const composeNext = (
   }
 }
 
+function addParentNode (firstStepId: string, 
+  stepMap: Map<string, WorkflowStep>,
+  disconnectedBranchZIndex:number,
+  nodes: Node<WorkflowStep, ActionType>[],
+  currentX: number, 
+  currentY: number
+  ) {
+  
+  // create parent node
+  let parentNodeId = firstStepId + 'parent'
+  let firstStep = stepMap.get(firstStepId)
+  
+  if(!firstStep) return
+
+  // Calculate the height of the parent node based on the number of nodes it will contain
+  // height = number of nodes (64) + number of edges (46)
+  let height = 0
+  if (firstStep.nextStepId) {
+    let nextNode = stepMap.get(firstStep.nextStepId)
+    while(nextNode) {
+      if(!nextNode.isEnd || !nextNode.isStart) {
+        height += 64 + 46
+      }
+      nextNode = nextNode.nextStepId ? stepMap.get(nextNode.nextStepId) : undefined
+    }
+    height -= 46 // remove the height of an edge since we added an extra one
+  }
+
+  nodes.push({
+    id: parentNodeId,
+    type: ActionType.DISCONNECTED_BRANCH,
+    position: { x: currentX, y: currentY },
+    style: {
+      width: '260px',
+      height: height + 40
+    },
+    zIndex: disconnectedBranchZIndex,
+    hidden: false,
+    deletable: false,
+    data: {id: parentNodeId, enrollmentActionId: ''}
+  })
+
+  return parentNodeId
+}
+
 
 export function toReactFlowData (
   steps: WorkflowStep[],
@@ -239,9 +284,10 @@ export function toReactFlowData (
 
   let disconnectedBranchZIndex = 1250
 
-  firstSteps?.forEach((firstStep) => {    
-    // TODO: simplify?
-    var isDisconnectedBranch = firstStep.statusReasons && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
+  firstSteps?.forEach((firstStep) => {
+
+    var isDisconnectedBranch = firstStep.statusReasons 
+      && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
 
     let startX = START_X
     let startY = START_Y
@@ -249,38 +295,15 @@ export function toReactFlowData (
     
     if(isDisconnectedBranch) {
       disconnectedBranchZIndex += 100
-      // create parent node
-      parentNodeId = firstStep.id + 'parent'
+      
+      parentNodeId = addParentNode(firstStep.id, stepMap, disconnectedBranchZIndex, 
+        nodes, START_X, START_Y)
 
-      //height = number of nodes (64) + number of edges (46)
-      let height = 0
-      if (firstStep.nextStepId) {
-        let nextNode = stepMap.get(firstStep.nextStepId)
-        while(nextNode) {
-          if(!nextNode.isEnd || !nextNode.isStart) {
-            height += 64 + 46
-          }
-          nextNode = nextNode.nextStepId ? stepMap.get(nextNode.nextStepId) : undefined
-        }
-        height -= 46 // remove the last edge height since it doesn't exist
-      }
-
-      nodes.push({
-        id: parentNodeId,
-        type: ActionType.DISCONNECTED_BRANCH,
-        position: { x: START_X, y: START_Y },
-        style: {
-          width: '260px',
-          height: height + 40
-        },
-        zIndex: disconnectedBranchZIndex,
-        hidden: false,
-        deletable: false,
-        data: {id: parentNodeId, enrollmentActionId: ''}
-      })
+      // Child nodes are positioned relative to the parent, so these are set to (20,20)
       startX = 20
       startY = 20
 
+      // add additonal room for the extra wide subflow node
       START_X += 30
     }
 
@@ -289,9 +312,6 @@ export function toReactFlowData (
 
     START_X += 250
   })
-
-  // TODO: remove
-  console.log("NODES: ************", nodes)
 
   return { nodes, edges }
 }

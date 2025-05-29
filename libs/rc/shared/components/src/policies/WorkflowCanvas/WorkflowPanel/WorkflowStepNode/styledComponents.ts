@@ -2,7 +2,6 @@ import { Menu, Typography }      from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
 
-// TODO: add hover and selected styles
 export const DisconnectedBranchNode = styled.div<{ selected?: boolean }>`
   width: 100%;
   height: 100%;
@@ -14,6 +13,14 @@ export const DisconnectedBranchNode = styled.div<{ selected?: boolean }>`
 
   border-radius: 4px;
   border: 1px solid var(--acx-semantics-red-70);
+
+  :hover {
+    background-color: var(--acx-semantics-red-30);
+  }
+
+  :selected {
+    background-color: var(--acx-semantics-red-30);
+  }
 `
 
 export const StepNode = styled.div<{ selected?: boolean, invalid?: boolean }>`
