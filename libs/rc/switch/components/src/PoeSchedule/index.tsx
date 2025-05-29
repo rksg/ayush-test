@@ -12,7 +12,7 @@ import { useIsSplitOn, Features }                        from '@acx-ui/feature-t
 import { useLazyGetTimezoneQuery, useLazyGetVenueQuery } from '@acx-ui/rc/services'
 import { SchedulerTypeEnum, PoeSchedulerType }           from '@acx-ui/rc/utils'
 import { useParams }                                     from '@acx-ui/react-router-dom'
-import { Scheduler }                                     from '@acx-ui/types'
+import { Scheduler, SchedulerDeviceTypeEnum }            from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
@@ -219,6 +219,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 venue={venueData}
                 readonly={readOnly}
                 disabled={false}
+                deviceType={SchedulerDeviceTypeEnum.SWITCH}
               />
               }
             </Col>

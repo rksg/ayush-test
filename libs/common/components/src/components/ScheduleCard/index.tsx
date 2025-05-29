@@ -20,11 +20,17 @@ import _           from 'lodash'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { ITimeZone, NetworkVenueScheduler, Scheduler }   from '@acx-ui/types'
+import {
+  ITimeZone,
+  NetworkVenueScheduler,
+  Scheduler,
+  SchedulerDeviceTypeEnum
+} from '@acx-ui/types'
 import { getVenueTimeZone, transformTimezoneDifference } from '@acx-ui/utils'
 
-import { Button }            from '../Button'
-import { ScheduleTipsModal } from '../ScheduleTipsModal'
+import { Button }                from '../Button'
+import { PoeSchedulerTipsModal } from '../PoeSchedulerTipsModal'
+import { ScheduleTipsModal }     from '../ScheduleTipsModal'
 
 import * as UI     from './styledComponents'
 import {
@@ -60,6 +66,7 @@ interface ScheduleCardProps extends AntdModalProps {
   isShowTips?: boolean
   isShowTimezone?: boolean
   prefix?: boolean
+  deviceType?: SchedulerDeviceTypeEnum
 }
 
 interface Schedule {
@@ -118,7 +125,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
   const { scheduler, venue, disabled, readonly=false, form, fieldNamePath, lazyQuery: getTimezone,
     localTimeZone=false, isShowTips=true, isShowTimezone=true, timelineLabelTop= true,
-    intervalUnit, prefix=true } = props
+    intervalUnit, prefix=true, deviceType=SchedulerDeviceTypeEnum.DEFAULT } = props
   const editabled = !disabled && !readonly
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
@@ -138,6 +145,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const arrCheckedList = [...checkedList]
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
+  const isSwtich = SchedulerDeviceTypeEnum.SWITCH === deviceType
 
   const initialValues = (scheduler: Scheduler) => {
     if (props.type === 'ALWAYS_ON') {
@@ -383,8 +391,10 @@ export function ScheduleCard (props: ScheduleCardProps) {
           </div>
         </Spin>
       </Card>
-      {isModalOpen &&
-      <ScheduleTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />}
+      {isModalOpen && (isSwtich
+        ? <PoeSchedulerTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />
+        : <ScheduleTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />)
+      }
     </>
   )
 }
