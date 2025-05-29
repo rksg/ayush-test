@@ -29,6 +29,7 @@ import {
   EdgeSubInterface,
   EntityCompatibility,
   EntityCompatibilityV1_1,
+  SubInterface,
   VenueSdLanApCompatibility
 } from '../../types'
 import { convertIpToLong, countIpSize, isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
@@ -47,7 +48,9 @@ export const edgePhysicalPortInitialConfigs = {
   gateway: '',
   enabled: true,
   natEnabled: true,
-  corePortEnabled: false
+  corePortEnabled: false,
+  accessPortEnabled: false,
+  natPools: []
 }
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
@@ -374,15 +377,6 @@ export const poolRangeOverlapValidator = async (pools:
   for (let i=0; i < pools.length; i++) {
     if (!pools[i]) continue
 
-    const start = convertIpToLong(pools[i].startIpAddress)
-    const end = convertIpToLong(pools[i].endIpAddress)
-
-    // check if the range is valid (ascending)
-    if (start >= end) {
-      // eslint-disable-next-line max-len
-      return Promise.reject($t({ defaultMessage: 'Invalid NAT pool start IP and end IP' }))
-    }
-
     for (let j=i+1; j < pools.length; j++) {
       if (i === pools.length - 1) break
 
@@ -517,72 +511,167 @@ const hasCoreLag = (lagData: EdgeLag[]) => {
   return lagData.some(isLagCorePort)
 }
 
-const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {
+const isAccessLag = (data: EdgeLag) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
+    && data.lagEnabled
+    && data.lagMembers.some(member => member.portEnabled)
+}
+
+const isAccessPhysicalPort = (data: EdgePort) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
+}
+
+const isAccessSubInterface = (data: SubInterface) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
+}
+
+const hasAccessLag = (lagData: EdgeLag[]) => {
+  return lagData.some(isAccessLag)
+}
+
+const hasAccessPhysicalPort = (portsData: EdgePort[]) => {
+  return portsData.some(isAccessPhysicalPort)
+}
+
+const hasAccessSubInterface = (subInterfaceData: SubInterface[]) => {
+  return subInterfaceData.some(isAccessSubInterface)
+}
+
+const getPhysicalPortGatewayCount = (portsData: EdgePort[], isCoreAccessEnabled?: boolean) => {
   return portsData.filter(port =>
     port.enabled
     && (port.portType === EdgePortTypeEnum.WAN
-      || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
+      || (port.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? port.accessPortEnabled : port.corePortEnabled)))
   ).length
 }
+
+const getSubInterfaceGatewayCount = (subInterfaceData: SubInterface[]) => {
+  return subInterfaceData.filter(subInterface => subInterface.accessPortEnabled).length
+}
+
 // eslint-disable-next-line max-len
-export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[], isDualWanEnabled: boolean) => {
+export const validateEdgeGateway = async (
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  isDualWanEnabled: boolean, isCoreAccessEnabled: boolean
+) => {
+  try {
+    await validateGatewayType(portsData, lagData, subInterfaceData, isCoreAccessEnabled)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+
+  try {
+    await validateGatewayCount(portsData, lagData, subInterfaceData, isDualWanEnabled, isCoreAccessEnabled)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+
+  return Promise.resolve()
+}
+
+const validateGatewayCount = (
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  isDualWanEnabled: boolean, isCoreAccessEnabled: boolean
+) => {
   const { $t } = getIntl()
-
-  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
-  const hasCoreLagPort = hasCoreLag(lagData)
-  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
-
-  const portWithGateway = getPhysicalPortGatewayCount(portsData)
-  const lagWithGateway = getLagGatewayCount(lagData)
-  const totalGateway = portWithGateway + lagWithGateway
+  const wanPortCount = getEdgeWanInterfaceCount(portsData, lagData)
+  const isDualWanCase = isDualWanEnabled && wanPortCount > 1
+  const portWithGateway = getPhysicalPortGatewayCount(portsData, isCoreAccessEnabled)
+  const lagWithGateway = getLagGatewayCount(lagData, true, isCoreAccessEnabled)
+  const subInterfaceWithGateway = isCoreAccessEnabled ? getSubInterfaceGatewayCount(subInterfaceData) : 0
+  const totalGateway = portWithGateway + lagWithGateway + subInterfaceWithGateway
 
   if (totalGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
-  } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > 1) {
-    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
-  } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
+    return Promise.reject($t({
+      defaultMessage: 'At least one port must be enabled and configured to WAN or {corePortType} port to form a cluster.'
+    }, {
+      corePortType: isCoreAccessEnabled ? $t({ defaultMessage: 'Access' }) : $t({ defaultMessage: 'Core' })
+    }))
+  } else if (isDualWanCase && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
     return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways.' }, {
       maxWanPortCount: MAX_DUAL_WAN_PORT
     }))
-  } else {
-    return Promise.resolve()
+  } else if (!isDualWanCase && totalGateway > 1) {
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   }
+
+  return Promise.resolve()
 }
 
 // portsData: all ports in a cluster
 // lagData: all lags in a cluster
 // eslint-disable-next-line max-len
-export const validateEdgeClusterLevelGateway = (portsData: EdgePort[], lagData: EdgeLag[], edgeNodes: EdgeStatus[], isDualWanEnabled: boolean) => {
+export const validateEdgeClusterLevelGateway = async (
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  edgeNodes: EdgeStatus[], isDualWanEnabled: boolean, isCoreAccessEnabled: boolean
+) => {
+  try {
+    await validateGatewayType(portsData, lagData, subInterfaceData, isCoreAccessEnabled)
+    await validateClusterLevelGatewayCount(portsData, lagData, subInterfaceData, edgeNodes, isDualWanEnabled, isCoreAccessEnabled)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+
+  return Promise.resolve()
+}
+
+const validateGatewayType = (
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  isCoreAccessEnabled: boolean
+) => {
+  const { $t } = getIntl()
+  const hasWanPort = getEdgeWanInterfaceCount(portsData, lagData) > 0
+
+  if(isCoreAccessEnabled) {
+    const hasAccessPort = hasAccessPhysicalPort(portsData) || hasAccessLag(lagData) || hasAccessSubInterface(subInterfaceData)
+
+    if (hasAccessPort && hasWanPort) {
+      return Promise.reject($t({ defaultMessage: 'Access port and WAN port cannot exist at the same time.' }))
+    }
+  } else {
+    const hasCorePort = hasCorePhysicalPort(portsData) || hasCoreLag(lagData)
+
+    if (hasCorePort && hasWanPort) {
+      return Promise.reject($t({ defaultMessage: 'Core port and WAN port cannot exist at the same time.' }))
+    }
+  }
+
+  return Promise.resolve()
+}
+
+const validateClusterLevelGatewayCount = (
+  portsData: EdgePort[], lagData: EdgeLag[], subInterfaceData: SubInterface[],
+  edgeNodes: EdgeStatus[], isDualWanEnabled: boolean, isCoreAccessEnabled: boolean
+) => {
   const { $t } = getIntl()
   const nodeCount = edgeNodes.length
+  const wanPortCount = getEdgeWanInterfaceCount(portsData, lagData)
+  const isDualWanCase = isDualWanEnabled && nodeCount === 1 && wanPortCount > 1
 
-  const hasPhysicalCorePort = hasCorePhysicalPort(portsData)
-  const hasCoreLagPort = hasCoreLag(lagData)
-  const hasCorePort = hasPhysicalCorePort || hasCoreLagPort
-
-  const portWithGateway = getPhysicalPortGatewayCount(portsData)
-  const lagWithGateway = getLagGatewayCount(lagData)
-  const totalGateway = portWithGateway + lagWithGateway
+  const portWithGateway = getPhysicalPortGatewayCount(portsData, isCoreAccessEnabled)
+  const lagWithGateway = getLagGatewayCount(lagData, true, isCoreAccessEnabled)
+  const subInterfaceWithGateway = isCoreAccessEnabled ? getSubInterfaceGatewayCount(subInterfaceData) : 0
+  const totalGateway = portWithGateway + lagWithGateway + subInterfaceWithGateway
 
   if (totalGateway < nodeCount) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.' }))
-
-  } else if ((hasCorePort || !isDualWanEnabled) && totalGateway > nodeCount) {
-    // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
-
-  } else if (!hasCorePort && isDualWanEnabled && totalGateway > MAX_DUAL_WAN_PORT) {
+    return Promise.reject($t({
+      defaultMessage: 'Each Edge at least one port must be enabled and configured to WAN or {corePortType} port to form a cluster.'
+    }, {
+      corePortType: isCoreAccessEnabled ? $t({ defaultMessage: 'Access' }) : $t({ defaultMessage: 'Core' })
+    }))
+  } else if (isDualWanCase && totalGateway > MAX_DUAL_WAN_PORT) {
     // eslint-disable-next-line max-len
     return Promise.reject($t({ defaultMessage: 'Please configure no more than {maxWanPortCount} gateways on each Edge.' }, {
       maxWanPortCount: MAX_DUAL_WAN_PORT
     }))
-
-  } else {
-    return Promise.resolve()
+  } else if (!isDualWanCase && totalGateway > nodeCount) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway on each Edge.' }))
   }
+  return Promise.resolve()
 }
 
 export const validateGatewayInSubnet = (ip?: string, mask?: string, gateway?: string) => {
@@ -739,20 +828,20 @@ export const genExpireTimeString = (seconds?: number) => {
   )
 }
 
-export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean) => {
   if (!lagData) return []
 
   const lagWithGateways = lagData.filter(lag =>
     (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
     && (lag.portType === EdgePortTypeEnum.WAN
-      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? lag.accessPortEnabled : lag.corePortEnabled)))
   )
   return lagWithGateways
 }
 
 // eslint-disable-next-line max-len
-export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
-  return getLagGateways(lagData, includeCorePort).length
+export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean) => {
+  return getLagGateways(lagData, includeCorePort, isCoreAccessEnabled).length
 }
 
 // eslint-disable-next-line max-len

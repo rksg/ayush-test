@@ -6,7 +6,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
-  cssStr,
   Loader,
   NoActiveData,
   Card
@@ -47,7 +46,7 @@ export function ActivePluginsWidget () {
             { data.map((plugin) => (
               <Col span={12} key={plugin.name}>
                 <Badge
-                  color={cssStr('--acx-semantics-blue-50')}
+                  color='rgb(45, 183, 245)'
                   text={plugin.name}
                 />
               </Col>

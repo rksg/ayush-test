@@ -294,11 +294,12 @@ function WiFi7 () {
                     placement='right'
                     onClick={() => setMloDrawerVisible(true)}
                   />}
-                  {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                  {isR370UnsupportedFeatures &&
+                  <ApCompatibilityDrawer
                     visible={mloDrawerVisible}
                     type={ApCompatibilityType.ALONE}
                     networkId={params.networkId}
-                    featureName={InCompatibilityFeatures.MLO_3R}
+                    featureNames={[InCompatibilityFeatures.MLO_3R]}
                     onClose={() => setMloDrawerVisible(false)}
                   />}
                 </Space>

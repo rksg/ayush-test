@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }       from '@acx-ui/components'
-import { useIotControllerActions }  from '@acx-ui/rc/components'
-import { useGetIotControllerQuery } from '@acx-ui/rc/services'
-import { IotControllerSetting }     from '@acx-ui/rc/utils'
+import { Button, PageHeader }           from '@acx-ui/components'
+import { useIotControllerActions }      from '@acx-ui/rc/components'
+import { useGetIotControllerListQuery } from '@acx-ui/rc/services'
+import { IotControllerSetting }         from '@acx-ui/rc/utils'
 import {
   useParams,
   TenantLink
@@ -17,15 +15,38 @@ import IotControllerTabs from './IotControllerTabs'
 
 function IotControllerPageHeader () {
   const { $t } = useIntl()
-  const [iotControllerSettingData, setIotControllerSettingData] = useState<IotControllerSetting>()
-  const { tenantId, iotId, venueId } = useParams()
+  const { iotId } = useParams()
+  const params = useParams()
 
-  const { data: iotControllerData } = useGetIotControllerQuery({ params:
-    { tenantId, iotId, venueId } })
+  const { availableIotControllers } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'publicAddress',
+        'publicPort',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId] }
+    }
+  }, {
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item
+      })) ?? []
+    })
+  })
 
-  useEffect(() => {
-    setIotControllerSettingData(iotControllerData)
-  }, [iotControllerData])
+  // eslint-disable-next-line max-len
+  const iotControllerSettingData = availableIotControllers?.find((item: IotControllerSetting) => item.id === iotId)
 
   const iotControllerActions = useIotControllerActions()
   const { isCustomRole } = useUserProfileContext()
@@ -49,12 +70,12 @@ function IotControllerPageHeader () {
               type='default'
               onClick={() =>
                 // eslint-disable-next-line max-len
-                window.open('https://' + '' + '/admin',
+                window.open('https://' + iotControllerSettingData?.publicAddress + ':' + iotControllerSettingData?.publicPort,
                   '_blank')
               }
             >{$t({ defaultMessage: 'Mangage IoT Controller' })}</Button>,
             <TenantLink
-              to={`/devices/iotController/${iotControllerData?.id}/edit`}
+              to={`/devices/iotController/${iotControllerSettingData?.id}/edit`}
             >
               <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
             </TenantLink>])])
