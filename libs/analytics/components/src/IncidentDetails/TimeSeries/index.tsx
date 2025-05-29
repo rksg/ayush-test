@@ -14,9 +14,7 @@ export const TimeSeries: React.FC<ChartDataProps> = (props) => {
     incident: {
       ...props.incident,
       startTime: props.incident.impactedStart || props.incident.startTime,
-      endTime: props.incident.impactedEnd|| props.incident.endTime,
-      code: props.incident.code === 'i-switch-port-flap' ? 'p-switch-port-congestion' :
-        props.incident.code
+      endTime: props.incident.impactedEnd|| props.incident.endTime
     }
   }
   const queryResults = useChartsQuery(propsModifiedTime)

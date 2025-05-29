@@ -2,9 +2,9 @@ import type { Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
 import { SwitchDetail,
-  ImpactedSwitchPortConjestionTable }     from '../Charts/ImpactedSwitchPortFlap/index'
+  ImpactedSwitchPortFlapTable }     from '../Charts/ImpactedSwitchPortFlap/index'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
@@ -63,7 +63,7 @@ export const SwitchPortFlap = (incident: Incident) => {
         />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
-        <ImpactedSwitchPortConjestionTable incident={incident} />
+        <ImpactedSwitchPortFlapTable incident={incident} />
       </GridCol>
     </GridRow>
   </> : null
