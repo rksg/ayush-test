@@ -2,7 +2,6 @@
 import { useMemo } from 'react'
 
 import { Space }   from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                                    from '@acx-ui/components'
