@@ -2188,10 +2188,6 @@ export const mockAAAPolicyAccountingListResponse = {
   ]
 }
 
-
-
-
-
 export const mockAAAPolicyTemplateListResponse = {
   page: 1,
   totalCount: 2,
