@@ -2,7 +2,7 @@ import { Menu, Typography }      from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
 
-
+// TODO: add hover and selected styles
 export const DisconnectedBranchNode = styled.div<{ selected?: boolean }>`
   width: 100%;
   height: 100%;
@@ -205,6 +205,49 @@ export const PlusButton = styled.div<{ disabled?: boolean }>`
     }
   }
 `
+
+export const DisconnectedBranchPlusButton = styled.div<{ disabled?: boolean }>`
+  position: absolute;
+  top: -31px;
+  right: 125px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid var(--acx-primary-black) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    width: 1px;
+    height: 16px;
+    background-color: var(--acx-primary-black);
+    transform: translateX(-50%);
+  }
+
+  :hover {
+    ${props => props.disabled
+    ? 'cursor: not-allowed;'
+    : 'cursor: pointer;'}
+    border: 1px solid var(--acx-accents-orange-50) !important;
+    background-color: var(--acx-accents-orange-10) !important;
+
+    path {
+      stroke: var(--acx-accents-orange-50) !important;
+    }
+
+    ::after {
+      height: 17px;
+      background-color: var(--acx-accents-orange-50);
+    }
+  }
+`
+
 
 export const EditorToolbarIcon = styled.div`
   display: flex;
