@@ -20,7 +20,7 @@ export function PoeSchedulerTipsModal (props: { isModalOpen: boolean, onOK: () =
         {message}
       </p>
       {additionalContent}
-      <video preload='auto' controls>
+      <video preload='auto' controls style={{ width: '500px' }}>
         <source src={videoSrc} type='video/mp4' />
       </video>
     </div>
@@ -65,17 +65,17 @@ export function PoeSchedulerTipsModal (props: { isModalOpen: boolean, onOK: () =
         <VideoSection
           marginTop='30px'
           message={$t({ defaultMessage: 'To enable or disable PoE for an entire day, use the checkbox next to the day label.' })}
-          videoSrc='./assets/videos/scheduling/entireDay.mp4'
+          videoSrc='./assets/videos/scheduling/switchEntireDay.mp4'
         />
         <VideoSection
           marginTop='20px'
-          message={$t({ defaultMessage: 'To set the network schedule for any time-slot, click the time slot' })}
-          videoSrc='./assets/videos/scheduling/partOfDay.mp4'
+          message={$t({ defaultMessage: 'To enable PoE during a specific time slot, click directly on the desired slot.' })}
+          videoSrc='./assets/videos/scheduling/switchPartOfDay.mp4'
         />
         <VideoSection
           marginTop='20px'
           message={$t({ defaultMessage: 'To enable PoE for multiple consecutive time slots, click and drag across the desired time range.' })}
-          videoSrc='./assets/videos/scheduling/multipleDays.mp4'
+          videoSrc='./assets/videos/scheduling/switchMultipleDays.mp4'
           additionalContent={
             <p style={{ marginBottom: '10px', marginLeft: '20px' }}>
               • <FormattedMessage
