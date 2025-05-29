@@ -133,11 +133,11 @@ function useOptions () {
 }
 
 export const validateSelectingAllAPs = (
-  selectedValue: NodeFilter[],
+  selectedValue: NodeFilter[] | undefined,
   apDataResponse: { data: unknown }
 ) => {
   const { $t } = getIntl()
-  if (!selectedValue.length) return Promise.resolve()
+  if (!selectedValue?.length) return Promise.resolve()
   let isSelectAllAPs = false
   if (get('IS_MLISA_SA')) {
     const data = apDataResponse.data as unknown as {
