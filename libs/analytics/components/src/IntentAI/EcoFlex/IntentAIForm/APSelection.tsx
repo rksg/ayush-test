@@ -163,9 +163,6 @@ export const validateSelectingAllAPs = (
 export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
   const { $t } = useIntl()
   const response = useOptions()
-  const raiMsg = defineMessage({ defaultMessage: 'Please select AP Groups / APs to exclude' })
-  const r1Msg = defineMessage({ defaultMessage: 'Please select APs to exclude' })
-  const isRai = get('IS_MLISA_SA')
   return <Loader
     states={[_.omit(response, ['options'])]}
     style={{ height: 'auto', minHeight: 200 }}
@@ -173,14 +170,13 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
     <Form.Item
       name={name as unknown as NamePath}
       rules={[{
-        required: !isDisabled,
-        message: isRai ? $t(raiMsg) : $t(r1Msg)
-      }, {
         validator: (_, value) => validateSelectingAllAPs(value, response)
       }]}
       children={<APsSelectionInput
         disabled={isDisabled}
-        placeholder={isRai ? $t(raiMsg) : $t(r1Msg)}
+        placeholder={get('IS_MLISA_SA')
+          ? $t({ defaultMessage: 'Select AP Groups / APs to exclude' })
+          : $t({ defaultMessage: 'Please select APs to exclude' })}
         options={response.options?.map(o => ({ ...o, disabled: isDisabled }))}
       />}
     />

@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Row, Col, Typography, Form } from 'antd'
 import Checkbox                       from 'antd/lib/checkbox'
 import { useIntl }                    from 'react-intl'
@@ -18,6 +20,13 @@ export function Settings () {
   const enableExcludedAPs = Form.useWatch(['preferences', 'enableExcludedAPs'])
   const isEnabled = form.getFieldValue('preferences').enable
   const excludedHours = form.getFieldValue('preferences').excludedHours
+  const excludedAPs = Form.useWatch(['preferences', 'excludedAPs'])
+
+  useEffect(() => {
+    if (enableExcludedAPs) {
+      form.validateFields()
+    }
+  }, [excludedAPs])
 
   const content = {
     // eslint-disable-next-line max-len
@@ -49,6 +58,14 @@ export function Settings () {
       />}
       <Form.Item
         name={['preferences','enableExcludedAPs']}
+        rules={[{
+          validator: () => {
+            if (enableExcludedAPs && !excludedAPs?.length) {
+              return Promise.reject($t({ defaultMessage: 'Please select at least one item' }))
+            }
+            return Promise.resolve()
+          }
+        }]}
         valuePropName='checked'>
         <Checkbox
           children={content.option2}
