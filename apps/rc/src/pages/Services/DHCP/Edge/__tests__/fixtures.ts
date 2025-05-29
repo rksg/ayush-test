@@ -215,6 +215,54 @@ export const mockDhcpStatsData = {
       health: 'Good',
       targetVersion: '1.0.2',
       tags: ['Tag1']
+    },{
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '5',
+      serviceName: 'TestDHCP-5',
+      serviceType: 'DHCP',
+      dhcpRelay: 'false',
+      dhcpPoolNum: 3,
+      edgeClusterIds: ['clusterId_3', 'clusterId_4', 'clusterId_5'],
+      venueNum: 3,
+      leaseTime: '24 hours',
+      health: 'Good',
+      currentVersion: '1.0.1',
+      tags: ['Tag1'],
+      clusterAppVersionInfo: [
+        {
+          edgeClusterId: 'clusterId_3',
+          currentVersion: '1.0.2',
+          targetVersion: '1.0.10'
+        },{
+          edgeClusterId: 'clusterId_4',
+          currentVersion: '1.0.2',
+          targetVersion: '1.0.2'
+        },{
+          edgeClusterId: 'clusterId_5',
+          currentVersion: '1.0.3',
+          targetVersion: '1.0.10'
+        }
+      ]
+    },{
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '3',
+      serviceName: 'TestDHCP-6',
+      serviceType: 'DHCP',
+      dhcpRelay: 'false',
+      dhcpPoolNum: 3,
+      edgeClusterIds: ['clusterId_6'],
+      leaseTime: '24 hours',
+      health: 'Good',
+      currentVersion: '1.0.2',
+      targetVersion: '1.0.2',
+      tags: ['Tag1'],
+      clusterAppVersionInfo: [
+        {
+          edgeClusterId: 'clusterId_6',
+          currentVersion: '1.0.10',
+          targetVersion: null
+        }
+      ]
     }
   ]
 }

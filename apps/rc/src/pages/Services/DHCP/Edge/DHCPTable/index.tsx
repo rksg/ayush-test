@@ -2,6 +2,7 @@
 import { useMemo } from 'react'
 
 import { Space }   from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                                    from '@acx-ui/components'
@@ -25,6 +26,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { compareVersions }                        from '@acx-ui/utils'
 
 
 const EdgeDhcpTable = () => {
@@ -41,6 +43,7 @@ const EdgeDhcpTable = () => {
       'health',
       'targetVersion',
       'currentVersion',
+      'clusterAppVersionInfo',
       'tags',
       'edgeAlarmSummary'
     ]
@@ -86,15 +89,42 @@ const EdgeDhcpTable = () => {
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
-    if (data?.currentVersion && data?.targetVersion) {
+
+    if (data?.clusterAppVersionInfo) {
+      data?.clusterAppVersionInfo.forEach(versionInfo => {
+        if (!isReadyToUpdate && versionInfo?.currentVersion && versionInfo?.targetVersion
+          && compareVersions(versionInfo?.currentVersion, versionInfo?.targetVersion) < 0
+        ) {
+          isReadyToUpdate = true
+        }
+      })
+    } else if (data?.currentVersion && data?.targetVersion) {
       data?.currentVersion.split(',').forEach(currentVersion=>{
         if (currentVersion.trim() !== data?.targetVersion) {
           isReadyToUpdate = true
         }
       })
     }
-
     return isReadyToUpdate
+  }
+
+  const getCurrentVersions = (data: DhcpStats) => {
+    let versions = ''
+    if (data?.clusterAppVersionInfo) {
+      const distinctVersions = new Set(
+        data?.clusterAppVersionInfo.map(item => {
+          if (item?.currentVersion) {
+            return item.currentVersion
+          } else {
+            return ''
+          }
+        })
+      )
+      versions = Array.from(distinctVersions).join(', ')
+    } else {
+      versions = data?.currentVersion || ''
+    }
+    return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
   }
 
   const columns: TableProps<DhcpStats>['columns'] = [
@@ -180,7 +210,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'currentVersion',
       sorter: true,
       render (data, row) {
-        return row.currentVersion || $t({ defaultMessage: 'NA' })
+        return getCurrentVersions(row)
       }
     }
     // {
