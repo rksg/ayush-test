@@ -348,7 +348,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                             <div
                               id={`${item.key}_${i}`}
                               data-testid={`${item.key}_${i}`}
-                              style={{ width: intervalUnit === 15 ? '10px' : '40px', height: '32px' }}
+                              style={{ width: intervalUnit === 15 ? '10px' : '20px', height: '32px' }}
                             ></div>
                           </Tooltip>,
                           value: timeslot
