@@ -24,6 +24,7 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   disabled?: boolean,
   clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]
+  isSupportAccessPort?: boolean
 }
 
 const { useWatch, useFormInstance } = Form
@@ -39,7 +40,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     disabled,
     formFieldsProps,
     subInterfaceList = [],
-    clusterInfo
+    clusterInfo,
+    isSupportAccessPort
   } = props
 
   const { $t } = useIntl()
@@ -134,6 +136,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 formFieldsProps={formFieldsProps}
                 subnetInfoForValidation={subnetInfoForValidation.concat(portsToBeValidated)}
                 clusterInfo={clusterInfo}
+                subInterfaceList={subInterfaceList}
+                isSupportAccessPort={isSupportAccessPort}
               />
             }}
           </Form.Item>

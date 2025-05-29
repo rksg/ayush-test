@@ -31,6 +31,9 @@ export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
     }, {
       featureName: 'L2oGRE',
       requiredFw: '2.4.0.1'
+    }, {
+      featureName: 'Core/Access Ports Separation',
+      requiredFw: '2.4.0.1'
     }
   ]
 }

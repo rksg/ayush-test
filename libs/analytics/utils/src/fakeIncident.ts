@@ -837,6 +837,41 @@ export const fakeIncidentLLDPStatus = fakeIncident({
   connectedPowerDeviceCount: -1
 })
 
+export const fakeIncidentPortFlap = fakeIncident({
+  severity: 0.75,
+  startTime: '2022-09-30T07:00:00.000Z',
+  endTime: '2022-10-05T01:00:00.000Z',
+  code: 'i-switch-port-flap',
+  sliceType: 'switchGroup',
+  sliceValue: 'GRP2',
+  id: '9bce5e7b-7959-44da-8dc6-b176456a2bfd',
+  path: [
+    {
+      type: 'switchGroup',
+      name: 'GRP2'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: 1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})
+
 export const fakeIncidentLoopDetection = fakeIncident({
   severity: 0.75,
   startTime: '2022-09-30T07:00:00.000Z',
