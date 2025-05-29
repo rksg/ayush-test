@@ -336,18 +336,17 @@ export function SwitchPortTable (props: {
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
         return row.poeScheduleEnabled ?
-          <>{$t({ defaultMessage: 'Custom Schedule' })}
-            <Button
-              type='link'
-              data-testid='edit-poe-schedule'
-              onClick={() => {
-                setPoeScheduleData(row?.poeScheduler || {})
-                setPoeSchedulerModalVisible(true)
-              }}
-              style={{ paddingLeft: '10px' }}
-            >
-              {$t({ defaultMessage: 'Preview' })}
-            </Button></> :
+          <Button
+            type='link'
+            data-testid='edit-poe-schedule'
+            onClick={() => {
+              setPoeScheduleData(row?.poeScheduler || {})
+              setPoeSchedulerModalVisible(true)
+            }}
+            style={{ paddingLeft: '10px' }}
+          >
+            {$t({ defaultMessage: 'Custom Schedule' })}
+          </Button> :
           noDataDisplay
       }
     },{
