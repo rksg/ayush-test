@@ -34,7 +34,7 @@ import { Actions, getDefaultTime, isVisibleByAction } from './utils'
 
 import type { Filters } from './services'
 
-type IconTooltipProps = {
+export type IntentSummaryProps = {
   title: MessageDescriptor
   subTitleLeft: MessageDescriptor
   subTitleMiddle: MessageDescriptor
@@ -43,7 +43,7 @@ type IconTooltipProps = {
   icon: JSX.Element
 }
 
-const IconTooltip = (props: IconTooltipProps) => {
+const IconTooltip = (props: IntentSummaryProps) => {
   const { $t } = useIntl()
   const title = $t(props.title)
   const subTitleLeft = $t(props.subTitleLeft)
@@ -63,47 +63,54 @@ const IconTooltip = (props: IconTooltipProps) => {
   )
 }
 
-export const iconTooltips = {
-  [AiFeatures.RRM]: <IconTooltip
-    icon={<AIDrivenRRM />}
-    title={defineMessage({ defaultMessage: 'AI-Driven RRM' })}
-    subTitleLeft={defineMessage({ defaultMessage: 'Throughput' })}
-    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
-    subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
-    content={defineMessage({
+export const intentSummaryConfig = {
+  [AiFeatures.RRM]: {
+    icon: <AIDrivenRRM />,
+    title: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+    subTitleLeft: defineMessage({ defaultMessage: 'Throughput' }),
+    subTitleMiddle: defineMessage({ defaultMessage: 'vs' }),
+    subTitleRight: defineMessage({ defaultMessage: 'Client Density' }),
+    content: defineMessage({
       defaultMessage: `Choose between a network with maximum throughput,
-      allowing some interference, or one with minimal interference, for high client density.` })}
-  />,
-  [AiFeatures.EquiFlex]: <IconTooltip
-    icon={<EquiFlex />}
-    title={defineMessage({ defaultMessage: 'EquiFlex' })}
-    subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
-    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
-    subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
-    content={defineMessage({
+      allowing some interference, or one with minimal interference, for high client density.` })
+  },
+  [AiFeatures.EquiFlex]: {
+    icon: <EquiFlex />,
+    title: defineMessage({ defaultMessage: 'EquiFlex' }),
+    subTitleLeft: defineMessage({ defaultMessage: 'Time to Connect' }),
+    subTitleMiddle: defineMessage({ defaultMessage: 'vs' }),
+    subTitleRight: defineMessage({ defaultMessage: 'Client Density' }),
+    content: defineMessage({
       defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
-      density environment or focus on keeping faster client time to connect.` })}
-  />,
-  [AiFeatures.AIOps]: <IconTooltip
-    icon={<AIOperation />}
-    title={defineMessage({ defaultMessage: 'AI Operations' })}
-    subTitleLeft={defineMessage({ defaultMessage: 'Optimize Network' })}
-    subTitleMiddle={defineMessage({ defaultMessage: 'with' })}
-    subTitleRight={defineMessage({ defaultMessage: 'AI Insights' })}
-    content={defineMessage({
+      density environment or focus on keeping faster client time to connect.` })
+  },
+  [AiFeatures.AIOps]: {
+    icon: <AIOperation />,
+    title: defineMessage({ defaultMessage: 'AI Operations' }),
+    subTitleLeft: defineMessage({ defaultMessage: 'Optimize Network' }),
+    subTitleMiddle: defineMessage({ defaultMessage: 'with' }),
+    subTitleRight: defineMessage({ defaultMessage: 'AI Insights' }),
+    content: defineMessage({
       defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
-      dynamic recommendations to enhance KPIs and user experience.` })}
-  />,
-  [AiFeatures.EcoFlex]: <IconTooltip
-    icon={<EcoFlexAI />}
-    title={defineMessage({ defaultMessage: 'Energy Saving' })}
-    subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
-    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
-    subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
-    content={defineMessage({
+      dynamic recommendations to enhance KPIs and user experience.` })
+  },
+  [AiFeatures.EcoFlex]: {
+    icon: <EcoFlexAI />,
+    title: defineMessage({ defaultMessage: 'Energy Saving' }),
+    subTitleLeft: defineMessage({ defaultMessage: 'Energy Footprint' }),
+    subTitleMiddle: defineMessage({ defaultMessage: 'vs' }),
+    subTitleRight: defineMessage({ defaultMessage: 'Mission Criticality' }),
+    content: defineMessage({
       defaultMessage: `Reduce energy footprint for efficiency and sustainability,
-      or operate mission-critical services for reliability and continuous operation.` })}
-  />
+      or operate mission-critical services for reliability and continuous operation.` })
+  }
+}
+
+export const iconTooltips = {
+  [AiFeatures.RRM]: <IconTooltip {...intentSummaryConfig[AiFeatures.RRM]} />,
+  [AiFeatures.EquiFlex]: <IconTooltip {...intentSummaryConfig[AiFeatures.EquiFlex]} />,
+  [AiFeatures.AIOps]: <IconTooltip {...intentSummaryConfig[AiFeatures.AIOps]} />,
+  [AiFeatures.EcoFlex]: <IconTooltip {...intentSummaryConfig[AiFeatures.EcoFlex]} />
 }
 
 export type AIFeatureProps = {
