@@ -2,14 +2,14 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
-import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
+import { Handle, isNode, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls } from '@acx-ui/rc/utils'
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusReason, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
 import { hasAllowedOperations, hasPermission }                                       from '@acx-ui/user'
 import { getOpsApi }                                                                 from '@acx-ui/utils'
 
@@ -39,6 +39,13 @@ export default function BaseStepNode (props: NodeProps
     = useDeleteWorkflowStepByIdV2Mutation()
   const [ deleteStepDescendants, { isLoading: isDeleteStepDescendantsLoading }]
     = useDeleteWorkflowStepDescendantsByIdMutation()
+
+  const {isNodeValid, validationErrors} = useMemo(() => {
+    // @ts-ignore
+    const validationErrors = props.data?.statusReasons.filter(reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+    return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors}
+
+  }, [props.data])
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -175,7 +182,7 @@ export default function BaseStepNode (props: NodeProps
 
   return (
     <UI.StepNode selected={props.selected}
-      invalid={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
+      invalid={workflowValidationEnhancementFFToggle && !isNodeValid}>
       <Loader states={[
         { isLoading: false, isFetching: (isDeleteStepLoading
           || isDeleteDetachStepLoading || isDeleteStepDescendantsLoading) }
@@ -233,29 +240,28 @@ export default function BaseStepNode (props: NodeProps
         position={Position.Bottom}
       />
 
-      {(props.data?.status === 'INVALID' && workflowValidationEnhancementFFToggle) &&
+      {(!isNodeValid && workflowValidationEnhancementFFToggle) &&
         <Tooltip
           showArrow={false}
           // @ts-ignore
-          title={props.data?.statusReasons?.map(reason =>
+          title={validationErrors?.map(reason =>
             <Row>{ reason.statusReason }</Row>)}>
           <UI.InvalidIcon>
             <WarningCircleSolid />
           </UI.InvalidIcon>
         </Tooltip>
-
       }
 
       {props.data.isStart &&
         <UI.FlagIcon
-          offset={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <StartFlag />
         </UI.FlagIcon>
       }
 
       {props.data.isEnd &&
         <UI.FlagIcon
-          offset={workflowValidationEnhancementFFToggle && props.data?.status === 'INVALID'}>
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <EndFlag />
         </UI.FlagIcon>
       }

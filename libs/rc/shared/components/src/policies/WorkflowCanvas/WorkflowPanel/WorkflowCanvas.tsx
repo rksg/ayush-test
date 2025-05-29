@@ -107,53 +107,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
   }
 
-  const onCustomNodeDrag = (event: React.MouseEvent, node: Node) => {
-
-    const { movementX, movementY, screenX, screenY } = event
-    const flowOldPosition = reactFlowInstance.screenToFlowPosition({
-      x: (screenX + movementX),
-      y: (screenY + movementY) })
-    const flowNewPosition = reactFlowInstance.screenToFlowPosition({ x: screenX, y: screenY })
-    const deltaX = (flowOldPosition.x - flowNewPosition.x)
-    const deltaY = (flowOldPosition.y - flowNewPosition.y)
-
-
-    const nodeMap = new Map<string, Node>()
-    nodes.forEach(n => {nodeMap.set(n.id, n)})
-
-    // TODO: update to handle splits in both directions
-
-    // update parents
-    let currentNodeId:string|null = node.id
-    while(currentNodeId) {
-      let currentNode = nodeMap.get(currentNodeId)
-      if(currentNode) {
-        currentNode.position = {
-          x: currentNode.position.x + deltaX,
-          y: currentNode.position.y + deltaY
-        }
-      }
-
-      currentNodeId = currentNode?.data.priorStepId ?? null
-    }
-
-    // update children
-    currentNodeId = node.data?.nextStepId ?? null
-    while(currentNodeId) {
-      let currentNode = nodeMap.get(currentNodeId)
-      if(currentNode) {
-        currentNode.position = {
-          x: currentNode.position.x + deltaX,
-          y: currentNode.position.y + deltaY
-        }
-      }
-
-      currentNodeId = currentNode?.data?.nextStepId ?? null
-    }
-
-    reactFlowInstance.setNodes(Array.from(nodeMap.values()))
-  }
-
   useEffect(() => {
     if (props.initialNodes) {
       setNodes(props.initialNodes)
@@ -174,8 +127,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodeTypes={nodeTypes}
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
-      // TODO: (remove this???) onNodeDrag={onCustomNodeDrag}
-      nodesDraggable={workflowValidationEnhancementFFToggle ? true : false}
+      nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
       nodesConnectable={false}
       minZoom={0.1}
       attributionPosition={'bottom-left'}

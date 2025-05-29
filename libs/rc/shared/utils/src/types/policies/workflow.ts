@@ -128,7 +128,7 @@ export interface WorkflowActionDefinition {
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
 
-enum StepStatusCodes {
+export enum StepStatusCodes {
     InvalidAction = 'invalid.action',
     MultipleOnboardingSteps = 'multiple.onboarding.steps',
     DisconnectedStep = 'disconnected.step'
