@@ -1395,6 +1395,24 @@ export function EditPortDrawer ({
     }
   }
 
+  const renderPoeScheduleStatus = () => {
+    const allCustomSchedule = multiPoeScheduleData.every(
+      schedule => schedule?.type === SchedulerTypeEnum.CUSTOM
+    )
+    const singleCustomSchedule = poeScheduler?.type === SchedulerTypeEnum.CUSTOM
+    const allNoSchedule = multiPoeScheduleData.every(
+      schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
+    )
+
+    if (allCustomSchedule || singleCustomSchedule) {
+      return $t({ defaultMessage: 'Custom Schedule' })
+    } else if (allNoSchedule) {
+      return noDataDisplay
+    } else {
+      return <MultipleText />
+    }
+  }
+
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       {
@@ -2204,12 +2222,7 @@ export function EditPortDrawer ({
               noStyle
               children={isMultipleEdit ?
                 <>
-                  {multiPoeScheduleData.every(
-                    poeScheduler => poeScheduler?.type === SchedulerTypeEnum.CUSTOM) ||
-                    poeScheduler?.type === SchedulerTypeEnum.CUSTOM ?
-                    $t({ defaultMessage: 'Custom Schedule' }) : (multiPoeScheduleData.every(
-                      poeScheduler => poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE) ?
-                      noDataDisplay : <MultipleText />)}
+                  {renderPoeScheduleStatus()}
                   <Button
                     hidden={!poeSchedulerCheckbox}
                     type='link'
