@@ -222,7 +222,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const actions = () => {
+    const actions = (isCallback?: boolean) => {
       if(e.key === 'New_Canvas') {
         onNewCanvas()
       } else if (e.key === 'Manage_Canvases') {
@@ -230,7 +230,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       } else {
         const selected = canvasList?.find(i => i.id == e.key)
         setCanvasId(selected?.id || canvasId)
-        setAvoidRefetchCanvas(true)
+        if(isCallback){
+          setAvoidRefetchCanvas(true)
+        }
         if(canvasId == selected?.id){
           fetchCanvas()
         }
@@ -241,7 +243,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       checkChanges(!!canvasHasChanges, () => {
         actions()
       }, ()=>{
-        onSave(actions)
+        onSave(() => actions(true))
       })
     }
   }
