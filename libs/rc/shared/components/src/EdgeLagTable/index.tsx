@@ -48,6 +48,7 @@ interface EdgeLagTableProps {
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
+  isSupportAccessPort?: boolean
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -57,7 +58,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
     isClusterWizard = false,
-    clusterInfo
+    clusterInfo, isSupportAccessPort
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -292,6 +293,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         subInterfaceList={subInterfaceList}
         isClusterWizard={isClusterWizard}
         clusterInfo={clusterInfo}
+        isSupportAccessPort={isSupportAccessPort}
       />
     </>
   )

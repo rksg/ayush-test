@@ -8,9 +8,16 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs, mockedIntentCRRMStatusTrail } from './__tests__/fixtures'
-import * as CCrrmChannelAuto                                                                     from './CCrrmChannelAuto'
-import { kpis }                                                                                  from './common'
+import {
+  mockedApChannelDistribution,
+  mockedApPowerDistribution,
+  mockedCRRMGraphs,
+  mockedIntentCRRM,
+  mockedIntentCRRMKPIs,
+  mockedIntentCRRMStatusTrail
+} from './__tests__/fixtures'
+import * as CCrrmChannelAuto from './CCrrmChannelAuto'
+import { kpis }              from './common'
 
 jest.mock('../IntentContext')
 jest.mock('./RRMGraph', () => ({
@@ -38,6 +45,12 @@ describe('IntentAIDetails', () => {
     store.dispatch(intentAIApi.util.resetApiState())
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
+    })
+    mockGraphqlQuery(intentAIUrl, 'ApChannelDistribution', {
+      data: { intent: { apChannelDistribution: mockedApChannelDistribution } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
+      data: { intent: { apPowerDistribution: mockedApPowerDistribution } }
     })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useAnySplitsOn).mockReturnValue(true)

@@ -1331,7 +1331,8 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
       vlan: item.vlan,
       status: item.status,
       isCorePort: item.isCorePort === 'Enabled',
-      portEnabled: item.adminStatus === 'Enabled'
+      portEnabled: item.adminStatus === 'Enabled',
+      isAccessPort: item.isAccessPort === 'Enabled'
     }
   })
 

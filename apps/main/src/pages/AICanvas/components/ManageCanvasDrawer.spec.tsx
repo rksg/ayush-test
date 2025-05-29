@@ -49,7 +49,7 @@ const mockedUpdate = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
   useDeleteCanvasMutation: () => [mockedDelete],
-  useUpdateCanvasMutation: () => [mockedUpdate]
+  usePatchCanvasMutation: () => [mockedUpdate]
 }))
 
 describe('ManageCanvasDrawer', () => {

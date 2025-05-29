@@ -6,8 +6,7 @@ import { useIntl }                       from 'react-intl'
 
 import {
   Loader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance,
+  StepsForm,
   AnchorContext
 } from '@acx-ui/components'
 import {
@@ -56,7 +55,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
 
   const [getVenueIot] = useLazyGetVenueIotQuery()
 
-  const formRef = useRef<StepsFormLegacyInstance<ApIot>>()
+  const [form] = Form.useForm()
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
   const [initData, setInitData] = useState({} as ApIot)
@@ -90,7 +89,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
 
           setReadyToScroll?.((r) => [...new Set(r.concat('IOT-CONTROLLER'))])
         } else {
-          formRef?.current?.setFieldsValue(iotData)
+          form.setFieldsValue(iotData)
         }
       }
 
@@ -104,25 +103,23 @@ export function IotControllerV2 (props: ApEditItemProps) {
     isUseVenueSettingsRef.current = isUseVenue
 
     if (isUseVenue) {
-      if (formRef?.current) {
-        const currentData = formRef.current.getFieldsValue()
-        setApIot({ ...currentData })
-      }
+      const currentData = form.getFieldsValue()
+      setApIot({ ...currentData })
 
       if (venueIot) {
         const data = {
           ...venueIot,
           useVenueSettings: true
         }
-        formRef?.current?.setFieldsValue(data)
+        form.setFieldsValue(data)
       }
     } else {
       if (!isEmpty(apIot)) {
-        formRef?.current?.setFieldsValue(apIot)
+        form.setFieldsValue(apIot)
       }
     }
 
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+    updateEditContext(true)
   }
 
   const handleUpdateIot = async (values: ApIot) => {
@@ -150,7 +147,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
   }
 
   const updateEditContext = (
-    form: StepsFormLegacyInstance,
+    // form: StepsFormLegacyInstance,
     isDirty: boolean
   ) => {
     setEditContextData &&
@@ -173,11 +170,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const handleDiscard = () => {
     setIsUseVenueSettings(initData.useVenueSettings)
     isUseVenueSettingsRef.current = initData.useVenueSettings
-    formRef?.current?.setFieldsValue(initData)
-  }
-
-  const handleChange = () => {
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+    form.setFieldsValue(initData)
   }
 
   const iotMqttBrokerAddressFieldName = 'mqttBrokerAddress'
@@ -197,8 +190,11 @@ export function IotControllerV2 (props: ApEditItemProps) {
         }
       ]}
     >
-      <StepsFormLegacy formRef={formRef} onFormChange={handleChange}>
-        <StepsFormLegacy.StepForm initialValues={initData}>
+      <StepsForm
+        form={form}
+        initialValues={initData}
+      >
+        <StepsForm.StepForm>
           <VenueSettingsHeader
             venue={venueData}
             disabled={!isAllowEdit}
@@ -265,10 +261,9 @@ export function IotControllerV2 (props: ApEditItemProps) {
           { drawerVisible && <IotControllerDrawer
             visible={drawerVisible}
             setVisible={setDrawerVisible}
-            applyIotController={handleIotController}
           /> }
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+        </StepsForm.StepForm>
+      </StepsForm>
     </Loader>
   )
 

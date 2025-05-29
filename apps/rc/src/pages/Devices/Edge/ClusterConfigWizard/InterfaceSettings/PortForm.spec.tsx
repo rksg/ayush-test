@@ -143,7 +143,7 @@ describe('InterfaceSettings - PortForm', () => {
     expect(screen.getByText('Port General Settings')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     // eslint-disable-next-line max-len
-    await screen.findByText('Each Edge at least one port must be enabled and configured to WAN or core port to form a cluster.')
+    await screen.findByText('Each Edge at least one port must be enabled and configured to WAN or Core port to form a cluster.')
   })
 
   describe('Core Access', () => {

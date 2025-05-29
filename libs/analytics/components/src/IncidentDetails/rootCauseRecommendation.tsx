@@ -109,6 +109,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-switch-vlan-mismatch': 'vlan-mismatch',
   'i-switch-loop-detection': 'loop-detection',
   'i-switch-lldp-status': 'lldp-status',
+  'i-switch-port-flap': 'port-flap',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
@@ -1217,6 +1218,27 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `<p>Enable LLDP on the affected device to restore proper network visibility and functionality, especially for AI. This will ensure that neighboring device details are accurately captured and analyzed, facilitating better network management and enabling the detection of potential incidents.</p>
 <ul>
   <li>If LLDP is disabled globally or at the port level, enable it accordingly also if LLDP is in transmit-only mode or receive-only mode, configure it to enable both transmit and receive.</li>
+</ul>`
+      })
+    }
+  },
+  'port-flap': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `<p>Common causes of port flapping include:</p>
+  <ol>
+    <li>Faulty or unsupported cables: Damaged or non-standard cables can cause intermittent connections</li>
+    <li>Issues with Small Form-Factor Pluggable (SFP) modules: Problems with these modules can lead to synchronization issues</li>
+    <li>Loose connections: Poorly connected cables or modules can result in unstable links</li>
+    <li>Peer Device: Continuous rebooting of an end device connected to the port or incorrect speed/duplex and configurations.</li>
+  </ol>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>To troubleshoot port flapping, you can:</p>
+<ul>
+  <li>Check and replace cables: Ensure all cables are in good condition and properly connected</li>
+  <li>Verify SFP modules: Make sure they are compatible and securely installed</li>
+  <li>Monitor syslogs and port configuration: Check syslog for additional information related port flap and error disable. Also check port configurations like speed/duplex setting, POE details.</li>
 </ul>`
       })
     }
