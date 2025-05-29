@@ -27,6 +27,9 @@ interface SubInterfaceTableProps {
   handleDelete: (data: EdgeSubInterface) => Promise<unknown>
   handleUpload: (formData: FormData) => Promise<unknown>
   uploadResult: unknown
+  portId?: string
+  lagId?: number
+  isSupportAccessPort?: boolean
 }
 
 interface UploadResultType {
@@ -51,7 +54,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     handleUpdate,
     handleDelete,
     handleUpload,
-    uploadResult
+    uploadResult,
+    portId,
+    lagId
   } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -220,6 +225,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             data={currentEditData}
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
+            portId={portId}
+            lagId={lagId}
           />
           <Loader states={[tableQuery]}>
             <Table<EdgeSubInterface>

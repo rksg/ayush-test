@@ -2,10 +2,10 @@ const data = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
     data: [{
-      id: 'bbc41563473348d29a36b76e95c50381',
+      id: '1',
       name: 'ruckusdemos',
       inboundAddress: '192.168.1.1',
-      iotSerialNumber: 'rewqfdsafasd',
+      serialNumber: 'rewqfdsafasd',
       publicAddress: 'ruckusdemos.cloud',
       publicPort: 443,
       apiToken: 'xxxxxxxxxxxxxxxxxxx',
@@ -15,7 +15,7 @@ const data = {
       id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
       name: 'iotController1',
       inboundAddress: '192.168.2.21',
-      iotSerialNumber: 'jfsdjoiasdfjo',
+      serialNumber: 'jfsdjoiasdfjo',
       publicAddress: '35.229.207.4',
       publicPort: 443,
       apiToken: 'xxxxxxxxxxxxxxxxxxx',

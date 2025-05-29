@@ -140,7 +140,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [isEditName, setIsEditName] = useState(false)
-  const [isEditInit, setIsEditInit] = useState(true)
+  const [avoidRefetchCanvas, setAvoidRefetchCanvas] = useState(!!editCanvasId)
   const [visibilityType, setVisibilityType] = useState('')
   const [nameFieldError, setNameFieldError] = useState('')
   const [canvasDisplayName, setCanvasDisplayName] = useState('')
@@ -192,9 +192,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(editCanvasId && !isCanvasLoading && isEditInit) {
-      // Avoid overwriting canvas data
-      setIsEditInit(false)
+    if(avoidRefetchCanvas && !isCanvasLoading) {
+      setAvoidRefetchCanvas(false)
       return
     }
     if(canvasList && !isCanvasFetching) {
@@ -223,7 +222,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const actions = () => {
+    const actions = (isCallback?: boolean) => {
       if(e.key === 'New_Canvas') {
         onNewCanvas()
       } else if (e.key === 'Manage_Canvases') {
@@ -231,6 +230,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       } else {
         const selected = canvasList?.find(i => i.id == e.key)
         setCanvasId(selected?.id || canvasId)
+        if(isCallback){
+          setAvoidRefetchCanvas(true)
+        }
         if(canvasId == selected?.id){
           fetchCanvas()
         }
@@ -241,7 +243,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       checkChanges(!!canvasHasChanges, () => {
         actions()
       }, ()=>{
-        onSave(actions)
+        onSave(() => actions(true))
       })
     }
   }
@@ -501,7 +503,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                         },
                         {
                           key: 'New_Canvas',
-                          label: $t({ defaultMessage: 'New Canvas' }),
+                          label: <>
+                            {
+                              canvasList.length >= 10 ? (
+                                <Tooltip
+                                  title={$t({ defaultMessage: 'Maximum of 10 canvases reached.' })}
+                                  placement='bottom'>
+                                  <span style={{
+                                    display: 'inline-block', width: '100%'
+                                  }}>{$t({ defaultMessage: 'New Canvas' })}</span>
+                                </Tooltip>
+                              ) : (
+                                <span>{$t({ defaultMessage: 'New Canvas' })}</span>
+                              )
+                            }
+                          </>,
                           disabled: canvasList.length >= 10
                         },
                         {
