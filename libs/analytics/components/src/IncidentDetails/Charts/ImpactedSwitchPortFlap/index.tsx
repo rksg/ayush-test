@@ -1,11 +1,15 @@
 import { useMemo } from 'react'
 
 import { MessageDescriptor,
-  defineMessage, useIntl }          from 'react-intl'
+  defineMessage, useIntl, FormattedMessage }          from 'react-intl'
+
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {  Card, Loader, Table,
-  TableProps }         from '@acx-ui/components'
+  TableProps, Tooltip }         from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import { DetailsCard } from '../SwitchDetail/DetailsCard'
 import { ChartProps }  from '../types'
@@ -34,7 +38,8 @@ export function SwitchDetail ({ incident }: ChartProps) {
     { key: 'model', title: defineMessage({ defaultMessage: 'Switch Model' }) },
     { key: 'mac', title: defineMessage({ defaultMessage: 'Switch MAC' }) },
     { key: 'firmware', title: defineMessage({ defaultMessage: 'Switch Firmware Version' }) },
-    { key: 'portCount', title: defineMessage({ defaultMessage: 'Impacted Port Count' }) }
+    { key: 'numOfPorts', title: defineMessage({ defaultMessage: 'Number of ports' }) },
+    { key: 'portCount', title: defineMessage({ defaultMessage: 'Ports with flap' }) }
   ]
 
   const data = {
@@ -47,16 +52,40 @@ export function SwitchDetail ({ incident }: ChartProps) {
   </Loader>
 }
 
-export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
+export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
+  const isMLISA = get('IS_MLISA_SA') === 'true'
 
   const impactedSwitch = usePortFlapImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
   const portCount = impactedSwitch.data?.ports?.length
 
+  const getSwitchDetailsPath = () => {
+    const mac = impactedSwitch.data?.mac
+    if (mac) {
+      return `devices/switch/${isMLISA ? mac : mac.toLowerCase()}/serial/details/${
+        isMLISA ? 'reports' : 'overview'
+      }`
+    }
+    return ''
+  }
+
   return <Loader states={[impactedSwitch]}>
-    <Card title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
-      { portCount })}
-    type='no-border'>
+    <Card
+      title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
+        { portCount })}
+      type='no-border'>
+      <p>
+        <FormattedMessage
+          defaultMessage='Port flap detected at {name}'
+          values={{
+            name: (
+              <TenantLink to={getSwitchDetailsPath()}>
+                {impactedSwitch.data?.name}
+              </TenantLink>
+            )
+          }}
+        />
+      </p>
       <ImpactedSwitchTable data={impactedSwitch.data?.ports!} />
     </Card>
   </Loader>
@@ -68,6 +97,18 @@ function ImpactedSwitchTable (props: {
   type Port = { portNumber: string; connectedDeviceName: string; connectedDevicePortType: string }
   const { $t } = useIntl()
   const ports = props.data
+
+  const formatVlans = (vlans: string) => {
+    if (!vlans) return '--'
+    const vlanList = vlans.split(',').map(v => v.trim())
+    if (vlanList.length <= 5) return vlans
+    return (
+      <Tooltip title={vlans}>
+        {vlanList.slice(0, 5).join(', ')} and more
+      </Tooltip>
+    )
+  }
+
   const rows: Port[] = ports.map(impactedSwitchPort => {
     const portCheckRegEx = new RegExp('\\d+/\\d+/\\d+')
     let portNumber = impactedSwitchPort.portNumber
@@ -75,14 +116,14 @@ function ImpactedSwitchTable (props: {
     if(!isPort) portNumber = portNumber + ' (LAG)'
     return {
       portNumber: portNumber,
-      portType: 'Copper',
-      portStatus: 'Up',
-      lastFlapTimeStamp: '2023-10-10 12:00:00',
-      poeDetail: 'PoE+',
-      vlan: 'VLAN 10',
+      portType: impactedSwitchPort.type,
+      portStatus: impactedSwitchPort.status,
+      lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(impactedSwitchPort.lastFlapTime),
+      poeDetail: impactedSwitchPort.poeOperState,
+      vlan: formatVlans(impactedSwitchPort.flapVlans),
       connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.name,
-      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === null ? '--' :
+      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.type
     }
   })
@@ -101,7 +142,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Port Type' }),
     fixed: 'left',
     width: 50,
-    sorter: { compare: sortProp('portNumber', defaultSort) },
+    sorter: { compare: sortProp('type', defaultSort) },
     searchable: true
   }, {
     key: 'vlan',
@@ -109,7 +150,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'VLAN' }),
     fixed: 'left',
     width: 40,
-    sorter: { compare: sortProp('portNumber', defaultSort) },
+    sorter: { compare: sortProp('flapVlans', defaultSort) },
     searchable: true
   }, {
     key: 'poeDetail',
@@ -117,7 +158,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'POE Detail' }),
     fixed: 'left',
     width: 60,
-    sorter: { compare: sortProp('portNumber', defaultSort) },
+    sorter: { compare: sortProp('poeOperState', defaultSort) },
     searchable: true
   }, {
     key: 'connectedDevicePortType',
@@ -141,7 +182,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Port status' }),
     fixed: 'left',
     width: 50,
-    sorter: { compare: sortProp('portNumber', defaultSort) },
+    sorter: { compare: sortProp('status', defaultSort) },
     searchable: true
   }, {
     key: 'lastFlapTimeStamp',
@@ -149,7 +190,7 @@ function ImpactedSwitchTable (props: {
     title: $t({ defaultMessage: 'Last Flap Time Stamp' }),
     fixed: 'left',
     width: 70,
-    sorter: { compare: sortProp('portNumber', defaultSort) },
+    sorter: { compare: sortProp('lastFlapTime', defaultSort) },
     searchable: true
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps

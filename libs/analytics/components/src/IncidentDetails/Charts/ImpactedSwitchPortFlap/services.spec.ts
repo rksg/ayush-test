@@ -5,16 +5,20 @@ import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 import { mockImpactedSwitches } from './__tests__/fixtures'
 import { api }                  from './services'
 
-
 describe('incidentDetailsApi', () => {
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
+
   describe('impactedSwitches', () => {
-    it('should return correct data', async () => {
+    it('should return correct data with model name transformation', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
       const { status, data, error } = await store.dispatch(
-        api.endpoints.portFlapImpactedSwitch.initiate({ id: fakeIncident1.id, n: 100, search: '' })
+        api.endpoints.portFlapImpactedSwitch.initiate({
+          id: fakeIncident1.id,
+          n: 100,
+          search: ''
+        })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual({
@@ -37,16 +41,68 @@ describe('incidentDetailsApi', () => {
       })
       expect(error).toBe(undefined)
     })
-    it('should return error', async () => {
+
+    it('should handle empty impacted switches array', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', {
-        error: new Error('something went wrong!')
+        data: { incident: { impactedSwitches: [] } }
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.portFlapImpactedSwitch.initiate({ id: 'xxx', n: 100, search: '' })
+        api.endpoints.portFlapImpactedSwitch.initiate({
+          id: fakeIncident1.id,
+          n: 100,
+          search: ''
+        })
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toBeUndefined()
+      expect(error).toBe(undefined)
+    })
+
+    it('should handle search parameter', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.portFlapImpactedSwitch.initiate({
+          id: fakeIncident1.id,
+          n: 100,
+          search: 'ICX8200'
+        })
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toBeTruthy()
+      expect(error).toBe(undefined)
+    })
+
+    it('should handle network error', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', {
+        error: new Error('GraphQL Error (Code: 500)')
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.portFlapImpactedSwitch.initiate({
+          id: 'xxx',
+          n: 100,
+          search: ''
+        })
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
-      expect(error).not.toBe(undefined)
+      expect(error).toBeTruthy()
+      expect(error?.message).toContain('GraphQL Error')
+    })
+
+    it('should handle GraphQL error', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', {
+        error: new Error('GraphQL error')
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.portFlapImpactedSwitch.initiate({
+          id: 'xxx',
+          n: 100,
+          search: ''
+        })
+      )
+      expect(status).toBe('rejected')
+      expect(data).toBe(undefined)
+      expect(error).toBeTruthy()
     })
   })
 })

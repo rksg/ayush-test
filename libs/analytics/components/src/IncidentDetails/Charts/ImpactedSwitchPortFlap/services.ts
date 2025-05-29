@@ -6,6 +6,11 @@ import { dataApi }  from '@acx-ui/store'
 
 export type ImpactedSwitchPort = {
   portNumber: string
+  type: string
+  poeOperState: string
+  status: string
+  lastFlapTime: string
+  flapVlans: string
   connectedDevice: {
     name: string
     mac: string
@@ -32,9 +37,14 @@ export const api = dataApi.injectEndpoints({
           query ImpactedSwitches($id: String, $n: Int, $search: String) {
             incident(id: $id) {
               impactedSwitches: getImpactedSwitches(n: $n, search: $search) {
-                name mac model firmware 
+                name mac model firmware numOfPorts
                 ports {
                   portNumber
+                  type
+                  poeOperState
+                  status
+                  lastFlapTime
+                  flapVlans
                   connectedDevice {
                     name
                     mac
