@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Space }   from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { Form, Space } from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader, Button } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
@@ -50,6 +50,7 @@ export function SwitchPortTable (props: {
   switchDetail?: SwitchViewModel
 }) {
   const { $t } = useIntl()
+  const [scheduleForm] = Form.useForm()
   const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -557,6 +558,7 @@ export function SwitchPortTable (props: {
 
     { poeSchedulerModalVisible &&
       <PoeSchedule
+        form={scheduleForm}
         visible={poeSchedulerModalVisible}
         setVisible={setPoeSchedulerModalVisible}
         venueId={switchDetail?.venueId}

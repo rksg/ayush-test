@@ -17,7 +17,7 @@ import { Scheduler }                                     from '@acx-ui/types'
 import * as UI from './styledComponents'
 
 interface ScheduleWeeklyProps {
-  form?: FormInstance
+  form: FormInstance
   visible: boolean
   setVisible: (visible: boolean) => void
   venueId?: string
@@ -69,7 +69,9 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       setHidden(false)
       const schedulerData = parseNetworkVenueScheduler({ ...poeScheduler })
       setSchedule(schedulerData)
-      form?.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
+      if(!readOnly){
+        form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
+      }
     }
 
     const fetchVenueData = async () => {
@@ -115,24 +117,24 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   }
 
   const onApply = () => {
-    const { scheduler, poeSchedulerType } = form?.getFieldsValue()
+    const { scheduler, poeSchedulerType } = form.getFieldsValue()
     const { type, ...weekDays } = scheduler || {}
 
     if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
-      form?.setFieldsValue({
-        ...form?.getFieldsValue(),
+      form.setFieldsValue({
+        ...form.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.NO_SCHEDULE }
       })
     } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
-      form?.setFieldsValue({
-        ...form?.getFieldsValue(),
+      form.setFieldsValue({
+        ...form.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
     setVisible(false)
   }
 
   const onClose = () => {
-    form?.resetFields()
+    form.resetFields()
     setVisible(false)
   }
 
@@ -206,7 +208,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 type={'CUSTOM'}
                 scheduler={schedule}
                 lazyQuery={isMapEnabled ? getTimezone : undefined}
-                form={form!}
+                form={form}
                 fieldNamePath={['scheduler']}
                 intervalUnit={60}
                 title={readOnly ? '' :
