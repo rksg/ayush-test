@@ -11,7 +11,8 @@ import {
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
-  useSwitchPortlistQuery
+  useSwitchPortlistQuery,
+  useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
 import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
@@ -75,6 +76,7 @@ export function SwitchPortTable (props: {
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+  const [getPortSetting] = useLazyGetPortSettingQuery()
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {
@@ -132,6 +134,24 @@ export function SwitchPortTable (props: {
     }
     setData()
   }, [isVenueLevel, switchDetail])
+
+  const handleOpenPoeScheduler = async (portIdentifier: string) => {
+    const portSettingArray = await getPortSetting({
+      params: {
+        tenantId,
+        switchId,
+        venueId: switchDetail?.venueId
+      },
+      payload: [portIdentifier],
+      enableRbac: isSwitchRbacEnabled,
+      option: { skip: !switchDetail?.venueId }
+    }, true).unwrap() || []
+
+    if (Array.isArray(portSettingArray)) {
+      setPoeScheduleData(portSettingArray[0].poeScheduler || {})
+      setPoeSchedulerModalVisible(true)
+    }
+  }
 
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
@@ -340,8 +360,7 @@ export function SwitchPortTable (props: {
             type='link'
             data-testid='edit-poe-schedule'
             onClick={() => {
-              setPoeScheduleData(row?.poeScheduler || {})
-              setPoeSchedulerModalVisible(true)
+              handleOpenPoeScheduler(row.portIdentifier)
             }}
             style={{ paddingLeft: '10px' }}
           >

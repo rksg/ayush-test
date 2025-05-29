@@ -69,9 +69,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       setHidden(false)
       const schedulerData = parseNetworkVenueScheduler({ ...poeScheduler })
       setSchedule(schedulerData)
-      if(!readOnly){
-        form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
-      }
+      form.setFieldValue('poeSchedulerType', SchedulerTypeEnum.CUSTOM)
     }
 
     const fetchVenueData = async () => {
@@ -220,7 +218,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 isShowTimezone={true}
                 venue={venueData}
                 readonly={readOnly}
-                disabled={readOnly!}
+                disabled={false}
               />
               }
             </Col>
