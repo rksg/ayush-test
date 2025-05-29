@@ -6,6 +6,7 @@ import {
   useGetEdgeClusterListQuery,
   useGetEdgeClusterNetworkSettingsQuery,
   useGetEdgeClusterSubInterfaceSettingsQuery,
+  useGetEdgeFeatureSetsQuery,
   useGetEdgesPortStatusQuery
 } from '@acx-ui/rc/services'
 import {
@@ -13,8 +14,10 @@ import {
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
   EdgeNodesPortsInfo,
-  EdgeSdLanViewDataP2
+  EdgeSdLanViewDataP2,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
@@ -23,6 +26,7 @@ export interface ClusterConfigWizardContextType {
   edgeSdLanData?: EdgeSdLanViewDataP2
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
+  isSupportAccessPort?: boolean
   isLoading: boolean
   isFetching: boolean
 }
@@ -105,6 +109,28 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     skip: !Boolean(clusterInfo)
   })
 
+  const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFwMap: {
+          [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw
+        }
+      }
+    }
+  })
+
+  const isSupportAccessPort = clusterInfo?.edgeList?.every(
+    // eslint-disable-next-line max-len
+    edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.CORE_ACCESS_SEPARATION]) > -1
+  )
+
   const isLoading = isClusterInfoLoading || isPortStatusLoading || isEdgeSdLanLoading ||
     isClusterNetworkSettingsLoading || isClusterSubInterfaceSettingsLoading
   const isFetching = isClusterInfoFetching || isPortStatusFetching || isEdgeSdLanFetching ||
@@ -127,6 +153,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
+    isSupportAccessPort,
     isLoading,
     isFetching
   }}>

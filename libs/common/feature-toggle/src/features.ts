@@ -107,6 +107,7 @@ export enum Features {
   INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'acx-ui-loop-detection-toggle',
   INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'acx-ui-lldp-status-toggle',
+  INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'acx-ui-port-flap-toggle',
   INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
   INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
@@ -162,6 +163,7 @@ export enum Features {
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'ruckus-ai-lldp-status-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'ruckus-ai-port-flap-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'ruckus-ai-port-congestion-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'ruckus-ai-uplink-port-congestion-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
@@ -351,7 +353,9 @@ export enum Features {
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
-  SSO_GROUP_LIMIT100 = 'sso-group-limit100'
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100',
+  RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
+  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
