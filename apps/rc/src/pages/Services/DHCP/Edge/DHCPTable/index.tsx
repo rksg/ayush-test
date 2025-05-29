@@ -15,6 +15,7 @@ import {
 import {
   DhcpStats,
   filterByAccessForServicePolicyMutation,
+  getEdgeAppCurrentVersions,
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
@@ -108,25 +109,6 @@ const EdgeDhcpTable = () => {
     return isReadyToUpdate
   }
 
-  const getCurrentVersions = (data: DhcpStats) => {
-    let versions = ''
-    if (data?.clusterAppVersionInfo) {
-      const distinctVersions = new Set(
-        data?.clusterAppVersionInfo.map(item => {
-          if (item?.currentVersion) {
-            return item.currentVersion
-          } else {
-            return ''
-          }
-        })
-      )
-      versions = Array.from(distinctVersions).join(', ')
-    } else {
-      versions = data?.currentVersion || ''
-    }
-    return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
-  }
-
   const columns: TableProps<DhcpStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -210,7 +192,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'currentVersion',
       sorter: true,
       render (data, row) {
-        return getCurrentVersions(row)
+        return getEdgeAppCurrentVersions(row)
       }
     }
     // {
