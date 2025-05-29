@@ -181,6 +181,10 @@ export function IotControllerV2 (props: ApEditItemProps) {
     setDrawerVisible(true)
   }
 
+  const handleChanged = () => {
+    // TODO update editContextData
+  }
+
   return (
     <Loader
       states={[
@@ -261,6 +265,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
           { drawerVisible && <IotControllerDrawer
             visible={drawerVisible}
             setVisible={setDrawerVisible}
+            applyIotController={handleChanged}
           /> }
         </StepsForm.StepForm>
       </StepsForm>
