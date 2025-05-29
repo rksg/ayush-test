@@ -27,6 +27,7 @@ import {
   EdgeSubInterface,
   EntityCompatibility,
   EntityCompatibilityV1_1,
+  SubInterface,
   VenueSdLanApCompatibility
 } from '../../types'
 
@@ -42,6 +43,7 @@ export const edgePhysicalPortInitialConfigs = {
   enabled: true,
   natEnabled: true,
   corePortEnabled: false,
+  accessPortEnabled: false,
   natPools: []
 }
 
@@ -306,12 +308,42 @@ export const hasCoreLag = (lagData: EdgeLag[]) => {
   return lagData.some(isLagCorePort)
 }
 
-export const getPhysicalPortGatewayCount = (portsData: EdgePort[]) => {
+const isAccessLag = (data: EdgeLag) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
+    && data.lagEnabled
+    && data.lagMembers.some(member => member.portEnabled)
+}
+
+const isAccessPhysicalPort = (data: EdgePort) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN && data.enabled
+}
+
+const isAccessSubInterface = (data: SubInterface) => {
+  return data.accessPortEnabled && data.portType === EdgePortTypeEnum.LAN
+}
+
+export const hasAccessLag = (lagData: EdgeLag[]) => {
+  return lagData.some(isAccessLag)
+}
+
+export const hasAccessPhysicalPort = (portsData: EdgePort[]) => {
+  return portsData.some(isAccessPhysicalPort)
+}
+
+export const hasAccessSubInterface = (subInterfaceData: SubInterface[]) => {
+  return subInterfaceData.some(isAccessSubInterface)
+}
+
+export const getPhysicalPortGatewayCount = (portsData: EdgePort[], isCoreAccessEnabled?: boolean) => {
   return portsData.filter(port =>
     port.enabled
     && (port.portType === EdgePortTypeEnum.WAN
-      || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
+      || (port.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? port.accessPortEnabled : port.corePortEnabled)))
   ).length
+}
+
+export const getSubInterfaceGatewayCount = (subInterfaceData: SubInterface[]) => {
+  return subInterfaceData.filter(subInterface => subInterface.accessPortEnabled).length
 }
 
 export const getEdgePortIpModeEnumValue = (type: string) => {
@@ -452,20 +484,20 @@ export const genExpireTimeString = (seconds?: number) => {
   )
 }
 
-export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean) => {
   if (!lagData) return []
 
   const lagWithGateways = lagData.filter(lag =>
     (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
     && (lag.portType === EdgePortTypeEnum.WAN
-      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? lag.accessPortEnabled : lag.corePortEnabled)))
   )
   return lagWithGateways
 }
 
 // eslint-disable-next-line max-len
-export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
-  return getLagGateways(lagData, includeCorePort).length
+export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true, isCoreAccessEnabled?: boolean) => {
+  return getLagGateways(lagData, includeCorePort, isCoreAccessEnabled).length
 }
 
 // eslint-disable-next-line max-len

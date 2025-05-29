@@ -109,6 +109,8 @@ describe('Edge utils', () => {
   })
 })
 
+
+
 describe('isAllPortsLagMember', () => {
   // 3 ports
   const mockUnconfiguredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))

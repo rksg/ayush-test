@@ -235,6 +235,17 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'i-switch-port-flap': {
+    category: defineMessage({ defaultMessage: 'Infrastructure' }),
+    subCategory: defineMessage({ defaultMessage: 'Port Flap' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Port flap detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Port flap detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-port-congestion': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Congestion' }),
