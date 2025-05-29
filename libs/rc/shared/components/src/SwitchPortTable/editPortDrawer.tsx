@@ -2201,7 +2201,10 @@ export function EditPortDrawer ({
               noStyle
               children={isMultipleEdit ?
                 <>
-                  <MultipleText />
+                  {selectedPorts.every(
+                    port => port.poeScheduler?.type === SchedulerTypeEnum.CUSTOM) &&
+                    poeScheduler?.type === SchedulerTypeEnum.CUSTOM ?
+                    $t({ defaultMessage: 'Custom Schedule' }) : <MultipleText />}
                   <Button
                     hidden={!poeSchedulerCheckbox}
                     type='link'

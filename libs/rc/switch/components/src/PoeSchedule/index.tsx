@@ -218,7 +218,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 isShowTimezone={true}
                 venue={venueData}
                 readonly={readOnly}
-                disabled={readOnly || true}
+                disabled={readOnly!}
               />
               }
             </Col>
