@@ -175,7 +175,7 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
       children={<APsSelectionInput
         disabled={isDisabled}
         placeholder={get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'Select AP Groups / APs to exclude' })
+          ? $t({ defaultMessage: 'Please select AP Groups / APs to exclude' })
           : $t({ defaultMessage: 'Please select APs to exclude' })}
         options={response.options?.map(o => ({ ...o, disabled: isDisabled }))}
       />}
