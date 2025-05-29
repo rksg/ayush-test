@@ -20,8 +20,8 @@ export function useIncidentToggles () {
       useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE)
     ].some(Boolean),
     [IncidentToggle.SwitchPortFlapIncidents]: [
-      !useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_FLAP_TOGGLE),
-      !useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE)
+      useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_FLAP_TOGGLE),
+      useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE)
     ].some(Boolean),
     [IncidentToggle.SwitchPortCongestionIncidents]: [
       useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
