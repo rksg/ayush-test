@@ -550,6 +550,50 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
   // The APIs defined into the apSnmpRbacUrls.ts
 
   // ===== IoT =====
+  updateVenueIotController: {
+    method: 'put',
+    url: '/venues/:venueId/iotControllers/:iotControllerId',
+    opsApi: 'PUT:/venues/{id}/iotControllers/{id}',
+    newApi: true
+  },
+  deleteVenueIotController: {
+    method: 'DELETE',
+    url: '/venues/:venueId/iotControllers/:iotControllerId',
+    opsApi: 'DELETE:/venues/{id}/iotControllers/{id}',
+    newApi: true
+  },
+  getApIotV2: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
+    opsApi: 'GET:/venues/{id}/aps/{id}/iotSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApIotV2: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/iotSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateApIotController: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/iotControllers/:iotControllerId',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/iotControllers/{id}',
+    newApi: true
+  },
+  deleteApIotController: {
+    method: 'DELETE',
+    url: '/venues/:venueId/aps/:serialNumber/iotControllers/:iotControllerId',
+    opsApi: 'DELETE:/venues/{id}/aps/{id}/iotControllers/{id}',
+    newApi: true
+  },
   getVenueIot: {
     method: 'get',
     url: '/venues/:venueId/apIotSettings',
