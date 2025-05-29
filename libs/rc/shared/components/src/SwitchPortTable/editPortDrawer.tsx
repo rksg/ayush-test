@@ -327,6 +327,7 @@ export function EditPortDrawer ({
   const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
   const [drawerPoeSchedule, setDrawerPoeSchedule] = useState(false)
   const [poeScheduleData, setPoeScheduleData] = useState({} as PoeSchedulerType)
+  const [multiPoeScheduleData, setMultiPoeScheduleData] = useState([] as PoeSchedulerType[])
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -750,6 +751,8 @@ export function EditPortDrawer ({
     setLldpQosList(portSetting?.lldpQos ?? [])
     setPortEditStatus('')
     setIsAppliedAuthProfile(!hasMultipleValueFields?.includes('authenticationProfileId'))
+    setMultiPoeScheduleData(
+      portsSetting?.map(s => s?.poeScheduler).filter(s => s !== undefined) as PoeSchedulerType[])
 
     form.setFieldsValue({
       ...portSetting,
@@ -2201,10 +2204,12 @@ export function EditPortDrawer ({
               noStyle
               children={isMultipleEdit ?
                 <>
-                  {selectedPorts.every(
-                    port => port.poeScheduler?.type === SchedulerTypeEnum.CUSTOM) ||
+                  {multiPoeScheduleData.every(
+                    poeScheduler => poeScheduler?.type === SchedulerTypeEnum.CUSTOM) ||
                     poeScheduler?.type === SchedulerTypeEnum.CUSTOM ?
-                    $t({ defaultMessage: 'Custom Schedule' }) : <MultipleText />}
+                    $t({ defaultMessage: 'Custom Schedule' }) : (multiPoeScheduleData.every(
+                      poeScheduler => poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE) ?
+                      noDataDisplay : <MultipleText />)}
                   <Button
                     hidden={!poeSchedulerCheckbox}
                     type='link'
