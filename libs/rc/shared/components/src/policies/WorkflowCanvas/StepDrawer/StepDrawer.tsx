@@ -42,7 +42,9 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
   [ActionType.DPSK]: DpskSettings,
   [ActionType.MAC_REG]: MacRegistrationSettings,
-  [ActionType.CERT_TEMPLATE]: CertTemplateSettings
+  [ActionType.CERT_TEMPLATE]: CertTemplateSettings,
+  // TODO: update
+  [ActionType.DISCONNECTED_BRANCH]: AupSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {

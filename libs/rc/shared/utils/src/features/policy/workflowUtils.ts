@@ -60,15 +60,15 @@ export const toStepMap = (steps: WorkflowStep[])
   return map
 }
 
-/* eslint-disable max-len */
-// TODO: need to be defined by UX designer
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' }),
+  // TODO: update
+  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
@@ -77,7 +77,9 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
   [ActionType.DPSK]: DpskActionTypeIcon,
   [ActionType.MAC_REG]: MacRegActionTypeIcon,
-  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon,
+  // TODO: update
+  [ActionType.DISCONNECTED_BRANCH]: AupActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -86,7 +88,9 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' }),
+  // TODO: update
+  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
@@ -95,7 +99,9 @@ export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' }),
+  // TODO: update
+  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
 }
 
 export const AupActionDefaultValue: {
@@ -144,15 +150,21 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
   [ActionType.DPSK]: {},
   [ActionType.MAC_REG]: {},
-  [ActionType.CERT_TEMPLATE]: {}
+  [ActionType.CERT_TEMPLATE]: {},
+  [ActionType.DISCONNECTED_BRANCH]: {}
 }
 /* eslint-enable max-len */
 
 export const composeNext = (
   mode: WorkflowPanelMode,
-  stepId: string, stepMap: Map<string, WorkflowStep>,
-  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
-  currentX: number, currentY: number,
+  stepId: string, 
+  stepMap: Map<string, WorkflowStep>,
+  parentId: string | undefined,
+  nodes: Node<WorkflowStep, ActionType>[], 
+  edges: Edge[],
+  currentX: number, 
+  currentY: number,
+  disconnectedBranchZIndex: number,
   isStart?: boolean
 ) => {
   const SPACE_OF_NODES = 110
@@ -173,8 +185,13 @@ export const composeNext = (
 
   nodes.push({
     id,
+    parentNode: parentId ?? undefined,
+    extent: parentId ? 'parent' : undefined,
+    expandParent: true,
     type: nodeType,
     position: { x: currentX, y: currentY },
+    draggable: false,
+    zIndex: parentId ? disconnectedBranchZIndex : undefined,
     data: {
       ...step,
       isStart,
@@ -195,12 +212,13 @@ export const composeNext = (
       target: nextStepId,
       type: ConnectionLineType.Step,
       style: { stroke: 'var(--acx-primary-black)' },
+      zIndex: parentId ? (disconnectedBranchZIndex + 50) : undefined,
 
       deletable: false
     })
 
-    composeNext(mode, nextStepId, stepMap, nodes, edges,
-      currentX, nextY, type === StepType.Start)
+    composeNext(mode, nextStepId, stepMap, parentId, nodes, edges,
+      currentX, nextY, disconnectedBranchZIndex, type === StepType.Start)
   }
 }
 
@@ -222,12 +240,61 @@ export function toReactFlowData (
   const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
-  firstSteps?.forEach((firstStep) => {
-    composeNext(mode, firstStep.id, stepMap, nodes, edges,
-      START_X, START_Y, firstStep.type === StepType.Start)
+  let disconnectedBranchZIndex = 1250
+
+  firstSteps?.forEach((firstStep) => {    
+    // TODO: simplify?
+    var isDisconnectedBranch = firstStep.statusReasons && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
+
+    let startX = START_X
+    let startY = START_Y
+    let parentNodeId = undefined
+    
+    if(isDisconnectedBranch) {
+      disconnectedBranchZIndex += 100
+      // create parent node
+      parentNodeId = firstStep.id + 'parent'
+
+      //height = number of nodes (64) + number of edges (46)
+      let height = 0
+      if (firstStep.nextStepId) {
+        let nextNode = stepMap.get(firstStep.nextStepId)
+        while(nextNode) {
+          if(!nextNode.isEnd || !nextNode.isStart) {
+            height += 64 + 46
+          }
+          nextNode = nextNode.nextStepId ? stepMap.get(nextNode.nextStepId) : undefined
+        }
+        height -= 46 // remove the last edge height since it doesn't exist
+      }
+
+      nodes.push({
+        id: parentNodeId,
+        type: ActionType.DISCONNECTED_BRANCH,
+        position: { x: START_X, y: START_Y },
+        style: {
+          width: '260px',
+          height: height + 40
+        },
+        zIndex: disconnectedBranchZIndex,
+        hidden: false,
+        deletable: false,
+        data: {id: parentNodeId, enrollmentActionId: ''}
+      })
+      startX = 20
+      startY = 20
+
+      START_X += 30
+    }
+
+    composeNext(mode, firstStep.id, stepMap, parentNodeId, nodes, edges,
+      startX, startY, disconnectedBranchZIndex, firstStep.type === StepType.Start)
 
     START_X += 250
   })
+
+  // TODO: remove
+  console.log("NODES: ************", nodes)
 
   return { nodes, edges }
 }

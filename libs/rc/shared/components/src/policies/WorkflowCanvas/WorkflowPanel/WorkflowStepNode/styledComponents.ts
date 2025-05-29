@@ -3,6 +3,19 @@ import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
 
 
+export const DisconnectedBranchNode = styled.div<{ selected?: boolean }>`
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--acx-semantics-red-20);
+  font-size: 12px;
+  padding: 12px;
+  cursor: pointer;
+
+  border-radius: 4px;
+  border: 1px solid var(--acx-semantics-red-70);
+`
+
 export const StepNode = styled.div<{ selected?: boolean, invalid?: boolean }>`
   background-color: var(--acx-primary-white);
   font-size: 12px;

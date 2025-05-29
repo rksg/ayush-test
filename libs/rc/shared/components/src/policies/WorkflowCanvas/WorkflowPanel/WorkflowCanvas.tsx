@@ -30,17 +30,22 @@ import {
   MacRegistrationNode,
   StartNode
 } from './WorkflowStepNode'
+import DisconnectedBranchNode from './WorkflowStepNode/DisconnectedBranchNode'
 
 
 
 const nodeTypes: NodeTypes = {
+
   START: StartNode, // This is a special type for the starter node displaying
+  
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
   [ActionType.DPSK]: DpskNode,
   [ActionType.MAC_REG]: MacRegistrationNode,
-  [ActionType.CERT_TEMPLATE]: CertTemplateNode
+  [ActionType.CERT_TEMPLATE]: CertTemplateNode,
+  // TODO: maybe this should not be an ActionType ???
+  [ActionType.DISCONNECTED_BRANCH]: DisconnectedBranchNode
 }
 
 interface WorkflowProps {
@@ -172,7 +177,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodeTypes={nodeTypes}
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
-      onNodeDrag={onCustomNodeDrag}
+      // TODO: (remove this???) onNodeDrag={onCustomNodeDrag}
       nodesDraggable={workflowValidationEnhancementFFToggle ? true : false}
       nodesConnectable={false}
       minZoom={0.1}
