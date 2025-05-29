@@ -25,12 +25,14 @@ export interface SubInterfaceTableProps {
   onChange?: (data: SubInterface[]) => void
   allInterface?: EdgePortInfo[]
   currentInterfaceName?: string
+  isSupportAccessPort?: boolean
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   const {
-    currentTab, ip, mac, value = [], onChange, allInterface = [], currentInterfaceName
+    currentTab, ip, mac, value = [], onChange, allInterface = [], currentInterfaceName,
+    isSupportAccessPort
   } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -39,7 +41,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
-  const { clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
+  const { clusterNetworkSettings, edgeSdLanData } = useContext(ClusterConfigWizardContext)
   const vipSettings = clusterNetworkSettings?.virtualIpSettings
 
   const closeDrawers = () => {
@@ -222,6 +224,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               (value as { id: string, vlan: number }[])
             }
             allInterface={allInterface}
+            isSdLanRun={!!edgeSdLanData}
+            currentInterfaceName={currentInterfaceName}
+            isSupportAccessPort={isSupportAccessPort}
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}
