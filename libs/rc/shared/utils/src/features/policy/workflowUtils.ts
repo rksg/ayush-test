@@ -181,17 +181,14 @@ export const composeNext = (
   const nodeType: ActionType = (actionType ?? 'START') as ActionType
   const nextStep = stepMap.get(nextStepId ?? '')
 
-  // console.log('Step :: ', nodeType, type, enrollmentActionId)
-
   nodes.push({
     id,
     parentNode: parentId ?? undefined,
     extent: parentId ? 'parent' : undefined,
-    expandParent: true,
     type: nodeType,
     position: { x: currentX, y: currentY },
     draggable: false,
-    zIndex: parentId ? disconnectedBranchZIndex : undefined,
+    zIndex: parentId ? disconnectedBranchZIndex : 1000,
     data: {
       ...step,
       isStart,
@@ -212,7 +209,7 @@ export const composeNext = (
       target: nextStepId,
       type: ConnectionLineType.Step,
       style: { stroke: 'var(--acx-primary-black)' },
-      zIndex: parentId ? (disconnectedBranchZIndex + 50) : undefined,
+      zIndex: parentId ? (disconnectedBranchZIndex + 50) : 0,
 
       deletable: false
     })

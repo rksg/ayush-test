@@ -183,6 +183,11 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       minZoom={0.1}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
+      // setting elevate edges and nodes to false to prevent selection from hiding edges or nodes
+      // The zIndex for nodes and edges is being set manually within workflowUtils.toReactFlowData
+      // because the automatic behavior was not handling zIndexes properly causing strange rendering
+      elevateEdgesOnSelect={false}
+      elevateNodesOnSelect={false}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
       proOptions={{ hideAttribution: true }}
     >
