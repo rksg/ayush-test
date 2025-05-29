@@ -8,6 +8,7 @@ import {
   EdgeGeneralFixtures,
   EdgeClusterStatus
 } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -73,10 +74,12 @@ describe('EditEdge ports - ports general - user actions', () => {
   describe('subnet overlap', () => {
 
     const MockedComponent = (props: { vipConfig?: ClusterNetworkSettings['virtualIpSettings'] })=>
-      <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
-        <EdgePortsGeneralBase {...mockedProps} {...props} />
-        <button>Submit</button>
-      </Form>
+      <Provider>
+        <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+          <EdgePortsGeneralBase {...mockedProps} {...props} />
+          <button>Submit</button>
+        </Form>
+      </Provider>
 
 
     it('should not check subnet overlapped on DHCP port', async () => {

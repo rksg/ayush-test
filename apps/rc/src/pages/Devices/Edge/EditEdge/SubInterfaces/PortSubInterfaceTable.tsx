@@ -19,6 +19,7 @@ interface PortSubInterfaceTableProps {
   ip: string
   mac: string
   portId: string
+  isSupportAccessPort?: boolean
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {

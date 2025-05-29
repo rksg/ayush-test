@@ -25,6 +25,8 @@ const EditEdgeCluster = () => {
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const [hasGateway, setHasGateway] = useState(false)
   const basePath = useTenantLink(getUrl({
     feature: Device.EdgeCluster,
@@ -78,12 +80,20 @@ const EditEdgeCluster = () => {
       const allPorts: EdgePort[] = networkSettings.portSettings?.flat().flatMap(setting => setting.ports) ?? []
       // eslint-disable-next-line max-len
       const allLags: EdgeLag[] = networkSettings.lagSettings?.flat().flatMap(setting => setting.lags) ?? []
+      // eslint-disable-next-line max-len
+      const allSubInterfaces = networkSettings.subInterfaceSettings?.flatMap(setting => {
+        const portSubInterfaces = setting.ports?.flatMap(item => item.subInterfaces) ?? []
+        const lagSubInterfaces = setting.lags?.flatMap(item => item.subInterfaces) ?? []
+        return portSubInterfaces.concat(lagSubInterfaces)
+      }) ?? []
       try {
         await validateEdgeClusterLevelGateway(
           allPorts,
           allLags,
+          allSubInterfaces,
           currentClusterStatus?.edgeList ?? [],
-          isDualWanEnabled
+          isDualWanEnabled,
+          isEdgeCoreAccessSeparationReady
         )
         setHasGateway(true)
       } catch (error) {
