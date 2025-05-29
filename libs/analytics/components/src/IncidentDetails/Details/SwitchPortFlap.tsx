@@ -26,8 +26,8 @@ export const SwitchPortFlap = (incident: Incident) => {
   ]
 
   const isEnabled = [
-    !useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_FLAP_TOGGLE),
-    !useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE)
+    useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_FLAP_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE)
   ].some(Boolean)
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
