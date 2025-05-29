@@ -170,7 +170,12 @@ export function APsSelection ({ isDisabled }: { isDisabled: boolean }) {
     <Form.Item
       name={name as unknown as NamePath}
       rules={[{
-        validator: (_, value) => validateSelectingAllAPs(value, response)
+        validator: (_, value) => {
+          if (isDisabled) {
+            return Promise.resolve()
+          }
+          return validateSelectingAllAPs(value, response)
+        }
       }]}
       children={<APsSelectionInput
         disabled={isDisabled}

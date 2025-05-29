@@ -23,7 +23,7 @@ export function Settings () {
   const excludedAPs = Form.useWatch(['preferences', 'excludedAPs'])
 
   useEffect(() => {
-    if (enableExcludedAPs) {
+    if (isEnabled && enableExcludedAPs) {
       form.validateFields()
     }
   }, [excludedAPs])
@@ -60,7 +60,7 @@ export function Settings () {
         name={['preferences','enableExcludedAPs']}
         rules={[{
           validator: () => {
-            if (enableExcludedAPs && !excludedAPs?.length) {
+            if (isEnabled && enableExcludedAPs && !excludedAPs?.length) {
               return Promise.reject($t({ defaultMessage: 'Please select at least one item' }))
             }
             return Promise.resolve()
