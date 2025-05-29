@@ -1,12 +1,12 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
-import { Checkbox, List, Dropdown, Menu, Space, MenuProps, Tooltip } from 'antd'
-import _                                                             from 'lodash'
-import moment                                                        from 'moment-timezone'
-import { useIntl }                                                   from 'react-intl'
+import { Checkbox, List, Dropdown, Menu, Space, MenuProps } from 'antd'
+import _                                                    from 'lodash'
+import moment                                               from 'moment-timezone'
+import { useIntl }                                          from 'react-intl'
 
-import { Button, Drawer, Loader, Tabs, showActionModal } from '@acx-ui/components'
-import { SearchOutlined }                                from '@acx-ui/icons'
+import { Button, Drawer, Loader, Tabs, showActionModal, Tooltip } from '@acx-ui/components'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
   AccountCircleSolid,
   GlobeOutlined,
@@ -242,41 +242,45 @@ export const ImportDashboardDrawer = (props: {
         size='small'
         renderItem={(item) => {
           const authorName = item.author || noDataDisplay
-          return <UI.CanvasListItem>
-            <Checkbox
-              checked={selectedCanvases.includes(item.id)}
-              onChange={e => handleCheck(e.target.checked, item.id)}
-              disabled={
-                !selectedCanvases.includes(item.id)
+          const checkboxDisabled = !selectedCanvases.includes(item.id)
             && selectedCanvases.length === maximumImportCount
-              }
-            >
-              <div className='info'>
-                <div className='title'>
-                  <span className='name' title={item.name}>{ item.name }</span>
-                  { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
+          return <UI.CanvasListItem>
+            <Tooltip title={checkboxDisabled ?
+              $t({ defaultMessage: 'Maximum of {maximum} dashboards reached, import unavailable' },
+                { maximum: MAXIMUM_DASHBOARD }) : ''}
+            placement='right'>
+              <Checkbox
+                checked={selectedCanvases.includes(item.id)}
+                onChange={e => handleCheck(e.target.checked, item.id)}
+                disabled={checkboxDisabled}
+              >
+                <div className='info'>
+                  <div className='title'>
+                    <span className='name' title={item.name}>{ item.name }</span>
+                    { item?.visible ? <GlobeOutlined size='sm' /> : <LockOutlined size='sm' /> }
+                  </div>
+                  <div className='desp'>
+                    <span className='count'>{
+                      $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
+                    }</span>
+                    { item?.updatedDate && <span className='date'>{
+                      moment(item.updatedDate).format('YYYY/MM/DD')
+                    }</span> }
+                    { !item?.owned && <span className='author'>
+                      <Tooltip
+                        title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+                        placement='bottom'
+                        overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
+                      >
+                        <AccountCircleSolid size='sm' />
+                        <span className='name'>{ authorName }</span>
+                      </Tooltip>
+                    </span>
+                    }
+                  </div>
                 </div>
-                <div className='desp'>
-                  <span className='count'>{
-                    $t({ defaultMessage: '{count} widgets' }, { count: item.widgetCount })
-                  }</span>
-                  { item?.updatedDate && <span className='date'>{
-                    moment(item.updatedDate).format('YYYY/MM/DD')
-                  }</span> }
-                  { !item?.owned && <span className='author'>
-                    <Tooltip
-                      title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
-                      placement='bottom'
-                      overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
-                    >
-                      <AccountCircleSolid size='sm' />
-                      <span className='name'>{ authorName }</span>
-                    </Tooltip>
-                  </span>
-                  }
-                </div>
-              </div>
-            </Checkbox>
+              </Checkbox>
+            </Tooltip>
 
             <div className='action'>
               <Dropdown overlay={getActionMenu(item)} trigger={['click']} key='actionMenu'>
@@ -362,7 +366,7 @@ export const ImportDashboardDrawer = (props: {
           onClick={() => props.handleOpenCanvas()}
           type='primary'
         >
-          {$t({ defaultMessage: 'Canvas Editor' })}
+          {$t({ defaultMessage: 'Canvas Creator' })}
         </Button>
         <div>
           <Button onClick={props.onBackClick}>
