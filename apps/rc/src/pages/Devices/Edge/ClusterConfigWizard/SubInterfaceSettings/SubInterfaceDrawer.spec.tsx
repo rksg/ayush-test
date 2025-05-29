@@ -4,11 +4,11 @@ import userEvent     from '@testing-library/user-event'
 import { UserEvent } from '@testing-library/user-event/dist/types/setup/setup'
 import { Form }      from 'antd'
 
-import { StepsForm }                                            from '@acx-ui/components'
-import { Features }                                             from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                from '@acx-ui/rc/components'
-import { EdgePortInfo, EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
+import { StepsForm }                                                              from '@acx-ui/components'
+import { Features }                                                               from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                  from '@acx-ui/rc/components'
+import { EdgePortInfo, EdgePortTypeEnum, EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -101,23 +101,26 @@ describe('EditEdge ports - sub-interface', () => {
   it('Add a STATIC sub-interface', async () => {
     const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
     render(
-      <StepsForm
-        form={formRef.current}
-        initialValues={mockSubInterfaceSettingsFormType}
-        buttonLabel={{ submit: 'mockSubmitButtonLabel' }}
-      >
-        <StepsForm.StepForm>
-          <SubInterfaceDrawer
-            serialNumber='96000076DCCAA42E87785B549A64997E72'
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={undefined}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-            allSubInterfaceVlans={[]}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>)
+      <Provider>
+        <StepsForm
+          form={formRef.current}
+          initialValues={mockSubInterfaceSettingsFormType}
+          buttonLabel={{ submit: 'mockSubmitButtonLabel' }}
+        >
+          <StepsForm.StepForm>
+            <SubInterfaceDrawer
+              serialNumber='96000076DCCAA42E87785B549A64997E72'
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              allSubInterfaceVlans={[]}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
     const user = userEvent.setup()
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
     await user.click(await screen.findByText('Static IP'))
@@ -142,19 +145,22 @@ describe('EditEdge ports - sub-interface', () => {
   it('Add a STATIC sub-interface with duplicate subnet range', async () => {
     const { result: formRef } = renderHook(() => Form.useForm<SubInterfaceSettingsFormType>()[0])
     render(
-      <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
-        <StepsForm.StepForm>
-          <SubInterfaceDrawer
-            serialNumber='96000076DCCAA42E87785B549A64997E72'
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={undefined}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-            allSubInterfaceVlans={[]}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>)
+      <Provider>
+        <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
+          <StepsForm.StepForm>
+            <SubInterfaceDrawer
+              serialNumber='96000076DCCAA42E87785B549A64997E72'
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              allSubInterfaceVlans={[]}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
 
     const user = userEvent.setup()
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
@@ -168,24 +174,27 @@ describe('EditEdge ports - sub-interface', () => {
 
   it('Add a STATIC sub-interface with duplicate subnet range with physical port', async () => {
     render(
-      <StepsForm initialValues={mockSubInterfaceSettingsFormType}>
-        <StepsForm.StepForm>
-          <SubInterfaceDrawer
-            serialNumber='96000076DCCAA42E87785B549A64997E72'
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={undefined}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-            allSubInterfaceVlans={[]}
-            allInterface={[{
-              ipMode: 'STATIC',
-              ip: '2.3.4.5',
-              subnet: '255.255.255.0'
-            }] as unknown as EdgePortInfo[]}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>)
+      <Provider>
+        <StepsForm initialValues={mockSubInterfaceSettingsFormType}>
+          <StepsForm.StepForm>
+            <SubInterfaceDrawer
+              serialNumber='96000076DCCAA42E87785B549A64997E72'
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              allSubInterfaceVlans={[]}
+              allInterface={[{
+                ipMode: 'STATIC',
+                ip: '2.3.4.5',
+                subnet: '255.255.255.0'
+              }] as unknown as EdgePortInfo[]}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
 
     const user = userEvent.setup()
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
@@ -205,19 +214,22 @@ describe('EditEdge ports - sub-interface', () => {
       .portSubInterfaces[editEdgeId][editPortId][0]
 
     render(
-      <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
-        <StepsForm.StepForm>
-          <SubInterfaceDrawer
-            serialNumber='96000076DCCAA42E87785B549A64997E72'
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={editSubInterface}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-            allSubInterfaceVlans={[]}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>)
+      <Provider>
+        <StepsForm form={formRef.current} initialValues={mockSubInterfaceSettingsFormType}>
+          <StepsForm.StepForm>
+            <SubInterfaceDrawer
+              serialNumber='96000076DCCAA42E87785B549A64997E72'
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={editSubInterface}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              allSubInterfaceVlans={[]}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
 
     const user = userEvent.setup()
     inputStaticIp(user, '1.1.3.2', '255.255.255.0')
@@ -344,15 +356,29 @@ describe('EditEdge ports - sub-interface', () => {
     it('should show gateway field when access port is checked', async () => {
       render(
         <Provider>
-          <SubInterfaceDrawer
-            serialNumber='edge-id'
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={undefined}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-            allSubInterfaceVlans={[]}
-          />
+          <StepsForm
+            initialValues={mockSubInterfaceSettingsFormType}
+          >
+            <StepsForm.StepForm>
+              <SubInterfaceDrawer
+                serialNumber='edge-id'
+                visible={true}
+                setVisible={mockedSetVisible}
+                data={undefined}
+                handleAdd={mockedHandleAddFn}
+                handleUpdate={mockedHandleUpdateFn}
+                allSubInterfaceVlans={[]}
+                allInterface={[{
+                  serialNumber: 'edge-id',
+                  portName: 'port1',
+                  portType: EdgePortTypeEnum.LAN,
+                  portEnabled: true
+                }] as EdgePortInfo[]}
+                currentInterfaceName='port1'
+                isSupportAccessPort={true}
+              />
+            </StepsForm.StepForm>
+          </StepsForm>
         </Provider>
       )
 

@@ -2,10 +2,10 @@ import { useContext } from 'react'
 
 import { rest } from 'msw'
 
-import { Loader }                                                                                                       from '@acx-ui/components'
-import { edgeApi }                                                                                                      from '@acx-ui/rc/services'
-import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                              from '@acx-ui/store'
+import { Loader }                                                                                                                                  from '@acx-ui/components'
+import { edgeApi }                                                                                                                                 from '@acx-ui/rc/services'
+import { EdgeCompatibilityFixtures, EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,6 +22,7 @@ const { mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockedSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const mockedUsedNavigate = jest.fn()
 const MockedComponent = (props: React.PropsWithChildren) => {
@@ -89,6 +90,10 @@ describe('ClusterConfigWizard', () => {
       rest.get(
         EdgeUrlsInfo.getEdgeClusterSubInterfaceSettings.url,
         (_req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
       )
     )
   })

@@ -618,13 +618,14 @@ export function SingleRadioSettings (props:{
                     style={{ height: '16px', width: '16px' }}
                   />}
                 />}
-                {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
+                {isR370Unsupported6gFeatures &&
+                <ApCompatibilityDrawer
                   visible={outdoor6gDrawerVisible}
                   type={(context === 'venue' || context === 'apGroup')
                     ? ApCompatibilityType.VENUE
                     : ApCompatibilityType.ALONE}
                   venueId={venueId}
-                  featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                  featureNames={[InCompatibilityFeatures.OUTDOOR_6G_CHANNEL]}
                   onClose={() => setOutdoor6gDrawerVisible(false)}
                 />}
               </Space>

@@ -330,6 +330,9 @@ export function NetworkForm (props:{
 
       const mergedData = merge({}, updateSate, saveData)
       mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if (Array.isArray(saveData.certificateTemplateIds) && saveData.certificateTemplateIds.length > 0) {
+        mergedData.certificateTemplateIds = saveData.certificateTemplateIds
+      }
       if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
         mergedData.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
       }

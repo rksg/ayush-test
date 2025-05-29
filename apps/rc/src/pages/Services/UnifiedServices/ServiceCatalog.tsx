@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                                                 from '@acx-ui/components'
-import { Features }                                                                                                                     from '@acx-ui/feature-toggle'
-import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached }                  from '@acx-ui/rc/components'
-import { IncompatibilityFeatures, PolicyType, ServiceType, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, PageHeader }                                                                                                                                        from '@acx-ui/components'
+import { Features }                                                                                                                                                            from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsWifiCallingProfileLimitReached }                                                         from '@acx-ui/rc/components'
+import { collectAvailableProductsAndCategories, IncompatibilityFeatures, PolicyType, ServiceType, UnifiedServiceType, useAvailableUnifiedServicesList, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
 
 import { UnifiedServiceCard } from '../UnifiedServiceCard'
 
@@ -26,6 +26,7 @@ export function ServiceCatalog () {
   const { $t } = useIntl()
   const rawUnifiedServiceList = useAvailableUnifiedServicesList()
   const defaultSortOrder = ServiceSortOrder.ASC
+  const { products, categories } = collectAvailableProductsAndCategories(rawUnifiedServiceList)
 
   const {
     setSearchTerm, setFilters, setSortOrder, filteredServices
@@ -63,6 +64,7 @@ export function ServiceCatalog () {
         setFilters={setFilters}
         defaultSortOrder={defaultSortOrder}
         setSortOrder={setSortOrder}
+        availableFilters={{ products, categories }}
       />
       <GridRow>
         {filteredServices.map(service => (
