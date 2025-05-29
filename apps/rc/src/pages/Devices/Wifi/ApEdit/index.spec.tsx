@@ -3,10 +3,18 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                    from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  AdministrationUrlsInfo,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  DHCPUrls,
+  FirmwareUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -33,6 +41,12 @@ import {
   deviceAps,
   r650Cap
 } from '../../__tests__/fixtures'
+import { apRadio, apViewModel, radioCustomizationData } from '../ApDetails/__tests__/fixtures'
+
+import {
+  StickyClientSteeringSettings_VenueSettingOff,
+  VenueLoadBalancingSettings_LoadBalanceOn
+} from './RadioTab/ClientSteering/__tests__/fixture'
 
 import { ApEdit } from './'
 
@@ -40,6 +54,22 @@ const buttonAction = {
   DISCARD_CHANGES: 'Discard Changes',
   SAVE_CHANGES: 'Save Changes',
   CANCEL: 'Cancel'
+}
+
+const mockVenueClientAdmissionControl = {
+  enable24G: false,
+  enable50G: false,
+  minClientCount24G: 10,
+  minClientCount50G: 20,
+  maxRadioLoad24G: 75,
+  maxRadioLoad50G: 75,
+  minClientThroughput24G: 0,
+  minClientThroughput50G: 0
+}
+
+const mockApClientAdmissionControl = {
+  ...mockVenueClientAdmissionControl,
+  useVenueSettings: true
 }
 
 async function showInvalidChangesModal (tabKey: string, action: string) {
@@ -74,6 +104,8 @@ async function showUnsavedChangesModal (tabKey: string, action: string) {
 }
 
 let dialog = null
+
+const mockedUpdateApRadioCustomizationFn = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -140,6 +172,18 @@ describe('ApEdit', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1, page: 1, data: [
+            {
+              id: '1724eda6f49e4223be36f864f46faba5',
+              venueId: 'venue-id',
+              name: ''
+            }
+          ]
+        }))
+      ),
       // rbac API
       rest.post(
         WifiRbacUrlsInfo.getDhcpAps.url,
@@ -153,11 +197,15 @@ describe('ApEdit', () => {
         WifiRbacUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(r650Cap))
       ),
-      rest.post(
-        WifiRbacUrlsInfo.getApGroupsList.url,
+      rest.get(
+        WifiRbacUrlsInfo.getApOperational.url.replace('?operational=true', ''),
         (_, res, ctx) => res(ctx.json({
-          totalCount: 0, page: 1, data: []
+          loginPassword: 'admin!234'
         }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(apViewModel))
       )
     )
   })
@@ -172,6 +220,36 @@ describe('ApEdit', () => {
     }
 
     it('should render correctly', async () => {
+      mockServer.use(
+        rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({
+              totalCount: 1, page: 1, data: [
+                {
+                  id: 'f9903daeeadb4af88969b32d185cbf27',
+                  venueId: '908c47ee1cd445838c3bf71d4addccdf',
+                  name: 'apGroup-name'
+                }
+              ]
+            }))
+          }
+        ),
+        rest.post(
+          WifiUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({
+              totalCount: 1, page: 1, data: [
+                {
+                  id: 'f9903daeeadb4af88969b32d185cbf27',
+                  venueId: '908c47ee1cd445838c3bf71d4addccdf',
+                  name: 'apGroup-name'
+                }
+              ]
+            }))
+          }
+        )
+      )
       render(<Provider><ApEdit /></Provider>, {
         route: {
           params,
@@ -252,6 +330,95 @@ describe('ApEdit', () => {
       await showInvalidChangesModal('General', buttonAction.CANCEL)
       // await userEvent.click(await screen.findByText('Back to device details'))
       // await showInvalidChangesModal('General', buttonAction.DISCARD_CHANGES)
+    })
+
+    describe('Ap Edit - Radio', () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+      mockServer.use(
+        rest.get(
+          WifiUrlsInfo.getVenueLoadBalancing.url,
+          (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
+        ),
+        rest.post(
+          WifiUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
+        ),
+        rest.get(
+          WifiUrlsInfo.getApClientAdmissionControl.url,
+          (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (req, res, ctx) => res(ctx.json(apRadio))
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(radioCustomizationData))
+        ),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => {
+            mockedUpdateApRadioCustomizationFn()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueLoadBalancing.url,
+          (_, res, ctx) => res(ctx.json(VenueLoadBalancingSettings_LoadBalanceOn))
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getApStickyClientSteering.url,
+          (_, res, ctx) => res(ctx.json(StickyClientSteeringSettings_VenueSettingOff))
+        ),
+        rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({
+              totalCount: 1, page: 1, data: [
+                {
+                  id: '1724eda6f49e4223be36f864f46faba5',
+                  venueId: '908c47ee1cd445838c3bf71d4addccdf',
+                  name: 'apGroup-name'
+                }
+              ]
+            }))
+          }
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getApClientAdmissionControl.url,
+          (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl)))
+
+      )
+
+      const params = {
+        tenantId: 'tenant-id',
+        venueId: '908c47ee1cd445838c3bf71d4addccdf',
+        serialNumber: 'serial-number',
+        action: 'edit',
+        activeTab: 'radio'
+      }
+
+      it('should render correctly', async () => {
+        render(<Provider><ApEdit/></Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/wifi/:serialNumber/:action/:activeTab'
+          }
+        })
+
+        expect(await screen.findAllByRole('tab')).toHaveLength(5)
+      })
     })
 
     // TODO: should test in apForm
@@ -403,6 +570,17 @@ describe('ApEdit', () => {
         // rbac
         rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
           (_, res, ctx) => res(ctx.json(r650Cap))
+        ),
+        rest.post(
+          WifiRbacUrlsInfo.getApGroupsList.url,
+          (_, res, ctx) => res(ctx.json({
+            totalCount: 1, page: 1, data: [
+              {
+                id: '1724eda6f49e4223be36f864f46faba5',
+                name: ''
+              }
+            ]
+          }))
         )
       )
     })

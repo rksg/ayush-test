@@ -6,7 +6,7 @@ export const CategoryContainer = styled.div`
   margin-bottom: 40px;
 `
 
-export const OltCardWrapper = styled(GridCol)`
+export const ReadonlyCardWrapper = styled(GridCol)`
  & button.ant-btn.ant-btn-primary {
   background-color: var(--acx-neutrals-40);
   border-color: var(--acx-neutrals-40);

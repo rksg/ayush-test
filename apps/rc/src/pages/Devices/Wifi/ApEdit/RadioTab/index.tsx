@@ -18,6 +18,7 @@ import { ExternalAntennaSettings }        from './Antenna/ExternalAntennaSetting
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
 import { ClientSteering }                 from './ClientSteering/ClientSteering'
 import { RadioSettings }                  from './RadioSettings/RadioSettings'
+import { RadioSettingsV1Dot1 }            from './RadioSettings/RadioSettingsV1Dot1'
 
 export interface ApRadioContext {
   updateWifiRadio?: (data?: unknown) => void | Promise<void>
@@ -69,12 +70,13 @@ export function RadioTab () {
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
 
   const isStickyClientSteeringEnable = useIsSplitOn(Features.WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE)
+  const apGroupPhase1Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
   const antennaTitle = $t({ defaultMessage: 'Antenna' })
-  const extAntennaTitle = $t({ defaultMessage: 'External Antenna' })
+  //const extAntennaTitle = $t({ defaultMessage: 'External Antenna' })
   const clientSteeringTitle = $t({ defaultMessage: 'Client Steering' })
 
   const anchorItems = [{
@@ -84,7 +86,11 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='radio-settings'>
           { wifiRadioTitle }
         </StepsFormLegacy.SectionTitle>
-        <RadioSettings isAllowEdit={isAllowEditRadioSettings} />
+        { apGroupPhase1Toggle
+          ? <RadioSettingsV1Dot1 isAllowEdit={isAllowEditRadioSettings} />
+          : <RadioSettings isAllowEdit={isAllowEditRadioSettings} />
+        }
+
       </>
     )
   },
@@ -131,11 +137,11 @@ export function RadioTab () {
     )
   }]: []),
   ...((supportExtAnt)? [{
-    title: extAntennaTitle,
+    title: antennaTitle,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='extAntennaTitle'>
-          {extAntennaTitle}
+          {antennaTitle}
         </StepsFormLegacy.SectionTitle>
         {<ExternalAntennaSettings />}
       </>

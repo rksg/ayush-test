@@ -14,7 +14,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
-  useActivateCertificateTemplateMutation,
   useActivateDirectoryServerMutation,
   useActivateDpskServiceMutation,
   useActivateDpskServiceTemplateMutation,
@@ -115,6 +114,7 @@ import {
   getDefaultMloOptions,
   hasControlnetworkVenuePermission,
   useAccessControlActivation,
+  useCertificateTemplateActivation,
   useClientIsolationActivations,
   useNetworkVxLanTunnelProfileInfo,
   useRadiusServer,
@@ -225,6 +225,7 @@ export function NetworkForm (props:{
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
   const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isMultipleCertificateTemplateEnabled = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
@@ -274,7 +275,7 @@ export function NetworkForm (props:{
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
 
-  const activateCertificateTemplate = useCertificateTemplateActivation()
+  const { activateCertificateTemplate, updateCertificateTemplateActivation } = useCertificateTemplateActivation()
   const activateDpskPool = useDpskServiceActivation()
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
@@ -327,17 +328,11 @@ export function NetworkForm (props:{
         delete saveData?.authRadiusId
       }
 
-      if(editMode &&
-        saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
-        saveData.isCloudpathEnabled){
-        updateSate.enableAuthProxy = false
-        updateSate.enableAccountingProxy = false
-        saveData.enableAuthProxy = false
-        saveData.enableAccountingProxy = false
-      }
-
       const mergedData = merge({}, updateSate, saveData)
       mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if (Array.isArray(saveData.certificateTemplateIds) && saveData.certificateTemplateIds.length > 0) {
+        mergedData.certificateTemplateIds = saveData.certificateTemplateIds
+      }
       if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
         mergedData.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
       }
@@ -351,12 +346,10 @@ export function NetworkForm (props:{
 
   const { data, isLoading } = useGetNetwork({ isRuckusAiMode, gptEditId })
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
-  const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
+  const { data: certTemplateServices } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
-    {
-      skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
-      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
-    })
+    { skip: !(editMode || cloneMode) || !data?.useCertificateTemplate })
+  const certificateTemplateIds = certTemplateServices?.data?.map(cert => cert.id) ?? []
 
   const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -433,12 +426,14 @@ export function NetworkForm (props:{
 
     updateSaveData({
       ...resolvedData,
-      certificateTemplateId,
+      ...(certTemplateServices && (isMultipleCertificateTemplateEnabled
+        ? { certificateTemplateIds: certificateTemplateIds }
+        : { certificateTemplateId: certificateTemplateIds?.[0] })),
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
       ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id }),
       ...((cloneMode && !hasActivateNetworkVenuePermission) && { venues: [] })
     })
-  }, [data, certificateTemplateId, dpskService, portalService])
+  }, [data, certTemplateServices, dpskService, portalService])
   //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
@@ -637,7 +632,10 @@ export function NetworkForm (props:{
 
   const handleWlanIdentityGroup = (data: NetworkSaveData, identityGroupFlag: boolean) => {
     if (
-      (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
+      ( data.type === NetworkTypeEnum.PSK ||
+        data.type === NetworkTypeEnum.AAA ||
+        data.type === NetworkTypeEnum.HOTSPOT20 ||
+        data.type === NetworkTypeEnum.CAPTIVEPORTAL )
       && identityGroupFlag
     ) {
       return omit(data, ['identityGroupId', 'identity', 'enableIdentityAssociation'])
@@ -649,6 +647,18 @@ export function NetworkForm (props:{
     if ((data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SAML)
       && SAMLFlag) {
       return omit(data, ['samlIdpProfilesId', 'samlIdpProfilesName'])
+    }
+    return data
+  }
+
+  const handleCaptivePortalHostApproval = (data: NetworkSaveData) => {
+    if(data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval){
+      const hostApprovalType = 'guestPortal.hostGuestConfig.hostApprovalType'
+      if(data.guestPortal.hostGuestConfig?.hostApprovalType === 'email'){
+        return omit(data, [hostApprovalType, 'guestPortal.hostGuestConfig.hostDomains'])
+      } else if(data.guestPortal.hostGuestConfig?.hostApprovalType === 'domain'){
+        return omit(data, [hostApprovalType, 'guestPortal.hostGuestConfig.hostEmails'])
+      }
     }
     return data
   }
@@ -921,6 +931,7 @@ export function NetworkForm (props:{
         'isOweMaster',
         'owePairNetworkId',
         'certificateTemplateId',
+        'certificateTemplateIds',
         'hotspot20Settings.wifiOperator',
         'hotspot20Settings.originalOperator',
         'hotspot20Settings.identityProviders',
@@ -931,13 +942,15 @@ export function NetworkForm (props:{
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
     const processBindingIdentityGroup = (data: NetworkSaveData) => handleWlanIdentityGroup(data, isWifiIdentityManagementEnable)
     const processSAMLProfile = (data: NetworkSaveData) => handleWlanSAMLProfile(data, isSSOSamlEnabled)
+    const processHostApprovalType = (data: NetworkSaveData) => handleCaptivePortalHostApproval(data)
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
       processCloneMode,
       processClientIsolationAllowlist,
       processBindingIdentityGroup,
-      processSAMLProfile
+      processSAMLProfile,
+      processHostApprovalType
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -970,12 +983,19 @@ export function NetworkForm (props:{
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
         beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
       }
-      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState))
+      beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
       // eslint-disable-next-line max-len
-      beforeVenueActivationRequest.push(activateCertificateTemplate(saveState.certificateTemplateId, networkId))
+      beforeVenueActivationRequest.push(
+        isMultipleCertificateTemplateEnabled
+          ? updateCertificateTemplateActivation(networkId, saveState.certificateTemplateIds)
+          : activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      )
       if (enableServiceRbac) {
-        beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        if(saveState.useDpskService) {
+          beforeVenueActivationRequest.push(activateDpskPool(saveState.dpskServiceProfileId, networkId))
+        }
+
         beforeVenueActivationRequest.push(activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId))
       }
 
@@ -1052,7 +1072,8 @@ export function NetworkForm (props:{
     const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const dataRemoveIdentity = handleWlanIdentityGroup(dataWlan, isWifiIdentityManagementEnable)
     const dataRemoveSAMLProfile = handleWlanSAMLProfile(dataRemoveIdentity, isSSOSamlEnabled)
-    const dataMore = handleGuestMoreSetting(dataRemoveSAMLProfile)
+    const dataRemoveHostApprovalType = handleCaptivePortalHostApproval(dataRemoveSAMLProfile)
+    const dataMore = handleGuestMoreSetting(dataRemoveHostApprovalType)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -1085,6 +1106,7 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
+            'certificateTemplateIds',
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
@@ -1102,6 +1124,7 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
+            'certificateTemplateIds',
             'userConnection',
             ...(enableServiceRbac) ? ['dpskServiceProfileId', 'macRegistrationPoolId'] : [],
             ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
@@ -1111,18 +1134,19 @@ export function NetworkForm (props:{
     }
     if (editMode && data.wlan?.wlanSecurity) {
       const toRemoveFromWlan: string[] = []
-      if (data.wlan.wlanSecurity === WlanSecurityEnum.OWE) {
-        toRemoveFromWlan.push('passphrase', 'saePassphrase')
-      } else if (data.wlan.wlanSecurity === WlanSecurityEnum.None) {
-        toRemoveFromWlan.push('managementFrameProtection', 'passphrase', 'saePassphrase')
-      } else {
+
+      if([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3, WlanSecurityEnum.None].includes(data.wlan.wlanSecurity)) {
         toRemoveFromWlan.push('managementFrameProtection')
-        if (data.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
-          toRemoveFromWlan.push('passphrase')
-        } else if (data.wlan.wlanSecurity !== WlanSecurityEnum.WPA23Mixed) {
-          toRemoveFromWlan.push('saePassphrase')
-        }
       }
+
+      if([WlanSecurityEnum.OWE, WlanSecurityEnum.None, WlanSecurityEnum.WPA3].includes(data.wlan.wlanSecurity)) {
+        toRemoveFromWlan.push('passphrase')
+      }
+      const isSupportSaePhrase = [WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed].includes(data.wlan.wlanSecurity)
+      if(!isSupportSaePhrase) {
+        toRemoveFromWlan.push('saePassphrase')
+      }
+
       saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
         toRemoveFromWlan
       )
@@ -1165,7 +1189,11 @@ export function NetworkForm (props:{
       const beforeVenueActivationRequest = []
       const afterVenueActivationRequest = []
 
-      beforeVenueActivationRequest.push(activateCertificateTemplate(formData.certificateTemplateId, payload.id))
+      beforeVenueActivationRequest.push(
+        isMultipleCertificateTemplateEnabled
+          ? updateCertificateTemplateActivation(payload.id, formData.certificateTemplateIds, certificateTemplateIds)
+          : activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      )
       if (isUseWifiRbacApi) {
         beforeVenueActivationRequest.push(activatePortal(payload.id, formData.portalServiceProfileId))
       }
@@ -1483,19 +1511,6 @@ function useUpdateInstance () {
   const [ updateNetworkTemplate ] = useUpdateNetworkTemplateMutation()
 
   return isTemplate ? updateNetworkTemplate : updateNetwork
-}
-
-function useCertificateTemplateActivation () {
-  const [activate] = useActivateCertificateTemplateMutation()
-  const activateCertificateTemplate =
-    async (certificateTemplateId?: string, networkId?: string) => {
-      if (certificateTemplateId && networkId) {
-        return await activate({ params: { networkId, certificateTemplateId } }).unwrap()
-      }
-      return null
-    }
-
-  return activateCertificateTemplate
 }
 
 function useMacRegistrationPoolActivation () {

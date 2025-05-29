@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react'
+import { Key, ReactNode, useEffect, useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { Col, Row }            from 'antd'
@@ -6,6 +6,7 @@ import { useIntl }             from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal }                             from '@acx-ui/components'
 import { Features }                                                               from '@acx-ui/feature-toggle'
+import { CheckMark }                                                              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { EdgeSubInterface, EdgeUrlsInfo, TableQuery }                             from '@acx-ui/rc/utils'
 import { EdgeScopes, RequestPayload }                                             from '@acx-ui/types'
@@ -26,6 +27,9 @@ interface SubInterfaceTableProps {
   handleDelete: (data: EdgeSubInterface) => Promise<unknown>
   handleUpload: (formData: FormData) => Promise<unknown>
   uploadResult: unknown
+  portId?: string
+  lagId?: number
+  isSupportAccessPort?: boolean
 }
 
 interface UploadResultType {
@@ -39,6 +43,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const isEdgeSubInterfaceCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const {
     currentTab,
     ip,
@@ -48,7 +54,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     handleUpdate,
     handleDelete,
     handleUpload,
-    uploadResult
+    uploadResult,
+    portId,
+    lagId
   } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -109,7 +117,31 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: $t({ defaultMessage: 'VLAN' }),
       key: 'vlan',
       dataIndex: 'vlan'
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: EdgeSubInterface) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: EdgeSubInterface) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
   const rowActions: TableProps<EdgeSubInterface>['rowActions'] = [
@@ -185,7 +217,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={12}>
+        <Col span={14}>
           <SubInterfaceDrawer
             mac={mac}
             visible={drawerVisible}
@@ -193,6 +225,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             data={currentEditData}
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
+            portId={portId}
+            lagId={lagId}
           />
           <Loader states={[tableQuery]}>
             <Table<EdgeSubInterface>

@@ -1,6 +1,5 @@
 
 import { Col, FormInstance, Row }   from 'antd'
-import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { PageHeader, StepsForm }               from '@acx-ui/components'
@@ -9,7 +8,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   CommonResult,
-  getPolicyListRoutePath,
+  usePolicyListBreadcrumb,
   getPolicyRoutePath,
   LocationExtended,
   PolicyOperation,
@@ -32,7 +31,6 @@ interface TunnelProfileFormProps {
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   // eslint-disable-next-line max-len
   const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode } = props
-  const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
@@ -55,17 +53,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     <>
       <PageHeader
         title={title}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.TUNNEL_PROFILE)}
       />
       <StepsForm
         form={form}

@@ -1,12 +1,15 @@
-import { Key, useContext, useEffect, useState } from 'react'
+import { Key, ReactNode, useContext, useEffect, useState } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Table, TableProps, showActionModal, useStepFormContext }                                        from '@acx-ui/components'
-import { isInterfaceInVRRPSetting, SubInterface, convertEdgeSubInterfaceToApiPayload, EdgeSubInterface } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                    from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                 from '@acx-ui/user'
+import { showActionModal, Table, TableProps }                                                                          from '@acx-ui/components'
+import { Features }                                                                                                    from '@acx-ui/feature-toggle'
+import { CheckMark }                                                                                                   from '@acx-ui/icons'
+import { useIsEdgeFeatureReady }                                                                                       from '@acx-ui/rc/components'
+import { convertEdgeSubInterfaceToApiPayload, EdgePortInfo, EdgeSubInterface, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                                  from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                               from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
@@ -18,20 +21,27 @@ export interface SubInterfaceTableProps {
   currentTab: string
   ip: string
   mac: string
-  namePath: string[]
+  value?: SubInterface[]
   onChange?: (data: SubInterface[]) => void
+  allInterface?: EdgePortInfo[]
+  currentInterfaceName?: string
+  isSupportAccessPort?: boolean
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const { currentTab, ip, mac } = props
+  const {
+    currentTab, ip, mac, value = [], onChange, allInterface = [], currentInterfaceName,
+    isSupportAccessPort
+  } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<SubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
-  const { form } = useStepFormContext()
-  const { clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
+  const { clusterNetworkSettings, edgeSdLanData } = useContext(ClusterConfigWizardContext)
   const vipSettings = clusterNetworkSettings?.virtualIpSettings
 
   const closeDrawers = () => {
@@ -79,7 +89,31 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: $t({ defaultMessage: 'VLAN' }),
       key: 'vlan',
       dataIndex: 'vlan'
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
   const isAllowedToDelete = (subInterfaces: SubInterface[]) => {
@@ -123,7 +157,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            handleDelete(selectedRows[0]).then(clearSelection)
+            handleDelete(selectedRows[0])
+            clearSelection()
           }
         })
       }
@@ -135,7 +170,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       label: $t({ defaultMessage: 'Add Sub-interface' }),
       scopeKey: [EdgeScopes.CREATE],
       onClick: () => openDrawer(),
-      disabled: (form.getFieldValue(props.namePath)?.length ?? 0) >= 16
+      disabled: (value?.length ?? 0) >= 16
     }
   ]
 
@@ -144,35 +179,24 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     setDrawerVisible(true)
   }
 
-  const handleAdd = async (data: SubInterface): Promise<unknown> => {
+  const handleAdd = (data: SubInterface) => {
     const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
-
-    form.setFieldValue(
-      props.namePath,
-      [...form.getFieldValue(props.namePath), savedData])
-    props.onChange?.(form.getFieldValue(props.namePath))
-    return
+    onChange?.([...value, { ...savedData, interfaceName: `${currentInterfaceName}.${data.vlan}` }])
   }
 
-  const handleUpdate = async (data: SubInterface): Promise<unknown> => {
-    const existingData = form.getFieldValue(props.namePath)
+  const handleUpdate = (data: SubInterface) => {
     const savedData = convertEdgeSubInterfaceToApiPayload(data as EdgeSubInterface)
-
-    const updatedData = existingData.map((item: SubInterface) =>
-      item.id === data.id ? savedData : item
+    const updatedData = value?.map((item: SubInterface) =>
+      item.id === data.id ?
+        { ...savedData, interfaceName: `${currentInterfaceName}.${data.vlan}` } :
+        item
     )
-
-    form.setFieldValue(props.namePath, updatedData)
-    props.onChange?.(form.getFieldValue(props.namePath))
-    return
+    onChange?.(updatedData)
   }
 
-  const handleDelete = async (data: SubInterface): Promise<unknown> => {
-    const existingData = form.getFieldValue(props.namePath)
-    const updatedData = existingData.filter((item: SubInterface) => item.id !== data.id)
-    form.setFieldValue(props.namePath, updatedData)
-    props.onChange?.(form.getFieldValue(props.namePath))
-    return
+  const handleDelete = (data: SubInterface) => {
+    const updatedData = value?.filter((item: SubInterface) => item.id !== data.id)
+    onChange?.(updatedData)
   }
 
   const isSelectionVisible = hasPermission({ scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE] })
@@ -188,7 +212,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={12}>
+        <Col span={18}>
           <SubInterfaceDrawer
             serialNumber={props.serialNumber}
             visible={drawerVisible}
@@ -197,12 +221,16 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
             allSubInterfaceVlans={
-              (form.getFieldValue(props.namePath) as { id: string, vlan: number }[])
+              (value as { id: string, vlan: number }[])
             }
+            allInterface={allInterface}
+            isSdLanRun={!!edgeSdLanData}
+            currentInterfaceName={currentInterfaceName}
+            isSupportAccessPort={isSupportAccessPort}
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}
-            dataSource={form.getFieldValue(props.namePath)}
+            dataSource={value}
             columns={columns}
             rowActions={filterByAccess(rowActions)}
             rowSelection={isSelectionVisible && {

@@ -1,11 +1,13 @@
 import { createContext } from 'react'
 
-import { Loader }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Loader }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
   useGetEdgeClusterQuery,
+  useGetEdgeFeatureSetsQuery,
   useGetEdgeLagListQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgeListQuery,
@@ -23,9 +25,12 @@ import {
   EdgeLagStatus,
   EdgePort,
   EdgePortInfo,
+  EdgeSdLanViewDataP2,
   EdgeStaticRouteConfig,
-  EdgeStatusEnum
+  EdgeStatusEnum,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 export interface EditEdgeDataContextType {
   generalSettings?: EdgeGeneralSetting
@@ -37,7 +42,9 @@ export interface EditEdgeDataContextType {
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
-  isCluster: boolean
+  edgeSdLanData?: EdgeSdLanViewDataP2
+  isSupportAccessPort?: boolean
+  isClusterFormed: boolean
   isGeneralSettingsLoading: boolean
   isGeneralSettingsFetching: boolean
   isClusterInfoLoading: boolean
@@ -241,16 +248,46 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     params: { venueId: clusterInfo?.venueId, clusterId: clusterInfo?.clusterId }
   }, { skip: !Boolean(clusterInfo?.clusterId) || !Boolean(clusterInfo?.venueId) })
 
-  const isCluster = !!clusterInfo?.edgeList &&
+  const isClusterFormed = !!clusterInfo?.edgeList &&
     clusterInfo.edgeList.filter(item =>
       item.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 1
 
+  const {
+    edgeSdLanData,
+    isLoading: isEdgeSdLanLoading,
+    isFetching: isEdgeSdLanFetching
+  } = useGetEdgeSdLanByEdgeOrClusterId(clusterId)
+
+  const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFwMap: {
+          [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw
+        }
+      }
+    }
+  })
+
+  const isSupportAccessPort = clusterInfo?.edgeList?.every(
+    // eslint-disable-next-line max-len
+    edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.CORE_ACCESS_SEPARATION]) > -1
+  )
+
   const isLoading = isPortDataLoading || isPortStatusLoading || isLagDataLoading ||
     isClusterInfoLoading || isLagStatusLoading || isGeneralSettingsLoading ||
-    isDnsServersDataLoading || isStaticRouteDataLoading || isClusterConfigLoading
+    isDnsServersDataLoading || isStaticRouteDataLoading || isClusterConfigLoading ||
+    isEdgeSdLanLoading
   const isFetching = isPortDataFetching || isPortStatusFetching || isLagDataFetching ||
     isClusterInfoFetching || isLagStatusFetching || isGeneralSettingsFetching ||
-    isDnsServersDataFetching || isStaticRouteDataFetching || isClusterConfigFetching
+    isDnsServersDataFetching || isStaticRouteDataFetching || isClusterConfigFetching ||
+    isEdgeSdLanFetching
 
   return <EditEdgeDataContext.Provider value={{
     generalSettings,
@@ -262,7 +299,9 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     dnsServersData,
     staticRouteData,
     clusterConfig,
-    isCluster,
+    isClusterFormed,
+    edgeSdLanData,
+    isSupportAccessPort,
     isGeneralSettingsLoading,
     isGeneralSettingsFetching,
     isClusterInfoLoading,

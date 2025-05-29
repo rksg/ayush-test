@@ -35,8 +35,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
-import { validationMessages }    from '@acx-ui/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 
 const defaultPayload = {
@@ -51,7 +50,6 @@ export function RWGForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const { isCustomRole } = useUserProfileContext()
 
   const linkToGateways = useTenantLink('/ruckus-wan-gateway')
   const [addGateway] = useAddGatewayMutation()
@@ -152,7 +150,6 @@ export function RWGForm () {
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToGateways) // TODO: set previousPath while gateway details implementation
         }
-        disabled={isCustomRole}
         buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}

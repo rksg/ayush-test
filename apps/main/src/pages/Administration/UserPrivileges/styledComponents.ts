@@ -68,8 +68,6 @@ export const FieldLabel2Attributes = styled.div<{ width: string }>`
 export const VenueList = styled.div`
   margin-left: 35px;
   padding-right: 5px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
  `
 export const ExpanderTableWrapper = styled.div`

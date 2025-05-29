@@ -14,13 +14,13 @@ import {
   ServiceType,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceListRoutePath,
   useTableQuery,
   ResidentPortal,
   getServiceDetailsLink,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -41,7 +41,11 @@ export default function ResidentPortalTable () {
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
-      visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
+      disabled: (([selectedRow]) => (selectedRow && !selectedRow.venueCount)? false : true),
+      tooltip: (([selectedRow]) => (selectedRow && !selectedRow.venueCount)?
+        undefined
+        : intl.$t({ defaultMessage: 'Cannot delete Resident Portal while ' +
+          '<VenuePlural></VenuePlural> are using it.' })),
       scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       rbacOpsIds: getServiceAllowedOperation(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
@@ -130,12 +134,7 @@ export default function ResidentPortalTable () {
           intl.$t({ defaultMessage: 'Resident Portals ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          {
-            text: intl.$t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({

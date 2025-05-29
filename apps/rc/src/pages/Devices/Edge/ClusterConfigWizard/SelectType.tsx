@@ -32,6 +32,8 @@ export const SelectType = () => {
   const [selected, setSelected] = useState<string | undefined>(undefined)
   const [hasGateway, setHasGateway] = useState(false)
   const isEdgeHaSubInterfaceReady = useIsEdgeFeatureReady(Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   useEffect(() => {
@@ -41,11 +43,20 @@ export const SelectType = () => {
         const portSetting = clusterNetworkSettings.portSettings[i]
         const lagSetting = clusterNetworkSettings.lagSettings.find(item =>
           item.serialNumber === portSetting.serialNumber)
+        // eslint-disable-next-line max-len
+        const currentSubInterfaces = clusterNetworkSettings.subInterfaceSettings?.filter(
+          item => item.serialNumber === portSetting.serialNumber).flatMap(setting => {
+          const portSubInterfaces = setting.ports?.flatMap(item => item.subInterfaces) ?? []
+          const lagSubInterfaces = setting.lags?.flatMap(item => item.subInterfaces) ?? []
+          return portSubInterfaces.concat(lagSubInterfaces)
+        }) ?? []
         try {
           await validateEdgeGateway(
             portSetting.ports,
             lagSetting?.lags ?? [],
-            isDualWanEnabled
+            currentSubInterfaces,
+            isDualWanEnabled,
+            isEdgeCoreAccessSeparationReady
           )
         } catch (error) {
           break
@@ -93,11 +104,16 @@ export const SelectType = () => {
 
   const isAaCluster = clusterInfo?.highAvailabilityMode ===
     ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+  const interfaceSettingTitle = isAaCluster ?
+    (isEdgeCoreAccessSeparationReady ?
+      $t({ defaultMessage: 'LAG, Port, Sub-Interface & HA Settings' }) :
+      $t({ defaultMessage: 'LAG, Port, HA Settings' })) :
+    (isEdgeCoreAccessSeparationReady ?
+      $t({ defaultMessage: 'LAG, Port, Sub-Interface & Virtual IP Settings' }) :
+      $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }))
   const typeCards = [{
     id: 'interface',
-    title: isAaCluster ?
-      $t({ defaultMessage: 'LAG, Port, HA Settings' }) :
-      $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }),
+    title: interfaceSettingTitle,
     icon: <PortIcon />,
     targetUrl: genUrl([
       CommonCategory.Device,
@@ -112,7 +128,7 @@ export const SelectType = () => {
       }
     ]
   },
-  ...(isEdgeHaSubInterfaceReady ? [{
+  ...(isEdgeHaSubInterfaceReady && !isEdgeCoreAccessSeparationReady ? [{
     id: 'subInterface',
     title: $t({ defaultMessage: 'Sub-interface Settings' }),
     icon: <SubInterfaceIcon />,
