@@ -2202,7 +2202,7 @@ export function EditPortDrawer ({
               children={isMultipleEdit ?
                 <>
                   {selectedPorts.every(
-                    port => port.poeScheduler?.type === SchedulerTypeEnum.CUSTOM) &&
+                    port => port.poeScheduler?.type === SchedulerTypeEnum.CUSTOM) ||
                     poeScheduler?.type === SchedulerTypeEnum.CUSTOM ?
                     $t({ defaultMessage: 'Custom Schedule' }) : <MultipleText />}
                   <Button
