@@ -37,12 +37,10 @@ import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPrevi
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: DataPromptPreview,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview,
   [ActionType.DPSK]: DpskActionPreview,
   [ActionType.MAC_REG]: MacRegActionPreview,
-  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview,
-  // TODO: update -- this shouldn't really be used
-  [ActionType.DISCONNECTED_BRANCH]: AupPreview
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview
 }
 
 export interface WorkflowActionPreviewProps {

@@ -21,7 +21,8 @@ import {
   StepType,
   WorkflowStep,
   LogoSize,
-  WorkflowPanelMode
+  WorkflowPanelMode,
+  WorkflowNodeTypes
 } from '../../types'
 
 export const InitialEmptyStepsCount = 2
@@ -66,9 +67,7 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' }),
-  // TODO: update
-  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
@@ -77,9 +76,7 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
   [ActionType.DPSK]: DpskActionTypeIcon,
   [ActionType.MAC_REG]: MacRegActionTypeIcon,
-  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon,
-  // TODO: update
-  [ActionType.DISCONNECTED_BRANCH]: AupActionTypeIcon
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -88,9 +85,7 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' }),
-  // TODO: update
-  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
@@ -99,9 +94,7 @@ export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' }),
-  // TODO: update
-  [ActionType.DISCONNECTED_BRANCH]: defineMessage({defaultMessage: 'a'})
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' })
 }
 
 export const AupActionDefaultValue: {
@@ -150,8 +143,7 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
   [ActionType.DPSK]: {},
   [ActionType.MAC_REG]: {},
-  [ActionType.CERT_TEMPLATE]: {},
-  [ActionType.DISCONNECTED_BRANCH]: {}
+  [ActionType.CERT_TEMPLATE]: {}
 }
 /* eslint-enable max-len */
 
@@ -160,7 +152,7 @@ export const composeNext = (
   stepId: string, 
   stepMap: Map<string, WorkflowStep>,
   parentId: string | undefined,
-  nodes: Node<WorkflowStep, ActionType>[], 
+  nodes: Node<WorkflowStep, WorkflowNodeTypes>[], 
   edges: Edge[],
   currentX: number, 
   currentY: number,
@@ -178,7 +170,7 @@ export const composeNext = (
     type,
     actionType
   } = step
-  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nodeType: WorkflowNodeTypes = (actionType ?? 'START')
   const nextStep = stepMap.get(nextStepId ?? '')
 
   nodes.push({
@@ -222,7 +214,7 @@ export const composeNext = (
 function addParentNode (firstStepId: string, 
   stepMap: Map<string, WorkflowStep>,
   disconnectedBranchZIndex:number,
-  nodes: Node<WorkflowStep, ActionType>[],
+  nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
   currentX: number, 
   currentY: number
   ) {
@@ -249,7 +241,7 @@ function addParentNode (firstStepId: string,
 
   nodes.push({
     id: parentNodeId,
-    type: ActionType.DISCONNECTED_BRANCH,
+    type: 'DISCONNECTED_BRANCH',
     position: { x: currentX, y: currentY },
     style: {
       width: '260px',
@@ -269,7 +261,7 @@ export function toReactFlowData (
   steps: WorkflowStep[],
   mode: WorkflowPanelMode = WorkflowPanelMode.Default
 ): { nodes: Node[], edges: Edge[] } {
-  const nodes: Node<WorkflowStep, ActionType>[] = []
+  const nodes: Node<WorkflowStep, WorkflowNodeTypes>[] = []
   const edges: Edge[] = []
   let START_X = 100
   const START_Y = 0

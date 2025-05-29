@@ -32,7 +32,6 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-
   priorNode?: NodeProps
 }
 
@@ -42,9 +41,7 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
   [ActionType.DPSK]: DpskSettings,
   [ActionType.MAC_REG]: MacRegistrationSettings,
-  [ActionType.CERT_TEMPLATE]: CertTemplateSettings,
-  // TODO: update
-  [ActionType.DISCONNECTED_BRANCH]: AupSettings
+  [ActionType.CERT_TEMPLATE]: CertTemplateSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {

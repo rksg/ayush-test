@@ -35,17 +35,14 @@ import DisconnectedBranchNode from './WorkflowStepNode/DisconnectedBranchNode'
 
 
 const nodeTypes: NodeTypes = {
-
   START: StartNode, // This is a special type for the starter node displaying
-  
+  DISCONNECTED_BRANCH: DisconnectedBranchNode,
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
   [ActionType.DPSK]: DpskNode,
   [ActionType.MAC_REG]: MacRegistrationNode,
-  [ActionType.CERT_TEMPLATE]: CertTemplateNode,
-  // TODO: maybe this should not be an ActionType ???
-  [ActionType.DISCONNECTED_BRANCH]: DisconnectedBranchNode
+  [ActionType.CERT_TEMPLATE]: CertTemplateNode
 }
 
 interface WorkflowProps {
