@@ -40,7 +40,11 @@ import {
   ScopeFeature,
   NotificationRecipientType,
   PrivacyFeatures,
-  PrivacySettings
+  PrivacySettings,
+  NewTableResult,
+  transferToTableResult,
+  TableChangePayload,
+  transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -791,6 +795,22 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
     }),
+    getMspEcPrivilegeGroupsPaginated: build.query<TableResult<PrivilegeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroupsPaginated, params)
+        return {
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse: (result: NewTableResult<PrivilegeGroup>) => {
+        return transferToTableResult<PrivilegeGroup>(result)
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
     getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
@@ -1137,6 +1157,7 @@ export const {
   useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
+  useGetMspEcPrivilegeGroupsPaginatedQuery,
   useGetPrivilegeGroupsWithAdminsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
