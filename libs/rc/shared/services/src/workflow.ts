@@ -412,6 +412,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       invalidatesTags: [{ type: 'Step' }]
     }),
 
+    attachStepBeneathStep: build.mutation<WorkflowStep, RequestPayload>({
+      query: commonQueryFn(WorkflowUrls.attachStepBeneathStep),
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+
     deleteWorkflowStepById: build.mutation({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.deleteWorkflowStep, params)
@@ -638,6 +643,7 @@ export const {
 export const {
   useCreateWorkflowStepMutation,
   useCreateWorkflowChildStepMutation,
+  useAttachStepBeneathStepMutation,
   useGetWorkflowStepByIdQuery,
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowStepsByIdQuery,

@@ -1,3 +1,6 @@
+import { DefaultHeader } from '@ant-design/pro-layout'
+import { opsApis }       from 'libs/common/user/src/aiAllowedOperations'
+
 import { ApiInfo } from '@acx-ui/utils'
 
 
@@ -23,7 +26,8 @@ type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'queryActions' | 'uploadFile' | 'deleteFile' | 'getFile'
 
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
-  | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
+  | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'attachStepBeneathStep'
+  | 'deleteSplitOptionById'
   | 'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep'
   | 'deleteWorkflowStepDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
 
@@ -173,6 +177,16 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'POST:/workflows/{id}/steps/{id}/nextSteps'
+  },
+  attachStepBeneathStep: {
+    method: 'put',
+    url: `${WorkflowStepBaseUrl}/{stepId}/nextSteps/{detachedStepId}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/workflows/{id}/steps/{id}/nextSteps/{id}'
   },
   deleteWorkflowStep: {
     method: 'delete',
