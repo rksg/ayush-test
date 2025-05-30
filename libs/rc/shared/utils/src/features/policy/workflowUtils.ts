@@ -61,6 +61,7 @@ export const toStepMap = (steps: WorkflowStep[])
   return map
 }
 
+/* eslint-disable max-len */
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
@@ -149,12 +150,12 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 
 export const composeNext = (
   mode: WorkflowPanelMode,
-  stepId: string, 
+  stepId: string,
   stepMap: Map<string, WorkflowStep>,
   parentId: string | undefined,
-  nodes: Node<WorkflowStep, WorkflowNodeTypes>[], 
+  nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
   edges: Edge[],
-  currentX: number, 
+  currentX: number,
   currentY: number,
   disconnectedBranchZIndex: number,
   isStart?: boolean
@@ -211,18 +212,18 @@ export const composeNext = (
   }
 }
 
-function addParentNode (firstStepId: string, 
+function addParentNode (firstStepId: string,
   stepMap: Map<string, WorkflowStep>,
   disconnectedBranchZIndex:number,
   nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
-  currentX: number, 
+  currentX: number,
   currentY: number
-  ) {
-  
+) {
+
   // create parent node
   let parentNodeId = firstStepId + 'parent'
   let firstStep = stepMap.get(firstStepId)
-  
+
   if(!firstStep) return
 
   // Calculate the height of the parent node based on the number of nodes it will contain
@@ -250,7 +251,7 @@ function addParentNode (firstStepId: string,
     zIndex: disconnectedBranchZIndex,
     hidden: false,
     deletable: false,
-    data: {id: parentNodeId, enrollmentActionId: ''}
+    data: { id: parentNodeId, enrollmentActionId: '' }
   })
 
   return parentNodeId
@@ -278,17 +279,17 @@ export function toReactFlowData (
 
   firstSteps?.forEach((firstStep) => {
 
-    var isDisconnectedBranch = firstStep.statusReasons 
+    let isDisconnectedBranch = firstStep.statusReasons
       && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
 
     let startX = START_X
     let startY = START_Y
     let parentNodeId = undefined
-    
+
     if(isDisconnectedBranch) {
       disconnectedBranchZIndex += 100
-      
-      parentNodeId = addParentNode(firstStep.id, stepMap, disconnectedBranchZIndex, 
+
+      parentNodeId = addParentNode(firstStep.id, stepMap, disconnectedBranchZIndex,
         nodes, START_X, START_Y)
 
       // Child nodes are positioned relative to the parent, so these are set to (20,20)

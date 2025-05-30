@@ -2,16 +2,16 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
-import { Handle, isNode, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
+import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusReason, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                       from '@acx-ui/user'
-import { getOpsApi }                                                                 from '@acx-ui/utils'
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission }                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                                  from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -40,10 +40,12 @@ export default function BaseStepNode (props: NodeProps
   const [ deleteStepDescendants, { isLoading: isDeleteStepDescendantsLoading }]
     = useDeleteWorkflowStepDescendantsByIdMutation()
 
-  const {isNodeValid, validationErrors} = useMemo(() => {
+  const { isNodeValid, validationErrors } = useMemo(() => {
     // @ts-ignore
-    const validationErrors = props.data?.statusReasons.filter(reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
-    return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors}
+    const validationErrors = props.data?.statusReasons.filter(
+      // @ts-ignore
+      reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+    return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
 
   }, [props.data])
 
