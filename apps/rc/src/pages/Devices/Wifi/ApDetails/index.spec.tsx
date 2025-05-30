@@ -207,7 +207,7 @@ describe('ApDetails', () => {
       route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
-      .toEqual('Clients ()')
+      .toEqual('Clients (0)')
   })
 
   it.skip('should navigate to services tab correctly', async () => {

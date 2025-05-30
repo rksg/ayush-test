@@ -2,14 +2,30 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                                                                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { directoryServerApi }                                                                                                       from '@acx-ui/rc/services'
-import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo, DirectoryServerUrls, GuestNetworkTypeEnum, NetworkTypeEnum, PersonaUrls, DpskUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                      from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                                                                             from '@acx-ui/user'
+import { StepsFormLegacy }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { directoryServerApi }     from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonUrlsInfo,
+  WifiUrlsInfo,
+  DirectoryServerUrls,
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  PersonaUrls,
+  DpskUrls,
+  AccessControlUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
+import {
+  enhancedLayer2PolicyListResponse,
+  enhancedLayer3PolicyListResponse,
+  enhancedDevicePolicyListResponse,
+  enhancedAccessControlList,
+  enhancedApplicationPolicyListResponse
+} from '../../policies/AccessControl/__tests__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -69,6 +85,17 @@ describe('CaptiveNetworkForm-Directory', () => {
           directoryServerAPI()
           return res(ctx.json(mockedDirectoryServerProfiles))
         }),
+      // Add missing handlers for enhanced policies
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => res(ctx.json(enhancedAccessControlList))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => {
@@ -131,7 +158,6 @@ describe('CaptiveNetworkForm-Directory', () => {
     await userEvent.click(await screen.findByRole('combobox'))
     expect(await screen.findByRole('option', { name: /ldap-profile1/ })).toBeInTheDocument()
   })
-
   it('should render and interact with Identity Group in create mode', async () => {
     // Arrange: Setup ref and context for create mode
     const directoryServerDataRef = { current: { id: '', name: '' } }
@@ -232,5 +258,128 @@ describe('CaptiveNetworkForm-Directory', () => {
     // Assert: 'Associate Identity' button should appear
     const addIdentityButton = screen.queryByTestId('add-identity-button')
     expect(addIdentityButton).not.toBeInTheDocument()
+  })
+  it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
+    const dataWithRedirectUrl = {
+      ...cloudPathDataNone,
+      id: params.networkId,
+      guestPortal: {
+        ...cloudPathDataNone.guestPortal,
+        redirectUrl: 'http://example.com'
+      }
+    }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: dataWithRedirectUrl,
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <DirectoryServerForm
+                  directoryServerDataRef={directoryServerDataRef}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+
+    // Check if the redirectCheckbox is checked
+    const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+    await waitFor(() => {
+      expect(checkbox).toBeChecked()
+    })
+  })
+
+  it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
+    const dataWithRedirectUrl = {
+      ...cloudPathDataNone,
+      id: params.networkId,
+      guestPortal: {
+        ...cloudPathDataNone.guestPortal,
+        redirectUrl: 'http://example.com'
+      }
+    }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false,
+            cloneMode: true,
+            data: dataWithRedirectUrl,
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <DirectoryServerForm
+                  directoryServerDataRef={directoryServerDataRef}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+
+    // Check if the redirectCheckbox is checked
+    const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+    await waitFor(() => {
+      expect(checkbox).toBeChecked()
+    })
+  })
+
+  it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+    const directoryServerDataRef = { current: { id: '', name: '' } }
+    const dataWithRedirectUrl = {
+      ...cloudPathDataNone,
+      id: params.networkId,
+      guestPortal: {
+        ...cloudPathDataNone.guestPortal,
+        redirectUrl: 'http://example.com'
+      }
+    }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false,
+            cloneMode: false,
+            data: dataWithRedirectUrl,
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <DirectoryServerForm
+                  directoryServerDataRef={directoryServerDataRef}/>
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+
+    // Check if the redirectCheckbox is not checked
+    const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+    expect(checkbox).not.toBeChecked()
   })
 })

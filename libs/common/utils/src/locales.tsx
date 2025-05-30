@@ -196,8 +196,7 @@ export const useLocaleContext = () => useContext(LocaleContext)
 export interface LocaleProviderProps {
   /** @default 'en-US' */
   lang?: LangKey
-  children: ReactElement,
-  supportReSkinning?: boolean
+  children: ReactElement
 }
 
 export { LocaleProviderWrap as LocaleProvider }
@@ -224,7 +223,7 @@ function LocaleProvider (props: LocaleProviderProps) {
       })
       setMessages(() => message)
     })
-  }, [lang, props.supportReSkinning])
+  }, [lang])
 
   const context = useMemo(() =>
     ({ lang, setLang, messages }), [lang, messages])

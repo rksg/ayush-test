@@ -8,6 +8,7 @@ import {
   Loader,
   Tabs
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
@@ -26,8 +27,9 @@ import { useParams }                                                            
 import { RolesEnum }                                                                     from '@acx-ui/types'
 import { AccountType }                                                                   from '@acx-ui/utils'
 
-import { SelectPGs }   from './SelectPGs'
-import { SelectUsers } from './SelectUsers'
+import { NewSelectPGs } from './NewSelectPGs'
+import { SelectPGs }    from './SelectPGs'
+import { SelectUsers }  from './SelectUsers'
 
 interface ManageMspDelegationDrawerProps {
   visible: boolean
@@ -67,6 +69,8 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [usersData, setUsersData] = useState([] as MspAdministrator[])
   const [delegatedAdminsData, setDelegatedAdminsData] = useState([] as MspEcDelegatedAdmins[])
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
+  const usePrivilegeGrouspPaginatedAPI
+    = useIsSplitOn(Features.ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API)
 
   const isSkip = tenantIds?.length !== 1
   const isTechPartner =
@@ -74,7 +78,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
      tenantType === AccountType.MSP_INTEGRATOR)
 
   const { data: privilegeGroupList, isLoading, isFetching }
-    = useGetPrivilegeGroupsWithAdminsQuery({ params })
+    = useGetPrivilegeGroupsWithAdminsQuery({ params }, { skip: usePrivilegeGrouspPaginatedAPI })
 
   const { data: delegatedPGs } = useGetMspEcDelegatePrivilegeGroupsQuery({
     params: { mspEcTenantId: tenantIds?.[0] } }, { skip: isSkip })
@@ -207,10 +211,17 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
           isFetching: isFetching
         }
       ]}>
-        <SelectPGs data={privilegeGroupData}
-          setSelected={setSelectedPrivilegeGroups}
-          selected={selectedPrivilegeGroups}
-        />
+        {
+          usePrivilegeGrouspPaginatedAPI
+            ? <NewSelectPGs
+              setSelected={setSelectedPrivilegeGroups}
+              selected={selectedPrivilegeGroups}
+            />
+            : <SelectPGs data={privilegeGroupData}
+              setSelected={setSelectedPrivilegeGroups}
+              selected={selectedPrivilegeGroups}
+            />
+        }
       </Loader>
     }
   ]
