@@ -49,7 +49,7 @@ export default function BaseStepNode (props: NodeProps
       return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
     }
 
-    return { isNodeValid: false, validationErrors: undefined }
+    return { isNodeValid: true, validationErrors: undefined }
 
   }, [props.data])
 

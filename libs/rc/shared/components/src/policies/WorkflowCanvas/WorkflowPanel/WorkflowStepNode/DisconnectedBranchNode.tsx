@@ -25,15 +25,15 @@ export default function DisconnectedBranchNode (props: NodeProps)
       </UI.DisconnectedBranchPlusButton>
 
       {workflowValidationEnhancementFFToggle &&
-          <Tooltip
-            showArrow={false}
-            // @ts-ignore
-            title={<Row>{ $t({ defaultMessage: 'This branch is diconnected from the rest of the '
-              + 'workflow. Drag over another branch to connec them.' }) }</Row>}>
-            <UI.InvalidIcon>
-              <WarningCircleSolid />
-            </UI.InvalidIcon>
-          </Tooltip>
+        <Tooltip
+          showArrow={false}
+          // @ts-ignore
+          title={<Row>{ $t({ defaultMessage: 'This branch is diconnected from the rest of the '
+            + 'workflow. Drag over another branch to connec them.' }) }</Row>}>
+          <UI.InvalidIcon>
+            <WarningCircleSolid />
+          </UI.InvalidIcon>
+        </Tooltip>
       }
 
     </UI.DisconnectedBranchNode>
