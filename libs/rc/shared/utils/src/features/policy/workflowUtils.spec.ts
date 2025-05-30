@@ -165,7 +165,8 @@ describe('WorkflowUtils', () => {
       WorkflowPanelMode.Default,
       findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
-      targetNodes, targetEdges, 0, 0
+      undefined,
+      targetNodes, targetEdges, 0, 0, 0
     )
 
     expect(targetNodes).toHaveLength(3)
@@ -182,8 +183,8 @@ describe('WorkflowUtils', () => {
     composeNext(
       WorkflowPanelMode.Default,
       'step-unknown-id',
-      new Map(),
-      targetNodes, targetEdges, 0, 0
+      new Map(), undefined,
+      targetNodes, targetEdges, 0, 0, 0
     )
 
     // if it can not find the next one, it should not modify the original Node[] and Edge[] input sources.

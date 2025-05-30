@@ -41,11 +41,15 @@ export default function BaseStepNode (props: NodeProps
     = useDeleteWorkflowStepDescendantsByIdMutation()
 
   const { isNodeValid, validationErrors } = useMemo(() => {
-    // @ts-ignore
-    const validationErrors = props.data?.statusReasons.filter(
+    if(props.data?.statusReasons) {
       // @ts-ignore
-      reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
-    return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
+      const validationErrors = props.data?.statusReasons.filter(
+        // @ts-ignore
+        reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+      return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
+    }
+
+    return { isNodeValid: false, validationErrors: undefined }
 
   }, [props.data])
 
