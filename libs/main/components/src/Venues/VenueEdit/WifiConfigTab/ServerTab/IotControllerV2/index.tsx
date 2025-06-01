@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Button,Col, Form, Row, Space } from 'antd'
-import { useIntl }                      from 'react-intl'
-import { useParams }                    from 'react-router-dom'
+import { Button, Col, Form, Row, Space } from 'antd'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import {
   AnchorContext,
@@ -12,26 +12,26 @@ import {
   IotControllerDrawer
 } from '@acx-ui/rc/components'
 import {
-  useGetVenueIotQuery,
-  useUpdateVenueIotMutation,
-  useGetVenueTemplateApIotSettingsQuery,
-  useUpdateVenueTemplateApIotSettingsMutation
+  useGetIotControllerListQuery,
+  useUpdateVenueIotControllerMutation,
+  useDeleteVenueIotControllerMutation
 } from '@acx-ui/rc/services'
-import { VenueIot } from '@acx-ui/rc/utils'
+import {
+  IotControllerStatus
+} from '@acx-ui/rc/utils'
 
 import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
-import {
-  useVenueConfigTemplateMutationFnSwitcher,
-  useVenueConfigTemplateQueryFnSwitcher
-} from '../../../../venueConfigTemplateApiSwitcher'
 
 
 export function IotControllerV2 (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
-  const { venueId } = useParams()
+  const { tenantId, venueId } = useParams()
   const { isAllowEdit=true } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
+  // eslint-disable-next-line max-len
+  const [initIotController, setInitIotController] = useState<IotControllerStatus | undefined>(undefined)
+  const [iotController, setIotController] = useState<IotControllerStatus | undefined>(undefined)
 
   const {
     editContextData,
@@ -43,52 +43,71 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
 
   const form = Form.useFormInstance()
 
-  const [updateVenueApIot, { isLoading: isUpdatingVenueApIot }] =
-  useVenueConfigTemplateMutationFnSwitcher(
-    useUpdateVenueIotMutation,
-    useUpdateVenueTemplateApIotSettingsMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueIotController, { isLoading: isUpdatingVenueApIot }] = useUpdateVenueIotControllerMutation()
+  // eslint-disable-next-line max-len
+  const [deleteVenueIotController, { isLoading: isDeletingVenueApIot }] = useDeleteVenueIotControllerMutation()
 
-  const venueApIot = useVenueConfigTemplateQueryFnSwitcher<VenueIot>({
-    useQueryFn: useGetVenueIotQuery,
-    useTemplateQueryFn: useGetVenueTemplateApIotSettingsQuery
+  // eslint-disable-next-line max-len
+  const { data: availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'serialNumber',
+        'publicAddress',
+        'publicPort',
+        'apiToken',
+        'tenantId',
+        'status',
+        'venueId',
+        'assocVenueId',
+        'assocApId',
+        'assocApVenueId'
+      ],
+      pageSize: 10,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [tenantId], venueId: [venueId] }
+    }
   })
 
+  const venueApIot = availableIotControllers?.data?.[0]
+
   useEffect(() => {
-    const venueApIotData = venueApIot.data
+    const venueApIotData = venueApIot
     if (venueApIotData) {
-      form.setFieldsValue({ iot: venueApIotData })
+      setInitIotController(venueApIotData)
+      setIotController(venueApIotData)
 
       setReadyToScroll?.((r) => [...new Set(r.concat('IoT-Controller'))])
     }
   }, [form, venueApIot, setReadyToScroll])
 
-  const updateIotController = async () => {
+  const updateIotController = async (id: string | undefined) => {
     try {
-      const formData =
-        form.getFieldsValue().iot
-      let payload: VenueIot = {
-        enabled: formData.enabled,
-        mqttBrokerAddress: formData.mqttBrokerAddress
+      if (id) {
+        await updateVenueIotController({
+          params: { venueId, iotControllerId: id }
+        }).unwrap()
+      } else {
+        await deleteVenueIotController({
+          params: { venueId, iotControllerId: initIotController?.id }
+        }).unwrap()
       }
-
-      await updateVenueApIot({
-        params: { venueId },
-        payload: payload
-      }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   const discardIotController = async () => {
-    const venueApIotData = venueApIot.data
-    if (venueApIotData) {
-      form.setFieldsValue({ iot: venueApIotData })
+    if (initIotController) {
+      setIotController(initIotController)
     }
   }
 
-  const handleChanged = () => {
+  const handleChanged = (id: string | undefined) => {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
@@ -98,43 +117,53 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
 
     setEditServerContextData && setEditServerContextData({
       ...editServerContextData,
-      updateVenueIot: updateIotController,
+      updateVenueIot: () => updateIotController(id),
       discardVenueIot: discardIotController
     })
   }
 
-  const iotMqttBrokerAddressFieldName = ['iot', 'mqttBrokerAddress']
+  const iotNameFieldName = ['iot', 'name']
+  const iotInboundAddressFieldName = ['iot', 'inboundAddress']
 
   const handleIotController = () => {
     setDrawerVisible(true)
+  }
+
+  const handleRemoveIotController = () => {
+    setIotController(undefined)
+    handleChanged(undefined)
+  }
+  const handleApplyIotController = (value: IotControllerStatus) => {
+    setIotController(value)
+    handleChanged(value.id)
   }
 
   return (
     <Loader
       states={[
         {
-          isLoading: venueApIot.isLoading,
-          isFetching: isUpdatingVenueApIot
+          isLoading,
+          isFetching: isUpdatingVenueApIot || isDeletingVenueApIot
         }
       ]}
     >
-      {venueApIot?.data?.enabled ? (
+      {iotController?.name ? (
         <Row>
           <Col span={colSpan}>
             <Form.Item
-              name={iotMqttBrokerAddressFieldName}
+              name={iotNameFieldName}
               style={{ display: 'inline-block', width: '230px' }}
               label={$t({ defaultMessage: 'IoT Controller Name' })}
               children={
-                <span>{venueApIot?.data?.enabled}</span>
+                <span>{iotController?.name}</span>
               }
             />
             <Form.Item
-              name={iotMqttBrokerAddressFieldName}
+              name={iotInboundAddressFieldName}
               style={{ display: 'inline-block', width: '230px' }}
               label={$t({ defaultMessage: 'FQDN / IP' })}
               children={
-                <span>{venueApIot?.data?.mqttBrokerAddress}</span>
+                <span>{iotController?.inboundAddress}</span>
               }
             />
           </Col>
@@ -151,7 +180,7 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
               <Button
                 type='link'
                 style={{ marginLeft: '20px' }}
-                onClick={handleIotController}
+                onClick={handleRemoveIotController}
               >
                 {$t({ defaultMessage: 'Remove' })}
               </Button>
@@ -178,7 +207,7 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
       { drawerVisible && <IotControllerDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        applyIotController={handleChanged}
+        applyIotController={handleApplyIotController}
       /> }
     </Loader>
   )
