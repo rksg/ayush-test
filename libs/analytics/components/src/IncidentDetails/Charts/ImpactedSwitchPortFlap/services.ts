@@ -8,7 +8,6 @@ export type ImpactedSwitchPort = {
   portNumber: string
   type: string
   poeOperState: string
-  status: string
   lastFlapTime: string
   flapVlans: string
   connectedDevice: {
@@ -42,7 +41,6 @@ export const api = dataApi.injectEndpoints({
                   portNumber
                   type
                   poeOperState
-                  status
                   lastFlapTime
                   flapVlans
                   connectedDevice {

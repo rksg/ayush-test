@@ -69,6 +69,17 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
     return ''
   }
 
+  // Sort ports by lastFlapTime in descending order (newest first)
+  // This ensures that the most recent port flaps appear at the top of the table
+  const sortedPorts = useMemo(() => {
+    if (!impactedSwitch.data?.ports) return []
+    return [...impactedSwitch.data.ports].sort((a, b) => {
+      const timeA = new Date(a.lastFlapTime).getTime()
+      const timeB = new Date(b.lastFlapTime).getTime()
+      return timeB - timeA // descending order
+    })
+  }, [impactedSwitch.data?.ports])
+
   return <Loader states={[impactedSwitch]}>
     <Card
       title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
@@ -86,7 +97,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
           }}
         />
       </p>
-      <ImpactedSwitchTable data={impactedSwitch.data?.ports!} />
+      <ImpactedSwitchTable data={sortedPorts} />
     </Card>
   </Loader>
 }
@@ -110,16 +121,12 @@ function ImpactedSwitchTable (props: {
   }
 
   const rows: Port[] = ports.map(impactedSwitchPort => {
-    const portCheckRegEx = new RegExp('\\d+/\\d+/\\d+')
-    let portNumber = impactedSwitchPort.portNumber
-    const isPort = portCheckRegEx.test(portNumber)
-    if(!isPort) portNumber = portNumber + ' (LAG)'
     return {
-      portNumber: portNumber,
+      portNumber: impactedSwitchPort.portNumber,
       portType: impactedSwitchPort.type,
-      portStatus: impactedSwitchPort.status,
       lastFlapTimeStamp: formatter(DateFormatEnum.DateTimeFormat)(impactedSwitchPort.lastFlapTime),
-      poeDetail: impactedSwitchPort.poeOperState,
+      poeDetail: impactedSwitchPort.poeOperState === 'Unknown' ? '--' :
+        impactedSwitchPort.poeOperState,
       vlan: formatVlans(impactedSwitchPort.flapVlans),
       connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.name,
@@ -175,14 +182,6 @@ function ImpactedSwitchTable (props: {
     fixed: 'left',
     width: 70,
     sorter: { compare: sortProp('connectedDevice.name', defaultSort) },
-    searchable: true
-  }, {
-    key: 'portStatus',
-    dataIndex: 'portStatus',
-    title: $t({ defaultMessage: 'Port status' }),
-    fixed: 'left',
-    width: 50,
-    sorter: { compare: sortProp('status', defaultSort) },
     searchable: true
   }, {
     key: 'lastFlapTimeStamp',

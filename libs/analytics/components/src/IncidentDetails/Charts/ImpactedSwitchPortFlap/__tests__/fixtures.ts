@@ -7,15 +7,25 @@ export const mockImpactedSwitches = {
         model: 'ICX8200-24P',
         firmware: 'RDR10020_b237',
         ports: [{
-          portNumber: '1/2/3',
+          portNumber: 'LAG1',
+          type: 'LAG',
+          lastFlapTime: '2024-03-20T10:00:00Z',
+          poeOperState: 'Enabled',
+          flapVlans: '1,2,3',
           connectedDevice: {
-            name: 'Device 1'
+            name: 'Device 1',
+            type: 'Switch'
           }
         },
         {
           portNumber: '2/1/20',
+          type: 'GigabitEthernet',
+          lastFlapTime: '2024-03-20T10:00:00Z',
+          poeOperState: 'Disabled',
+          flapVlans: '4,5,6',
           connectedDevice: {
-            name: 'Device 2'
+            name: 'Device 2',
+            type: 'AP'
           }
         }]
       }]
@@ -32,9 +42,14 @@ export const mockImpactedSwitchesWithUnknown = {
         model: 'ICX8200-24P',
         firmware: 'RDR10020_b237',
         ports: [{
-          portNumber: '1/2/3',
+          portNumber: 'LAG1',
+          type: 'LAG',
+          lastFlapTime: '2024-03-20T10:00:00Z',
+          poeOperState: 'Enabled',
+          flapVlans: '1,2,3',
           connectedDevice: {
-            name: 'Unknown'
+            name: 'Unknown',
+            type: 'Unknown'
           }
         }]
       }]

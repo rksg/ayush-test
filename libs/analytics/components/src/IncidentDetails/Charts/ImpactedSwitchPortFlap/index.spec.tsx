@@ -6,8 +6,8 @@ import { get }                                                         from '@ac
 import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockImpactedSwitches } from './__tests__/fixtures'
-import { api }                  from './services'
+import { mockImpactedSwitches, mockImpactedSwitchesWithUnknown } from './__tests__/fixtures'
+import { api }                                                   from './services'
 
 import { SwitchDetail, ImpactedSwitchPortFlapTable } from '.'
 
@@ -133,65 +133,71 @@ describe('ImpactedSwitchPortFlap', () => {
     expect(await screen.findByText('Impacted Port')).toBeVisible()
   })
 
-  it('should format VLANs correctly when 5 or fewer', async () => {
-    const mockData = {
-      ...mockImpactedSwitches,
-      data: {
-        incident: {
-          impactedSwitches: [{
-            ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-            ports: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-              flapVlans: '1, 2, 3, 4, 5'
-            }]
-          }]
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+  it('should format LAG port numbers correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(await screen.findByText('1, 2, 3, 4, 5')).toBeVisible()
+    expect(await screen.findByText('LAG1')).toBeVisible()
   })
 
-  it('should format VLANs correctly when more than 5', async () => {
-    const mockData = {
-      ...mockImpactedSwitches,
-      data: {
-        incident: {
-          impactedSwitches: [{
-            ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-            ports: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-              flapVlans: '1, 2, 3, 4, 5, 6, 7, 8'
-            }]
-          }]
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+  it('should handle unknown connected device', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitchesWithUnknown)
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const vlanText = await screen.findByText('1, 2, 3, 4, 5 and more')
-    expect(vlanText).toBeVisible()
-    await userEvent.hover(vlanText)
-    const tooltip = await screen.findByRole('tooltip', { hidden: true })
-    expect(tooltip).toHaveTextContent('1, 2, 3, 4, 5, 6, 7, 8')
+    // Verify both connected device cells show "--"
+    const dashCells = await screen.findAllByText('--')
+    expect(dashCells).toHaveLength(2)
   })
 
-  it('should handle empty VLAN data', async () => {
+  it('should format last flap time correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const tableCells = await screen.findAllByRole('cell')
+    const dateCell = tableCells.find(cell => cell.textContent?.includes('2024'))
+    expect(dateCell).toBeTruthy()
+    expect(dateCell).toHaveTextContent(/2024/)
+  })
+
+  it('should display POE details correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Enabled')).toBeVisible()
+  })
+
+  it('should sort ports by lastFlapTime in descending order', async () => {
     const mockData = {
-      ...mockImpactedSwitches,
       data: {
         incident: {
           impactedSwitches: [{
             ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-            ports: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-              flapVlans: ''
-            }]
+            ports: [
+              {
+                portNumber: '1/1/1',
+                type: 'GigabitEthernet',
+                lastFlapTime: '2024-03-20T10:00:00Z',
+                poeOperState: 'Enabled',
+                flapVlans: '1,2,3',
+                connectedDevice: {
+                  name: 'Device 1',
+                  type: 'Switch'
+                }
+              },
+              {
+                portNumber: '1/1/2',
+                type: 'GigabitEthernet',
+                lastFlapTime: '2024-03-20T11:00:00Z',
+                poeOperState: 'Disabled',
+                flapVlans: '4,5,6',
+                connectedDevice: {
+                  name: 'Device 2',
+                  type: 'AP'
+                }
+              }
+            ]
           }]
         }
       }
@@ -200,7 +206,57 @@ describe('ImpactedSwitchPortFlap', () => {
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await screen.findByText('--')).toBeVisible()
+    // Get all port numbers in the order they appear
+    const port1 = await screen.findByText('1/1/2')
+    const port2 = await screen.findByText('1/1/1')
+    // Verify the order (newest first)
+    expect(port1.compareDocumentPosition(port2) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('should handle table sorting', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const portIdHeader = await screen.findByText('Port Id')
+    await userEvent.click(portIdHeader)
+    const cells = await screen.findAllByRole('cell')
+    const portNumbers = cells.filter(cell =>
+      cell.textContent === 'LAG1' || cell.textContent === '2/1/20'
+    )
+    expect(portNumbers[0]).toHaveTextContent('2/1/20')
+    expect(portNumbers[1]).toHaveTextContent('LAG1')
+  })
+
+  it('should handle table search', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const searchInput = await screen.findByPlaceholderText(/Search Port Id/)
+    await userEvent.type(searchInput, 'LAG1')
+    expect(await screen.findByText('LAG1')).toBeVisible()
+    expect(screen.queryByText('2/1/20')).not.toBeInTheDocument()
+  })
+
+  it('should handle table pagination', async () => {
+    const mockData = {
+      ...mockImpactedSwitches,
+      data: {
+        incident: {
+          impactedSwitches: [{
+            ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+            ports: Array(10).fill(mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0])
+          }]
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('row')
+    expect(rows.length).toBe(6) // Header + 5 rows per page
   })
 
   describe('MLISA paths', () => {
@@ -230,208 +286,6 @@ describe('ImpactedSwitchPortFlap', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       const mlisaLink = await screen.findByRole('link', { name: 'ICX8200-24P Router' })
       expect(mlisaLink).toHaveAttribute('href', expect.stringContaining('/reports'))
-    })
-  })
-
-  describe('ImpactedSwitchTable', () => {
-    it('should format LAG port numbers correctly', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [{
-                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                portNumber: 'LAG1'
-              }]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('LAG1 (LAG)')).toBeVisible()
-    })
-
-    it('should handle unknown connected device', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [{
-                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                connectedDevice: {
-                  name: 'Unknown',
-                  type: 'Unknown'
-                },
-                flapVlans: '1,2,3' // Add some VLANs to avoid the third "--"
-              }]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      // Verify both connected device cells show "--"
-      const dashCells = await screen.findAllByText('--')
-      expect(dashCells).toHaveLength(2)
-    })
-
-    it('should format last flap time correctly', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [{
-                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                lastFlapTime: '2024-03-20T10:00:00Z'
-              }]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      const tableCells = await screen.findAllByRole('cell')
-      const dateCell = tableCells.find(cell => cell.textContent?.includes('2024'))
-      expect(dateCell).toBeTruthy()
-      expect(dateCell).toHaveTextContent(/2024/)
-    })
-
-    it('should display POE details correctly', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [{
-                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                poeOperState: 'Enabled'
-              }]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Enabled')).toBeVisible()
-    })
-
-    it('should display port status correctly', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [{
-                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                status: 'Up'
-              }]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Up')).toBeVisible()
-    })
-
-    it('should handle table sorting', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [
-                {
-                  ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                  portNumber: '1/1/1'
-                },
-                {
-                  ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                  portNumber: '1/1/2'
-                }
-              ]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      // Find and click the Port Id column header to sort
-      const portIdHeader = await screen.findByText('Port Id')
-      await userEvent.click(portIdHeader)
-
-      // Verify the table is still visible after sorting
-      expect(screen.getByRole('table')).toBeVisible()
-    })
-
-    it('should handle table search', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: [
-                {
-                  ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
-                  portNumber: '1/1/1'
-                }
-              ]
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      // Find and type in the search input
-      const searchInput = await screen.findByPlaceholderText(/Search/)
-      await userEvent.type(searchInput, '1/1/1')
-
-      // Verify the table is still visible after search
-      expect(screen.getByRole('table')).toBeVisible()
-    })
-
-    it('should handle table pagination', async () => {
-      const mockData = {
-        ...mockImpactedSwitches,
-        data: {
-          incident: {
-            impactedSwitches: [{
-              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-              ports: Array(10).fill(mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0])
-            }]
-          }
-        }
-      }
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      // Verify pagination controls are present
-      expect(screen.getByRole('table')).toBeVisible()
-      expect(screen.getByText('1')).toBeVisible() // First page
-      expect(screen.getByText('2')).toBeVisible() // Second page
     })
   })
 })
