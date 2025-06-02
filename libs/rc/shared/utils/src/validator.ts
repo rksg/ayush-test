@@ -47,7 +47,7 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
-function promiseAnyIpRegexPass<T>(promises: Promise<T>[]): Promise<T> {
+function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
   if (promises.length === 0) {
     return Promise.reject(new Error('No promises found'))
   }
