@@ -69,17 +69,6 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
     return ''
   }
 
-  // Sort ports by lastFlapTime in descending order (newest first)
-  // This ensures that the most recent port flaps appear at the top of the table
-  const sortedPorts = useMemo(() => {
-    if (!impactedSwitch.data?.ports) return []
-    return [...impactedSwitch.data.ports].sort((a, b) => {
-      const timeA = new Date(a.lastFlapTime).getTime()
-      const timeB = new Date(b.lastFlapTime).getTime()
-      return timeB - timeA // descending order
-    })
-  }, [impactedSwitch.data?.ports])
-
   return <Loader states={[impactedSwitch]}>
     <Card
       title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
@@ -97,7 +86,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
           }}
         />
       </p>
-      <ImpactedSwitchTable data={sortedPorts} />
+      <ImpactedSwitchTable data={impactedSwitch.data?.ports ?? []} />
     </Card>
   </Loader>
 }

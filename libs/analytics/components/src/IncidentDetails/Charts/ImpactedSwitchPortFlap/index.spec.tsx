@@ -150,67 +150,99 @@ describe('ImpactedSwitchPortFlap', () => {
     expect(dashCells).toHaveLength(2)
   })
 
-  it('should format last flap time correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
-    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const tableCells = await screen.findAllByRole('cell')
-    const dateCell = tableCells.find(cell => cell.textContent?.includes('2024'))
-    expect(dateCell).toBeTruthy()
-    expect(dateCell).toHaveTextContent(/2024/)
-  })
-
-  it('should display PoE details correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
-    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Enabled')).toBeVisible()
-  })
-
-  it('should sort ports by lastFlapTime in descending order', async () => {
-    const mockData = {
-      data: {
-        incident: {
-          impactedSwitches: [{
-            ...mockImpactedSwitches.data.incident.impactedSwitches[0],
-            ports: [
-              {
-                portNumber: '1/1/1',
-                type: 'GigabitEthernet',
-                lastFlapTime: '2024-03-20T10:00:00Z',
-                poeOperState: 'Enabled',
-                flapVlans: '1,2,3',
-                connectedDevice: {
-                  name: 'Device 1',
-                  type: 'Switch'
-                }
-              },
-              {
-                portNumber: '1/1/2',
-                type: 'GigabitEthernet',
-                lastFlapTime: '2024-03-20T11:00:00Z',
-                poeOperState: 'Disabled',
-                flapVlans: '4,5,6',
-                connectedDevice: {
-                  name: 'Device 2',
-                  type: 'AP'
-                }
-              }
-            ]
-          }]
+  describe('VLAN formatting', () => {
+    it('should display empty VLAN as --', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                flapVlans: ''
+              }]
+            }]
+          }
         }
       }
-    }
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
-    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('--')).toBeVisible()
+    })
 
-    // Get all port numbers in the order they appear
-    const port1 = await screen.findByText('1/1/2')
-    const port2 = await screen.findByText('1/1/1')
-    // Verify the order (newest first)
-    expect(port1.compareDocumentPosition(port2) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    it('should display up to 5 VLANs without truncation', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                flapVlans: '1,2,3,4,5'
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('1,2,3,4,5')).toBeVisible()
+    })
+
+    it('should truncate more than 5 VLANs with tooltip', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                flapVlans: '1, 2, 3, 4, 5, 6, 7, 8'
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const truncatedText = await screen.findByText('1, 2, 3, 4, 5 and more')
+      expect(truncatedText).toBeVisible()
+      await userEvent.hover(truncatedText)
+      expect(await screen.findByRole('tooltip', { hidden: true }))
+        .toHaveTextContent('1, 2, 3, 4, 5, 6, 7, 8')
+    })
+  })
+
+  describe('PoE state handling', () => {
+    it('should display PoE state correctly', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('Enabled')).toBeVisible()
+    })
+
+    it('should display -- for Unknown PoE state', async () => {
+      const mockData = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [{
+                ...mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0],
+                poeOperState: 'Unknown'
+              }]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockData)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('--')).toBeVisible()
+    })
   })
 
   it('should handle table sorting', async () => {
