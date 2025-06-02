@@ -21,10 +21,11 @@ export interface SubInterfaceSettingsFormProps {
   ports: EdgePort[]
   portStatus: EdgePortInfo[]
   lagStatus: EdgePortInfo[]
+  isSupportAccessPort?: boolean
 }
 
 export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) => {
-  const { serialNumber, ports, portStatus, lagStatus } = props
+  const { serialNumber, ports, portStatus, lagStatus, isSupportAccessPort } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
 
@@ -75,6 +76,7 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
                     ...lagStatus
                   ]}
                   currentInterfaceName={item.portName}
+                  isSupportAccessPort={isSupportAccessPort}
                 />
               </Form.Item>
             }
@@ -99,6 +101,7 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
                     ...lagStatus
                   ]}
                   currentInterfaceName={item.portName}
+                  isSupportAccessPort={isSupportAccessPort}
                 />
               </Form.Item>
             }

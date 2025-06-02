@@ -626,6 +626,11 @@ export interface ApBandModeSettings {
   useVenueSettings: boolean
 }
 
+export interface ApBandModeSettingsV1Dot1 {
+  bandMode: BandModeEnum,
+  useVenueOrApGroupSettings: boolean
+}
+
 export type ApExternalAntennaSettings = {
   externalAntenna: ExternalAntenna,
   useVenueSettings: boolean
@@ -735,6 +740,10 @@ export interface ApSmartMonitor {
   enabled: boolean,
   interval: number,
   threshold: number
+}
+
+export interface ApIotController {
+  useVenueSettings: boolean
 }
 
 export interface ApIot {
