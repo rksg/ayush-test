@@ -123,6 +123,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'UPDATE_WORKFLOW',
             'INITIATE_PUBLISH_WORKFLOW',
             'DELETE_WORKFLOW',
+            'ATTACH_STEP',
             'CREATE_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
@@ -449,6 +450,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CREATE_STEP',
+            'ATTACH_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
             'IMPORT_WORKFLOW'

@@ -180,7 +180,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   attachStepBeneathStep: {
     method: 'put',
-    url: `${WorkflowStepBaseUrl}/{stepId}/nextSteps/{detachedStepId}`,
+    url: `${WorkflowStepBaseUrl}/:stepId/nextSteps/:detachedStepId`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
