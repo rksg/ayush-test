@@ -497,8 +497,9 @@ export interface MspRecCustomer {
   kumo?: boolean,
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
-  email_id?: string
-  is_tenant_onboarded?: boolean
+  email_id?: string,
+  is_tenant_onboarded?: boolean,
+  propertyCode?: string
 }
 
 export enum MspEcTierEnum {
