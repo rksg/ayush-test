@@ -7,7 +7,7 @@ import { Button, PageHeader, Tabs } from '@acx-ui/components'
 import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import {
   filterByAccessForServicePolicyMutation,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   PortProfileTabsEnum,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
@@ -97,14 +97,7 @@ export default function PortProfile () {
             { defaultMessage: 'Port Profiles' }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={getAddButton()}
         footer={<ProfileTabs/>}
       />

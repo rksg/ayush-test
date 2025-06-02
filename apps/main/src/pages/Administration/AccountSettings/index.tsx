@@ -6,11 +6,14 @@ import { Features, useIsSplitOn, useIsTierAllowed }                             
 import { useGetMspEcProfileQuery }                                                                   from '@acx-ui/msp/services'
 import { MSPUtils }                                                                                  from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                                                    from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  getUserProfile,
+  hasAllowedOperations
 } from '@acx-ui/user'
-import { AccountType, isDelegationMode, useTenantId } from '@acx-ui/utils'
+import { AccountType, getOpsApi, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
@@ -33,6 +36,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const params = { tenantId: useTenantId() }
   const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
   const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+  const { rbacOpsApiEnabled } = getUserProfile()
   const {
     data: userProfileData,
     isPrimeAdmin,
@@ -62,6 +66,10 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isLoginSSoMspEcEnabled = useIsSplitOn(Features.LOGIN_SSO_SAML_MSPEC)
   const isSoftTenantDeleteEnabled = useIsSplitOn(Features.NUKETENANT_SOFT_TENANT_DELETE_TOGGLE)
 
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.getTenantAuthentications)
+    ]) : isPrimeAdminUser
   const isMsp =
   tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR
 
@@ -73,16 +81,18 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
-  const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
+  const showSsoSupport = hasPermission && isIdmDecoupling && !isDogfood
     && !isDelegationMode() && (isMsp || isRec || (isLoginSSoMspEcEnabled && isMspEc)
     || (isLoginSSoTechpartnerEnabled && isTechPartner))
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled
-  const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
-  const showSoftDeleteButton = isPrimeAdminUser && isSoftTenantDeleteEnabled &&
+  const showApiKeySupport = hasPermission && isApiKeyEnabled
+  const showBetaButton = hasPermission && betaButtonToggle && showRksSupport
+  const showSoftDeleteButton = (rbacOpsApiEnabled ? hasAllowedOperations([
+    getOpsApi(AdministrationUrlsInfo.deleteTenant)
+  ]) : isPrimeAdminUser) && isSoftTenantDeleteEnabled &&
    canMSPDelegation
 
   const authenticationData =
-    useGetTenantAuthenticationsQuery({ params }, { skip: !isPrimeAdminUser })
+    useGetTenantAuthenticationsQuery({ params }, { skip: !hasPermission })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
@@ -95,7 +105,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
         <StepsForm.TextContent>
           <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-          { (isPrimeAdminUser) && (
+          { (hasPermission) && (
             <>
               <Divider />
               <DefaultSystemLanguageFormItem />
@@ -109,7 +119,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
             </>
           )}
 
-          { isPrimeAdminUser && (
+          { hasPermission && (
             <>
               <Divider />
               <MapRegionFormItem />

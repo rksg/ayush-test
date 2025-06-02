@@ -1860,6 +1860,26 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    updateVenueIotController: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueIotController, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    deleteVenueIotController: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.deleteVenueIotController, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
     getVenueIot: build.query<VenueIot, RequestPayload>({
       query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2640,6 +2660,8 @@ export const {
   useGetVenueApRebootTimeoutQuery,
   useLazyGetVenueApRebootTimeoutQuery,
   useUpdateVenueApRebootTimeoutMutation,
+  useUpdateVenueIotControllerMutation,
+  useDeleteVenueIotControllerMutation,
   useGetVenueIotQuery,
   useLazyGetVenueIotQuery,
   useUpdateVenueIotMutation,

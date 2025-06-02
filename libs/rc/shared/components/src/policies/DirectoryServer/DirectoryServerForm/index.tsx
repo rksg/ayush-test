@@ -1,9 +1,10 @@
-
 import { Col, Form, Row }                      from 'antd'
+import { cloneDeep }                           from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useCreateDirectoryServerMutation, useUpdateDirectoryServerMutation } from '@acx-ui/rc/services'
 import {
   LocationExtended,
@@ -12,7 +13,8 @@ import {
   getPolicyRoutePath,
   redirectPreviousPage,
   DirectoryServer,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  combineAttributeMappingsToData
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -30,6 +32,9 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
   const location = useLocation()
   const [form] = Form.useForm()
 
+  // eslint-disable-next-line max-len
+  const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.DIRECTORY_SERVER)
   const tablePath = getPolicyRoutePath({
@@ -41,12 +46,24 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
   const [ updateDirectoryServer ] = useUpdateDirectoryServerMutation()
   const [ createDirectoryServer ] = useCreateDirectoryServerMutation()
 
+  const requestPreProcess = (data: DirectoryServer) => {
+    const { ...result } = cloneDeep(data)
+
+    if(isSupportIdentityAttribute) {
+      Object.assign(result, combineAttributeMappingsToData(result))
+    }
+
+    return result
+  }
+
   const handleFinish = async (data: DirectoryServer) => {
     try {
+      const payload = requestPreProcess(data)
+
       if (editMode) {
-        await updateDirectoryServer({ params, payload: data }).unwrap()
+        await updateDirectoryServer({ params, payload: payload }).unwrap()
       } else {
-        await createDirectoryServer({ params, payload: data }).unwrap()
+        await createDirectoryServer({ params, payload: payload }).unwrap()
       }
 
       redirectPreviousPage(navigate, previousPath, linkToTableView)

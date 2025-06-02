@@ -634,6 +634,10 @@ export const SamlIdpMessages = {
   DOWNLOAD_SAML_METADATA: defineMessage({
     defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
   }),
+  IDENTITY_DESCRIPTION: defineMessage({
+    defaultMessage: 'Map user attributes from your IdP to identity attributes'+
+      ' in RUCKUS One using the exact values from your IdP.'+
+      ' Claim names are available in your IdP console.' }),
   IDENTITY_NAME: defineMessage({
     defaultMessage: 'If "Identity Name" is empty or does not match, it will default to “NameID”.'
   })

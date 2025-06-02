@@ -125,7 +125,7 @@ describe('ClientDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
@@ -155,7 +155,7 @@ describe('ClientDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     expect(await screen.findByText('Clients')).toBeVisible()
     expect(await screen.findByText('Wireless')).toBeVisible()
@@ -175,7 +175,7 @@ describe('ClientDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     expect(await screen.findAllByRole('tab')).toHaveLength(4)
 
@@ -194,7 +194,7 @@ describe('ClientDetails', () => {
       activeTab: 'troubleshooting'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Troubleshooting')
@@ -207,7 +207,7 @@ describe('ClientDetails', () => {
       activeTab: 'reports'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
   })
 
@@ -218,7 +218,7 @@ describe('ClientDetails', () => {
       activeTab: 'timeline'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Timeline')
@@ -231,7 +231,7 @@ describe('ClientDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><ClientDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)

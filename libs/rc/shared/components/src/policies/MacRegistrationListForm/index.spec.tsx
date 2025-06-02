@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -191,6 +191,8 @@ describe('MacRegistrationListForm', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
 
     mockServer.use(
       rest.get(
@@ -274,7 +276,7 @@ describe('MacRegistrationListForm', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'MAC Registration Lists'
+      name: 'MAC Registration List'
     })).toBeVisible()
   })
 
@@ -403,7 +405,7 @@ describe('MacRegistrationListForm', () => {
     await userEvent.click(groupOption[0])
 
     // eslint-disable-next-line max-len
-    const useSingleIdentityElem = await screen.findByText('Use Single Identity for all connections')
+    const useSingleIdentityElem = await screen.findByText('Use single identity association to all onboarded devices')
     await userEvent.click(useSingleIdentityElem)
 
     await userEvent.type(expirationOffsetElem, mockedCreateFormData.expirationOffset!.toString())

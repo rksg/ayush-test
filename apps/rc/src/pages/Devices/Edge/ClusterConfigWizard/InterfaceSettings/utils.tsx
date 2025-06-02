@@ -602,6 +602,7 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
       subnet: item[0].subnet,
       portType: item[0].portType,
       isCorePort: item[0].corePortEnabled,
+      isAccessPort: item[0].accessPortEnabled,
       isLag: false,
       isLagMember: currentLagMembers?.includes(item[0].id) ?? false,
       portEnabled: item[0].enabled
@@ -616,6 +617,7 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
       subnet: item.subnet,
       portType: item.portType,
       isCorePort: item.corePortEnabled,
+      isAccessPort: item.accessPortEnabled,
       isLag: true,
       isLagMember: false,
       portEnabled: item.lagEnabled
