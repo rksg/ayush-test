@@ -31,7 +31,7 @@ export interface UserProfileContextProps {
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
   isCustomRole?: boolean
-  isCustomGroup?: boolean
+  isCustomPrivilegeGroup?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
   selectedBetaListEnabled?: boolean
@@ -54,7 +54,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false,
     isCustomRole = false,
-    isCustomGroup = false,
+    isCustomPrivilegeGroup = false,
     rbacOpsApiEnabled = false,
     activityAllVenuesEnabled = false
 
@@ -123,7 +123,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
-    isCustomGroup = profile?.privilegeGroupType?.toLocaleLowerCase()?.includes('custom') ?? false
+    // eslint-disable-next-line max-len
+    isCustomPrivilegeGroup = profile?.privilegeGroupType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
@@ -131,7 +132,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       userProfile.roles = userProfile.roles
         .every(r => r in Role) ? userProfile.roles : [Role.PRIME_ADMIN]
       isCustomRole = false
-      isCustomGroup = false
+      isCustomPrivilegeGroup = false
     }
     setUserProfile({
       profile: userProfile,
@@ -142,7 +143,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
       isCustomRole,
-      isCustomGroup,
+      isCustomPrivilegeGroup,
       scopes: profile?.scopes,
       hasAllVenues,
       venuesList,
@@ -165,7 +166,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
       isCustomRole,
-      isCustomGroup,
+      isCustomPrivilegeGroup,
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
