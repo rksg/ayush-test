@@ -52,14 +52,14 @@ function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
     return Promise.reject(new Error('No promises found'))
   }
   return new Promise((resolve, reject) => {
-    const errorsMsg: string[] = []
+    const errorsMsg: Error[] = []
     let rejectedCount = 0
     promises.forEach(promise => {
       promise.then(resolve, (error) => {
         errorsMsg.push(error)
         rejectedCount++
         if (rejectedCount === promises.length) {
-          reject(new Error(errorsMsg[0]))
+          reject(errorsMsg[0])
         }
       })
     })
@@ -68,7 +68,7 @@ function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
 
 export async function dualModeServerIpAddressRegExp (value: string) {
   return promiseAnyIpRegexPass([serverIpAddressRegExp(value), ipv6RegExp(value)])
-    .catch((err: Error) => {
+    .catch((err) => {
       return Promise.reject(err)
     })
 }
