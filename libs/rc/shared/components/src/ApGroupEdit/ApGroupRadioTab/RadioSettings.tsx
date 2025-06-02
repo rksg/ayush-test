@@ -1146,7 +1146,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                     } )}} >
                   <Space direction='vertical'>
                     <Radio value={true}>
-                      <FormattedMessage defaultMessage={'Use inherited settings from Venue'} />
+                      <FormattedMessage defaultMessage={'Use inherited settings from <VenueSingular></VenueSingular>'} />
                     </Radio>
                     <Radio value={false}>
                       <FormattedMessage defaultMessage={'Customize settings'} />
@@ -1185,7 +1185,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   <Space direction='vertical'>
                     <Radio value={true} data-testid='apGroup-useVenueSettings'>
                       <FormattedMessage
-                        defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from Venue'}
+                        defaultMessage={'Use inherited <radioTypeName></radioTypeName> settings from <VenueSingular></VenueSingular>'}
                         values={{
                           radioTypeName: () => getRadioTypeDisplayName(currentTab as RadioType)
                         }}
