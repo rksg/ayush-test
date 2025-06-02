@@ -379,7 +379,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -6122,7 +6122,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -11532,7 +11532,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -17213,7 +17213,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
 
 .c3 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c3 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -19427,7 +19427,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
 
 .c3 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c3 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
