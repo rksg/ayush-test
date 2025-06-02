@@ -20,8 +20,8 @@ import {
 } from '@acx-ui/components'
 import {
   useAddIotControllerMutation,
-  useGetIotControllerQuery,
-  useLazyGetIotControllerListQuery,
+  useGetIotControllerListQuery,
+  // useLazyGetIotControllerSerialNumberQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -29,6 +29,7 @@ import {
   checkObjectNotExists,
   redirectPreviousPage,
   IotControllerSetting,
+  IotControllerStatus,
   excludeSpaceRegExp,
   domainNameRegExp
 } from '@acx-ui/rc/utils'
@@ -65,12 +66,7 @@ export function IotControllerForm () {
   const [addIotController] = useAddIotControllerMutation()
   const [updateIotController] = useUpdateIotControllerMutation()
 
-  const [serialNumberEnabled, setSerialNumberEnabled] = useState(true)
-
-  const { tenantId, iotId, venueId, action } = useParams()
-  // eslint-disable-next-line max-len
-  const { data, isLoading: isIotControllerLoading } = useGetIotControllerQuery({ params: { tenantId, iotId, venueId } },
-    { skip: !iotId })
+  const { iotId, action } = useParams()
 
   const onClickTestConnection = async () => {
     try {
@@ -103,19 +99,67 @@ export function IotControllerForm () {
     setTestConnectionStatus(undefined)
   }
 
-  const [getIotControllerList] = useLazyGetIotControllerListQuery()
+  const { availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'serialNumber',
+        'publicAddress',
+        'publicPort',
+        'apiToken',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId] }
+    }
+  }, {
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item,
+        iotSerialNumber: item.serialNumber
+      }) as IotControllerStatus) ?? []
+    })
+  })
+
+  // form data
+  // eslint-disable-next-line max-len
+  const data = availableIotControllers?.find((item: IotControllerStatus) => item.id === iotId)
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject($t(validationMessages.name))
     }
     try {
-      const list = (await getIotControllerList({ params: { tenantId } })
-        .unwrap()).data?.map(n => ({ name: n.name }))
+      // filter for edit mode if iotId is not null
+      const list = availableIotControllers?.filter(n => n.id !== iotId).map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  // TODO : Add serial number check
+  // const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
+
+  // const serialNumberValidator = async (value: string) => {
+  //   const list = (await getSerialNumber({
+  //     params: { serialNumber: value }
+  //   }).unwrap())
+  //     // .filter(n => n.id !== id)
+  //     // .map(n => ({ name: n.name }))
+
+  //   // return checkObjectNotExists(list,
+  //   //   { name: value }
+  //     // intl.$t({ defaultMessage: 'Resident Portal' }))
+  // }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
@@ -150,6 +194,7 @@ export function IotControllerForm () {
     }
   }, [])
 
+
   return (
     <>
       <PageHeader
@@ -173,7 +218,7 @@ export function IotControllerForm () {
       >
         <StepsForm.StepForm>
           <Loader states={[{
-            isLoading: isIotControllerLoading
+            isLoading
           }]}>
             <>
               <Row gutter={20}>
@@ -212,15 +257,9 @@ export function IotControllerForm () {
                     {$t({ defaultMessage: 'Enable Public IP address' })}
                     <Form.Item
                       name='publicEnabled'
+                      initialValue={data?.publicAddress ? data?.publicAddress?.length > 0 : false}
                       valuePropName={'checked'}
-                      children={<Switch
-                        onChange={(checked: boolean)=>{
-                          if(checked){
-                            setSerialNumberEnabled(false)
-                          } else {
-                            setSerialNumberEnabled(true)
-                          }
-                        }}/>}
+                      children={<Switch />}
                     />
                   </StepsForm.FieldLabel>
                   <UI.FieldTitle>
@@ -333,9 +372,13 @@ export function IotControllerForm () {
                       {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Serial Number' })
+                      // TODO: add serial number validator
+                      // },
+                      // {
+                      //   validator: (_, value) => serialNumberValidator(value)
                       }
                     ]}
-                    children={<Input disabled={isEditMode || !serialNumberEnabled} />}
+                    children={<Input disabled={isEditMode || publicEnabled} />}
                     validateFirst
                   />
                 </Col>

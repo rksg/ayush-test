@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import TextArea                                                      from 'antd/lib/input/TextArea'
@@ -121,6 +121,14 @@ export default function DHCPPoolTable ({
 
   const handleChanged = () => onChange?.(values())
 
+  useEffect(() => {
+    if (dhcpMode === DHCPConfigTypeEnum.MULTIPLE) {
+      form.setFieldValue('allowWired', undefined)
+      form.setFieldValue('vlanId', 300)
+      setVlanEnable(true)
+    }
+  }, [dhcpMode])
+
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
     if (item) {
@@ -199,7 +207,8 @@ export default function DHCPPoolTable ({
             disabled={dhcpMode === DHCPConfigTypeEnum.MULTIPLE}
             onChange={(checked: boolean)=>{
               if(checked){
-                if (dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL) {
+                // eslint-disable-next-line max-len
+                if (dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL || dhcpMode === DHCPConfigTypeEnum.SIMPLE) {
                   form.setFieldsValue({ vlanId: 1 })
                   setVlanEnable(false)
                 }

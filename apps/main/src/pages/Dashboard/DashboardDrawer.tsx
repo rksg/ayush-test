@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import { Dropdown, Menu, MenuProps, Tooltip, Space }   from 'antd'
+import { Dropdown, Menu, MenuProps, Space }            from 'antd'
 import moment                                          from 'moment-timezone'
 import { DndProvider, useDrag, useDragLayer, useDrop } from 'react-dnd'
 import { HTML5Backend }                                from 'react-dnd-html5-backend'
 import { IntlShape, useIntl }                          from 'react-intl'
 
-import { Button, Drawer }            from '@acx-ui/components'
+import { Button, Drawer, Tooltip }   from '@acx-ui/components'
 import { MoveSolid, PentagramSolid } from '@acx-ui/icons'
 import {
   AccountCircleSolid,
@@ -24,8 +24,8 @@ import { noDataDisplay } from '@acx-ui/utils'
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
 
-import { formatDashboardList } from './index.utils'
-import * as UI                 from './styledComponents'
+import { formatDashboardList, DashboardMessages } from './index.utils'
+import * as UI                                    from './styledComponents'
 
 
 type ListItemProps = {
@@ -150,7 +150,6 @@ const getItemInfo = (props: {
       // eslint-disable-next-line max-len
         ? <Tooltip
           title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}
-          overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
         >
           <PentagramSolid />
         </Tooltip>
@@ -173,11 +172,12 @@ const getItemInfo = (props: {
         }</span> }
         { item.authorId && <span className='author'>
           <Tooltip
-            title={$t({ defaultMessage: 'The creator or owner of this canvas.' })}
+            title={$t(DashboardMessages.authorTooltip)}
             placement='bottom'
-            overlayInnerStyle={{ fontSize: '12px', minHeight: '28px' }}
           >
             <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
+          </Tooltip>
+          <Tooltip title={authorName} placement='bottom'>
             <span className='name'>{ authorName }</span>
           </Tooltip>
         </span>
