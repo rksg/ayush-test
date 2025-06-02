@@ -26,9 +26,9 @@ describe('mdnsProxyConsolidationUtils', () => {
       const { result } = renderHook(() => useMdnsProxyStateMap())
 
       expect(result.current).toEqual({
-        [ServiceType.MDNS_PROXY]: true,
-        [ServiceType.EDGE_MDNS_PROXY]: true,
-        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+        [ServiceType.MDNS_PROXY]: false,
+        [ServiceType.EDGE_MDNS_PROXY]: false,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
       })
     })
 
@@ -39,9 +39,9 @@ describe('mdnsProxyConsolidationUtils', () => {
       const { result } = renderHook(() => useMdnsProxyStateMap())
 
       expect(result.current).toEqual({
-        [ServiceType.MDNS_PROXY]: false,
-        [ServiceType.EDGE_MDNS_PROXY]: false,
-        [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+        [ServiceType.MDNS_PROXY]: true,
+        [ServiceType.EDGE_MDNS_PROXY]: true,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
       })
     })
 
@@ -52,9 +52,9 @@ describe('mdnsProxyConsolidationUtils', () => {
       const { result } = renderHook(() => useMdnsProxyStateMap())
 
       expect(result.current).toEqual({
-        [ServiceType.MDNS_PROXY]: false,
-        [ServiceType.EDGE_MDNS_PROXY]: true,
-        [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+        [ServiceType.MDNS_PROXY]: true,
+        [ServiceType.EDGE_MDNS_PROXY]: false,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
       })
     })
 
@@ -65,9 +65,9 @@ describe('mdnsProxyConsolidationUtils', () => {
       const { result } = renderHook(() => useMdnsProxyStateMap())
 
       expect(result.current).toEqual({
-        [ServiceType.MDNS_PROXY]: false,
-        [ServiceType.EDGE_MDNS_PROXY]: true,
-        [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+        [ServiceType.MDNS_PROXY]: true,
+        [ServiceType.EDGE_MDNS_PROXY]: false,
+        [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
       })
     })
   })

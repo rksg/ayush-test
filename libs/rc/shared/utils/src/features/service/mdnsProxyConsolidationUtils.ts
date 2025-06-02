@@ -20,8 +20,8 @@ export function useMdnsProxyStateMap (): MdnsProxyStateMap {
   const isConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
 
   return {
-    [ServiceType.MDNS_PROXY]: isConsolidationEnabled,
-    [ServiceType.EDGE_MDNS_PROXY]: !isEdgeMdnsReady || isConsolidationEnabled,
-    [ServiceType.MDNS_PROXY_CONSOLIDATION]: !isConsolidationEnabled
+    [ServiceType.MDNS_PROXY]: !isConsolidationEnabled,
+    [ServiceType.EDGE_MDNS_PROXY]: isEdgeMdnsReady && !isConsolidationEnabled,
+    [ServiceType.MDNS_PROXY_CONSOLIDATION]: isConsolidationEnabled
   }
 }

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
@@ -7,6 +9,8 @@ import {
   RadioCardCategory,
   StepsForm
 }  from '@acx-ui/components'
+import { Features }                                                               from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   getSelectServiceRoutePath,
   ServiceOperation,
@@ -15,7 +19,9 @@ import {
   LocationExtended,
   useServiceListBreadcrumb,
   redirectPreviousPage,
-  hasServicePermission
+  hasServicePermission,
+  useIsEdgeFeatureReady,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -33,6 +39,9 @@ export default function CreateMdnsProxyService () {
   const createEdgeMdnsProxyPath = useTenantLink(
     getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.CREATE })
   )
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
 
   const handleCreateMdnsProxyService = async (
@@ -85,13 +94,28 @@ export default function CreateMdnsProxyService () {
                   value={MdnsProxyConsolidationTabKey.EDGE}
                   disabled={!hasEdgeMdnsProxyPermission}
                 >
-                  {$t(categoryMapping[RadioCardCategory.EDGE].text)}
+                  <Space>
+                    <span>{$t(categoryMapping[RadioCardCategory.EDGE].text)}</span>
+                    <ApCompatibilityToolTip
+                      title=''
+                      showDetailButton
+                      // eslint-disable-next-line max-len
+                      onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+                    />
+                  </Space>
                 </Radio>
               </Space>
             </Radio.Group>
           </Form.Item>
         </StepsForm.StepForm>
       </StepsForm>
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeCompatibilityFeature}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }

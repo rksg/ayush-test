@@ -263,6 +263,20 @@ describe('Edge mDNS Proxy Table', () => {
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('RUCKUS Edges')
   })
+
+  it('should render table without Header when hideHeader is true', async () => {
+    render(
+      <Provider>
+        <EdgeMdnsProxyTable hideHeader={true} />
+      </Provider>, {
+        route: { params, path: mockPath }
+      }
+    )
+
+    await basicCheck()
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    expect(screen.queryByRole('button', { name: /Add mDNS Proxy Service/ })).toBeNull()
+  })
 })
 
 const basicCheck= async () => {
