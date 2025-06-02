@@ -10,7 +10,7 @@ import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
-import { useIsMdnsProxyConsolidationEnabled }    from '../service'
+import { useMdnsProxyStateMap }                  from '../service'
 
 import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
 import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
@@ -40,10 +40,10 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   // Policy features
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
@@ -67,7 +67,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
-  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
 
 
   return useMemo<Array<BaseAvailableUnifiedService>>(() => {
@@ -310,7 +309,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !isEdgeMdnsReady || isMdnsProxyConsolidationEnabled,
+        disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
         isBetaFeature: isEdgeMdnsBetaEnabled
       },
       {
@@ -318,14 +317,14 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: isMdnsProxyConsolidationEnabled
+        disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
       },
       {
         type: ServiceType.MDNS_PROXY_CONSOLIDATION,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !isMdnsProxyConsolidationEnabled
+        disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
       },
       {
         type: ServiceType.PIN,

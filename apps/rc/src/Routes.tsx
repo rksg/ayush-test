@@ -74,7 +74,7 @@ import {
   IdentityProviderTabType,
   PersonaUrls,
   useIsNewServicesCatalogEnabled,
-  useIsMdnsProxyConsolidationEnabled
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -694,7 +694,7 @@ function ServiceRoutes () {
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
-  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
+  const isMdnsProxyConsolidationEnabled = useMdnsProxyStateMap()[ServiceType.MDNS_PROXY_CONSOLIDATION]
 
   return rootRoutes(
     <Route path=':tenantId/t'>

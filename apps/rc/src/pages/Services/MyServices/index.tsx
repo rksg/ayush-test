@@ -26,7 +26,7 @@ import {
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType,
-  useIsMdnsProxyConsolidationEnabled
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
@@ -57,7 +57,7 @@ export default function MyServices () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
-  const isMdnsProxyConsolidationEnabled = useIsMdnsProxyConsolidationEnabled()
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   const services = [
     {
@@ -66,7 +66,7 @@ export default function MyServices () {
       totalCount: useGetEnhancedMdnsProxyListQuery({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
       }).data?.totalCount,
-      disabled: isMdnsProxyConsolidationEnabled
+      disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
     },
     {
       type: ServiceType.EDGE_MDNS_PROXY,
@@ -76,7 +76,7 @@ export default function MyServices () {
       }, {
         skip: !isEdgeMdnsReady
       }).data?.totalCount,
-      disabled: !isEdgeMdnsReady || isMdnsProxyConsolidationEnabled,
+      disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
       isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
     },
     {
@@ -84,8 +84,8 @@ export default function MyServices () {
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useMdnsProxyConsolidationTotalCount({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }, !isMdnsProxyConsolidationEnabled).data?.totalCount,
-      disabled: !isMdnsProxyConsolidationEnabled
+      }, !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]).data?.totalCount,
+      disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
     },
     {
       type: ServiceType.DHCP,
