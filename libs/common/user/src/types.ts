@@ -76,6 +76,7 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
+  privilegeGroupType?: CustomRoleType
   scopes?: string[],
   preferredNotifications?: {
     emailPreferences: boolean,
