@@ -1405,8 +1405,12 @@ export function EditPortDrawer ({
     const allNoSchedule = multiPoeScheduleData.every(
       schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
     )
+    const sameCustomScheduleId = allCustomSchedule &&
+      multiPoeScheduleData.every(
+        schedule => schedule?.id === multiPoeScheduleData[0]?.id
+      )
 
-    if (allCustomSchedule) {
+    if (sameCustomScheduleId) {
       return $t({ defaultMessage: 'Custom Schedule' })
     } else if (allNoSchedule) {
       return noDataDisplay
@@ -2230,9 +2234,16 @@ export function EditPortDrawer ({
                     type='link'
                     data-testid='edit-poe-schedule'
                     onClick={() => {
-                      if(poeScheduler){
-                        setPoeScheduleData(poeScheduler)
-                      }
+                      setPoeScheduleData({
+                        type: SchedulerTypeEnum.CUSTOM,
+                        sun: '111111111111111111111111',
+                        mon: '111111111111111111111111',
+                        tue: '111111111111111111111111',
+                        wed: '111111111111111111111111',
+                        thu: '111111111111111111111111',
+                        fri: '111111111111111111111111',
+                        sat: '111111111111111111111111'
+                      })
                       setDrawerPoeSchedule(true) }}
                     style={{ paddingLeft: '10px' }}
                   >

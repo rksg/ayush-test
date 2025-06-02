@@ -107,6 +107,7 @@ export class LldpQosModel {
 }
 
 export interface PoeSchedulerType {
+  id?: string
   type?: string
   sun?: string
   mon?: string

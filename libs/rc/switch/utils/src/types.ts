@@ -1201,6 +1201,7 @@ export interface MacAcl {
 }
 
 interface PoeSchedulerType {
+  id?: string
   type?: string
   sun?: string
   mon?: string
