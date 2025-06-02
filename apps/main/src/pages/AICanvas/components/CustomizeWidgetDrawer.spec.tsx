@@ -138,7 +138,7 @@ describe('CustomizeWidgetDrawer', () => {
 
     await userEvent.click(screen.getByText('Select...'))
 
-    expect(screen.getByText('Reset to default range')).not.toBeVisible()
+    expect(screen.getByText('Reset to default range')).toBeVisible()
     expect(screen.getByText('Last 8 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 24 Hours')).toBeInTheDocument()
     expect(screen.getByText('Last 7 Days')).toBeInTheDocument()
