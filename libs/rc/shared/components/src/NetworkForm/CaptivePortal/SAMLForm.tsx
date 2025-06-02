@@ -76,6 +76,7 @@ export const SAMLForm = () => {
         idp.wifiNetworkIds.includes(data.id ?? '')
       )
       setFormFields(idp)
+      form.setFieldsValue({ ...data })
     }
 
     if (createdSamlIdpId) {
