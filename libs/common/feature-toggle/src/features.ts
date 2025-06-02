@@ -355,7 +355,9 @@ export enum Features {
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   SSO_GROUP_LIMIT100 = 'sso-group-limit100',
   RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
-  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle'
+  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
+  ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
+  ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
