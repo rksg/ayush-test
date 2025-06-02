@@ -117,13 +117,11 @@ export default function DHCPPoolTable ({
   const [vlanEnable, setVlanEnable] = useState(true)
   const [leaseUnit, setLeaseUnit] = useState(LeaseUnit.HOURS)
   const [previousVal, setPreviousVal] = useState(initPoolData.vlanId)
-  const [dhcpModeStatus, setDhcpModeStatus] = useState(dhcpMode)
   const values = () => Object.values(valueMap.current)
 
   const handleChanged = () => onChange?.(values())
 
   useEffect(() => {
-    setDhcpModeStatus(dhcpMode)
     if (dhcpMode === DHCPConfigTypeEnum.MULTIPLE) {
       form.setFieldValue('allowWired', undefined)
       form.setFieldValue('vlanId', 300)
@@ -206,7 +204,7 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'Allow AP wired clients' })}
           valuePropName='checked'
           children={<Switch
-            disabled={dhcpModeStatus === DHCPConfigTypeEnum.MULTIPLE}
+            disabled={dhcpMode === DHCPConfigTypeEnum.MULTIPLE}
             onChange={(checked: boolean)=>{
               if(checked){
                 // eslint-disable-next-line max-len
