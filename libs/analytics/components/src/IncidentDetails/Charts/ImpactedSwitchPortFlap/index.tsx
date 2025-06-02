@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { MessageDescriptor,
   defineMessage, useIntl, FormattedMessage }          from 'react-intl'
 
-
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {  Card, Loader, Table,
   TableProps, Tooltip }         from '@acx-ui/components'
@@ -61,8 +60,9 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
 
   const getSwitchDetailsPath = () => {
     const mac = impactedSwitch.data?.mac
+    const serial = impactedSwitch.data?.serial
     if (mac) {
-      return `devices/switch/${isMLISA ? mac : mac.toLowerCase()}/serial/details/${
+      return `devices/switch/${isMLISA ? mac : mac.toLowerCase()}/${serial}/details/${
         isMLISA ? 'reports' : 'overview'
       }`
     }
@@ -87,7 +87,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       type='no-border'>
       <p>
         <FormattedMessage
-          defaultMessage='Port flap detected at {name}'
+          defaultMessage='Port flap detected in {name}'
           values={{
             name: (
               <TenantLink to={getSwitchDetailsPath()}>
@@ -162,7 +162,7 @@ function ImpactedSwitchTable (props: {
   }, {
     key: 'poeDetail',
     dataIndex: 'poeDetail',
-    title: $t({ defaultMessage: 'POE Detail' }),
+    title: $t({ defaultMessage: 'PoE Detail' }),
     fixed: 'left',
     width: 60,
     sorter: { compare: sortProp('poeOperState', defaultSort) },

@@ -20,6 +20,7 @@ export interface ImpactedSwitch {
   name: string
   mac: string
   model: string
+  serial: string
   firmware: string
   ports: ImpactedSwitchPort[]
 }
@@ -36,7 +37,7 @@ export const api = dataApi.injectEndpoints({
           query ImpactedSwitches($id: String, $n: Int, $search: String) {
             incident(id: $id) {
               impactedSwitches: getImpactedSwitches(n: $n, search: $search) {
-                name mac model firmware numOfPorts
+                name mac model serial firmware numOfPorts
                 ports {
                   portNumber
                   type

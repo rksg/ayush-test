@@ -110,7 +110,7 @@ describe('ImpactedSwitchPortFlap', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Impacted Ports')).toBeVisible()
-    expect(await screen.findByText(/Port flap detected at/)).toBeVisible()
+    expect(await screen.findByText(/Port flap detected in/)).toBeVisible()
     expect(await screen.findByText('ICX8200-24P Router')).toBeVisible()
   })
 
@@ -161,7 +161,7 @@ describe('ImpactedSwitchPortFlap', () => {
     expect(dateCell).toHaveTextContent(/2024/)
   })
 
-  it('should display POE details correctly', async () => {
+  it('should display PoE details correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
