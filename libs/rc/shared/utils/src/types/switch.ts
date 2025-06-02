@@ -30,6 +30,7 @@ export const SwitchPortViewModelQueryFields = [
   'inDiscard',
   'ingressAclName',
   'inErr',
+  'isPoeSupported',
   'lagId',
   'lagName',
   'mediaType',

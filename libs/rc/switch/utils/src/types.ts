@@ -96,6 +96,7 @@ export const SwitchPortViewModelQueryFields = [
   'inDiscard',
   'ingressAclName',
   'inErr',
+  'isPoeSupported',
   'lagId',
   'lagName',
   'mediaType',
@@ -630,6 +631,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stackingNeighborPort?: string
   poeCapability?: boolean
   poeScheduleEnabled?: boolean
+  isPoeSupported?: string
   poeScheduler?: PoeSchedulerType
 }
 
