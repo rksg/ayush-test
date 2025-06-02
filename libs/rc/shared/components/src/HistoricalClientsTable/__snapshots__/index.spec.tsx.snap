@@ -97,7 +97,7 @@ h5.c1.ant-typography {
 
 .c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 

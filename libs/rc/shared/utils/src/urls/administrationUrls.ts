@@ -321,6 +321,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/roleAuthentications/privilegeGroups',
     newApi: true
   },
+  getPrivilegeGroupsPaginated: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups/query',
+    newApi: true
+  },
   getPrivilegeGroupsWithAdmins: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups?withAdmins=true',
