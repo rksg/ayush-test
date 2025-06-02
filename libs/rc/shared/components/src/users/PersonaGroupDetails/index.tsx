@@ -6,27 +6,29 @@ import { useParams } from 'react-router-dom'
 import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
+  useGetIdentityGroupTemplateByIdQuery,
   useGetPersonaGroupByIdQuery,
-  useLazyGetCertificateTemplateQuery,
-  useLazyGetDpskQuery,
-  useLazyGetMacRegListQuery,
-  useLazyGetEdgePinByIdQuery,
-  useLazyGetVenueQuery,
   useLazyGetAdaptivePolicySetQuery,
-  useGetIdentityGroupTemplateByIdQuery
+  useLazyGetCertificateTemplateQuery,
+  useLazyGetDpskQuery, useLazyGetDpskTemplateQuery,
+  useLazyGetEdgePinByIdQuery,
+  useLazyGetMacRegListQuery,
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
-  PersonaGroup,
-  PersonaUrls,
   CertTemplateLink,
+  ConfigTemplateType,
   DpskPoolLink,
+  getConfigTemplateEditPath,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  VenueLink,
+  PersonaGroup,
+  PersonaUrls,
   PolicySetLink,
-  useIsEdgeFeatureReady,
+  useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate
+  useIsEdgeFeatureReady,
+  VenueLink
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
@@ -76,15 +78,19 @@ function PersonaGroupDetailsPageHeader (props: {
 
 export function PersonaGroupDetails () {
   const { $t } = useIntl()
-  const basePath = useTenantLink('users/identity-management/identity-group')
   const navigate = useNavigate()
-  const { isTemplate } = useConfigTemplate()
+  const { personaGroupId, tenantId } = useParams()
+
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
-  const { personaGroupId, tenantId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const editPagePath = useTenantLink(isTemplate
+    ? getConfigTemplateEditPath(ConfigTemplateType.IDENTITY_GROUP, personaGroupId ?? '')
+    : `users/identity-management/identity-group/${personaGroupId}/edit`,
+  isTemplate ? 'v' : 't')
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
@@ -94,7 +100,10 @@ export function PersonaGroupDetails () {
   const [policySetDisplay, setPolicySetDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
-  const [getDpskPoolById] = useLazyGetDpskQuery()
+  const [getDpskPoolById] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyGetDpskQuery,
+    useLazyTemplateQueryFn: useLazyGetDpskTemplateQuery
+  })
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
@@ -241,8 +250,8 @@ export function PersonaGroupDetails () {
         onClick={() => {
           if (isIdentityRefactorEnabled) {
             navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/${personaGroupId}/edit`
+              ...editPagePath,
+              pathname: `${editPagePath.pathname}`
             })
           } else {
             setEditVisible(true)

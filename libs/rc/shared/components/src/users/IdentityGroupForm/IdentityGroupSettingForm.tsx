@@ -8,12 +8,15 @@ import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListQuery,
+  useLazyQueryIdentityGroupTemplatesQuery,
   useLazySearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   getPolicyAllowedOperation, PolicyOperation, PolicyType,
-  trailingNorLeadingSpaces, useConfigTemplate
+  trailingNorLeadingSpaces,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
 
@@ -25,12 +28,15 @@ export function IdentityGroupSettingForm ({ modalMode }: { modalMode?: boolean }
   const id = Form.useWatch<string>('id', form)
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
-  const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
+  const [searchPersonaGroupList] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazySearchPersonaGroupListQuery,
+    useLazyTemplateQueryFn: useLazyQueryIdentityGroupTemplatesQuery
+  })
   const { isTemplate } = useConfigTemplate()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery({
     payload: { page: 1, pageSize: '2147483647' }
-  })
+  }, { skip: isTemplate })
 
   const nameValidator = async (name: string) => {
     try {

@@ -2,7 +2,11 @@ import {
   CommonResult,
   IdentityTemplateUrlsInfo,
   PersonaGroup,
-  NewTableResult
+  NewTableResult,
+  TableResult,
+  transferToTableResult,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -23,20 +27,27 @@ export const identityConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getIdentityGroupTemplateById: build.query<PersonaGroup, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(IdentityTemplateUrlsInfo.getIdentityGroupTemplate, params)
+        const req = createHttpRequest(IdentityTemplateUrlsInfo.getIdentityGroupTemplateById, params)
         return {
           ...req
         }
       },
       providesTags: [{ type: 'IdentityGroupTemplate', id: 'ID' }]
     }),
-    queryIdentityGroupTemplates: build.query<NewTableResult<PersonaGroup>, RequestPayload>({
+    queryIdentityGroupTemplates: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityTemplateUrlsInfo.queryIdentityGroupTemplates, params)
+        const req = createNewTableHttpRequest({
+          apiInfo: IdentityTemplateUrlsInfo.queryIdentityGroupTemplates,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req,
           body: JSON.stringify(payload)
         }
+      },
+      transformResponse (result: NewTableResult<PersonaGroup>) {
+        return transferToTableResult<PersonaGroup>(result)
       },
       providesTags: [{ type: 'IdentityGroupTemplate', id: 'LIST' }]
     }),
@@ -65,7 +76,7 @@ export const identityConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 export const {
   useAddIdentityGroupTemplateMutation,
   useGetIdentityGroupTemplateByIdQuery,
-  useQueryIdentityGroupTemplatesQuery,
+  useLazyQueryIdentityGroupTemplatesQuery,
   useUpdateIdentityGroupTemplateMutation,
   useDeleteIdentityGroupTemplateMutation
 } = identityConfigTemplateApi

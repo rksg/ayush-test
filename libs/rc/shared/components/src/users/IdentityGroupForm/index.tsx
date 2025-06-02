@@ -2,16 +2,19 @@
 import { useEffect } from 'react'
 
 import { Form }    from 'antd'
-import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
 import {
-  useAddPersonaGroupMutation,
-  useAssociateIdentityGroupWithPolicySetMutation,
-  useGetPersonaGroupByIdQuery
+  useGetPersonaGroupByIdQuery,
+  useGetIdentityGroupTemplateByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }                          from '@acx-ui/rc/utils'
+import {
+  CONFIG_TEMPLATE_LIST_PATH,
+  PersonaGroup,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { usePersonaGroupAction } from '../PersonaGroupDrawer/usePersonaGroupActions'
@@ -33,12 +36,21 @@ export function IdentityGroupForm ({
   const { $t } = useIntl()
   const [ form ] = Form.useForm<PersonaGroup>()
   const navigate = useNavigate()
-  const { pathname: previousPath } = useTenantLink('users/identity-management/identity-group')
+  const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const { pathname: regularFallbackPath } = useTenantLink('users/identity-management/identity-group')
+  const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
+  const previousPath = isTemplate ? templateFallbackPath : regularFallbackPath
+
   const { personaGroupId } = useParams()
 
-  const { data: dataFromServer, isLoading, isFetching } = useGetPersonaGroupByIdQuery({
-    params: { groupId: personaGroupId }
-  }, { skip: !editMode })
+  const { data: dataFromServer, isLoading, isFetching }
+    = useConfigTemplateQueryFnSwitcher<PersonaGroup>({
+      useQueryFn: useGetPersonaGroupByIdQuery,
+      useTemplateQueryFn: useGetIdentityGroupTemplateByIdQuery,
+      skip: !editMode,
+      extraParams: { groupId: personaGroupId }
+    })
 
   useEffect(() => {
     if (editMode && dataFromServer) {
@@ -46,9 +58,7 @@ export function IdentityGroupForm ({
     }
   }, [editMode, dataFromServer])
 
-  const { updatePersonaGroupMutation } = usePersonaGroupAction()
-  const [ addPersonaGroup ] = useAddPersonaGroupMutation()
-  const [ associatePolicySet ] = useAssociateIdentityGroupWithPolicySetMutation()
+  const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
 
   const handleSubmit = async () => {
     let result
@@ -59,15 +69,7 @@ export function IdentityGroupForm ({
           await updatePersonaGroupMutation(personaGroupId, dataFromServer, form.getFieldsValue())
         }
       } else {
-        result = await addPersonaGroup({
-          payload: omit(form.getFieldsValue(), ['policySetId'])
-        }).unwrap()
-
-        if (form.getFieldsValue().policySetId) {
-          await associatePolicySet({
-            params: { groupId: result.id, policySetId: form.getFieldsValue().policySetId }
-          })
-        }
+        result = await createPersonaGroupMutation(form.getFieldsValue(), callback)
       }
 
       if (modalMode) {

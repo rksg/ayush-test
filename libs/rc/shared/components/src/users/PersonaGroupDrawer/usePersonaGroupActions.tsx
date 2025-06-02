@@ -1,19 +1,27 @@
 import {
   CommonAsyncResponse,
+  useAddIdentityGroupTemplateMutation,
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
   useAssociateIdentityGroupWithPolicySetMutation,
   useDissociateIdentityGroupWithPolicySetMutation,
+  useUpdateIdentityGroupTemplateMutation,
   useUpdatePersonaGroupMutation
 } from '@acx-ui/rc/services'
-import { PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 
 
 export function usePersonaGroupAction () {
-  const [addPersonaGroup] = useAddPersonaGroupMutation()
-  const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
+  const [addPersonaGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddPersonaGroupMutation,
+    useTemplateMutationFn: useAddIdentityGroupTemplateMutation
+  })
+  const [updatePersonaGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdatePersonaGroupMutation,
+    useTemplateMutationFn: useUpdateIdentityGroupTemplateMutation
+  })
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
   const [associatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()

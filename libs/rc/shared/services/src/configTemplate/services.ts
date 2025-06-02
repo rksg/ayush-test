@@ -357,6 +357,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
 export const {
   useGetDpskTemplateQuery,
+  useLazyGetDpskTemplateQuery,
   useCreateDpskTemplateMutation,
   useUpdateDpskTemplateMutation,
   useActivateDpskServiceTemplateMutation,
