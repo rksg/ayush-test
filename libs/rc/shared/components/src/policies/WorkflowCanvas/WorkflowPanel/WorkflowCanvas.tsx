@@ -116,97 +116,23 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
 
   const onNodeDragStop = useCallback((event:React.MouseEvent, node:Node) => {
-    console.log('Node STOPPED dragging =======================================================')
-    //TODO: if parent node of the node's chain is overlapping the final node of another chain then connect those two chains
-    // TODO: also if final node is over another chains parent node
     const nodeMap = new Map<string, Node>()
     nodes.forEach(n => {nodeMap.set(n.id, n)})
-    console.log("NODE MAP", nodeMap)
-
-    // TODO: get parent and/or tail node -- for now I'll just use the current node
-    // TODO: should I just verify the current node is either tail or parent and then only allow connecting if it is?
-
-    /** Behavior per Gil (and my additions)
-     * - The branch being dragged will be attached to the end of the branch it is dragged on top of 
-     * - if the dragged branch is on top of multiple other branches no attachement will occur -- show error
-     * - I will only highlight the last step in the parent branch and the first step in the child branch to highlight how things will reconnect
-     */
-
-    // TODO: this should be the subflow node
-    console.log("DRAGGEd node type", node.type)
-    
-
-
-    // // get all nodes in branch
-    // let branchNodes = new Array<Node>()
-
-    // // get parents
-    // let currentNodeId:string|null = node.id
-    // while(currentNodeId) {
-    //   let currentNode = nodeMap.get(currentNodeId)
-
-    //   if(currentNode && currentNode?.data.type !== StepType.Start && currentNode?.data.type !== StepType.End) {
-    //     branchNodes.push(currentNode)
-    //   }
-
-    //   currentNodeId = currentNode?.data.priorStepId ?? null
-    // }
-
-    // get children
-    // currentNodeId = node.data?.nextStepId ?? null
-    // while(currentNodeId) {
-    //   let currentNode = nodeMap.get(currentNodeId)
-    //   if(currentNode && currentNode?.data.type !== StepType.Start && currentNode?.data.type !== StepType.End) {
-    //     branchNodes.push(currentNode)
-    //   }
-
-    //   currentNodeId = currentNode?.data?.nextStepId ?? null
-    // }
-
-    // console.log('BRANCH NODES', branchNodes)
 
     const currentBranchBounds = getNodesBounds([node])
     const intersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
 
-    console.log("NODE", node)
-    console.log('BOUNDING:', currentBranchBounds)
-    console.log('INTERSECTING NODES', intersectingNodes)
-
-    // TODO: update all of this to handle connecting to a branch with a parent node
-    // TODO: rename other nodes
     let otherNodes = undefined
     if(intersectingNodes) {
       otherNodes = intersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
     }
-
-    console.log("OTHER nodes INTERMEDIATE", otherNodes)
 
     if(!otherNodes || otherNodes.length === 0) {
       // calculate bounding box for plus drag handle (plus is 16 pixels wide and 30 pixels from the top of the subflow)
       const topPlusBounds = {x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8), y: currentBranchBounds.y - 30, height: 30, width: 16}
       const topPlusIntersectingNodes = reactFlowInstance.getIntersectingNodes(topPlusBounds)
       otherNodes = topPlusIntersectingNodes
-      console.log("TOP PLUS BOUNDS", topPlusBounds)
-      console.log("PLUS INTERSECTION", topPlusIntersectingNodes)
     }
-
-
-
-    // if(!otherNodes || otherNodes.length === 0) {
-    //   // find node under the mouse position in case the branch is being dragged by the plus
-    //   // const mouseFlowPosition = reactFlowInstance.screenToFlowPosition({ x: event.clientX,  y: event.clientY })
-    //   const mouseFlowPosition = reactFlowInstance.screenToFlowPosition({ x: event.clientX,  y: event.clientY })
-    //   const intersectingMouse = reactFlowInstance.getIntersectingNodes({...mouseFlowPosition, width: 10, height: 10}, true)
-    //   otherNodes = intersectingMouse
-    //   // NOTE: if intersecting mouse is used and there are 3 or more intersections then there are multiple branches, also the mouse doesn't intersect with its own nodes
-    //   console.log("MOUSE FLOW POSITION", mouseFlowPosition)
-    //   console.log("INTERSECTING MOUSE", intersectingMouse)
-    // }
-
-    console.log("OTHER nodes", otherNodes)
-
-
-
 
     // from other nodes determine final node
     if(otherNodes && otherNodes.length > 0) {
@@ -216,13 +142,10 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       let startingNode = undefined
       startingNode = otherNodes[0]
       // check if this node is a parent node
-      // TODO: clean this up
       if(startingNode.type === 'DISCONNECTED_BRANCH') {
         idsInBranch.add(startingNode.id)
         let firstMemberId = startingNode.id.split('parent')[0]
-        console.log("CURRENT MEMBER ID", firstMemberId)
         startingNode = nodeMap.get(firstMemberId)
-        console.log("CURRENT node", startingNode)
         if(!startingNode) { return }
       }
 
@@ -230,7 +153,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       // find the top node from the current node
       idsInBranch.add(startingNode.id)
       let currentNode:undefined | Node = startingNode
-      while(currentNode?.data?.priorStepId) { //TODO: fix this
+      while(currentNode?.data?.priorStepId) {
         const previousNode = nodeMap.get(currentNode.data.priorStepId)
         if(previousNode && previousNode.data.type !== StepType.Start) {
           idsInBranch.add(previousNode.id)
@@ -240,14 +163,10 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         }
       }
 
-    
-
       let finalNode = startingNode
-      // TODO: clean this up
       if (finalNode.data?.nextStepId) {
         let nextNode = nodeMap.get(finalNode.data.nextStepId)
         while(nextNode) {
-          console.log("NEXTNode", nextNode)
           if(nextNode.data.type === StepType.End) {
             nextNode = undefined
           } else {
@@ -257,37 +176,13 @@ export default function WorkflowCanvas (props: WorkflowProps) {
           }
         }
       }
-      console.log("ATTACH TO", finalNode)
-      console.log("IDS", idsInBranch)
 
-      // TODO: ----------- START HERE --------------------
-      // TODO: this isn't working when dragging mouse over a subflow -- because the ID in the otherNodes is the parent, which isn't in the idsInBranch
-      // are there ids that don't belong to the chosen branch?
-      let isMultipleBranches = otherNodes.length > idsInBranch.size || otherNodes.filter(n => !idsInBranch.has(n.id)).length > 0
-      console.log("IS multiple branches?", isMultipleBranches)
-
+      let isMultipleBranches = (otherNodes.length > idsInBranch.size 
+        || otherNodes.filter(n => !idsInBranch.has(n.id)).length > 0)
       if(isMultipleBranches) {
-        // TODO: show popup?
         return
       }
 
-      // TODO: display popup to reconnect
-
-      // showActionModal({
-      //   type: 'confirm',
-      //   customContent: {
-      //     action: 'DELETE',
-      //     entityName: $t({ defaultMessage: 'Action' }),
-      //     entityValue: $t(ActionTypeTitle[finalNode.type as ActionType])
-      //       ?? $t({ defaultMessage: 'Step' })
-      //   },
-      //   // content:
-      //   //   $t({ defaultMessage: 'Do you want to attach to this step?' }),
-      //   onOk: () => {
-      //     console.log("OK --------")
-      //     // deleteStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
-      //   }
-      // })
 
       let stepIdToAttach = node.id
       if(stepIdToAttach && stepIdToAttach.endsWith('parent')) {
@@ -308,7 +203,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
           }, { formattedName: $t(ActionTypeTitle[finalNode.type as ActionType]) }),
         okText: $t({ defaultMessage: 'Attach Actions' }),
         onOk: () => {
-          console.log("OK --------", finalNode)
           attachSteps({ params: { policyId: workflowId, stepId: finalNode.id, detachedStepId: stepIdToAttach } }).unwrap()
         }
       })
