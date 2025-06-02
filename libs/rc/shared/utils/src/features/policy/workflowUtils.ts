@@ -221,7 +221,7 @@ function addParentNode (firstStepId: string,
 ) {
 
   // create parent node
-  // NOTE: this id format is used by other code to determine the subflow 
+  // NOTE: this id format is used by other code to determine the subflow
   // starting member, don't change it without consideration
   let parentNodeId = firstStepId + 'parent'
   let firstStep = stepMap.get(firstStepId)

@@ -2,7 +2,7 @@ import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { ReactElement, useCallback, useEffect, useRef } from 'react'
 
-import { useIntl }      from 'react-intl'
+import { useIntl } from 'react-intl'
 import ReactFlow, {
   Panel,
   Background,
@@ -19,9 +19,12 @@ import ReactFlow, {
   getNodesBounds
 } from 'reactflow'
 
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { showActionModal }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useAttachStepBeneathStepMutation }                         from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle, StepType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
+import { useWorkflowContext } from './WorkflowContextProvider'
 import {
   AupNode,
   CertTemplateNode,
@@ -32,9 +35,7 @@ import {
   StartNode
 } from './WorkflowStepNode'
 import DisconnectedBranchNode from './WorkflowStepNode/DisconnectedBranchNode'
-import { showActionModal } from '@acx-ui/components'
-import { useAttachStepBeneathStepMutation } from '@acx-ui/rc/services'
-import { useWorkflowContext } from './WorkflowContextProvider'
+
 
 
 
@@ -60,7 +61,7 @@ const MIN_STEP_COUNT = 5
 
 export default function WorkflowCanvas (props: WorkflowProps) {
   const { initialNodes, mode = WorkflowPanelMode.Default, customPanel } = props
-  const {workflowId} = useWorkflowContext()
+  const { workflowId } = useWorkflowContext()
   const isFirstRender = useRef(true)
   const isDesignMode = mode === WorkflowPanelMode.Design
   const isEditMode = mode === WorkflowPanelMode.Edit
@@ -69,7 +70,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
-  const [attachSteps, {isLoading: isAttachStepLoading} ] = useAttachStepBeneathStepMutation()
+  const [attachSteps] = useAttachStepBeneathStepMutation()
 
   const workflowValidationEnhancementFFToggle =
     useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
@@ -125,16 +126,16 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
     let otherBranchIntersectingNodes = undefined
     if(allIntersectingNodes) {
-      otherBranchIntersectingNodes = 
+      otherBranchIntersectingNodes =
         allIntersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
     }
 
     // if no intersecting nodes were found then look for nodes that the plus drag handle is covering
     if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
-      // calculate bounding box for plus drag handle 
+      // calculate bounding box for plus drag handle
       // (plus is 16 pixels wide and 30 pixels from the top of the subflow)
-      const topPlusBounds = {x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8), 
-        y: currentBranchBounds.y - 30, height: 30, width: 16}
+      const topPlusBounds = { x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8),
+        y: currentBranchBounds.y - 30, height: 30, width: 16 }
       const topPlusIntersectingNodes = reactFlowInstance.getIntersectingNodes(topPlusBounds)
       otherBranchIntersectingNodes = topPlusIntersectingNodes
     }
@@ -158,7 +159,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
 
 
-    // find the top node from the current node 
+    // find the top node from the current node
     // (this is necessary so we can determine if we are overlapping multiple branches)
     idsInIntersectedBranch.add(startingNode.id)
     let currentNode:undefined | Node = startingNode
@@ -188,7 +189,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     }
 
     // if we are intersecting multiple branches do nothing
-    let isMultipleBranches = (otherBranchIntersectingNodes.length > idsInIntersectedBranch.size 
+    let isMultipleBranches = (otherBranchIntersectingNodes.length > idsInIntersectedBranch.size
       || otherBranchIntersectingNodes.filter(n => !idsInIntersectedBranch.has(n.id)).length > 0)
     if(isMultipleBranches) {
       return
@@ -209,18 +210,18 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       type: 'confirm',
       title: title,
       content: $t({
-        defaultMessage: 
-          `Are you sure you want to attach the branch below the step of type "{formattedName}"`
-        }, { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }),
+        defaultMessage:
+          'Are you sure you want to attach the branch below the step of type "{formattedName}"'
+      }, { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }),
       okText: $t({ defaultMessage: 'Attach Actions' }),
       onOk: () => {
-        attachSteps({ params: { policyId: workflowId, stepId: finalIntersectedNode.id, 
+        attachSteps({ params: { policyId: workflowId, stepId: finalIntersectedNode.id,
           detachedStepId: stepIdToAttach } }).unwrap()
       }
     })
 
 
-  
+
 
   }, [nodes])
 
