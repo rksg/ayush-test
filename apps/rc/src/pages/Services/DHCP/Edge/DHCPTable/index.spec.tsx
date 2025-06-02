@@ -94,7 +94,7 @@ describe('EdgeDhcpTable', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
-    expect(row.length).toBe(4)
+    expect(row.length).toBe(6)
     await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
@@ -216,8 +216,8 @@ describe('EdgeDhcpTable', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row')
-    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
-    await user.click(within(rows[1]).getByRole('radio'))
+    expect(within(rows[5]).getByRole('cell', { name: /DHCP-5/i })).toBeVisible()
+    await user.click(within(rows[5]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
     const dialog = await screen.findByRole('dialog')
     screen.getByText('Service Update')
@@ -266,6 +266,12 @@ describe('EdgeDhcpTable', () => {
     expect(await within(rows[3]).findByText('No')).toBeValid() //TestDHCP-3
     expect(within(rows[4]).getByRole('cell', { name: /TestDHCP-4/i })).toBeVisible()
     expect(await within(rows[4]).findByText('No')).toBeValid() //TestDHCP-4
+    expect(within(rows[5]).getByRole('cell', { name: /TestDHCP-5/i })).toBeVisible()
+    expect(await within(rows[5]).findByText('Yes')).toBeValid() //TestDHCP-5
+    expect(await within(rows[5]).findByText('1.0.2, 1.0.3')).toBeValid() //TestDHCP-5
+    expect(within(rows[6]).getByRole('cell', { name: /TestDHCP-6/i })).toBeVisible()
+    expect(await within(rows[6]).findByText('No')).toBeValid() //TestDHCP-6
+    expect(await within(rows[6]).findByText('1.0.10')).toBeValid() //TestDHCP-6
   })
 
   it('Should render EdgeDhcpTable data as expected', async () => {
