@@ -3,18 +3,19 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { venueApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }            from '@acx-ui/test-utils'
 
 import {
   venueData,
   venueSetting,
   venueApsList,
   validChannelsData,
-  venueApCompatibilitiesData
+  venueApCompatibilitiesData,
+  mockedApModelFamilies
 } from '../../../../__tests__/fixtures'
 
 import { MeshNetwork } from '.'
@@ -47,7 +48,11 @@ describe('MeshNetwork', () => {
         (_, res, ctx) => res(ctx.json(validChannelsData))),
       rest.get(
         WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-        (_, res, ctx) => res(ctx.json(validChannelsData)))
+        (_, res, ctx) => res(ctx.json(validChannelsData))),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
+      )
     )
   })
   it('should render correctly', async () => {

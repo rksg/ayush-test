@@ -1,6 +1,7 @@
-import { useCallback, useLayoutEffect } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Space, Switch } from 'antd'
+import { CheckboxChangeEvent }                                                              from 'antd/lib/checkbox'
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
@@ -12,6 +13,8 @@ import {
   EdgeLag,
   EdgePort,
   EdgePortTypeEnum,
+  IncompatibilityFeatures,
+  SubInterface,
   edgePortIpValidator,
   getEdgePortTypeOptions,
   getEdgeWanInterfaces,
@@ -21,8 +24,10 @@ import {
   validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }  from '../../useEdgeActions'
-import { getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
+import { ApCompatibilityToolTip }                           from '../../ApCompatibility'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType }   from '../../Compatibility'
+import { useIsEdgeFeatureReady }                            from '../../useEdgeActions'
+import { getEnabledAccessPortInfo, getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
 import { EdgeNatFormItems }    from './NatFormItems'
 import * as UI                 from './styledComponents'
@@ -30,17 +35,18 @@ import { formFieldsPropsType } from './types'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
-  fieldHeadPath: string[],
-  portsDataRootPath: string[],
+  fieldHeadPath?: string[],
+  portsDataRootPath?: string[],
   portsData: EdgePort[],
   lagData?: EdgeLag[],
   isEdgeSdLanRun: boolean,
   isListForm?: boolean,
-  formListItemKey: string,
-  formListID?: string,
+  formListItemKey?: string,
   formFieldsProps?: formFieldsPropsType
-  subnetInfoForValidation?: { ip: string, subnetMask: string } []
+  subnetInfoForValidation?: { id: string | number | undefined, ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
+  subInterfaceList?: SubInterface[]
+  isSupportAccessPort?: boolean
 }
 
 const { useWatch } = Form
@@ -48,17 +54,19 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const {
     formRef: form,
     fieldHeadPath = [],
-    portsDataRootPath,
     isEdgeSdLanRun,
     portsData,
-    lagData,
+    lagData = [],
     isListForm = true,
     formListItemKey = '0',
-    formListID,
     formFieldsProps,
     subnetInfoForValidation = [],
-    clusterInfo
+    clusterInfo,
+    subInterfaceList = [],
+    isSupportAccessPort
   } = props
+
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
@@ -77,15 +85,19 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       : [fieldName]
   }, [isListForm, fieldHeadPath])
 
-  const mac = useWatch(getFieldFullPath('mac'), form)
+  const id = useWatch(getFieldFullPath('id'), form) || form.getFieldValue(getFieldFullPath('id'))
   const portType = useWatch(getFieldFullPath('portType'), form)
   // eslint-disable-next-line max-len
   const portEnabled = useWatch(getFieldFullPath((_.get(formFieldsProps, 'enabled')?.name as string) ?? 'enabled'), form)
   const corePortEnabled = useWatch(getFieldFullPath('corePortEnabled'), form)
   const accessPortEnabled = useWatch(getFieldFullPath('accessPortEnabled'), form)
 
-  const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData, subInterfaceList)
   const hasCorePortEnabled = !!corePortInfo.key
+  const accessPortInfo = getEnabledAccessPortInfo(portsData, lagData, subInterfaceList)
+  const hasAccessPortEnabled = !!accessPortInfo.key
+  const existingLagMember = lagData?.flatMap(lag => lag.lagMembers
+    ?.map(member => member?.portId)) ?? []
 
   // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
   // 2. corePort should be grey-out when one of the following NOT matches :
@@ -98,14 +110,18 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //     - must be LAN port type
   const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
 
-  const isExistingWanPortInLagMember = lagData?.some(lag => lag.lagMembers
-    // eslint-disable-next-line max-len
-    ? lag.lagMembers.filter(member => wanPortsInfo.find(wan => (wan as EdgePort).id === member?.portId)).length > 0
-    : false) ?? false
+  const isExistingWanPortInLagMember = existingLagMember.some(lagMember =>
+    wanPortsInfo.find(wan => (wan as EdgePort).id === lagMember)) ?? false
 
   const hasWANPort = wanPortsInfo.length > 0 && !isExistingWanPortInLagMember
 
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+
+  const handleCorePortChange = (e: CheckboxChangeEvent) => {
+    if(!isSupportAccessPort) {
+      form.setFieldValue(getFieldFullPath('accessPortEnabled'), e.target.checked)
+    }
+  }
 
   const getCurrentSubnetInfo = () => {
     return {
@@ -113,25 +129,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       ip: form.getFieldValue(getFieldFullPath('ip')),
       subnetMask: form.getFieldValue(getFieldFullPath('subnet'))
     }
-  }
-
-  const getSubnetInfoWithoutCurrent = () => {
-    const formValues = portsDataRootPath.length
-      ? _.get(form.getFieldsValue(true), portsDataRootPath)
-      : form.getFieldsValue(true)
-
-    return Object.entries<EdgePort[]>(formValues)
-      .filter(item => {
-        return item[0] !== formListID
-        && _.get(item[1], getFieldPathBaseFormList('enabled'))
-        && !!_.get(item[1], getFieldPathBaseFormList('ip'))
-        && !!_.get(item[1], getFieldPathBaseFormList('subnet'))
-      })
-      .map(item => ({
-        ipMode: _.get(item[1], getFieldPathBaseFormList('ipMode')),
-        ip: _.get(item[1], getFieldPathBaseFormList('ip')),
-        subnetMask: _.get(item[1], getFieldPathBaseFormList('subnet'))
-      }))
   }
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
@@ -193,7 +190,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     interfaceSubnetValidator(
                       getCurrentSubnetInfo(),
                       // eslint-disable-next-line max-len
-                      [...getSubnetInfoWithoutCurrent().filter(item => item.ipMode === EdgeIpModeEnum.STATIC), ...subnetInfoForValidation]
+                      subnetInfoForValidation.filter(item => item.id !== id && !existingLagMember.includes(item.id + ''))
                     )
                 }
               ]}
@@ -248,10 +245,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     )
   }
 
-  useLayoutEffect(() => {
-    form.validateFields()
-  }, [mac, form])
-
   return <>
     <Form.Item
       name={getFieldPathBaseFormList('portType')}
@@ -280,7 +273,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           return <Select.Option
             key={item.value}
             value={item.value}
-            disabled={hasCorePortLimitation && item.value === EdgePortTypeEnum.WAN}
+            disabled={
+              (hasAccessPortEnabled || hasCorePortLimitation) &&
+              item.value === EdgePortTypeEnum.WAN
+            }
           >
             {item.label}
           </Select.Option>
@@ -314,17 +310,34 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                         >
                           <Checkbox
                             children={$t({ defaultMessage: 'Core port' })}
+                            onChange={handleCorePortChange}
+                            disabled={
+                              hasWANPort || (hasCorePortEnabled && !corePortEnabled) ||
+                              isEdgeSdLanRun
+                            }
                           />
                         </Form.Item>
-                        <Form.Item
-                          name={getFieldPathBaseFormList('accessPortEnabled')}
-                          valuePropName='checked'
-                          noStyle
-                        >
-                          <Checkbox
-                            children={$t({ defaultMessage: 'Access port' })}
+                        <Space size={0}>
+                          <Form.Item
+                            name={getFieldPathBaseFormList('accessPortEnabled')}
+                            valuePropName='checked'
+                            noStyle
+                          >
+                            <Checkbox
+                              children={$t({ defaultMessage: 'Access port' })}
+                              disabled={
+                                hasWANPort || (hasAccessPortEnabled && !accessPortEnabled) ||
+                              isEdgeSdLanRun || !isSupportAccessPort
+                              }
+                            />
+                          </Form.Item>
+                          <ApCompatibilityToolTip
+                            title=''
+                            showDetailButton
+                            // eslint-disable-next-line max-len
+                            onClick={() => setEdgeFeatureName(IncompatibilityFeatures.CORE_ACCESS_SEPARATION)}
                           />
-                        </Form.Item>
+                        </Space>
                       </Space>
                     }
                   /> :
@@ -384,5 +397,12 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             </>): null
       }}
     </Form.Item>
+    <EdgeCompatibilityDrawer
+      visible={!!edgeFeatureName}
+      type={EdgeCompatibilityType.ALONE}
+      title={$t({ defaultMessage: 'Compatibility Requirement' })}
+      featureName={edgeFeatureName}
+      onClose={() => setEdgeFeatureName(undefined)}
+    />
   </>
 }

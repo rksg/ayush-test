@@ -7,14 +7,15 @@ import { useIntl }         from 'react-intl'
 import { CSSProperties }   from 'styled-components'
 import styled              from 'styled-components/macro'
 
-import { Button, Pill, Table, TableProps }                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, EditOutlinedIcon }                                                        from '@acx-ui/icons'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
-import { BandModeEnum, VenueApModelBandModeSettings }                                                  from '@acx-ui/rc/utils'
-import { useParams }                                                                                   from '@acx-ui/react-router-dom'
+import { Button, Pill, Table, TableProps }       from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, EditOutlinedIcon }  from '@acx-ui/icons'
+import { BandModeEnum, ApModelBandModeSettings } from '@acx-ui/rc/utils'
+import { useParams }                             from '@acx-ui/react-router-dom'
 
-import { VenueBandManagementDrawer } from './VenueBandManagementDrawer'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+
+import { BandManagementDrawer } from './BandManagementDrawer'
 
 const BandModePill = styled((props: { children: React.ReactNode }) =>
   (<Pill type='color'{...props}/>))`
@@ -33,20 +34,21 @@ export interface ModelOption {
   value: string
 }
 
-export interface VenueBandManagementPorps {
+export interface BandManagementPorps {
   style?: CSSProperties | undefined
   triBandApModels: string[]
   dual5gApModels: string[]
   bandModeCaps: Record<string, BandModeEnum[]>
-  venueTriBandApModels: string[]
-  currentVenueBandModeData: VenueApModelBandModeSettings[]
-  setCurrentVenueBandModeData: (data: VenueApModelBandModeSettings[]) => void,
+  existingTriBandApModels: string[]
+  currentBandModeData: ApModelBandModeSettings[]
+  setCurrentBandModeData: (data: ApModelBandModeSettings[]) => void,
   disabled?: boolean
+  showTitle?: boolean
 }
 
-export const VenueBandManagement = ({ style, disabled,
-  triBandApModels, dual5gApModels, bandModeCaps, venueTriBandApModels,
-  currentVenueBandModeData, setCurrentVenueBandModeData }: VenueBandManagementPorps) => {
+export const BandManagement = ({ style, disabled, showTitle = true,
+  triBandApModels, dual5gApModels, bandModeCaps, existingTriBandApModels,
+  currentBandModeData, setCurrentBandModeData }: BandManagementPorps) => {
 
   const { $t } = useIntl()
   const { venueId } = useParams()
@@ -62,27 +64,27 @@ export const VenueBandManagement = ({ style, disabled,
     setSupportBandManagementApModels(supportBandManagementApModels)
   }, [triBandApModels, dual5gApModels, bandModeCaps])
 
-  const [tableData, setTableData] = useState([] as VenueApModelBandModeSettings[])
+  const [tableData, setTableData] = useState([] as ApModelBandModeSettings[])
 
   useEffect(()=> {
-    const tableData = [ ...currentVenueBandModeData ]
+    const tableData = [ ...currentBandModeData ]
     setTableData(sortBy(tableData, ['model']))
-  }, [currentVenueBandModeData])
+  }, [currentBandModeData])
 
-  const tableDataMap = useRef<Record<string, VenueApModelBandModeSettings>>({})
+  const tableDataMap = useRef<Record<string, ApModelBandModeSettings>>({})
   useEffect(()=> {
     tableDataMap.current = tableData ? keyBy(tableData, 'model') : {}
   }, [tableData])
 
-  const [drawerData, setDrawerData] = useState({} as VenueApModelBandModeSettings)
+  const [drawerData, setDrawerData] = useState({} as ApModelBandModeSettings)
   const [drawerVisible, setDrawerVisible] = useState(false)
 
-  const onAddOrEdit = (item: VenueApModelBandModeSettings) => {
-    tableDataMap.current[item['model' as keyof VenueApModelBandModeSettings] as unknown as string] = item
-    setCurrentVenueBandModeData(sortBy(Object.values(tableDataMap.current)))
+  const onAddOrEdit = (item: ApModelBandModeSettings) => {
+    tableDataMap.current[item['model' as keyof ApModelBandModeSettings] as unknown as string] = item
+    setCurrentBandModeData(sortBy(Object.values(tableDataMap.current)))
   }
 
-  const columns: TableProps<VenueApModelBandModeSettings>['columns'] = [{
+  const columns: TableProps<ApModelBandModeSettings>['columns'] = [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
     key: 'model',
@@ -116,21 +118,21 @@ export const VenueBandManagement = ({ style, disabled,
         icon={<EditOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
-          setDrawerData({ ...row } as VenueApModelBandModeSettings)
+          setDrawerData({ ...row } as ApModelBandModeSettings)
           setDrawerVisible(true)
         }} />
       <Button
         key='delete'
         role='deleteBtn'
         type='link'
-        disabled={disabled || venueTriBandApModels.includes(row.model)}
+        disabled={disabled || existingTriBandApModels.includes(row.model)}
         icon={<DeleteOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
           setTableData(tableData.filter((item) => item.model !== row.model))
-          setCurrentVenueBandModeData(currentVenueBandModeData.filter((item) => item.model !== row.model))
+          setCurrentBandModeData(currentBandModeData.filter((item) => item.model !== row.model))
           if (row.model === drawerData?.model) {
-            setDrawerData({} as VenueApModelBandModeSettings)
+            setDrawerData({} as ApModelBandModeSettings)
             setDrawerVisible(false)
           }
         }} />
@@ -141,18 +143,19 @@ export const VenueBandManagement = ({ style, disabled,
     <Row gutter={0}>
       <Col span={18}>
         <Space>
-          {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+          {showTitle && $t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={''}
             showDetailButton
             placement='right'
             onClick={() => setRfDrawerVisible(true)}
           />}
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
             visible={rfDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.BAND_MANAGEMENT}
+            featureNames={[InCompatibilityFeatures.BAND_MANAGEMENT]}
             onClose={() => setRfDrawerVisible(false)}
           />}
         </Space>
@@ -160,7 +163,7 @@ export const VenueBandManagement = ({ style, disabled,
       <Col span={6} style={{ textAlign: 'right' }}>
         <Button
           onClick={() => {
-            setDrawerData({} as VenueApModelBandModeSettings)
+            setDrawerData({} as ApModelBandModeSettings)
             setDrawerVisible(true)
           }}
           type='link'
@@ -176,7 +179,7 @@ export const VenueBandManagement = ({ style, disabled,
       columns={columns}
       dataSource={tableData}
       type='form' />
-    <VenueBandManagementDrawer
+    <BandManagementDrawer
       visible={drawerVisible}
       setVisible={setDrawerVisible}
       onAddOrEdit={onAddOrEdit}

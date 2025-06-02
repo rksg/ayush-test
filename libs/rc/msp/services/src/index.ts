@@ -915,19 +915,6 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      transformResponse: (response: AvailableMspRecCustomers) => {
-        const _childAccounts = response.child_accounts?.map((account) => {
-          return (!account?.is_tenant_onboarded)
-            ? { ...account, account_name: '* ' + account.account_name }
-            : account
-        }).sort((a,b) => {
-          if(a.account_name < b.account_name) { return -1 }
-          if(a.account_name > b.account_name) { return 1 }
-          return 0
-        })
-
-        return { ...response, child_accounts: _childAccounts }
       }
     }),
     addRecCustomer: build.mutation<CommonResult, RequestPayload>({
@@ -953,9 +940,8 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const mspUrlsInfo = getMspUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(mspUrlsInfo.getMspCustomersList, arg.params),
+          ...createHttpRequest(MspRbacUrlsInfo.getMspCustomersListWithoutDelegations, arg.params),
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)

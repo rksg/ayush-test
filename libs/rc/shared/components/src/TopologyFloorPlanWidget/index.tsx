@@ -89,7 +89,7 @@ export function getFloorplanComponent (showTopologyFloorplanOn: ShowTopologyFloo
         : getEmptyTemplate(ShowTopologyFloorplanOn.AP_OVERVIEW, venueId)
   }
 
-  return
+  return <></>
 }
 
 export function getEmptyTemplate (emptyTemplateFor: ShowTopologyFloorplanOn, venueId: string) {
