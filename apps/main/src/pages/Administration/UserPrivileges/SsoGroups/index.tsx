@@ -287,6 +287,9 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
 
     const [, drag] = useDrag(() => ({
       type: 'DraggableRow',
+      canDrag: rbacOpsApiEnabled
+        ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.updateAdminGroups)])
+        : isPrimeAdminUser,
       item: {
         id: props['data-row-key']
       },
@@ -333,7 +336,9 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeleteAdminUpdating
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       <DndProvider backend={HTML5Backend} >
         <Table style={{ paddingBottom: '40px' }}
           columns={columns}

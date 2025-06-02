@@ -59,7 +59,7 @@ exports[`Table component renders compact table 1`] = `
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -434,7 +434,7 @@ exports[`Table component renders form table 1`] = `
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -808,7 +808,7 @@ exports[`Table component renders nested table 1`] = `
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -1505,7 +1505,7 @@ exports[`Table component renders stickyPagination table 1`] = `
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -2111,7 +2111,7 @@ exports[`Table component should render correctly 1`] = `
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -2680,7 +2680,7 @@ exports[`Table component should render multi select table and render action butt
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -3418,7 +3418,7 @@ exports[`Table component should render multi select table and render action butt
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -4192,7 +4192,7 @@ exports[`Table component should render multi select table and render action butt
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -4892,7 +4892,7 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
 
 .c0 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c0 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 

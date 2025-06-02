@@ -95,8 +95,13 @@ export const ExpanderTableWrapper = styled.div`
     }
   } 
   .ant-pro-table {
-    width: 292px;
+    width: 350px;
   }
+
+  .expanded-row-hidden {
+    display: none;
+  }
+
 `
 export const SelectedCount = styled.div`
   line-height: 16px;
