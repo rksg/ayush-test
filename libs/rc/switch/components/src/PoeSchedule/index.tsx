@@ -120,12 +120,10 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
     if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
       form.setFieldsValue({
-        ...form.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.NO_SCHEDULE }
       })
     } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
       form.setFieldsValue({
-        ...form.getFieldsValue(),
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
     setVisible(false)
