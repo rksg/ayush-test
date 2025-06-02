@@ -53,7 +53,8 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
 export const reportAccountTierMapping: Partial<Record<AccountTier, ReportType[]>> = {
   [AccountTier.CORE]: [
     ReportType.AP_DETAIL,
-    ReportType.CLIENT_DETAIL
+    ReportType.CLIENT_DETAIL,
+    ReportType.OVERVIEW
   ]
 }
 
