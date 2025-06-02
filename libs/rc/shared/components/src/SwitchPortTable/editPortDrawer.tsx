@@ -2227,7 +2227,11 @@ export function EditPortDrawer ({
                     hidden={!poeSchedulerCheckbox}
                     type='link'
                     data-testid='edit-poe-schedule'
-                    onClick={() => { setDrawerPoeSchedule(true) }}
+                    onClick={() => {
+                      if(poeScheduler){
+                        setPoeScheduleData(poeScheduler)
+                      }
+                      setDrawerPoeSchedule(true) }}
                     style={{ paddingLeft: '10px' }}
                   >
                     {$t({ defaultMessage: 'Edit' })}
@@ -2243,7 +2247,11 @@ export function EditPortDrawer ({
                       <Button
                         type='link'
                         data-testid='edit-poe-schedule'
-                        onClick={() => { setDrawerPoeSchedule(true) }}
+                        onClick={() => {
+                          if(poeScheduler){
+                            setPoeScheduleData(poeScheduler)
+                          }
+                          setDrawerPoeSchedule(true) }}
                         disabled={getFieldDisabled('poeEnable') && getFieldDisabled('poeScheduler')}
                       >
                         {$t({ defaultMessage: 'Edit' })}
