@@ -280,6 +280,9 @@ export const EditPortMessages = {
     defaultMessage: 'When authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
+  }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
   TAGGED_VLAN_TOOLTIP: defineMessage({
@@ -350,6 +353,9 @@ export const MultipleEditPortMessages = {
     defaultMessage: 'Each port must be a member of at least one VLAN'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }

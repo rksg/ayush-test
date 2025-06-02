@@ -779,10 +779,13 @@ export function EditPortDrawer ({
         return isCloudPort ? $t({ defaultMessage: 'Uplink port cannot be disabled' }) : ''
       case 'poeEnable':
         return disablePoeCapability
-          ? (isMultipleEdit
+          ? (isSwitchTimeBasedPoeEnabled ? (isMultipleEdit
+            ? $t(MultipleEditPortMessages.POE_CAPABILITY_SCHEDULE_DISABLE)
+            : $t(EditPortMessages.POE_CAPABILITY_SCHEDULE_DISABLE)
+          ) : (isMultipleEdit
             ? $t(MultipleEditPortMessages.POE_CAPABILITY_DISABLE)
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
-          ) : ''
+          )) : ''
       case 'useVenuesettings':
         return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
@@ -1399,12 +1402,11 @@ export function EditPortDrawer ({
     const allCustomSchedule = multiPoeScheduleData.every(
       schedule => schedule?.type === SchedulerTypeEnum.CUSTOM
     )
-    const singleCustomSchedule = poeScheduler?.type === SchedulerTypeEnum.CUSTOM
     const allNoSchedule = multiPoeScheduleData.every(
       schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
     )
 
-    if (allCustomSchedule || singleCustomSchedule) {
+    if (allCustomSchedule) {
       return $t({ defaultMessage: 'Custom Schedule' })
     } else if (allNoSchedule) {
       return noDataDisplay
