@@ -25,7 +25,7 @@ import {
   replacePagination
 } from '../__tests__/fixtures'
 
-import PersonaGroupDetails from '.'
+import { PersonaGroupDetails } from '.'
 
 const venueData = {
   address: {

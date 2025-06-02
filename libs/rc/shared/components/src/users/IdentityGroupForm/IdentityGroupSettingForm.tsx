@@ -13,7 +13,7 @@ import {
 import {
   checkObjectNotExists,
   getPolicyAllowedOperation, PolicyOperation, PolicyType,
-  trailingNorLeadingSpaces
+  trailingNorLeadingSpaces, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
 
@@ -26,6 +26,7 @@ export function IdentityGroupSettingForm ({ modalMode }: { modalMode?: boolean }
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
+  const { isTemplate } = useConfigTemplate()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery({
     payload: { page: 1, pageSize: '2147483647' }
@@ -84,7 +85,7 @@ export function IdentityGroupSettingForm ({ modalMode }: { modalMode?: boolean }
         </Row>
         <Row align={'middle'} gutter={8}>
           {
-            isPolicySetSupported && <>
+            (isPolicySetSupported && !isTemplate) && <>
               <Col span={24}>
                 <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
               </Col>

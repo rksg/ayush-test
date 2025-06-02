@@ -227,10 +227,6 @@ jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
   return <div data-testid='PersonaDetails' />
 })
 
-jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
-  return <div data-testid='PersonaGroupDetails' />
-})
-
 jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () => () => {
   return <div data-testid='MacRegistrationListsTable' />
 })
@@ -326,7 +322,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ConnectionMeteringFormMode: {},
   useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
   IdentityForm: () => <div data-testid='IdentityForm' />,
-  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />
+  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />,
+  PersonaGroupDetails: () => <div data-testid='PersonaGroupDetails' />
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {

@@ -159,6 +159,9 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
   } else if (type === ConfigTemplateType.AP_GROUP) {
     return <ConfigTemplateLink to={`devices/apgroups/${id}/details/networks`} children={name} />
+  } else if (type === ConfigTemplateType.IDENTITY_GROUP) {
+    // eslint-disable-next-line max-len
+    return <ConfigTemplateLink to={`identityManagement/identityGroups/${id}/details`} children={name} />
   }
 
   return <span>{name}</span>

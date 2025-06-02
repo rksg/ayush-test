@@ -25,7 +25,9 @@ import {
   CliProfileForm, ApGroupDetails, ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
-  EthernetPortProfileDetail
+  EthernetPortProfileDetail,
+  IdentityGroupForm,
+  PersonaGroupDetails
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -462,6 +464,20 @@ export function ConfigTemplatesRoutes () {
           <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.IDENTITY_GROUP] && <>
+          <Route
+            path='identityManagement/identityGroups/add'
+            element={<IdentityGroupForm />}
+          />
+          <Route
+            path='identityManagement/identityGroups/:personaGroupId/edit'
+            element={<IdentityGroupForm editMode={true}/>}
+          />
+          <Route
+            path='identityManagement/identityGroups/:personaGroupId/details'
+            element={<PersonaGroupDetails />}
+          />
         </>}
       </Route>
     </Route>

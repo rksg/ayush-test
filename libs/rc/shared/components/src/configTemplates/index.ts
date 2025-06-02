@@ -27,6 +27,7 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
   const isGA = useIsConfigTemplateGA()
   const isExtraScope = useIsConfigTemplateExtra()
   const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_TEMPLATE)
 
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,
@@ -48,7 +49,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.SWITCH_REGULAR]: isExtraScope,
     [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
     [ConfigTemplateType.AP_GROUP]: isExtraScope,
-    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled,
+    [ConfigTemplateType.IDENTITY_GROUP]: isIdentityGroupTemplateEnabled
   }
 
   return visibilityMap

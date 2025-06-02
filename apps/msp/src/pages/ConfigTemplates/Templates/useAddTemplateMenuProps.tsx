@@ -33,6 +33,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
     : [policyMenuItems, serviceMenuItems]
 
   const menuItems = [
+    useClientMenuItems(),
     useWiFiMenuItems(),
     useVenueItem(),
     useSwitchMenuItems(),
@@ -231,5 +232,28 @@ export function useVenueItem (): ItemType | null {
     label: <ConfigTemplateLink to='venues/add'>
       {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
     </ConfigTemplateLink>
+  }
+}
+
+export function useClientMenuItems (): ItemType | null {
+  const { $t } = getIntl()
+  const visibilityMap = useConfigTemplateVisibilityMap()
+
+  const isIdentityGroupAvailable = visibilityMap[ConfigTemplateType.IDENTITY_GROUP]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.IDENTITY_GROUP, 'Create')
+
+  if (!isIdentityGroupAvailable) return null
+
+  return {
+    key: 'add-client',
+    label: $t({ defaultMessage: 'Clients' }),
+    children: [
+      (isIdentityGroupAvailable ? {
+        key: 'add-identity-group',
+        label: <ConfigTemplateLink to='identityManagement/identityGroups/add'>
+          {getConfigTemplateTypeLabel(ConfigTemplateType.IDENTITY_GROUP)}
+        </ConfigTemplateLink>
+      } : null)
+    ]
   }
 }

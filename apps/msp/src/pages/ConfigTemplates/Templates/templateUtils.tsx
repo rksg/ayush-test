@@ -45,7 +45,8 @@ const partialConfigTemplateTypeLabelMap: Partial<Record<ConfigTemplateType, Mess
   [ConfigTemplateType.VENUE]: defineMessage({ defaultMessage: '<VenueSingular></VenueSingular>' }),
   [ConfigTemplateType.AP_GROUP]: defineMessage({ defaultMessage: 'AP Group' }),
   [ConfigTemplateType.SWITCH_CLI]: defineMessage({ defaultMessage: 'Switch CLI Profile' }),
-  [ConfigTemplateType.SWITCH_REGULAR]: defineMessage({ defaultMessage: 'Switch Regular Profile' })
+  [ConfigTemplateType.SWITCH_REGULAR]: defineMessage({ defaultMessage: 'Switch Regular Profile' }),
+  [ConfigTemplateType.IDENTITY_GROUP]: defineMessage({ defaultMessage: 'Identity Group' })
 }
 
 export function getConfigTemplateTypeLabel (configTemplateType: ConfigTemplateType): string {

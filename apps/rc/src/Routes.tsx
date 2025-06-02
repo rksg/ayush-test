@@ -50,7 +50,8 @@ import {
   EditSamlIdp,
   SamlIdpDetail,
   IdentityGroupForm,
-  IdentityForm
+  IdentityForm,
+  PersonaGroupDetails
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -219,7 +220,6 @@ import WifiCallingTable                     from './pages/Services/WifiCalling/W
 import Timeline                             from './pages/Timeline'
 import PersonaPortal                        from './pages/Users/Persona'
 import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList                     from './pages/Users/Switch/ClientList'
 import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
