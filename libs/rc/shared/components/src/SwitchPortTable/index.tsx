@@ -582,6 +582,7 @@ export function SwitchPortTable (props: {
         venueId={switchDetail?.venueId}
         poeScheduler={poeScheduleData}
         readOnly={true}
+        portData={selectedPorts[0]}
       />
     }
 

@@ -8,11 +8,12 @@ import {
   parseNetworkVenueScheduler,
   ScheduleCard
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
-import { useLazyGetTimezoneQuery, useLazyGetVenueQuery } from '@acx-ui/rc/services'
-import { SchedulerTypeEnum, PoeSchedulerType }           from '@acx-ui/rc/utils'
-import { useParams }                                     from '@acx-ui/react-router-dom'
-import { Scheduler, SchedulerDeviceTypeEnum }            from '@acx-ui/types'
+import { useIsSplitOn, Features }                                                     from '@acx-ui/feature-toggle'
+import { useLazyGetTimezoneQuery, useLazyGetVenueQuery, useSavePortsSettingMutation } from '@acx-ui/rc/services'
+import { SwitchPortViewModel }                                                        from '@acx-ui/rc/switch/utils'
+import { SchedulerTypeEnum, PoeSchedulerType }                                        from '@acx-ui/rc/utils'
+import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import { Scheduler, SchedulerDeviceTypeEnum }                                         from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
@@ -23,6 +24,7 @@ interface ScheduleWeeklyProps {
   venueId?: string
   poeScheduler: PoeSchedulerType
   readOnly?: boolean
+  portData?: SwitchPortViewModel
 }
 
 interface ScheduleVenue {
@@ -31,38 +33,18 @@ interface ScheduleVenue {
   longitude: string
 }
 
-export const parseExcludedHours = (hours?:Scheduler):Record<string, number[]> | undefined => {
-  if (hours) {
-    const result: Record<string, number[]> = {}
-    Object.keys(hours).forEach(hour => {
-      result[hour] = hours[hour].map(h => parseInt(h, 10))
-    })
-    return result
-  }
-  return hours
-}
-
-export const buildExcludedHours = (hours?:Record<string, number[]>):Scheduler | undefined => {
-  if (hours) {
-    const result: Scheduler = {}
-    Object.keys(hours).forEach(hour => {
-      result[hour] = hours[hour].map(h => `${h}`)
-    })
-    return result
-  }
-  return hours
-}
-
 export const PoeSchedule = (props:ScheduleWeeklyProps) => {
-  const { visible, setVisible, form, venueId, poeScheduler, readOnly } = props
+  const { visible, setVisible, form, venueId, poeScheduler, readOnly, portData } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
+  const [readOnlyMode, setReadOnlyMode] = useState<boolean>(readOnly || false)
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const [getTimezone] = useLazyGetTimezoneQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [venueData, setVenueData] = useState<ScheduleVenue>()
   const [schedule, setSchedule] = useState<Scheduler | undefined>(undefined)
+  const [savePortsSetting] = useSavePortsSettingMutation()
 
   useEffect(() => {
     if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
@@ -114,7 +96,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
     return transformedData
   }
 
-  const onApply = () => {
+  const onApply = async () => {
     const { scheduler, poeSchedulerType } = form.getFieldsValue()
     const { type, ...weekDays } = scheduler || {}
 
@@ -126,16 +108,24 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       form.setFieldsValue({
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
+    const payload = {
+      ...portData,
+      poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) }
+    }
+    await savePortsSetting({
+      params: { tenantId, venueId },
+      payload,
+      enableRbac: true
+    }).unwrap()
     setVisible(false)
   }
 
   const onClose = () => {
-    form.resetFields()
     setVisible(false)
   }
 
   const footer = (
-    readOnly ? <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    readOnlyMode ? <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <Button
         data-testid='addButton'
         key='okBtn'
@@ -161,7 +151,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
   return (
     <Modal
-      title={readOnly ?
+      title={readOnlyMode ?
         $t({ defaultMessage: 'Preview PoE Schedule' }) :
         $t({ defaultMessage: 'PoE Schedule ' })}
       visible={visible}
@@ -180,7 +170,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
         <UI.ScheduleWrapper>
           <Row gutter={10} key={'row1'}>
             <Col span={6} key={'col1'}>
-              <div style={{ marginTop: '1em', display: readOnly ? 'none' : 'block' }}>
+              <div style={{ marginTop: '1em', display: readOnlyMode ? 'none' : 'block' }}>
                 <Form.Item
                   name={'poeSchedulerType'}
                   initialValue={SchedulerTypeEnum.NO_SCHEDULE}
@@ -199,6 +189,19 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
             </Col>
           </Row>
           <Row gutter={24}>
+            <Col span={24}>
+              <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  data-testid='editButton'
+                  key='editBtn'
+                  type='link'
+                  onClick={() => setReadOnlyMode(false)}
+                  hidden={!readOnlyMode}
+                >
+                  {$t({ defaultMessage: 'Edit PoE Schedule' })}
+                </Button>
+              </div>
+            </Col>
             <Col span={24} key={'col1'}>
               {!hidden && <ScheduleCard
                 type={'CUSTOM'}
@@ -207,15 +210,15 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 form={form}
                 fieldNamePath={['scheduler']}
                 intervalUnit={60}
-                title={readOnly ? '' :
+                title={readOnlyMode ? '' :
                   $t({ defaultMessage: 'Mark/ unmark areas to change PoE availability' })}
                 loading={false}
-                isShowTips={readOnly ? false : true}
+                isShowTips={readOnlyMode ? false : true}
                 prefix={true}
                 timelineLabelTop={false}
                 isShowTimezone={true}
                 venue={venueData}
-                readonly={readOnly}
+                readonly={readOnlyMode}
                 disabled={false}
                 deviceType={SchedulerDeviceTypeEnum.SWITCH}
               />
