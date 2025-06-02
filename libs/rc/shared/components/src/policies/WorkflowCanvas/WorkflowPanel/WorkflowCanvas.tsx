@@ -119,133 +119,108 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     const nodeMap = new Map<string, Node>()
     nodes.forEach(n => {nodeMap.set(n.id, n)})
 
+    // get intersecting nodes of the dragged node
     const currentBranchBounds = getNodesBounds([node])
-    const intersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
+    const allIntersectingNodes = reactFlowInstance.getIntersectingNodes(node, true)
 
-    let otherNodes = undefined
-    if(intersectingNodes) {
-      otherNodes = intersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
+    let otherBranchIntersectingNodes = undefined
+    if(allIntersectingNodes) {
+      otherBranchIntersectingNodes = 
+        allIntersectingNodes.filter(n => n.id != node.id && n.parentNode != node.id)
     }
 
-    if(!otherNodes || otherNodes.length === 0) {
-      // calculate bounding box for plus drag handle (plus is 16 pixels wide and 30 pixels from the top of the subflow)
-      const topPlusBounds = {x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8), y: currentBranchBounds.y - 30, height: 30, width: 16}
+    // if no intersecting nodes were found then look for nodes that the plus drag handle is covering
+    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
+      // calculate bounding box for plus drag handle 
+      // (plus is 16 pixels wide and 30 pixels from the top of the subflow)
+      const topPlusBounds = {x: currentBranchBounds.x + ((currentBranchBounds.width / 2) - 8), 
+        y: currentBranchBounds.y - 30, height: 30, width: 16}
       const topPlusIntersectingNodes = reactFlowInstance.getIntersectingNodes(topPlusBounds)
-      otherNodes = topPlusIntersectingNodes
+      otherBranchIntersectingNodes = topPlusIntersectingNodes
     }
 
-    // from other nodes determine final node
-    if(otherNodes && otherNodes.length > 0) {
+    if(!otherBranchIntersectingNodes || otherBranchIntersectingNodes.length === 0) {
+      // we are not intersecting other nodes
+      return
+    }
 
-      let idsInBranch = new Set()
+    // find the final node of the branch we are intersecting with
+    let idsInIntersectedBranch = new Set()
 
-      let startingNode = undefined
-      startingNode = otherNodes[0]
-      // check if this node is a parent node
-      if(startingNode.type === 'DISCONNECTED_BRANCH') {
-        idsInBranch.add(startingNode.id)
-        let firstMemberId = startingNode.id.split('parent')[0]
-        startingNode = nodeMap.get(firstMemberId)
-        if(!startingNode) { return }
+    let startingNode = undefined
+    startingNode = otherBranchIntersectingNodes[0]
+    // check if this node is a parent node (subflow) and get it's child if so
+    if(startingNode.type === 'DISCONNECTED_BRANCH') {
+      idsInIntersectedBranch.add(startingNode.id)
+      let firstMemberId = startingNode.id.split('parent')[0]
+      startingNode = nodeMap.get(firstMemberId)
+      if(!startingNode) { return }
+    }
+
+
+    // find the top node from the current node 
+    // (this is necessary so we can determine if we are overlapping multiple branches)
+    idsInIntersectedBranch.add(startingNode.id)
+    let currentNode:undefined | Node = startingNode
+    while(currentNode?.data?.priorStepId) {
+      const previousNode = nodeMap.get(currentNode.data.priorStepId)
+      if(previousNode && previousNode.data.type !== StepType.Start) {
+        idsInIntersectedBranch.add(previousNode.id)
+        currentNode = previousNode
+      } else {
+        currentNode = undefined
       }
+    }
 
-
-      // find the top node from the current node
-      idsInBranch.add(startingNode.id)
-      let currentNode:undefined | Node = startingNode
-      while(currentNode?.data?.priorStepId) {
-        const previousNode = nodeMap.get(currentNode.data.priorStepId)
-        if(previousNode && previousNode.data.type !== StepType.Start) {
-          idsInBranch.add(previousNode.id)
-          currentNode = previousNode
+    // get the final node of the branch that was intersected with so we can attach to it
+    let finalIntersectedNode = startingNode
+    if (finalIntersectedNode.data?.nextStepId) {
+      let nextNode = nodeMap.get(finalIntersectedNode.data.nextStepId)
+      while(nextNode) {
+        if(nextNode.data.type === StepType.End) {
+          nextNode = undefined
         } else {
-          currentNode = undefined
+          idsInIntersectedBranch.add(nextNode.id)
+          finalIntersectedNode = nextNode
+          nextNode = nextNode.data.nextStepId ? nodeMap.get(nextNode.data.nextStepId) : undefined
         }
       }
-
-      let finalNode = startingNode
-      if (finalNode.data?.nextStepId) {
-        let nextNode = nodeMap.get(finalNode.data.nextStepId)
-        while(nextNode) {
-          if(nextNode.data.type === StepType.End) {
-            nextNode = undefined
-          } else {
-            idsInBranch.add(nextNode.id)
-            finalNode = nextNode
-            nextNode = nextNode.data.nextStepId ? nodeMap.get(nextNode.data.nextStepId) : undefined
-          }
-        }
-      }
-
-      let isMultipleBranches = (otherNodes.length > idsInBranch.size 
-        || otherNodes.filter(n => !idsInBranch.has(n.id)).length > 0)
-      if(isMultipleBranches) {
-        return
-      }
-
-
-      let stepIdToAttach = node.id
-      if(stepIdToAttach && stepIdToAttach.endsWith('parent')) {
-        stepIdToAttach = node.id.split('parent')[0]
-      }
-
-      const title = $t(
-        { defaultMessage: 'Attach to Action "{formattedName}"?' },
-        { formattedName: $t(ActionTypeTitle[finalNode.type as ActionType]) }
-      )
-
-      showActionModal({
-        type: 'confirm',
-        title: title,
-        content: $t({
-          defaultMessage: 
-            `Are you sure you want to attach the branch below the step of type "{formattedName}"`
-          }, { formattedName: $t(ActionTypeTitle[finalNode.type as ActionType]) }),
-        okText: $t({ defaultMessage: 'Attach Actions' }),
-        onOk: () => {
-          attachSteps({ params: { policyId: workflowId, stepId: finalNode.id, detachedStepId: stepIdToAttach } }).unwrap()
-        }
-      })
-
-
     }
+
+    // if we are intersecting multiple branches do nothing
+    let isMultipleBranches = (otherBranchIntersectingNodes.length > idsInIntersectedBranch.size 
+      || otherBranchIntersectingNodes.filter(n => !idsInIntersectedBranch.has(n.id)).length > 0)
+    if(isMultipleBranches) {
+      return
+    }
+
+    // get the id of the step we want to attach below the intersected branch
+    let stepIdToAttach = node.id
+    if(stepIdToAttach && stepIdToAttach.endsWith('parent')) {
+      stepIdToAttach = node.id.split('parent')[0]
+    }
+
+    const title = $t(
+      { defaultMessage: 'Attach to Action "{formattedName}"?' },
+      { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }
+    )
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: $t({
+        defaultMessage: 
+          `Are you sure you want to attach the branch below the step of type "{formattedName}"`
+        }, { formattedName: $t(ActionTypeTitle[finalIntersectedNode.type as ActionType]) }),
+      okText: $t({ defaultMessage: 'Attach Actions' }),
+      onOk: () => {
+        attachSteps({ params: { policyId: workflowId, stepId: finalIntersectedNode.id, 
+          detachedStepId: stepIdToAttach } }).unwrap()
+      }
+    })
+
+
   
-
-
-
-
-
-
-
-
-
-    // TODO: find parent node - if it is overlapping another chains final node highlight that final node (maybe add a custom property to the node that changes it's CSS styling)
-
-    // from reactflow example
-    // const closestNode = Array.from(nodeLookup.values()).reduce(
-    //   (res, n) => {
-    //     if (n.id !== internalNode.id) {
-    //       const dx =
-    //         n.internals.positionAbsolute.x -
-    //         internalNode.internals.positionAbsolute.x;
-    //       const dy =
-    //         n.internals.positionAbsolute.y -
-    //         internalNode.internals.positionAbsolute.y;
-    //       const d = Math.sqrt(dx * dx + dy * dy);
-
-    //       if (d < res.distance && d < MIN_DISTANCE) {
-    //         res.distance = d;
-    //         res.node = n;
-    //       }
-    //     }
-
-    //     return res;
-    //   },
-    //   {
-    //     distance: Number.MAX_VALUE,
-    //     node: null,
-    //   },
-    // );
 
   }, [nodes])
 
