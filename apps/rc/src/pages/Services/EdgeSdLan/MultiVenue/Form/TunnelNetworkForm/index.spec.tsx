@@ -69,8 +69,8 @@ jest.mock('./VenueNetworkTable/NetworksDrawer.tsx', () => ({
   NetworksDrawer: () => <div data-testid='NetworksDrawer' />
 }))
 
-jest.mock('libs/rc/shared/components/src/useEdgeActions', () => ({
-  ...jest.requireActual('libs/rc/shared/components/src/useEdgeActions'),
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 

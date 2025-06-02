@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                                                            from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                                                                                             from '@acx-ui/rc/components'
-import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                                          from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                                                                                                         from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                                                                                          from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, ServiceType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -25,6 +25,12 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
+const mockedUseMdnsProxyStateMap = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
+}))
+
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
 
@@ -78,6 +84,15 @@ describe('MyServices', () => {
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
+  })
+
   afterEach(() => {
     getEnhancedMdnsProxyRequestSpy.mockClear()
   })
@@ -125,8 +140,11 @@ describe('MyServices', () => {
   })
 
   it('should render Edge MDNS when FF is ON', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: true,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
 
     render(
       <Provider>
