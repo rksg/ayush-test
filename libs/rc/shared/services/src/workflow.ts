@@ -27,7 +27,8 @@ import {
   WorkflowActionDefinition,
   WorkflowStep,
   WorkflowUrls,
-  FileDownloadResponse
+  FileDownloadResponse,
+  WorkflowAssignment
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }                               from '@acx-ui/store'
 import { MaybePromise }                                  from '@acx-ui/types'
@@ -139,6 +140,30 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       providesTags: [
         { type: 'Workflow', id: 'ID' }
       ]
+    }),
+    getWorkflowProfiles: build.query<Workflow[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.searchWorkflowProfiles, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewAPITableResult<Workflow>) {
+        return result.content
+      }
+    }),
+    getWorkflowProfileBoundNetwork: build.query<WorkflowAssignment[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.searchWorkflowProfileBoundNetwork, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewAPITableResult<WorkflowAssignment>) {
+        return result.content
+      }
     }),
     // eslint-disable-next-line max-len
     updateWorkflow: build.mutation<CommonAsyncResponse, RequestPayload<Workflow> & { callback?: () => void }>({
@@ -613,6 +638,8 @@ export const {
   useDeleteWorkflowsMutation,
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
+  useGetWorkflowProfilesQuery,
+  useGetWorkflowProfileBoundNetworkQuery,
   useUpdateWorkflowMutation,
   useUpdateWorkflowIgnoreErrorsMutation,
   useSearchWorkflowListQuery,
