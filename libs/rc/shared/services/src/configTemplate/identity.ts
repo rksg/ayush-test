@@ -76,6 +76,7 @@ export const identityConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 export const {
   useAddIdentityGroupTemplateMutation,
   useGetIdentityGroupTemplateByIdQuery,
+  useQueryIdentityGroupTemplatesQuery,
   useLazyQueryIdentityGroupTemplatesQuery,
   useUpdateIdentityGroupTemplateMutation,
   useDeleteIdentityGroupTemplateMutation

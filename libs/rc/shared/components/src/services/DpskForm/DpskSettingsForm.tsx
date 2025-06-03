@@ -26,6 +26,7 @@ import {
   useAdaptivePolicySetListQuery,
   useLazyGetDpskListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
+  useQueryIdentityGroupTemplatesQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -43,7 +44,8 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   DpskSaveData,
   TableResult,
-  useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation
+  useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getIntl }              from '@acx-ui/utils'
@@ -73,8 +75,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
     useLazyQueryFn: useLazyGetDpskListQuery,
     useLazyTemplateQueryFn: useLazyGetEnhancedDpskTemplateListQuery
   })
-  const { isTemplate } = useConfigTemplate()
-  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const nameValidator = async (value: string) => {
     const list = (await getDpskList({}).unwrap()).data
@@ -165,19 +166,21 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
-        <ProtectedEnforceTemplateToggleP1 initValue={isEnforced} />
       </GridCol>
     </GridRow>
     {isCloudpathEnabled && <CloudpathFormItems editMode={editMode} />}
+    <ProtectedEnforceTemplateToggleP1 initValue={isEnforced} />
   </>)
 }
 
 function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const { $t } = getIntl()
+  const { isTemplate } = useConfigTemplate()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const policySetId = Form.useWatch<string>('policySetId', form)
   const deviceCountLimit = Form.useWatch<number>('deviceCountLimit', form)
   const dpskDeviceCountLimitToggle =
@@ -197,20 +200,17 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
       }
     }
   )
-  const { identityGroupList } = useSearchPersonaGroupListQuery({
+  const { data: identityGroupRawList } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useSearchPersonaGroupListQuery,
+    useTemplateQueryFn: useQueryIdentityGroupTemplatesQuery,
+    skip: isTemplate ? !isIdentityGroupTemplateEnabled : false,
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
-  }, {
-    skip: !isIdentityGroupRequired,
-    selectFromResult ({ data }) {
-      return {
-        // return empty list if data?.data is undefined
-        // eslint-disable-next-line max-len
-        identityGroupList: data?.data.filter(group => editMode || !group.dpskPoolId).map(group => ({ value: group.id, label: group.name }))
-      }
-    }
   })
+  const identityGroupList = identityGroupRawList?.data
+    .filter(group => !group.dpskPoolId)
+    .map(group => ({ value: group.id, label: group.name }))
 
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
@@ -218,60 +218,63 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   return (
     <GridRow>
       <GridCol col={{ span: 8 }}>
-        <Form.Item
-          label={$t({ defaultMessage: 'Devices allowed per passphrase' })}
-          rules={[{ required: true }]}
-          name='deviceNumberType'
-          children={
-            <Radio.Group>
-              <Space size={'middle'} direction='vertical'>
-                <Radio value={DeviceNumberType.UNLIMITED}>
-                  {$t(unlimitedNumberOfDeviceLabel)}
-                </Radio>
-                <FieldSpace>
-                  <Radio value={DeviceNumberType.LIMITED}>
-                    {$t({ defaultMessage: 'Limited to...' })}
+        {!isTemplate &&
+          <Form.Item
+            label={$t({ defaultMessage: 'Devices allowed per passphrase' })}
+            rules={[{ required: true }]}
+            name='deviceNumberType'
+            children={
+              <Radio.Group>
+                <Space size={'middle'} direction='vertical'>
+                  <Radio value={DeviceNumberType.UNLIMITED}>
+                    {$t(unlimitedNumberOfDeviceLabel)}
                   </Radio>
-                  {deviceNumberType === DeviceNumberType.LIMITED &&
-                    <Space size={'middle'} direction='horizontal'>
-                      <Form.Item
-                        name='deviceCountLimit'
-                        initialValue={1}
-                        rules={[
-                          {
-                            required: true,
-                            // eslint-disable-next-line max-len
-                            message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
-                          },
-                          {
-                            type: 'number',
-                            min: 1,
-                            max: MAX_DEVICES_PER_PASSPHRASE,
-                            message: $t(
+                  <FieldSpace>
+                    <Radio value={DeviceNumberType.LIMITED}>
+                      {$t({ defaultMessage: 'Limited to...' })}
+                    </Radio>
+                    {deviceNumberType === DeviceNumberType.LIMITED &&
+                      <Space size={'middle'} direction='horizontal'>
+                        <Form.Item
+                          name='deviceCountLimit'
+                          initialValue={1}
+                          rules={[
+                            {
+                              required: true,
                               // eslint-disable-next-line max-len
-                              { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
-                              { max: MAX_DEVICES_PER_PASSPHRASE }
-                            )
-                          }
-                        ]}
-                        children={<InputNumber min={1} max={MAX_DEVICES_PER_PASSPHRASE} />}
-                      />
-                      <Form.Item
-                        name='deviceCountLimitLabel'
-                        children={<div>{$t(
-                          // eslint-disable-next-line max-len
-                          { defaultMessage: '{deviceCountLimit, plural, one {Device} other {Devices}}' },
-                          { deviceCountLimit: deviceCountLimit })
-                        }</div>}
-                      />
-                    </Space>
-                  }
-                </FieldSpace>
-              </Space>
-            </Radio.Group>
-          }
-        />
-        {isIdentityGroupRequired &&
+                              message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
+                            },
+                            {
+                              type: 'number',
+                              min: 1,
+                              max: MAX_DEVICES_PER_PASSPHRASE,
+                              message: $t(
+                                // eslint-disable-next-line max-len
+                                { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
+                                { max: MAX_DEVICES_PER_PASSPHRASE }
+                              )
+                            }
+                          ]}
+                          children={<InputNumber min={1} max={MAX_DEVICES_PER_PASSPHRASE} />}
+                        />
+                        <Form.Item
+                          name='deviceCountLimitLabel'
+                          children={<div>{$t(
+                            // eslint-disable-next-line max-len
+                            { defaultMessage: '{deviceCountLimit, plural, one {Device} other {Devices}}' },
+                            { deviceCountLimit: deviceCountLimit })
+                          }</div>}
+                        />
+                      </Space>
+                    }
+                  </FieldSpace>
+                </Space>
+              </Radio.Group>
+            }
+          />
+        }
+
+        {isIdentityGroupRequired && (isTemplate ? isIdentityGroupTemplateEnabled : true) &&
           <div style={{
             display: 'flex',
             alignItems: 'center'
@@ -325,7 +328,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
             }
           </div>
         }
-        {isPolicyManagementEnabled &&
+        {isPolicyManagementEnabled && !isTemplate &&
           <>
             <div style={{
               display: 'flex',

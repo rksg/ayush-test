@@ -19,7 +19,8 @@ import {
   getDhcpProfileFn,
   updateWifiCallingFn,
   getWifiCallingFn,
-  queryWifiCallingFn
+  queryWifiCallingFn,
+  addDpskWithIdentityGroupFn
 } from '../servicePolicy.utils'
 import { addDpskFn, updateDpskFn } from '../servicePolicy.utils'
 
@@ -46,6 +47,10 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     createDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: addDpskFn(true),
       // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
+    }),
+    createDpskTemplateWithIdentityGroup: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
+      queryFn: addDpskWithIdentityGroupFn(true),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
     updateDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
@@ -389,7 +394,8 @@ export const {
   useDeleteWifiCallingServiceTemplateMutation,
   useActivateWifiCallingServiceTemplateMutation,
   useDeactivateWifiCallingServiceTemplateMutation,
-  useActivatePortalTemplateMutation
+  useActivatePortalTemplateMutation,
+  useCreateDpskTemplateWithIdentityGroupMutation
 } = servicesConfigTemplateApi
 
 

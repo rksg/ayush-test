@@ -27,7 +27,7 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
   const isGA = useIsConfigTemplateGA()
   const isExtraScope = useIsConfigTemplateExtra()
   const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
-  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_TEMPLATE)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
 
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,

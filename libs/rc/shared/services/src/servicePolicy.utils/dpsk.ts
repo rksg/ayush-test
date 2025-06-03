@@ -84,8 +84,8 @@ export function updateDpskFn (isTemplate: boolean = false) : QueryFn<DpskMutatio
   }
 }
 
-export function addDpskWithIdentityGroupFn () : QueryFn<DpskMutationResult, DpskSaveData> {
-  const api = DpskUrls
+export function addDpskWithIdentityGroupFn (isTemplate: boolean = false) : QueryFn<DpskMutationResult, DpskSaveData> {
+  const api = isTemplate ? ServicesConfigTemplateUrlsInfo :DpskUrls
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
       payload = _.omit(payload, 'identityGroupId')
@@ -99,7 +99,7 @@ export function addDpskWithIdentityGroupFn () : QueryFn<DpskMutationResult, Dpsk
       }
       const { id } = res.data as DpskMutationResult
 
-      if (enableRbac && payload!.policySetId) {
+      if (enableRbac && payload!.policySetId && !isTemplate) {
         await fetchWithBQ({
           ...createHttpRequest(api.updateDpskPolicySet, {
             serviceId: id,

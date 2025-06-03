@@ -13,6 +13,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
+  useCreateDpskTemplateWithIdentityGroupMutation,
   useCreateDpskWithIdentityGroupMutation,
   useGetDpskListQuery,
   useGetDpskQuery,
@@ -64,8 +65,10 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const { isTemplate } = useConfigTemplate()
-  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  const isIdentityGroupRequired =
+    useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+    && isIdentityGroupTemplateEnabled
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
@@ -81,7 +84,10 @@ export function DpskForm (props: DpskFormProps) {
     useMutationFn: useUpdateDpskMutation,
     useTemplateMutationFn: useUpdateDpskTemplateMutation
   })
-  const [ createDpskWithIdentityGroup ] = useCreateDpskWithIdentityGroupMutation()
+  const [ createDpskWithIdentityGroup ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateDpskWithIdentityGroupMutation,
+    useTemplateMutationFn: useCreateDpskTemplateWithIdentityGroupMutation
+  })
 
   // eslint-disable-next-line max-len
   const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>({
