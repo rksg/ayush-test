@@ -1,20 +1,23 @@
 
 import { useEffect } from 'react'
 
-import { Form, Radio, Space } from 'antd'
-import { useIntl }            from 'react-intl'
-import { useNavigate }        from 'react-router-dom'
+import { Form, Radio, Space }       from 'antd'
+import { useIntl }                  from 'react-intl'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { IDENTITY_PROVIDER_MAX_COUNT, SAML_MAX_COUNT }                            from '@acx-ui/rc/components'
 import { useGetIdentityProviderListQuery, useGetSamlIdpProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  LocationExtended,
   PolicyOperation,
   PolicyType,
   getPolicyAllowedOperation,
-  getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle
 } from '@acx-ui/rc/utils'
 import { useTenantLink }        from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
@@ -26,18 +29,13 @@ const IdentityProviderCreate = () => {
 
   const isSupportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const fromPage = (useLocation() as LocationExtended)?.state?.from
+  // eslint-disable-next-line max-len
+  const resolvedPolicyType = isCaptivePortalSsoSamlEnabled ? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER
+  const breadcrumb = usePolicyListBreadcrumb(resolvedPolicyType)
+  const pageTitle = usePolicyPageHeaderTitle(false, resolvedPolicyType)
 
-  const policiesPageLink = useTenantLink(`${getPolicyListRoutePath(true) + '/select'}`)
-
-  const identityProviderRoute = (isCaptivePortalSsoSamlEnabled)?
-    getPolicyRoutePath({
-      type: PolicyType.SAML_IDP,
-      oper: PolicyOperation.LIST
-    }) :
-    getPolicyRoutePath({
-      type: PolicyType.IDENTITY_PROVIDER,
-      oper: PolicyOperation.LIST
-    })
+  const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
 
   const createSamlIdpPath = useTenantLink('/policies/samlIdp/add')
   const createIdentityProviderPath =
@@ -55,8 +53,10 @@ const IdentityProviderCreate = () => {
 
   const handleCreateIdP = async () => {
     const type = form.getFieldValue('idpType')
-    navigate(type === PolicyType.SAML_IDP ?
-      createSamlIdpPath : createIdentityProviderPath)
+    navigate(type === PolicyType.SAML_IDP
+      ? createSamlIdpPath
+      : createIdentityProviderPath
+    , { state: { from: fromPage } })
   }
 
   const currentSamlIdpNumber = (useGetSamlIdpProfileViewDataListQuery(
@@ -96,18 +96,8 @@ const IdentityProviderCreate = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Identity Provider' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Identity Provider' }),
-            link: identityProviderRoute
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       <StepsForm
         form={form}
