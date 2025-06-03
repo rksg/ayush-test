@@ -10,9 +10,9 @@ import { useParams }                                       from '@acx-ui/react-r
 import * as UI from './styledComponents'
 
 // eslint-disable-next-line max-len
-export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerStatus[]): DonutChartData[] => {
+export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerStatus): DonutChartData[] => {
   const chartData: DonutChartData[] = []
-  const apsSummary = overviewData?.length
+  const apsSummary = overviewData?.assocVenueCount
   if (apsSummary) {
     chartData.push({
       name: 'Venues',
@@ -25,29 +25,46 @@ export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerSt
 
 export function AssociatedVenues () {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const overviewQuery = useGetIotControllerListQuery({
-    params: useParams()
+  const { availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'publicAddress',
+        'publicPort',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId], id: params.iotId }
+    }
   }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getAssociatedVenuesDonutChartData(data?.data),
-      ...rest
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item
+      })) ?? []
     })
   })
 
-  const { data } = overviewQuery
-
   return (
-    <Loader states={[overviewQuery]}>
+    <Loader states={[ { isLoading } ]}>
       <Card title={$t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' })}>
         <AutoSizer>
           {({ height, width }) => (
-            (data && data.length > 0)
+            (availableIotControllers && availableIotControllers.length > 0)
               ? <UI.Container>
                 <DonutChart
                   style={{ width, height: height - 50 }}
                   size={'medium'}
-                  data={data}/>
+                  data={getAssociatedVenuesDonutChartData(availableIotControllers[0])}/>
               </UI.Container>
               // eslint-disable-next-line max-len
               : <NoActiveData text={$t({ defaultMessage: 'No Associated <VenuePlural></VenuePlural>' })}/>

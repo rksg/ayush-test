@@ -13,6 +13,7 @@ import {
   convertEdgeSubInterfaceToApiPayload,
   edgeSerialNumberValidator,
   genExpireTimeString,
+  getEdgeAppCurrentVersions,
   getEdgeModelDisplayText,
   getEdgeServiceHealth,
   getIpWithBitMask,
@@ -1488,5 +1489,50 @@ describe('getEdgeModelDisplayText', () => {
   it('should return empty string for empty string model', () => {
     const result = getEdgeModelDisplayText('')
     expect(result).toBe('')
+  })
+})
+
+describe('getEdgeAppCurrentVersions', () => {
+  it('should return multiple versions from clusterAppVersionInfo', () => {
+    const data = {
+      clusterAppVersionInfo: [
+        { currentVersion: '1.0.0' },
+        { currentVersion: '2.0.0' },
+        { currentVersion: '' },
+        { currentVersion: '1.0.0' }
+      ]
+    }
+    expect(getEdgeAppCurrentVersions(data)).toBe('1.0.0, 2.0.0')
+  })
+  it('should return single version from clusterAppVersionInfo', () => {
+    const data = {
+      clusterAppVersionInfo: [{ currentVersion: '1.0.0' }]
+    }
+    expect(getEdgeAppCurrentVersions(data)).toBe('1.0.0')
+  })
+  it('should return NA when clusterAppVersionInfo is empty', () => {
+    const data = {
+      clusterAppVersionInfo: []
+    }
+    expect(getEdgeAppCurrentVersions(data)).toBe('NA')
+  })
+  it('should return currentVersion when clusterAppVersionInfo is not present', () => {
+    const data = {
+      currentVersion: '1.0.0'
+    }
+    expect(getEdgeAppCurrentVersions(data)).toBe('1.0.0')
+  })
+  it('should return NA when currentVersion is not present', () => {
+    const data = {}
+    expect(getEdgeAppCurrentVersions(data)).toBe('NA')
+  })
+  it('should return NA when data object is null', () => {
+    expect(getEdgeAppCurrentVersions(null)).toBe('NA')
+  })
+  it('should return NA when clusterAppVersionInfo is null', () => {
+    const data = {
+      clusterAppVersionInfo: null
+    }
+    expect(getEdgeAppCurrentVersions(data)).toBe('NA')
   })
 })

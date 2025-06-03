@@ -61,6 +61,17 @@ export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation):
   return (location as LocationExtended)?.state?.from?.pathname ?? fallbackPath
 }
 
+export function useAfterPolicySaveRedirectPath (type: PolicyType): Path | string {
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const { isTemplate } = useConfigTemplate()
+  const routeToList = useTenantLink(getPolicyRoutePath({ type, oper: PolicyOperation.LIST }))
+  const previousPath = usePolicyPreviousPath(type, PolicyOperation.LIST)
+
+  if (isNewServiceCatalogEnabled && !isTemplate) return routeToList
+
+  return isTemplate ? previousPath : routeToList
+}
+
 // eslint-disable-next-line max-len
 type AdaptivePolicyRelatedTypes = PolicyType.ADAPTIVE_POLICY | PolicyType.ADAPTIVE_POLICY_SET | PolicyType.RADIUS_ATTRIBUTE_GROUP
 export const adaptivePolicyListLabelMap: Record<AdaptivePolicyRelatedTypes, MessageDescriptor> = {
