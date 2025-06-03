@@ -48,8 +48,8 @@ export const mockImpactedSwitchesWithUnknown = {
           poeOperState: 'Enabled',
           flapVlans: '1,2,3',
           connectedDevice: {
-            name: 'Unknown',
-            type: 'Unknown'
+            port: null,
+            type: null
           }
         }]
       }]

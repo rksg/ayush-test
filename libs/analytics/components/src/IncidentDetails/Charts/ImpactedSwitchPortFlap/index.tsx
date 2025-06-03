@@ -94,7 +94,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
 function ImpactedSwitchTable (props: {
     data: ImpactedSwitchPort[]
   }) {
-  type Port = { portNumber: string; connectedDeviceName: string; connectedDevicePortType: string }
+  type Port = { portNumber: string; connectedDevicePort: string; connectedDevicePortType: string }
   const { $t } = useIntl()
   const ports = props.data
 
@@ -117,9 +117,9 @@ function ImpactedSwitchTable (props: {
       poeDetail: impactedSwitchPort.poeOperState === 'Unknown' ? '--' :
         impactedSwitchPort.poeOperState,
       vlan: formatVlans(impactedSwitchPort.flapVlans),
-      connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
-        impactedSwitchPort.connectedDevice.name,
-      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === 'Unknown' ? '--' :
+      connectedDevicePort: impactedSwitchPort.connectedDevice.port === null ? '--' :
+        impactedSwitchPort.connectedDevice.port,
+      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === null ? '--' :
         impactedSwitchPort.connectedDevice.type
     }
   })
@@ -165,12 +165,12 @@ function ImpactedSwitchTable (props: {
     sorter: { compare: sortProp('connectedDevice.type', defaultSort) },
     searchable: true
   }, {
-    key: 'connectedDeviceName',
-    dataIndex: 'connectedDeviceName',
+    key: 'connectedDevicePort',
+    dataIndex: 'connectedDevicePort',
     title: $t({ defaultMessage: 'Remote Device Port' }),
     fixed: 'left',
     width: 70,
-    sorter: { compare: sortProp('connectedDevice.name', defaultSort) },
+    sorter: { compare: sortProp('connectedDevice.port', defaultSort) },
     searchable: true
   }, {
     key: 'lastFlapTimeStamp',

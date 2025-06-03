@@ -11,8 +11,7 @@ export type ImpactedSwitchPort = {
   lastFlapTime: string
   flapVlans: string
   connectedDevice: {
-    name: string
-    mac: string
+    port: string
     type: string
   }
 }
@@ -45,8 +44,7 @@ export const api = dataApi.injectEndpoints({
                   lastFlapTime
                   flapVlans
                   connectedDevice {
-                    name
-                    mac
+                    port
                     type
                   }
                 }
