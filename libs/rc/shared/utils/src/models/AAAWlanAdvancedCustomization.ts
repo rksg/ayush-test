@@ -42,6 +42,8 @@ export class AAAWlanAdvancedCustomization {
   // Client isolation custom settings
   clientIsolationOptions: ClientIsolationOptions
 
+  clientIsolationAllowlistEnabled?: boolean | undefined
+
   // Network will not broadcast its SSID publicly, but users who know the SSID will be able to connect.
   hideSsid?: boolean
 

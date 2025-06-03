@@ -5,6 +5,7 @@ import { useIntl }                                                              
 import { useParams }                                                            from 'react-router-dom'
 
 import { Loader, Button, PasswordInput }     from '@acx-ui/components'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import {
   useGetDirectoryServerByIdQuery,
   useLazyGetDirectoryServerViewDataListQuery,
@@ -16,9 +17,12 @@ import {
   DirectoryServerProfileEnum,
   domainNameRegExp,
   DirectoryServerDiagnosisCommand,
-  DirectoryServerDiagnosisCommandEnum
+  DirectoryServerDiagnosisCommandEnum,
+  splitAttributeMappingsFromData
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
+
+import { IdentityAttributesInput } from '../../IdentityAttributesInput'
 
 import * as UI from './styledComponents'
 
@@ -58,10 +62,14 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
   let currentTestConnectionFun: ReturnType<typeof testConnectionDirectoryServer> | undefined
 
+  // eslint-disable-next-line max-len
+  const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+
   useEffect(() => {
     if (!policyId || !data) return
 
-    form.setFieldsValue(data)
+    const sourceData = splitAttributeMappingsFromData(data)
+    form.setFieldsValue(sourceData)
 
   }, [policyId, data, form])
 
@@ -315,7 +323,6 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             />
           </Col>)
         }
-
         <Col span={8} />
         <Col span={24}>
           <Space>
@@ -357,6 +364,18 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             }
           </Space>
         </Col>
+        {isSupportIdentityAttribute && <Col span={16}>
+          <IdentityAttributesInput
+            fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
+            attributeMappings={data?.attributeMappings ?? []}
+            description={
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Map user attributes from your IdP to identity attributes in RUCKUS One using the exact values from your IdP. Claim names are available in your IdP console.' })
+            }
+            readMode={readMode}
+          />
+        </Col>
+        }
       </Row>
     </Loader>
   )

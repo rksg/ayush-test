@@ -2,11 +2,11 @@ import { useContext } from 'react'
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { edgeApi }                                                                    from '@acx-ui/rc/services'
-import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                            from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                            from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                         from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                                              from '@acx-ui/rc/services'
+import { EdgeCompatibilityFixtures, EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                      from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                                                                      from '@acx-ui/test-utils'
 
 import { EditEdgeDataContext, EditEdgeDataProvider } from './EditEdgeDataProvider'
 
@@ -16,6 +16,7 @@ const {
 } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList, mockedEdgeLagList } = EdgeLagFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 describe('EditEdge - EditEdgeDataProvider', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -61,6 +62,14 @@ describe('EditEdge - EditEdgeDataProvider', () => {
       rest.get(
         EdgeUrlsInfo.getEdgeCluster.url,
         (req, res, ctx) => res(ctx.json(mockEdgeCluster))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
       )
     )
   })
@@ -83,7 +92,8 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     await waitFor(() => expect(result.current.dnsServersData?.primary).toBe('1.1.1.1'))
     await waitFor(() => expect(result.current.dnsServersData?.secondary).toBe('2.2.2.2'))
     await waitFor(() => expect(result.current.staticRouteData?.routes.length).toBe(2))
-    await waitFor(() => expect(result.current.isCluster).toBeTruthy())
+    await waitFor(() => expect(result.current.isClusterFormed).toBeTruthy())
     await waitFor(() => expect(result.current.clusterConfig?.id).toBe('clusterId_1'))
+    await waitFor(() => expect(result.current.isSupportAccessPort).toBeFalsy())
   })
 })

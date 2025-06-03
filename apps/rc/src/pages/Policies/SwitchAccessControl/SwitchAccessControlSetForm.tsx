@@ -19,10 +19,14 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MacAcl,
+  PolicyOperation,
   PolicyType,
   SwitchAccessControl,
-  usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+  useAfterPolicySaveRedirectPath,
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { SwitchLayer2ACLForm } from './SwitchLayer2/SwitchLayer2ACLForm'
 
@@ -74,10 +78,10 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const [layer2ProfileVisible, setLayer2ProfileVisible] = useState(false)
   const [layer2AclDrawerId, setLayer2AclDrawerId] = useState('')
 
-  const switchAccessControlPage = '/policies/accessControl/switch'
-  const switchAccessControlLink = useTenantLink(switchAccessControlPage)
+  const previousPath = usePolicyPreviousPath(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SWITCH_ACCESS_CONTROL)
+
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
-  breadcrumb[2].link = switchAccessControlPage
   const pageTitle = editMode ? $t({ defaultMessage: 'Edit Switch Access Control' }) :
     $t({ defaultMessage: 'Add Switch Access Control' })
 
@@ -113,7 +117,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   }, [data, layer2ProfileList])
 
   const onCancel = () => {
-    navigate(switchAccessControlLink, { replace: false })
+    navigate(previousPath, { replace: false })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,7 +167,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     } else {
       await addAccessControl({ payload }).unwrap()
     }
-    navigate(switchAccessControlLink, { replace: false })
+    navigate(redirectPathAfterSave, { replace: false })
   }
 
   return (

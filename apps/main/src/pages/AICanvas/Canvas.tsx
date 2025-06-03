@@ -55,6 +55,7 @@ export interface CardInfo {
   widgetId?: string
   chatId?: string
   canvasId?: string
+  timeRange?: string
 }
 export interface Group {
   id: string
@@ -139,15 +140,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   const [manageCanvasVisible, setManageCanvasVisible] = useState(false)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [isEditName, setIsEditName] = useState(false)
+  const [avoidRefetchCanvas, setAvoidRefetchCanvas] = useState(!!editCanvasId)
   const [visibilityType, setVisibilityType] = useState('')
   const [nameFieldError, setNameFieldError] = useState('')
+  const [canvasDisplayName, setCanvasDisplayName] = useState('')
 
   const [getCanvasById] = useLazyGetCanvasByIdQuery()
   const [createCanvas] = useCreateCanvasMutation()
   const [updateCanvas] = useUpdateCanvasMutation()
   const [patchCanvas] = usePatchCanvasMutation()
   const [form] = Form.useForm()
-  const { data: canvasList, isFetching: isCanvasFetching } = getCanvasQuery
+  const {
+    data: canvasList,
+    isFetching: isCanvasFetching,
+    isLoading: isCanvasLoading
+  } = getCanvasQuery
 
   useEffect(() => {
     if (!groups.length || !sections.length) return
@@ -185,7 +192,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }, [canvasId])
 
   useEffect(() => {
-    if(canvasList && !editCanvasId && !isCanvasFetching) {
+    if(avoidRefetchCanvas && !isCanvasLoading) {
+      setAvoidRefetchCanvas(false)
+      return
+    }
+    if(canvasList && !isCanvasFetching) {
       const newCanvasId = canvasList[0].id
       const fetchData = async () => {
         await getCanvasById({ params: { canvasId } }).unwrap().then((res)=> {
@@ -211,7 +222,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const actions = () => {
+    const actions = (isCallback?: boolean) => {
       if(e.key === 'New_Canvas') {
         onNewCanvas()
       } else if (e.key === 'Manage_Canvases') {
@@ -219,6 +230,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       } else {
         const selected = canvasList?.find(i => i.id == e.key)
         setCanvasId(selected?.id || canvasId)
+        if(isCallback){
+          setAvoidRefetchCanvas(true)
+        }
         if(canvasId == selected?.id){
           fetchCanvas()
         }
@@ -229,16 +243,22 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       checkChanges(!!canvasHasChanges, () => {
         actions()
       }, ()=>{
-        onSave(actions)
+        onSave(() => actions(true))
       })
     }
   }
 
   const patchCurrentCanvas = async (payload: { [key:string]: string|boolean }) => {
-    await patchCanvas({
-      params: { canvasId },
-      payload
-    })
+    try {
+      await patchCanvas({
+        params: { canvasId },
+        payload
+      })
+    } catch {
+      if(payload.name) {
+        setCanvasDisplayName(currentCanvas.name)
+      }
+    }
   }
 
   const handleVisibilityMenuClick: MenuProps['onClick'] = (e) => {
@@ -266,6 +286,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
 
   const setupCanvas = (response: CanvasType) => {
     setCurrentCanvas(response)
+    setCanvasDisplayName(response.name)
     setPreviewData(response)
     setVisibilityType(response.visible ? 'public' : 'private')
     if(isEditName){
@@ -371,7 +392,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const onEditCanvasName = () => {
-    form.setFieldValue('name', currentCanvas.name)
+    form.setFieldValue('name', canvasDisplayName)
     setNameFieldError('')
     setIsEditName(true)
   }
@@ -393,10 +414,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
   }
 
   const onSubmit = (value: { name:string }) => {
+    if(value.name === canvasDisplayName) {
+      onCancelEditCanvasName()
+      return
+    }
     if(checkChanges) {
+      setCanvasDisplayName(value.name)
       const payload:{ [key:string]: string } = {
         name: value.name
       }
+      onCancelEditCanvasName()
       checkChanges(!!canvasHasChanges, () => {
         patchCurrentCanvas(payload)
       }, ()=>{
@@ -452,12 +479,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
       <div className='header'>
         <Form form={form} onFinish={onSubmit} onFieldsChange={onFieldsChange}>
           {
-            currentCanvas.name && canvasList ? <>
+            canvasDisplayName && canvasList ? <>
               {
                 isEditName ? editCanvasName() :
                   <div className='title'>
                     <div className='name' onClick={onEditCanvasName}>
-                      {currentCanvas.name}
+                      {canvasDisplayName}
                     </div>
                     <Dropdown overlay={<Menu
                       onClick={handleMenuClick}
@@ -476,7 +503,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                         },
                         {
                           key: 'New_Canvas',
-                          label: $t({ defaultMessage: 'New Canvas' }),
+                          label: <>
+                            {
+                              canvasList.length >= 10 ? (
+                                <Tooltip
+                                  title={$t({ defaultMessage: 'Maximum of 10 canvases reached.' })}
+                                  placement='bottom'>
+                                  <span style={{
+                                    display: 'inline-block', width: '100%'
+                                  }}>{$t({ defaultMessage: 'New Canvas' })}</span>
+                                </Tooltip>
+                              ) : (
+                                <span>{$t({ defaultMessage: 'New Canvas' })}</span>
+                              )
+                            }
+                          </>,
                           disabled: canvasList.length >= 10
                         },
                         {
@@ -535,7 +576,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({
                   <div className='type'>
                     <span className='title'>{$t({ defaultMessage: 'Private mode' })}</span>
                     <div>
-                      {$t({ defaultMessage: `Hide this canvas from the public. 
+                      {$t({ defaultMessage: `Hide this canvas from the public.
                           The canvas will be visible to the owner only.` })}
                     </div>
                   </div>

@@ -1,18 +1,17 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }                   from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
 import { Loader, NoData, Tabs, Tooltip } from '@acx-ui/components'
-import { isMultiWanClusterPrerequisite } from '@acx-ui/edge/components'
 import { Features }                      from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }         from '@acx-ui/rc/components'
 import { EdgePort }                      from '@acx-ui/rc/utils'
 
-import { ClusterNavigateWarning, MultiWanClusterNavigateWarning } from '../ClusterNavigateWarning'
-import { EditEdgeDataContext }                                    from '../EditEdgeDataProvider'
+import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
+import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
@@ -29,18 +28,15 @@ export const SubInterfaces = () => {
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
   const {
-    clusterInfo,
     portData,
     portStatus,
     lagStatus,
     isPortDataFetching,
     isPortStatusFetching,
     isLagStatusFetching,
-    isCluster
+    isClusterFormed,
+    isSupportAccessPort
   } = useContext(EditEdgeDataContext)
-
-  // eslint-disable-next-line max-len
-  const isMutliWanClusterCondition = isEdgeDualWanEnabled && isMultiWanClusterPrerequisite(clusterInfo)
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
@@ -56,18 +52,25 @@ export const SubInterfaces = () => {
     }
   }, [portData, portStatus, lagStatus])
 
+  const disabledWholeForm = isClusterFormed || isEdgeDualWanEnabled
+
   return (
     <Loader states={[{
       isLoading: false,
       isFetching: isPortDataFetching || isPortStatusFetching || isLagStatusFetching
     }]}>
       {
-        isCluster && <ClusterNavigateWarning />
+        disabledWholeForm &&
+          <ClusterNavigateWarning
+            warningMsgDescriptor={isClusterFormed
+              ? undefined
+              : defineMessage({
+                defaultMessage: `Please go to “{redirectLink}” to modify the configurations
+                    for all nodes in this cluster ({clusterName})` })
+            }
+          />
       }
-      {
-        isMutliWanClusterCondition && <MultiWanClusterNavigateWarning />
-      }
-      <Form disabled={isCluster || isMutliWanClusterCondition}>
+      <Form disabled={disabledWholeForm}>
         {
           portData.length > 0 ?
             <Tabs
@@ -96,6 +99,7 @@ export const SubInterfaces = () => {
                         ip={item.ip!}
                         mac={item.mac}
                         portId={portId}
+                        isSupportAccessPort={isSupportAccessPort}
                       />
                     }
                     disabled={item.isLagMember}
@@ -115,6 +119,7 @@ export const SubInterfaces = () => {
                         ip={item.ip ?? ''}
                         mac={item.mac ?? ''}
                         lagId={item.lagId}
+                        isSupportAccessPort={isSupportAccessPort}
                       />
                     }
                   />

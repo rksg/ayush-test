@@ -5,15 +5,15 @@ import { useIsSplitOn, Features }                     from '@acx-ui/feature-togg
 import { AccessControlTabs as WifiAccessControlTabs } from '@acx-ui/rc/components'
 import {
   filterByAccessForServicePolicyMutation,
-  getPolicyListRoutePath,
   PortProfileTabsEnum,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  usePoliciesBreadcrumb,
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
 import { SwitchAccessControl } from '../SwitchAccessControl/index'
 
@@ -54,28 +54,35 @@ export default function AccessControl () {
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const getAddButton = () => {
-    return activeTab === PortProfileTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
-      <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
-        // eslint-disable-next-line max-len
-        to={'/policies/accessControl/create'}
-      >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
-      </TenantLink>
-    ]) : hasCrossVenuesPermission() && filterByAccess([
-      <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
-        }
-        rbacOpsIds={
-          getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
-        }
-        to={'/policies/accessControl/switch/add'}
-      >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
-      </TenantLink>
-    ])
+    return activeTab === PortProfileTabsEnum.WIFI
+      ? filterByAccessForServicePolicyMutation([
+        <TenantLink
+          scopeKey={
+            getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          rbacOpsIds={
+            getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          to={
+            getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })
+          }
+        >
+          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+        </TenantLink>
+      ])
+      : filterByAccessForServicePolicyMutation([
+        <TenantLink
+          scopeKey={
+            getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          rbacOpsIds={
+            getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
+          }
+          to={'/policies/accessControl/switch/add'}
+        >
+          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+        </TenantLink>
+      ])
   }
 
   return (
@@ -86,14 +93,7 @@ export default function AccessControl () {
             { defaultMessage: 'Access Control' }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={getAddButton()}
         footer={isSwitchMacAclEnabled && <AccessControlTabs/>}
       />

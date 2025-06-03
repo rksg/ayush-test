@@ -1,19 +1,29 @@
-import { useEffect } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { Form, Input, InputNumber, Select } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Select, Space } from 'antd'
+import { CheckboxChangeEvent }                               from 'antd/lib/checkbox'
+import { useWatch }                                          from 'antd/lib/form/Form'
+import { useIntl }                                           from 'react-intl'
 
-import { Alert, Drawer }                                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, edgePortIpValidator, generalSubnetMskRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                     from '@acx-ui/utils'
+import { Alert, Drawer }                                                                                                                                                                                      from '@acx-ui/components'
+import { Features }                                                                                                                                                                                           from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady }                                                                                                      from '@acx-ui/rc/components'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, IncompatibilityFeatures, edgePortIpValidator, generalSubnetMskRegExp, getEdgeWanInterfaceCount, serverIpAddressRegExp, validateGatewayInSubnet } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                                                                        from '@acx-ui/utils'
 
-interface StaticRoutesDrawerProps {
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
+
+interface SubInterfaceDrawerProps {
   mac: string
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: EdgeSubInterface
   handleAdd: (data: EdgeSubInterface) => Promise<unknown>
   handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
+  portId?: string
+  lagId?: number
+  allSubInterfaces?: EdgeSubInterface[]
+  isSupportAccessPort?: boolean
 }
 
 const getPortTypeOptions = () => {
@@ -31,11 +41,20 @@ const getIpModeOptions = () => {
   ]
 }
 
-const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
+const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { $t } = useIntl()
-  const { mac, visible, setVisible, data, handleAdd, handleUpdate } = props
+  const {
+    mac, visible, setVisible, data, handleAdd, handleUpdate, portId, lagId, allSubInterfaces,
+    isSupportAccessPort
+  } = props
   const [formRef] = Form.useForm()
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+  const { portData, lagData, edgeSdLanData } = useContext(EditEdgeDataContext)
+  const corePortEnabled = useWatch('corePortEnabled', formRef)
+  const accessPortEnabled = useWatch('accessPortEnabled', formRef)
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
 
   useEffect(() => {
     if(visible) {
@@ -44,10 +63,44 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     }
   }, [visible, formRef, data])
 
+  const { isPortEnabled, hasCorePort, hasAccessPort } = useMemo(() => {
+    let isPortEnabled = false
+    const hasCorePort = portData?.some(p => p.corePortEnabled) ||
+      lagData?.some(l => l.corePortEnabled) || allSubInterfaces?.some(s => s.corePortEnabled)
+    const hasAccessPort = portData?.some(p => p.accessPortEnabled) ||
+      lagData?.some(l => l.accessPortEnabled) || allSubInterfaces?.some(s => s.accessPortEnabled)
+    if(portId !== undefined) {
+      const port = portData?.find(p => p.id === portId)
+      isPortEnabled = port?.enabled ?? false
+    } else if(lagId !== undefined) {
+      const lag = lagData?.find(l => l.id === lagId)
+      isPortEnabled = lag?.lagEnabled ?? false
+    }
+    return {
+      isPortEnabled,
+      hasCorePort,
+      hasAccessPort
+    }
+  }, [portData, lagData, portId, lagId, allSubInterfaces])
+
+  const hasWanPort = getEdgeWanInterfaceCount(portData, lagData) > 0
+  const isSdLanRun = !!edgeSdLanData
+
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },
       { operation: data ? $t({ defaultMessage: 'Edit' }) :
         $t({ defaultMessage: 'Add' }) })
+  }
+
+  const getCurrentSubnetInfo = () => {
+    const { ipMode, ip, subnet } = formRef.getFieldsValue(true)
+    return { ipMode, ip, subnetMask: subnet }
+  }
+
+  const handleCorePortChange = (e: CheckboxChangeEvent) => {
+    if(!isSupportAccessPort) {
+      formRef.setFieldValue('accessPortEnabled', e.target.checked)
+    }
   }
 
   const handleClose = () => {
@@ -115,9 +168,54 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
         ) : null
       }
     </Form.Item>
+    {
+      isEdgeCoreAccessSeparationReady && <Form.Item
+        label={$t({ defaultMessage: 'Use port as…' })}
+        children={
+          <Space direction='vertical'>
+            <Form.Item
+              name='corePortEnabled'
+              valuePropName='checked'
+              noStyle
+            >
+              <Checkbox
+                children={$t({ defaultMessage: 'Core port' })}
+                onChange={handleCorePortChange}
+                disabled={
+                  !isPortEnabled || hasWanPort || (hasCorePort && !corePortEnabled) ||
+                  isSdLanRun
+                }
+              />
+            </Form.Item>
+            <Space size={0}>
+              <Form.Item
+                name='accessPortEnabled'
+                valuePropName='checked'
+                noStyle
+              >
+                <Checkbox
+                  children={$t({ defaultMessage: 'Access port' })}
+                  disabled={
+                    !isPortEnabled || hasWanPort || (hasAccessPort && !accessPortEnabled) ||
+                  isSdLanRun || !isSupportAccessPort
+                  }
+                />
+              </Form.Item>
+              <ApCompatibilityToolTip
+                title=''
+                showDetailButton
+                // eslint-disable-next-line max-len
+                onClick={() => setEdgeFeatureName(IncompatibilityFeatures.CORE_ACCESS_SEPARATION)}
+              />
+            </Space>
+          </Space>
+        }
+      />
+    }
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode}
+      shouldUpdate={(prev, cur) => prev.ipMode !== cur.ipMode ||
+        prev.accessPortEnabled !== cur.accessPortEnabled}
     >
       {({ getFieldValue }) =>
         getFieldValue('ipMode') === EdgeIpModeEnum.STATIC ? (
@@ -142,6 +240,25 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
               ]}
               children={<Input />}
             />
+            {
+              (isEdgeCoreAccessSeparationReady && getFieldValue('accessPortEnabled')) ?
+                <Form.Item
+                  name='gateway'
+                  label={$t({ defaultMessage: 'Gateway' })}
+                  validateFirst
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => serverIpAddressRegExp(value) },
+                    {
+                      validator: (_, value) => {
+                        let subnet = getCurrentSubnetInfo()
+                        return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                      }
+                    }
+                  ]}
+                  children={<Input />}
+                /> : null
+            }
           </>
         ) : null
       }
@@ -159,6 +276,13 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
         }
       ]}
       children={<InputNumber />}
+    />
+    <EdgeCompatibilityDrawer
+      visible={!!edgeFeatureName}
+      type={EdgeCompatibilityType.ALONE}
+      title={$t({ defaultMessage: 'Compatibility Requirement' })}
+      featureName={edgeFeatureName}
+      onClose={() => setEdgeFeatureName(undefined)}
     />
   </Form>
 

@@ -8,11 +8,13 @@ import { Tabs, Tooltip } from '@acx-ui/components'
 import { Features }      from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
+  EdgeClusterStatus,
   EdgeLag, EdgePort,
   EdgePortInfo,
   EdgePortWithStatus,
   getEdgePortDisplayName,
   isInterfaceInVRRPSetting,
+  SubInterface,
   validateEdgeGateway
 } from '@acx-ui/rc/utils'
 
@@ -34,32 +36,40 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
+  clusterInfo: EdgeClusterStatus
   statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
-  isCluster?: boolean
+  disabled?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
+  isSupportAccessPort?: boolean
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
   const {
     statusData,
-    lagData,
+    lagData = [],
     isEdgeSdLanRun,
     activeTab,
     onTabChange,
     fieldHeadPath = [],
-    isCluster,
+    disabled,
     formFieldsProps,
     vipConfig = [],
-    isClusterWizard
+    subInterfaceList = [],
+    isClusterWizard,
+    clusterInfo,
+    isSupportAccessPort
   } = props
   const { $t } = useIntl()
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const [currentTab, setCurrentTab] = useState<string>('')
   const form = Form.useFormInstance()
@@ -90,7 +100,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             isEdgeSdLanRun={isEdgeSdLanRun}
             statusData={portStatus}
             lagData={lagData}
-            isCluster={isCluster}
+            disabled={disabled}
+            clusterInfo={clusterInfo}
             formFieldsProps={
               {
                 ...formFieldsProps,
@@ -104,6 +115,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
                 }
               }
             }
+            subInterfaceList={subInterfaceList}
+            isSupportAccessPort={isSupportAccessPort}
           />
         )}
       </Form.List>,
@@ -135,7 +148,10 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             ? _.get(form.getFieldsValue(true), fieldHeadPath)
             : form.getFieldsValue(true)) as { [portId:string ]: EdgePort[] }
           const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-          return validateEdgeGateway(portsData, lagData ?? [], isDualWanEnabled)
+          return validateEdgeGateway(
+            portsData, lagData, subInterfaceList,
+            isDualWanEnabled, isEdgeCoreAccessSeparationReady
+          )
         } }
       ]}
       children={<input hidden/>}

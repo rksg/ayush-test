@@ -3,43 +3,67 @@ import { ApiInfo } from '@acx-ui/utils'
 export const IotUrlsInfo: { [key: string]: ApiInfo } = {
   addIotController: {
     method: 'post',
-    url: '/iots',
+    url: '/iotControllers',
     newApi: true,
-    opsApi: 'POST:/iots'
+    opsApi: 'POST:/iotControllers'
   },
   getIotController: {
     method: 'get',
-    url: '/iots/:iotId',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'GET:/iots/{id}'
+    opsApi: 'GET:/iotControllers/{id}'
   },
   updateIotController: {
     method: 'PATCH',
-    url: '/iots/:iotId',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'PATCH:/iots/{id}'
+    opsApi: 'PATCH:/iotControllers/{id}'
   },
   deleteIotController: {
     method: 'delete',
-    url: '/iots/:iotId',
+    url: '/iotControllers/:iotId',
     newApi: true,
-    opsApi: 'DELETE:/iotController/{id}'
+    opsApi: 'DELETE:/iotControllers/{id}'
   },
   getIotControllerList: {
     method: 'post',
-    url: '/iots/query',
+    url: '/iotControllers/query',
     newApi: true,
-    opsApi: 'POST:/iots/query'
+    opsApi: 'POST:/iotControllers/query'
   },
   testConnectionIotController: {
     method: 'PATCH',
-    url: '/iots/diagnosisCommands',
+    url: '/iotControllers/diagnosisCommands',
     newApi: true,
-    opsApi: 'PATCH:/iots/diagnosisCommands'
+    opsApi: 'PATCH:/iotControllers/diagnosisCommands'
+  },
+  getIotControllerSerialNumber: {
+    method: 'get',
+    url: '/iotControllers/serialNumber/:serialNumber',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/serialNumber/{id}'
+  },
+  getIotControllerVenues: {
+    method: 'get',
+    url: '/iotControllers/:iotId/venueIds',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}/venueIds'
+  },
+  getIotControllerLicenseStatus: {
+    method: 'get',
+    url: '/iotControllers/:iotId/licenseStatus',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
   },
   getIotControllerDashboard: {
     method: 'get',
     url: '/iotControllers/:iotId/dashboard',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
+  },
+  getIotControllerPlugins: {
+    method: 'get',
+    url: '/iotControllers/:iotId/plugins',
     newApi: true,
     opsApi: 'GET:/iotControllers/{id}'
   }

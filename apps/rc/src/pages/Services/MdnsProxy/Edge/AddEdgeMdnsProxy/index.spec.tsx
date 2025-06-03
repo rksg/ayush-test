@@ -134,11 +134,7 @@ describe('MdnsProxyForm', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUseNavigate).toBeCalledWith({
-      hash: '',
-      pathname: '/mock-t/t/'+expectedListPath,
-      search: ''
-    })
+    expect(mockedUseNavigate).toBeCalledWith('/mock-t/t/' + expectedListPath, { replace: true })
   })
 
   describe('API failed', () => {

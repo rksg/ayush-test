@@ -224,6 +224,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTenantAuthentications: {
     method: 'get',
     url: '/tenants/authentications',
+    opsApi: 'GET:/tenants/authentications',
     newApi: true
   },
   addTenantAuthentications: {
@@ -246,6 +247,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteTenantAuthentications: {
     method: 'delete',
     url: '/tenants/authentications/:authenticationId',
+    opsApi: 'DELETE:/tenants/authentications/{id}',
     newApi: true
   },
   // acceptRejectInvitation: {
@@ -317,6 +319,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getPrivilegeGroups: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  getPrivilegeGroupsPaginated: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups/query',
     newApi: true
   },
   getPrivilegeGroupsWithAdmins: {
@@ -426,11 +433,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updatePrivacySettings: {
     method: 'PATCH',
     url: '/tenants/privacySettings',
+    opsApi: 'PATCH:/tenants/privacySettings',
     newApi: true
   },
   deleteTenant: {
     method: 'delete',
     url: '/nuketenant/:tenantId',
+    opsApi: 'DELETE:/nuketenant/:tenantId',
     newApi: true
   }
 }

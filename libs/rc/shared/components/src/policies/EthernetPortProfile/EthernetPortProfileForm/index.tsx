@@ -3,19 +3,15 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { cloneDeep }                                                               from 'lodash'
 import { useIntl }                                                                 from 'react-intl'
-import { useLocation, useNavigate }                                                from 'react-router-dom'
+import { Path, useNavigate }                                                       from 'react-router-dom'
 
 import { Alert, PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
   WifiNetworkMessages,
   checkVlanMember,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   EthernetPortAuthType,
   EthernetPortSupplicantType,
   EthernetPortProfileMessages,
@@ -26,9 +22,11 @@ import {
   EthernetPortType,
   usePolicyListBreadcrumb,
   usePolicyPageHeaderTitle,
-  useConfigTemplate
+  useConfigTemplate,
+  usePoliciesBreadcrumb,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { EthernetPortAAASettings } from '../AAASettings/EthernetPortAAASettings'
 
@@ -68,11 +66,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   const wifiBreadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
   const switchBreadcrumb = [
-    { text: $t({ defaultMessage: 'Network Control' }) },
-    {
-      text: $t({ defaultMessage: 'Policies & Profiles' }),
-      link: getPolicyListRoutePath(true)
-    },
+    ...usePoliciesBreadcrumb(),
     {
       text: $t({ defaultMessage: 'Ethernet Port Profile' }),
       link: '/policies/portProfile/wifi'
@@ -81,15 +75,9 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const breadcrumb = (isSwitchPortProfileEnabled && !isTemplate)? switchBreadcrumb : wifiBreadcrumb
   const pageTitle = usePolicyPageHeaderTitle(isEditMode, PolicyType.ETHERNET_PORT_PROFILE)
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.ETHERNET_PORT_PROFILE,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
-  const linkToTableViewWithSwitch = useTenantLink('/policies/portProfile/wifi')
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.ETHERNET_PORT_PROFILE)
+  const previousPath = usePolicyPreviousPath(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.LIST)
 
   const handleFinish = async () => {
     try{
@@ -98,12 +86,11 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       console.log(error) // eslint-disable-line no-console
     }
 
-    handleCancel()
+    handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = () => {
-    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath,
-      isSwitchPortProfileEnabled ? linkToTableViewWithSwitch : linkToTableView)
+  const handleCancel = (prev: string | Path) => {
+    (onCancel) ? onCancel() : navigate(prev)
   }
 
   // const ethernetPortProfileListPayload = {
@@ -211,7 +198,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>

@@ -19,20 +19,22 @@ const iotControllerList = {
       id: 'bbc41563473348d29a36b76e95c50381',
       name: 'ruckusdemos',
       inboundAddress: '192.168.1.1',
-      serialNumber: 'rewqfdsafasd',
+      iotSerialNumber: 'rewqfdsafasd',
       publicAddress: 'ruckusdemos.cloud',
       publicPort: 443,
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      tenantId: '3f10af1401b44902a88723cb68c4bc77'
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      tenantId: '3f10af1401b44902a88723cb68c4bc77',
+      assocVenueId: 'db2b80ba868c419fb5c1732575160808'
     }, {
-      id: 'bbc41563473348d29a36b76e95c50382',
+      id: 'e0dfcc8c-e328-4969-b5de-10aa91b98b82',
       name: 'iotController1',
       inboundAddress: '192.168.2.21',
-      serialNumber: 'jfsdjoiasdfjo',
-      publicAddress: 'iotController1.cloud',
+      iotSerialNumber: 'jfsdjoiasdfjo',
+      publicAddress: '35.229.207.4',
       publicPort: 443,
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      tenantId: '3f10af1401b44902a88723cb68c4bc77'
+      apiToken: 'xxxxxxxxxxxxxxxxxxx',
+      tenantId: '3f10af1401b44902a88723cb68c4bc77',
+      assocVenueId: 'db2b80ba868c419fb5c1732575160808'
     }] as IotControllerStatus[]
   }
 }
@@ -70,7 +72,7 @@ describe('Iot Controller Table', () => {
       <Provider>
         <IotController />
       </Provider>, {
-        route: { params, path: '/iots/query' }
+        route: { params, path: '/:tenantId/t/devices/iotController' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

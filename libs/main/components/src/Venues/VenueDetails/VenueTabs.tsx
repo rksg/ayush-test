@@ -23,6 +23,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { isTemplate } = useConfigTemplate()
   const isCore = isCoreTier(accountTier)
   const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {
@@ -36,7 +38,6 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     skip: !enableProperty || isTemplate
   })
 
-  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
@@ -65,15 +66,20 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     })
   }
 
-  const data = props.venueDetail
+  const {
+    totalClientCount, totalApWiredClientCount, switchClients,
+    aps, switches, edges, activeNetworkCount
+  } = props.venueDetail ?? {}
+
   const [clientsCount, devicesCount, networksCount, unitCount] = [
-    (data?.totalClientCount ? Number(data.totalClientCount) : 0) +
-      (data?.switchClients?.totalCount ?? 0),
-    (data?.aps?.totalApCount ?? 0) +
-      (data?.switches?.totalCount ?? 0) +
-      (data?.edges?.totalCount ?? 0)
+    (totalClientCount ? Number(totalClientCount) : 0) +
+      ((isSupportWifiWiredClient && totalApWiredClientCount)? Number(totalApWiredClientCount) : 0) +
+      (switchClients?.totalCount ?? 0),
+    (aps?.totalApCount ?? 0) +
+      (switches?.totalCount ?? 0) +
+      (edges?.totalCount ?? 0)
       + (rwgs?.totalCount ?? 0),
-    data?.activeNetworkCount ?? 0,
+    activeNetworkCount ?? 0,
     unitQuery?.totalCount ?? 0
   ]
 

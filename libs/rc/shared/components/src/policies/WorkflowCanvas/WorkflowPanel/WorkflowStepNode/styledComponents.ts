@@ -1,4 +1,4 @@
-import { Typography }            from 'antd'
+import { Menu, Typography }      from 'antd'
 import { Popover as AntPopover } from 'antd'
 import styled                    from 'styled-components/macro'
 
@@ -188,4 +188,23 @@ export const PopoverContent = styled(Typography.Text)`
   color: var(--acx-primary-white);
   font-size: var(--acx-body-3-font-size);
   padding-bottom: 20px;
+`
+
+export const DeleteMenu = styled(Menu)`
+  .ant-menu-item:hover, .ant-menu-item-active {
+    color: var(--acx-primary-white);
+    background-color: var(--acx-neutrals-70);
+  }
+
+  .ant-menu-item {
+      line-height: 2;
+      height: auto;
+      color: var(--acx-primary-white);
+      padding: 0 0.5rem !important;
+      margin: 0 !important;
+      font-size: 12px;
+  }
+
+  padding-bottom: 0px !important;
+  user-select: none;
 `

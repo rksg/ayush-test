@@ -3,30 +3,21 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
 import type { DonutChartData }                             from '@acx-ui/components'
-import { useIotControllerDashboardQuery }                  from '@acx-ui/rc/services'
-import { IotControllerDashboard }                          from '@acx-ui/rc/utils'
+import { useGetIotControllerListQuery }                    from '@acx-ui/rc/services'
+import { IotControllerStatus }                             from '@acx-ui/rc/utils'
 import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 // eslint-disable-next-line max-len
-export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerDashboard): DonutChartData[] => {
-  const seriesMapping = [
-    { key: 'Venues',
-      name: 'Venues',
-      color: cssStr('--acx-semantics-green-50') }
-  ] as Array<{ key: string, name: string, color: string }>
+export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerStatus): DonutChartData[] => {
   const chartData: DonutChartData[] = []
-  const apsSummary = overviewData?.summary?.associatedVenues?.summary
+  const apsSummary = overviewData?.assocVenueCount
   if (apsSummary) {
-    seriesMapping.forEach(({ key, name, color }) => {
-      if (apsSummary[key]) {
-        chartData.push({
-          name,
-          value: apsSummary[key],
-          color
-        })
-      }
+    chartData.push({
+      name: 'Venues',
+      value: apsSummary,
+      color: cssStr('--acx-semantics-green-50')
     })
   }
   return chartData
@@ -34,29 +25,46 @@ export const getAssociatedVenuesDonutChartData = (overviewData?: IotControllerDa
 
 export function AssociatedVenues () {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const overviewQuery = useIotControllerDashboardQuery({
-    params: useParams()
+  const { availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'publicAddress',
+        'publicPort',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId], id: params.iotId }
+    }
   }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getAssociatedVenuesDonutChartData(data),
-      ...rest
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item
+      })) ?? []
     })
   })
 
-  const { data } = overviewQuery
-
   return (
-    <Loader states={[overviewQuery]}>
+    <Loader states={[ { isLoading } ]}>
       <Card title={$t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' })}>
         <AutoSizer>
           {({ height, width }) => (
-            (data && data.length > 0)
+            (availableIotControllers && availableIotControllers.length > 0)
               ? <UI.Container>
                 <DonutChart
                   style={{ width, height: height - 50 }}
                   size={'medium'}
-                  data={data}/>
+                  data={getAssociatedVenuesDonutChartData(availableIotControllers[0])}/>
               </UI.Container>
               // eslint-disable-next-line max-len
               : <NoActiveData text={$t({ defaultMessage: 'No Associated <VenuePlural></VenuePlural>' })}/>

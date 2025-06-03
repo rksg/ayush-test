@@ -31,6 +31,13 @@ export function networkWifiIpRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function networkWifiDualModeIpRegExp (value: string) {
+  return promiseAnyIpRegexPass([networkWifiIpRegExp(value), ipv6RegExp(value)])
+    .catch((err: Error) => {
+      return Promise.reject(err)
+    })
+}
+
 export function serverIpAddressRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
@@ -38,6 +45,32 @@ export function serverIpAddressRegExp (value: string) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
+}
+
+function promiseAnyIpRegexPass<T> (promises: Promise<T>[]): Promise<T> {
+  if (promises.length === 0) {
+    return Promise.reject(new Error('No promises found'))
+  }
+  return new Promise((resolve, reject) => {
+    const errorsMsg: Error[] = []
+    let rejectedCount = 0
+    promises.forEach(promise => {
+      promise.then(resolve, (error) => {
+        errorsMsg.push(error)
+        rejectedCount++
+        if (rejectedCount === promises.length) {
+          reject(errorsMsg[0])
+        }
+      })
+    })
+  })
+}
+
+export async function dualModeServerIpAddressRegExp (value: string) {
+  return promiseAnyIpRegexPass([serverIpAddressRegExp(value), ipv6RegExp(value)])
+    .catch((err) => {
+      return Promise.reject(err)
+    })
 }
 
 export function generalIpAddressRegExp (value: string) {
@@ -1184,7 +1217,7 @@ export function validateTags (value: string[]) {
 export function ipv6RegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/gi
+  const re = new RegExp('^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$')
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))

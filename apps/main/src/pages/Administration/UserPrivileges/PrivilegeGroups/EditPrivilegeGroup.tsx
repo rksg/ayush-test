@@ -9,7 +9,8 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -20,7 +21,7 @@ import {
   Tabs
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
+import { useGetMspEcListQuery }     from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
   useAddPrivilegeGroupMutation,
@@ -54,6 +55,7 @@ import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
 
 import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
+import { NewSelectCustomerDrawer }             from './NewSelectCustomerDrawer'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectCustomerOnlyDrawer }            from './SelectCustomerOnlyDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
@@ -138,6 +140,8 @@ export function EditPrivilegeGroup () {
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
   const [selectedRole, setCustomRole] = useState('')
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const customerListEnhancementToggle =
+      useIsSplitOn(Features.ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT)
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -160,7 +164,7 @@ export function EditPrivilegeGroup () {
       useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
   const { data: customerList } =
-      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload,
+      useGetMspEcListQuery({ params: useParams(), payload: customerListPayload,
         enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isOnboardedMsp })
 
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
@@ -309,16 +313,28 @@ export function EditPrivilegeGroup () {
     return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
       marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
-        {firstVenue.name}
+        <Typography.Text
+          title={firstVenue.name}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstVenue.name}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectVenue}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restVenue.map(venue =>
         <UI.VenueList key={venue.id}>
-          {venue.name}
+          <Typography.Text
+            title={venue.name}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {venue.name}
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }
@@ -326,25 +342,41 @@ export function EditPrivilegeGroup () {
   const DisplaySelectedCustomers = () => {
     const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
+    const firstCustomerWithVenues = `${firstCustomer.name} (${
+      intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+        { count: firstCustomer.allVenues ? 'All'
+          : firstCustomer.children?.filter(v => v.selected).length })})`
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({
-          intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-            { count: firstCustomer.allVenues ? 'All'
-              : firstCustomer.children?.filter(v => v.selected).length })
-        })
+        <Typography.Text
+          title={firstCustomerWithVenues}
+          style={{ width: '250px' }}
+          ellipsis={true}
+        >
+          {firstCustomerWithVenues}
+        </Typography.Text>
         <Button
           type='link'
-          style={{ marginLeft: '40px' }}
+          style={{ marginLeft: '20px' }}
           onClick={onClickSelectCustomer}
         >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({
-            intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
-              { count: ec.allVenues ? 'All' : ec?.children.filter(v => v.selected).length })
-          })
+          <Typography.Text
+            title={`${ec.name} (${
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.allVenues ? 'All' : ec?.children.filter(v => v.selected).length })
+            })`}
+            style={{ width: '250px' }}
+            ellipsis={true}
+          >
+            {ec.name} ({
+              intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+                { count: ec.allVenues ? 'All'
+                  : ec?.children.filter(v => v.selected).length })
+            })
+          </Typography.Text>
         </UI.VenueList>
       )}</div>
   }
@@ -649,12 +681,18 @@ export function EditPrivilegeGroup () {
         setVisible={setSelectCustomerDrawer}
         setSelected={setSelectedCustomers}
       />
-      : <SelectCustomerDrawer
-        visible={selectCustomerDrawer}
-        selected={selectedCustomers}
-        setVisible={setSelectCustomerDrawer}
-        setSelected={setSelectedCustomers}
-      />)
+      : customerListEnhancementToggle
+        ? <NewSelectCustomerDrawer
+          visible={selectCustomerDrawer}
+          selected={selectedCustomers}
+          setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}/>
+        : <SelectCustomerDrawer
+          visible={selectCustomerDrawer}
+          selected={selectedCustomers}
+          setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}
+        />)
     }
   </>)
 }

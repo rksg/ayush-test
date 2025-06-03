@@ -35,6 +35,7 @@ export enum Features {
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
+  MULTIPLE_CERTIFICATE_TEMPLATE = 'multiple-certificate-template',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
   DATA_PLANE = 'dataPlane',
@@ -71,10 +72,12 @@ export enum Features {
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
+  EDGE_CORE_ACCESS_SEPARATION_TOGGLE = 'edge-core-access-separation-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
   EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   EDGE_L2OGRE_TOGGLE = 'edge-l2ogre-toggle',
   EDGE_NETWORK_FILTER_TOGGLE = 'acx-ui-network-filter-edges-toggle',
+  EDGE_MULTI_NAT_IP_TOGGLE = 'edge-multi-nat-ip-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -104,6 +107,7 @@ export enum Features {
   INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'acx-ui-loop-detection-toggle',
   INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'acx-ui-lldp-status-toggle',
+  INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'acx-ui-port-flap-toggle',
   INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
   INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
@@ -159,6 +163,7 @@ export enum Features {
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'ruckus-ai-lldp-status-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'ruckus-ai-port-flap-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'ruckus-ai-port-congestion-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'ruckus-ai-uplink-port-congestion-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
@@ -224,6 +229,7 @@ export enum Features {
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
   WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
+  WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE='wifi-directory-profile-reuse-component-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -254,6 +260,7 @@ export enum Features {
   WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   IOT_PHASE_2_TOGGLE = 'iot-phase-2-toggle',
+  WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE = 'wifi-softgre-gateway-failback-toggle',
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
   WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
@@ -295,6 +302,7 @@ export enum Features {
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   ACX_UI_DATE_RANGE_RESET_MSG ='acx-ui-date-range-event-limit-90-days-toggle',
+  ACX_UI_REPORTS_CORE_TIER_TOGGLE = 'acx-ui-reports-core-tier-toggle',
   ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT ='acx-ui-historical-clients-date-range-limit-90-days-toggle',
   ACX_UI_MULTIPLE_AP_DHCP_MODE_WARNING ='acx-ui-multiple-ap-dhcp-mode-warning-toggle',
   VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
@@ -342,7 +350,15 @@ export enum Features {
   WIFI_AP_EXTERNAL_ANTENNA_TOGGLE = 'wifi-ap-external-antenna-toggle',
   WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
-  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle'
+  ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
+  ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
+  NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100',
+  RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
+  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
+  ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
+  ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
+  MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -361,11 +377,13 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
+  EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
   EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
-  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03'
+  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03',
+  SERVICE_CATALOG_UPDATED = 'SERVICE-CATALOG-UPDATED'
 }
 
 interface BetaList {
@@ -391,11 +409,13 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
   { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
-  { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support NAT-Traversal' }), status: false },
+  { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge NAT-T Support: Enables NAT Traversal (NAT-T) for VxLAN-GPE tunnels between RUCKUS APs and RUCKUS Edge, allowing APs located behind a NAT router to establish tunnel connections.' }), status: true },
   { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: true },
   { key: TierFeatures.EDGE_MDNS_PROXY, description: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge: RUCKUS Edge mDNS gateway enables seamless service discovery across VLANs by overcoming Bonjour/mDNS’s Layer 2 limitations. It records services and processes client requests, allowing devices to discover and access services across network segments.' }), status: true },
   { key: TierFeatures.EDGE_HQOS, description: defineMessage({ defaultMessage: 'Edge HQoS Bandwidth: RUCKUS Edge HQoS-Driven Egress Scheduling to enforce strict SLAs, intelligent bandwidth management, LLQ prioritization, and DSCP-based classification for seamless, end-to-end QoS.' }), status: true },
   { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
+  { key: TierFeatures.SERVICE_CATALOG_UPDATED, description: defineMessage({ defaultMessage: 'Service Catalog (Updated): Introduces a new layout and filtering logic for network services and policies, enabling clearer visibility and easier access to unified services for RUCKUS network deployments.' }), status: true },
+  { key: TierFeatures.EDGE_NAT_IP_POOL, description: defineMessage({ defaultMessage: 'Edge NAT IP Pool: Enables NAT IP pooling, allowing more client sessions to be supported by dynamically allocating public IP addresses from a shared pool.' }), status: false },
   { key: TierFeatures.EDGE_DUAL_WAN, description: defineMessage({ defaultMessage: 'Multi-WAN for RUCKUS Edge: RUCKUS Edge Multi-WAN enables support for two WAN links with active-backup functionality to ensure uninterrupted WAN connectivity. This feature includes monitoring mechanisms to actively check the status of the WAN links and automatically switch back to the primary active WAN link when its connection is restored.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

@@ -5,12 +5,11 @@ import { venueApi }                                                      from '@
 import {
   PropertyUrlsInfo, ServiceOperation, ServiceType, getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { Path, To }        from '@acx-ui/react-router-dom'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
@@ -27,24 +26,13 @@ import { ResidentPortalForm } from './ResidentPortalForm'
 
 
 const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/' + mockedTenantId,
-  search: '',
-  hash: ''
-}
-
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (to: To): Path => {
-    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
+    return { hash: '', search: '', pathname: to as string }
   }
 }))
-
-const { result: selectServicePath } = renderHook(() => {
-  return useTenantLink(getServiceRoutePath(
-    { type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST }))
-})
 
 describe('ResidentPortalForm', () => {
   beforeEach(async () => {
@@ -71,6 +59,10 @@ describe('ResidentPortalForm', () => {
         (req, res, ctx) => res(ctx.status(404))
       )
     )
+  })
+
+  afterEach(() => {
+    mockedUseNavigate.mockClear()
   })
 
   it('should create a Resident Portal service', async () => {
@@ -129,7 +121,7 @@ describe('ResidentPortalForm', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Resident Portals'
+      name: 'Resident Portal'
     })).toBeVisible()
   })
 
@@ -181,7 +173,10 @@ describe('ResidentPortalForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
+    expect(mockedUseNavigate).toHaveBeenCalledWith(getServiceRoutePath({
+      type: ServiceType.RESIDENT_PORTAL,
+      oper: ServiceOperation.LIST
+    }))
   })
 
 })

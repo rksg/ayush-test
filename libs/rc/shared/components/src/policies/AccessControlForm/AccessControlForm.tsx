@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl }         from 'react-intl'
+import { Path, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
@@ -16,15 +16,14 @@ import {
   AccessControlInfoType,
   AccessControlProfile,
   usePolicyPageHeaderTitle,
-  getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
   useConfigTemplateMutationFnSwitcher,
-  usePolicyListBreadcrumb, useConfigTemplate
+  usePolicyListBreadcrumb, useConfigTemplate,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
-
-import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 
 import { AccessControlSettingForm } from './AccessControlSettingForm'
 
@@ -141,15 +140,14 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const params = useParams()
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
-  // eslint-disable-next-line max-len
-  const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-  let linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+  const previousPath = usePreviousPath(isSwitchMacAclEnabled)
+  const redirectPathAfterSave = useAfterSaveRedirectPath(isSwitchMacAclEnabled)
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
@@ -186,43 +184,25 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         }).unwrap()
       }
 
-      navigate(linkToInstanceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
-  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
-  let breadcrumbWithSwitchMacAcl = [...breadcrumb]
-  if (isSwitchMacAclEnabled) {
-    // Modify the breadcrumb
-    if (breadcrumbWithSwitchMacAcl.length >= 3) {
-      breadcrumbWithSwitchMacAcl[2] = {
-        ...breadcrumbWithSwitchMacAcl[2],
-        link: 'policies/accessControl/wifi'
-      }
-    }
-
-    // Modify the linkToInstanceList to point to wifi path instead of list
-    if (typeof linkToInstanceList === 'object' && linkToInstanceList.pathname) {
-      linkToInstanceList = {
-        ...linkToInstanceList,
-        pathname: linkToInstanceList.pathname.replace('/accessControl/list', '/accessControl/wifi')
-      }
-    }
-  }
+  const breadcrumb = useBreadcrumb(isSwitchMacAclEnabled)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.ACCESS_CONTROL)
 
   return (
     <>
       <PageHeader
         title={pageTitle}
-        breadcrumb={isSwitchMacAclEnabled ? breadcrumbWithSwitchMacAcl : breadcrumb}
+        breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(linkToInstanceList, { replace: true })}
+        onCancel={() => navigate(previousPath, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
         <StepsFormLegacy.StepForm<AccessControlProfile>
@@ -234,4 +214,31 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
       </StepsFormLegacy>
     </>
   )
+}
+
+
+function useBreadcrumb (isSwitchMacAclEnabled: boolean) {
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
+  const breadcrumb = usePolicyListBreadcrumb(resolvedPolicyType)
+
+  return breadcrumb
+}
+
+function usePreviousPath (isSwitchMacAclEnabled: boolean): Path | string {
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
+
+  return usePolicyPreviousPath(resolvedPolicyType, PolicyOperation.LIST)
+}
+
+
+function useAfterSaveRedirectPath (isSwitchMacAclEnabled: boolean) {
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
+
+  return useAfterPolicySaveRedirectPath(resolvedPolicyType)
 }
