@@ -49,7 +49,7 @@ import {
   LAG_TYPE,
   sortPortFunction,
   VlanModalType,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1
+  isFirmwareVersionAbove10010gCd1Or10020bCd2
 } from '@acx-ui/rc/switch/utils'
 import {
   EditPortMessages,
@@ -647,7 +647,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         </Form.Item>
       </Col>
       { isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
-        isFirmwareVersionAbove10010gCd1Or10020bCd1(switchDetailHeader?.firmware) &&
+        isFirmwareVersionAbove10010gCd1Or10020bCd2(switchDetailHeader?.firmware) &&
         <Col
           span={10}
           flex='300px'
