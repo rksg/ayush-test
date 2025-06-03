@@ -98,6 +98,8 @@ export function IdentityGroup (props: IdentityGroupProps) {
           if (boundIdentityGroups && boundIdentityGroups.totalCount > 0) {
             form.setFieldValue('identityGroupId', boundIdentityGroups.data[0].id)
             setSelectedIdentityGroup(boundIdentityGroups.data[0])
+          } else {
+            form.setFieldValue('identityGroupId', undefined)
           }
         }
         // Only PSK and Open network can bind identity
