@@ -30,7 +30,8 @@ export enum IncompatibilityFeatures {
   ARP_TERMINATION = 'ARP_TERMINATION',
   L2OGRE = 'L2oGRE',
   DUAL_WAN = 'Dual WAN',
-  MULTI_NAT_IP = 'Multi NAT IP'
+  MULTI_NAT_IP = 'Multi NAT IP',
+  CORE_ACCESS_SEPARATION = 'Core/Access Ports Separation'
 }
 
 export enum IncompatibilityFeatureGroups {

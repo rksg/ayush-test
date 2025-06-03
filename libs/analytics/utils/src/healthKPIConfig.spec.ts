@@ -1,3 +1,6 @@
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { AccountTier }                    from '@acx-ui/utils'
+
 import { multipleBy1000, divideBy100, noFormat,
   kpisForTab, wiredKPIsForTab,
   numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
@@ -39,8 +42,18 @@ describe('Health KPI', () => {
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
   })
-  it('should return correct config for RA', () => {
-    expect(kpisForTab('true')).toMatchObject({
+  it('should return correct config without Energy Saving for RA', () => {
+    const expectedObject = {
+      overview: {
+        kpis: [
+          'connectionSuccess',
+          'timeToConnect',
+          'clientThroughput',
+          'apCapacity',
+          'apServiceUptime',
+          'onlineAPs'
+        ]
+      },
       infrastructure: {
         kpis: [
           'apServiceUptime',
@@ -50,16 +63,100 @@ describe('Health KPI', () => {
           'onlineAPs'
         ]
       }
+    }
+    // RAI with Energy Saving FF off (isProfessionalTierUser is undefined in RAI)
+    expect(kpisForTab('true', false)).toMatchObject(expectedObject)
+  })
+  it('should return correct config with Energy Saving for RA', () => {
+    // RAI with Energy Saving FF on (isProfessionalTierUser is undefined in RAI)
+    expect(kpisForTab('true', true)).toMatchObject({
+      overview: {
+        kpis: [
+          'connectionSuccess',
+          'timeToConnect',
+          'clientThroughput',
+          'apCapacity',
+          'apServiceUptime',
+          'onlineAPs',
+          'energySavingAPs'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'apServiceUptime',
+          'apToSZLatency',
+          'clusterLatency',
+          'switchPoeUtilization',
+          'onlineAPs',
+          'energySavingAPs'
+        ]
+      }
     })
   })
-  it('should return correct config for ACX', () => {
-    expect(kpisForTab(undefined)).toMatchObject({
+  it('should return correct config without Energy Saving for ACX', () => {
+    const expectedObject = {
+      overview: {
+        kpis: [
+          'connectionSuccess',
+          'timeToConnect',
+          'clientThroughput',
+          'apCapacity',
+          'apServiceUptime',
+          'onlineAPs'
+        ]
+      },
       infrastructure: {
         kpis: [
           'apServiceUptime',
           'apToSZLatency',
           'switchPoeUtilization',
           'onlineAPs'
+        ]
+      }
+    }
+
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.GOLD
+    })
+    // R1 with non professional tier with Energy Saving FF off
+    expect(kpisForTab(undefined, false)).toMatchObject(expectedObject)
+    // R1 with non professional tier with Energy Saving FF on
+    expect(kpisForTab(undefined, true)).toMatchObject(expectedObject)
+
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.PLATINUM
+    })
+    // R1 with professional tier with Energy Saving FF off
+    expect(kpisForTab(undefined, false)).toMatchObject(expectedObject)
+  })
+  // eslint-disable-next-line max-len
+  it('should return correct config with Energy Saving for ACX', () => {
+    setUserProfile({
+      ...getUserProfile(),
+      accountTier: AccountTier.PLATINUM
+    })
+    // R1 with professional tier with Energy Saving FF on
+    expect(kpisForTab(undefined, true)).toMatchObject({
+      overview: {
+        kpis: [
+          'connectionSuccess',
+          'timeToConnect',
+          'clientThroughput',
+          'apCapacity',
+          'apServiceUptime',
+          'onlineAPs',
+          'energySavingAPs'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'apServiceUptime',
+          'apToSZLatency',
+          'switchPoeUtilization',
+          'onlineAPs',
+          'energySavingAPs'
         ]
       }
     })

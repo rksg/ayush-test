@@ -7,8 +7,8 @@ import { generatePolicyListBreadcrumb, generateServiceListBreadcrumb, getPolicyR
 import { ServiceOperation, ServiceType }                                                                                                                                                 from '../../constants'
 import { PolicyOperation, PolicyType, policyTypeDescMapping }                                                                                                                            from '../../types'
 
-import { UnifiedServiceCategory, UnifiedServiceSourceType }                                                                                                                          from './constants'
-import { buildUnifiedServices, getUnifiedServiceRoute, hasUnifiedServiceCreatePermission, canCreateAnyUnifiedService, isUnifiedServiceAvailable, generateUnifiedServicesBreadcrumb } from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                                                                                                                                                 from './constants'
+import { buildUnifiedServices, getUnifiedServiceRoute, hasUnifiedServiceCreatePermission, canCreateAnyUnifiedService, isUnifiedServiceAvailable, generateUnifiedServicesBreadcrumb, collectAvailableProductsAndCategories } from './utils'
 
 const mockedHasServicePermission = jest.fn(() => true)
 const mockedHasPolicyPermission = jest.fn(() => true)
@@ -44,7 +44,7 @@ describe('utils', () => {
         searchKeywords: [defineMessage({ defaultMessage: 'AAA Keyword' })]
       }]
 
-      const result = buildUnifiedServices(input, true)
+      const result = buildUnifiedServices(input)
 
       expect(result[0].label).toBe($t(serviceTypeLabelMapping[ServiceType.DPSK]))
       expect(result[0].description).toBe($t(serviceTypeDescMapping[ServiceType.DPSK]))
@@ -154,6 +154,76 @@ describe('utils', () => {
     it('should generate My Services breadcrumb otherwise', () => {
       const breadcrumb = generateUnifiedServicesBreadcrumb()
       expect(breadcrumb[1].text).toBe('My Services')
+    })
+  })
+
+  describe('collectAvailableProductsAndCategories', () => {
+    const baseUnifiedService: UnifiedService = {
+      type: PolicyType.AAA,
+      sourceType: UnifiedServiceSourceType.POLICY,
+      label: 'RADIUS Server',
+      products: [RadioCardCategory.WIFI],
+      category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+      route: ''
+    }
+
+    it('should return empty arrays for empty services array', () => {
+      const services: UnifiedService[] = []
+      const result = collectAvailableProductsAndCategories(services)
+      expect(result.products).toEqual([])
+      expect(result.categories).toEqual([])
+    })
+
+    it('should return products and categories for single service', () => {
+      const services: UnifiedService[] = [
+        {
+          ...baseUnifiedService,
+          products: [RadioCardCategory.WIFI],
+          category: UnifiedServiceCategory.NETWORK_SERVICES
+        }
+      ]
+      const result = collectAvailableProductsAndCategories(services)
+      expect(result.products).toEqual([RadioCardCategory.WIFI])
+      expect(result.categories).toEqual([UnifiedServiceCategory.NETWORK_SERVICES])
+    })
+
+    it('should return products and categories for multiple services', () => {
+      const services: UnifiedService[] = [
+        {
+          ...baseUnifiedService,
+          products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          category: UnifiedServiceCategory.NETWORK_SERVICES
+        },
+        {
+          ...baseUnifiedService,
+          products: [RadioCardCategory.WIFI],
+          category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY
+        }
+      ]
+      const result = collectAvailableProductsAndCategories(services)
+      expect(result.products).toEqual([RadioCardCategory.WIFI, RadioCardCategory.EDGE])
+      expect(result.categories).toEqual([
+        UnifiedServiceCategory.NETWORK_SERVICES,
+        UnifiedServiceCategory.AUTHENTICATION_IDENTITY
+      ])
+    })
+
+    it('should remove duplicates from products and categories', () => {
+      const services: UnifiedService[] = [
+        {
+          ...baseUnifiedService,
+          products: [RadioCardCategory.WIFI, RadioCardCategory.WIFI],
+          category: UnifiedServiceCategory.NETWORK_SERVICES
+        },
+        {
+          ...baseUnifiedService,
+          products: [RadioCardCategory.WIFI],
+          category: UnifiedServiceCategory.NETWORK_SERVICES
+        }
+      ]
+      const result = collectAvailableProductsAndCategories(services)
+      expect(result.products).toEqual([RadioCardCategory.WIFI])
+      expect(result.categories).toEqual([UnifiedServiceCategory.NETWORK_SERVICES])
     })
   })
 })

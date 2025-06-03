@@ -25,7 +25,7 @@ export const SubTitle = styled.span`
   color: var(--acx-neutrals-70);
   font-size: var(--acx-subtitle-5-font-size);
   line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  font-weight: var(--acx-subtitle-6-font-weight);
 `
 
 export const SearchInput = styled(Input).attrs({ prefix: <SearchOutlined /> })`
@@ -532,7 +532,7 @@ export const Wrapper = styled.div<StyledTable>`
 
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
-        padding-bottom: 12px;
+        padding-bottom: 4px;
         border-bottom: 1px solid var(--acx-neutrals-30);
       }
 
