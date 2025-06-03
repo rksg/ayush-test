@@ -40,6 +40,30 @@ const params = {
   serialNumber: 'serial-number'
 }
 
+const poeSchedulerList = [{
+  poeScheduler: {
+    id: '5f47250192d3481996be93ed9a7aea6c',
+    type: 'CUSTOM',
+    mon: '000000111111111111111111',
+    tue: '000000111111111111111111',
+    wed: '000000111111111111111111',
+    thu: '000000111111111111111111',
+    fri: '000000111111111111111111',
+    sat: '000000000000000000000000',
+    sun: '000000000000000000000000'
+  } },{
+  poeScheduler: {
+    id: '4b1d4e6e7d4b4d3f8b1d4e6e7d4b4d3f',
+    type: 'CUSTOM',
+    mon: '000000111111111111111111',
+    tue: '000000111111111111111111',
+    wed: '000000111111111111111111',
+    thu: '000000111111111111111111',
+    fri: '000000111111111111111111',
+    sat: '000000000000000000000000',
+    sun: '000000000000000000000000'
+  } }]
+
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
 }))
@@ -256,6 +280,7 @@ describe('EditPortDrawer', () => {
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
               (_, res, ctx) => res(ctx.json([{
                 ...portSetting[0],
+                ...poeSchedulerList[0],
                 taggedVlans: ['2'],
                 untaggedVlan: '1'
               }, {
@@ -293,10 +318,12 @@ describe('EditPortDrawer', () => {
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
               (_, res, ctx) => res(ctx.json([{
                 ...portSetting[0],
+                ...poeSchedulerList[0],
                 taggedVlans: ['2'],
                 untaggedVlan: '1'
               }, {
                 ...portSetting[1],
+                poeScheduler: { type: 'NO_SCHEDULE' },
                 taggedVlans: ['2'],
                 untaggedVlan: '1'
               }]))
