@@ -357,7 +357,8 @@ export enum Features {
   RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
   ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
-  ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement'
+  ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
+  MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
