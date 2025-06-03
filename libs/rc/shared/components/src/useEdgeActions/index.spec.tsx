@@ -247,7 +247,7 @@ describe('Edge enabled evaluation', () => {
           ff === Features.EDGES_TOGGLE ||
           ff === Features.EDGE_DUAL_WAN_TOGGLE)
         jest.mocked(useIsTierAllowed).mockImplementation(ff =>
-          ff === TierFeatures.EDGE_MULTI_WAN)
+          ff === TierFeatures.EDGE_DUAL_WAN)
 
         const { result } = renderHook(() =>
           useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE))
@@ -258,7 +258,7 @@ describe('Edge enabled evaluation', () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.EDGES_TOGGLE)
         jest.mocked(useIsTierAllowed).mockImplementation(ff =>
-          ff === TierFeatures.EDGE_MULTI_WAN)
+          ff === TierFeatures.EDGE_DUAL_WAN)
 
         const { result } = renderHook(() =>
           useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE))
