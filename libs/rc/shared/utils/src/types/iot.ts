@@ -25,6 +25,11 @@ export interface IotControllerSetting {
   iotSerialNumber: string
 }
 
+export interface IotControllerVenues {
+  requestId: string
+  venueIds: string[]
+}
+
 export interface IotSerialNumberResult {
   requestId: string
   serialNumber: string
@@ -88,11 +93,13 @@ export interface RcapLicenseUtilizationData {
 }
 
 export enum IotControllerStatusEnum {
+  UNKNOWN = 'UNKNOWN',
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE'
 }
 
 export const IotControllerStatusMap = {
+  [IotControllerStatusEnum.UNKNOWN]: defineMessage({ defaultMessage: 'Unknown' }),
   [IotControllerStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
   [IotControllerStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Offline' })
 }
