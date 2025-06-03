@@ -1,41 +1,92 @@
-export const venueResponse = {
-  name: 'My-Venue',
-  latitude: '40.7690084',
-  longitude: '-73.9431541'
+export const portDataResponse = {
+  cloudPort: false,
+  stack: false,
+  name: 'GigabitEthernet1/1/11',
+  portId: 'c0-c5-20-aa-35-d9_1-1-11',
+  status: 'Down',
+  adminStatus: 'Up',
+  vlanIds: '1',
+  portSpeed: 'link down or no traffic',
+  poeUsed: 0,
+  poeTotal: 0,
+  signalIn: 0,
+  signalOut: 0,
+  crcErr: '0',
+  inErr: '0',
+  outErr: '0',
+  opticsType: '1 Gbits per second copper',
+  switchUnitId: 'FEK3224R0AN',
+  poeEnabled: true,
+  usedInFormingStack: false,
+  portIdentifier: '1/1/11',
+  unTaggedVlan: '1',
+  inDiscard: '0',
+  broadcastIn: '0',
+  broadcastOut: '0',
+  multicastIn: '0',
+  multicastOut: '0',
+  poeType: 'n/a',
+  switchMac: 'c0:c5:20:aa:35:d9',
+  id: 'c0-c5-20-aa-35-d9_1-1-11',
+  neighborName: '',
+  venueId: 'bde45788c8b34706b4c6507f73001540',
+  tags: '',
+  ingressAclName: '',
+  egressAclName: '',
+  vsixIngressAclName: '',
+  vsixEgressAclName: '',
+  lagName: '',
+  switchName: 'B-ICX7150-C12 Router',
+  switchSerial: 'c0:c5:20:aa:35:d9',
+  lagId: '0',
+  deviceStatus: 'ONLINE',
+  unitStatus: 'Standalone',
+  unitState: 'ONLINE',
+  switchModel: 'ICX7150-C12P',
+  neighborMacAddress: '',
+  syncedSwitchConfig: true,
+  mediaType: 'MEDIA_TYPE_EMPTY',
+  poeUsage: '0/0W (0%)',
+  errorDisableStatus: '',
+  stickyMacAclAllowCount: 0,
+  lagForceUpPort: false,
+  poeScheduleEnabled: true,
+  isPoeSupported: 'true',
+  inactiveRow: false,
+  inactiveTooltip: ''
 }
 
+export const mockScheduler = {
+  type: 'CUSTOM',
+  mon: '111111111111111111111111',
+  tue: '111111111111111111111111',
+  wed: '111111111111111111111111',
+  thu: '111111111111111111111111',
+  fri: '111111111111111111111111',
+  sat: '111111111111111111111111',
+  sun: '111111111111111111111111'
+}
 
-export const scheduleResultRAI = {
-  sun: [],
-  mon: [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-    '12', '13', '14', '15', '16', '17',
-    '18', '19', '20', '21', '22', '23'
-  ],
-  tue: [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-    '12', '13', '14', '15', '16', '17',
-    '18', '19', '20', '21', '22', '23'
-  ],
-  wed: [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-    '12', '13', '14', '15', '16', '17',
-    '18', '19', '20', '21', '22', '23'
-  ],
-  thu: [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-    '12', '13', '14', '15', '16', '17',
-    '18', '19', '20', '21', '22', '23'
-  ],
-  fri: [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-    '12', '13', '14', '15', '16', '17',
-    '18', '19', '20', '21', '22', '23'
-  ],
-  sat: []
+export const venueResponse = {
+  id: 'venue-123',
+  name: 'venue-123',
+  address: {
+    country: 'Taiwan',
+    countryCode: 'TW',
+    city: 'Wenshan District, Taipei City',
+    addressLine: 'Xinguang Rd, Wenshan District, Taipei City, Taiwan 116',
+    latitude: 24.9985635,
+    longitude: 121.5809857,
+    timezone: 'Asia/Taipei'
+  },
+  isTemplate: false,
+  isEnforced: false,
+  templateContext: 'NONE'
+}
+
+export const timezoneResponse = {
+  dstOffset: 0,
+  rawOffset: 28800,
+  timeZoneId: 'Asia/Taipei',
+  timeZoneName: 'Taipei Standard Time'
 }
