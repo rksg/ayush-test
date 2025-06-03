@@ -7,7 +7,8 @@ import {
   EdgeLag,
   EdgeNatPool,
   EdgePort,
-  EdgeStatus } from '../../types'
+  EdgeStatus,
+  SubInterface } from '../../types'
 import { convertIpToLong, countIpSize, isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 import {
