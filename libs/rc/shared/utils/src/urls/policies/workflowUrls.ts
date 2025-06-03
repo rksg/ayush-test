@@ -25,7 +25,7 @@ type WorkflowActionUrlType = 'createAction' | 'patchAction'
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
   | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
   | 'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep'
-  | 'deleteWorkflowStepAndDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
+  | 'deleteWorkflowStepDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
 
 type WorkflowActionDefinitionUrlType = 'getWorkflowActionDefinitions'
   | 'getWorkflowActionDefinitionById' | 'getWorkflowActionRequiredDefinitions'
@@ -184,7 +184,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     },
     opsApi: 'DELETE:/workflows/{id}/steps/{id}'
   },
-  deleteWorkflowStepAndDescendants: {
+  deleteWorkflowStepDescendants: {
     method: 'delete',
     url: `${WorkflowStepBaseUrl}/:stepId/descendantSteps`,
     newApi: true,

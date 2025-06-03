@@ -122,7 +122,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           const activities = [
             'UPDATE_WORKFLOW',
             'INITIATE_PUBLISH_WORKFLOW',
-            'DELETE_WORKFLOW'
+            'DELETE_WORKFLOW',
+            'CREATE_STEP',
+            'DELETE_STEP',
+            'DELETE_STEP_DESCENDENTS',
+            'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -424,9 +428,9 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       invalidatesTags: [{ type: 'Step' }]
     }),
 
-    deleteWorkflowStepAndDescendantsById: build.mutation({
+    deleteWorkflowStepDescendantsById: build.mutation({
       query: ({ params }) => {
-        return createHttpRequest(WorkflowUrls.deleteWorkflowStepAndDescendants, params)
+        return createHttpRequest(WorkflowUrls.deleteWorkflowStepDescendants, params)
       },
       invalidatesTags: [{ type: 'Step' }]
     }),
@@ -441,6 +445,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           const activities = [
             'CREATE_STEP',
             'DELETE_STEP',
+            'DELETE_STEP_DESCENDENTS',
             'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -638,7 +643,7 @@ export const {
   useLazyGetWorkflowStepsByIdQuery,
   useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation,
-  useDeleteWorkflowStepAndDescendantsByIdMutation,
+  useDeleteWorkflowStepDescendantsByIdMutation,
   useCreateSplitOptionMutation,
   useCreateWorkflowStepUnderOptionMutation,
   useGetSplitOptionsByStepIdQuery,

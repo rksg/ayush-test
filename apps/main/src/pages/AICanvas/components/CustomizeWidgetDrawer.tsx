@@ -130,7 +130,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
                 <Space>{widget.defaultTimeRange}</Space>
                 <Button type='link'
                   onClick={()=>{
-                    setEnabledReset(false)
+                    setEnabledReset(true)
                     setEnabledTimeRangeOption(true)
                   }}>
                   {$t({ defaultMessage: 'Change' })}
@@ -143,9 +143,6 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
                 children={<Select
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={timeRangeOptions}
-                  onChange={() => {
-                    setEnabledReset(true)
-                  }}
                 />}
               />
             </Form.Item>

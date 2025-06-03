@@ -214,6 +214,7 @@ display: flex;
       .newChat {
         &.disabled {
           color: var(--acx-neutrals-50);
+          cursor: not-allowed;
         }
       }
     }
@@ -353,8 +354,8 @@ display: flex;
         align-self: flex-end;
       }
       .chat-bubble {
-        background: linear-gradient(264deg, #0CC3EC -25.46%,
-           #A560FF 39.27%, #EC4C9A 88.67%, #F65650 119.35%);
+        background: linear-gradient(94deg, #E550A9 -5.07%,
+          #C54DA9 21.24%, #9355C1 49.19%, #2987DF 90.85%);
         color: var(--acx-primary-white);
         width: fit-content;
         max-width: 90%;
@@ -363,6 +364,7 @@ display: flex;
         margin: 7px;
         margin-left: 10px;
         font-weight: 600;
+        line-height: 18px;
       }
       .chat-bubble {
         align-self: flex-start;
@@ -422,7 +424,7 @@ display: flex;
         }
       }
       .timestamp {
-        color: var(--acx-neutrals-70);
+        color: var(--acx-neutrals-80);
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
@@ -543,6 +545,11 @@ export const Canvas = styled.div`
     border-bottom-right-radius: 24px;
     height: calc(100vh - 130px);
   }
+  .ant-card {
+    &:hover {
+      border: 1px solid var(--acx-neutrals-40) !important;
+    }
+  }
 `
 
 export const Visibility = styled.div`
@@ -607,6 +614,7 @@ overflow: auto;
     padding: 8px;
     border-radius: 4px;
     margin: 8px;
+    gap: 4px;
     .icon{
       cursor: pointer;
       margin: 4px;
@@ -650,8 +658,11 @@ overflow: auto;
     color: var(--acx-primary-white);
     border-radius: 0 0 4px 4px;
     opacity: 0.9;
-    pointer-events: none;
     padding: 0 5%;
+    cursor: default;
+    .slider-mark {
+      padding-bottom: 4px;
+    }
     .slider{
       cursor: pointer;
       margin: 0 min(6%, 24px);
@@ -664,6 +675,27 @@ overflow: auto;
       }
       .ant-slider-handle::before {
         display: none !important;
+      }
+      .ant-slider-step {
+        top: 3px;
+      }
+      .ant-slider-rail {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 24px;
+        width: calc(100% + 14px);
+        left: -7px;
+        top: -7px;
+        background-color: transparent;
+        &:after {
+          content: '';
+          display: block;
+          width: calc(100% - 10px);
+          height: 2px;
+          background-color: yellow;
+          background-color: var(--slider-inactive-color);
+        }
       }
       .ant-slider-dot {
         display: block;
@@ -732,7 +764,7 @@ overflow: auto;
 
 ${props => props.$type === 'pageview' && css`
   height: auto;
-  overflow: hidden;
+  overflow: visible;
   .rglb_group-item .group-item-container {
     padding: 0;
     margin: 0 -20px;
@@ -742,6 +774,7 @@ ${props => props.$type === 'pageview' && css`
 `
 
 export const Widget = styled(Card)`
+  transition: border 0.2s ease-out;
   &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;
     /* width */
@@ -883,6 +916,10 @@ export const CanvasListItem = styled(AntList.Item)`
     .button {
       margin-left: 16px;
       cursor: pointer;
+      &.disabled {
+        color: var(--acx-neutrals-50);
+        cursor: not-allowed;
+      }
     }
   }
 `
@@ -965,6 +1002,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     height: calc(80vh - 68px);
     transition: all .2s linear;  
     overflow: auto;
+    overflow-x: hidden;
     button, a {
       pointer-events: none;
     }

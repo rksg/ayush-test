@@ -6,7 +6,7 @@ import { assign, cloneDeep, find, remove, unionBy, unset } from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Drawer }                                          from '@acx-ui/components'
-import { showSdLanCaptivePortalConflictModal }             from '@acx-ui/edge/components'
+import { showSdLanNetworksTunnelConflictModal }            from '@acx-ui/edge/components'
 import { EdgeSdLanTunneledWlan, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
@@ -78,11 +78,11 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     setUpdateContent(toggleItemFromSelected(checked, venueId, data, updateContent))
   }
 
-  const checkCaptivePortalConflict = (
+  const checkNetworksTunnelConflict = (
     networkData: Network,
     tunnelProfileId: string
   ) => {
-    showSdLanCaptivePortalConflictModal({
+    showSdLanNetworksTunnelConflictModal({
       currentNetworkVenueId: venueId,
       currentNetworkId: networkData.id,
       currentNetworkName: networkData.name,
@@ -124,11 +124,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     const targetVenueData = cloneUpdateContent[venueId]
     const targetNetworkData = find(targetVenueData, { networkId: data.id })
     assign(targetNetworkData, { tunnelProfileId })
-    if(data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
-      checkCaptivePortalConflict(data, tunnelProfileId)
-    } else {
-      setUpdateContent(cloneUpdateContent)
-    }
+    checkNetworksTunnelConflict(data, tunnelProfileId)
   }
 
   const handleSubmit = async () => {

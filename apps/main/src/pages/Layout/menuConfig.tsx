@@ -27,8 +27,8 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
-import { useIsEdgeReady }  from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
+import { useIsEdgeReady }          from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -37,7 +37,8 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab,
   MigrationUrlsInfo,
-  LicenseUrlsInfo
+  LicenseUrlsInfo,
+  useIsNewServicesCatalogEnabled
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -79,7 +80,7 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
   const isCore = isCoreTier(accountTier)
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
 
   const config: LayoutProps['menuConfig'] = [

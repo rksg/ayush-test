@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { PageNotFound }                                           from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AAAForm,
   AAAPolicyDetail,
@@ -72,7 +72,8 @@ import {
   ServiceOperation,
   ServiceType,
   IdentityProviderTabType,
-  PersonaUrls
+  PersonaUrls,
+  useIsNewServicesCatalogEnabled
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -224,6 +225,7 @@ import WifiClientDetails                    from './pages/Users/Wifi/ClientDetai
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
 import { WiredClientList, WiredTabsEnum }   from './pages/Users/Wired'
+import ApWiredClientDetails                 from './pages/Users/Wired/ApWiredClientDetails'
 
 
 export default function RcRoutes () {
@@ -688,7 +690,7 @@ function ServiceRoutes () {
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -977,7 +979,7 @@ function PolicyRoutes () {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
-  const isNewServiceCatalogEnabled = useIsTierAllowed(TierFeatures.SERVICE_CATALOG_UPDATED)
+  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1159,6 +1161,11 @@ function PolicyRoutes () {
               <CreateAccessControl />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/wifi'} />}
         />
         <Route
           path='policies/accessControls/create'
@@ -1688,6 +1695,10 @@ function PolicyRoutes () {
           }
         />
         <Route
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to='policies/portProfile/wifi' />}
+        />
+        <Route
           path='policies/portProfile/:activeTab/'
           element={<PortProfile />}
         />
@@ -1872,6 +1883,10 @@ function UserRoutes () {
             element={<SwitchClientDetailsPage />} />
           <Route path='users/wired/wifi/clients'
             element={<WiredClientList tab={WiredTabsEnum.AP_CLIENTS} />} />
+          <Route path='users/wired/wifi/clients/:clientId/details'>
+            <Route path='' element={<Navigate replace to='./overview' />} />
+            <Route path=':activeTab' element={<ApWiredClientDetails />} />
+          </Route>
         </>
       }
       {(isCloudpathBetaEnabled)

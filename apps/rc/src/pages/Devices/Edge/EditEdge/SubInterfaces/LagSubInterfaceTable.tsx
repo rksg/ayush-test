@@ -19,6 +19,7 @@ interface LagSubInterfaceTableProps {
   ip: string
   mac: string
   lagId: number
+  isSupportAccessPort?: boolean
 }
 
 export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {

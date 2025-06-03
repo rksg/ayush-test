@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Col, Divider, Form, Input, Row, Select } from 'antd'
-import { useIntl }                                        from 'react-intl'
+import { Col, Divider, Form, Input, Row, Select } from 'antd'
+import { useIntl }                                from 'react-intl'
 
 import {
   useGetCertificateAuthoritiesQuery,
-  useSearchPersonaListQuery,
   useGetCertificateTemplatesQuery
 } from '@acx-ui/rc/services'
-import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
+import { CertificateTemplate } from '@acx-ui/rc/utils'
 
-import { hasCreateIdentityPermission }                        from '../../../../useIdentityGroupUtils'
-import { PersonaDrawer }                                      from '../../../../users'
+import { IdentitySelector }                                   from '../../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
 import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
 import { Description }                                        from '../../styledComponents'
@@ -24,11 +22,8 @@ export default function CertificateSettings (
   const form = Form.useFormInstance()
   const csrType = Form.useWatch('csrType', form)
   const certificateTemplateId = Form.useWatch('certificateTemplateId', form)
-
-  const [identityDrawerState, setIdentityDrawerState] = useState({
-    visible: false,
-    data: {} as Persona | undefined
-  })
+  // eslint-disable-next-line max-len
+  const [identityGroupId, setIdentityGroupId] = useState<string | undefined>(templateData?.identityGroupId)
 
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
@@ -58,21 +53,13 @@ export default function CertificateSettings (
       })
   })
 
-  const getIdentityGroupIdFromSelectTemplate: () => string | undefined = () => {
-    return certificateTemplateOptions?.find(
+  useEffect(() => {
+    const groupId = certificateTemplateOptions?.find(
       (item) => item.value === certificateTemplateId)?.groupId
-  }
-
-  const {
-    data: identityList,
-    isLoading: isIdentityLoading,
-    isFetching: isIdentityFetching
-  } = useSearchPersonaListQuery({
-    payload: {
-      page: 1, pageSize: 10000,
-      groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate()
+    if (groupId && groupId !== identityGroupId) {
+      setIdentityGroupId(groupId)
     }
-  }, { skip: (!templateData?.identityGroupId && !certificateTemplateId) || !!specificIdentity })
+  }, [certificateTemplateId, certificateTemplateOptions, identityGroupId])
 
   const csrSourceOptions = [
     { label: $t({ defaultMessage: 'Auto-Generate CSR' }), value: 'generate' },
@@ -96,7 +83,6 @@ export default function CertificateSettings (
 
   useEffect(() =>{
     form.setFieldValue('identityId', undefined)
-    setIdentityDrawerState({ visible: false, data: undefined })
   }, [certificateTemplateId])
 
   return (
@@ -121,50 +107,8 @@ export default function CertificateSettings (
       {!specificIdentity &&
         <Row align={'middle'} gutter={8}>
           <Col span={10}>
-            <Form.Item
-              name='identityId'
-              label={$t({ defaultMessage: 'Identity' })}
-              rules={[{
-                required: true
-              }]}
-            >
-              <Select
-                loading={isIdentityLoading || isIdentityFetching}
-                placeholder={$t({ defaultMessage: 'Choose ...' })}
-                options={
-                  // eslint-disable-next-line max-len
-                  identityList?.data?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
-              />
-            </Form.Item>
+            <IdentitySelector identityGroupId={identityGroupId}/>
           </Col>
-          {
-            hasCreateIdentityPermission() &&
-            <>
-              <Col span={2}>
-                <Button
-                  type='link'
-                  onClick={async () => {
-                    setIdentityDrawerState({ visible: true,
-                      // eslint-disable-next-line max-len
-                      data: { groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate() } as Persona })
-                  }}
-                  disabled={!templateData?.identityGroupId && !certificateTemplateId}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </Button>
-              </Col>
-              <PersonaDrawer
-                data={identityDrawerState.data}
-                isEdit={false}
-                visible={identityDrawerState.visible}
-                onClose={(result) => {
-                  if (result?.id) {
-                    form.setFieldValue('identityId', result?.id)
-                  }
-                  setIdentityDrawerState({ visible: false, data: undefined })
-                }} />
-            </>
-          }
         </Row>
       }
       <Row>

@@ -107,7 +107,7 @@ export function SingleRadioSettings (props:{
   const supportDfsChannels = supportRadioDfsChannels? supportRadioDfsChannels[radioType]: undefined
 
   const isSupportRadio = bandwidthOptions?.length > 0
-  const radioDataKey = (context === 'venue') ?
+  const radioDataKey = (context === 'venue' || context === 'apGroup') ?
     VenueRadioTypeDataKeyMap[radioType] : ApRadioTypeDataKeyMap[radioType]
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -147,7 +147,7 @@ export function SingleRadioSettings (props:{
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
 
-  if (context === 'venue') {
+  if (context === 'venue' || context === 'apGroup') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
     hasOutdoorBandwidth = !isEmpty(outdoor)
@@ -369,7 +369,7 @@ export function SingleRadioSettings (props:{
         : txPowerAdjustmentOptions
 
       if (isApTxPowerToggleEnabled) {
-        if (context === 'venue'
+        if ((context === 'venue' || context === 'apGroup')
           // eslint-disable-next-line max-len
           || (context === 'ap' && isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
@@ -533,7 +533,9 @@ export function SingleRadioSettings (props:{
                   { defaultMessage: 'Selected channels will be available for radio broadcasting in this {context}. Hover to see overlapping channels' },
                   { context: (context === 'venue')?
                     $t({ defaultMessage: '<venueSingular></venueSingular>' }) :
-                    $t({ defaultMessage: 'AP' })
+                    (context === 'apGroup')?
+                      $t({ defaultMessage: 'AP Group' }) :
+                      $t({ defaultMessage: 'AP' })
                   }
                 )
               }
@@ -616,11 +618,14 @@ export function SingleRadioSettings (props:{
                     style={{ height: '16px', width: '16px' }}
                   />}
                 />}
-                {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
+                {isR370Unsupported6gFeatures &&
+                <ApCompatibilityDrawer
                   visible={outdoor6gDrawerVisible}
-                  type={context === 'venue' ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                  type={(context === 'venue' || context === 'apGroup')
+                    ? ApCompatibilityType.VENUE
+                    : ApCompatibilityType.ALONE}
                   venueId={venueId}
-                  featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                  featureNames={[InCompatibilityFeatures.OUTDOOR_6G_CHANNEL]}
                   onClose={() => setOutdoor6gDrawerVisible(false)}
                 />}
               </Space>

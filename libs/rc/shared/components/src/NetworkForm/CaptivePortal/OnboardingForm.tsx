@@ -30,9 +30,6 @@ export function OnboardingForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
-      if(data.guestPortal?.redirectUrl){
-        form.setFieldValue('redirectCheckbox',true)
-      }
     }
   }, [data])
   return (<>

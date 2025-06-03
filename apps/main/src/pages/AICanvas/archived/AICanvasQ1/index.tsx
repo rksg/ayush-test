@@ -1,24 +1,46 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Divider, Form, Spin } from 'antd'
-import { debounce }            from 'lodash'
-import moment                  from 'moment'
-import { DndProvider }         from 'react-dnd'
-import { HTML5Backend }        from 'react-dnd-html5-backend'
-import { useIntl }             from 'react-intl'
-import { v4 as uuidv4 }        from 'uuid'
+import { Divider, Form, InputRef, Spin } from 'antd'
+import { debounce, difference }          from 'lodash'
+import moment                            from 'moment'
+import { DndProvider }                   from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { v4 as uuidv4 }                  from 'uuid'
 
-import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
-import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import {
+  SendMessageSolid,
+  HistoricalOutlined,
+  Plus,
+  Close
+}    from '@acx-ui/icons-new'
+import {
+  useStreamChatsAiMutation,
+  useGetAllChatsQuery,
+  useGetChatsMutation,
+  useStopChatMutation
+} from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage, RuckusAiChat } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+
+import {
+  getStreamingWordingKey,
+  StreamingMessages
+} from '../../index.utils'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
+
+
+enum MessageRole {
+  AI = 'AI',
+  SYSTEM = 'SYSTEM',
+  STREAMING = 'STATUS',
+  USER = 'USER'
+}
 
 const Message = (props:{
     chat: ChatMessage,
@@ -30,12 +52,24 @@ const Message = (props:{
   const { $t } = useIntl()
   const deletedHint = $t({ defaultMessage:
     'Older chat conversations have been deleted due to the 30-day retention policy.' })
-  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+
+  const streamingMsgKey = chat.role === MessageRole.STREAMING
+    ? getStreamingWordingKey(chat.text) : undefined
+
+  return chat.role === MessageRole.SYSTEM
+    ? <Divider plain>{deletedHint}</Divider>
     : <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+      <div className={`chat-container ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+        { chat.role !== MessageRole.STREAMING
+          // eslint-disable-next-line max-len
+          ? <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+          : <div className='chat-bubble loading' style={{ width: '90%' }}>
+            <div className='loader'></div>
+            { streamingMsgKey && $t(StreamingMessages[streamingMsgKey]) }
+          </div>
+        }
       </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+      { chat.role === MessageRole.AI && !!chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],
         sessionId,
         id: chat.id,
@@ -45,8 +79,11 @@ const Message = (props:{
       removeShadowCard={canvasRef?.current?.removeShadowCard}
       /> }
       {
-        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('hh:mm A')}
+        chat.created &&
+        <div className={`timestamp ${chat.role === MessageRole.USER ? 'right' : ''}`}>
+          { chat.created !== '-' && chat.role !== MessageRole.STREAMING
+            ? moment(chat.created).format('hh:mm A') : <>&nbsp;</>
+          }
         </div>
       }
     </div>
@@ -67,7 +104,7 @@ const Messages = memo((props:{
     text: $t({ defaultMessage:
       'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
   }
-  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef } = props
+  const { moreloading, chats, sessionId, groups, canvasRef } = props
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
@@ -79,18 +116,19 @@ const Messages = memo((props:{
     {chats?.map((i) => (
       <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef}/>
     ))}
-    {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
 
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
+  const searchInputRef = useRef<InputRef>(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
   const [form] = Form.useForm()
-  const [chatAi] = useChatAiMutation()
+  const [streamChatsAi] = useStreamChatsAiMutation()
   const [getChats] = useGetChatsMutation()
+  const [stopChat] = useStopChatMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
@@ -104,6 +142,7 @@ export default function AICanvas () {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
+  const [streamingMessageIds, setStreamingMessageIds] = useState<string[] | []>([])
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -174,14 +213,15 @@ export default function AICanvas () {
     }
   }
 
-  const getSessionChats = async (pageNum: number)=>{
+  const getSessionChats = async (pageNum: number, sessionChatId?: string)=>{
     if(pageNum ===1) {
       setIsChatsLoading(true)
     } else {
       setMoreLoading(true)
     }
+    const id: string = sessionChatId || sessionId
     const response = await getChats({
-      params: { sessionId },
+      params: { sessionId: id },
       payload: {
         page: pageNum,
         pageSize: 100,
@@ -207,50 +247,127 @@ export default function AICanvas () {
       handleSearch()
     }
   }
+
+  const handlePollStreaming = async (sessionId: string, streamMessageIds: string[]) => {
+    try {
+      const streamingResponse = await getChats({
+        params: { sessionId },
+        payload: {
+          page: 1,
+          pageSize: 100,
+          sortOrder: 'DESC'
+        }
+      }).unwrap()
+
+      const streamingMessageIds = streamingResponse.data
+        .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+      const successedStreamIds = difference(streamMessageIds, streamingMessageIds)
+
+      if (!!streamingMessageIds.length) {
+        await new Promise(res => setTimeout(res, 300))
+        setChats([...streamingResponse.data].reverse())
+        await handlePollStreaming(sessionId, streamMessageIds)
+      } else {
+        if(streamingResponse) {
+          const tempChats = streamingResponse.data.map(msg => {
+            if (successedStreamIds.includes(msg.id)) {
+              return {
+                ...msg,
+                role: MessageRole.STREAMING,
+                text: '5'
+              }
+            }
+            return msg
+          })
+          setChats(tempChats.reverse())
+          setTimeout(()=>{
+            setChats([...streamingResponse.data].reverse())
+            setTotalPages(streamingResponse.totalPages)
+            setPage(1)
+          }, 500)
+        }
+        setAiBotLoading(false)
+        setStreamingMessageIds([])
+      }
+    } catch (error) {
+      console.error(error) // eslint-disable-line no-console
+      setAiBotLoading(false)
+      setStreamingMessageIds([])
+      getSessionChats(1, sessionId)
+    }
+  }
+
   const handleSearch = async (suggestion?: string) => {
     if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
     let question = suggestion || searchText
     question = question.replaceAll('\n', '<br/>')
     const newMessage = {
       id: uuidv4(),
-      role: 'USER',
+      created: '-',
+      role: MessageRole.USER,
       text: question
     }
-    setChats([...chats, newMessage])
+    const fakeInitStreamingMessage = {
+      id: uuidv4(),
+      created: '-',
+      role: MessageRole.STREAMING,
+      text: '0'
+    }
+    setChats([...chats, newMessage, fakeInitStreamingMessage])
     setAiBotLoading(true)
     setSearchText('')
     form.setFieldValue('searchInput', '')
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    await chatAi({
+    await streamChatsAi({
       customHeaders: { timezone },
       payload: {
         question,
         pageSize: 100,
         ...(sessionId && { sessionId })
       }
-    })
-      .then(({ data: response, error })=>{
-        if(error) {
-          getSessionChats(1)
-        } else {
-          if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-        || !historyData?.length){
-            getAllChatsQuery.refetch()
-          }
-          if(sessionId && isNewChat) {
-            setIsNewChat(false)
-          }
-          if(response) {
-            if(response.sessionId && !sessionId) {
-              setSessionId(response.sessionId)
-            }
-            setChats([...response.messages].reverse())
-            setTotalPages(response.totalPages)
-            setPage(1)
-          }
+    }).then(async ({ data, error })=>{
+      if(error) {
+        getSessionChats(1)
+      } else {
+        const response = data as RuckusAiChat
+        if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+      || !historyData?.length){
+          getAllChatsQuery.refetch()
         }
-        setAiBotLoading(false)
-      })
+        if(sessionId && isNewChat) {
+          setIsNewChat(false)
+        }
+        if(response) {
+          if(response.sessionId && !sessionId) {
+            setSessionId(response.sessionId)
+          }
+          const startStreamingIds = response?.messages
+            .filter(msg => msg.role === MessageRole.STREAMING).map(msg => msg.id)
+
+          setStreamingMessageIds(startStreamingIds)
+          await handlePollStreaming(response.sessionId, startStreamingIds)
+        }
+      }
+    })
+  }
+
+  const handleStop = async () => {
+    const [messageId] = streamingMessageIds
+    if (messageId) {
+      try {
+        await stopChat({
+          params: { sessionId, messageId },
+          payload: {
+            page: 1,
+            pageSize: 100,
+            sortOrder: 'DESC'
+          }
+        }).unwrap()
+        searchInputRef.current?.focus()
+      } catch (error) {
+        // console.error(error) // eslint-disable-line no-console
+      }
+    }
   }
 
   const onClickClose = () => {
@@ -320,6 +437,8 @@ export default function AICanvas () {
     setChats([])
   }
 
+  const isStopAllowed = aiBotLoading && !!streamingMessageIds.length
+
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
@@ -384,6 +503,7 @@ export default function AICanvas () {
                       <Form.Item
                         name='searchInput'
                         children={<UI.Input
+                          ref={searchInputRef}
                           autoFocus
                           maxLength={maxSearchTextNumber}
                           data-testid='search-input'
@@ -398,12 +518,14 @@ export default function AICanvas () {
                       searchText.length > 0 && <div className='text-counter'>
                         {searchText.length + '/' + maxSearchTextNumber}</div>
                     }
-                    <Button
-                      data-testid='search-button'
-                      icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading || searchText.length <= 1}
-                      onClick={()=> { handleSearch() }}
-                    />
+                    <Tooltip title={isStopAllowed ? $t({ defaultMessage: 'Stop generating' }) : ''}>
+                      <UI.SearchButton
+                        data-testid='search-button'
+                        icon={aiBotLoading ? <UI.StopIcon /> : <SendMessageSolid />}
+                        disabled={aiBotLoading ? !isStopAllowed : searchText.length <= 1}
+                        onClick={()=> { aiBotLoading ? handleStop() : handleSearch() }}
+                      />
+                    </Tooltip>
                   </div>
                 </div>
               </Loader>

@@ -1,9 +1,9 @@
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { renderHook }                     from '@acx-ui/test-utils'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { renderHook }       from '@acx-ui/test-utils'
 
 import { ServiceOperation, ServiceType } from '../../constants'
 
-import { getServiceListRoutePath, getServiceRoutePath, useServiceListBreadcrumb, useServicePageHeaderTitle } from '.'
+import { getServiceListRoutePath, getServiceRoutePath, useAfterServiceSaveRedirectPath, useServiceListBreadcrumb, useServicePageHeaderTitle } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
@@ -12,17 +12,21 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedLocationFrom = { pathname: '/test' }
+const generalPreviousPath = '/test'
+const mockedLocationFrom = { pathname: generalPreviousPath }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useLocation: () => ({ state: { from: mockedLocationFrom } })
+  useLocation: () => ({ state: { from: mockedLocationFrom } }),
+  useTenantLink: (path: string) => path
 }))
 
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
+const mockedUseIsNewServicesCatalogEnabled = jest.fn(() => false)
 jest.mock('../unifiedServices', () => ({
   ...jest.requireActual('../unifiedServices'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  generateUnifiedServicesBreadcrumb: (from: any) => mockedGenerateUnifiedServicesBreadcrumb(from)
+  generateUnifiedServicesBreadcrumb: (from: any) => mockedGenerateUnifiedServicesBreadcrumb(from),
+  useIsNewServicesCatalogEnabled: () => mockedUseIsNewServicesCatalogEnabled()
 }))
 
 describe('servicePageUtils', () => {
@@ -34,6 +38,7 @@ describe('servicePageUtils', () => {
   afterEach(() => {
     mockedUseConfigTemplate.mockRestore()
     mockedGenerateUnifiedServicesBreadcrumb.mockClear()
+    mockedUseIsNewServicesCatalogEnabled.mockRestore()
   })
 
   it('should generate Service PageHeader Title correctly', () => {
@@ -71,12 +76,39 @@ describe('servicePageUtils', () => {
   })
 
   it('useServiceListBreadcrumb when isNewServiceCatalogEnabled is true', () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.SERVICE_CATALOG_UPDATED)
+    mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
 
     renderHook(() => useServiceListBreadcrumb(ServiceType.DPSK))
 
     // eslint-disable-next-line max-len
     expect(mockedGenerateUnifiedServicesBreadcrumb).toHaveBeenCalledWith(mockedLocationFrom)
+  })
+
+  describe('useAfterServiceSaveRedirectPath', () => {
+    it('should return routeToList when isTemplate is false', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      // eslint-disable-next-line max-len
+      const routeToList = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+
+      const { result } = renderHook(() =>
+        useAfterServiceSaveRedirectPath(ServiceType.DPSK)
+      )
+
+      expect(result.current).toBe(routeToList)
+    })
+
+    it('should return previousPath when isTemplate is true', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() =>
+        useAfterServiceSaveRedirectPath(ServiceType.DPSK)
+      )
+
+      expect(result.current).toEqual({
+        hash: '',
+        search: '',
+        pathname: generalPreviousPath
+      })
+    })
   })
 })

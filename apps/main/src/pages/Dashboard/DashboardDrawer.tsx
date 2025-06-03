@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import { Dropdown, Menu, MenuProps, Tooltip, Space }   from 'antd'
+import { Dropdown, Menu, MenuProps, Space }            from 'antd'
 import moment                                          from 'moment-timezone'
 import { DndProvider, useDrag, useDragLayer, useDrop } from 'react-dnd'
 import { HTML5Backend }                                from 'react-dnd-html5-backend'
 import { IntlShape, useIntl }                          from 'react-intl'
 
-import { Button, Drawer }            from '@acx-ui/components'
+import { Button, Drawer, Tooltip }   from '@acx-ui/components'
 import { MoveSolid, PentagramSolid } from '@acx-ui/icons'
 import {
   AccountCircleSolid,
@@ -24,8 +24,8 @@ import { noDataDisplay } from '@acx-ui/utils'
 import { ItemTypes }         from '../AICanvas/components/GroupItem'
 import { MAXIMUM_DASHBOARD } from '../AICanvas/index.utils'
 
-import { formatDashboardList } from './index.utils'
-import * as UI                 from './styledComponents'
+import { formatDashboardList, DashboardMessages } from './index.utils'
+import * as UI                                    from './styledComponents'
 
 
 type ListItemProps = {
@@ -148,7 +148,9 @@ const getItemInfo = (props: {
     <div className={`mark ${item?.isLanding ? 'star' : 'move'}`}>{
       item?.isLanding
       // eslint-disable-next-line max-len
-        ? <Tooltip title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}>
+        ? <Tooltip
+          title={$t({ defaultMessage: 'This dashboard is set as my account\'s landing page.' })}
+        >
           <PentagramSolid />
         </Tooltip>
         : <MoveSolid />
@@ -169,8 +171,15 @@ const getItemInfo = (props: {
           moment(item.updatedDate).format('YYYY/MM/DD')
         }</span> }
         { item.authorId && <span className='author'>
-          <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
-          <span className='name' title={authorName}>{ authorName }</span>
+          <Tooltip
+            title={$t(DashboardMessages.authorTooltip)}
+            placement='bottom'
+          >
+            <AccountCircleSolid size='sm' style={{ marginRight: '4px' }} />
+          </Tooltip>
+          <Tooltip title={authorName} placement='bottom'>
+            <span className='name'>{ authorName }</span>
+          </Tooltip>
         </span>
         }
       </div>}
@@ -181,10 +190,11 @@ const getItemInfo = (props: {
         key='actionMenu'
         trigger={['click']}
       >
-        <MoreVertical
-          size='sm'
+        <Button
           data-testid='dashboard-more-btn'
-        // onClick={(e) => e.stopPropagation()}
+          type='link'
+          size='small'
+          icon={<MoreVertical size='sm' />}
         />
       </Dropdown>
     </div>}
@@ -196,7 +206,6 @@ export const DashboardDrawer = (props: {
   visible: boolean
   onClose: () => void
   onNextClick: (visible: boolean) => void
-  setPreviewId: (id: string) => void,
   handleOpenPreview: (data: DashboardInfo[]) => void
   handleOpenCanvas: (id?: string) => void
 }) => {
@@ -239,7 +248,6 @@ export const DashboardDrawer = (props: {
       default: // view
         const previewDashboard = dashboardList.filter(item => item.id === id)
         props.handleOpenPreview(previewDashboard)
-        props.setPreviewId(id)
         break
     }
   }

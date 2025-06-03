@@ -170,17 +170,23 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
-      if (selectedDashboard) {
-        const { canvasId, sections, groups } = getCanvasData(
-          selectedDashboard as unknown as Canvas[]
-        )
-        if (canvasId && sections) {
-          setCanvasId(canvasId)
-          setSections(sections)
-          setGroups(groups)
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardList.length) {
+      if (dashboardId !== DEFAULT_DASHBOARD_ID) {
+        const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
+        if (selectedDashboard) {
+          const { canvasId, sections, groups } = getCanvasData(
+            selectedDashboard as unknown as Canvas[]
+          )
+          if (canvasId && sections) {
+            setCanvasId(canvasId)
+            setSections(sections)
+            setGroups(groups)
+          }
         }
+      } else if (canvasId) {
+        setCanvasId('')
+        setSections([])
+        setGroups([])
       }
     }
   }, [dashboardId, dashboardList])
@@ -230,13 +236,13 @@ function DashboardPageHeader (props: {
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
-  const [previewId, setPreviewId] = useState('')
   const [previewData, setPreviewData] = useState([] as Canvas[])
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [dashboardDrawerVisible, setDashboardDrawerVisible] = useState(false)
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
   const [patchDashboard] = usePatchDashboardMutation()
+  const isInitDashboardCheckedRef = useRef<boolean | undefined>(false)
   const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
@@ -326,8 +332,21 @@ function DashboardPageHeader (props: {
   }, [])
 
   useEffect(() => {
+    if (dashboardId && dashboardList.length && !isInitDashboardCheckedRef.current) {
+      const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+      if (currentDashboard && hasDashboardChanged(currentDashboard)) {
+        shouldCleanupDashboardIdRef.current = dashboardId
+      }
+      isInitDashboardCheckedRef.current = true
+    }
+  }, [dashboardId])
+
+  useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
+
+  const hasDashboardChanged = (dashboard?: DashboardInfo) =>
+    !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
 
   const handleClearNotifications = async (value: string) => {
     await patchDashboard({
@@ -339,13 +358,10 @@ function DashboardPageHeader (props: {
   const handleChangeDashboard = async (value: string) => {
     const currentDashboard = dashboardList.find(item => item.id === dashboardId)
     const newDashboard = dashboardList.find(item => item.id === value)
-    const hasDiff = (dashboard?: DashboardInfo) =>
-      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
-
-    if (currentDashboard && hasDiff(currentDashboard)) {
+    if (currentDashboard && hasDashboardChanged(currentDashboard)) {
       handleClearNotifications(currentDashboard.id)
     }
-    if (newDashboard && hasDiff(newDashboard)) {
+    if (newDashboard && hasDashboardChanged(newDashboard)) {
       shouldCleanupDashboardIdRef.current = value
     }
     setDashboardId(value)
@@ -441,13 +457,13 @@ function DashboardPageHeader (props: {
           maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
+      style={{ marginBottom: '12px' }}
     />
 
     { isDashboardCanvasEnabled && <>
       <DashboardDrawer
         data={dashboardList}
         visible={dashboardDrawerVisible}
-        setPreviewId={setPreviewId}
         handleOpenPreview={handleOpenPreview}
         handleOpenCanvas={handleOpenCanvas}
         onClose={() => {
@@ -480,7 +496,6 @@ function DashboardPageHeader (props: {
 
       <PreviewDashboardModal
         data={previewData}
-        previewId={previewId}
         visible={previewModalVisible}
         setVisible={setPreviewModalVisible}
         DefaultDashboard={DefaultDashboard}
@@ -759,7 +774,7 @@ function CanvasDashboard (props: {
   }, [menuCollapsed])
 
   return <DndProvider backend={HTML5Backend}>
-    <div className='grid'>
+    <div className='grid' style={{ marginTop: '-10px' }}>
       <CanvasUI.Grid $type='pageview'>
         <Layout
           readOnly={true}
