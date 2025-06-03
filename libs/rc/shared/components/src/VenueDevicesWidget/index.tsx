@@ -38,8 +38,27 @@ export function VenueDevicesWidget () {
     { skip: !(showRwgUI && rwgHasPermission) })
 
   const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
-  const { data: iotControllers } = useGetIotControllerListQuery({ params: useParams() },
-    { skip: !(showIotControllerUI) })
+
+  const { data: iotControllers } =
+    useGetIotControllerListQuery({
+      payload: {
+        fields: [
+          'id',
+          'name',
+          'inboundAddress',
+          'publicAddress',
+          'publicPort',
+          'apiToken',
+          'tenantId',
+          'status',
+          'assocVenueCount'
+        ],
+        pageSize: 10,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters: { tenantId: [params.tenantId], venueId: [params.venueId] }
+      }
+    }, { skip: !showIotControllerUI })
 
   useTrackLoadTime({
     itemName: widgetsMapping.VENUE_DEVICES_WIDGET,
