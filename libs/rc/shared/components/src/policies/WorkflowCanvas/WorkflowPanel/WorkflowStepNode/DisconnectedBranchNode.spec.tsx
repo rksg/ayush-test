@@ -1,13 +1,11 @@
 import { NodeProps, ReactFlowProvider } from 'reactflow'
 
-import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { ActionType, WorkflowStep } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { render, screen }    from '@acx-ui/test-utils'
+import { Provider }                 from '@acx-ui/store'
+import { render, screen }           from '@acx-ui/test-utils'
 
 import DisconnectedBranchNode from './DisconnectedBranchNode'
-
-const child = <div data-testid={'expectedChild'} />
 
 const mockNodeProps: NodeProps<WorkflowStep> = {
   id: 'mock-step-id',
@@ -15,24 +13,6 @@ const mockNodeProps: NodeProps<WorkflowStep> = {
   data: {
     enrollmentActionId: 'mock-enrollment-action-id',
     actionType: ActionType.AUP
-  } as WorkflowStep,
-  selected: false,
-  dragging: false,
-  zIndex: 0,
-  isConnectable: false,
-  xPos: 0,
-  yPos: 0
-}
-
-const mockInvalidNodeProps: NodeProps<WorkflowStep> = {
-  id: 'mock-step-id',
-  type: 'AUP' as ActionType,
-  data: {
-    enrollmentActionId: 'mock-enrollment-action-id',
-    actionType: ActionType.AUP,
-    status: 'INVALID',
-    statusReasons: [{ statusCode: 'multiple.onboarding.steps',
-      statusReason: 'Test Status Reason 1234' }]
   } as WorkflowStep,
   selected: false,
   dragging: false,

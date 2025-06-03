@@ -230,16 +230,15 @@ function addParentNode (firstStepId: string,
 
   // Calculate the height of the parent node based on the number of nodes it will contain
   // height = number of nodes (64) + number of edges (46)
-  let height = 0
+  let height = 64 // 64 to account for the first step
   if (firstStep.nextStepId) {
     let nextNode = stepMap.get(firstStep.nextStepId)
     while(nextNode) {
-      if(!nextNode.isEnd || !nextNode.isStart) {
+      if(nextNode.type !== StepType.End && nextNode.type !== StepType.Start) {
         height += 64 + 46
       }
       nextNode = nextNode.nextStepId ? stepMap.get(nextNode.nextStepId) : undefined
     }
-    height -= 46 // remove the height of an edge since we added an extra one
   }
 
   nodes.push({

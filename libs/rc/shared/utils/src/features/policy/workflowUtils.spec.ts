@@ -2,7 +2,7 @@ import { Edge, Node } from 'reactflow'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { ActionType, WorkflowPanelMode, WorkflowStep } from '../../types'
+import { ActionType, StepStatusCodes, WorkflowPanelMode, WorkflowStep } from '../../types'
 
 import {
   AupActionDefaultValue,
@@ -95,6 +95,24 @@ const mockDisconnectedSteps: WorkflowStep[] = [
   }
 ]
 
+const mockSimpleDisconnectedSteps: WorkflowStep[] = [
+  {
+    id: 'step-1a',
+    actionDefinitionId: 'definition-id-3',
+    enrollmentActionId: 'enrollment-id-1',
+    nextStepId: 'step-1b',
+    actionType: ActionType.AUP
+  },
+  {
+    id: 'step-2a',
+    actionDefinitionId: 'definition-id-3',
+    enrollmentActionId: 'enrollment-id-1',
+    nextStepId: 'step-2b',
+    actionType: ActionType.DATA_PROMPT,
+    statusReasons: [{ statusCode: StepStatusCodes.DisconnectedStep, statusReason: 'test' }]
+  }
+]
+
 
 describe('WorkflowUtils', () => {
   it('should handle toStepMap correctly', () => {
@@ -158,6 +176,29 @@ describe('WorkflowUtils', () => {
     expect(result.checkboxHighlightColor).toBe(AupActionDefaultValue.checkboxHighlightColor)
   })
 
+
+  it('should handle composeNext with parent correctly', () => {
+    const targetNodes: Node<WorkflowStep, ActionType>[] = []
+    const targetEdges: Edge[] = []
+    const testParentId = 'test-subflow-node-id'
+    const testZIndex = 1234
+    composeNext(
+      WorkflowPanelMode.Default,
+      findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
+      toStepMap(mockReverseOrderSteps),
+      testParentId,
+      targetNodes, targetEdges, 0, 0, testZIndex
+    )
+
+    expect(targetNodes).toHaveLength(3)
+    expect(targetEdges).toHaveLength(2)
+
+    const firstNode = targetNodes[0]
+    expect(firstNode.parentNode).toBe(testParentId)
+    expect(firstNode.extent).toBe('parent')
+    expect(firstNode.zIndex).toBe(testZIndex)
+  })
+
   it('should handle composeNext correctly', () => {
     const targetNodes: Node<WorkflowStep, ActionType>[] = []
     const targetEdges: Edge[] = []
@@ -171,6 +212,11 @@ describe('WorkflowUtils', () => {
 
     expect(targetNodes).toHaveLength(3)
     expect(targetEdges).toHaveLength(2)
+
+    const firstNode = targetNodes[0]
+    expect(firstNode.parentNode).toBe(undefined)
+    expect(firstNode.extent).toBe(undefined)
+    expect(firstNode.zIndex).toBe(1000)
   })
 
   it('should handle composeNext with empty input correctly', () => {
@@ -208,6 +254,30 @@ describe('WorkflowUtils', () => {
     })
     expect(result.nodes.map(n => n.type))
       .toEqual([ActionType.AUP, ActionType.DISPLAY_MESSAGE, ActionType.DATA_PROMPT])
+
+    expect(result.edges).toHaveLength(2)
+  })
+
+  it('should handle toReactFlowData correctly with disconnected branch', () => {
+    const result = toReactFlowData(mockSimpleDisconnectedSteps, WorkflowPanelMode.Design)
+
+    expect(result.nodes).toHaveLength(3)
+    // Make sure the ordering of Nodes
+
+    expect(result.nodes[0].id).toBe(mockSimpleDisconnectedSteps[0].id)
+    expect(result.nodes[0].data.mode).toBe(WorkflowPanelMode.Design)
+    expect(result.nodes[0].type).toBe(ActionType.AUP)
+
+    expect(result.nodes[1].id).toBe(mockSimpleDisconnectedSteps[1].id + 'parent')
+    expect(result.nodes[1].type).toBe('DISCONNECTED_BRANCH')
+    expect(result.nodes[1].style?.width).toBe('260px')
+    expect(result.nodes[1].style?.height).toBe(104)
+
+    expect(result.nodes[2].id).toBe(mockSimpleDisconnectedSteps[1].id)
+    expect(result.nodes[2].data.mode).toBe(WorkflowPanelMode.Design)
+    expect(result.nodes[2].type).toBe(ActionType.DATA_PROMPT)
+    expect(result.nodes[2].position.x).toBe(20)
+    expect(result.nodes[2].position.y).toBe(20)
 
     expect(result.edges).toHaveLength(2)
   })
