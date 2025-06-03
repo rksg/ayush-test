@@ -1,5 +1,8 @@
 import {
   networkWifiIpRegExp,
+  networkWifiDualModeIpRegExp,
+  serverIpAddressRegExp,
+  dualModeServerIpAddressRegExp,
   domainNameRegExp,
   passphraseRegExp,
   checkObjectNotExists,
@@ -47,6 +50,55 @@ describe('validator', () => {
     })
     it('Should display error message if ip address values incorrectly', async () => {
       const result = networkWifiIpRegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('dualModeIpRegExp', () => {
+    it('Should take care of ipv4 address values correctly', async () => {
+      const result = networkWifiDualModeIpRegExp('111.111.111.111')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of ipv6 address values correctly', async () => {
+      const result = networkWifiDualModeIpRegExp('2001:db8:3333:4444:5555:6666:7777:8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if ipv4 address values incorrectly', async () => {
+      const result = networkWifiIpRegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid IP address')
+    })
+    it('Should display error message if ipv6 address values incorrectly', async () => {
+      const result = networkWifiIpRegExp('127::0::1')
+      await expect(result).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('serverIpRegExp', () => {
+    it('Should take care of ipv4 address values correctly', async () => {
+      const result = serverIpAddressRegExp('111.111.111.111')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if ipv4 address values incorrectly', async () => {
+      const result = serverIpAddressRegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('dualModelServerIpRegExp', () => {
+    it('Should take care of ipv4 address values correctly', async () => {
+      const result = serverIpAddressRegExp('111.111.111.111')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of ipv6 address values correctly', async () => {
+      const result = dualModeServerIpAddressRegExp('2001:db8:3333:4444:5555:6666:7777:8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if ipv4 address values incorrectly', async () => {
+      const result = serverIpAddressRegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid IP address')
+    })
+    it('Should display error message if ipv6 address values incorrectly', async () => {
+      const result = dualModeServerIpAddressRegExp('127::0::1')
       await expect(result).rejects.toEqual('Please enter a valid IP address')
     })
   })

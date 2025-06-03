@@ -108,6 +108,7 @@ export enum Features {
   INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'acx-ui-loop-detection-toggle',
   INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'acx-ui-lldp-status-toggle',
+  INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'acx-ui-port-flap-toggle',
   INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
   INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
@@ -163,6 +164,7 @@ export enum Features {
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'ruckus-ai-lldp-status-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_PORT_FLAP_TOGGLE = 'ruckus-ai-port-flap-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'ruckus-ai-port-congestion-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'ruckus-ai-uplink-port-congestion-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
@@ -350,9 +352,14 @@ export enum Features {
   WORKFLOW_ENHANCED_VALIDATION_ENABLED = 'workflow-enhanced-validation-enabled',
   WIFI_EDA_IP_MODE_CONFIG_TOGGLE = 'wifi-eda-ip-mode-config-toggle',
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
-  NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
-  SSO_GROUP_LIMIT100 = 'sso-group-limit100'
+  NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
+  SSO_GROUP_LIMIT100 = 'sso-group-limit100',
+  RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
+  ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
+  ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
+  ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
+  MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -371,7 +378,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
-  EDGE_MULTI_NAT_IP = 'EDGE-MULTI-NAT-IP',
+  EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -408,6 +415,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_HQOS, description: defineMessage({ defaultMessage: 'Edge HQoS Bandwidth: RUCKUS Edge HQoS-Driven Egress Scheduling to enforce strict SLAs, intelligent bandwidth management, LLQ prioritization, and DSCP-based classification for seamless, end-to-end QoS.' }), status: true },
   { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
   { key: TierFeatures.SERVICE_CATALOG_UPDATED, description: defineMessage({ defaultMessage: 'Service Catalog (Updated): Introduces a new layout and filtering logic for network services and policies, enabling clearer visibility and easier access to unified services for RUCKUS network deployments.' }), status: true },
+  { key: TierFeatures.EDGE_NAT_IP_POOL, description: defineMessage({ defaultMessage: 'Edge NAT IP Pool: Enables NAT IP pooling, allowing more client sessions to be supported by dynamically allocating public IP addresses from a shared pool.' }), status: false },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

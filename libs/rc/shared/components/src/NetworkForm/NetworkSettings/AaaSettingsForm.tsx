@@ -514,11 +514,12 @@ function AaaService () {
               placement='bottom'
               onClick={() => setDrawerVisible(true)}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={drawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={networkId}
-              featureName={InCompatibilityFeatures.MAC_AUTH}
+              featureNames={[InCompatibilityFeatures.MAC_AUTH]}
               onClose={() => setDrawerVisible(false)}
             />}
           </Space>

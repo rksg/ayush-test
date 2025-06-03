@@ -3,7 +3,7 @@ import { renderHook }       from '@acx-ui/test-utils'
 
 import { PolicyType, PolicyOperation } from '../../types'
 
-import { getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '.'
+import { getPolicyListRoutePath, getPolicyRoutePath, useAfterPolicySaveRedirectPath, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
@@ -12,10 +12,12 @@ jest.mock('../../configTemplate', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
-const mockedLocationFrom = { pathname: '/test' }
+const generalPreviousPath = '/test'
+const mockedLocationFrom = { pathname: generalPreviousPath }
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useLocation: () => ({ state: { from: mockedLocationFrom } })
+  useLocation: () => ({ state: { from: mockedLocationFrom } }),
+  useTenantLink: (path: string) => path
 }))
 
 const mockedGenerateUnifiedServicesBreadcrumb = jest.fn().mockReturnValue([])
@@ -80,5 +82,57 @@ describe('policyPageUtils', () => {
 
     // eslint-disable-next-line max-len
     expect(mockedGenerateUnifiedServicesBreadcrumb).toHaveBeenCalledWith(mockedLocationFrom)
+  })
+
+  describe('useAfterPolicySaveRedirectPath', () => {
+    // eslint-disable-next-line max-len
+    it('should return routeToList when isNewServiceCatalogEnabled is true and isTemplate is false', () => {
+      mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      const routeToList = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
+
+      const { result } = renderHook(() =>
+        useAfterPolicySaveRedirectPath(PolicyType.AAA)
+      )
+
+      expect(result.current).toBe(routeToList)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return previousPath when isNewServiceCatalogEnabled is true and isTemplate is true', () => {
+      mockedUseIsNewServicesCatalogEnabled.mockReturnValue(true)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() =>
+        useAfterPolicySaveRedirectPath(PolicyType.AAA)
+      )
+
+      expect(result.current).toBe(generalPreviousPath)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return previousPath when isNewServiceCatalogEnabled is false and isTemplate is true', () => {
+      mockedUseIsNewServicesCatalogEnabled.mockReturnValue(false)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() =>
+        useAfterPolicySaveRedirectPath(PolicyType.AAA)
+      )
+
+      expect(result.current).toBe(generalPreviousPath)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return routeToList when isNewServiceCatalogEnabled is false and isTemplate is false', () => {
+      mockedUseIsNewServicesCatalogEnabled.mockReturnValue(false)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      const routeToList = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
+
+      const { result } = renderHook(() =>
+        useAfterPolicySaveRedirectPath(PolicyType.AAA)
+      )
+
+      expect(result.current).toBe(routeToList)
+    })
   })
 })

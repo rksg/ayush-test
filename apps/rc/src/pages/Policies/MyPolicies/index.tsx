@@ -409,7 +409,7 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isSwitchPortProfileEnabled
     },
     {

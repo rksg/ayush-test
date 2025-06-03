@@ -8,6 +8,7 @@ import {
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotControllerVenues,
   IotSerialNumberResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -96,6 +97,22 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
+    getIotControllerSerialNumber: build.query<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerSerialNumber, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenues: build.query<IotControllerVenues, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
     refreshIotController: build.mutation<void, void>({
       queryFn: async () => {
         return { data: undefined }
@@ -141,6 +158,10 @@ export const {
   useUpdateIotControllerMutation,
   useDeleteIotControllerMutation,
   useTestConnectionIotControllerMutation,
+  useGetIotControllerSerialNumberQuery,
+  useLazyGetIotControllerSerialNumberQuery,
+  useGetIotControllerVenuesQuery,
+  useLazyGetIotControllerVenuesQuery,
   useRefreshIotControllerMutation,
   useIotControllerLicenseStatusQuery,
   useIotControllerDashboardQuery,

@@ -21,7 +21,7 @@ import {
   Tabs
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
+import { useGetMspEcListQuery }     from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
   useAddPrivilegeGroupMutation,
@@ -55,6 +55,7 @@ import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
 
 import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
+import { NewSelectCustomerDrawer }             from './NewSelectCustomerDrawer'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectCustomerOnlyDrawer }            from './SelectCustomerOnlyDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
@@ -139,6 +140,8 @@ export function EditPrivilegeGroup () {
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
   const [selectedRole, setCustomRole] = useState('')
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const customerListEnhancementToggle =
+      useIsSplitOn(Features.ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT)
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -161,7 +164,7 @@ export function EditPrivilegeGroup () {
       useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
   const { data: customerList } =
-      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload,
+      useGetMspEcListQuery({ params: useParams(), payload: customerListPayload,
         enableRbac: isViewmodleAPIsMigrateEnabled }, { skip: !isOnboardedMsp })
 
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
@@ -678,12 +681,18 @@ export function EditPrivilegeGroup () {
         setVisible={setSelectCustomerDrawer}
         setSelected={setSelectedCustomers}
       />
-      : <SelectCustomerDrawer
-        visible={selectCustomerDrawer}
-        selected={selectedCustomers}
-        setVisible={setSelectCustomerDrawer}
-        setSelected={setSelectedCustomers}
-      />)
+      : customerListEnhancementToggle
+        ? <NewSelectCustomerDrawer
+          visible={selectCustomerDrawer}
+          selected={selectedCustomers}
+          setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}/>
+        : <SelectCustomerDrawer
+          visible={selectCustomerDrawer}
+          selected={selectedCustomers}
+          setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}
+        />)
     }
   </>)
 }

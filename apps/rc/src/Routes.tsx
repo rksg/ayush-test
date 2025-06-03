@@ -1163,6 +1163,11 @@ function PolicyRoutes () {
           }
         />
         <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL_CONSOLIDATION, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to={'policies/accessControl/wifi'} />}
+        />
+        <Route
           path='policies/accessControls/create'
           element={
             // eslint-disable-next-line max-len
@@ -1688,6 +1693,10 @@ function PolicyRoutes () {
               <CreatePortProfile />
             </AuthRoute>
           }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
+          element={<TenantNavigate replace to='policies/portProfile/wifi' />}
         />
         <Route
           path='policies/portProfile/:activeTab/'

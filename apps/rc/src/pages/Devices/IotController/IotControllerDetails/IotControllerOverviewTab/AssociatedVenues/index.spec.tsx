@@ -28,7 +28,7 @@ describe('AssociatedVenues Widget', () => {
   it('should render donut chart', async () => {
     mockServer.use(
       rest.post(IotUrlsInfo.getIotControllerList.url,
-        (req, res, ctx) => res(ctx.json(data)))
+        (req, res, ctx) => res(ctx.json(data.response)))
     )
 
     params = {
@@ -52,7 +52,7 @@ describe('AssociatedVenues Widget', () => {
   it('should render "No Associated Venues" when no data exist', async () => {
     mockServer.use(
       rest.post(IotUrlsInfo.getIotControllerList.url,
-        (req, res, ctx) => res(ctx.json(noData)))
+        (req, res, ctx) => res(ctx.json(noData.response)))
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',

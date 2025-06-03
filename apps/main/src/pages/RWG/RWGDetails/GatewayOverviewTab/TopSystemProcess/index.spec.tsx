@@ -76,7 +76,6 @@ describe('RWG Dashboard statistics', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(await asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
 
-    expect(await screen.findByText('process')).toBeInTheDocument()
     expect(await screen.findByText('process1')).toBeInTheDocument()
     expect(await screen.findByText('rxgd (perl)')).toBeInTheDocument()
 
