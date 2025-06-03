@@ -87,7 +87,7 @@ beforeEach(async () => {
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
     accountTier: 'Gold',
-    alphaEnabled: false,
+    isAlphaUser: false,
     betaEnabled: false,
     abacEnabled: false,
     isCustomRole: false,

@@ -27,7 +27,7 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
-  alphaEnabled?: boolean
+  isAlphaUser?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
@@ -113,6 +113,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: earlyAcessStatus } = useGetEarlyAccessQuery({ params })
   const betaStatus = earlyAcessStatus?.betaStatus
   const alphaStatus = earlyAcessStatus?.alphaStatus
+  const isAlphaUser = ((betaStatus && profile?.dogfood) || !!alphaStatus)
 
   const { data: features } = useGetBetaFeatureListQuery({ params },
     { skip: !(betaStatus) || !selectedBetaListEnabled })
@@ -135,7 +136,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       allowedOperations,
       accountTier,
       betaEnabled: betaStatus,
-      alphaEnabled: alphaStatus,
+      isAlphaUser,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
@@ -158,7 +159,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       hasAccess,
       accountTier: accountTier,
       betaEnabled: betaStatus,
-      alphaEnabled: alphaStatus,
+      isAlphaUser,
       abacEnabled,
       rbacOpsApiEnabled,
       activityAllVenuesEnabled,
