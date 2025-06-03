@@ -4,11 +4,12 @@ import { Buffer } from 'buffer'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Table, TableProps, showActionModal }           from '@acx-ui/components'
+import { Button, Loader, Table, TableProps }                            from '@acx-ui/components'
 import { useIsSplitOn, Features }                                       from '@acx-ui/feature-toggle'
-import {  CodeDocument }                                                from '@acx-ui/icons'
+import { CodeDocument }                                                 from '@acx-ui/icons'
 import { CertificateInfoItem, SamlIdpMetadataModal, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteSamlIdpProfileMutation,
   useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileViewDataListQuery,
@@ -219,20 +220,21 @@ const SamlIdpTable = () => {
     scopeKey: getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.DELETE),
     rbacOpsIds: getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: (rows, clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Profile' }),
-          entityValue: rows.length === 1 ? rows[0].name : undefined,
-          numOfEntities: rows.length
-        },
-        onOk: () => {
-          Promise.all(rows.map(row => deleteSamlIdpProfile({ params: { id: row.id } })))
-            .then(clearSelection)
+    onClick: (selectedRows, clearSelection) => {
+      doProfileDelete(
+        selectedRows,
+        $t({ defaultMessage: 'Profile{plural}' },
+          { plural: selectedRows.length > 1 ? 's' : '' }),
+        selectedRows[0].name,
+        [{
+          fieldName: 'wifiNetworkIds',
+          fieldText: $t({ defaultMessage: 'Network' })
         }
-      })
+        ],
+        async () =>
+          Promise.all(selectedRows.map(row => deleteSamlIdpProfile({ params: { id: row.id } })))
+            .then(clearSelection)
+      )
     }
   }]
 

@@ -1,9 +1,9 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { PageHeader, StepsForm }                                                                  from '@acx-ui/components'
-import { getSelectPolicyRoutePath, LocationExtended, NetworkTypeTabsEnum, usePoliciesBreadcrumb } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                                          from '@acx-ui/components'
+import { getSelectPolicyRoutePath, LocationExtended, NetworkTypeTabsEnum, PolicyType, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '@acx-ui/rc/utils'
+import { useLocation, useNavigate, useTenantLink }                                                                                        from '@acx-ui/react-router-dom'
 
 export default function CreateAccessControl () {
   const { $t } = useIntl()
@@ -11,31 +11,24 @@ export default function CreateAccessControl () {
   const navigate = useNavigate()
   const createWifiAccessControlPath = useTenantLink('/policies/accessControl/create')
   const createSwitchAccessControlPath = useTenantLink('/policies/accessControl/switch/add')
-  const wifiAccessControlRoute = '/policies/accessControl/wifi'
   const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
   const fromPage = (useLocation() as LocationExtended)?.state?.from
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL_CONSOLIDATION)
+  const pageTitle = usePolicyPageHeaderTitle(false, PolicyType.ACCESS_CONTROL_CONSOLIDATION)
 
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('accessControlType')
-    navigate(type === NetworkTypeTabsEnum.WIFI ?
-      createWifiAccessControlPath : createSwitchAccessControlPath, { state: { from: fromPage } })
+    navigate(type === NetworkTypeTabsEnum.WIFI
+      ? createWifiAccessControlPath
+      : createSwitchAccessControlPath,
+    { state: { from: fromPage } })
   }
 
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Add Access Control' }
-          )
-        }
-        breadcrumb={[
-          ...usePoliciesBreadcrumb(),
-          {
-            text: $t({ defaultMessage: 'Access Control' }),
-            link: wifiAccessControlRoute
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       <StepsForm
         form={form}

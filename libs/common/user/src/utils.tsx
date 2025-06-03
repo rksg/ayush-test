@@ -41,3 +41,7 @@ export function goToNoPermission () {
 export function isCoreTier (tier: string | undefined) {
   return tier === AccountTier.CORE
 }
+
+export function isProfessionalTier (tier: string | undefined) {
+  return tier === AccountTier.PLATINUM
+}

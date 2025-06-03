@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useGetCustomRolesQuery } from '@acx-ui/rc/services'
+import { sortProp, defaultSort }  from '@acx-ui/rc/utils'
 import { RolesEnum }              from '@acx-ui/types'
 import { roleStringMap }          from '@acx-ui/user'
 
@@ -36,11 +37,13 @@ const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
     ? [...without(NonSupportedRoles, RolesEnum.PRIME_ADMIN)] : NonSupportedRoles
 
   const rolesList = roleList?.filter(item =>
-    !rolesToBeRemoved.includes(item.name as RolesEnum)).map((item) => ({
-    label: roleStringMap[item.name as RolesEnum]
-      ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
-    value: item.name
-  }))
+    !rolesToBeRemoved.includes(item.name as RolesEnum))
+    .map((item) => ({
+      label: roleStringMap[item.name as RolesEnum]
+        ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
+      value: item.name
+    }))
+    ?.sort(sortProp('label', defaultSort))
 
   const handleRoleChange = (value: string) => {
     setSelected(value as RolesEnum)
