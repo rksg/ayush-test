@@ -42,7 +42,7 @@ describe('validateSelectingAllAPs', () => {
     ] } }
     await expect(validateSelectingAllAPs(selectedValue, apDataResponse))
       // eslint-disable-next-line max-len
-      .rejects.toBe('Cannot exclude all APs. Please pause Energy Saving if you want to exclude all APs.')
+      .rejects.toBe('Please pause Energy Saving if you want to exclude all APs.')
   })
   it('should resolve if not all AP groups are selected in RAI', async () => {
     mockGet.mockReturnValue('true')
@@ -66,7 +66,7 @@ describe('validateSelectingAllAPs', () => {
     const selectedValue = [[{ type: 'zone', name: 'zone1' }]] as NodeFilter[]
     await expect(validateSelectingAllAPs(selectedValue, { data: {} }))
       // eslint-disable-next-line max-len
-      .rejects.toBe('Cannot exclude all APs. Please pause Energy Saving if you want to exclude all APs.')
+      .rejects.toBe('Please pause Energy Saving if you want to exclude all APs.')
   })
   it('should resolve if not all APs are selected in R1', async () => {
     const selectedValue = [[

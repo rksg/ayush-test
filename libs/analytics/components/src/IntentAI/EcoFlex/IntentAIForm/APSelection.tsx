@@ -155,7 +155,7 @@ export const validateSelectingAllAPs = (
   return isSelectAllAPs
     ? Promise.reject($t({
       defaultMessage:
-        'Cannot exclude all APs. Please pause Energy Saving if you want to exclude all APs.'
+        'Please pause Energy Saving if you want to exclude all APs.'
     }))
     : Promise.resolve()
 }
