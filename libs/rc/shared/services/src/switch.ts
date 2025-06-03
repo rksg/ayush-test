@@ -699,7 +699,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
+      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }, { type: 'SwitchPort', id: 'Setting' }]
     }),
 
     importSwitches: build.mutation<{}, RequestFormData>({

@@ -272,3 +272,14 @@ export function getSwitchFwGroupVersionV1002 (
   fwV1002: FirmwareSwitchVenueVersionsV1002[], modelGroup: SwitchFirmwareModelGroup): string {
   return fwV1002?.find((fw) => fw.modelGroup === modelGroup)?.version ?? ''
 }
+
+export const allMultipleEditableFields = [
+  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
+  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
+  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
+  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
+  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
+  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
+  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
+]

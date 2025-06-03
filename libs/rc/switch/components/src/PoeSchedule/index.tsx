@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }                                                     from '@acx-ui/feature-toggle'
 import { useLazyGetTimezoneQuery, useLazyGetVenueQuery, useSavePortsSettingMutation } from '@acx-ui/rc/services'
-import { SwitchPortViewModel }                                                        from '@acx-ui/rc/switch/utils'
+import { allMultipleEditableFields, SwitchPortViewModel }                             from '@acx-ui/rc/switch/utils'
 import { SchedulerTypeEnum, PoeSchedulerType }                                        from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
 import { Scheduler, SchedulerDeviceTypeEnum }                                         from '@acx-ui/types'
@@ -108,15 +108,21 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       form.setFieldsValue({
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
     }
-    const payload = {
-      ...portData,
-      poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) }
+    if(portData){
+      const payload = {
+        port: portData.portIdentifier,
+        ports: [portData.portIdentifier],
+        switchId: portData.switchId,
+        ignoreFields: allMultipleEditableFields.filter(
+          f => !['poeScheduler'].includes(f)).join(','),
+        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) }
+      }
+      await savePortsSetting({
+        params: { tenantId, venueId },
+        payload: [payload],
+        enableRbac: true
+      }).unwrap()
     }
-    await savePortsSetting({
-      params: { tenantId, venueId },
-      payload,
-      enableRbac: true
-    }).unwrap()
     setVisible(false)
   }
 

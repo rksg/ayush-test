@@ -360,6 +360,9 @@ export function SwitchPortTable (props: {
             type='link'
             data-testid='edit-poe-schedule'
             onClick={() => {
+              if(switchDetail?.id){
+                setSelectedPorts([{ ...row, switchId: switchDetail?.id }])
+              }
               handleOpenPoeScheduler(row.portIdentifier)
             }}
             style={{ paddingLeft: '10px' }}
