@@ -143,7 +143,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
     form.setFieldValue('highAvailabilityMode', getVenueHaMode(selectedVenueId))
   }
 
-  const onClusterChnage = (selectedClusterId: string) => {
+  const onClusterChange = (selectedClusterId: string) => {
     const targetCluster = find(clusterList, { clusterId: selectedClusterId })
     let venueHaMode: ClusterHighAvailabilityModeEnum | undefined
 
@@ -220,7 +220,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
                   !venueId || cluster.venueId === venueId))
               ]}
               disabled={isEdit}
-              onChange={isEdgePinEnhanceEnabled ? onClusterChnage : undefined}
+              onChange={isEdgePinEnhanceEnabled ? onClusterChange : undefined}
               />
             </Form.Item>
           </Col>}
