@@ -85,11 +85,11 @@ export function IdentityGroup (props: IdentityGroupProps) {
       if ((editMode || cloneMode) && data) {
         // These network can bind identity group
         if (
-          data.type === NetworkTypeEnum.PSK ||
+          (data.type === NetworkTypeEnum.PSK ||
           data.type === NetworkTypeEnum.AAA ||
           data.type === NetworkTypeEnum.HOTSPOT20 ||
           data.type === NetworkTypeEnum.CAPTIVEPORTAL ||
-          data.type === NetworkTypeEnum.OPEN
+          data.type === NetworkTypeEnum.OPEN) && data.id
         ) {
           const retrievedIdentityGroupsData = await identityGroupListTrigger(
             { payload: { networkId: data.id } }
@@ -98,8 +98,6 @@ export function IdentityGroup (props: IdentityGroupProps) {
           if (boundIdentityGroups && boundIdentityGroups.totalCount > 0) {
             form.setFieldValue('identityGroupId', boundIdentityGroups.data[0].id)
             setSelectedIdentityGroup(boundIdentityGroups.data[0])
-          } else {
-            form.setFieldValue('identityGroupId', undefined)
           }
         }
         // Only PSK and Open network can bind identity
