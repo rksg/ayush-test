@@ -500,7 +500,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         const key = channel as keyof ApExtraParams
         acc.push({
           key: channel,
-          width: 80,
+          width: 70,
           dataIndex: channel,
           title: <Table.SubTitle children={channelTitleMap[key]} />,
           align: 'center',

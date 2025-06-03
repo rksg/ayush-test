@@ -405,7 +405,7 @@ describe('MacRegistrationListForm', () => {
     await userEvent.click(groupOption[0])
 
     // eslint-disable-next-line max-len
-    const useSingleIdentityElem = await screen.findByText('Use Single Identity for all connections')
+    const useSingleIdentityElem = await screen.findByText('Use single identity association to all onboarded devices')
     await userEvent.click(useSingleIdentityElem)
 
     await userEvent.type(expirationOffsetElem, mockedCreateFormData.expirationOffset!.toString())

@@ -19,6 +19,7 @@ import {
   ApBssColoringSettings,
   ApSmartMonitor,
   ApIot,
+  ApIotController,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -1606,6 +1607,44 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
     }),
+    getApIotV2: build.query<ApIotController, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApIotV2, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    updateApIotV2: build.mutation<ApIotController, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApIotV2, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    updateApIotController: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApIotController, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    deleteApIotController: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.deleteApIotController, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
     getApIot: build.query<ApIot, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -2115,6 +2154,11 @@ export const {
   useGetApSmartMonitorQuery,
   useLazyGetApSmartMonitorQuery,
   useUpdateApSmartMonitorMutation,
+  useGetApIotV2Query,
+  useLazyGetApIotV2Query,
+  useUpdateApIotV2Mutation,
+  useUpdateApIotControllerMutation,
+  useDeleteApIotControllerMutation,
   useGetApIotQuery,
   useLazyGetApIotQuery,
   useUpdateApIotMutation,
