@@ -37,8 +37,8 @@ export function SwitchDetail ({ incident }: ChartProps) {
     { key: 'model', title: defineMessage({ defaultMessage: 'Switch Model' }) },
     { key: 'mac', title: defineMessage({ defaultMessage: 'Switch MAC' }) },
     { key: 'firmware', title: defineMessage({ defaultMessage: 'Switch Firmware Version' }) },
-    { key: 'numOfPorts', title: defineMessage({ defaultMessage: 'Number of ports' }) },
-    { key: 'portCount', title: defineMessage({ defaultMessage: 'Ports with flap' }) }
+    { key: 'numOfPorts', title: defineMessage({ defaultMessage: 'Number Of Ports' }) },
+    { key: 'portCount', title: defineMessage({ defaultMessage: 'Ports With Flap' }) }
   ]
 
   const data = {
@@ -117,9 +117,11 @@ function ImpactedSwitchTable (props: {
       poeDetail: impactedSwitchPort.poeOperState === 'Unknown' ? '--' :
         impactedSwitchPort.poeOperState,
       vlan: formatVlans(impactedSwitchPort.flapVlans),
-      connectedDevicePort: impactedSwitchPort.connectedDevice.port === null ? '--' :
+      connectedDevicePort: impactedSwitchPort.connectedDevice.port === null ||
+        impactedSwitchPort.connectedDevice.port === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.port,
-      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === null ? '--' :
+      connectedDevicePortType: impactedSwitchPort.connectedDevice.type === null ||
+        impactedSwitchPort.connectedDevice.type === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.type
     }
   })
@@ -145,7 +147,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'vlan',
     title: $t({ defaultMessage: 'VLAN' }),
     fixed: 'left',
-    width: 40,
+    width: 70,
     sorter: { compare: sortProp('flapVlans', defaultSort) },
     searchable: true
   }, {
@@ -177,7 +179,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'lastFlapTimeStamp',
     title: $t({ defaultMessage: 'Last Flap Time Stamp' }),
     fixed: 'left',
-    width: 70,
+    width: 80,
     sorter: { compare: sortProp('lastFlapTime', defaultSort) },
     searchable: true
   }

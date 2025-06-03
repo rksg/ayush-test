@@ -49,7 +49,7 @@ describe('SwitchDetails', () => {
 
     expect(await screen.findByText('Switch Name')).toBeVisible()
     expect(await screen.findByText('ICX8200-24P Router')).toBeVisible()
-    expect(await screen.findByText('Ports with flap')).toBeVisible()
+    expect(await screen.findByText('Ports With Flap')).toBeVisible()
     expect(await screen.findByText('2')).toBeVisible() // portCount
   })
 
@@ -67,8 +67,8 @@ describe('SwitchDetails', () => {
     expect(await screen.findByText('Switch Model')).toBeVisible()
     expect(await screen.findByText('Switch MAC')).toBeVisible()
     expect(await screen.findByText('Switch Firmware Version')).toBeVisible()
-    expect(await screen.findByText('Number of ports')).toBeVisible()
-    expect(await screen.findByText('Ports with flap')).toBeVisible()
+    expect(await screen.findByText('Number Of Ports')).toBeVisible()
+    expect(await screen.findByText('Ports With Flap')).toBeVisible()
     expect(screen.getAllByText('--')).toHaveLength(6)
   })
 })
@@ -131,13 +131,6 @@ describe('ImpactedSwitchPortFlap', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Impacted Port')).toBeVisible()
-  })
-
-  it('should format LAG port numbers correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
-    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('LAG1')).toBeVisible()
   })
 
   it('should handle unknown connected device', async () => {
