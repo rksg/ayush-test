@@ -241,7 +241,7 @@ describe('Edge enabled evaluation', () => {
       })
     })
 
-    describe('edge Multi-WAN toggle', () => {
+    describe('edge Dual-WAN toggle', () => {
       it('should return true when edge is enabled and feature flag is ready', () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.EDGES_TOGGLE ||

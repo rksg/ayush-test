@@ -15,7 +15,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeMdnsProxyEnabled = useIsTierAllowed(TierFeatures.EDGE_MDNS_PROXY)
   const isEdgeHqosEnabled = useIsTierAllowed(TierFeatures.EDGE_HQOS)
   const isEdgeL2oGREEnabled = useIsTierAllowed(TierFeatures.EDGE_L2OGRE)
-  const isEdgeMultiWanEnabled = useIsTierAllowed(TierFeatures.EDGE_MULTI_WAN)
+  const isEdgeDualWanEnabled = useIsTierAllowed(TierFeatures.EDGE_DUAL_WAN)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
@@ -35,7 +35,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
     case Features.EDGE_L2OGRE_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeL2oGREEnabled
     case Features.EDGE_DUAL_WAN_TOGGLE:
-      return isEnabledWithBooleanFlag && isEdgeMultiWanEnabled
+      return isEnabledWithBooleanFlag && isEdgeDualWanEnabled
     default:
       return isEnabledWithBooleanFlag
   }
