@@ -13,11 +13,13 @@ import {
   IotControllerDrawer
 } from '@acx-ui/rc/components'
 import {
-  useGetApIotQuery,
-  useLazyGetVenueIotQuery,
-  useUpdateApIotV2Mutation
+  useGetApIotV2Query,
+  useLazyGetIotControllerListQuery,
+  useUpdateApIotV2Mutation,
+  useUpdateApIotControllerMutation,
+  useDeleteApIotControllerMutation
 } from '@acx-ui/rc/services'
-import { ApIot, VenueIot } from '@acx-ui/rc/utils'
+import { ApIotController, IotControllerStatus } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -43,7 +45,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const iot = useGetApIotQuery(
+  const iot = useGetApIotV2Query(
     {
       params: { venueId, serialNumber }
     },
@@ -53,33 +55,82 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const [updateApIot, { isLoading: isUpdatingApIot }] =
     useUpdateApIotV2Mutation()
 
-  const [getVenueIot] = useLazyGetVenueIotQuery()
+  const [getVenueIot] = useLazyGetIotControllerListQuery()
 
   const [form] = Form.useForm()
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
-  const [initData, setInitData] = useState({} as ApIot)
-  const [apIot, setApIot] = useState({} as ApIot)
+  const [initData, setInitData] = useState({} as ApIotController)
+  const [apIot, setApIot] = useState({} as ApIotController)
   const [venueIot, setVenueIot] = useState(
-    {} as VenueIot
+    {} as IotControllerStatus
   )
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
   const [formInitializing, setFormInitializing] = useState(true)
 
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  // eslint-disable-next-line max-len
+  const [initIotController, setInitIotController] = useState<IotControllerStatus | undefined>(undefined)
+  const [iotController, setIotController] = useState<IotControllerStatus | undefined>(undefined)
+
+  // eslint-disable-next-line max-len
+  const [updateApIotController, { isLoading: isUpdatingApIotController }] = useUpdateApIotControllerMutation()
+  // eslint-disable-next-line max-len
+  const [deleteApIotController, { isLoading: isDeletingApIotController }] = useDeleteApIotControllerMutation()
+
   useEffect(() => {
     const iotData = iot?.data
 
-    if (venueId && iotData) {
+    if (venueId && serialNumber && iotData) {
       const setIotData = async () => {
         const venueIotData = await getVenueIot(
           {
-            params: { tenantId, venueId }
+            payload: {
+              fields: [
+                'id',
+                'name',
+                'inboundAddress',
+                'serialNumber',
+                'publicAddress',
+                'publicPort',
+                'apiToken',
+                'tenantId',
+                'status',
+                'venueId',
+                'assocVenueId',
+                'assocApId',
+                'assocApVenueId'
+              ],
+              pageSize: 10,
+              sortField: 'name',
+              sortOrder: 'ASC',
+              filters: { tenantId: [tenantId] }
+            }
           },
           true
         ).unwrap()
 
-        setVenueIot(venueIotData)
+        // eslint-disable-next-line max-len
+        setVenueIot(venueIotData?.data.find((i) => i.assocApVenueId === venueId) as IotControllerStatus)
+        // use venue settings or custom
+        // eslint-disable-next-line max-len
+        setInitIotController(venueIotData?.data.find((i) => i.assocApId === serialNumber) as IotControllerStatus)
+
+        if (iotData.useVenueSettings) {
+          // eslint-disable-next-line max-len
+          setIotController(venueIotData?.data.find((i) => i.assocApVenueId === venueId) as IotControllerStatus)
+        } else {
+          // eslint-disable-next-line max-len
+          setIotController(venueIotData?.data.find((i) => i.assocApId === serialNumber) as IotControllerStatus)
+        }
+
+        // for test
+        // eslint-disable-next-line max-len
+        // setIotController(venueIotData?.data[0] as IotControllerStatus)
+        // setInitIotController(venueIotData?.data[0] as IotControllerStatus)
+        // setVenueIot(venueIotData?.data[0] as IotControllerStatus)
+
         setIsUseVenueSettings(iotData.useVenueSettings)
         isUseVenueSettingsRef.current = iotData.useVenueSettings
 
@@ -95,7 +146,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
 
       setIotData()
     }
-  }, [venueId, iot?.data])
+  }, [venueId, serialNumber, iot?.data])
 
   const handleVenueSetting = async () => {
     let isUseVenue = !isUseVenueSettings
@@ -106,23 +157,21 @@ export function IotControllerV2 (props: ApEditItemProps) {
       const currentData = form.getFieldsValue()
       setApIot({ ...currentData })
 
-      if (venueIot) {
-        const data = {
-          ...venueIot,
-          useVenueSettings: true
-        }
-        form.setFieldsValue(data)
+      setIotController(venueIot)
+      const data = {
+        useVenueSettings: true
       }
+      form.setFieldsValue(data)
     } else {
       if (!isEmpty(apIot)) {
         form.setFieldsValue(apIot)
       }
     }
 
-    updateEditContext(true)
+    updateEditContext(true, undefined)
   }
 
-  const handleUpdateIot = async (values: ApIot) => {
+  const handleUpdateIot = async (id: string | undefined) => {
     try {
       setEditContextData &&
         setEditContextData({
@@ -133,22 +182,37 @@ export function IotControllerV2 (props: ApEditItemProps) {
 
       const isUseVenue = isUseVenueSettingsRef.current
       const payload = {
-        ...values,
         useVenueSettings: isUseVenue
       }
 
-      await updateApIot({
-        params: { venueId, serialNumber },
-        payload
-      }).unwrap()
+      if (isUseVenue) {
+        await updateApIot({
+          params: { venueId, serialNumber },
+          payload
+        }).unwrap()
+        return
+      }
+
+      if (id) {
+        await updateApIotController({
+          params: { venueId, serialNumber, iotControllerId: id },
+          payload
+        }).unwrap()
+      } else {
+        await deleteApIotController({
+          params: { venueId, serialNumber, iotControllerId: initIotController?.id },
+          payload
+        }).unwrap()
+      }
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   const updateEditContext = (
-    // form: StepsFormLegacyInstance,
-    isDirty: boolean
+    isDirty: boolean,
+    id: string | undefined
   ) => {
     setEditContextData &&
       setEditContextData({
@@ -162,7 +226,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
       setEditNetworkControlContextData({
         ...editNetworkControlContextData,
         updateApIot: () =>
-          handleUpdateIot(form?.getFieldsValue()),
+          handleUpdateIot(id),
         discardApIotChanges: () => handleDiscard()
       })
   }
@@ -171,14 +235,25 @@ export function IotControllerV2 (props: ApEditItemProps) {
     setIsUseVenueSettings(initData.useVenueSettings)
     isUseVenueSettingsRef.current = initData.useVenueSettings
     form.setFieldsValue(initData)
+    setIotController(initIotController)
   }
 
-  const iotMqttBrokerAddressFieldName = 'mqttBrokerAddress'
+  const iotNameFieldName = 'name'
+  const iotInboundAddressFieldName = 'inboundAddress'
 
-  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const handleIotController = () => {
     setDrawerVisible(true)
+  }
+
+  const handleRemoveIotController = () => {
+    setIotController(undefined)
+    updateEditContext(true, undefined)
+  }
+
+  const handleApplyIotController = (value: IotControllerStatus) => {
+    setIotController(value)
+    updateEditContext(true, value.id)
   }
 
   return (
@@ -186,7 +261,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
       states={[
         {
           isLoading: formInitializing,
-          isFetching: isUpdatingApIot
+          isFetching: isUpdatingApIot || isUpdatingApIotController || isDeletingApIotController
         }
       ]}
     >
@@ -201,23 +276,23 @@ export function IotControllerV2 (props: ApEditItemProps) {
             isUseVenueSettings={isUseVenueSettings}
             handleVenueSetting={handleVenueSetting}
           />
-          {apIot?.mqttBrokerAddress?.length > 0 ? (
+          {iotController?.name ? (
             <Row>
               <Col span={colSpan}>
                 <Form.Item
-                  name={iotMqttBrokerAddressFieldName}
+                  name={iotNameFieldName}
                   style={{ display: 'inline-block', width: '230px' }}
                   label={$t({ defaultMessage: 'IoT Controller Name' })}
                   children={
-                    <span>{apIot?.mqttBrokerAddress}</span>
+                    <span>{iotController?.name}</span>
                   }
                 />
                 <Form.Item
-                  name={iotMqttBrokerAddressFieldName}
+                  name={iotInboundAddressFieldName}
                   style={{ display: 'inline-block', width: '230px' }}
                   label={$t({ defaultMessage: 'FQDN / IP' })}
                   children={
-                    <span>{apIot?.mqttBrokerAddress}</span>
+                    <span>{iotController?.inboundAddress}</span>
                   }
                 />
               </Col>
@@ -234,7 +309,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
                   <Button
                     type='link'
                     style={{ marginLeft: '20px' }}
-                    onClick={handleIotController}
+                    onClick={handleRemoveIotController}
                   >
                     {$t({ defaultMessage: 'Remove' })}
                   </Button>
@@ -261,6 +336,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
           { drawerVisible && <IotControllerDrawer
             visible={drawerVisible}
             setVisible={setDrawerVisible}
+            applyIotController={handleApplyIotController}
           /> }
         </StepsForm.StepForm>
       </StepsForm>
