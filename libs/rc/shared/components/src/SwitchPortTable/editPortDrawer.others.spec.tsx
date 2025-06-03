@@ -4,11 +4,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { switchApi }                          from '@acx-ui/rc/services'
-import { allMultipleEditableFields }          from '@acx-ui/rc/switch/utils'
-import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { switchApi }                                                     from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo, allMultipleEditableFields } from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
