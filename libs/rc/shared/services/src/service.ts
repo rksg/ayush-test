@@ -151,7 +151,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
         const req = createHttpRequest(url, params)
-        const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(payload) : undefined })
+        const adjustedPayload = _.omit(payload as DHCPSaveData, ['defaultPageSize'])
+        const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(adjustedPayload) : undefined })
         if (res.error) {
           return { error: res.error as FetchBaseQueryError }
         }
@@ -166,9 +167,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           data: {
+            ...result,
             data: result.data,
-            page: 0,
-            totalCount: result.data.length
+            totalCount: result.totalCount
           }
         }
       },
