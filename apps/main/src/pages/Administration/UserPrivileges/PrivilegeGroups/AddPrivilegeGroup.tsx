@@ -19,6 +19,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { MspEcWithVenue }                                           from '@acx-ui/msp/utils'
 import { useAddPrivilegeGroupMutation, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
@@ -44,6 +45,7 @@ import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
 
 
+import { NewSelectCustomerDrawer }  from './NewSelectCustomerDrawer'
 import { SelectCustomerDrawer }     from './SelectCustomerDrawer'
 import { SelectCustomerOnlyDrawer } from './SelectCustomerOnlyDrawer'
 import { SelectVenuesDrawer }       from './SelectVenuesDrawer'
@@ -84,6 +86,9 @@ export function AddPrivilegeGroup () {
   const navigate = useNavigate()
   const location = useLocation().state as PrivilegeGroupSateProps
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
+
+  const customerListEnhancementToggle =
+    useIsSplitOn(Features.ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT)
 
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
@@ -459,7 +464,9 @@ export function AddPrivilegeGroup () {
               ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
               type='link'
               onClick={onClickSelectCustomer}
-            >Select customers</Button>
+            >
+              {intl.$t({ defaultMessage: 'Select customers' })}
+            </Button>
           </Space>
         </Radio.Group>
       </Form.Item>
@@ -539,12 +546,18 @@ export function AddPrivilegeGroup () {
             setVisible={setSelectCustomerDrawer}
             setSelected={setSelectedCustomers}
           />
-          : <SelectCustomerDrawer
-            visible={selectCustomerDrawer}
-            selected={selectedCustomers}
-            setVisible={setSelectCustomerDrawer}
-            setSelected={setSelectedCustomers}
-          />)
+          : customerListEnhancementToggle
+            ? <NewSelectCustomerDrawer
+              visible={selectCustomerDrawer}
+              selected={selectedCustomers}
+              setVisible={setSelectCustomerDrawer}
+              setSelected={setSelectedCustomers}/>
+            : <SelectCustomerDrawer
+              visible={selectCustomerDrawer}
+              selected={selectedCustomers}
+              setVisible={setSelectCustomerDrawer}
+              setSelected={setSelectedCustomers}
+            />)
         }
 
       </StepsForm.StepForm>
