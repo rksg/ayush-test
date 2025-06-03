@@ -2218,7 +2218,8 @@ export function EditPortDrawer ({
               noStyle
               children={isMultipleEdit ?
                 <>
-                  {renderPoeScheduleStatus()}
+                  <span data-testid='poe-multiple-schedule-status'>
+                    {renderPoeScheduleStatus()}</span>
                   <Button
                     hidden={!poeSchedulerCheckbox}
                     type='link'
@@ -2245,8 +2246,9 @@ export function EditPortDrawer ({
                     label={$t({ defaultMessage: 'PoE Schedule' })}
                     labelCol={{ span: 24 }}
                     children={<Space style={{ fontSize: '12px' }}>
-                      <span>{poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
-                        noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
+                      <span data-testid='poe-schedule-status'>
+                        {poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
+                          noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
                       <Button
                         type='link'
                         data-testid='edit-poe-schedule'

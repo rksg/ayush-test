@@ -6,6 +6,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { switchApi }                                     from '@acx-ui/rc/services'
+import { allMultipleEditableFields }                     from '@acx-ui/rc/switch/utils'
 import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow } from '@acx-ui/rc/utils'
 import { Provider, store }                               from '@acx-ui/store'
 import {
@@ -32,8 +33,7 @@ import {
   vlansByVenue
 } from './__tests__/fixtures'
 import {
-  EditPortDrawer,
-  allMultipleEditableFields
+  EditPortDrawer
 } from './editPortDrawer'
 
 const params = {
