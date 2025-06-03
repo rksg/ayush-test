@@ -10,21 +10,20 @@ import { useIntl }                                            from 'react-intl'
 import { Button, cssStr, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
 import { useGetServerCertificatesQuery }                          from '@acx-ui/rc/services'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
   SamlIdpProfileFormType,
   SamlIdpMessages,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   usePolicyListBreadcrumb,
   KeyUsages,
   ServerCertificate,
   KeyUsageType,
   HttpURLRegExp,
-  combineAttributeMappingsToData
+  combineAttributeMappingsToData,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, useNavigate } from '@acx-ui/react-router-dom'
 
 import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
 import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
@@ -53,14 +52,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
     isEmbedded = false
   } = props
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.SAML_IDP,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
+
+  const previousPath = usePolicyPreviousPath(PolicyType.SAML_IDP, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SAML_IDP)
+
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
 
   const [encryptCertFormVisible, setEncryptCertFormVisible] = useState(false)
@@ -106,13 +102,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
 
-    handleCancel()
+    handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = () => {
-    (onCancel)?
-      onCancel() :
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+  const handleCancel = (prev: string | Path) => {
+    (onCancel) ? onCancel() : navigate(prev)
   }
 
   const handleImportRequest = (formData: FormData, values: object, content?: string)=> {
@@ -141,7 +135,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>
