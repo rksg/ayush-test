@@ -764,7 +764,7 @@ overflow: auto;
 
 ${props => props.$type === 'pageview' && css`
   height: auto;
-  overflow: hidden;
+  overflow: visible;
   .rglb_group-item .group-item-container {
     padding: 0;
     margin: 0 -20px;
@@ -1002,6 +1002,7 @@ export const PreviewModal = styled(Modal)<{ $type?: string }>`
     height: calc(80vh - 68px);
     transition: all .2s linear;  
     overflow: auto;
+    overflow-x: hidden;
     button, a {
       pointer-events: none;
     }

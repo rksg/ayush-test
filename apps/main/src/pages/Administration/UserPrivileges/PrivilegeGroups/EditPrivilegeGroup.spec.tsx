@@ -252,7 +252,7 @@ describe('Edit Privilege Group', () => {
     services.useGetVenuesQuery = jest.fn().mockImplementation(() => {
       return { data: venueList }
     })
-    mspServices.useMspCustomerListQuery = jest.fn().mockImplementation(() => {
+    mspServices.useGetMspEcListQuery = jest.fn().mockImplementation(() => {
       return { data: customerList }
     })
     services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {

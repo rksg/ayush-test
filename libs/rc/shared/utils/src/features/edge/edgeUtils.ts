@@ -10,6 +10,7 @@ import {
   ApCompatibility,
   ApIncompatibleDevice,
   ClusterNetworkSettings,
+  DhcpStats,
   EdgeAlarmSummary,
   EdgeIncompatibleFeature,
   EdgeIncompatibleFeatureV1_1,
@@ -534,4 +535,20 @@ export const getEdgeModelDisplayText = (model?: string) => {
     default:
       return model?.startsWith('E') ? model.replace('E', 'RUCKUS Edge ') : (model ?? '')
   }
+}
+
+export const getEdgeAppCurrentVersions = (data: Pick<DhcpStats, 'clusterAppVersionInfo' | 'currentVersion'>) => {
+  const { $t } = getIntl()
+  let versions = ''
+  if (data?.clusterAppVersionInfo) {
+    const distinctVersions = new Set(
+      data?.clusterAppVersionInfo
+        .map(item => item?.currentVersion)
+        .filter(Boolean)
+    )
+    versions = Array.from(distinctVersions).join(', ')
+  } else {
+    versions = data?.currentVersion || ''
+  }
+  return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
 }
