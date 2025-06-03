@@ -220,9 +220,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       }
     })
 
-
-
-
   }, [nodes])
 
 

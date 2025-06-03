@@ -29,7 +29,7 @@ export default function DisconnectedBranchNode (props: NodeProps)
           showArrow={false}
           // @ts-ignore
           title={<Row>{ $t({ defaultMessage: 'This branch is diconnected from the rest of the '
-            + 'workflow. Drag over another branch to connec them.' }) }</Row>}>
+            + 'workflow. Drag over another branch to connect them.' }) }</Row>}>
           <UI.InvalidIcon>
             <WarningCircleSolid />
           </UI.InvalidIcon>
