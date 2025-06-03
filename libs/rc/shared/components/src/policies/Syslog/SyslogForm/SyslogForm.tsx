@@ -24,7 +24,8 @@ import {
   usePolicyPageHeaderTitle,
   usePolicyPreviousPath,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplate
+  useConfigTemplate,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -60,6 +61,7 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SYSLOG)
   const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.SYSLOG)
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SYSLOG)
   const form = Form.useFormInstance()
   const { isTemplate } = useConfigTemplate()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
@@ -128,7 +130,7 @@ export const SyslogForm = (props: SyslogFormProps) => {
           enableRbac: resolvedEnableRbac
         }).unwrap()
       }
-      navigate(linkToInstanceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
