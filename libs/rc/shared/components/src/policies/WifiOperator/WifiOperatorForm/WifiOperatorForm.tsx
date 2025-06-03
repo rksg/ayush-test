@@ -21,11 +21,11 @@ import {
   PolicyType,
   WifiOperatorContext,
   usePolicyPageHeaderTitle,
-  getPolicyRoutePath,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
-import { CommonResult }  from '@acx-ui/user'
+import { CommonResult } from '@acx-ui/user'
 
 import WifiOperatorSettingForm from './WifiOperatorSettingForm'
 
@@ -39,11 +39,6 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.WIFI_OPERATOR,
-    oper: PolicyOperation.LIST
-  })
-  const linkToPolicies = useTenantLink(tablePath)
 
   const { editMode=false, modalMode=false, modalCallBack } = props
 
@@ -54,6 +49,8 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.WIFI_OPERATOR)
+  const previousPath = usePolicyPreviousPath(PolicyType.WIFI_OPERATOR, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.WIFI_OPERATOR)
 
   useEffect(() => {
     if (data) {
@@ -80,7 +77,7 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
           }
         }).unwrap().then(() => {
           if (!modalMode) {
-            navigate(linkToPolicies, { replace: true })
+            navigate(redirectPathAfterSave, { replace: true })
           }
         })
       } else {
@@ -88,7 +85,7 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
           params,
           payload
         }).unwrap()
-        modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+        modalMode? modalCallBack?.() : navigate(redirectPathAfterSave, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -105,7 +102,7 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
     <StepsFormLegacy<WifiOperatorContext>
       formRef={formRef}
       editMode={editMode}
-      onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
+      onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
       onFinish={async (data) => {
         return handleWifiOperator(data)
       }}
