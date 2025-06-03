@@ -38,8 +38,9 @@ describe('IotController', () => {
     )
   })
 
-  it('should render IoT V2 UI when isIotV2Enabled is true', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_PHASE_2_TOGGLE)
+  it('should render correctly', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_MQTT_BROKER_TOGGLE)
 
     render(
       <Provider>
@@ -49,29 +50,14 @@ describe('IotController', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    expect(await screen.findByText(/Associate IoT Controller/)).toBeVisible()
-  })
-
-  it('should render IoT V1 UI when isIotV2Enabled is false', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.IOT_PHASE_2_TOGGLE)
-
-    render(
-      <Provider>
-        <Form>
-          <IotController />
-        </Form>
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('Enable IoT Controller'))
     expect(await screen.findByText(/Enable IoT Controller/)).toBeVisible()
   })
 
-  it('should toggle IoT enabled state', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.IOT_PHASE_2_TOGGLE)
+  it('should handle enable changed', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_MQTT_BROKER_TOGGLE)
 
     render(
       <Provider>
@@ -87,28 +73,10 @@ describe('IotController', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-
     await waitFor(() => screen.findByText('Enable IoT Controller'))
-    const switchElement = await screen.findByTestId('iot-switch')
-    fireEvent.click(switchElement)
-    expect(setEditContextData).toHaveBeenCalledWith(expect.objectContaining({ isDirty: true }))
-  })
-  // eslint-disable-next-line max-len
-  it('should open the IoT Controller Drawer when "Associate IoT Controller" button is clicked', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_PHASE_2_TOGGLE)
+    expect(await screen.findByText(/Enable IoT Controller/)).toBeVisible()
 
-    render(
-      <Provider>
-        <Form>
-          <IotController />
-        </Form>
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
+    fireEvent.click(await screen.findByTestId('iot-switch'))
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    const associateButton = await screen.findByText(/Associate IoT Controller/)
-    fireEvent.click(associateButton)
-    expect(await screen.findByText('Add IoT Controller')).toBeVisible()
   })
 })

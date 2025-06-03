@@ -29,7 +29,8 @@ import {
   EmbeddedReport,
   convertDateTimeToSqlFormat,
   getSupersetRlsClause,
-  getRLSClauseForSA } from '.'
+  getRLSClauseForSA,
+  generateUniqueQueryId } from '.'
 
 import type { EmbedDashboardParams } from '@superset-ui/embedded-sdk'
 
@@ -923,5 +924,161 @@ describe('getRLSClauseForSA', () => {
     const rlsClause = getRLSClauseForSA(
       apNetworkPath as NetworkPath, sameNameSystemMap, ReportType.WIRELESS)
     expect(rlsClause).toMatchSnapshot('rlsClauseOverviewForSA')
+  })
+})
+
+describe('generateUniqueQueryId', () => {
+  // Mock sessionStorage for consistent testing
+  const mockSessionStorage = (() => {
+    let store: Record<string, string> = {}
+    return {
+      getItem: (key: string) => store[key] || null,
+      setItem: (key: string, value: string) => {
+        store[key] = value
+      },
+      clear: () => {
+        store = {}
+      }
+    }
+  })()
+
+  beforeEach(() => {
+    // Replace global sessionStorage with our mock
+    Object.defineProperty(window, 'sessionStorage', {
+      value: mockSessionStorage,
+      writable: true
+    })
+    mockSessionStorage.clear()
+
+    // Mock Date.now for consistent timestamp testing
+    jest.spyOn(Date, 'now').mockReturnValue(1703123456789)
+    jest.spyOn(Math, 'random').mockReturnValue(0.123456789)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should generate consistent IDs within the same session', () => {
+    // Test that same inputs produce same output in same session
+    const userInfo = 'user123'
+    const tenantInfo = 'tenant456'
+
+    const id1 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.AP_DETAIL)
+    const id2 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.AP_DETAIL)
+
+    expect(id1).toBe(id2)
+    expect(id1).toMatch(/^qid_[a-z0-9]+_[a-z0-9]{4}$/)
+  })
+
+  it('should generate different IDs for different sessions', () => {
+    const userInfo = 'user123'
+    const tenantInfo = 'tenant456'
+
+    // First session
+    const id1 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.AP_DETAIL)
+
+    // Clear session (simulate new session)
+    mockSessionStorage.clear()
+
+    // Mock different timestamp for new session
+    jest.spyOn(Date, 'now').mockReturnValue(1703123999999)
+    jest.spyOn(Math, 'random').mockReturnValue(0.987654321)
+
+    // Second session
+    const id2 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.AP_DETAIL)
+
+    expect(id1).not.toBe(id2)
+    expect(id1).toMatch(/^qid_[a-z0-9]+_[a-z0-9]{4}$/)
+    expect(id2).toMatch(/^qid_[a-z0-9]+_[a-z0-9]{4}$/)
+  })
+
+  it('should generate different IDs for different report types', () => {
+    const userInfo = 'user123'
+    const tenantInfo = 'tenant456'
+
+    const id1 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.AP_DETAIL)
+    const id2 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.WIRELESS)
+    const id3 = generateUniqueQueryId(userInfo, tenantInfo, ReportType.WIRED)
+
+    expect(id1).not.toBe(id2)
+    expect(id2).not.toBe(id3)
+    expect(id1).not.toBe(id3)
+  })
+
+  it('should not expose sensitive information in generated ID', () => {
+    const sensitiveUserInfo = 'sensitive_user_123'
+    const sensitiveTenantInfo = 'confidential_tenant_456'
+
+    const id = generateUniqueQueryId(sensitiveUserInfo, sensitiveTenantInfo, ReportType.AP_DETAIL)
+
+    // Verify that sensitive information is not present in the generated ID
+    expect(id).not.toContain('sensitive_user_123')
+    expect(id).not.toContain('confidential_tenant_456')
+    expect(id).not.toContain('sensitive')
+    expect(id).not.toContain('confidential')
+
+    // Verify the format is correct
+    expect(id).toMatch(/^qid_[a-z0-9]+_[a-z0-9]{4}$/)
+  })
+})
+
+describe('EmbeddedReport RLS Clause Integration with Unique Query ID', () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = 'development'
+    get.mockReturnValue('') // Non-SA mode
+
+    userProfileR1.mockReturnValue({
+      profile: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        externalId: 'ext123',
+        tenantId: 'tenant456',
+        roles: [RolesEnumR1.ADMINISTRATOR]
+      }
+    })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should generate unique query identifiers that do not expose sensitive information', () => {
+    // Test the core logic without rendering the full component
+    // This validates the security improvement without complex component dependencies
+
+    // Test with actual sensitive data patterns
+    const sensitiveExternalId = 'ext123'
+    const sensitiveTenantId = 'tenant456'
+
+    const queryId = generateUniqueQueryId(
+      sensitiveExternalId,
+      sensitiveTenantId,
+      ReportType.AP_DETAIL
+    )
+
+    // Verify the generated ID doesn't expose sensitive information
+    expect(queryId).not.toContain(sensitiveExternalId)
+    expect(queryId).not.toContain(sensitiveTenantId)
+    expect(queryId).not.toContain('ext')
+    expect(queryId).not.toContain('tenant')
+
+    // Verify the ID follows the expected format and can be used in a tautology
+    expect(queryId).toMatch(/^qid_[a-z0-9]+_[a-z0-9]{4}$/)
+
+    // Test that it creates a valid tautology for SQL
+    const sqlClause = `'${queryId}' = '${queryId}'`
+    expect(sqlClause).toMatch(/'qid_[a-z0-9]+_[a-z0-9]{4}' = 'qid_[a-z0-9]+_[a-z0-9]{4}'/)
+
+    // Verify different inputs create different IDs
+    const differentQueryId = generateUniqueQueryId(
+      'different_user',
+      'different_tenant',
+      ReportType.WIRELESS
+    )
+    expect(queryId).not.toBe(differentQueryId)
   })
 })

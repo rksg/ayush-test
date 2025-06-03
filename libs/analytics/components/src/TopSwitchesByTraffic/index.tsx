@@ -49,7 +49,9 @@ const getSwitchTrafficRichStyle = () => ({
   }
 })
 
-export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+export const tooltipFormatter = (callbackParams: TooltipComponentFormatterCallbackParams) => {
+  const params = Array.isArray(callbackParams)
+    ? callbackParams : (callbackParams ? [callbackParams] : null)
   const name = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
   const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[1] : ''
   return renderToString(
@@ -117,6 +119,10 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
                 onClick={onClick(navigate,basePath)}
                 tooltipFormatter={tooltipFormatter}
                 style={{ width, height }}
+                silent={false}
+                tooltip={{
+                  trigger: 'item'
+                }}
               />:
               <NoData/>
           )}

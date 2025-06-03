@@ -43,12 +43,12 @@ jest.mock('../../../../WorkflowActionPreviewModal', () => ({
 describe('BaseStepNode', () => {
   const spyDeleteStepFn = jest.fn()
   const spyDeleteIndividualStepFn = jest.fn()
-  const spyDeleteStepAndChildrenFn = jest.fn()
+  const spyDeleteStepChildrenFn = jest.fn()
 
   beforeEach(() => {
     spyDeleteStepFn.mockClear()
     spyDeleteIndividualStepFn.mockClear()
-    spyDeleteStepAndChildrenFn.mockClear()
+    spyDeleteStepChildrenFn.mockClear()
 
     mockServer.use(
       rest.delete(
@@ -63,9 +63,9 @@ describe('BaseStepNode', () => {
         }
       ),
       rest.delete(
-        WorkflowUrls.deleteWorkflowStepAndDescendants.url,
+        WorkflowUrls.deleteWorkflowStepDescendants.url,
         (_, res, ctx) => {
-          spyDeleteStepAndChildrenFn()
+          spyDeleteStepChildrenFn()
           return res(ctx.json({}))
         }
       )
@@ -172,16 +172,16 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
-    await userEvent.click(await screen.findByRole('button', { name: /Delete step only/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: /Delete Action Only/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action' }))
 
     await waitFor(() => expect(spyDeleteIndividualStepFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Action' })).toBeNull()
     })
   })
 
-  it('should delete step and children correctly', async () => {
+  it('should delete steps children correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
@@ -200,12 +200,13 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
-    await userEvent.click(await screen.findByRole('button', { name: /Delete step and children/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+    await userEvent.click(await screen.findByRole('menuitem',
+      { name: /Delete Action\'s Children/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action\'s Children' }))
 
-    await waitFor(() => expect(spyDeleteStepAndChildrenFn).toHaveBeenCalled())
+    await waitFor(() => expect(spyDeleteStepChildrenFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Action\'s Children' })).toBeNull()
     })
   })
 

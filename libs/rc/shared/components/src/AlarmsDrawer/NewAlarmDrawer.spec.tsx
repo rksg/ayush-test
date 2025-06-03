@@ -205,7 +205,8 @@ describe('NewAlarmsDrawer', () => {
 
     window.dispatchEvent(new CustomEvent('showAlarmDrawer',
       { detail: { data:
-        { venueId: '908c47ee1cd445838c3bf71d4addccdf', serialNumber: 'FEK3230S0A2' } } }
+      // eslint-disable-next-line max-len
+        { venueId: '5e75f787e010471984b18ad0eb156487', serialNumber: 'FEK3230S0A2', product: 'swtich', name: 'Some_Switch' } } }
     ))
 
     await waitFor(() => expect(screen.queryByText('Some_AP')).toBeNull())

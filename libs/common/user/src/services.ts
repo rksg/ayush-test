@@ -19,7 +19,7 @@ import {
   AllowedOperationsResponse
 } from './types'
 
-const getUserUrls = (enableRbac?: boolean | unknown) => {
+export const getUserUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? UserRbacUrlsInfo : UserUrlsInfo
 }
 
@@ -118,7 +118,8 @@ export const UserUrlsInfo = {
   },
   toggleMFA: {
     method: 'put',
-    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
+    url: '/mfa/setupTenant/tenant/:tenantId/:enable',
+    opsApi: 'PUT:/mfa/setupTenant/{id}'
   },
   getMfaMasterCode: {
     method: 'get',
@@ -196,6 +197,7 @@ export const UserRbacUrlsInfo = {
   toggleMFA: {
     method: 'put',
     url: '/mfa/setupTenant/:enable',
+    opsApis: 'PUT:/mfa/setupTenant/{id}',
     newApi: true
   },
   getBetaFeatureList: {

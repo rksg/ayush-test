@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
+import { AlignType }                     from 'rc-table/lib/interface'
 import { useIntl }                       from 'react-intl'
 
 import {
@@ -92,6 +93,7 @@ function useColumns (
   const isEdgeEnabled = useIsEdgeReady()
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
   const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -173,14 +175,42 @@ function useColumns (
         )
       }
     },
-    {
+    ...(isSupportWifiWiredClient? [{
+      title: $t({ defaultMessage: 'Wi-Fi Clients' }),
+      key: 'wifi-clients',
+      dataIndex: 'wifi-clients',
+      children: [{
+        key: 'clients',
+        width: 75,
+        dataIndex: 'clients',
+        title: <Table.SubTitle children={$t({ defaultMessage: 'Wireless' })} />,
+        align: 'center' as AlignType,
+        sorter: true,
+        render: (_: React.ReactNode, row: Venue) =>
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/clients`}
+            children={row.clients ? row.clients : 0}
+          />
+      }, {
+        key: 'apWiredClients',
+        width: 75,
+        dataIndex: 'apWiredClients',
+        title: <Table.SubTitle children={$t({ defaultMessage: 'AP Wired' })} />,
+        align: 'center' as AlignType,
+        sorter: true,
+        render: (_: React.ReactNode, row: Venue) =>
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/clients/apWired`}
+            children={row.apWiredClients ?? 0}
+          />
+      }]
+    }] : [{
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'clients',
       dataIndex: 'clients',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
-      align: 'center',
-      render: function (_, row) {
+      align: 'center' as AlignType,
+      render: function (_: React.ReactNode, row: Venue) {
         return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/clients`}
@@ -188,7 +218,7 @@ function useColumns (
           />
         )
       }
-    },
+    }]),
     {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
@@ -265,6 +295,7 @@ function useColumns (
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   const isEdgeEnabled = useIsEdgeReady()
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return {
     fields: [
@@ -278,6 +309,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'switches',
       'switchClients',
       'clients',
+      ...(isSupportWifiWiredClient? ['apWiredClients'] : []),
       ...(isEdgeEnabled ? ['edges'] : []),
       'cog',
       'latitude',

@@ -20,7 +20,8 @@ import {
   PolicyType,
   useConfigTemplateMutationFnSwitcher,
   usePolicyListBreadcrumb, useConfigTemplate,
-  usePolicyPreviousPath
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
@@ -146,6 +147,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
   const previousPath = usePreviousPath(isSwitchMacAclEnabled)
+  const redirectPathAfterSave = useAfterSaveRedirectPath(isSwitchMacAclEnabled)
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
@@ -182,7 +184,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         }).unwrap()
       }
 
-      navigate(previousPath, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -216,32 +218,27 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
 
 
 function useBreadcrumb (isSwitchMacAclEnabled: boolean) {
-  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
+  const breadcrumb = usePolicyListBreadcrumb(resolvedPolicyType)
 
-  if (!isSwitchMacAclEnabled) return breadcrumb
-
-  let breadcrumbWithSwitchMacAcl = [...breadcrumb]
-  if (breadcrumbWithSwitchMacAcl.length >= 3) {
-    breadcrumbWithSwitchMacAcl[2] = {
-      ...breadcrumbWithSwitchMacAcl[2],
-      link: 'policies/accessControl/wifi'
-    }
-  }
-
-  return breadcrumbWithSwitchMacAcl
+  return breadcrumb
 }
 
 function usePreviousPath (isSwitchMacAclEnabled: boolean): Path | string {
-  let linkToInstanceList = usePolicyPreviousPath(PolicyType.ACCESS_CONTROL, PolicyOperation.LIST)
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
 
-  if (!isSwitchMacAclEnabled) return linkToInstanceList
+  return usePolicyPreviousPath(resolvedPolicyType, PolicyOperation.LIST)
+}
 
-  if (typeof linkToInstanceList === 'object' && linkToInstanceList.pathname) {
-    linkToInstanceList = {
-      ...linkToInstanceList,
-      pathname: linkToInstanceList.pathname.replace('/accessControl/list', '/accessControl/wifi')
-    }
-  }
 
-  return linkToInstanceList
+function useAfterSaveRedirectPath (isSwitchMacAclEnabled: boolean) {
+  const resolvedPolicyType = isSwitchMacAclEnabled
+    ? PolicyType.ACCESS_CONTROL_CONSOLIDATION
+    : PolicyType.ACCESS_CONTROL
+
+  return useAfterPolicySaveRedirectPath(resolvedPolicyType)
 }
