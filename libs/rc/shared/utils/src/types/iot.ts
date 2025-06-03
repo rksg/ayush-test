@@ -4,12 +4,16 @@ export interface IotControllerStatus {
   id: string
   name: string
   inboundAddress: string
+  serialNumber?: string
   iotSerialNumber: string
   publicAddress: string
   publicPort: number
   apiToken: string
   tenantId: string
-  assocVenueIds?: string[]
+  assocVenueId?: string
+  assocVenueCount?: number
+  assocApId?: string
+  assocApVenueId?: string
   status: IotControllerStatusEnum
 }
 
