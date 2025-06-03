@@ -9,11 +9,12 @@ import {
   useUpdateIdentityGroupTemplateMutation,
   useUpdatePersonaGroupMutation
 } from '@acx-ui/rc/services'
-import { PersonaGroup, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
+import { PersonaGroup, useConfigTemplate, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 
 
 export function usePersonaGroupAction () {
+  const { isTemplate } = useConfigTemplate()
   const [addPersonaGroup] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddPersonaGroupMutation,
     useTemplateMutationFn: useAddIdentityGroupTemplateMutation
@@ -52,20 +53,26 @@ export function usePersonaGroupAction () {
       }
     }
 
-    return await addPersonaGroup({
-      payload: groupData,
-      onSuccess: (response: CommonAsyncResponse) => {
-        callback?.(response)
-        if (response.id) {
-          associateDpskCallback(response.id)
-          associateMacRegistrationCallback(response.id)
-          associatePolicySetCallback(response.id)
+    if (isTemplate) {
+      // template does not need to associate other resources, so we can return immediately
+      return await addPersonaGroup({ payload: groupData }).unwrap()
+        .then((result) => callback?.(result))
+    } else {
+      return await addPersonaGroup({
+        payload: groupData,
+        onSuccess: (response: CommonAsyncResponse) => {
+          callback?.(response)
+          if (response.id) {
+            associateDpskCallback(response.id)
+            associateMacRegistrationCallback(response.id)
+            associatePolicySetCallback(response.id)
+          }
+        },
+        onError: (response?: CommonAsyncResponse) => {
+          callback?.(response)
         }
-      },
-      onError: (response?: CommonAsyncResponse) => {
-        callback?.(response)
-      }
-    }).unwrap()
+      }).unwrap()
+    }
   }
 
   const updatePersonaGroupMutation

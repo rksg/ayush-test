@@ -7,11 +7,19 @@ import { Drawer }                 from '@acx-ui/components'
 import {
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetDpskQuery,
+  useLazyGetDpskTemplateQuery,
   useLazyGetMacRegListQuery,
+  useLazyQueryIdentityGroupTemplatesQuery,
   useLazySearchPersonaGroupListQuery,
   useLazySearchPersonaListQuery
 } from '@acx-ui/rc/services'
-import { NetworkTypeEnum, Persona, PersonaGroup } from '@acx-ui/rc/utils'
+import {
+  NetworkTypeEnum,
+  Persona,
+  PersonaGroup,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher
+} from '@acx-ui/rc/utils'
 
 import {
   DpskPoolLink,
@@ -33,6 +41,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
 
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
 
   const form = Form.useFormInstance()
   const formFieldIdentity = Form.useWatch('identity', form)
@@ -53,7 +62,10 @@ export function IdentityGroup (props: IdentityGroupProps) {
     setIdentityGroupDrawerVisible(false)
   }
 
-  const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
+  const [identityGroupListTrigger] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazySearchPersonaGroupListQuery,
+    useLazyTemplateQueryFn: useLazyQueryIdentityGroupTemplatesQuery
+  })
   const [identityListTrigger] = useLazySearchPersonaListQuery()
   const noDisplayUnderSpecificNetwork =
     ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20, NetworkTypeEnum.CAPTIVEPORTAL]
@@ -178,7 +190,7 @@ export function IdentityGroup (props: IdentityGroupProps) {
           </Button>
         </Space>
       </Space>
-      {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
+      {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && !isTemplate && (
         <>
           <UI.FieldLabelByFraction fraction={[9,1]}>
             <div>
@@ -294,8 +306,12 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
   } = props
 
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
 
-  const [getDpskById] = useLazyGetDpskQuery()
+  const [getDpskById] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyGetDpskQuery,
+    useLazyTemplateQueryFn: useLazyGetDpskTemplateQuery
+  })
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getPolicySetById] = useLazyGetAdaptivePolicySetQuery()
 
@@ -311,7 +327,7 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
 
   useEffect(() => {
 
-    if (personaGroup?.macRegistrationPoolId) {
+    if (personaGroup?.macRegistrationPoolId && !isTemplate) {
       getMacRegistrationById({ params: { policyId: personaGroup?.macRegistrationPoolId } })
         .then(result => {
           if (result.data) setMacRegistrationName(result.data.name)
@@ -325,7 +341,7 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
         })
     }
 
-    if(personaGroup?.policySetId) {
+    if(personaGroup?.policySetId && !isTemplate) {
       getPolicySetById({ params: { policySetId: personaGroup?.policySetId } })
         .then(result => {
           if(result?.data) setPolicySetName(result.data.name)
@@ -357,26 +373,30 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
                   />
                 }
               />
-              <Form.Item
-                label={$t({ defaultMessage: 'MAC Registration' })}
-                children={
-                  <MacRegistrationPoolLink
-                    name={macRegistrationName}
-                    macRegistrationPoolId={personaGroup?.macRegistrationPoolId}
-                    showNoData={true}
+              {!isTemplate &&
+                <>
+                  <Form.Item
+                    label={$t({ defaultMessage: 'MAC Registration' })}
+                    children={
+                      <MacRegistrationPoolLink
+                        name={macRegistrationName}
+                        macRegistrationPoolId={personaGroup?.macRegistrationPoolId}
+                        showNoData={true}
+                      />
+                    }
                   />
-                }
-              />
-              <Form.Item
-                label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-                children={
-                  <PolicySetLink
-                    name={policySetName}
-                    id={personaGroup?.policySetId}
-                    showNoData={true}
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                    children={
+                      <PolicySetLink
+                        name={policySetName}
+                        id={personaGroup?.policySetId}
+                        showNoData={true}
+                      />
+                    }
                   />
-                }
-              />
+                </>
+              }
             </Col>
           </Row>
         </Form>

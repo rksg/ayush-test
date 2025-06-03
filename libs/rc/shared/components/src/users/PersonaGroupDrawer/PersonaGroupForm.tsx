@@ -9,6 +9,7 @@ import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListQuery,
   useGetEnhancedDpskListQuery,
+  useLazyQueryIdentityGroupTemplatesQuery,
   useLazySearchPersonaGroupListQuery,
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
@@ -20,7 +21,9 @@ import {
   checkObjectNotExists,
   hasServicePermission,
   trailingNorLeadingSpaces,
-  getPolicyAllowedOperation, PolicyType, PolicyOperation
+  getPolicyAllowedOperation, PolicyType, PolicyOperation,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
@@ -52,6 +55,8 @@ export function PersonaGroupForm (props: {
 }) {
   const { $t } = useIntl()
   const { form, defaultValue, requiredDpsk } = props
+  const { isTemplate } = useConfigTemplate()
+
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
@@ -73,7 +78,10 @@ export function PersonaGroupForm (props: {
     payload: macRegSearchDefaultPayload
   }, { skip: isMacRequiredGroupEnabled })
 
-  const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
+  const [searchPersonaGroupList] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazySearchPersonaGroupListQuery,
+    useLazyTemplateQueryFn: useLazyQueryIdentityGroupTemplatesQuery
+  })
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery({
     payload: { page: 1, pageSize: '2147483647' }
@@ -135,7 +143,7 @@ export function PersonaGroupForm (props: {
           </Col>
         </Row>
 
-        {hasServices &&
+        {!isTemplate && hasServices &&
           <Row align={'middle'} gutter={8}>
             <Col span={24}>
               <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
