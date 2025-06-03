@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Col, Form, FormInstance, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useIntl }                                                              from 'react-intl'
+import { Button, Col, Form, FormInstance, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
+import { useIntl }                                                                          from 'react-intl'
 
 import {
   Modal,
@@ -39,6 +39,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
   const [readOnlyMode, setReadOnlyMode] = useState<boolean>(readOnly || false)
+  const [noTimeslotMsg, setNoTimeslotMsg] = useState<boolean>(false)
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const [getTimezone] = useLazyGetTimezoneQuery()
   const [getVenue] = useLazyGetVenueQuery()
@@ -98,14 +99,21 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
 
   const onApply = async () => {
     const { scheduler, poeSchedulerType } = form.getFieldsValue()
-    const { type, ...weekDays } = scheduler || {}
 
     if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
       form.resetFields(['poeScheduler'])
       form.setFieldValue('poeScheduler', { type: SchedulerTypeEnum.NO_SCHEDULE })
     } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
+      const hasAnyTimeSlot = Object.values(scheduler).some(daySlots =>
+        Array.isArray(daySlots) && daySlots.length > 0
+      )
+
+      if (!hasAnyTimeSlot) {
+        setNoTimeslotMsg(true)
+        return
+      }
       form.setFieldValue('poeScheduler',
-        { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) })
+        { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(scheduler) })
     }
     if(portData){
       const payload = {
@@ -114,7 +122,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
         switchId: portData.switchSerial,
         ignoreFields: allMultipleEditableFields.filter(
           f => !['poeScheduler'].includes(f)).join(','),
-        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) }
+        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(scheduler) }
       }
       await savePortsSetting({
         params: { tenantId, venueId },
@@ -208,6 +216,11 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
               </div>
             </Col>
             <Col span={24} key={'col1'}>
+              {noTimeslotMsg &&
+                <Typography.Text style={{ fontSize: '12px' }} type='danger'>
+                  {$t({ defaultMessage: 'Please select at least 1 time slot' })}
+                </Typography.Text>
+              }
               {!hidden && <ScheduleCard
                 type={'CUSTOM'}
                 scheduler={schedule}
