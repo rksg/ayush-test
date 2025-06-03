@@ -135,16 +135,15 @@ export function SwitchPortTable (props: {
     setData()
   }, [isVenueLevel, switchDetail])
 
-  const handleOpenPoeScheduler = async (portIdentifier: string) => {
+  const handleOpenPoeScheduler = async (portIdentifier: string, switchSerial: string) => {
     const portSettingArray = await getPortSetting({
       params: {
         tenantId,
-        switchId,
-        venueId: switchDetail?.venueId
+        switchId: switchSerial,
+        venueId: vid
       },
       payload: [portIdentifier],
-      enableRbac: isSwitchRbacEnabled,
-      option: { skip: !switchDetail?.venueId }
+      enableRbac: isSwitchRbacEnabled
     }, true).unwrap() || []
 
     if (Array.isArray(portSettingArray)) {
@@ -360,10 +359,8 @@ export function SwitchPortTable (props: {
             type='link'
             data-testid='edit-poe-schedule'
             onClick={() => {
-              if(switchDetail?.id){
-                setSelectedPorts([{ ...row, switchId: switchDetail?.id }])
-              }
-              handleOpenPoeScheduler(row.portIdentifier)
+              setSelectedPorts([row])
+              handleOpenPoeScheduler(row.portIdentifier, row.switchSerial)
             }}
             style={{ paddingLeft: '10px' }}
           >
@@ -582,7 +579,7 @@ export function SwitchPortTable (props: {
         form={scheduleForm}
         visible={poeSchedulerModalVisible}
         setVisible={setPoeSchedulerModalVisible}
-        venueId={switchDetail?.venueId}
+        venueId={vid}
         poeScheduler={poeScheduleData}
         readOnly={true}
         portData={selectedPorts[0]}

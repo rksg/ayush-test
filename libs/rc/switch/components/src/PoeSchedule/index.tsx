@@ -101,18 +101,17 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
     const { type, ...weekDays } = scheduler || {}
 
     if (poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE) {
-      form.setFieldsValue({
-        poeScheduler: { type: SchedulerTypeEnum.NO_SCHEDULE }
-      })
+      form.resetFields(['poeScheduler'])
+      form.setFieldValue('poeScheduler', { type: SchedulerTypeEnum.NO_SCHEDULE })
     } else if (poeSchedulerType === SchedulerTypeEnum.CUSTOM) {
-      form.setFieldsValue({
-        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) } })
+      form.setFieldValue('poeScheduler',
+        { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) })
     }
     if(portData){
       const payload = {
         port: portData.portIdentifier,
         ports: [portData.portIdentifier],
-        switchId: portData.switchId,
+        switchId: portData.switchSerial,
         ignoreFields: allMultipleEditableFields.filter(
           f => !['poeScheduler'].includes(f)).join(','),
         poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(weekDays) }
