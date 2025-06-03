@@ -253,6 +253,17 @@ describe('ImpactedSwitchPortFlap', () => {
     expect(portNumbers[1]).toHaveTextContent('LAG1')
   })
 
+  it('should display LAG ports correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // Verify LAG port is displayed
+    expect(await screen.findByText('LAG1')).toBeVisible()
+    // Verify port type is displayed
+    expect(await screen.findByText('LAG')).toBeVisible()
+  })
+
   it('should handle table search', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
     renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
@@ -262,6 +273,38 @@ describe('ImpactedSwitchPortFlap', () => {
     await userEvent.type(searchInput, 'LAG1')
     expect(await screen.findByText('LAG1')).toBeVisible()
     expect(screen.queryByText('2/1/20')).not.toBeInTheDocument()
+  })
+
+  it('should handle VLAN search', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+    renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // Search for a VLAN number
+    const searchInput = await screen.findByPlaceholderText(/Search Port Id, Port Type, VLAN/)
+    await userEvent.type(searchInput, '1,2,3')
+
+    // Verify the LAG1 port is visible and highlighted
+    const lag1Port = await screen.findByText('LAG1')
+    expect(lag1Port).toBeVisible()
+    const lag1Row = await screen.findByRole('row', { name: /LAG1/ })
+    expect(lag1Row).toHaveTextContent('1,2,3')
+
+    // Verify the other port is not visible
+    expect(screen.queryByText('2/1/20')).not.toBeInTheDocument()
+
+    // Clear search and search for different VLAN
+    await userEvent.clear(searchInput)
+    await userEvent.type(searchInput, '4,5,6')
+
+    // Verify the 2/1/20 port is visible and highlighted
+    const port = await screen.findByText('2/1/20')
+    expect(port).toBeVisible()
+    const portRow = await screen.findByRole('row', { name: /2\/1\/20/ })
+    expect(portRow).toHaveTextContent('4,5,6')
+
+    // Verify the LAG1 port is not visible
+    expect(screen.queryByText('LAG1')).not.toBeInTheDocument()
   })
 
   it('should handle table pagination', async () => {

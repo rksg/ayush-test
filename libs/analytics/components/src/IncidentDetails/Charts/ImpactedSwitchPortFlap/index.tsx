@@ -94,7 +94,16 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
 function ImpactedSwitchTable (props: {
     data: ImpactedSwitchPort[]
   }) {
-  type Port = { portNumber: string; connectedDevicePort: string; connectedDevicePortType: string }
+  type Port = {
+    portNumber: string
+    portType: string
+    lastFlapTimeStamp: string
+    poeDetail: string
+    vlan: string | JSX.Element
+    vlanText: string
+    connectedDevicePort: string
+    connectedDevicePortType: string
+  }
   const { $t } = useIntl()
   const ports = props.data
 
@@ -117,6 +126,7 @@ function ImpactedSwitchTable (props: {
       poeDetail: impactedSwitchPort.poeOperState === 'Unknown' ? '--' :
         impactedSwitchPort.poeOperState,
       vlan: formatVlans(impactedSwitchPort.flapVlans),
+      vlanText: impactedSwitchPort.flapVlans || '--',
       connectedDevicePort: impactedSwitchPort.connectedDevice.port === null ||
         impactedSwitchPort.connectedDevice.port === 'Unknown' ? '--' :
         impactedSwitchPort.connectedDevice.port,
@@ -144,12 +154,26 @@ function ImpactedSwitchTable (props: {
     searchable: true
   }, {
     key: 'vlan',
-    dataIndex: 'vlan',
+    dataIndex: 'vlanText',
     title: $t({ defaultMessage: 'VLAN' }),
     fixed: 'left',
     width: 70,
     sorter: { compare: sortProp('flapVlans', defaultSort) },
-    searchable: true
+    searchable: true,
+    searchField: 'vlanText',
+    render: (_, record, __, highlightFn) => {
+      if (!record.vlanText || record.vlanText === '--') return '--'
+      const vlanList = record.vlanText.split(',').map(v => v.trim())
+      const displayText = vlanList.length <= 5
+        ? record.vlanText
+        : `${vlanList.slice(0, 5).join(', ')} and more`
+      const content = <span>{highlightFn(displayText)}</span>
+      return vlanList.length <= 5 ? content : (
+        <Tooltip title={record.vlanText} placement='topLeft'>
+          {content}
+        </Tooltip>
+      )
+    }
   }, {
     key: 'poeDetail',
     dataIndex: 'poeDetail',
