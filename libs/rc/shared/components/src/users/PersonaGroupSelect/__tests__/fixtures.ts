@@ -31,3 +31,20 @@ export const personaGroupList: NewTableResult<PersonaGroup> = {
   ]
 }
 
+export const personaGroupTemplateList: NewTableResult<PersonaGroup> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalPages: 1,
+  totalElements: 1,
+  content: [
+    {
+      id: 'persona-group-template-id-1',
+      name: 'persona-group-template-name-1'
+    },
+    {
+      id: 'persona-group-template-id-2',
+      name: 'persona-group-template-name-2'
+    }
+  ]
+}
+
