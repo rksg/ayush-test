@@ -7,8 +7,8 @@ import { Button, GridCol, GridRow, Tabs }    from '@acx-ui/components'
 import { useGetCertificateAuthoritiesQuery } from '@acx-ui/rc/services'
 import { CertificateCategoryType }           from '@acx-ui/rc/utils'
 
-import { MAX_CERTIFICATE_PER_TENANT }                              from '../constants'
-import { Section, SettingsSectionTitle, TabItem, TabLabel, Title } from '../styledComponents'
+import { MAX_CERTIFICATE_PER_TENANT }        from '../constants'
+import { Section, TabItem, TabLabel, Title } from '../styledComponents'
 
 import AddCertificateAuthorityDrawer from './AddCertificateAuthorityDrawer'
 import CertificateStrengthSettings   from './CertificateTemplateSettings/CertificateStrengthSettings'
@@ -64,9 +64,8 @@ export default function MoreSettingsForm ({ editMode = false }) {
 
   return (
     <>
-      <Title>{$t({ defaultMessage: 'More Settings' })}</Title>
+      <Title>{$t({ defaultMessage: 'Settings' })}</Title>
       <Section>
-        <SettingsSectionTitle>{$t({ defaultMessage: 'CA Sources' })}</SettingsSectionTitle>
         <GridRow>
           <GridCol col={{ span: 12 }}>
             <Form.Item
