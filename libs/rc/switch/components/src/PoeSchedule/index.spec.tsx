@@ -177,6 +177,50 @@ describe('PoeSchedule', () => {
     expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
   })
 
+  it('should save port settings with no schedule', async () => {
+    const setVisible = jest.fn()
+    const { result } = renderHook(() => Form.useForm())
+    const form = result.current[0]
+
+    form.resetFields = jest.fn()
+    form.setFieldValue = jest.fn()
+
+    render(
+      <Provider>
+        <PoeSchedule
+          form={form}
+          visible={true}
+          setVisible={setVisible}
+          venueId='venue-123'
+          poeScheduler={{ type: SchedulerTypeEnum.NO_SCHEDULE }}
+        />
+      </Provider>
+    )
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+
+    const noScheduleRadio = await screen.findByRole('radio', { name: 'No Schedule' })
+    expect(noScheduleRadio).toBeChecked()
+    jest.spyOn(form, 'getFieldsValue').mockReturnValue({
+      scheduler: {
+        mon: [],
+        tue: [],
+        wed: [],
+        thu: [],
+        fri: [],
+        sat: [],
+        sun: []
+      },
+      poeSchedulerType: SchedulerTypeEnum.NO_SCHEDULE
+    })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(form.resetFields).toHaveBeenCalledWith(['poeScheduler'])
+    expect(form.setFieldValue).toHaveBeenCalledWith('poeScheduler',
+      { type: SchedulerTypeEnum.NO_SCHEDULE })
+  })
+
   it('should save port settings when port data is provided', async () => {
     const setVisible = jest.fn()
     const { result } = renderHook(() => Form.useForm())
