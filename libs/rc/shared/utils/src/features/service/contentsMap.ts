@@ -40,7 +40,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' }),
   [ServiceType.EDGE_OLT]: defineMessage(
     { defaultMessage: 'NOKIA GPON Services' }),
-  [ServiceType.PORTAL_PROFILE]: defineMessage({ defaultMessage: 'Portal' })
+  [ServiceType.PORTAL_PROFILE]: defineMessage({ defaultMessage: 'Portal' }),
+  [ServiceType.DHCP_CONSOLIDATION]: defineMessage({ defaultMessage: 'DHCP' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -48,6 +49,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from RUCKUS Access Points' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.DHCP_CONSOLIDATION]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from Access Points or RUCKUS Edge' }),
   // eslint-disable-next-line max-len
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({

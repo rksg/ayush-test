@@ -45,6 +45,16 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.DELETE]: ['DELETE:/dhcpConfigServiceProfiles/{id}'],
     [ServiceOperation.LIST]: ['POST:/dhcpConfigServiceProfiles/query']
   },
+  [ServiceType.DHCP_CONSOLIDATION]: {
+    [ServiceOperation.CREATE]: [
+      'POST:/dhcpConfigServiceProfiles',
+      getOpsApi(EdgeDhcpUrls.addDhcpService)
+    ],
+    [ServiceOperation.LIST]: [
+      'POST:/dhcpConfigServiceProfiles/query',
+      getOpsApi(EdgeDhcpUrls.getDhcpStats)
+    ]
+  },
   [ServiceType.MDNS_PROXY]: {
     [ServiceOperation.CREATE]: ['POST:/multicastDnsProxyProfiles'],
     [ServiceOperation.EDIT]: ['PUT:/multicastDnsProxyProfiles/{id}'],

@@ -29,7 +29,7 @@ import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom
 import { compareVersions }                        from '@acx-ui/utils'
 
 
-const EdgeDhcpTable = () => {
+const EdgeDhcpTable = ({ hideHeader = false } : { hideHeader?: boolean }) => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -267,15 +267,16 @@ const EdgeDhcpTable = () => {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
-      <PageHeader
+      {!hideHeader && <PageHeader
         title={
           $t({ defaultMessage: 'DHCP for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
@@ -285,7 +286,7 @@ const EdgeDhcpTable = () => {
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
       <Loader states={[
         tableQuery,
         { isLoading: false, isFetching: isDeleteDhcpUpdating || isEdgeDhcpUpgrading }

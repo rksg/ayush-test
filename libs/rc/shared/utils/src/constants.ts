@@ -115,6 +115,7 @@ export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
   EDGE_DHCP = 'DHCP (Edge)',
+  DHCP_CONSOLIDATION = 'DHCP Consolidation',
   EDGE_FIREWALL = 'Firewall (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',

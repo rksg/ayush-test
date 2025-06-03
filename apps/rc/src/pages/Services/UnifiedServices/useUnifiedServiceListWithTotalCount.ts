@@ -25,6 +25,7 @@ import {
   useGetResidentPortalListQuery, useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import { ExtendedUnifiedService, PolicyType, ServiceType, UnifiedService, UnifiedServiceType, useAvailableUnifiedServicesList } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                       from '@acx-ui/types'
 
 const defaultPayload = { fields: ['id'] }
 
@@ -116,7 +117,8 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.PORTAL]: useGetEnhancedPortalProfileListQuery(defaultQueryArgs, { skip: !typeSet.has(ServiceType.PORTAL) }),
     [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
     [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
-    [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) })
+    [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }),
+    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION))
   }
 
   return {
@@ -217,5 +219,23 @@ function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisable
   return {
     data: { totalCount: Number(guestPortal?.totalCount ?? 0) + Number(pinPortal?.totalCount ?? 0) },
     isFetching: guestPortalIsFetching || pinPortalIsFetching
+  }
+}
+
+export function useDhcpConsolidationTotalCount (
+  defaultQueryArgs: RequestPayload,
+  isDisabled?: boolean
+) : TotalCountQueryResult {
+
+  const { data: dhcpData, isFetching: dhcpIsFetching } =
+    useGetDHCPProfileListViewModelQuery(defaultQueryArgs, { skip: isDisabled })
+
+  const { data: edgeDhcpData, isFetching: edgeDhcpIsFetching } =
+    useGetDhcpStatsQuery(defaultQueryArgs,{ skip: isDisabled })
+
+
+  return {
+    data: { totalCount: Number(dhcpData?.totalCount ?? 0) + Number(edgeDhcpData?.totalCount ?? 0) },
+    isFetching: dhcpIsFetching || edgeDhcpIsFetching
   }
 }

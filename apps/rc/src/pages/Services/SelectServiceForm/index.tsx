@@ -16,7 +16,8 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   isServiceCardEnabled,
-  isServiceCardSetEnabled
+  isServiceCardSetEnabled,
+  useDhcpStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
@@ -38,13 +39,13 @@ export default function SelectServiceForm () {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
+  const dhcpStateMap = useDhcpStateMap()
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -62,11 +63,20 @@ export default function SelectServiceForm () {
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
-        { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.DHCP,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !dhcpStateMap[ServiceType.DHCP]
+        },
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
+          disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+        },
+        {
+          type: ServiceType.DHCP_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
         },
         {
           type: ServiceType.DPSK,
