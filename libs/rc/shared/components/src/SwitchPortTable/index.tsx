@@ -358,7 +358,8 @@ export function SwitchPortTable (props: {
           <Button
             type='link'
             data-testid='edit-poe-schedule'
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setSelectedPorts([row])
               handleOpenPoeScheduler(row.portIdentifier, row.switchSerial)
             }}
