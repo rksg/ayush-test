@@ -38,7 +38,6 @@ import {
   useGetSwitchMacAclsQuery,
   useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
-import { allMultipleEditableFields } from '@acx-ui/rc/switch/utils'
 import {
   EditPortMessages,
   FlexAuthMessages,
@@ -66,7 +65,8 @@ import {
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
   useTableQuery,
   SchedulerTypeEnum,
-  PoeSchedulerType
+  PoeSchedulerType,
+  allMultipleEditableFields
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { store }                             from '@acx-ui/store'
