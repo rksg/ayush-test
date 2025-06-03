@@ -97,7 +97,6 @@ export function IotController () {
         render: function (_, row) {
 
           const onClickHandler = async () => {
-            // TODO wait for api ready
             const venues = (await getIotControllerVenues({
               params: { iotId: row.id }
             }, false)).data
