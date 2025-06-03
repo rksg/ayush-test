@@ -122,7 +122,9 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
         switchId: portData.switchSerial,
         ignoreFields: allMultipleEditableFields.filter(
           f => !['poeScheduler'].includes(f)).join(','),
-        poeScheduler: { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(scheduler) }
+        poeScheduler: poeSchedulerType === SchedulerTypeEnum.NO_SCHEDULE ?
+          { type: SchedulerTypeEnum.NO_SCHEDULE } :
+          { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(scheduler) }
       }
       await savePortsSetting({
         params: { tenantId, venueId },
