@@ -12,9 +12,3 @@ Object {
   },
 }
 `;
-
-exports[`IntentAI Settings should handle error on save settings for tenantSettings 1`] = `
-Object {
-  "enabled-intent-features": "[\\"Energy Saving\\"]",
-}
-`;

@@ -2,10 +2,14 @@ import userEvent                       from '@testing-library/user-event'
 import { rest }                        from 'msw'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
-import { AnalyticsPreferences, rbacApi }                         from '@acx-ui/analytics/services'
+import {
+  AnalyticsPreferences,
+  preferencesApi,
+  useUpdateTenantSettingsMutation
+} from '@acx-ui/analytics/services'
 import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/analytics/utils'
 import { get }                                                   from '@acx-ui/config'
-import { notificationApiURL, Provider, rbacApiURL, store }       from '@acx-ui/store'
+import { notificationApiURL, Provider, store }                   from '@acx-ui/store'
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
 
 import { Settings, prepareNotificationPreferences } from './Settings'
@@ -31,10 +35,18 @@ const mockedIntentNotificationsWithoutIntentAI = {
   }
 } as AnalyticsPreferences
 
+const mockedUseUpdateTenantSettingsMutation = useUpdateTenantSettingsMutation as jest.Mock
+jest.mock('@acx-ui/analytics/services', () => ({
+  ...jest.requireActual('@acx-ui/analytics/services'),
+  useUpdateTenantSettingsMutation: jest.fn()
+}))
+
 describe('IntentAI Settings', () => {
   beforeEach(() => {
+    const updateSettingsMock = jest.fn(() => Promise.resolve('success'))
+    mockedUseUpdateTenantSettingsMutation.mockImplementation(() =>
+      [updateSettingsMock, { isLoading: false }])
     mockServer.use(
-      rest.post(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text('Updated'))),
       rest.get(`${notificationApiURL}/preferences`,
         (_req, res, ctx) => res(ctx.json(mockedIntentNotificationsWithoutIntentAI))),
       rest.post(`${notificationApiURL}/preferences`,
@@ -42,8 +54,9 @@ describe('IntentAI Settings', () => {
     )
   })
   afterEach(() => {
-    store.dispatch(rbacApi.util.resetApiState())
+    store.dispatch(preferencesApi.util.resetApiState())
     components.showToast.mockClear()
+    mockedUseUpdateTenantSettingsMutation.mockClear()
   })
   it('should render Settings and about intents drawer', async () => {
     const settings = JSON.stringify(['Energy Saving'])
@@ -95,7 +108,14 @@ describe('IntentAI Settings', () => {
   })
   it('should handle error on save settings for tenantSettings', async () => {
     const error = 'tenantSettings server error'
-    mockRestApiQuery(`${rbacApiURL}/tenantSettings`, 'post', { error }, false, true)
+    const updateSettingsMock = jest.fn(() => Promise.resolve({
+      error: {
+        status: 500,
+        data: JSON.stringify({ error })
+      }
+    }))
+    mockedUseUpdateTenantSettingsMutation.mockImplementation(() =>
+      [updateSettingsMock, { isLoading: false }])
     const settings = JSON.stringify(['Energy Saving'])
     render(<Settings settings={settings}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
