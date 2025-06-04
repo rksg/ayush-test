@@ -7,6 +7,9 @@ export function getIotControllerStatus (status: IotControllerStatusEnum) {
 }
 
 export const seriesMappingIotController = () => [
+  { key: IotControllerStatusEnum.UNKNOWN,
+    name: getIotControllerStatusDisplayName(IotControllerStatusEnum.UNKNOWN, false),
+    color: '--acx-semantics-red-50' },
   { key: IotControllerStatusEnum.OFFLINE,
     name: getIotControllerStatusDisplayName(IotControllerStatusEnum.OFFLINE, false),
     color: '--acx-semantics-red-50' },
