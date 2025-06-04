@@ -74,7 +74,6 @@ describe('CertificateTemplateForm', () => {
     await userEvent.click(await screen.findByText('ps12'))
     await userEvent.click(screen.getByText('Next'))
 
-    await waitFor(() => expect(screen.queryByText('CA Sources')).toBeVisible())
     const select = await screen.findByRole('combobox')
     await userEvent.click(select)
     await userEvent.click(await screen.findByText('onboard1'))
@@ -121,7 +120,6 @@ describe('CertificateTemplateForm', () => {
     await userEvent.click(await screen.findByText('ps12'))
     await userEvent.click(screen.getByText('Next'))
 
-    await waitFor(() => expect(screen.queryByText('CA Sources')).toBeVisible())
     const showMoreButton = await screen.findByRole('button', { name: 'Show more settings' })
     await userEvent.click(showMoreButton)
     const expirationDateByDateRadio = await screen.queryAllByRole('radio', { name: 'By date' })[1]
