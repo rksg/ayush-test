@@ -4,6 +4,7 @@ import {
   serverIpAddressRegExp,
   dualModeServerIpAddressRegExp,
   domainNameRegExp,
+  domainNameWithIPv6RegExp,
   passphraseRegExp,
   checkObjectNotExists,
   checkItemNotIncluded,
@@ -86,7 +87,7 @@ describe('validator', () => {
 
   describe('dualModelServerIpRegExp', () => {
     it('Should take care of ipv4 address values correctly', async () => {
-      const result = serverIpAddressRegExp('111.111.111.111')
+      const result = dualModeServerIpAddressRegExp('111.111.111.111')
       await expect(result).resolves.toEqual(undefined)
     })
     it('Should take care of ipv6 address values correctly', async () => {
@@ -94,7 +95,7 @@ describe('validator', () => {
       await expect(result).resolves.toEqual(undefined)
     })
     it('Should display error message if ipv4 address values incorrectly', async () => {
-      const result = serverIpAddressRegExp('000.000.000.000')
+      const result = dualModeServerIpAddressRegExp('000.000.000.000')
       await expect(result).rejects.toEqual('Please enter a valid IP address')
     })
     it('Should display error message if ipv6 address values incorrectly', async () => {
@@ -110,6 +111,25 @@ describe('validator', () => {
     })
     it('Should display error message if domain name values incorrectly', async () => {
       const result = domainNameRegExp('testcom')
+      await expect(result).rejects.toEqual('Please enter a valid domain')
+    })
+  })
+
+  describe('domainNameWithIPv6RegExp', () => {
+    it('Should take care of ipv4 address values correctly', async () => {
+      const result = domainNameWithIPv6RegExp('111.111.111.111')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of ipv6 address values correctly', async () => {
+      const result = domainNameWithIPv6RegExp('2001:db8:3333:4444:5555:6666:7777:8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if ipv4 address values incorrectly', async () => {
+      const result = domainNameWithIPv6RegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid domain')
+    })
+    it('Should display error message if ipv6 address values incorrectly', async () => {
+      const result = domainNameWithIPv6RegExp('127::0::1')
       await expect(result).rejects.toEqual('Please enter a valid domain')
     })
   })

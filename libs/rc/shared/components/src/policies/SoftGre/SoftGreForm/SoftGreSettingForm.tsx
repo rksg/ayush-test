@@ -4,11 +4,20 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Tooltip }                                                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                               from '@acx-ui/feature-toggle'
-import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                                                   from '@acx-ui/rc/services'
-import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp, transformDisplayOnOff } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                                        from '@acx-ui/utils'
+import { Loader, Tooltip }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  MtuTypeEnum,
+  servicePolicyNameRegExp,
+  checkObjectNotExists,
+  SoftGreViewData,
+  domainNameRegExp,
+  domainNameWithIPv6RegExp,
+  transformDisplayOnOff,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
@@ -62,6 +71,8 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
   const [ fallbackEnable, setFallbackEnable ] = useState<boolean>(false)
+  const { isTemplate } = useConfigTemplate()
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
   const { softGreData, isLoading } = useGetSoftGreViewDataListQuery(
     { params, payload: {
@@ -121,6 +132,13 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
       )
   }
 
+  const gatewayIpAddressValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return domainNameWithIPv6RegExp(value)
+    }
+    return domainNameRegExp(value)
+  }
+
   const secondaryGWValidator = (value: string) => {
     const primaryGatewayAddress = form.getFieldValue('primaryGatewayAddress')
     return (value && primaryGatewayAddress && primaryGatewayAddress === value) ?
@@ -168,7 +186,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             label={$t({ defaultMessage: 'Primary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
               { required: true },
-              { validator: (_, value) => domainNameRegExp(value),
+              { validator: (_, value) => gatewayIpAddressValidator(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               },
               { validator: (_, value) => gatewayValidator(value) }
@@ -183,7 +201,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             {...(readMode? undefined : { name: 'secondaryGatewayAddress' })}
             label={$t({ defaultMessage: 'Secondary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
-              { validator: (_, value) => domainNameRegExp(value),
+              { validator: (_, value) => gatewayIpAddressValidator(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               },
               { validator: (_, value) => secondaryGWValidator(value) },
