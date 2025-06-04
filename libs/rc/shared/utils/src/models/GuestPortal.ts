@@ -62,6 +62,8 @@ export class GuestPortal {
 
   workflowId?: string
 
+  workflowName?: string
+
   constructor () {
     this.smsPasswordDuration = new GuestSmsPasswordDuration()
 
