@@ -378,6 +378,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
+  EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -415,6 +416,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
   { key: TierFeatures.SERVICE_CATALOG_UPDATED, description: defineMessage({ defaultMessage: 'Service Catalog (Updated): Introduces a new layout and filtering logic for network services and policies, enabling clearer visibility and easier access to unified services for RUCKUS network deployments.' }), status: true },
   { key: TierFeatures.EDGE_NAT_IP_POOL, description: defineMessage({ defaultMessage: 'Edge NAT IP Pool: Enables NAT IP pooling, allowing more client sessions to be supported by dynamically allocating public IP addresses from a shared pool.' }), status: false },
+  { key: TierFeatures.EDGE_DUAL_WAN, description: defineMessage({ defaultMessage: 'Dual-WAN for RUCKUS Edge: RUCKUS Edge Dual-WAN enables support for two WAN links with active-backup functionality to ensure uninterrupted WAN connectivity. This feature includes monitoring mechanisms to actively check the status of the WAN links and automatically switch back to the primary active WAN link when its connection is restored.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
