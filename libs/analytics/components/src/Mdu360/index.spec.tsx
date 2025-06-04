@@ -7,9 +7,6 @@ import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import { DateRange, useDateFilter }  from '@acx-ui/utils'
 
-
-import { VenueFilterProps } from './VenueFilter'
-
 import { Mdu360 } from '.'
 
 const mockNavigate = jest.fn()
@@ -20,7 +17,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockNavigate,
   useTenantLink: jest.fn().mockReturnValue({ pathname: '/t1/v/mdu360' })
 }))
-
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -38,15 +34,6 @@ jest.mock('@acx-ui/components', () => ({
   RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
 }))
 
-jest.mock('./VenueFilter', () => ({
-  VenueFilter: ({ selectedVenues, setSelectedVenues }: VenueFilterProps) => (
-    <div data-testid='venue-filter'>
-      <button onClick={() => setSelectedVenues(['venue1'])}>Select Venue</button>
-      <span data-testid='selected-venues'>{selectedVenues.length}</span>
-    </div>
-  )
-}))
-
 const route = {
   params: { activeTab: 'networkOverview', tenantId: 't1' },
   path: '/:tenantId/v/mdu360/residentExperience'
@@ -54,7 +41,6 @@ const route = {
 
 describe('Mdu360', () => {
   beforeEach(() => {
-    // jest.clearAllMocks()
     Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockNavigate.mockClear()
@@ -82,7 +68,6 @@ describe('Mdu360', () => {
   it('renders MDU 360 correct', () => {
     renderComponent()
     expect(screen.getByText('MDU 360')).toBeVisible()
-    expect(screen.getByTestId('venue-filter')).toBeInTheDocument()
     expect(screen.getByTestId('analytics-RangePicker')).toBeInTheDocument()
   })
 
