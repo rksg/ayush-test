@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import LanPortProfileDetailsDrawer, { LanPortDetailState } from 'libs/rc/wifi/components/src/LanPortProfileDetailDrawer'
-
 import { Button, Descriptions, Subtitle }   from '@acx-ui/components'
 import { getDeviceTypeIcon, getOsTypeIcon } from '@acx-ui/rc/utils'
 import { TenantLink }                       from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }           from '@acx-ui/utils'
+import { LanPortProfileDetailsDrawer }      from '@acx-ui/wifi/components'
+import type { LanPortDetailState }          from '@acx-ui/wifi/components'
 
 import { useApWiredClientContext } from '../ApWiredClientContextProvider'
 
