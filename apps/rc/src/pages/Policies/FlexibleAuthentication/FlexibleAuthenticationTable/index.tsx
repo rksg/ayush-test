@@ -19,7 +19,8 @@ import {
   SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
-  useTableQuery
+  useTableQuery,
+  policyTypeLabelWithCountMapping
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -165,7 +166,7 @@ const FlexibleAuthenticationTable = () => {
     <PageHeader
       title={
         $t(
-          { defaultMessage: 'Authentication ({count})' },
+          policyTypeLabelWithCountMapping[PolicyType.FLEX_AUTH],
           { count: tableQuery.data?.totalCount }
         )
       }
@@ -178,7 +179,7 @@ const FlexibleAuthenticationTable = () => {
           oper: PolicyOperation.CREATE
         })}
       >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Authentication' })}</Button>
+        <Button type='primary'>{$t({ defaultMessage: 'Add Port Authentication' })}</Button>
       </TenantLink>
       ])}
     />

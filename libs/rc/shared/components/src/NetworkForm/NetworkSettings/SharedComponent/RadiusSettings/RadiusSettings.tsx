@@ -12,9 +12,10 @@ import { Subtitle, Tooltip }                                                    
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { AAAInstance }    from '../../../AAAInstance'
-import NetworkFormContext from '../../../NetworkFormContext'
-import * as UI            from '../../../styledComponents'
+import { AAAInstance }            from '../../../AAAInstance'
+import NetworkFormContext         from '../../../NetworkFormContext'
+import { AccountingServiceInput } from '../../../SharedComponent'
+import * as UI                    from '../../../styledComponents'
 
 
 const { useWatch } = Form
@@ -94,8 +95,6 @@ export function RadiusSettings (props: RadiusSettingsProps) {
     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
   />
 
-  const enableAccountingService = useWatch('enableAccountingService')
-
   const authProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA, NetworkTypeEnum.DPSK]
   const accountingProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA]
 
@@ -132,46 +131,21 @@ export function RadiusSettings (props: RadiusSettingsProps) {
         </UI.FieldLabel>}
       </div>
       <div>
-        <UI.FieldLabel width={labelWidth}>
-          <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
-          <Form.Item
-            name='enableAccountingService'
-            valuePropName='checked'
-            style={{ marginTop: '-5px', marginBottom: '0' }}
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-        {enableAccountingService && <>
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'
-            networkType={data?.type}
-            excludeRadSec={
-              data?.type === NetworkTypeEnum.DPSK ||
-              dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
-            }
-          />
-          {(data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
-            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed &&
-          <UI.FieldLabel width={labelWidth}>
-            <Space align='start'>
-              { $t({ defaultMessage: 'Proxy Service' }) }
-              { (data?.type === NetworkTypeEnum.DPSK)?
-                DPSKAcctProxyServiceTooltip : proxyServiceTooltip }
-            </Space>
-            <Form.Item
-              name='enableAccountingProxy'
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch
-                data-testid='enable-accounting-proxy'
-                disabled={
-                  (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled)
-                }
-              />}
-            />
-          </UI.FieldLabel>}
-        </>}
+        <AccountingServiceInput
+          isProxyModeConfigurable={
+            ((data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
+            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed) ?? false
+          }
+          labelWidth={labelWidth}
+          networkType={data?.type}
+          excludeRadSec={
+            data?.type === NetworkTypeEnum.DPSK ||
+            dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
+          }
+          customProxyModeToolTip={(data?.type === NetworkTypeEnum.DPSK)?
+            DPSKAcctProxyServiceTooltip: undefined
+          }
+        />
       </div>
     </Space>
   )

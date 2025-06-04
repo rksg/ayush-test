@@ -123,7 +123,7 @@ export function DevicesWidget (props: {
                 <DonutChart
                   key='iot-controller-donutChart'
                   style={{ width: width/numDonut, height }}
-                  title={$t({ defaultMessage: 'IoT Controller' })}
+                  title={$t({ defaultMessage: 'IoT' })}
                   data={props.iotControllerData}/>
               </UI.NavigationContainer>)}
 

@@ -95,11 +95,11 @@ describe('AuditLogTable', () => {
         })
       ).map((cell) => cell.textContent)
     ).toEqual([
-      'Last update',
+      'Last Update',
       'Status',
-      'Size transferred',
-      'Export start',
-      'Export end'
+      'Size Transferred',
+      'Export Start',
+      'Export End'
     ])
 
     const firstRow = (await tbody.findAllByRole('row'))[0]

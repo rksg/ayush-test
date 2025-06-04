@@ -16,12 +16,12 @@ import {
   ApSnmpActionType,
   ApSnmpPolicy,
   usePolicyPageHeaderTitle,
-  getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import SnmpAgentFormContext, { mainReducer } from './SnmpAgentFormContext'
 import SnmpAgentSettingForm                  from './SnmpAgentSettingForm'
@@ -34,8 +34,6 @@ type SnmpAgentFormProps = {
 const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
@@ -46,6 +44,8 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
+  const previousPath = usePolicyPreviousPath(PolicyType.SNMP_AGENT, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SNMP_AGENT)
   //eslint-disable-next-line
   const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
@@ -116,7 +116,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
           }).unwrap()
         }
 
-        navigate(linkToPolicies, { replace: true })
+        navigate(redirectPathAfterSave, { replace: true })
       }
 
     } catch(error) {
@@ -134,7 +134,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         <StepsForm<ApSnmpPolicy>
           form={form}
           editMode={editMode}
-          onCancel={() => navigate(linkToPolicies, { replace: true })}
+          onCancel={() => navigate(previousPath, { replace: true })}
           onFinish={handleSaveApSnmpAgentPolicy}
         >
           <StepsForm.StepForm>
