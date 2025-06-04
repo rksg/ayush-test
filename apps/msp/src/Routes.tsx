@@ -475,7 +475,7 @@ export function ConfigTemplatesRoutes () {
             element={<IdentityGroupForm editMode={true}/>}
           />
           <Route
-            path='identityManagement/identityGroups/:personaGroupId/details'
+            path='identityManagement/identityGroups/:personaGroupId/detail'
             element={<PersonaGroupDetails />}
           />
         </>}

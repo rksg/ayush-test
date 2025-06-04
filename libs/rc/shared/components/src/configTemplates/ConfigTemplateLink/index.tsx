@@ -1,7 +1,15 @@
 import { ReactElement, ReactNode } from 'react'
 
+import { getIdentityGroupRoutePath, IdentityOperation } from '@acx-ui/cloudpath/components'
 import {
+  configTemplatePolicyTypeMap,
+  configTemplateServiceTypeMap,
   ConfigTemplateType,
+  getConfigTemplatePath,
+  getPolicyDetailsLink,
+  getPolicyRoutePath,
+  getServiceDetailsLink,
+  getServiceRoutePath,
   LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,
@@ -9,15 +17,8 @@ import {
   ServiceDetailsLinkProps,
   ServiceOperation,
   ServiceRoutePathProps,
-  getConfigTemplatePath,
-  getPolicyDetailsLink,
-  getPolicyRoutePath,
   useConfigTemplate,
-  useConfigTemplateTenantLink,
-  getServiceDetailsLink,
-  getServiceRoutePath,
-  configTemplateServiceTypeMap,
-  configTemplatePolicyTypeMap
+  useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RbacOpsIds, ScopeKeys }                                                  from '@acx-ui/types'
@@ -162,7 +163,7 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`devices/apgroups/${id}/details/networks`} children={name} />
   } else if (type === ConfigTemplateType.IDENTITY_GROUP) {
     // eslint-disable-next-line max-len
-    return <ConfigTemplateLink to={`identityManagement/identityGroups/${id}/details`} children={name} />
+    return <ConfigTemplateLink to={getIdentityGroupRoutePath(IdentityOperation.DETAIL, true, id)} children={name} />
   }
 
   return <span>{name}</span>
