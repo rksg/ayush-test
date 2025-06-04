@@ -36,7 +36,7 @@ export function IntroSummary () {
         children={getIntentStatus(intent.displayStatus)}
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Last update' })}
+        label={$t({ defaultMessage: 'Last Update' })}
         children={formatter(DateFormatEnum.DateTimeFormat)(intent.updatedAt)}
       />
     </Descriptions>
