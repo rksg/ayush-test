@@ -244,7 +244,7 @@ export enum Features {
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
-  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'removable-ff',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
