@@ -34,7 +34,7 @@ const mockedShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
-  const Button = jest.requireActual('@acx-ui/components').Button
+  const Button = jest.requireActual('antd').Button
   const Card = jest.requireActual('@acx-ui/components').Card
   return {
     Card,
@@ -161,7 +161,31 @@ jest.mock('@acx-ui/rc/services', () => {
           ],
           totalCount: 2
         } })
-    ]
+    ],
+    useStreamChatsAiMutation: () => [
+      jest.fn().mockResolvedValue({
+        data: {
+          sessionId: 'b2c7f415-4306-4ecf-a001-dd7288eca7f8',
+          title: 'New Chat',
+          updatedDate: '2025-01-20T09:56:05.006+00:00',
+          messages: [
+            {
+              id: 'b401cdf8c6274914927151cdde562bb6',
+              role: 'USER',
+              text: 'hello',
+              created: '2025-01-20T09:56:11.258+00:00'
+            },
+            {
+              id: 'f8791011b0704d849b5fdd93fe1deb18',
+              role: 'STATUS',
+              text: '0',
+              created: '2025-01-20T09:56:11.265+00:00'
+            }
+          ],
+          totalCount: 2
+        } })
+    ],
+    useStopChatMutation: jest.fn(() => [jest.fn()])
   }
 })
 

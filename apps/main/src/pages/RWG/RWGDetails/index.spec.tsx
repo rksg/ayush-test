@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { rwgApi }                                 from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }  from '@acx-ui/test-utils'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }                  from '@acx-ui/test-utils'
 
 
 import { RWGDetails } from '.'
@@ -20,7 +20,16 @@ const gatewayResponse = {
     hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxx',
     status: RWGStatusEnum.ONLINE,
-    isCluster: false
+    isCluster: false,
+    clusterNodes: [{
+      id: 'cluster1',
+      name: 'cluster1',
+      ip: '12.12.12.12'
+    },{
+      id: 'cluster2',
+      name: 'cluster2',
+      ip: '12.12.12.13'
+    }] as RWGClusterNode[]
   } as RWG
 }
 
@@ -56,7 +65,8 @@ describe('RWGDetails', () => {
       tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
       gatewayId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
-      activeTab: 'overview'
+      activeTab: 'overview',
+      clusterNodeId: 'cluster1'
     }
     mockServer.use(
       rest.get(
