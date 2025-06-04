@@ -123,7 +123,7 @@ describe.skip('DpskSettingsForm', () => {
       </Provider>
     )
     await userEvent.click((await screen.findAllByText('Add'))[0])
-    expect(await screen.findByText('Add Identity Group')).toBeVisible()
+    expect(await screen.findByText('Create Identity Group')).toBeVisible()
   })
 
   it('click add button and show adaptive policy set dialog', async () => {

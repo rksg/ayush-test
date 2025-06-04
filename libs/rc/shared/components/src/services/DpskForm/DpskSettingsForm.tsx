@@ -11,6 +11,7 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
+import { useIdentityGroupPageHeaderTitle } from '@acx-ui/cloudpath/components'
 import {
   GridCol,
   GridRow,
@@ -181,6 +182,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
+  const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: false })
   const policySetId = Form.useWatch<string>('policySetId', form)
   const deviceCountLimit = Form.useWatch<number>('deviceCountLimit', form)
   const dpskDeviceCountLimitToggle =
@@ -308,7 +310,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                   </Button>
                 </Space>
                 <Modal
-                  title={$t({ defaultMessage: 'Add Identity Group' })}
+                  title={pageTitle}
                   visible={identityGroupModelVisible}
                   type={ModalType.ModalStepsForm}
                   children={<IdentityGroupForm

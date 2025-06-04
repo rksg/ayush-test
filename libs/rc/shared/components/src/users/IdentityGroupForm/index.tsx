@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
+import { useIdentityGroupPageHeaderTitle } from '@acx-ui/cloudpath/components'
+import { Loader, PageHeader, StepsForm }   from '@acx-ui/components'
 import {
   useGetPersonaGroupByIdQuery,
   useGetIdentityGroupTemplateByIdQuery
@@ -37,6 +38,7 @@ export function IdentityGroupForm ({
   const [ form ] = Form.useForm<PersonaGroup>()
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
+  const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: editMode })
   // eslint-disable-next-line max-len
   const { pathname: regularFallbackPath } = useTenantLink('users/identity-management/identity-group')
   const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
@@ -86,9 +88,7 @@ export function IdentityGroupForm ({
 
   return (<>
     {!modalMode && <PageHeader
-      title={editMode
-        ? $t({ defaultMessage: 'Edit Identity Group' })
-        : $t({ defaultMessage: 'Create Identity Group' })}
+      title={pageTitle}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
