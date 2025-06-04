@@ -28,7 +28,7 @@ export function PoeSchedulerTipsModal (props: { isModalOpen: boolean, onOK: () =
 
   return (
     <Modal
-      title='Scheduler Tips'
+      title={$t({ defaultMessage: 'Scheduler Tips' })}
       width={800}
       cancelButtonProps={{ style: { display: 'none' } }}
       visible={props.isModalOpen}

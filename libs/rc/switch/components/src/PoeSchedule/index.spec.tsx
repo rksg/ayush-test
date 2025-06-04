@@ -111,6 +111,7 @@ describe('PoeSchedule', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockedSavePortsSetting).toHaveBeenCalled()
   })
 
   it('should show error message when no time slots are selected', async () => {
@@ -142,7 +143,6 @@ describe('PoeSchedule', () => {
     await userEvent.click(await screen.findByTestId('checkbox_sun'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
     expect(await screen.findByText('Please select at least 1 time slot')).toBeVisible()
   })
 
@@ -253,6 +253,7 @@ describe('PoeSchedule', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockedSavePortsSetting).toHaveBeenCalled()
   })
 
   it('should handle See tips button click', async () => {
@@ -326,6 +327,7 @@ describe('PoeSchedule', () => {
     expect(mondayCheckbox).toHaveAttribute('aria-checked', 'mixed')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockedSavePortsSetting).toHaveBeenCalled()
   })
 
   it('should cancel and close the dialog without saving', async () => {
@@ -349,7 +351,6 @@ describe('PoeSchedule', () => {
     await userEvent.click(customScheduleRadio)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
     expect(setVisible).toHaveBeenCalledWith(false)
   })
 })

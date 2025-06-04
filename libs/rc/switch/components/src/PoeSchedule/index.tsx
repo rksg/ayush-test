@@ -69,11 +69,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   }, [getVenue, tenantId, venueId, poeScheduler])
 
   const onTypeChange = (e: RadioChangeEvent) => {
-    if(e.target.value === SchedulerTypeEnum.NO_SCHEDULE){
-      setHidden(true)
-    }else{
-      setHidden(false)
-    }
+    setHidden(e.target.value === SchedulerTypeEnum.NO_SCHEDULE)
   }
 
   interface ScheduleData {
@@ -231,7 +227,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 fieldNamePath={['scheduler']}
                 intervalUnit={60}
                 title={readOnlyMode ? '' :
-                  $t({ defaultMessage: 'Mark/ unmark areas to change PoE availability' })}
+                  $t({ defaultMessage: 'Mark / unmark areas to change PoE availability' })}
                 loading={false}
                 isShowTips={readOnlyMode ? false : true}
                 prefix={true}
