@@ -243,7 +243,7 @@ export const convertEdgeNetworkIfConfigToApiPayload = (
   return payload
 }
 
-export const convertEdgeSubInterfaceToApiPayload = (formData: EdgeSubInterface) => {
+export const convertEdgeSubInterfaceToApiPayload = (formData: SubInterface) => {
   const payload = { ...formData }
   if (payload.ipMode === EdgeIpModeEnum.DHCP) {
     if (payload.ip) payload.ip = ''

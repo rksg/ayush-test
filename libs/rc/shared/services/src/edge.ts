@@ -314,7 +314,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -324,7 +324,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -333,7 +333,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
       query: ({ params }) => {
@@ -571,7 +571,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     getEdgeLagsStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -760,7 +761,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     updateLagSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -770,7 +771,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     deleteLagSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -779,7 +780,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     importLagSubInterfacesCSV: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -791,7 +792,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -1069,7 +1071,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update LAG, port and virtual IP settings'
+            'Update LAG, port and virtual IP settings',
+            'Update sub-interface',
+            'Delete LAG',
+            'Add LAG',
+            'Update LAG',
+            'Update ports',
+            'Update LAG sub-interface'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))

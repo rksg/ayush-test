@@ -83,6 +83,13 @@ const defaultEditEdgeClusterCtxData = {
   portData: mockEdgePortConfig.ports,
   portStatus: mockEdgePortStatus,
   lagStatus: mockEdgeLagStatusList.data,
+  subInterfaceData: [{
+    portId: '6ab895d4-cb8a-4664-b3f9-c4d6e0c8b8c1',
+    subInterfaces: mockEdgeSubInterfaces.content
+  },{
+    lagId: 1,
+    subInterfaces: mockEdgeSubInterfaces.content
+  }],
   generalSettings: mockEdgeData,
   isPortDataFetching: false,
   isPortStatusFetching: false,
@@ -113,17 +120,9 @@ describe('EditEdge ports - sub-interface', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeList))
       ),
-      rest.get(
-        EdgeUrlsInfo.getSubInterfaces.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
-      ),
       rest.delete(
         EdgeUrlsInfo.deleteSubInterfaces.url,
         (_req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getLagSubInterfaces.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteLagSubInterfaces.url,
@@ -143,6 +142,7 @@ describe('EditEdge ports - sub-interface', () => {
               portData: [],
               portStatus: [],
               lagStatus: [],
+              subInterfaceData: [],
               generalSettings: mockEdgeData,
               isPortDataFetching: false,
               isPortStatusFetching: false,
@@ -307,7 +307,6 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 

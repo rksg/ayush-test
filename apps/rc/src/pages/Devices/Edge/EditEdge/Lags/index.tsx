@@ -20,11 +20,14 @@ const Lags = () => {
   const { serialNumber } = useParams()
   const {
     portData, lagData, lagStatus, isFetching,
-    clusterInfo, isClusterFormed, clusterConfig
+    clusterInfo, isClusterFormed, clusterConfig,
+    subInterfaceData
   } = useContext(EditEdgeDataContext)
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
+
+  const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces) ?? []
 
   const handleAdd = async (serialNumber: string, data: EdgeLag) => {
     const requestPayload = {
@@ -89,6 +92,7 @@ const Lags = () => {
           onEdit={handleEdit}
           onDelete={handleDelete}
           clusterInfo={clusterInfo!}
+          subInterfaceList={subInterfaceList}
         />
       </Form>
     </Loader>

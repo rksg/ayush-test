@@ -47,7 +47,7 @@ const Ports = () => {
   const {
     clusterInfo, portData, portStatus,
     lagData, isFetching, isClusterFormed, clusterConfig,
-    isSupportAccessPort
+    isSupportAccessPort, subInterfaceData
   } = useContext(EditEdgeDataContext)
 
   const [updatePortConfig] = useUpdatePortConfigMutation()
@@ -57,6 +57,8 @@ const Ports = () => {
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+
+  const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces) ?? []
 
   const handleFormChange = async (changedValues: Object) => {
     // due to form.List, must use the trailing 0
@@ -207,6 +209,7 @@ const Ports = () => {
               vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
               clusterInfo={clusterInfo!}
               isSupportAccessPort={isSupportAccessPort}
+              subInterfaceList={subInterfaceList}
             />
           </StepsForm.StepForm>
         </StepsForm>

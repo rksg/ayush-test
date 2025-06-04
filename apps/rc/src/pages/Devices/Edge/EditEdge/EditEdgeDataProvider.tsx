@@ -6,14 +6,13 @@ import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
+  useGetEdgeClusterNetworkSettingsQuery,
   useGetEdgeClusterQuery,
   useGetEdgeFeatureSetsQuery,
-  useGetEdgeLagListQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgeListQuery,
   useGetEdgeQuery,
   useGetEdgesPortStatusQuery,
-  useGetPortConfigQuery,
   useGetStaticRoutesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -28,7 +27,9 @@ import {
   EdgeSdLanViewDataP2,
   EdgeStaticRouteConfig,
   EdgeStatusEnum,
-  IncompatibilityFeatures
+  IncompatibilityFeatures,
+  LagSubInterface,
+  PortSubInterface
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -39,6 +40,7 @@ export interface EditEdgeDataContextType {
   portStatus: EdgePortInfo[]
   lagData: EdgeLag[]
   lagStatus: EdgeLagStatus[]
+  subInterfaceData?: (PortSubInterface | LagSubInterface)[]
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
@@ -49,12 +51,8 @@ export interface EditEdgeDataContextType {
   isGeneralSettingsFetching: boolean
   isClusterInfoLoading: boolean
   isClusterInfoFetching: boolean
-  isPortDataLoading: boolean
-  isPortDataFetching: boolean
   isPortStatusLoading: boolean
   isPortStatusFetching: boolean
-  isLagDataLoading: boolean
-  isLagDataFetching: boolean
   isLagStatusLoading: boolean
   isLagStatusFetching: boolean
   isDnsServersDataLoading: boolean
@@ -152,20 +150,6 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
   })
 
   const {
-    data: portData,
-    isLoading: isPortDataLoading,
-    isFetching: isPortDataFetching
-  } = useGetPortConfigQuery({
-    params: {
-      venueId: clusterInfo?.venueId,
-      edgeClusterId: clusterInfo?.clusterId,
-      serialNumber
-    }
-  }, {
-    skip: !serialNumber || !clusterInfo?.venueId || !clusterInfo?.clusterId
-  })
-
-  const {
     data: portStatus,
     isLoading: isPortStatusLoading,
     isFetching: isPortStatusFetching
@@ -173,26 +157,6 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     payload: { edgeIds: [serialNumber] }
   }, {
     skip: !serialNumber
-  })
-
-  const { lagData, isLagDataLoading, isLagDataFetching } = useGetEdgeLagListQuery({
-    params: {
-      venueId: clusterInfo?.venueId,
-      edgeClusterId: clusterInfo?.clusterId,
-      serialNumber },
-    payload: {
-      page: 1,
-      pageSize: 10
-    }
-  },{
-    skip: !isEdgeLagEnabled || !clusterInfo?.venueId || !clusterInfo?.clusterId,
-    selectFromResult ({ data, isLoading, isFetching }) {
-      return {
-        lagData: data?.data,
-        isLagDataLoading: isLoading,
-        isLagDataFetching: isFetching
-      }
-    }
   })
 
   const { lagStatus, isLagStatusLoading, isLagStatusFetching } = useGetEdgeLagsStatusListQuery({
@@ -275,27 +239,58 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     }
   })
 
+  const {
+    currentNodePortData = [],
+    currentNodeLagData = [],
+    currentNodeSubInterfaceData = [],
+    isClusterNetworkSettingsLoading,
+    isClusterNetworkSettingsFetching
+  } = useGetEdgeClusterNetworkSettingsQuery({
+    params: {
+      venueId: clusterInfo?.venueId,
+      clusterId: clusterInfo?.clusterId
+    }
+  },{
+    skip: !Boolean(clusterInfo),
+    selectFromResult: ({ data, isLoading, isFetching }) => {
+      // eslint-disable-next-line max-len
+      const targetSubInterfaceData = data?.subInterfaceSettings?.find(item => item.serialNumber === serialNumber)
+      const currentNodeSubInterfaceData = [
+        ...(targetSubInterfaceData?.lags ?? []),
+        ...(targetSubInterfaceData?.ports ?? [])
+      ]
+      return {
+      // eslint-disable-next-line max-len
+        currentNodePortData: data?.portSettings.find(item => item.serialNumber === serialNumber)?.ports,
+        // eslint-disable-next-line max-len
+        currentNodeLagData: data?.lagSettings.find(item => item.serialNumber === serialNumber)?.lags,
+        currentNodeSubInterfaceData,
+        isClusterNetworkSettingsLoading: isLoading,
+        isClusterNetworkSettingsFetching: isFetching
+      }
+    }
+  })
+
   const isSupportAccessPort = clusterInfo?.edgeList?.every(
     // eslint-disable-next-line max-len
     edge => compareVersions(edge.firmwareVersion, requiredFwMap[IncompatibilityFeatures.CORE_ACCESS_SEPARATION]) > -1
   )
 
-  const isLoading = isPortDataLoading || isPortStatusLoading || isLagDataLoading ||
-    isClusterInfoLoading || isLagStatusLoading || isGeneralSettingsLoading ||
-    isDnsServersDataLoading || isStaticRouteDataLoading || isClusterConfigLoading ||
-    isEdgeSdLanLoading
-  const isFetching = isPortDataFetching || isPortStatusFetching || isLagDataFetching ||
-    isClusterInfoFetching || isLagStatusFetching || isGeneralSettingsFetching ||
-    isDnsServersDataFetching || isStaticRouteDataFetching || isClusterConfigFetching ||
-    isEdgeSdLanFetching
+  const isLoading = isPortStatusLoading || isClusterInfoLoading || isLagStatusLoading ||
+    isGeneralSettingsLoading || isDnsServersDataLoading || isStaticRouteDataLoading ||
+    isClusterConfigLoading || isEdgeSdLanLoading || isClusterNetworkSettingsLoading
+  const isFetching = isPortStatusFetching || isClusterInfoFetching || isLagStatusFetching ||
+    isGeneralSettingsFetching || isDnsServersDataFetching || isStaticRouteDataFetching ||
+    isClusterConfigFetching || isEdgeSdLanFetching || isClusterNetworkSettingsFetching
 
   return <EditEdgeDataContext.Provider value={{
     generalSettings,
     clusterInfo,
-    portData: portData?.ports ?? [],
+    portData: currentNodePortData,
     portStatus: portStatus?.[serialNumber] ?? [],
-    lagData: lagData ?? [],
+    lagData: currentNodeLagData,
     lagStatus: lagStatus ?? [],
+    subInterfaceData: currentNodeSubInterfaceData,
     dnsServersData,
     staticRouteData,
     clusterConfig,
@@ -306,12 +301,8 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     isGeneralSettingsFetching,
     isClusterInfoLoading,
     isClusterInfoFetching,
-    isPortDataLoading,
-    isPortDataFetching,
     isPortStatusLoading,
     isPortStatusFetching,
-    isLagDataLoading,
-    isLagDataFetching,
     isLagStatusLoading,
     isLagStatusFetching,
     isDnsServersDataLoading,
