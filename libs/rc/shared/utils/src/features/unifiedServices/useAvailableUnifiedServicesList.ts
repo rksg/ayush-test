@@ -43,7 +43,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isEdgeMdnsBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
-  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
+  const mdnsProxyStateMap = useMdnsProxyStateMap()
 
   // Policy features
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
@@ -309,7 +309,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
+        disabled: !mdnsProxyStateMap[ServiceType.EDGE_MDNS_PROXY],
         isBetaFeature: isEdgeMdnsBetaEnabled
       },
       {
@@ -317,14 +317,14 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
+        disabled: !mdnsProxyStateMap[ServiceType.MDNS_PROXY]
       },
       {
         type: ServiceType.MDNS_PROXY_CONSOLIDATION,
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.MONITORING_TROUBLESHOOTING,
-        disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
+        disabled: !mdnsProxyStateMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
       },
       {
         type: ServiceType.PIN,
