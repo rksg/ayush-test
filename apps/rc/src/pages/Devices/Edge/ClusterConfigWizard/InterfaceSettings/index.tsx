@@ -54,8 +54,7 @@ import {
 } from './utils'
 import { VirtualIpForm } from './VirtualIpForm'
 
-const lagCompatibleErrorFields = getLagFormCompatibilityFields()
-const portCompatibleErrorFields = getPortFormCompatibilityFields()
+
 const subInterfaceCompatibleErrorFields = getSubInterfaceCompatibilityFields()
 
 export const InterfaceSettings = () => {
@@ -88,6 +87,10 @@ export const InterfaceSettings = () => {
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
   const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
 
+  // After removing core/access FF, move the following code outside the component
+  const lagCompatibleErrorFields = getLagFormCompatibilityFields(isEdgeCoreAccessSeparationReady)
+  const portCompatibleErrorFields = getPortFormCompatibilityFields(isEdgeCoreAccessSeparationReady)
+
   const doCompatibleCheck = (typeKey: string): void => {
     const checkResult = getCompatibleCheckResult(typeKey)
     updateAlertMessage(checkResult, typeKey)
@@ -97,7 +100,8 @@ export const InterfaceSettings = () => {
     const formData = get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
-      checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
+      // eslint-disable-next-line max-len
+      checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList, isEdgeCoreAccessSeparationReady)
     } else if (typeKey === InterfaceSettingsTypeEnum.SUB_INTERFACE) {
       const allInterfaces = getAllInterfaceAsPortInfoFromForm(configWizardForm)
       checkResult = subInterfaceCompatibleCheck(
@@ -114,7 +118,8 @@ export const InterfaceSettings = () => {
         }, {} as EdgeNodesPortsInfo)) as unknown as CompatibilityCheckResult
     } else {
       const lagFormData = get(configWizardForm.getFieldsValue(true), 'lagSettings')
-      checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
+      // eslint-disable-next-line max-len
+      checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList, isEdgeCoreAccessSeparationReady)
     }
 
     return checkResult

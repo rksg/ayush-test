@@ -139,7 +139,7 @@ export default function SelectPolicyForm () {
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       disabled: !isEdgeEnabled
     },
     {

@@ -1,5 +1,5 @@
 import { NamePath } from 'antd/lib/form/interface'
-import _            from 'lodash'
+import _, { isNil } from 'lodash'
 
 import { EdgeLag, EdgePort, EdgePortTypeEnum, SubInterface } from '@acx-ui/rc/utils'
 
@@ -42,7 +42,7 @@ export const getEnabledCorePortInfo = (
     item.corePortEnabled && item.portType === EdgePortTypeEnum.LAN)
   const lagCorePortEnabled = lagCorePort[0]?.id !== undefined
   const corePortKey = physicalCorePort[0]?.interfaceName ||
-    (lagCorePort[0]?.id !== undefined && lagCorePort[0]?.id + '') ||
+    (!isNil(lagCorePort[0]?.id) && lagCorePort[0]?.id + '') ||
     subInterfaceCorePort?.interfaceName
   const isLag = physicalCorePort[0]?.interfaceName ? false : lagCorePort[0]?.id !== undefined
   const physicalCorePortId = isLag ? undefined : physicalCorePort[0]?.id
@@ -74,11 +74,12 @@ export const getEnabledAccessPortInfo = (
     item.accessPortEnabled && item.lagEnabled && item.portType === EdgePortTypeEnum.LAN)
   const subInterfaceAccessPort = subInterfaceData.find(item =>
     item.accessPortEnabled && item.portType === EdgePortTypeEnum.LAN)
-  const accessPortKey = physicalAccessPort?.interfaceName || lagAccessPort?.id ||
+  const accessPortKey = physicalAccessPort?.interfaceName ||
+    (!isNil(lagAccessPort?.id) && lagAccessPort?.id + '') ||
     subInterfaceAccessPort?.interfaceName
 
   return {
-    key: accessPortKey !== undefined ? (accessPortKey + '') : accessPortKey
+    key: accessPortKey
   }
 }
 

@@ -8716,6 +8716,9 @@ h5.c6.ant-typography {
                         </label>
                       </div>
                     </div>
+                    <div
+                      style="display: flex; flex-wrap: nowrap;"
+                    />
                   </div>
                 </div>
               </div>
@@ -8781,7 +8784,7 @@ h5.c6.ant-typography {
                               <span
                                 class="ant-select-selection-placeholder"
                               >
-                                Select Venue / APs to exclude
+                                Please select APs to exclude
                               </span>
                             </div>
                           </div>
