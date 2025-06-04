@@ -263,7 +263,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     (n: ApLldpNeighbor | ApRfNeighbor) => 'lldpPowerType' in n && n.lldpPowerType != null
   ) as ApLldpNeighbor
   const poeClass = currentAPNeighbor?.lldpClass
-  const powerConsumption = currentAPNeighbor?.lldpPSEAllocPowerVal
+  const allocatedPower = currentAPNeighbor?.lldpPSEAllocPowerVal
 
   const getPoePortSpeed = (): string | undefined => {
     const poePortId = apCapabilities?.lanPorts
@@ -273,7 +273,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       ?.find(item =>
         (parseInt(item.port, 10) + 1) === parseInt(poePortId as string, 10)
       )?.phyLink?.split(' ')[1]
-    return phyLink
+    return phyLink?.includes(' ') ? phyLink : phyLink?.replace(/(\d)(?=[A-Za-z])/g, '$1 ')
   }
 
   const getPoeClassDesc = (lldpClass: string | null | undefined): string => {
@@ -291,11 +291,11 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const getAllocPowerVal = (lldpPSEAllocPowerVal: string | null | undefined): string => {
     if (!lldpPSEAllocPowerVal) return noDataDisplay
-    const powerConsumption = Number(lldpPSEAllocPowerVal) / 1000
-    if(Number.isInteger(powerConsumption)) {
-      return `${powerConsumption} W`
+    const allocatedPower = Number(lldpPSEAllocPowerVal) / 1000
+    if(Number.isInteger(allocatedPower)) {
+      return `${allocatedPower} W`
     }
-    return `${powerConsumption.toFixed(2)} W`
+    return `${allocatedPower.toFixed(2)} W`
   }
 
   async function socketHandler () {
@@ -503,8 +503,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                     label={$t({ defaultMessage: 'PoE Class' })}
                     children={getPoeClassDesc(poeClass)} />
                   <Descriptions.Item
-                    label={$t({ defaultMessage: 'Power Consumption' })}
-                    children={getAllocPowerVal(powerConsumption)} />
+                    label={$t({ defaultMessage: 'Allocated Power' })}
+                    children={getAllocPowerVal(allocatedPower)} />
                 </>
               )}
           </Descriptions>

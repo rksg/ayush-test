@@ -69,6 +69,10 @@ describe('FlexibleAuthenticationForm', ()=>{
     )
   })
 
+  afterEach(() => {
+    mockedNavigate.mockClear()
+  })
+
   describe('Add mode', ()=>{
     const params = {
       tenantId: 'tenant-id'
@@ -100,7 +104,7 @@ describe('FlexibleAuthenticationForm', ()=>{
       )
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Add Authentication')).toBeVisible()
+      expect(await screen.findByText('Add Port Authentication')).toBeVisible()
       await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
       await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
       await userEvent.type(await screen.findByLabelText(/Guest VLAN/),'1')
@@ -136,7 +140,7 @@ describe('FlexibleAuthenticationForm', ()=>{
       )
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Add Authentication')).toBeVisible()
+      expect(await screen.findByText('Add Port Authentication')).toBeVisible()
       await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
       await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
 
@@ -194,12 +198,16 @@ describe('FlexibleAuthenticationForm', ()=>{
       )
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Add Authentication')).toBeVisible()
+      expect(await screen.findByText('Add Port Authentication')).toBeVisible()
       await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
       await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
 
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-      expect(mockedNavigate).toHaveBeenCalledWith('/tenant-id/t/policies/authentication/list')
+      expect(mockedNavigate).toHaveBeenCalledWith({
+        hash: '',
+        pathname: '/tenant-id/t/policies/authentication/list',
+        search: ''
+      })
     })
 
     describe('Handle the visibility of form items', ()=>{
@@ -220,7 +228,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
 
@@ -250,7 +258,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
         expect(await screen.findByTestId('fail-action-select')).toBeVisible()
@@ -290,7 +298,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
 
         expect(screen.queryByTestId('change-auth-order-switch')).toBeNull()
@@ -325,7 +333,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_AUTHORIZED)
 
@@ -359,7 +367,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_AUTHORIZED)
 
@@ -388,7 +396,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
         await userEvent.selectOptions(await screen.findByTestId('port-control-select'), PortControl.FORCE_UNAUTHORIZED)
 
@@ -417,7 +425,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
 
         await userEvent.selectOptions(await screen.findByTestId('fail-action-select'), AuthFailAction.RESTRICTED_VLAN)
@@ -447,7 +455,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
 
         const restrictedVlanField = await screen.findByTestId('restricted-vlan-input')
@@ -476,7 +484,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
 
         const criticalVlanField = await screen.findByTestId('critical-vlan-input')
@@ -505,7 +513,7 @@ describe('FlexibleAuthenticationForm', ()=>{
         )
 
         await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        expect(await screen.findByText('Add Authentication')).toBeVisible()
+        expect(await screen.findByText('Add Port Authentication')).toBeVisible()
         await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
 
         const criticalVlanField = await screen.findByTestId('critical-vlan-input')

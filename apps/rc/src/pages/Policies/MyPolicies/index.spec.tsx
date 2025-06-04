@@ -355,7 +355,7 @@ describe('MyPolicies', () => {
       }
     )
 
-    expect(await screen.findByText('Authentication (1)')).toBeVisible()
+    expect(await screen.findByText('Port Authentication (1)')).toBeVisible()
   })
   it('should render Port Profile correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)

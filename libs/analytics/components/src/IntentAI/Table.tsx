@@ -316,7 +316,7 @@ export function IntentAITable (
       }
     },
     {
-      title: $t({ defaultMessage: 'Last update' }),
+      title: $t({ defaultMessage: 'Last Update' }),
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
