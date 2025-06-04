@@ -435,6 +435,7 @@ export function getRadiusIdFromFormData (key: RadiusIdKey, formData: NetworkSave
 export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
+      return true
     case NetworkTypeEnum.OPEN:
       return !!saveData.wlan?.macAuthMacFormat
     case NetworkTypeEnum.DPSK:

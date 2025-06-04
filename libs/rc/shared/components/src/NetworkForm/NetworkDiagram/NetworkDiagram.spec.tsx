@@ -1,5 +1,8 @@
 import '@testing-library/jest-dom'
 
+import { features } from 'process'
+
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { render, screen }                                          from '@acx-ui/test-utils'
@@ -44,6 +47,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
@@ -57,6 +61,98 @@ describe('NetworkDiagram', () => {
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Psk')
       expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render PSK Mac Auth with proxy diagram successfully', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(
+        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+      )
+
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>,{
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('PskMacAuthProxy')
+    })
+
+    it('should render PSK external Mac Auth with proxy diagram successfully', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(
+        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+      )
+
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableMACAuth={true}
+              isMacRegistrationList={false}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>,{
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaProxy')
+    })
+
+    it('should render PSK with proxy diagram successfully', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(
+        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+      )
+
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableMACAuth={true}
+              isMacRegistrationList={false}
+              enableAccountingService={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>,{
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('Aaa')
     })
 
     it('should render AAA diagram successfully', async () => {
