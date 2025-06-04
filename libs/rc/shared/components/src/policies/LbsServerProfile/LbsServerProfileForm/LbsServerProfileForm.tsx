@@ -1,3 +1,4 @@
+/* eslint-disable align-import/align-import */
 import { useEffect, useRef } from 'react'
 
 import { useIntl }                from 'react-intl'
@@ -22,10 +23,10 @@ import {
   PolicyType,
   LbsServerProfileContext,
   usePolicyPageHeaderTitle,
-  getPolicyRoutePath,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 import { CommonResult }  from '@acx-ui/user'
 
 import LbsServerProfileSettingForm from './LbsServerProfileSettingForm'
@@ -41,13 +42,10 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.LBS_SERVER_PROFILE,
-    oper: PolicyOperation.LIST
-  })
-  const linkToPolicies = useTenantLink(tablePath)
-
   const { editMode = false, modalMode = false, modalCallBack } = props
+
+  const previousPath = usePolicyPreviousPath(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.LBS_SERVER_PROFILE)
 
   const formRef = useRef<StepsFormLegacyInstance<LbsServerProfileContext>>()
   const { data } = useGetLbsServerProfileQuery({ params }, { skip: !editMode })
@@ -112,7 +110,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
           }
         }).unwrap().then(() => {
           if (!modalMode) {
-            navigate(linkToPolicies, { replace: true })
+            navigate(redirectPathAfterSave, { replace: true })
           }
         })
       } else {
@@ -120,7 +118,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
           params,
           payload
         }).unwrap()
-        modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+        modalMode ? modalCallBack?.() : navigate(redirectPathAfterSave, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -137,7 +135,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
     <StepsFormLegacy<LbsServerProfileContext>
       formRef={formRef}
       editMode={editMode}
-      onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
+      onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath, { replace: true })}
       onFinish={handleLbsServerProfile}
     >
       <StepsFormLegacy.StepForm>

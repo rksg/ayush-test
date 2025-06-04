@@ -16,15 +16,16 @@ import {
   useUpdateClientIsolationMutation
 } from '@acx-ui/rc/services'
 import {
-  getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
   ClientIsolationSaveData,
-  usePolicyListBreadcrumb, formatMacAddress
+  usePolicyListBreadcrumb, formatMacAddress,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
@@ -39,13 +40,13 @@ interface ClientIsolationFormProps {
 export function ClientIsolationForm (props: ClientIsolationFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  // eslint-disable-next-line max-len
-  const tablePath = getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-
   const { editMode = false , isEmbedded = false, updateInstance } = props
+
+  const previousPath = usePolicyPreviousPath(PolicyType.CLIENT_ISOLATION, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.CLIENT_ISOLATION)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.CLIENT_ISOLATION)
 
   const [ addClientIsolation ] = useAddClientIsolationMutation()
   const [ updateClientIsolation ] = useUpdateClientIsolationMutation()
@@ -87,7 +88,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
       }
 
       if(!isEmbedded) {
-        navigate(linkToPolicies, { replace: true })
+        navigate(redirectPathAfterSave, { replace: true })
       }
 
     } catch (error) {
@@ -98,10 +99,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
   return (
     <>
       {!isEmbedded && <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
-          : $t({ defaultMessage: 'Add Client Isolation Profile' })
-        }
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       }
@@ -112,7 +110,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
             formRef.current?.resetFields()
             updateInstance?.()
           } else {
-            navigate(linkToPolicies)
+            navigate(previousPath)
           }
         }}
         onFinish={saveData}
