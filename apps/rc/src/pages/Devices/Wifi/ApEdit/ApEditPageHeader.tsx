@@ -56,7 +56,10 @@ function ApEditPageHeader () {
 
   useEffect(() => {
     if (apGroupInfo?.data && apDetails) {
-      setApGroup(apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)[0].name)
+      const filteredApGroup = apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)
+      if (filteredApGroup.length > 0) {
+        setApGroup(filteredApGroup[0].name)
+      }
     }
   }, [apGroupInfo, apDetails])
 
