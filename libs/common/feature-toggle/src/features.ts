@@ -241,7 +241,7 @@ export enum Features {
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   WORKFLOW_CERTIFICATE_TEMPLATE_ACTION = 'workflow-cert-template-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
-  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'removable-ff',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'removable-ff',
