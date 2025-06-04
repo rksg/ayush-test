@@ -496,7 +496,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   bindingWorkflowOnNetwork: {
     method: 'PUT',
-    url: '	/wifiNetworks/:networkId/workflows/:workflowId',
+    url: '	/wifiNetworks/:networkId/workflowProfiles/:workflowId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
