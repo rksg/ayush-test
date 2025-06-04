@@ -1,22 +1,23 @@
-
 import { useEffect } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useIdentityGroupPageHeaderTitle } from '@acx-ui/cloudpath/components'
-import { Loader, PageHeader, StepsForm }   from '@acx-ui/components'
 import {
-  useGetPersonaGroupByIdQuery,
-  useGetIdentityGroupTemplateByIdQuery
-} from '@acx-ui/rc/services'
+  getIdentityGroupRoutePath,
+  IdentityOperation,
+  useIdentityGroupBreadcrumbs,
+  useIdentityGroupPageHeaderTitle
+} from '@acx-ui/cloudpath/components'
+import { Loader, PageHeader, StepsForm }                                     from '@acx-ui/components'
+import { useGetIdentityGroupTemplateByIdQuery, useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
-  CONFIG_TEMPLATE_LIST_PATH,
   PersonaGroup,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePersonaGroupAction } from '../PersonaGroupDrawer/usePersonaGroupActions'
 
@@ -39,9 +40,10 @@ export function IdentityGroupForm ({
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: editMode })
+  const breadcrumb = useIdentityGroupBreadcrumbs(IdentityOperation.LIST)
   // eslint-disable-next-line max-len
-  const { pathname: regularFallbackPath } = useTenantLink('users/identity-management/identity-group')
-  const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
+  const regularFallbackPath = getIdentityGroupRoutePath(IdentityOperation.LIST, false)
+  const templateFallbackPath = useConfigTemplateTenantLink('')
   const previousPath = isTemplate ? templateFallbackPath : regularFallbackPath
 
   const { personaGroupId } = useParams()
@@ -89,18 +91,7 @@ export function IdentityGroupForm ({
   return (<>
     {!modalMode && <PageHeader
       title={pageTitle}
-      breadcrumb={[
-        {
-          text: $t({ defaultMessage: 'Clients' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Management' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Groups' }),
-          link: 'users/identity-management'
-        }
-      ]}
+      breadcrumb={breadcrumb}
     />}
     <Loader states={[{ isLoading, isFetching }]}>
       <StepsForm

@@ -3,14 +3,16 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { getIdentityGroupRoutePath, IdentityOperation, useIdentityGroupBreadcrumbs } from '@acx-ui/cloudpath/components'
+import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard }               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
 import {
   useGetIdentityGroupTemplateByIdQuery,
   useGetPersonaGroupByIdQuery,
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetCertificateTemplateQuery,
-  useLazyGetDpskQuery, useLazyGetDpskTemplateQuery,
+  useLazyGetDpskQuery,
+  useLazyGetDpskTemplateQuery,
   useLazyGetEdgePinByIdQuery,
   useLazyGetMacRegListQuery,
   useLazyGetVenueQuery
@@ -18,14 +20,14 @@ import {
 import {
   CertTemplateLink,
   ConfigTemplateType,
-  DpskPoolLink,
   getConfigTemplateEditPath,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroup,
   PersonaUrls,
   PolicySetLink,
-  useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useIsEdgeFeatureReady,
   VenueLink
@@ -34,6 +36,7 @@ import { useNavigate, useTenantLink }                   from '@acx-ui/react-rout
 import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
+import { DpskPoolLink }       from '../../CommonLinkHelper'
 import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
 
@@ -44,6 +47,7 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
+  const breadcrumb = useIdentityGroupBreadcrumbs(IdentityOperation.LIST)
 
   const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
     ? [
@@ -60,18 +64,7 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={filterByOperations(extra)}
-      breadcrumb={[
-        {
-          text: $t({ defaultMessage: 'Clients' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Management' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Groups' }),
-          link: 'users/identity-management'
-        }
-      ]}
+      breadcrumb={breadcrumb}
     />
   )
 }
@@ -89,7 +82,7 @@ export function PersonaGroupDetails () {
   const { isTemplate } = useConfigTemplate()
   const editPagePath = useTenantLink(isTemplate
     ? getConfigTemplateEditPath(ConfigTemplateType.IDENTITY_GROUP, personaGroupId ?? '')
-    : `users/identity-management/identity-group/${personaGroupId}/edit`,
+    : getIdentityGroupRoutePath(IdentityOperation.EDIT, isTemplate, personaGroupId),
   isTemplate ? 'v' : 't')
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -124,7 +117,7 @@ export function PersonaGroupDetails () {
       propertyId,
       certificateTemplateId,
       policySetId
-    } = detailsQuery.data as PersonaGroup
+    } = (detailsQuery?.data as PersonaGroup) ?? {}
 
     if (macRegistrationPoolId && !isTemplate) {
       getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })

@@ -13,6 +13,8 @@ import {
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
+import { ServiceConfigTemplateLinkSwitcher } from '../configTemplates'
+
 
 export function VenueLink (props: { venueId?: string, name?: string, showNoData?: boolean }) {
   const { venueId, name, showNoData } = props
@@ -74,14 +76,13 @@ export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showN
   const { dpskPoolId, name, showNoData } = props
   return (
     dpskPoolId
-      ? <TenantLink to={getServiceDetailsLink({
+      ? ServiceConfigTemplateLinkSwitcher({
         serviceId: dpskPoolId,
         oper: ServiceOperation.DETAIL,
         type: ServiceType.DPSK,
-        activeTab: DpskDetailsTabKey.OVERVIEW
-      })}>
-        {name ?? dpskPoolId}
-      </TenantLink>
+        activeTab: DpskDetailsTabKey.OVERVIEW,
+        children: name ?? dpskPoolId
+      })
       : <>{showNoData && noDataDisplay}</>
   )
 }

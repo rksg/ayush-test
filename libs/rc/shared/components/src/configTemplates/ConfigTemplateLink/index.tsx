@@ -119,10 +119,11 @@ interface ServiceConfigTemplateLinkSwitcherProps extends React.PropsWithChildren
 // eslint-disable-next-line max-len
 export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateLinkSwitcherProps) {
   const { isTemplate } = useConfigTemplate()
-  const { type, oper, serviceId, children } = props
+  const { type, oper, serviceId, children, activeTab } = props
 
   return isTemplate
-    ? <ServiceConfigTemplateDetailsLink type={type} oper={oper} serviceId={serviceId}>
+    // eslint-disable-next-line max-len
+    ? <ServiceConfigTemplateDetailsLink type={type} oper={oper} serviceId={serviceId} activeTab={activeTab}>
       {children}
     </ServiceConfigTemplateDetailsLink>
     : <TenantLink to={getServiceDetailsLink({ type, oper, serviceId })}>
