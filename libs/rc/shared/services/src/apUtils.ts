@@ -209,14 +209,14 @@ export const transformGroupByListFromNewModel = (
     let clientCount = 0
     const aps = item.aps?.map(ap => {
       clientCount += (ap.clientCount ?? 0)
-      const APRadio = item.radioStatuses
-      const lanPortStatus = item.lanPortStatuses
+      const APRadio = ap.radioStatuses
+      const lanPortStatus = ap.lanPortStatuses
 
       if (APRadio) {
-        setAPRadioInfo(ap, APRadio, channelColumnStatus)
+        setAPRadioInfo(ap, APRadio, channelColumnStatus, true)
       }
       if (lanPortStatus) {
-        setPoEPortStatus(ap, lanPortStatus)
+        setPoEPortStatus(ap, lanPortStatus, true)
       }
       return ap
     })

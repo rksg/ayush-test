@@ -301,7 +301,7 @@ function useCardData (): PolicyCardData[] {
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
       }, { skip: !isEdgeEnabled }).data?.totalCount,
