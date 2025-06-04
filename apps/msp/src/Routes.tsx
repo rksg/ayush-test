@@ -43,7 +43,7 @@ import { DataStudio }                                                           
 import { Provider }                                                              from '@acx-ui/store'
 import { SwitchScopes }                                                          from '@acx-ui/types'
 import { AuthRoute }                                                             from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload }                      from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
 import { hspReducer }                              from './HspReducer'
@@ -69,16 +69,12 @@ export function Init () {
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
 
-  const { tenantType, acx_account_vertical } = getJwtTokenPayload()
+  const { tenantType } = getJwtTokenPayload()
 
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   const isShowBrand360 = isBrand360Enabled && state.isHsp && !isInstaller
 
-  const isShowMdu360 = acx_account_vertical === AccountVertical.MDU
-
-  const linkTo = isShowMdu360 ? '/mdu360' : isShowBrand360 ? '/brand360' : '/dashboard'
-
-  const basePath = useTenantLink(linkTo, 'v')
+  const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
     to={{ pathname: basePath.pathname }}
