@@ -62,7 +62,7 @@ describe('FlexibleAuthenticationTable', ()=>{
     const rows = await within(table).findAllByRole('row')
     expect(rows).toHaveLength(flexAuthList.data.length + 1)
 
-    const button = await screen.findByRole('button', { name: 'Add Authentication' })
+    const button = await screen.findByRole('button', { name: 'Add Port Authentication' })
     expect(button).toBeVisible()
 
     const profile01 = within(rows[1])
@@ -89,7 +89,7 @@ describe('FlexibleAuthenticationTable', ()=>{
     const rows = await within(table).findAllByRole('row')
     expect(rows).toHaveLength(flexAuthList.data.length + 1)
 
-    const button = await screen.findByRole('button', { name: 'Add Authentication' })
+    const button = await screen.findByRole('button', { name: 'Add Port Authentication' })
     expect(button).toBeVisible()
 
     const profile01 = within(rows[1])
@@ -122,7 +122,7 @@ describe('FlexibleAuthenticationTable', ()=>{
     const rows = await within(table).findAllByRole('row')
     expect(rows).toHaveLength(flexAuthList.data.length + 1)
 
-    const button = await screen.findByRole('button', { name: 'Add Authentication' })
+    const button = await screen.findByRole('button', { name: 'Add Port Authentication' })
     expect(button).toBeVisible()
 
     const profile01 = within(rows[1])
@@ -151,7 +151,7 @@ describe('FlexibleAuthenticationTable', ()=>{
     const rows = await within(table).findAllByRole('row')
     expect(rows).toHaveLength(flexAuthList.data.length + 1)
 
-    const button = await screen.findByRole('button', { name: 'Add Authentication' })
+    const button = await screen.findByRole('button', { name: 'Add Port Authentication' })
     expect(button).toBeVisible()
 
     const profile01 = within(rows[1])
