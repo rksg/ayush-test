@@ -21,7 +21,9 @@ import {
   IncompatibilityFeatures,
   deriveEdgeModel,
   edgeSerialNumberValidator,
-  isOtpEnrollmentRequired
+  isOtpEnrollmentRequired,
+  MAX_EDGE_AA_NODES_COUNT,
+  MAX_EDGE_AB_NODES_COUNT
 } from '@acx-ui/rc/utils'
 import { hasPermission }              from '@acx-ui/user'
 import { compareVersions, getOpsApi } from '@acx-ui/utils'
@@ -147,13 +149,11 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     }
   }
 
-  const maxActiveActiveNodes = 4
-  const maxActiveStandbyNodes = 2
   const isAaSelected = () => {
     return haMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
   }
   const getMaxNodes = () => {
-    return isAaSelected() ? maxActiveActiveNodes : maxActiveStandbyNodes
+    return isAaSelected() ? MAX_EDGE_AA_NODES_COUNT : MAX_EDGE_AB_NODES_COUNT
   }
   const isDisableAddEdgeButton = () => {
     return (smartEdges?.length ?? 0) >= getMaxNodes() ||
@@ -167,7 +167,8 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     if (isFeatureSetsLoading) {
       return true
     }
-    let exceedAbNodeCountLimit = isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandbyNodes
+    // eslint-disable-next-line max-len
+    let exceedAbNodeCountLimit = isAaSelected() && (smartEdges?.length ?? 0) > MAX_EDGE_AB_NODES_COUNT
     return exceedAbNodeCountLimit || isAaNotSuportedByFirmware()
   }
 
