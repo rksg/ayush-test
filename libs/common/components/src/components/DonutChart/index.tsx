@@ -270,7 +270,7 @@ export function DonutChart ({
       show: true,
       text: props.title,
       subtext: props.value
-        ? props.value
+        ? props.showTotal ? `${props.value}\n${dataFormatter(sum)}` : props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
       left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
