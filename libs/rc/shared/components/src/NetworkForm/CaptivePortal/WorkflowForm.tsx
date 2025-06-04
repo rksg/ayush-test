@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { useIntl }             from 'react-intl'
@@ -11,12 +11,18 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  useGetWorkflowProfilesQuery,
+  useGetWorkflowProfileBoundNetworkQuery
+} from '@acx-ui/rc/services'
 import {
   GuestNetworkTypeEnum,
   NetworkSaveData,
   NetworkTypeEnum,
+  WifiNetworkMessages,
   useConfigTemplate,
-  WifiNetworkMessages
+  Radius
 } from '@acx-ui/rc/utils'
 
 import { AAAInstance }             from '../AAAInstance'
@@ -31,7 +37,6 @@ import {
 import { WalledGardenTextArea }  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WlanSecurityFormItems } from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 
-
 const { useWatch } = Form
 
 export function WorkflowForm () {
@@ -39,16 +44,112 @@ export function WorkflowForm () {
   const { data, setData, editMode, isRuckusAiMode, cloneMode } =
     useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-
-  const onProxyChange = (value: boolean, fieldName: string) => {
-    setData && setData({ ...data, [fieldName]: value })
-  }
-  const enableAccountingService = useWatch('enableAccountingService', form)
-
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
+
+  const [
+    workflowId,
+    enableAccountingService,
+    accountingRadius
+  ] = [
+    useWatch<string>(['guestPortal', 'workflowId']),
+    useWatch<boolean>(['enableAccountingService']),
+    useWatch<Radius>('accountingRadius')
+  ]
+
+  const onChange = (value: boolean, fieldName: string) => {
+    form.setFieldValue(fieldName, value)
+    if (supportRadsec) {
+      setData && setData({
+        ...data,
+        [fieldName]: value,
+        accountingRadius: accountingRadius,
+        accountingRadiusId: accountingRadius?.id
+      })
+    } else {
+      setData && setData({
+        ...data,
+        [fieldName]: value
+      })
+    }
+  }
+
+  const { workflowProfileOptions } = useGetWorkflowProfilesQuery({
+    payload: {
+      page: '0',
+      pageSize: '2000',
+      defaultPageSize: 2000,
+      total: 0,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      sort: 'name,asc',
+      filters: {
+        publishedChildren: true
+      }
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        workflowProfileOptions: data?.map((item) => ({
+          label: item.name,
+          value: item.id
+        })) ?? []
+      }
+    }
+  })
+
+  const { data: boundProfile } = useGetWorkflowProfileBoundNetworkQuery({
+    payload: {
+      page: '0',
+      pageSize: '10',
+      defaultPageSize: 10,
+      total: 0,
+      filters: {
+        assignmentResourceType: 'NETWORK',
+        assignmentResourceId: data?.id ?? ''
+      }
+    }
+  })
+
   const { $t } = useIntl()
 
-  // SANTODO: implement editing logic
+  useEffect(() => {
+    if((editMode || cloneMode) && data ) {
+      form.setFieldsValue({ ...data })
+      // Initialize Workflow dropdown under edit/clone mode
+      if (boundProfile) {
+        if(boundProfile.length < 1 || boundProfile[0].links.length < 1) {
+          return
+        }
+        const link = boundProfile[0].links[0]
+        // Parsing id from URL
+        // URL pattern: https://api.int.ruckus.cloud/workflows/03508fd8-de89-4133-a8df-3bb9eb73d3fe
+        const profileId = link.href.match(/([a-z0-9\-]{36})$/i)
+        if (profileId && profileId.length > 0) {
+          form.setFieldValue(['guestPortal', 'workflowId'], profileId[0])
+        }
+      }
+    }
+  }, [])
+
+  useEffect(()=>{
+    if(accountingRadius){
+      if (supportRadsec && accountingRadius.radSecOptions?.tlsEnabled) {
+        onChange(true, 'enableAccountingProxy')
+      }
+    }
+  },[supportRadsec, accountingRadius])
+
+  useEffect(() => {
+    if (workflowId) {
+      form.setFieldValue(['guestPortal', 'workflowName'],
+        workflowProfileOptions.find(option => option.value === workflowId)?.label
+      )
+    }
+  }, [workflowId])
+
   return (
     <>
       <GridRow>
@@ -56,26 +157,21 @@ export function WorkflowForm () {
           <StepsFormLegacy.Title
             children={$t({ defaultMessage: 'Settings' })}
           />
-          {/*SANTODO: Check with backend*/}
           <Form.Item
             label={$t({ defaultMessage: 'Workflow' })}
-            name={''}
+            name={['guestPortal', 'workflowId']}
             rules={[{ required: true }]}
             children={
               <Select
                 data-testid={'workflow-profile-select'}
-                options={[
-                  { label: 'Workflow-1', value: 1 },
-                  { label: 'Workflow-2', value: 2 }
-                ]}
+                options={workflowProfileOptions}
               />
             }
           />
+          <Form.Item name={['guestPortal', 'workflowName']} hidden/>
           <WlanSecurityFormItems />
           <BypassCaptiveNetworkAssistantCheckbox />
-          <WalledGardenTextArea
-            enableDefaultWalledGarden={true}
-          />
+          <WalledGardenTextArea enableDefaultWalledGarden={false} />
           <div>
             <UI.FieldLabel width={labelWidth}>
               <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
@@ -85,7 +181,7 @@ export function WorkflowForm () {
                 style={{ marginTop: '-5px', marginBottom: '0' }}
                 initialValue={false}
                 children={<Switch
-                  onChange={(value) => onProxyChange(value,'enableAccountingService')}
+                  onChange={(value) => onChange(value,'enableAccountingService')}
                 />}
               />
             </UI.FieldLabel>
@@ -109,14 +205,14 @@ export function WorkflowForm () {
                   initialValue={false}
                   children={<Switch
                     data-testid='enable-accounting-proxy'
-                    onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
+                    onChange={(value)=>onChange(value,'enableAccountingProxy')}
+                    disabled={supportRadsec && accountingRadius?.radSecOptions?.tlsEnabled}
                   />}
                 />
               </UI.FieldLabel>
             </>}
           </div>
         </GridCol>
-        {/*SANTODO: Images need update, no psk and owe.*/}
         <GridCol col={{ span: 14 }}>
           <NetworkDiagram
             type={NetworkTypeEnum.CAPTIVEPORTAL}
