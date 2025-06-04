@@ -233,7 +233,6 @@ export default function BaseStepNode (props: NodeProps
             <Plus />
           </UI.PlusButton>
         </Tooltip>
-
       }
 
       <Handle

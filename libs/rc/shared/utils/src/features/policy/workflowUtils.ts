@@ -157,7 +157,6 @@ export const composeNext = (
   edges: Edge[],
   currentX: number,
   currentY: number,
-  disconnectedBranchZIndex: number,
   isStart?: boolean
 ) => {
   const SPACE_OF_NODES = 110
@@ -181,7 +180,6 @@ export const composeNext = (
     type: nodeType,
     position: { x: currentX, y: currentY },
     draggable: false,
-    zIndex: parentId ? disconnectedBranchZIndex : 1000,
     data: {
       ...step,
       isStart,
@@ -202,18 +200,17 @@ export const composeNext = (
       target: nextStepId,
       type: ConnectionLineType.Step,
       style: { stroke: 'var(--acx-primary-black)' },
-      zIndex: parentId ? disconnectedBranchZIndex : 0,
+      zIndex: parentId ? 1000 : undefined, // if in subflow set edges to same level as nodes
       deletable: false
     })
 
     composeNext(mode, nextStepId, stepMap, parentId, nodes, edges,
-      currentX, nextY, disconnectedBranchZIndex, type === StepType.Start)
+      currentX, nextY, type === StepType.Start)
   }
 }
 
 function addParentNode (firstStepId: string,
   stepMap: Map<string, WorkflowStep>,
-  disconnectedBranchZIndex:number,
   nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
   currentX: number,
   currentY: number
@@ -248,7 +245,6 @@ function addParentNode (firstStepId: string,
       width: '260px',
       height: height + 40
     },
-    zIndex: disconnectedBranchZIndex,
     hidden: false,
     deletable: false,
     data: { id: parentNodeId, enrollmentActionId: '' }
@@ -275,8 +271,6 @@ export function toReactFlowData (
   const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
-  let disconnectedBranchZIndex = 1250
-
   firstSteps?.forEach((firstStep) => {
 
     let isDisconnectedBranch = firstStep.statusReasons
@@ -287,12 +281,9 @@ export function toReactFlowData (
     let parentNodeId = undefined
 
     if(isDisconnectedBranch) {
-      disconnectedBranchZIndex += 100
 
-      parentNodeId = addParentNode(firstStep.id, stepMap, disconnectedBranchZIndex,
+      parentNodeId = addParentNode(firstStep.id, stepMap,
         nodes, START_X, START_Y)
-
-      disconnectedBranchZIndex += 100 // child nodes and edges should be on top of subflow
 
       // Child nodes are positioned relative to the parent, so these are set to (20,20)
       startX = 20
@@ -303,7 +294,7 @@ export function toReactFlowData (
     }
 
     composeNext(mode, firstStep.id, stepMap, parentNodeId, nodes, edges,
-      startX, startY, disconnectedBranchZIndex, firstStep.type === StepType.Start)
+      startX, startY, firstStep.type === StepType.Start)
 
     START_X += 250
   })
