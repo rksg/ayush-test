@@ -1,21 +1,44 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent                       from '@testing-library/user-event'
+import { rest }                        from 'msw'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
-import { rbacApi }                                               from '@acx-ui/analytics/services'
-import { Provider, rbacApiURL, store }                           from '@acx-ui/store'
+import { AnalyticsPreferences, rbacApi }                         from '@acx-ui/analytics/services'
+import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/analytics/utils'
+import { get }                                                   from '@acx-ui/config'
+import { notificationApiURL, Provider, rbacApiURL, store }       from '@acx-ui/store'
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
 
-import { Settings } from './Settings'
+import { Settings, prepareNotificationPreferences } from './Settings'
 
 const components = require('@acx-ui/components')
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+const mockGet = jest.mocked(get)
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+const mockRaiUserProfile = jest.mocked(getRaiUserProfile)
+const mockedIntentNotificationsWithoutIntentAI = {
+  incident: {
+    P1: ['email'],
+    P2: ['email']
+  }
+} as AnalyticsPreferences
+
 describe('IntentAI Settings', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.post(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text('Updated')))
+      rest.post(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text('Updated'))),
+      rest.get(`${notificationApiURL}/preferences`,
+        (_req, res, ctx) => res(ctx.json(mockedIntentNotificationsWithoutIntentAI))),
+      rest.post(`${notificationApiURL}/preferences`,
+        (_req, res, ctx) => res(ctx.json({ success: true })))
     )
   })
   afterEach(() => {
@@ -70,8 +93,8 @@ describe('IntentAI Settings', () => {
         })
     })
   })
-  it('should handle error on save settings', async () => {
-    const error = 'server error'
+  it('should handle error on save settings for tenantSettings', async () => {
+    const error = 'tenantSettings server error'
     mockRestApiQuery(`${rbacApiURL}/tenantSettings`, 'post', { error }, false, true)
     const settings = JSON.stringify(['Energy Saving'])
     render(<Settings settings={settings}/>,
@@ -94,5 +117,111 @@ describe('IntentAI Settings', () => {
           })
         })
     })
+  })
+  it('should handle error on save settings for notification preferences', async () => {
+    const error = 'notification preferences server error'
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', { error }, false, true)
+    const settings = JSON.stringify(['Energy Saving'])
+    render(<Settings settings={settings}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByTestId('intent-subscriptions'))
+    const applyBtn = await screen.findByRole('button', { name: 'Save' })
+    await userEvent.click(applyBtn)
+    await waitFor(() => {
+      expect(components.showToast)
+        .toHaveBeenLastCalledWith({
+          type: 'error',
+          content: JSON.stringify({
+            status: 500,
+            data: { error }
+          })
+        })
+    })
+  })
+  describe('should render hyperlinks', () => {
+    beforeEach(() => {
+      mockGet.mockReturnValue('')
+    })
+    afterEach(() => {
+      mockGet.mockReset()
+    })
+    it('should render the correct links in RAI', async () => {
+      mockGet.mockReturnValue('true')
+      mockRaiUserProfile.mockReturnValue({ selectedTenant: 'tenant-id' } as unknown as UserProfile)
+      const settings = JSON.stringify(['Energy Saving'])
+      render(
+        <Provider>
+          <MemoryRouter initialEntries={['/ai/intentAI']}>
+            <Routes>
+              <Route path='/ai/profile/notifications'
+                element={<div>Notifications Page</div>} />
+              <Route path='/ai/intentAI'
+                element={<Settings settings={settings} />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      )
+      const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+      expect(intentSubscriptions).toBeVisible()
+      await userEvent.click(await screen.findByTestId('intent-subscriptions'))
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        'href', '/ai/profile/notifications')
+      const tenantLink = await screen.findByRole('link', { name: /Manage in My Preferences/i })
+      await userEvent.click(tenantLink)
+      expect(sessionStorage.getItem('intent-subscription-forward-r1-show-drawer')).toBeNull()
+    })
+    it('should render the correct links in R1', async () => {
+      const settings = JSON.stringify(['Energy Saving'])
+      render(
+        <Provider>
+          <MemoryRouter initialEntries={['/tenant-id/t/analytics/intentAI']}>
+            <Routes>
+              <Route path='/:tenantId/t/administration/notifications'
+                element={<div>Notifications Page</div>} />
+              <Route path='/:tenantId/t/analytics/intentAI'
+                element={<Settings settings={settings} />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      )
+      const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+      expect(intentSubscriptions).toBeVisible()
+      await userEvent.click(await screen.findByTestId('intent-subscriptions'))
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        'href', '/tenant-id/t/administration/notifications')
+      const tenantLink = await screen.findByRole('link', { name: /Manage in My Preferences/i })
+      await userEvent.click(tenantLink)
+      expect(sessionStorage.getItem('intent-subscription-forward-r1-show-drawer')).toEqual('true')
+    })
+  })
+  describe('should generate notification preferences correctly for IntentAI Settings', () => {
+    it('should add intentAI to preferences when notification is checked', async () => {
+      let result = prepareNotificationPreferences(mockedIntentNotificationsWithoutIntentAI, true)
+      expect(result).toEqual({
+        ...mockedIntentNotificationsWithoutIntentAI,
+        intentAI: { all: ['email'] }
+      })
+    })
+    it('should remove intentAI from preferences when notification is unchecked', async () => {
+      const preferencesWithIntentAI = {
+        ...mockedIntentNotificationsWithoutIntentAI,
+        intentAI: { all: ['email'] }
+      } as AnalyticsPreferences
+      let result = prepareNotificationPreferences(preferencesWithIntentAI, false)
+      expect(result).toEqual(mockedIntentNotificationsWithoutIntentAI)
+    })
+    it('should not change original data when intentAI item already exists or not exist',
+      async () => {
+        // intentAI item already exists
+        const preferencesWithIntentAI = {
+          ...mockedIntentNotificationsWithoutIntentAI,
+          intentAI: { all: ['email'] }
+        } as AnalyticsPreferences
+        let result = prepareNotificationPreferences(preferencesWithIntentAI, true)
+        expect(result).toEqual(preferencesWithIntentAI)
+        // intentAI item does not exists
+        result = prepareNotificationPreferences(mockedIntentNotificationsWithoutIntentAI, false)
+        expect(result).toEqual(mockedIntentNotificationsWithoutIntentAI)
+      })
   })
 })

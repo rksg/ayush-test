@@ -1,11 +1,20 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Checkbox, Form, Typography } from 'antd'
 import { defineMessage, useIntl }     from 'react-intl'
 
-import { useUpdateTenantSettingsMutation }               from '@acx-ui/analytics/services'
+import {
+  AnalyticsPreferences,
+  useGetPreferencesQuery,
+  useSetNotificationMutation,
+  useUpdateTenantSettingsMutation
+} from '@acx-ui/analytics/services'
+import { getUserProfile as getRaiUserProfile }           from '@acx-ui/analytics/utils'
 import { Drawer, Button, Loader, Transfer, showToast }   from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
+import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { getUserProfile as getR1UserProfile }            from '@acx-ui/user'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
@@ -19,6 +28,18 @@ const iconMap = {
 }
 const subscribedIntents = defineMessage({ defaultMessage: 'Subscribed Intents' })
 const unsubscribedIntents = defineMessage({ defaultMessage: 'Unsubscribed Intents' })
+export const prepareNotificationPreferences = (
+  prev: AnalyticsPreferences,
+  notificationChecked: boolean
+) => {
+  const newPreferences = { ...prev }
+  if (notificationChecked) {
+    newPreferences.intentAI = { all: ['email'] }
+  } else {
+    delete newPreferences.intentAI
+  }
+  return newPreferences
+}
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const aiFeatures = Object.entries(aiFeaturesLabel)
@@ -29,32 +50,64 @@ export function Settings ({ settings }: { settings: string }) {
   const [form] = Form.useForm()
 
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
-  const saveSettings = useCallback(() => {
-    return updateSettings({
-      'enabled-intent-features': JSON.stringify(targetKeys)
-    })
-      .unwrap()
-      .then(() => {
-        showToast({
-          type: 'success',
-          content: $t({ defaultMessage: 'Subscriptions saved successfully!' })
-        })
-        closeDrawer(undefined)
-      })
-      .catch((error) => {
-        showToast({ type: 'error', content: JSON.stringify(error) })
-      })
-  }, [targetKeys, updateSettings, showToast])
 
   useEffect(() => {
     setTargetKeys(JSON.parse(settings))
   }, [settings])
 
+  const isRai = get('IS_MLISA_SA')
+  let tenantId = isRai
+    ? getRaiUserProfile().selectedTenant.id
+    : getR1UserProfile().profile.tenantId
+  const query = useGetPreferencesQuery({ tenantId })
+  const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
+  const [updatePrefrences] = useSetNotificationMutation()
+  const hasIntentEmailNotification = (data: AnalyticsPreferences) => {
+    return !!data?.intentAI?.all?.includes('email')
+  }
+  useEffect(() => {
+    setNotificationPreferences(query.data!)
+    setNotificationChecked(hasIntentEmailNotification(query.data!))
+  }, [query.data])
+  useEffect(() => {
+    setNotificationPreferences((prev: AnalyticsPreferences) => {
+      return prepareNotificationPreferences(prev, notificationChecked)
+    })
+  }, [notificationChecked])
+
+  const saveData = async () => {
+    const [tenantSettingsResult, notificationPreferencesResult] = await Promise.all([
+      updateSettings({
+        'enabled-intent-features': JSON.stringify(targetKeys)
+      }),
+      updatePrefrences({ tenantId, preferences: notificationPreferences })
+    ])
+    if (tenantSettingsResult.error || notificationPreferencesResult.error) {
+      showToast({
+        type: 'error',
+        content: JSON.stringify(tenantSettingsResult.error || notificationPreferencesResult.error)
+      })
+    } else {
+      showToast({
+        type: 'success',
+        content: $t({ defaultMessage: 'Subscriptions saved successfully!' })
+      })
+      closeDrawer(undefined)
+    }
+  }
+
   const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent | undefined) => {
     e?.stopPropagation()
     setTargetKeys(JSON.parse(settings))
+    setNotificationPreferences(query.data!)
+    setNotificationChecked(hasIntentEmailNotification(query.data!))
     setVisible(false)
   }
+
+  const notificationLinkPath = isRai
+    ? '/profile/notifications'
+    : '/administration/notifications'
+
   return <Button
     onClick={() => setVisible(true)}
     icon={<UI.Icon data-testid='intent-subscriptions' />}
@@ -72,7 +125,7 @@ export function Settings ({ settings }: { settings: string }) {
           disabled={false}
           onClick={(e) => {
             e.stopPropagation()
-            saveSettings()
+            saveData()
           }}>
           {$t({ defaultMessage: 'Save' })}
         </Button>
@@ -122,6 +175,7 @@ export function Settings ({ settings }: { settings: string }) {
           <br/><br/>
           <Typography.Text strong>{$t({ defaultMessage: 'Notifications' })}</Typography.Text>
           <Form.Item>
+            {/* Only R1 non-core tier can view the RAI notification items, but we don't need to check core tier here because this page exists in IntentAI which is accessible to non-core tier */}
             <Checkbox
               style={{ paddingRight: '5px' }}
               checked={notificationChecked}
@@ -129,9 +183,21 @@ export function Settings ({ settings }: { settings: string }) {
                 setNotificationChecked(e.target.checked)
               }
             />
-            {$t({
-              defaultMessage: 'Get email alerts when Intents status change.(Manage in My Profile)'
-            })}
+            {$t({ defaultMessage: 'Get email alerts when Intents status change. (' })}
+            <TenantLink
+              to={notificationLinkPath}
+              onClick={() => {
+                if (!isRai) {
+                  sessionStorage.setItem('intent-subscription-forward-r1-show-drawer', 'true')
+                }
+                setVisible(false)
+              }}
+            >
+              <b>
+                {$t({ defaultMessage: 'Manage in My Preferences' })}
+              </b>
+            </TenantLink>
+            {')'}
           </Form.Item>
         </Form>
       </Loader>
