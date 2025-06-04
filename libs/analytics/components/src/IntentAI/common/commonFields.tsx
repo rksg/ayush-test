@@ -39,7 +39,7 @@ export const useCommonFields = (intent: IntentDetail) => {
       tooltipPlacement: 'right' as TooltipPlacement
     },
     {
-      label: $t({ defaultMessage: 'Date' }),
+      label: $t({ defaultMessage: 'Last Update' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(updatedAt))
     },
     ...[
