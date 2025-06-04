@@ -97,40 +97,42 @@ export function usePersonaGroupAction () {
     const { dpskPoolId, macRegistrationPoolId, policySetId, ...groupData } = patchData
     const associationPromises = []
 
-    if (macRegistrationPoolId) {
-      associationPromises.push(associateMacReg({
-        params: {
-          groupId,
-          poolId: macRegistrationPoolId
-        }
-      }))
-    }
+    if (!isTemplate) {
+      if (macRegistrationPoolId) {
+        associationPromises.push(associateMacReg({
+          params: {
+            groupId,
+            poolId: macRegistrationPoolId
+          }
+        }))
+      }
 
-    if (dpskPoolId) {
-      associationPromises.push(associateDpsk({
-        params: {
-          groupId,
-          poolId: dpskPoolId
-        }
-      }))
-    }
+      if (dpskPoolId) {
+        associationPromises.push(associateDpsk({
+          params: {
+            groupId,
+            poolId: dpskPoolId
+          }
+        }))
+      }
 
-    if (policySetId) {
-      associationPromises.push(associatePolicySet({
-        params: {
-          groupId,
-          policySetId
-        }
-      }))
-    } else if (newData.hasOwnProperty('policySetId')
+      if (policySetId) {
+        associationPromises.push(associatePolicySet({
+          params: {
+            groupId,
+            policySetId
+          }
+        }))
+      } else if (newData.hasOwnProperty('policySetId')
       && newData.policySetId === undefined
       && oldData.policySetId) {
-      associationPromises.push(dissociatePolicySet({
-        params: {
-          groupId,
-          policySetId: oldData.policySetId
-        }
-      }))
+        associationPromises.push(dissociatePolicySet({
+          params: {
+            groupId,
+            policySetId: oldData.policySetId
+          }
+        }))
+      }
     }
 
     let updatePersonaGroupPromise
