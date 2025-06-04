@@ -273,7 +273,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       ?.find(item =>
         (parseInt(item.port, 10) + 1) === parseInt(poePortId as string, 10)
       )?.phyLink?.split(' ')[1]
-    return phyLink?.includes(' ') ? phyLink : phyLink?.replace(/(?=M)/, ' ')
+    return phyLink?.includes(' ') ? phyLink : phyLink?.replace(/(\d)(?=[A-Za-z])/g, '$1 ')
   }
 
   const getPoeClassDesc = (lldpClass: string | null | undefined): string => {
