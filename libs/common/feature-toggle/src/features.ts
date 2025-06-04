@@ -358,7 +358,8 @@ export enum Features {
   ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
-  MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle'
+  MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
+  WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
