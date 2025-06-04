@@ -12,7 +12,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   getServiceCatalogRoutePath,
-  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
+  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath,
+  useDhcpStateMap
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -157,6 +158,14 @@ jest.mock('./pages/Services/DHCP/Edge/DHCPDetail', () => () => {
 
 jest.mock('./pages/Services/DHCP/Edge/EditDHCP', () => () => {
   return <div data-testid='EdgeEditDhcp' />
+})
+
+jest.mock('./pages/Services/DHCPConsolidation', () => () => {
+  return <div data-testid='DHCPConsolidation' />
+})
+
+jest.mock('./pages/Services/DHCPConsolidation/create', () => () => {
+  return <div data-testid='CreateDHCPService' />
 })
 
 jest.mock('./pages/Users/Switch/ClientList', () => () => {
@@ -436,10 +445,20 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
   return <div data-testid='ClusterDetails' />
 })
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: jest.fn()
+}))
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+    jest.mocked(useDhcpStateMap).mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
   })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -854,6 +873,35 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('DHCPDetail')).toBeVisible()
+    })
+
+    describe('should navigate to DHCP Consolidation page', () => {
+      beforeEach(() => {
+        jest.mocked(useDhcpStateMap).mockReturnValue({
+          [ServiceType.DHCP]: false,
+          [ServiceType.EDGE_DHCP]: false,
+          [ServiceType.DHCP_CONSOLIDATION]: true
+        })
+      })
+      test('should navigate to DHCP Consolidation page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.LIST }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('DHCPConsolidation')).toBeVisible()
+      })
+
+      test('should navigate to DHCP Consolidation create page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.CREATE }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('CreateDHCPService')).toBeVisible()
+      })
     })
 
     test('should navigate to create Portal page', async () => {
