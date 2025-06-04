@@ -218,4 +218,17 @@ describe('Select Service Form', () => {
       expect(screen.queryByText('Wi-Fi Calling')).toBeNull()
     })
   })
+
+  it('should render mDNS Proxy Consolidation corredectly when FF is ON', async () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: false,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+    })
+
+    render(<SelectServiceForm />, { route: { params, path } })
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('mDNS Proxy')).toBeInTheDocument()
+  })
 })

@@ -16,6 +16,10 @@ import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mocked
 
 import MyServices from '.'
 
+jest.mock('../UnifiedServices/useUnifiedServiceListWithTotalCount', () => ({
+  ...jest.requireActual('../UnifiedServices/useUnifiedServiceListWithTotalCount'),
+  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
+}))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
@@ -201,5 +205,24 @@ describe('MyServices', () => {
 
       expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
     })
+  })
+
+  it('should render mDNS Proxy Consolidation corredectly when FF is ON', async () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: false,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+    })
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('mDNS Proxy (16)')).toBeInTheDocument()
   })
 })

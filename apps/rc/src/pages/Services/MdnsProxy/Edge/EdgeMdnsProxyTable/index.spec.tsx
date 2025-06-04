@@ -67,7 +67,8 @@ describe('Edge mDNS Proxy Table', () => {
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
         (_, res, ctx) => res(ctx.json({
-          data: mockEdgeMdnsViewDataList
+          data: mockEdgeMdnsViewDataList,
+          totalCount: mockEdgeMdnsViewDataList.length
         }))
       ),
       rest.post(
@@ -274,7 +275,8 @@ describe('Edge mDNS Proxy Table', () => {
     )
 
     await basicCheck()
-    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText(`mDNS Proxy for RUCKUS Edge (${mockEdgeMdnsViewDataList.length})`)).toBeNull()
     expect(screen.queryByRole('button', { name: /Add mDNS Proxy Service/ })).toBeNull()
   })
 })
