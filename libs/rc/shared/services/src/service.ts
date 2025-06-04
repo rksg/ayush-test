@@ -242,8 +242,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return {
           ...req
         }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      }
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
