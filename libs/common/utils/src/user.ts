@@ -14,7 +14,7 @@ export const userLogout = () => {
   if (Boolean(get('IS_MLISA_SA'))) {
     const search = new URLSearchParams(window.location.search)
     if (token) { search.append('token', token) }
-    const queryParams = decodeURIComponent(search.toString())
+    const queryParams = search.toString()
     const form = document.createElement('form')
     form.action = get('MLISA_LOGOUT_URL')
     if (queryParams) { form.action += `?${queryParams}` }

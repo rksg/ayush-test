@@ -103,4 +103,12 @@ describe('useIsEdgeFeatureReady', () => {
       expect(result.current).toBe(false)
     })
   })
+
+  describe('Dual-WAN Feature', () => {
+    it('should require EDGE_DUAL_WAN tier for EDGE_DUAL_WAN_TOGGLE', () => {
+      mockUseIsTierAllowed.mockImplementation((tier) => tier === !TierFeatures.EDGE_DUAL_WAN)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE))
+      expect(result.current).toBe(false)
+    })
+  })
 })
