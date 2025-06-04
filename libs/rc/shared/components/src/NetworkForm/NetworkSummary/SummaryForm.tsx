@@ -147,6 +147,13 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Identity Provider (IdP) via SAML:' })}
               children={summaryData.samlIdpProfilesName ?? ''}
             />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.Workflow &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Workflow:' })}
+              children={summaryData.guestPortal.workflowName ?? ''}
+            />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
             summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
             summaryData.type !== NetworkTypeEnum.DPSK &&
@@ -183,6 +190,13 @@ export function SummaryForm (props: {
                 />}
             </>
           }
+          { summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Workflow &&
+            summaryData.accountingRadius &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Accounting Service' })}
+              children={`${summaryData.accountingRadius?.name}`}
+            />}
           {summaryData.type === NetworkTypeEnum.AAA
           && !summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
            <AaaSummaryForm summaryData={summaryData} />
