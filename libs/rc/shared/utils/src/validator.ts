@@ -156,6 +156,14 @@ export function domainNameRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+export async function domainNameWithIPv6RegExp (value: string) {
+  return promiseAnyIpRegexPass([domainNameRegExp(value), ipv6RegExp(value)])
+    .catch((err) => {
+      return Promise.reject(err)
+    })
+}
+
 export function domainsNameRegExp (value: string[], required: boolean) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
