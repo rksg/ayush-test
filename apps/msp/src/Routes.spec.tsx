@@ -21,6 +21,14 @@ jest.mock('./pages/ConfigTemplates/Templates', () => ({
   ConfigTemplateList: () => <div>ConfigTemplateList</div>
 }))
 
+const mockedGetJwtTokenPayload = jest.fn()
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false),
+  getJwtTokenPayload: () => mockedGetJwtTokenPayload()
+}))
+
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -66,7 +74,21 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
 jest.mocked(useIsSplitOn).mockReturnValue(false)
 jest.mocked(useIsTierAllowed).mockReturnValue(false)
 
+const isMSP_BRAND_360 = (ff: string): boolean => {
+  return ff === Features.MSP_BRAND_360
+}
+
+const isHSP_360_FF = (ff: string): boolean => {
+  return ff === Features.MSP_HSP_360_PLM_FF
+}
+
 describe('Init', () => {
+  beforeEach(() => {
+    mockedGetJwtTokenPayload.mockReturnValue({
+      acx_account_tier: 'Platinum',
+      tenantType: 'MSP'
+    })
+  })
   it('navigates to dashboard if brand360 is not available', async () => {
     render(<Init />, {
       route: {
@@ -79,8 +101,8 @@ describe('Init', () => {
     )).toBeVisible()
   })
   it('navigates to brand360 when available', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(ff => ff === Features.MSP_BRAND_360)
-    jest.mocked(useIsTierAllowed).mockReturnValue(ff => ff === Features.MSP_HSP_360_PLM_FF)
+    jest.mocked(useIsSplitOn).mockImplementation(isMSP_BRAND_360)
+    jest.mocked(useIsTierAllowed).mockImplementation(isHSP_360_FF)
     render(<HspContext.Provider value={{ state: { isHsp: true }, dispatch: jest.fn() }}>
       <Init />
     </HspContext.Provider>, {
@@ -93,10 +115,35 @@ describe('Init', () => {
       '{"replace":true,"to":{"pathname":"/undefined/v/brand360"}}'
     )).toBeVisible()
   })
+
+  it('navigates to mdu360 when available', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(isMSP_BRAND_360)
+    jest.mocked(useIsTierAllowed).mockImplementation(isHSP_360_FF)
+    mockedGetJwtTokenPayload.mockReturnValue({
+      acx_account_vertical: 'MDU',
+      acx_account_tier: 'Platinum',
+      tenantType: 'MSP'
+    })
+    render(<HspContext.Provider value={{ state: { isHsp: true }, dispatch: jest.fn() }}>
+      <Init />
+    </HspContext.Provider>, {
+      route: {
+        path: '/tenantId/v',
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByText(
+      '{"replace":true,"to":{"pathname":"/undefined/v/mdu360"}}'
+    )).toBeVisible()
+  })
 })
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
   beforeEach(() => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })
+    mockedGetJwtTokenPayload.mockReturnValue({
+      acx_account_tier: 'Platinum',
+      tenantType: 'MSP'
+    })
   })
 
   it('should navigate to the default page of the config template', async () => {

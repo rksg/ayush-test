@@ -60,9 +60,11 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
+  const { acx_account_vertical } = getJwtTokenPayload()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
@@ -91,7 +93,9 @@ function Layout () {
     ? '/users/guestsManager'
     : isShowBrand360
       ? '/brand360'
-      : '/dashboard'
+      : isMDU
+        ? '/mdu360/residentExperience'
+        : '/dashboard'
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
