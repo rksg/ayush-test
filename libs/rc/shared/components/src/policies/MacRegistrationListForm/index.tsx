@@ -14,15 +14,16 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MacRegistrationPoolFormFields,
-  getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
   usePolicyListBreadcrumb,
   MacRegistrationPool,
   transferDataToExpirationFormFields,
-  transferExpirationFormFieldsToData
+  transferExpirationFormFieldsToData,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { MacRegistrationListSettingForm } from './MacRegistrationListSettingForm'
 
@@ -36,9 +37,6 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const intl = useIntl()
   const { editMode = false, modalMode, modalCallBack } = props
   const { policyId } = useParams()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<MacRegistrationPoolFormFields>>()
 
@@ -52,6 +50,8 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.MAC_REGISTRATION_LIST)
+  const previousPath = usePolicyPreviousPath(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.MAC_REGISTRATION_LIST)
 
   useEffect(() => {
     if (data && editMode) {
@@ -101,7 +101,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         await bindPolicySet({ params: { policyId: result.id, policySetId: data.policySetId } })
       }
 
-      modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.(result) : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -129,7 +129,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         await unbindPolicySet({ params: { policyId, policySetId: data?.policySetId } })
       }
 
-      modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.() : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -147,7 +147,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
         onFinish={editMode ? handleEditList : handleAddList}>
         <StepsFormLegacy.StepForm<MacRegistrationPoolFormFields>>
           <Loader states={[{
