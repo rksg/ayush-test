@@ -249,6 +249,7 @@ export default function BaseStepNode (props: NodeProps
       {(!isNodeValid && workflowValidationEnhancementFFToggle) &&
         <Tooltip
           showArrow={false}
+          align={{ offset: [10, 10] }}
           // @ts-ignore
           title={validationErrors?.map(reason =>
             <Row>{ reason.statusReason }</Row>)}>

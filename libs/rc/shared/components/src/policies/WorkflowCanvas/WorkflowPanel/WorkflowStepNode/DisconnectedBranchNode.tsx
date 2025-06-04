@@ -27,6 +27,7 @@ export default function DisconnectedBranchNode (props: NodeProps)
       {workflowValidationEnhancementFFToggle &&
         <Tooltip
           showArrow={false}
+          align={{ offset: [10, 10] }}
           // @ts-ignore
           title={<Row>{ $t({ defaultMessage: 'This branch is diconnected from the rest of the '
             + 'workflow. Drag over another branch to connect them.' }) }</Row>}>
