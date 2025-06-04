@@ -8,10 +8,10 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useConfigTemplate }                     from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsFormLegacy }        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { GuestNetworkTypeEnum, NetworkTypeEnum }    from '@acx-ui/rc/utils'
+import { useConfigTemplate }                        from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
@@ -49,6 +49,10 @@ function TypesForm () {
   const isDirectoryServerEnabledFF = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSAMLSSOEnable = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isDirectoryServerEnabled = !isRuckusAiMode && isDirectoryServerEnabledFF
+  const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
+  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isWorkflowNetworkFFEnabled = useIsSplitOn(Features.WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE)
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
        { ...data?.guestPortal, guestNetworkType: e.target.value as GuestNetworkTypeEnum } })
@@ -140,7 +144,7 @@ function TypesForm () {
               </Radio>
             }
             {
-              // SANTODO: Add FF
+              isWorkflowTierEnabled && isWorkflowFFEnabled && isWorkflowNetworkFFEnabled &&
               !isTemplate &&
               <Radio value={GuestNetworkTypeEnum.Workflow}>
                 {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Workflow]}
