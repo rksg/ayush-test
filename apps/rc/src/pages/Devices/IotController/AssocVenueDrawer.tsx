@@ -32,6 +32,7 @@ export const AssocVenueDrawer = (props: AssocVenueDrawerProps) => {
   const { availableVenues, isLoading, isFetching } = useVenuesListQuery({
     payload: {
       fields: ['name', 'country', 'city', 'id', 'addressLine'],
+      filters: { id: usedVenueIds },
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
@@ -43,8 +44,7 @@ export const AssocVenueDrawer = (props: AssocVenueDrawerProps) => {
       availableVenues: data?.data.filter(venue => {
         return usedVenueIds.includes(venue.id)
       }).map(item => ({
-        ...pick(item, ['id', 'name', 'addressLine']),
-        address: `${item.country}, ${item.city}`
+        ...pick(item, ['id', 'name', 'addressLine'])
       } as AssocVenueTableDataType)) ?? []
     })
   })

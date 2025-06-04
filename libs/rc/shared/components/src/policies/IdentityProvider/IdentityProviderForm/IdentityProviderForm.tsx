@@ -19,11 +19,11 @@ import {
   PolicyOperation,
   PolicyType,
   usePolicyPageHeaderTitle,
-  getPolicyRoutePath,
   usePolicyListBreadcrumb,
-  CommonResult
+  CommonResult,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AddRowIdToIdentityProvider, removeRowIds } from '../utils'
 
@@ -42,11 +42,9 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.IDENTITY_PROVIDER,
-    oper: PolicyOperation.LIST
-  })
-  const linkToPolicies = useTenantLink(tablePath)
+
+  const previousPath = usePolicyPreviousPath(PolicyType.IDENTITY_PROVIDER, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.IDENTITY_PROVIDER)
 
   const origAuthId = useRef<string>()
   const origAccountingId = useRef<string | undefined>()
@@ -153,7 +151,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
         await activateRadius({ params: accountingParams }).unwrap()
       }
 
-      !modalMode && navigate(linkToPolicies, { replace: true })
+      !modalMode && navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -182,7 +180,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
         await activateRadius({ params: accountingParams }).unwrap()
       }
 
-      modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+      modalMode? modalCallBack?.() : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -198,7 +196,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       <StepsForm<IdentityProvider>
         form={form}
         editMode={editMode}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath, { replace: true })}
         onFinish={editMode? handleEditIdentityProvider : handleAddIdentityProvider}
       >
         <StepsForm.StepForm
