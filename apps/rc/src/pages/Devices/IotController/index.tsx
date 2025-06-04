@@ -7,8 +7,8 @@ import {
   useIotControllerActions
 } from '@acx-ui/rc/components'
 import {
-  useGetIotControllerListQuery
-  // useLazyGetIotControllerVenuesQuery
+  useGetIotControllerListQuery,
+  useLazyGetIotControllerVenuesQuery
 } from '@acx-ui/rc/services'
 import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                        from '@acx-ui/react-router-dom'
@@ -25,7 +25,7 @@ export function IotController () {
   const { isCustomRole } = useUserProfileContext()
   const [ assocVenueDrawerVisible, setAssocVenueDrawerVisible ] = useState(false)
   const [ venueIds, setVenueIds ] = useState<string[]>([])
-  // const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
+  const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
 
   const payload = {
     fields: [
@@ -36,7 +36,7 @@ export function IotController () {
       'publicPort',
       'tenantId',
       'status',
-      'assocVenueId'
+      'assocVenueCount'
     ],
     filters: { tenantId: [params.tenantId] }
   }
@@ -97,14 +97,14 @@ export function IotController () {
         render: function (_, row) {
 
           const onClickHandler = async () => {
-            // TODO wait for api ready
-            // const venues = (await getIotControllerVenues({
-            //   params: { iotId: row.id }
-            // }, false)).data
-            // if (venues) {
-            //   setVenueIds()
-            // }
-            setVenueIds([])
+            const venues = (await getIotControllerVenues({
+              params: { iotId: row.id }
+            }, false)).data
+            if (venues) {
+              setVenueIds(venues.venueIds)
+            } else {
+              setVenueIds([])
+            }
             setAssocVenueDrawerVisible(true)
           }
 
