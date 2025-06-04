@@ -49,6 +49,18 @@ export const IotUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'GET:/iotControllers/{id}/venueIds'
   },
+  getIotControllerVenueAssociations: {
+    method: 'get',
+    url: '/iotControllers/venueAssociations/:venueId',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/venueAssociations/{id}'
+  },
+  getIotControllerApAssociations: {
+    method: 'get',
+    url: '/iotControllers/apAssociations/:apId',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/apAssociations/{id}'
+  },
   getIotControllerLicenseStatus: {
     method: 'get',
     url: '/iotControllers/:iotId/licenseStatus',
