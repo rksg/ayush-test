@@ -81,7 +81,7 @@ describe('userLogout', () => {
       sessionStorage.setItem('jwt', 'testToken')
       raUserLogout()
       expect(mockedForm.action)
-        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==&token=testToken')
+        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ%3D%3D&token=testToken')
       expect(mockedForm.method).toEqual('POST')
       expect(mockedForm.submit).toHaveBeenCalled()
       expect(document.body.appendChild).toHaveBeenCalledWith(mockedForm)
@@ -92,7 +92,7 @@ describe('userLogout', () => {
       const { userLogout: raUserLogout } = require('./user')
       raUserLogout()
       expect(mockedForm.action)
-        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==')
+        .toEqual('/logout?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ%3D%3D')
     })
 
     it('should logout without query parameters', () => {

@@ -56,7 +56,7 @@ describe('EditFlexibleAuthentication', ()=>{
     )
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Edit Authentication')).toBeVisible()
+    expect(await screen.findByText('Edit Port Authentication')).toBeVisible()
     expect(await screen.findByLabelText(/Profile Name/)).toHaveValue('Profile01--auth10-guest5')
 
     const guestVlanInput = await screen.findByLabelText(/Guest VLAN/)
@@ -87,7 +87,7 @@ describe('EditFlexibleAuthentication', ()=>{
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Authentication' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Port Authentication' })).toBeVisible()
   })
 
 })

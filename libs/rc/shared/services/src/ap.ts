@@ -180,6 +180,18 @@ export const apApi = baseApApi.injectEndpoints({
     apViewModel: build.query<ApViewModel, RequestPayload>({
       queryFn: async (args, _queryApi, _extraOptions, fetchWithBQ) => {
         return await getApViewmodelListFn(args, fetchWithBQ)
+      },
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ActivateApOnApGroup'
+            //'UpdateAp'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+          })
+        })
       }
     }),
     // for AP Table
@@ -820,7 +832,10 @@ export const apApi = baseApApi.injectEndpoints({
     getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
         const req = createHttpRequest(urlsInfo.getApRadioCustomization, params, apiCustomHeader)
         return {
           ...req
@@ -886,7 +901,11 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApRadioCustomizationV1Dot1: build.query<ApRadioCustomizationV1Dot1, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1, params)
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1_1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApRadioCustomizationV1Dot1, params, apiCustomHeader)
         return {
           ...req
         }
@@ -1088,7 +1107,10 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getDefaultApLanPorts: build.query<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
-        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const apiCustomHeader = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
         const req = createHttpRequest(WifiRbacUrlsInfo.getDefaultApLanPorts, params, apiCustomHeader)
         return {
           ...req
@@ -1098,7 +1120,10 @@ export const apApi = baseApApi.injectEndpoints({
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
         const req = createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         return {
           ...req,
@@ -1468,7 +1493,10 @@ export const apApi = baseApApi.injectEndpoints({
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
         const req = createHttpRequest(urlsInfo.getApBandModeSettings, params, customHeaders)
         return {
           ...req
@@ -1490,7 +1518,12 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApBandModeSettingsV1Dot1: build.query<ApBandModeSettingsV1Dot1, RequestPayload<void>>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiRbacUrlsInfo.getApBandModeSettingsV1Dot1, params)
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1_1),
+          ...ignoreErrorModal
+        }
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApBandModeSettingsV1Dot1, params, customHeaders)
         return {
           ...req
         }
@@ -1587,8 +1620,11 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApSmartMonitor: build.query<ApSmartMonitor, RequestPayload>({
       query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders)
+        const customHeaders = {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders )
         return {
           ...req,
           body: payload
@@ -1672,7 +1708,11 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
           (enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const apiCustomHeader = rbacApiVersion? {
+          ...GetApiVersionHeader(rbacApiVersion),
+          ...ignoreErrorModal
+        } : undefined
 
         const req = createHttpRequest(urlsInfo.getApValidChannel, params, apiCustomHeader)
         return {
@@ -1683,8 +1723,10 @@ export const apApi = baseApApi.injectEndpoints({
     getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
 
         const req = createHttpRequest(urlsInfo.getApDirectedMulticast, params, apiCustomHeader)
         return {
@@ -1731,8 +1773,11 @@ export const apApi = baseApApi.injectEndpoints({
     getApNetworkSettings: build.query<APNetworkSettings, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getApNetworkSettings, params, customHeaders)
+        const customHeaders = enableRbac ? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
+        const req = createHttpRequest(urlsInfo.getApNetworkSettings, params, customHeaders )
         return {
           ...req
         }
@@ -1774,8 +1819,11 @@ export const apApi = baseApApi.injectEndpoints({
     getApMeshSettings: build.query<APMeshSettings, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getApMeshSettings, params, customHeaders)
+        const customHeaders = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
+        const req = createHttpRequest(urlsInfo.getApMeshSettings, params, { ...customHeaders, ...ignoreErrorModal })
         return {
           ...req
         }
@@ -1952,7 +2000,10 @@ export const apApi = baseApApi.injectEndpoints({
     getApClientAdmissionControl: build.query<ApClientAdmissionControl, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
         const req = createHttpRequest(urlsInfo.getApClientAdmissionControl, params, customHeaders)
         return {
           ...req
@@ -2051,7 +2102,10 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApStickyClientSteering: build.query<ApStickyClientSteering, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiRbacUrlsInfo.getApStickyClientSteering, params)
+        const apiCustomHeader = {
+          ...ignoreErrorModal
+        }
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApStickyClientSteering, params, apiCustomHeader)
         return {
           ...req
         }
