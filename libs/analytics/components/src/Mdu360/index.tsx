@@ -14,7 +14,7 @@ const Mdu360: React.FC<{}> = () => {
   const basePath = useTenantLink('/mdu360', 'v')
   const navigate = useNavigate()
   const { activeTab } = useParams()
-  const [selectedVenues, setSelectedVenues] = useState<string[]>([''])
+  const [selectedVenues, setSelectedVenues] = useState<string[]>([])
   const { startDate, endDate, setDateFilter, range } = useDateFilter({
     showResetMsg: true, earliestStart: getDefaultEarliestStart() })
 
