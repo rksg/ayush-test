@@ -1389,23 +1389,31 @@ export function EditPortDrawer ({
   }
 
   const renderPoeScheduleStatus = () => {
-    const allCustomSchedule = multiPoeScheduleData.every(
-      schedule => schedule?.type === SchedulerTypeEnum.CUSTOM
-    )
-    const allNoSchedule = multiPoeScheduleData.every(
-      schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
-    )
-    const sameCustomScheduleId = allCustomSchedule &&
+    if(multiPoeScheduleData.length > 0) {
+      const allCustomSchedule = multiPoeScheduleData.every(
+        schedule => schedule?.type === SchedulerTypeEnum.CUSTOM
+      )
+      const allNoSchedule = multiPoeScheduleData.every(
+        schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
+      )
+      const sameCustomScheduleId = allCustomSchedule &&
       multiPoeScheduleData.every(
         schedule => schedule?.id === multiPoeScheduleData[0]?.id
       )
 
-    if (sameCustomScheduleId) {
-      return $t({ defaultMessage: 'Custom Schedule' })
-    } else if (allNoSchedule) {
-      return noDataDisplay
-    } else {
-      return <MultipleText />
+      if (sameCustomScheduleId) {
+        return $t({ defaultMessage: 'Custom Schedule' })
+      } else if (allNoSchedule) {
+        return noDataDisplay
+      } else {
+        return <MultipleText />
+      }
+    }else{
+      if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
+        return $t({ defaultMessage: 'Custom Schedule' })
+      }else{
+        return noDataDisplay
+      }
     }
   }
 
@@ -2860,6 +2868,7 @@ export function EditPortDrawer ({
           setVisible={setDrawerPoeSchedule}
           venueId={switchDetail?.venueId}
           poeScheduler={poeScheduleData}
+          setMultiPoeScheduleData={setMultiPoeScheduleData}
           readOnly={false}
         />
       }

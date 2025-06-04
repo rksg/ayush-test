@@ -39,27 +39,35 @@ export function PoeSchedulerTipsModal (props: { isModalOpen: boolean, onOK: () =
       closable={false}
     >
       <p>{$t({ defaultMessage: 'You can customize the PoE schedule using the following options:' })}</p>
-      <p>• <FormattedMessage
-        defaultMessage='Turn PoE <b>on or off for the entire day</b> using the checkbox next to the day label.'
-        values={{
-          b: (contents) => <b>{contents}</b>
-        }}
-      />
-      </p>
-      <p>• <FormattedMessage
-        defaultMessage='Turn PoE <b>on or off for a specific time slot</b> by clicking on that time slot.'
-        values={{
-          b: (contents) => <b>{contents}</b>
-        }}
-      />
-      </p>
-      <p>• <FormattedMessage
-        defaultMessage='Turn PoE <b>on or off for multiple consecutive time slots</b> by clicking and dragging across them.'
-        values={{
-          b: (contents) => <b>{contents}</b>
-        }}
-      />
-      </p>
+      <ul style={{ listStyle: 'disc' }}>
+        <li>
+          <p><FormattedMessage
+            defaultMessage='Turn PoE <b>on or off for the entire day</b> using the checkbox next to the day label.'
+            values={{
+              b: (contents) => <b>{contents}</b>
+            }}
+          />
+          </p>
+        </li>
+        <li>
+          <p><FormattedMessage
+            defaultMessage='Turn PoE <b>on or off for a specific time slot</b> by clicking on that time slot.'
+            values={{
+              b: (contents) => <b>{contents}</b>
+            }}
+          />
+          </p>
+        </li>
+        <li>
+          <p><FormattedMessage
+            defaultMessage='Turn PoE <b>on or off for multiple consecutive time slots</b> by clicking and dragging across them.'
+            values={{
+              b: (contents) => <b>{contents}</b>
+            }}
+          />
+          </p>
+        </li>
+      </ul>
 
       <>
         <VideoSection
@@ -77,14 +85,15 @@ export function PoeSchedulerTipsModal (props: { isModalOpen: boolean, onOK: () =
           message={$t({ defaultMessage: 'To enable PoE for multiple consecutive time slots, click and drag across the desired time range.' })}
           videoSrc='./assets/videos/scheduling/switchMultipleDays.mp4'
           additionalContent={
-            <p style={{ marginBottom: '10px', marginLeft: '20px' }}>
-              • <FormattedMessage
-                defaultMessage='When dragging, all selected slots will be set to the opposite state of the slot where the drag began.'
-                values={{
-                  b: (contents) => <b>{contents}</b>
-                }}
-              />
-            </p>
+            <ul style={{ listStyle: 'disc' }}>
+              <li>
+                <p>
+                  <FormattedMessage
+                    defaultMessage='When dragging, all selected slots will be set to the opposite state of the slot where the drag began.'
+                  />
+                </p>
+              </li>
+            </ul>
           }
         />
       </>

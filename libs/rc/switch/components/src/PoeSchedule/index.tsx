@@ -23,6 +23,7 @@ interface ScheduleWeeklyProps {
   setVisible: (visible: boolean) => void
   venueId?: string
   poeScheduler: PoeSchedulerType
+  setMultiPoeScheduleData?: (data: PoeSchedulerType[]) => void
   readOnly?: boolean
   portData?: SwitchPortViewModel
 }
@@ -34,7 +35,8 @@ interface ScheduleVenue {
 }
 
 export const PoeSchedule = (props:ScheduleWeeklyProps) => {
-  const { visible, setVisible, form, venueId, poeScheduler, readOnly, portData } = props
+  const { visible, setVisible, form, venueId, poeScheduler,
+    setMultiPoeScheduleData, readOnly, portData } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [hidden, setHidden] = useState<boolean>(true)
@@ -111,6 +113,8 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
       form.setFieldValue('poeScheduler',
         { type: SchedulerTypeEnum.CUSTOM, ...transformScheduleData(scheduler) })
     }
+    setMultiPoeScheduleData && setMultiPoeScheduleData([])
+
     if(portData){
       const payload = {
         port: portData.portIdentifier,
@@ -132,6 +136,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
   }
 
   const onClose = () => {
+    form.resetFields(['poeSchedulerType'])
     setVisible(false)
   }
 

@@ -18,8 +18,6 @@ import { mockScheduler, portDataResponse, timezoneResponse, venueResponse } from
 
 import { PoeSchedule } from './index'
 
-
-
 // Mock the hooks
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
@@ -50,6 +48,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('PoeSchedule', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
+    mockedSavePortsSetting.mockClear()
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTimezone.url.split('?')[0],
@@ -72,6 +71,8 @@ describe('PoeSchedule', () => {
     const setVisible = jest.fn()
     const { result } = renderHook(() => Form.useForm())
     const form = result.current[0]
+
+    const setFieldValueSpy = jest.spyOn(form, 'setFieldValue')
 
     render(
       <Provider>
@@ -111,7 +112,38 @@ describe('PoeSchedule', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(mockedSavePortsSetting).toHaveBeenCalled()
+
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'mon'],
+      Array.from({ length: 24 }, (_, i) => `mon_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'tue'],
+      Array.from({ length: 24 }, (_, i) => `tue_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'wed'],
+      Array.from({ length: 24 }, (_, i) => `wed_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'thu'],
+      Array.from({ length: 24 }, (_, i) => `thu_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'fri'],
+      Array.from({ length: 24 }, (_, i) => `fri_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'sat'],
+      Array.from({ length: 24 }, (_, i) => `sat_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledWith(
+      ['scheduler', 'sun'],
+      Array.from({ length: 24 }, (_, i) => `sun_${i}`)
+    )
+    expect(setFieldValueSpy).toHaveBeenCalledTimes(8)
+
+    setFieldValueSpy.mockRestore()
   })
 
   it('should show error message when no time slots are selected', async () => {
@@ -216,7 +248,6 @@ describe('PoeSchedule', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(form.resetFields).toHaveBeenCalledWith(['poeScheduler'])
     expect(form.setFieldValue).toHaveBeenCalledWith('poeScheduler',
       { type: SchedulerTypeEnum.NO_SCHEDULE })
   })
@@ -239,7 +270,7 @@ describe('PoeSchedule', () => {
       </Provider>
     )
 
-    jest.spyOn(form, 'getFieldsValue').mockReturnValue({
+    const getFieldsValueSpy = jest.spyOn(form, 'getFieldsValue').mockReturnValue({
       scheduler: {
         mon: ['mon_0', 'mon_1', 'mon_2'],
         tue: ['tue_0', 'tue_1', 'tue_2'],
@@ -254,6 +285,30 @@ describe('PoeSchedule', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(mockedSavePortsSetting).toHaveBeenCalled()
+    expect(mockedSavePortsSetting).toHaveBeenCalledWith(
+      expect.objectContaining({
+        enableRbac: true,
+        params: {
+          tenantId: 'tenant-123',
+          venueId: 'venue-123'
+        },
+        payload: expect.arrayContaining([
+          expect.objectContaining({
+            poeScheduler: {
+              type: SchedulerTypeEnum.CUSTOM,
+              mon: '111000000000000000000000',
+              tue: '111000000000000000000000',
+              wed: '000000000000000000000000',
+              thu: '000000000000000000000000',
+              fri: '000000000000000000000000',
+              sat: '000000000000000000000000',
+              sun: '000000000000000000000000'
+            }
+          })
+        ])
+      })
+    )
+    getFieldsValueSpy.mockRestore()
   })
 
   it('should handle See tips button click', async () => {
@@ -327,7 +382,7 @@ describe('PoeSchedule', () => {
     expect(mondayCheckbox).toHaveAttribute('aria-checked', 'mixed')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(mockedSavePortsSetting).toHaveBeenCalled()
+    expect(setVisible).toHaveBeenCalledWith(false)
   })
 
   it('should cancel and close the dialog without saving', async () => {

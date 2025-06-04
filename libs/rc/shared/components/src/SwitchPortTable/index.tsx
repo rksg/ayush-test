@@ -363,7 +363,7 @@ export function SwitchPortTable (props: {
               setSelectedPorts([row])
               handleOpenPoeScheduler(row.portIdentifier, row.switchSerial)
             }}
-            style={{ paddingLeft: '10px' }}
+            style={{ fontSize: '12px' }}
           >
             {$t({ defaultMessage: 'Custom Schedule' })}
           </Button> :
