@@ -277,7 +277,7 @@ export const EditPortMessages = {
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'When authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
+    defaultMessage: 'When port authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
@@ -302,28 +302,28 @@ export const EditPortMessages = {
     defaultMessage: 'Modifying the uplink port may result in connectivity issues. Are you sure you want to apply these changes?'
   }),
   NEED_CONFIGURE_AAA_RADIUS_SETTINGS: defineMessage({
-    defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
+    defaultMessage: 'Port Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Port Authentication automatically. If no, please set them to make Port Authentication work.'
   }),
   ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
     defaultMessage: 'The firmware version on the selected switches must be FI 10.0.10f or higher.'
   }),
   UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
-    defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
+    defaultMessage: 'This port is Untagged port. So can not enable Port Authentication.'
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED: defineMessage({
-    defaultMessage: 'Authentication cannot be enabled if IPSG is turned ON.'
+    defaultMessage: 'Port Authentication cannot be enabled if IPSG is turned ON.'
   }),
   CANNOT_ENABLE_IPSG_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'IPSG cannot be enabled if Authentication is turned ON.'
+    defaultMessage: 'IPSG cannot be enabled if Port Authentication is turned ON.'
   }),
   CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
-    defaultMessage: 'Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+    defaultMessage: 'Port Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
   }),
   SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
-    defaultMessage: 'Before enable Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
+    defaultMessage: 'Before enable Port Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
   }),
   GUIDE_TO_AUTHENTICATION: defineMessage({
-    defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
+    defaultMessage: 'Go to "{path}"'
   }),
   SWITCH_PORT_PROFILE_NOT_ENABLED: defineMessage({
     defaultMessage: 'The firmware version on the selected switches must be FI 10.0.20b or higher.'
@@ -335,13 +335,13 @@ export const EditPortMessages = {
     defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
   }),
   CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'Port MAC Security cannot be enabled if Authentication is turned ON.'
+    defaultMessage: 'Port MAC Security cannot be enabled if Port Authentication is turned ON.'
   }),
   CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'MAC ACL cannot be enabled if Authentication is turned ON.'
+    defaultMessage: 'MAC ACL cannot be enabled if Port Authentication is turned ON.'
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
-    defaultMessage: 'Authentication cannot be enabled if Port MAC Security is turned ON.'
+    defaultMessage: 'Port Authentication cannot be enabled if Port MAC Security is turned ON.'
   })
 }
 
@@ -373,7 +373,7 @@ export const FlexAuthMessages = {
     defaultMessage: 'Guest VLAN is already defined on the switch(es). Select a different profile that has a matching Guest VLAN.'
   }),
   CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
-    defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
+    defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have port authentication enabled.'
   }),
   CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
     defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. If the Auth Default VLAN is needed, please change the 802.1x Port Control to ‘Auto’.'
@@ -409,7 +409,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
+    defaultMessage: 'This port has port authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
