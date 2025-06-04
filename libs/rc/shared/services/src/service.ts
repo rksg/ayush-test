@@ -166,9 +166,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           data: {
+            ...result,
             data: result.data,
-            page: 0,
-            totalCount: result.data.length
+            totalCount: result.totalCount
           }
         }
       },

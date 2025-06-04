@@ -55,7 +55,7 @@ describe('AddFlexibleAuthentication', ()=>{
     )
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Add Authentication')).toBeVisible()
+    expect(await screen.findByText('Add Port Authentication')).toBeVisible()
     await userEvent.type(await screen.findByLabelText(/Profile Name/),'Profile-1')
     await userEvent.type(await screen.findByLabelText(/Auth Default VLAN/),'1')
     await userEvent.type(await screen.findByLabelText(/Guest VLAN/),'1')
@@ -83,7 +83,7 @@ describe('AddFlexibleAuthentication', ()=>{
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Authentication' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Port Authentication' })).toBeVisible()
   })
 
 })

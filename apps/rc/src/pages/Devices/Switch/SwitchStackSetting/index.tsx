@@ -310,7 +310,7 @@ export function SwitchStackSetting (props: {
         isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f && <>
           <Space size={8} style={{ display: 'flex', margin: '40px 0 30px' }}>
             <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
-              {$t({ defaultMessage: 'Authentication' })}
+              {$t({ defaultMessage: 'Port Authentication' })}
             </Typography.Text>
             <Form.Item
               noStyle

@@ -146,7 +146,7 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
   const columns: TableProps<AuditDto>['columns'] = useMemo(
     () => [
       {
-        title: $t({ defaultMessage: 'Last update' }),
+        title: $t({ defaultMessage: 'Last Update' }),
         dataIndex: 'updatedAt',
         key: 'updatedAt',
         render: (_, { updatedAt }) =>
@@ -159,20 +159,20 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
         render: (_, { status, error }) => renderStatusWithBadge(status, error)
       },
       {
-        title: $t({ defaultMessage: 'Size transferred' }),
+        title: $t({ defaultMessage: 'Size Transferred' }),
         dataIndex: 'size',
         key: 'size',
         render: (_, { size }) => formats.bytesFormat(size)
       },
       {
-        title: $t({ defaultMessage: 'Export start' }),
+        title: $t({ defaultMessage: 'Export Start' }),
         dataIndex: 'start',
         key: 'start',
         render: (_, { start }) =>
           formatter(DateFormatEnum.DateTimeFormat)(start)
       },
       {
-        title: $t({ defaultMessage: 'Export end' }),
+        title: $t({ defaultMessage: 'Export End' }),
         dataIndex: 'end',
         key: 'end',
         render: (_, { end }) =>
