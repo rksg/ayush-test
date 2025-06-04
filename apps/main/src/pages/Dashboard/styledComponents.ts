@@ -1,5 +1,5 @@
-import { Input, List as AntList }    from 'antd'
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { Input, List as AntList, Modal } from 'antd'
+import styled, { createGlobalStyle }     from 'styled-components/macro'
 
 import { Select, Tabs as AcxTabs } from '@acx-ui/components'
 import { ArrowChevronRight }       from '@acx-ui/icons'
@@ -355,6 +355,27 @@ export const CanvasListItem = styled(AntList.Item)`
       width: 100%;
       path {
         color: var( --acx-neutrals-70);
+      }
+    }
+  }
+`
+
+export const EditCanvasNameModal = styled(Modal)`
+  .ant-modal-content {
+    .ant-modal-body {
+      padding-top: 4px;
+    }
+    .ant-radio-wrapper {
+      .label {
+        display: flex;
+        align-item: center;
+        svg {
+          margin-left: 5px;
+        }
+      }
+      .desp {
+        padding: 8px 0px;
+        color: var(--acx-neutrals-60);
       }
     }
   }
