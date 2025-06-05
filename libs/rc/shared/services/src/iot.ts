@@ -8,6 +8,7 @@ import {
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotControllerVenues,
   IotSerialNumberResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -104,7 +105,7 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
-    getIotControllerVenues: build.query<CommonResult, RequestPayload>({
+    getIotControllerVenues: build.query<IotControllerVenues, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(IotUrlsInfo.getIotControllerVenues, params)
         return {

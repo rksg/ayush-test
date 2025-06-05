@@ -66,6 +66,7 @@ export function MspRecCustomers () {
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspHspDisplayToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
@@ -148,9 +149,10 @@ export function MspRecCustomers () {
       'expirationDate',
       'wifiLicense',
       'switchLicense',
-      'streetAddress'
+      'streetAddress',
+      'propertyCode'
     ],
-    searchTargetFields: ['name']
+    searchTargetFields: ['name','propertyCode']
   }
 
   const integratorPayload = {
@@ -231,6 +233,13 @@ export function MspRecCustomers () {
         )
       }
     },
+    ...(!mspHspDisplayToggle ? [] :[{
+      title: $t({ defaultMessage: 'Property ID' }),
+      dataIndex: 'propertyCode',
+      key: 'propertyCode',
+      sorter: true,
+      searchable: true
+    }]),
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',

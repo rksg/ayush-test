@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -14,12 +14,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AccessCondition, CriteriaOption, EvaluationRule,
-  getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useAdaptivePolicyBreadcrumb
+  useAdaptivePolicyBreadcrumb,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
 
@@ -32,9 +32,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const { $t } = useIntl()
   const { editMode = false, drawerMode = false } = props
   const { policyId, templateId } = useParams()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()
@@ -53,6 +50,8 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const [isUpdating, setIsUpdating] = useState(false)
 
   const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY)
+  const previousPath = usePolicyPreviousPath(PolicyType.ADAPTIVE_POLICY, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.ADAPTIVE_POLICY)
 
   useEffect(() => {
     if(data && editMode) {
@@ -145,7 +144,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
         )
       })
 
-      navigate(linkToList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     } finally {
@@ -182,7 +181,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onCancel={() => navigate(linkToList)}
+        onCancel={() => navigate(previousPath)}
         onFinish={handleSubmit}>
         <StepsFormLegacy.StepForm initialValues={{ templateTypeId: 0 }}>
           <Loader states={[{

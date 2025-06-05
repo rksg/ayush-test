@@ -126,7 +126,8 @@ describe('IntentAIForm', () => {
       metadata: {
         preferences: {
           enabled: true,
-          excludedAPs: [[{ name: 'name', type: 'zone' }]],
+          // Must select partial APs (cannot select all APs)
+          excludedAPs: [[{ name: 'name', type: 'zone' }, { name: 'name', type: 'apMac' }]],
           excludedHours: []
         }
       } as IntentDetail['metadata']
@@ -182,7 +183,7 @@ describe('IntentAIForm', () => {
         preferences: {
           averagePowerPrice: { currency: 'SGD', value: 0 },
           crrmFullOptimization: true,
-          excludedAPs: [[{ name: 'name', type: 'zone' }]]
+          excludedAPs: [[{ name: 'name', type: 'zone' }, { name: 'name', type: 'apMac' }]]
         },
         scheduledAt: '',
         dataEndTime: '2024-08-08T12:00:00.000Z'
@@ -250,7 +251,13 @@ describe('IntentAIForm', () => {
         dataEndTime: ''
       } as IntentDetail['metadata']
     })
-    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    render(<IntentAIForm />, {
+      route: {
+        params,
+        path: '/intentAI',
+        wrapRoutes: false
+      }, wrapper: Provider
+    })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 

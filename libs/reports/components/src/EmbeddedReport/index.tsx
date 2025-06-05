@@ -208,6 +208,33 @@ export const getRLSClauseForSA = (
   }
 }
 
+/**
+ * Generate a unique query identifier based on user/tenant information without exposing actual IDs
+ * Uses a simple hash function for browser compatibility and includes session stability
+ */
+export const generateUniqueQueryId = (
+  userInfo: string,
+  tenantInfo: string,
+  reportName: string
+): string => {
+  // Create a session-stable identifier that doesn't change on every request
+  const sessionId = sessionStorage.getItem('userSessionId') ||
+    (() => {
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+      sessionStorage.setItem('userSessionId', newSessionId)
+      return newSessionId
+    })()
+
+  const combinedInfo = `${userInfo}-${tenantInfo}-${reportName}-${sessionId}`
+  let hash = 0
+  for (let i = 0; i < combinedInfo.length; i++) {
+    const char = combinedInfo.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  return `qid_${Math.abs(hash).toString(36)}_${Date.now().toString(36).slice(-4)}`
+}
+
 export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
@@ -316,6 +343,11 @@ export function EmbeddedReport (props: ReportProps) {
         bands as RadioBand[]
       )
 
+    // Generate unique query identifier without exposing actual IDs
+    const uniqueQueryId = isRA
+      ? generateUniqueQueryId(userId, selectedTenant.id, reportName)
+      : generateUniqueQueryId(externalId, tenantId, reportName)
+
     const guestTokenPayload = {
       user: {
         firstName,
@@ -339,13 +371,8 @@ export function EmbeddedReport (props: ReportProps) {
             '"__time"',
             '<',
             `'${convertDateTimeToSqlFormat(endDate)}'`,
-            ...(
-              isRA
-                ? ['AND', `'${userId}' = '${userId}'`, 'AND',
-                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For RAI, selectedTenant id to cover supertenant use case
-                : ['AND', `'${tenantId}' = '${tenantId}'`,
-                  'AND', `'${externalId}' = '${externalId}'` ] // For R1, externalId is userId
-            )
+            'AND',
+            `'${uniqueQueryId}' = '${uniqueQueryId}'` // Tautology using unique query ID for cache differentiation
           ].join(' ')
         },
         ...(rlsClause || networkClause || radioBandClause

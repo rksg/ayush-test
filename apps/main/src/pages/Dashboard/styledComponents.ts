@@ -255,8 +255,16 @@ export const CanvasListItem = styled(AntList.Item)`
   background: var(--acx-neutrals-10);
   margin-bottom: 6px;
   padding: 12px 16px 12px 15px !important;
+  justify-content: space-between !important;
   .ant-checkbox-inner {
     background: var(--acx-primary-white);
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    max-width: calc(100% - 20px);
+    gap: 12px;
   }
 
   .ant-checkbox-wrapper {
@@ -271,6 +279,8 @@ export const CanvasListItem = styled(AntList.Item)`
   .info {
     white-space: nowrap;
     overflow: hidden;
+    flex: 1;
+    cursor: default;
   }
   .title {
     display: inline-flex;

@@ -190,12 +190,8 @@ export const NewSelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const updateListStateonSelection = (selectedCustomerRows: MspEcWithVenue[]) => {
     setCustomerList((prevCustomerList: MspEcWithVenue[] = []) => {
       return prevCustomerList.map(customer => {
-        selectedCustomerRows.map(item => {
-          if (item.id === customer.id) {
-            customer = item
-          }
-        })
-        return customer
+        const selectedCustomer = selectedCustomerRows.find(item => item.id === customer.id)
+        return selectedCustomer || customer
       })
     })
   }

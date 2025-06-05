@@ -6,7 +6,6 @@ import { find }         from 'lodash'
 import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import {
   EdgeMvSdLanExtended,
-  getServiceRoutePath,
   getVlanVxlanDefaultTunnelProfileOpt,
   ServiceOperation,
   ServiceType,
@@ -14,9 +13,10 @@ import {
   EdgeMvSdLanViewData,
   EdgeSdLanTunneledWlan,
   EdgeMvSdLanFormModel,
-  EdgeMvSdLanFormNetwork
+  EdgeMvSdLanFormNetwork,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanContextProvider, useEdgeSdLanContext } from './EdgeSdLanContextProvider'
 
@@ -74,10 +74,8 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   const navigate = useNavigate()
   const { allSdLans } = useEdgeSdLanContext()
   const isEditMode = Boolean(editData)
-  const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
-    oper: ServiceOperation.LIST
-  }))
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.EDGE_SD_LAN, ServiceOperation.LIST)
 
   const handleFinish = async (formData: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => {
     await onFinish(formData, gotoStep)
@@ -104,7 +102,7 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
 
   return (<StepsForm
     form={form}
-    onCancel={() => navigate(linkToServiceList)}
+    onCancel={() => navigate(previousPath)}
     onFinish={handleFinish}
     editMode={isEditMode}
     initialValues={initFormValues}

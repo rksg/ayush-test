@@ -20,12 +20,14 @@ jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const TooltipWrapper = jest.requireActual('@acx-ui/components').TooltipWrapper
   const Card = jest.requireActual('@acx-ui/components').Card
+  const Button = jest.requireActual('@acx-ui/components').Button
   return {
     cssNumber,
     cssStr,
     Loader,
     TooltipWrapper,
     Card,
+    Button,
     BarChart: () => <div data-testid='BarChart' />,
     DonutChart: () => <div data-testid='DonutChart' />,
     StackedAreaChart: () => <div data-testid='StackedAreaChart' />,

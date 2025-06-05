@@ -24,6 +24,7 @@ import {
   PriorityEnum,
   SyslogActionTypes,
   serverIpAddressRegExp,
+  dualModeServerIpAddressRegExp,
   servicePolicyNameRegExp,
   protocolLabelMapping,
   facilityLabelMapping,
@@ -34,7 +35,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   SyslogPolicyDetailType,
   TableResult,
-  SyslogPolicyListType
+  SyslogPolicyListType,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { PROFILE_MAX_COUNT } from '../constants'
@@ -54,7 +56,9 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   } = useContext(SyslogContext)
 
   const form = Form.useFormInstance()
+  const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
@@ -255,6 +259,13 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     return checkObjectNotExists(list, { name: value } , $t(policyTypeLabelMapping[PolicyType.SYSLOG]))
   }
 
+  const serverIpValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return dualModeServerIpAddressRegExp(value)
+    }
+    return serverIpAddressRegExp(value)
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -287,7 +298,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
               label={$t({ defaultMessage: 'Server Address' })}
               rules={[
                 { required: true },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => serverIpValidator(value) }
               ]}
             >
               <Input
@@ -330,7 +341,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
               name='secondaryServer'
               label={$t({ defaultMessage: 'Server Address' })}
               rules={[
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => serverIpValidator(value) }
               ]}
             >
               <Input
