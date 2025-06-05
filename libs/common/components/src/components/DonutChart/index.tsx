@@ -306,7 +306,7 @@ export function DonutChart ({
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
-          case 'name-bold-value': return `${name}: **${dataFormatter(value)}**`
+          case 'name-bold-value': return `${name}: ${dataFormatter(value)}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
@@ -325,8 +325,7 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label,
-          formatter: '{b}'
+          ...styles.label
         },
         tooltip: {
           ...tooltipOptions(),

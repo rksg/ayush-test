@@ -8,7 +8,6 @@ import { DonutChart, ContentSwitcher, qualitativeColorSet, Card, Loader, NoData 
 import { AnalyticsFilter }                                                        from '@acx-ui/utils'
 
 import { useTopNWifiClientQuery } from './services'
-import * as UI                    from './styledComponents'
 
 const colors = qualitativeColorSet()
 
@@ -51,29 +50,29 @@ export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) 
 
   return (
     <Loader states={[queryResults]}>
-      <AutoSizer>
-        {({ height, width }) => (
-          results ? (
-            <Card type='default' title={title}>
-              <div style={{ marginTop: -35 }}>
-                <ContentSwitcher
-                  key={selectedTab}
-                  tabDetails={tabDetails.map(({ label, value }) => ({
-                    label,
-                    value,
-                    children: null
-                  }))}
-                  value={selectedTab}
-                  onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
-                  size='small'
-                  align='right'
-                  noPadding
-                />
-              </div>
-              <UI.FlexRow style={{ marginTop: 24 }}>
+      <Card type='default' title={title}>
+        {results ? (
+          <>
+            <div style={{ marginTop: -38 }}>
+              <ContentSwitcher
+                key={selectedTab}
+                tabDetails={tabDetails.map(({ label, value }) => ({
+                  label,
+                  value,
+                  children: null
+                }))}
+                value={selectedTab}
+                onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+                size='small'
+                align='right'
+                noPadding
+              />
+            </div>
+            <AutoSizer>
+              {({ height, width }) => (
                 <DonutChart
                   data={chartData}
-                  style={{ width: width, height: height }}
+                  style={{ width: width * 0.9, height: height * 0.9 }}
                   legend='name-bold-value'
                   size='small'
                   showLegend
@@ -81,13 +80,13 @@ export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) 
                   value={centerText}
                   labelTextStyle={{ overflow: 'breakAll', width: 240 }}
                 />
-              </UI.FlexRow>
-            </Card>
-          ) : (
-            <NoData />
-          )
+              )}
+            </AutoSizer>
+          </>
+        ) : (
+          <NoData />
         )}
-      </AutoSizer>
+      </Card>
     </Loader>
   )
 }
