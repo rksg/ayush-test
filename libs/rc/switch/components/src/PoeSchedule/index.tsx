@@ -171,7 +171,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
         $t({ defaultMessage: 'Preview PoE Schedule' }) :
         $t({ defaultMessage: 'PoE Schedule ' })}
       visible={visible}
-      width={850}
+      width={920}
       footer={footer}
       maskClosable={true}
       destroyOnClose={true}
@@ -236,12 +236,13 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 loading={false}
                 isShowTips={readOnlyMode ? false : true}
                 prefix={true}
-                timelineLabelTop={false}
+                timelineLabelTop={true}
                 isShowTimezone={true}
                 venue={venueData}
                 readonly={readOnlyMode}
                 disabled={false}
                 deviceType={SchedulerDeviceTypeEnum.SWITCH}
+                slotWidth={30}
               />
               }
             </Col>
