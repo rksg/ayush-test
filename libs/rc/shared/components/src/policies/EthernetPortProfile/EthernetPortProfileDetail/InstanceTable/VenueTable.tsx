@@ -20,7 +20,7 @@ interface VenueTableProps {
   venueActivations: ProfileLanVenueActivations[]
 }
 
-const useGetVenueNameMap = (venueGrouping: Record<string, string[]> ) => {
+const useGetVenueNameMap = (venueGrouping: Record<string, Set<string>> ) => {
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
@@ -72,21 +72,17 @@ export const VenueTable = (props: VenueTableProps) => {
 
   const venueGrouping = useMemo(()=>{
     if(venueActivations.length > 0) {
-
       return venueActivations.reduce((acc, activation) => {
         const { venueId, apModel } = activation
         if (venueId !== undefined && apModel !== undefined) {
           if (!acc[venueId]) {
-            acc[venueId] = []
+            acc[venueId] = new Set()
           }
-          acc[venueId].push(apModel)
+          acc[venueId].add(apModel)
         }
-
         return acc
-      }, {} as Record<string, string[]>)
+      }, {} as Record<string, Set<string>>)
     }
-
-
     return {}
   }, [venueActivations])
 
@@ -97,7 +93,7 @@ export const VenueTable = (props: VenueTableProps) => {
       return Array.from(Object.entries(venueGrouping)).map(([id, apModels]) => ({
         id,
         name: venueNameMap[id],
-        apModels
+        apModels: Array.from(apModels)
       }))
     }
     return []
