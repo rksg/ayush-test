@@ -48,7 +48,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
     },
     {
       key: 'moreSettings',
-      title: $t({ defaultMessage: 'More Settings' }),
+      title: $t({ defaultMessage: 'Settings' }),
       content: <MoreSettingsForm editMode={editMode}/>,
       showEdit: true
     },
