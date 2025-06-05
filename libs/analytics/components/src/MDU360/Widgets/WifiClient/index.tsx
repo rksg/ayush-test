@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -13,7 +13,7 @@ const colors = qualitativeColorSet()
 
 const tabDetails = [
   { label: 'Device Type', value: 'deviceType' },
-  { label: 'Manufacture', value: 'manufacture' }
+  { label: 'Manufacture', value: 'manufacturer' }
 ]
 
 export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) => {
@@ -30,18 +30,11 @@ export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) 
 
   const results = queryResults?.data?.nodes?.[0]
 
-  const getChartData = useCallback((data?: { name: string; value: number }[]) => {
-    return data?.map((d, i) => ({
-      name: d.name,
-      value: d.value,
-      color: colors[i]
-    })) ?? []
-  }, [])
-
-  const chartData = useMemo(() => {
-    if (!results) return []
-    return getChartData(results[selectedTab])
-  }, [results, selectedTab, getChartData])
+  const chartData = (results?.[selectedTab] ?? []).map((d, i) => ({
+    name: d.name,
+    value: d.value,
+    color: colors[i]
+  }))
 
   const title = $t({ defaultMessage: 'Wi-Fi Client' })
   const centerText = selectedTab === 'deviceType'
@@ -55,7 +48,6 @@ export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) 
           <>
             <div style={{ marginTop: -38 }}>
               <ContentSwitcher
-                key={selectedTab}
                 tabDetails={tabDetails.map(({ label, value }) => ({
                   label,
                   value,

@@ -25,20 +25,28 @@ const mockData = {
       manufacturer: [
         {
           name: 'Apple',
-          value: 50
+          value: 30
         },
         {
           name: 'Dell',
           value: 30
+        },
+        {
+          name: 'Samsung',
+          value: 20
         }
       ],
       deviceType: [
         {
           name: 'Laptop',
-          value: 20
+          value: 80
         },
         {
           name: 'Phone',
+          value: 10
+        },
+        {
+          name: 'Tablet',
           value: 10
         }
       ]
@@ -59,22 +67,23 @@ describe('WifiClient', () => {
 
     render(<WifiClient filters={mockFilters} />, { wrapper: Provider })
     expect(await screen.findByText('Wi-Fi Client')).toBeVisible()
+    expect(await screen.findByText('Device Type')).toBeVisible()
+    expect(await screen.findByText('Manufacture')).toBeVisible()
+
     expect(await screen.findByText('Total Wi-Fi Clients')).toBeVisible()
     expect(await screen.findByText('100')).toBeVisible()
+    expect(await screen.findByText('Laptop: 80')).toBeVisible()
+    expect(await screen.findByText('Phone: 10')).toBeVisible()
+    expect(await screen.findByText('Tablet: 10')).toBeVisible()
 
-    expect(await screen.findByText('Laptop: 50')).toBeVisible()
-    expect(await screen.findByText('Phone: 30')).toBeVisible()
-    expect(await screen.findByText('Laptop: 20')).toBeVisible()
+    const manufacturer = await screen.findByRole('radio', { name: 'Manufacture' })
+    fireEvent.click(manufacturer)
 
-    const radio = await screen.findByRole('radio', { name: 'Manufacture' })
-    fireEvent.click(radio)
-
-    expect(await screen.findByText('Device Type')).toBeVisible()
     expect(await screen.findByText('Total Devices')).toBeVisible()
-    expect(await screen.findByText('100')).toBeVisible()
-    expect(await screen.findByText('Apple: 50')).toBeVisible()
-    expect(await screen.findByText('Samsung: 30')).toBeVisible()
-    expect(await screen.findByText('Dell: 20')).toBeVisible()
+    expect(await screen.findByText('80')).toBeVisible()
+    expect(await screen.findByText('Apple: 30')).toBeVisible()
+    expect(await screen.findByText('Samsung: 20')).toBeVisible()
+    expect(await screen.findByText('Dell: 30')).toBeVisible()
   })
 
   it('should render no data when there is no data', async () => {
