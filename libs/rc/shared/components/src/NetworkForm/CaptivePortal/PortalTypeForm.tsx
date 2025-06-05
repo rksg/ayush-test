@@ -50,7 +50,6 @@ function TypesForm () {
   const isSAMLSSOEnable = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isDirectoryServerEnabled = !isRuckusAiMode && isDirectoryServerEnabledFF
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
-  const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   // eslint-disable-next-line max-len
   const isWorkflowNetworkFFEnabled = useIsSplitOn(Features.WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE)
   const onChange = (e: RadioChangeEvent) => {
@@ -144,7 +143,7 @@ function TypesForm () {
               </Radio>
             }
             {
-              isWorkflowTierEnabled && isWorkflowFFEnabled && isWorkflowNetworkFFEnabled &&
+              isWorkflowTierEnabled && isWorkflowNetworkFFEnabled &&
               !isTemplate &&
               <Radio value={GuestNetworkTypeEnum.Workflow}>
                 {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Workflow]}
