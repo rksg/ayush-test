@@ -14,8 +14,9 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useGetApIotV2Query,
-  useLazyGetIotControllerListQuery,
   useUpdateApIotV2Mutation,
+  useLazyGetIotControllerVenueAssociationsQuery,
+  useLazyGetIotControllerApAssociationsQuery,
   useUpdateApIotControllerMutation,
   useDeleteApIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -31,7 +32,7 @@ import { VenueSettingsHeader }                           from '../../VenueSettin
 export function IotControllerV2 (props: ApEditItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const { isAllowEdit=true } = props
 
   const {
@@ -55,7 +56,8 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const [updateApIot, { isLoading: isUpdatingApIot }] =
     useUpdateApIotV2Mutation()
 
-  const [getVenueIot] = useLazyGetIotControllerListQuery()
+  const [getVenueIot] = useLazyGetIotControllerVenueAssociationsQuery()
+  const [getApIot] = useLazyGetIotControllerApAssociationsQuery()
 
   const [form] = Form.useForm()
   const isUseVenueSettingsRef = useRef<boolean>(false)
@@ -84,52 +86,21 @@ export function IotControllerV2 (props: ApEditItemProps) {
 
     if (venueId && serialNumber && iotData) {
       const setIotData = async () => {
-        const venueIotData = await getVenueIot(
-          {
-            payload: {
-              fields: [
-                'id',
-                'name',
-                'inboundAddress',
-                'serialNumber',
-                'publicAddress',
-                'publicPort',
-                'apiToken',
-                'tenantId',
-                'status',
-                'venueId',
-                'assocVenueId',
-                'assocApId',
-                'assocApVenueId'
-              ],
-              pageSize: 10,
-              sortField: 'name',
-              sortOrder: 'ASC',
-              filters: { tenantId: [tenantId] }
-            }
-          },
-          true
-        ).unwrap()
+        try {
+          const venueIotData = await getVenueIot({ params: { venueId } }).unwrap()
+          const apIotData = await getApIot({ params: { apId: serialNumber } }).unwrap()
 
-        // eslint-disable-next-line max-len
-        setVenueIot(venueIotData?.data.find((i) => i.assocApVenueId === venueId) as IotControllerStatus)
-        // use venue settings or custom
-        // eslint-disable-next-line max-len
-        setInitIotController(venueIotData?.data.find((i) => i.assocApId === serialNumber) as IotControllerStatus)
+          setVenueIot(venueIotData)
+          setInitIotController(apIotData)
 
-        if (iotData.useVenueSettings) {
-          // eslint-disable-next-line max-len
-          setIotController(venueIotData?.data.find((i) => i.assocApVenueId === venueId) as IotControllerStatus)
-        } else {
-          // eslint-disable-next-line max-len
-          setIotController(venueIotData?.data.find((i) => i.assocApId === serialNumber) as IotControllerStatus)
+          if (iotData.useVenueSettings) {
+            setIotController(venueIotData)
+          } else {
+            setIotController(apIotData)
+          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
-
-        // for test
-        // eslint-disable-next-line max-len
-        // setIotController(venueIotData?.data[0] as IotControllerStatus)
-        // setInitIotController(venueIotData?.data[0] as IotControllerStatus)
-        // setVenueIot(venueIotData?.data[0] as IotControllerStatus)
 
         setIsUseVenueSettings(iotData.useVenueSettings)
         isUseVenueSettingsRef.current = iotData.useVenueSettings
