@@ -12,10 +12,11 @@ import { EditEdgeDataContext, EditEdgeDataProvider } from './EditEdgeDataProvide
 
 const {
   mockEdgeList, mockEdgeData, mockEdgeClusterList,
-  mockEdgeDnsServersData, mockStaticRoutes, mockEdgeCluster
+  mockEdgeDnsServersData, mockStaticRoutes, mockEdgeCluster,
+  mockedHaNetworkSettings
 } = EdgeGeneralFixtures
-const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
-const { mockEdgeLagStatusList, mockedEdgeLagList } = EdgeLagFixtures
+const { mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 describe('EditEdge - EditEdgeDataProvider', () => {
@@ -35,10 +36,6 @@ describe('EditEdge - EditEdgeDataProvider', () => {
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.post(
         EdgeUrlsInfo.getEdgePortStatusList.url,
         (_req, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
@@ -46,10 +43,6 @@ describe('EditEdge - EditEdgeDataProvider', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeLagStatusList.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeLagStatusList))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdgeLagList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeLagList))
       ),
       rest.get(
         EdgeUrlsInfo.getDnsServers.url,
@@ -70,6 +63,10 @@ describe('EditEdge - EditEdgeDataProvider', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(mockedHaNetworkSettings))
       )
     )
   })
@@ -78,7 +75,7 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     const { result } = renderHook(() => useContext(EditEdgeDataContext), {
       wrapper: ({ children }) => <Provider>
         <EditEdgeDataProvider
-          serialNumber='serial-number'
+          serialNumber={mockEdgeClusterList.data[0].edgeList[0].serialNumber}
         >
           {children}
         </EditEdgeDataProvider>
@@ -86,8 +83,8 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     })
     await waitFor(() => expect(result.current.generalSettings?.serialNumber).toBe('96123456789'))
     await waitFor(() => expect(result.current.clusterInfo?.clusterId).toBe('clusterId_1'))
-    await waitFor(() => expect(result.current.portData.length).toBe(5))
-    await waitFor(() => expect(result.current.lagData.length).toBe(2))
+    await waitFor(() => expect(result.current.portData.length).toBe(2))
+    await waitFor(() => expect(result.current.lagData.length).toBe(1))
     await waitFor(() => expect(result.current.lagStatus.length).toBe(2))
     await waitFor(() => expect(result.current.dnsServersData?.primary).toBe('1.1.1.1'))
     await waitFor(() => expect(result.current.dnsServersData?.secondary).toBe('2.2.2.2'))
@@ -95,5 +92,6 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     await waitFor(() => expect(result.current.isClusterFormed).toBeTruthy())
     await waitFor(() => expect(result.current.clusterConfig?.id).toBe('clusterId_1'))
     await waitFor(() => expect(result.current.isSupportAccessPort).toBeFalsy())
+    await waitFor(() => expect(result.current.subInterfaceData?.length).toBe(3))
   })
 })
