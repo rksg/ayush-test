@@ -179,6 +179,8 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const { isTemplate } = useConfigTemplate()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
+  const identityGroupId = Form.useWatch('identityId', form)
+  const [ isChanging, setIsChanging ] = useState(false)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
@@ -211,7 +213,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
     }
   })
   const identityGroupList = identityGroupRawList?.data
-    .filter(group => !group.dpskPoolId)
+    .filter(group => identityGroupId === group.id || !group.dpskPoolId)
     .map(group => ({ value: group.id, label: group.name }))
 
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
@@ -291,7 +293,14 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 allowClear
                 options={identityGroupList}
-                disabled={editMode}
+                onChange={(id) => {
+                  if (identityGroupId !== id) {
+                    // the legacy DPSK template doesn't have identityGroupId, so we allow the user to change the identity group.
+                    // but we cannot disable the select field once the identity group is selected in edit mode.
+                    setIsChanging(true)
+                  }
+                }}
+                disabled={editMode && identityGroupId && !isChanging}
               />
             </Form.Item>
             {

@@ -65,10 +65,11 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
+  const { isTemplate } = useConfigTemplate()
   const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const isIdentityGroupRequired =
     useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-    && isIdentityGroupTemplateEnabled
+    && (isTemplate ? isIdentityGroupTemplateEnabled : true)
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
@@ -139,7 +140,10 @@ export function DpskForm (props: DpskFormProps) {
       if (editMode) {
         result = await updateDpsk({
           params: { ...params },
-          payload: _.omit(dpskSaveData, 'id'),
+          payload: {
+            ..._.omit(dpskSaveData, 'id'),
+            identityGroupId: dpskSaveData.identityId
+          },
           enableRbac
         }).unwrap()
 
