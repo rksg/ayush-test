@@ -91,6 +91,10 @@ describe('multi-venue SD-LAN form', () => {
     )
   })
 
+  afterEach(() => {
+    mockedNavigate.mockClear()
+  })
+
   it('should navigate to service list when click cancel', async () => {
     const { result } = renderHook(() => Form.useForm())
     render(<MockedTargetComponent
@@ -115,11 +119,7 @@ describe('multi-venue SD-LAN form', () => {
     const actions = within(await form.findByTestId('steps-form-actions'))
     await click(await actions.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => {
-      expect(mockedNavigate).toBeCalledWith({
-        hash: '',
-        pathname: '/t-id/t/'+targetPath,
-        search: ''
-      })
+      expect(mockedNavigate).toBeCalledWith('/t-id/t/' + targetPath)
     })
   })
 

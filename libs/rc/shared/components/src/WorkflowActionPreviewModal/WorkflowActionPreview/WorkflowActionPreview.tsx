@@ -34,11 +34,10 @@ import { DpskActionPreview }         from './DpskActionPreview'
 
 import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPreview } from './index'
 
-
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: DataPromptPreview,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview,
   [ActionType.DPSK]: DpskActionPreview,
   [ActionType.MAC_REG]: MacRegActionPreview,
   [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview

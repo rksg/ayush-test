@@ -1,22 +1,21 @@
-import { Col, Form, Row }                      from 'antd'
-import { cloneDeep }                           from 'lodash'
-import { useIntl }                             from 'react-intl'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Col, Form, Row }         from 'antd'
+import { cloneDeep }              from 'lodash'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useCreateDirectoryServerMutation, useUpdateDirectoryServerMutation } from '@acx-ui/rc/services'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   DirectoryServer,
   usePolicyListBreadcrumb,
-  combineAttributeMappingsToData
+  combineAttributeMappingsToData,
+  usePolicyPageHeaderTitle,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { DirectoryServerSettingForm } from './DirectoryServerSettingForm'
 
@@ -29,19 +28,15 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
   const [form] = Form.useForm()
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.DIRECTORY_SERVER)
 
   // eslint-disable-next-line max-len
   const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
 
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.DIRECTORY_SERVER)
+  const previousPath = usePolicyPreviousPath(PolicyType.DIRECTORY_SERVER, PolicyOperation.LIST)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.DIRECTORY_SERVER)
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.DIRECTORY_SERVER,
-    oper: PolicyOperation.LIST
-  })
-  const linkToTableView = useTenantLink(tablePath)
 
   const [ updateDirectoryServer ] = useUpdateDirectoryServerMutation()
   const [ createDirectoryServer ] = useCreateDirectoryServerMutation()
@@ -66,7 +61,7 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
         await createDirectoryServer({ params, payload: payload }).unwrap()
       }
 
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -75,16 +70,13 @@ export const DirectoryServerForm = (props: DirectoryServerFormProps) => {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Directory Server' })
-          : $t({ defaultMessage: 'Add Directory Server' })
-        }
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <StepsForm<DirectoryServer>
         form={form}
         onFinish={handleFinish}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
+        onCancel={() => navigate(previousPath)}
         buttonLabel={{
           submit: editMode
             ? $t({ defaultMessage: 'Apply' })

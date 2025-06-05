@@ -30,7 +30,7 @@ export interface PortVlan {
 }
 
 export const FIELD_LABEL: Record<string, MessageDescriptor> = {
-  flexibleAuthenticationEnabled: defineMessage({ defaultMessage: 'Authentication' }),
+  flexibleAuthenticationEnabled: defineMessage({ defaultMessage: 'Port Authentication' }),
   authenticationProfileId: defineMessage({ defaultMessage: 'Profile' }),
   authenticationType: defineMessage({ defaultMessage: 'Type' }),
   changeAuthOrder: defineMessage({ defaultMessage: 'Change Authentication Order' }),

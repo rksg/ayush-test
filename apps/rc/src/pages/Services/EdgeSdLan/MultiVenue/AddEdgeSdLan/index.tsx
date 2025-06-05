@@ -5,12 +5,11 @@ import { PageHeader }                                            from '@acx-ui/c
 import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
 import {
   EdgeMvSdLanFormModel,
-  getServiceRoutePath,
-  ServiceOperation,
   ServiceType,
+  useAfterServiceSaveRedirectPath,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormContainer } from '../Form'
 import { SettingsForm }           from '../Form/SettingsForm'
@@ -21,12 +20,7 @@ export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
-    oper: ServiceOperation.LIST
-  })
-
-  const linkToServiceList = useTenantLink(cfListRoute)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { addEdgeSdLan } = useEdgeMvSdLanActions()
 
   const [form] = Form.useForm()
@@ -65,11 +59,11 @@ export const AddEdgeSdLan = () => {
         }).catch(reject)
       })
 
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     }
   }
 

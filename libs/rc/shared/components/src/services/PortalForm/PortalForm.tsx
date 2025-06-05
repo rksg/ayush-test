@@ -41,7 +41,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useServicePreviousPath,
-  Demo
+  Demo,
+  useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -97,6 +98,7 @@ export const PortalForm = (props: {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.PORTAL, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.PORTAL)
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -274,7 +276,7 @@ export const PortalForm = (props: {
       }
       networkView
         ? backToNetwork?.(data)
-        : navigate(previousPath, { replace: true })
+        : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

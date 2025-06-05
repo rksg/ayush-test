@@ -21,7 +21,8 @@ import {
   StepType,
   WorkflowStep,
   LogoSize,
-  WorkflowPanelMode
+  WorkflowPanelMode,
+  WorkflowNodeTypes
 } from '../../types'
 
 export const InitialEmptyStepsCount = 2
@@ -61,7 +62,6 @@ export const toStepMap = (steps: WorkflowStep[])
 }
 
 /* eslint-disable max-len */
-// TODO: need to be defined by UX designer
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
@@ -150,9 +150,14 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 
 export const composeNext = (
   mode: WorkflowPanelMode,
-  stepId: string, stepMap: Map<string, WorkflowStep>,
-  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
-  currentX: number, currentY: number,
+  stepId: string,
+  stepMap: Map<string, WorkflowStep>,
+  parentId: string | undefined,
+  nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
+  edges: Edge[],
+  currentX: number,
+  currentY: number,
+  disconnectedBranchZIndex: number,
   isStart?: boolean
 ) => {
   const SPACE_OF_NODES = 110
@@ -166,15 +171,17 @@ export const composeNext = (
     type,
     actionType
   } = step
-  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nodeType: WorkflowNodeTypes = (actionType ?? 'START')
   const nextStep = stepMap.get(nextStepId ?? '')
-
-  // console.log('Step :: ', nodeType, type, enrollmentActionId)
 
   nodes.push({
     id,
+    parentNode: parentId ?? undefined,
+    extent: parentId ? 'parent' : undefined,
     type: nodeType,
     position: { x: currentX, y: currentY },
+    draggable: false,
+    zIndex: parentId ? disconnectedBranchZIndex : 1000,
     data: {
       ...step,
       isStart,
@@ -195,13 +202,59 @@ export const composeNext = (
       target: nextStepId,
       type: ConnectionLineType.Step,
       style: { stroke: 'var(--acx-primary-black)' },
-
+      zIndex: parentId ? disconnectedBranchZIndex : 0,
       deletable: false
     })
 
-    composeNext(mode, nextStepId, stepMap, nodes, edges,
-      currentX, nextY, type === StepType.Start)
+    composeNext(mode, nextStepId, stepMap, parentId, nodes, edges,
+      currentX, nextY, disconnectedBranchZIndex, type === StepType.Start)
   }
+}
+
+function addParentNode (firstStepId: string,
+  stepMap: Map<string, WorkflowStep>,
+  disconnectedBranchZIndex:number,
+  nodes: Node<WorkflowStep, WorkflowNodeTypes>[],
+  currentX: number,
+  currentY: number
+) {
+
+  // create parent node
+  // NOTE: this id format is used by other code to determine the subflow
+  // starting member, don't change it without consideration
+  let parentNodeId = firstStepId + 'parent'
+  let firstStep = stepMap.get(firstStepId)
+
+  if(!firstStep) return
+
+  // Calculate the height of the parent node based on the number of nodes it will contain
+  // height = number of nodes (64) + number of edges (46)
+  let height = 64 // 64 to account for the first step
+  if (firstStep.nextStepId) {
+    let nextNode = stepMap.get(firstStep.nextStepId)
+    while(nextNode) {
+      if(nextNode.type !== StepType.End && nextNode.type !== StepType.Start) {
+        height += 64 + 46
+      }
+      nextNode = nextNode.nextStepId ? stepMap.get(nextNode.nextStepId) : undefined
+    }
+  }
+
+  nodes.push({
+    id: parentNodeId,
+    type: 'DISCONNECTED_BRANCH',
+    position: { x: currentX, y: currentY },
+    style: {
+      width: '260px',
+      height: height + 40
+    },
+    zIndex: disconnectedBranchZIndex,
+    hidden: false,
+    deletable: false,
+    data: { id: parentNodeId, enrollmentActionId: '' }
+  })
+
+  return parentNodeId
 }
 
 
@@ -209,7 +262,7 @@ export function toReactFlowData (
   steps: WorkflowStep[],
   mode: WorkflowPanelMode = WorkflowPanelMode.Default
 ): { nodes: Node[], edges: Edge[] } {
-  const nodes: Node<WorkflowStep, ActionType>[] = []
+  const nodes: Node<WorkflowStep, WorkflowNodeTypes>[] = []
   const edges: Edge[] = []
   let START_X = 100
   const START_Y = 0
@@ -222,9 +275,35 @@ export function toReactFlowData (
   const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
+  let disconnectedBranchZIndex = 1250
+
   firstSteps?.forEach((firstStep) => {
-    composeNext(mode, firstStep.id, stepMap, nodes, edges,
-      START_X, START_Y, firstStep.type === StepType.Start)
+
+    let isDisconnectedBranch = firstStep.statusReasons
+      && firstStep.statusReasons.findIndex(e => e.statusCode === 'disconnected.step') != -1
+
+    let startX = START_X
+    let startY = START_Y
+    let parentNodeId = undefined
+
+    if(isDisconnectedBranch) {
+      disconnectedBranchZIndex += 100
+
+      parentNodeId = addParentNode(firstStep.id, stepMap, disconnectedBranchZIndex,
+        nodes, START_X, START_Y)
+
+      disconnectedBranchZIndex += 100 // child nodes and edges should be on top of subflow
+
+      // Child nodes are positioned relative to the parent, so these are set to (20,20)
+      startX = 20
+      startY = 20
+
+      // add additonal room for the extra wide subflow node
+      START_X += 30
+    }
+
+    composeNext(mode, firstStep.id, stepMap, parentNodeId, nodes, edges,
+      startX, startY, disconnectedBranchZIndex, firstStep.type === StepType.Start)
 
     START_X += 250
   })

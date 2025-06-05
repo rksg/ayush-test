@@ -68,7 +68,14 @@ export interface DhcpStats {
   currentVersion?: string
   tags?: string[]
   edgeAlarmSummary?: EdgeAlarmSummary[]
-  edgeClusterIds?: string[]
+  edgeClusterIds?: string[],
+  clusterAppVersionInfo?: EdgeClusterAppVersionInfo[]
+}
+
+export interface EdgeClusterAppVersionInfo {
+  edgeClusterId: string
+  currentVersion?: string
+  targetVersion?: string
 }
 
 export interface DhcpHostStats {
