@@ -57,24 +57,25 @@ export const nodeTypes = {
     tooltip: null
   },
   [Node.NonInterfering]: {
-    name: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
+    name: defineMessage({ defaultMessage: 'Avg. Non-Interfering APs' }),
     color: cssStr('--acx-accents-blue-50'),
-    legendText: defineMessage({ defaultMessage: 'Non-Interfering AP' }),
-    tooltip: defineMessage(
-      { defaultMessage: 'APs on different channels that minimize interference.' })
+    legendText: defineMessage({ defaultMessage: 'Avg. Non-Interfering APs' }),
+    // eslint-disable-next-line max-len
+    tooltip: defineMessage({ defaultMessage: 'Average number of APs operating on non-overlapping channels, helping to reduce interference and maintain optimal wireless performance.' })
   },
   [Node.Interfering]: {
-    name: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
+    name: defineMessage({ defaultMessage: 'Avg. Co-Channel Interfering APs' }),
     color: cssStr('--acx-semantics-red-50'),
-    legendText: defineMessage({ defaultMessage: 'Co-Channel Interfering AP' }),
-    tooltip: defineMessage(
-      { defaultMessage: 'APs operating on the same channel, potentially causing interference.' })
+    legendText: defineMessage({ defaultMessage: 'Avg. Co-Channel Interfering APs' }),
+    // eslint-disable-next-line max-len
+    tooltip: defineMessage({ defaultMessage: 'Average number of APs operating on the same or overlapping channels, which may cause signal interference and degrade network performance.' })
   },
   [Node.Rogue]: {
-    name: defineMessage({ defaultMessage: 'Rogue AP' }),
+    name: defineMessage({ defaultMessage: 'Avg. Rogue APs' }),
     color: cssStr('--acx-neutrals-80'),
-    legendText: defineMessage({ defaultMessage: 'Rogue AP' }),
-    tooltip: defineMessage({ defaultMessage: 'Unauthorized or unknown APs detected.' })
+    legendText: defineMessage({ defaultMessage: 'Rogue APs' }),
+    // eslint-disable-next-line max-len
+    tooltip: defineMessage({ defaultMessage: 'Average number of unauthorized or unidentified APs detected in the vicinity, which may pose security risks or cause network interference.' })
   }
 } as Record<string, NodeType>
 
