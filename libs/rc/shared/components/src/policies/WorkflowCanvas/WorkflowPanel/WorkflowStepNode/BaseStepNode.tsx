@@ -110,7 +110,8 @@ export default function BaseStepNode (props: NodeProps
         : $t({ defaultMessage: 'Do you want to delete this action?' }),
       onOk: () => {
         selectedKey === 'deleteStepDescendants' ?
-          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId, deleteSelectedStep: true } }).unwrap()
+          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId,
+            deleteSelectedStep: true } }).unwrap()
           : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
