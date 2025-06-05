@@ -56,7 +56,7 @@ export function Settings ({ settings }: { settings: string }) {
   }, [settings])
 
   const isRai = get('IS_MLISA_SA')
-  let tenantId = isRai
+  const tenantId = isRai
     ? getRaiUserProfile().selectedTenant.id
     : getR1UserProfile().profile.tenantId
   const query = useGetPreferencesQuery({ tenantId })
