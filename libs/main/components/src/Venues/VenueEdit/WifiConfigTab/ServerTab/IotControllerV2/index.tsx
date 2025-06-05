@@ -12,7 +12,7 @@ import {
   IotControllerDrawer
 } from '@acx-ui/rc/components'
 import {
-  useGetIotControllerListQuery,
+  useGetIotControllerVenueAssociationsQuery,
   useUpdateVenueIotControllerMutation,
   useDeleteVenueIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -26,7 +26,7 @@ import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 export function IotControllerV2 (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { isAllowEdit=true } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
   // eslint-disable-next-line max-len
@@ -49,31 +49,7 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
   const [deleteVenueIotController, { isLoading: isDeletingVenueApIot }] = useDeleteVenueIotControllerMutation()
 
   // eslint-disable-next-line max-len
-  const { data: availableIotControllers, isLoading } = useGetIotControllerListQuery({
-    payload: {
-      fields: [
-        'id',
-        'name',
-        'inboundAddress',
-        'serialNumber',
-        'publicAddress',
-        'publicPort',
-        'apiToken',
-        'tenantId',
-        'status',
-        'venueId',
-        'assocVenueId',
-        'assocApId',
-        'assocApVenueId'
-      ],
-      pageSize: 10,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: { tenantId: [tenantId], venueId: [venueId] }
-    }
-  })
-
-  const venueApIot = availableIotControllers?.data?.[0]
+  const { data: venueApIot, isLoading } = useGetIotControllerVenueAssociationsQuery({ params: { venueId } })
 
   useEffect(() => {
     const venueApIotData = venueApIot

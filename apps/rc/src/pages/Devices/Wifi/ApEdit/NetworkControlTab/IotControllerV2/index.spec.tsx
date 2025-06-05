@@ -58,6 +58,14 @@ describe('Iot Controller', () => {
         IotUrlsInfo.getIotControllerList.url,
         (req, res, ctx) => res(ctx.json(iotControllerList.response))
       ),
+      rest.get(
+        IotUrlsInfo.getIotControllerVenueAssociations.url,
+        (req, res, ctx) => res(ctx.json(iotControllerList.response.data[0]))
+      ),
+      rest.get(
+        IotUrlsInfo.getIotControllerApAssociations.url,
+        (req, res, ctx) => res(ctx.json(iotControllerList.response.data[0]))
+      ),
       rest.get(WifiRbacUrlsInfo.getApIotV2.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetApIotSettings))
       })

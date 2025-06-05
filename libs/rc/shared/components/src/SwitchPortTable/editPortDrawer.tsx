@@ -63,7 +63,9 @@ import {
   SwitchUrlsInfo,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  useTableQuery
+  useTableQuery,
+  PolicyType,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { store }              from '@acx-ui/store'
@@ -335,6 +337,8 @@ export function EditPortDrawer ({
   useLazyPortProfileOptionsForMultiSwitchesQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
+  const authenticationBreadcrumb = usePolicyListBreadcrumb(PolicyType.FLEX_AUTH)
+  const authenticationPath = authenticationBreadcrumb.map(item => item.text).join(' --> ')
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
@@ -1533,7 +1537,9 @@ export function EditPortDrawer ({
                 label={<>
                   {$t({ defaultMessage: 'Profile' })}
                   <Tooltip.Question
-                    title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
+                    title={
+                      $t(EditPortMessages.GUIDE_TO_AUTHENTICATION, { path: authenticationPath })
+                    }
                   />
                 </>}
                 validateFirst

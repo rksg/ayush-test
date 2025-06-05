@@ -64,4 +64,25 @@ describe('EthernetPortProfile Venue Instance Table', () => {
     expect(screen.queryByText(mockVenueName)).not.toBeInTheDocument()
   })
 
+  it('Should remove duplicate AP models', async () => {
+    const duplicateVenueActivations = [
+      { venueId: 'venue1', apModel: 'R550' },
+      { venueId: 'venue1', apModel: 'R550' },
+      { venueId: 'venue1', apModel: 'R650' },
+      { venueId: 'venue1', apModel: 'R650' }
+    ] as ProfileLanVenueActivations[]
+
+    render(
+      <Provider>
+        <VenueTable
+          venueActivations={duplicateVenueActivations}
+        />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    const apModelCell = await screen.findByText('R550, R650')
+    expect(apModelCell).toBeInTheDocument()
+  })
 })
