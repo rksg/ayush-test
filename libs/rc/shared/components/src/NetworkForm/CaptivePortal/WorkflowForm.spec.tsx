@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { render, screen } from '@testing-library/react'
-import { Form }           from 'antd'
-import { IntlProvider }   from 'react-intl'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent                              from '@testing-library/user-event'
+import { Form }                               from 'antd'
+import { IntlProvider }                       from 'react-intl'
 
 import { WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }         from '@acx-ui/store'
@@ -52,7 +53,9 @@ jest.mock('@acx-ui/rc/services', () => ({
         }
       ]
     }]
-  })
+  }),
+  // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+  useGetAAAPolicyViewModelListQuery: (...args: any[]) => jest.fn(...args)
 }))
 
 const mockContextValue = {
@@ -143,5 +146,85 @@ describe('WorkflowForm', () => {
     renderWithProviders(<WorkflowForm />)
     const networkDiagram = screen.getByTestId('network-diagram')
     expect(networkDiagram).toBeInTheDocument()
+  })
+
+  it('renders accounting service section with correct initial state', () => {
+    renderWithProviders(<WorkflowForm />)
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
+    expect(screen.getByRole('switch')).not.toBeChecked()
+  })
+
+  it('shows accounting server and proxy service when accounting service is enabled', async () => {
+    renderWithProviders(<WorkflowForm />)
+    const accountingSwitch = screen.getByRole('switch')
+    fireEvent.click(accountingSwitch)
+
+    await waitFor(() => {
+      expect(screen.getByText('Accounting Server')).toBeInTheDocument()
+    })
+
+    expect(screen.getByText('Proxy Service')).toBeInTheDocument()
+  })
+
+  it('initializes form with correct values in edit mode', async () => {
+    const editModeContext = {
+      ...mockContextValue,
+      editMode: true,
+      data: {
+        ...mockContextValue.data,
+        guestPortal: {
+          workflowId: 'workflow-1',
+          workflowName: 'Workflow 1'
+        }
+      }
+    }
+
+    render(
+      <Provider>
+        <IntlProvider messages={{}} locale='en'>
+          <NetworkFormContext.Provider value={editModeContext}>
+            <Form>
+              <WorkflowForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </IntlProvider>
+      </Provider>
+    )
+
+    expect(screen.getByText('Workflow 1')).toBeInTheDocument()
+  })
+
+  it('handles form value changes correctly', async () => {
+    renderWithProviders(<WorkflowForm />)
+    const workflowSelect = screen.getAllByRole('combobox')[0]
+
+    await userEvent.click(workflowSelect)
+
+
+    expect(screen.getByText('Workflow 2')).toBeInTheDocument()
+  })
+
+  it('handles accounting service toggle correctly', async () => {
+    renderWithProviders(<WorkflowForm />)
+    const accountingSwitch = screen.getByRole('switch')
+
+    fireEvent.click(accountingSwitch)
+    expect(accountingSwitch).toBeChecked()
+
+    fireEvent.click(accountingSwitch)
+    expect(accountingSwitch).not.toBeChecked()
+  })
+
+  it('handles proxy service toggle correctly when accounting is enabled', async () => {
+    renderWithProviders(<WorkflowForm />)
+    const accountingSwitch = screen.getByRole('switch')
+    fireEvent.click(accountingSwitch)
+
+    const proxySwitch = screen.getByTestId('enable-accounting-proxy')
+    fireEvent.click(proxySwitch)
+    expect(proxySwitch).toBeChecked()
+
+    fireEvent.click(proxySwitch)
+    expect(proxySwitch).not.toBeChecked()
   })
 })
