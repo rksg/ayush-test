@@ -49,7 +49,7 @@ import {
   LAG_TYPE,
   sortPortFunction,
   VlanModalType,
-  isFirmwareVersionAbove10010gCd1Or10020bCd2
+  isFirmwareVersionAbove10020bCd2
 } from '@acx-ui/rc/switch/utils'
 import {
   EditPortMessages,
@@ -163,6 +163,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     ports,
     type
   } = (useWatch([], form) ?? {})
+
+  const isDynamicFW10020bcd2 = type === LAG_TYPE.DYNAMIC &&
+    isFirmwareVersionAbove10020bCd2(switchDetailHeader?.firmware)
 
   useEffect(() => {
     const setVlanData = async () => {
@@ -445,7 +448,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       switchDetailHeader?.model) {
       let count = 16
       const model = switchDetailHeader.model.slice(3, 7)
-      if (['7250', '7450', '7650', '7750', '7850', '7550', '8200'].includes(model)) {
+      if (['7250', '7450', '7650', '7750', '7850', '7550', '8100', '8200'].includes(model)) {
         count = 16
       } else if (['7150'].includes(model)) {
         count = 8
@@ -646,8 +649,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           />
         </Form.Item>
       </Col>
-      { isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
-        isFirmwareVersionAbove10010gCd1Or10020bCd2(switchDetailHeader?.firmware) &&
+      { isDynamicFW10020bcd2 && selectedPorts.length > 0 &&
         <Col
           span={10}
           flex='300px'
@@ -764,7 +766,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onClose={onClose}
-            width={isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC ? 900 : 644}
+            width={isDynamicFW10020bcd2 ? 900 : 644}
             footer={footerForDrawer}
             children={lagForm}
           />
@@ -772,7 +774,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onCancel={onClose}
-            width={isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC ? 900 : 644}
+            width={isDynamicFW10020bcd2 ? 900 : 644}
             footer={footer}
             destroyOnClose={true}
             children={lagForm}
