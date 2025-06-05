@@ -4173,6 +4173,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_mon"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -4815,6 +4816,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_tue"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -5457,6 +5459,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_wed"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -6099,6 +6102,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_thu"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -6741,6 +6745,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_fri"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -7383,6 +7388,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_sat"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -8025,6 +8031,7 @@ h5.c6.ant-typography {
                                         class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_sun"
                                         intervalunit="60"
+                                        slotwidth="20"
                                       >
                                         <label
                                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
