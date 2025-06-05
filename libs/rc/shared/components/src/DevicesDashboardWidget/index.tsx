@@ -21,6 +21,7 @@ import {
 import { DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidgetV2 () {
+  const params = useParams()
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
@@ -61,7 +62,25 @@ export function DevicesDashboardWidgetV2 () {
   const showIotControllerUI = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
 
   const { data: iotControllers, isLoading: iotControllerLoading, isSuccess: iotControllerSuccess } =
-    useGetIotControllerListQuery({ params: useParams() }, { skip: !(showIotControllerUI) })
+    useGetIotControllerListQuery({
+      payload: {
+        fields: [
+          'id',
+          'name',
+          'inboundAddress',
+          'publicAddress',
+          'publicPort',
+          'apiToken',
+          'tenantId',
+          'status',
+          'assocVenueCount'
+        ],
+        pageSize: 10,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters: { tenantId: [params.tenantId] }
+      }
+    }, { skip: !showIotControllerUI })
 
   useTrackLoadTime({
     itemName: widgetsMapping.DEVICES_DASHBOARD_WIDGET,

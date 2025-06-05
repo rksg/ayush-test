@@ -6,13 +6,15 @@ import { MessageDescriptor } from 'react-intl'
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 import { UIConfiguration } from './workflow'
 
+export type WorkflowNodeTypes = ActionType | 'START' | 'DISCONNECTED_BRANCH'
+
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
   DPSK = 'DPSK',
   MAC_REG = 'MAC_REG',
-  CERT_TEMPLATE = 'CERT_TEMPLATE'
+  CERT_TEMPLATE = 'CERT_TEMPLATE',
 }
 
 export interface ActionBase {

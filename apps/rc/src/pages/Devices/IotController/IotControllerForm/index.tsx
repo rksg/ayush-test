@@ -21,7 +21,7 @@ import {
 import {
   useAddIotControllerMutation,
   useGetIotControllerListQuery,
-  // useLazyGetIotControllerSerialNumberQuery,
+  useLazyGetIotControllerSerialNumberQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -68,6 +68,8 @@ export function IotControllerForm () {
 
   const { iotId, action } = useParams()
 
+  const isEditMode: boolean = action === 'edit'
+
   const onClickTestConnection = async () => {
     try {
       await form.validateFields(['adminDomainName', 'adminPassword', 'host'])
@@ -87,6 +89,14 @@ export function IotControllerForm () {
       })
       const result = await currentTestConnectionFun.unwrap()
       if(result.serialNumber){
+        if (isEditMode) {
+          if (form.getFieldValue('serialNumber') === result.serialNumber) {
+            setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+          } else {
+            setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
+          }
+          return
+        }
         form.setFieldsValue({ iotSerialNumber: result.serialNumber })
         setTestConnectionStatus(TestConnectionStatusEnum.PASS)
       }
@@ -147,19 +157,23 @@ export function IotControllerForm () {
   }
 
   // TODO : Add serial number check
-  // const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
+  const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
 
-  // const serialNumberValidator = async (value: string) => {
-  //   const list = (await getSerialNumber({
-  //     params: { serialNumber: value }
-  //   }).unwrap())
-  //     // .filter(n => n.id !== id)
-  //     // .map(n => ({ name: n.name }))
+  const serialNumberValidator = async (value: string) => {
+    try {
+      const serialNumberData = (await getSerialNumber({
+        params: { serialNumber: value }
+      }).unwrap())
 
-  //   // return checkObjectNotExists(list,
-  //   //   { name: value }
-  //     // intl.$t({ defaultMessage: 'Resident Portal' }))
-  // }
+      if (serialNumberData?.existed) {
+        return Promise.reject($t({ defaultMessage: 'The serial number already exists' }))
+      } else {
+        return Promise.resolve()
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
@@ -175,7 +189,8 @@ export function IotControllerForm () {
 
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values, id: data?.id }
+      // eslint-disable-next-line max-len
+      const formData = isEditMode ? { ...values, id: data?.id, publicAddress: '', publicPort: 443, apiToken: '' } : { ...values, id: data?.id }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -183,8 +198,6 @@ export function IotControllerForm () {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  const isEditMode: boolean = action === 'edit'
 
   const loadForm: boolean = isEditMode ? !!data : true
 
@@ -372,14 +385,15 @@ export function IotControllerForm () {
                       {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Serial Number' })
-                      // TODO: add serial number validator
-                      // },
-                      // {
-                      //   validator: (_, value) => serialNumberValidator(value)
+                      },
+                      {
+                        // eslint-disable-next-line max-len
+                        validator: (_, value) => isEditMode ? Promise.resolve() : serialNumberValidator(value)
                       }
                     ]}
                     children={<Input disabled={isEditMode || publicEnabled} />}
                     validateFirst
+                    validateTrigger={'onBlur'}
                   />
                 </Col>
               </Row>
