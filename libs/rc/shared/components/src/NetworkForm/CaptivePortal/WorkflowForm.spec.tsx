@@ -5,6 +5,7 @@ import { Form }           from 'antd'
 import { IntlProvider }   from 'react-intl'
 
 import { WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider }         from '@acx-ui/store'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -31,6 +32,29 @@ jest.mock('./SharedComponent/WalledGarden/WalledGardenTextArea', () => ({
   WalledGardenTextArea: () => <div data-testid='walled-garden'>Walled Garden</div>
 }))
 
+// Mock the workflow service
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetWorkflowProfilesQuery: () => ({
+    workflowProfileOptions: [
+      { label: 'Workflow 1', value: 'workflow-1' },
+      { label: 'Workflow 2', value: 'workflow-2' }
+    ]
+  }),
+  useGetWorkflowProfileBoundNetworkQuery: () => ({
+    data: [{
+      assignmentResourceType: 'NETWORK',
+      assignmentResourceId: 'network-1',
+      links: [
+        {
+          rel: 'workflow',
+          href: 'https://api.int.ruckus.cloud/workflows/workflow-1'
+        }
+      ]
+    }]
+  })
+}))
+
 const mockContextValue = {
   data: {
     wlan: {
@@ -44,13 +68,15 @@ const mockContextValue = {
 
 const renderWithProviders = (ui: React.ReactElement) => {
   return render(
-    <IntlProvider messages={{}} locale='en'>
-      <NetworkFormContext.Provider value={mockContextValue}>
-        <Form>
-          {ui}
-        </Form>
-      </NetworkFormContext.Provider>
-    </IntlProvider>
+    <Provider>
+      <IntlProvider messages={{}} locale='en'>
+        <NetworkFormContext.Provider value={mockContextValue}>
+          <Form>
+            {ui}
+          </Form>
+        </NetworkFormContext.Provider>
+      </IntlProvider>
+    </Provider>
   )
 }
 
@@ -59,7 +85,7 @@ describe('WorkflowForm', () => {
     renderWithProviders(<WorkflowForm />)
 
     expect(screen.getByText('Settings')).toBeInTheDocument()
-    expect(screen.getByTestId('saml-idp-profile-select')).toBeInTheDocument()
+    expect(screen.getByTestId('workflow-profile-select')).toBeInTheDocument()
     expect(screen.getByTestId('wlan-security')).toBeInTheDocument()
     expect(screen.getByTestId('bypass-cna')).toBeInTheDocument()
     expect(screen.getByTestId('walled-garden')).toBeInTheDocument()
@@ -78,13 +104,15 @@ describe('WorkflowForm', () => {
     }
 
     render(
-      <IntlProvider messages={{}} locale='en'>
-        <NetworkFormContext.Provider value={editModeContext}>
-          <Form>
-            <WorkflowForm />
-          </Form>
-        </NetworkFormContext.Provider>
-      </IntlProvider>
+      <Provider>
+        <IntlProvider messages={{}} locale='en'>
+          <NetworkFormContext.Provider value={editModeContext}>
+            <Form>
+              <WorkflowForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </IntlProvider>
+      </Provider>
     )
 
     expect(screen.queryByTestId('network-more-settings')).not.toBeInTheDocument()
@@ -97,13 +125,15 @@ describe('WorkflowForm', () => {
     }
 
     render(
-      <IntlProvider messages={{}} locale='en'>
-        <NetworkFormContext.Provider value={ruckusAiModeContext}>
-          <Form>
-            <WorkflowForm />
-          </Form>
-        </NetworkFormContext.Provider>
-      </IntlProvider>
+      <Provider>
+        <IntlProvider messages={{}} locale='en'>
+          <NetworkFormContext.Provider value={ruckusAiModeContext}>
+            <Form>
+              <WorkflowForm />
+            </Form>
+          </NetworkFormContext.Provider>
+        </IntlProvider>
+      </Provider>
     )
 
     expect(screen.queryByTestId('network-more-settings')).not.toBeInTheDocument()
