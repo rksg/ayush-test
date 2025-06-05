@@ -127,7 +127,7 @@ export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateL
     ? <ServiceConfigTemplateDetailsLink type={type} oper={oper} serviceId={serviceId} activeTab={activeTab}>
       {children}
     </ServiceConfigTemplateDetailsLink>
-    : <TenantLink to={getServiceDetailsLink({ type, oper, serviceId })}>
+    : <TenantLink to={getServiceDetailsLink({ type, oper, serviceId, activeTab })}>
       {children}
     </TenantLink>
 }
