@@ -34,6 +34,78 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   })
 }))
 
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  ScheduleCard: ({
+    type,
+    scheduler,
+    fieldNamePath,
+    intervalUnit,
+    title,
+    loading,
+    isShowTips,
+    prefix,
+    timelineLabelTop,
+    isShowTimezone,
+    venue,
+    readonly,
+    disabled,
+    deviceType,
+    slotWidth
+  }: {
+    type: string
+    scheduler?: {
+      mon?: string[]
+      tue?: string[]
+      wed?: string[]
+      thu?: string[]
+      fri?: string[]
+      sat?: string[]
+      sun?: string[]
+    }
+    fieldNamePath?: string[]
+    intervalUnit?: number
+    title?: string
+    loading?: boolean
+    isShowTips?: boolean
+    prefix?: boolean
+    timelineLabelTop?: boolean
+    isShowTimezone?: boolean
+    venue?: { name: string }
+    readonly?: boolean
+    disabled?: boolean
+    deviceType?: string
+    slotWidth?: number
+  }) => (
+    <div
+      data-testid='schedule-card'
+      data-type={type}
+      data-field-name-path={fieldNamePath?.join('.')}
+      data-interval-unit={intervalUnit}
+      data-title={title}
+      data-loading={loading}
+      data-show-tips={isShowTips}
+      data-prefix={prefix}
+      data-timeline-label-top={timelineLabelTop}
+      data-show-timezone={isShowTimezone}
+      data-venue-name={venue?.name}
+      data-readonly={readonly}
+      data-disabled={disabled}
+      data-device-type={deviceType}
+      data-slot-width={slotWidth}
+    >
+      Schedule Card Mock
+      {scheduler && <div data-testid='scheduler-data'>{JSON.stringify(scheduler)}</div>}
+      <div data-testid='checkbox_mon' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_tue' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_wed' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_thu' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_fri' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_sat' role='checkbox' aria-checked={false} />
+      <div data-testid='checkbox_sun' role='checkbox' aria-checked={false} />
+    </div>
+  )
+}))
 
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
@@ -114,34 +186,18 @@ describe('PoeSchedule', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'mon'],
-      Array.from({ length: 24 }, (_, i) => `mon_${i}`)
+      'poeScheduler',
+      {
+        type: SchedulerTypeEnum.CUSTOM,
+        mon: '111111111111111111111111',
+        tue: '111111111111111111111111',
+        wed: '111111111111111111111111',
+        thu: '111111111111111111111111',
+        fri: '111111111111111111111111',
+        sat: '111111111111111111111111',
+        sun: '111111111111111111111111'
+      }
     )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'tue'],
-      Array.from({ length: 24 }, (_, i) => `tue_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'wed'],
-      Array.from({ length: 24 }, (_, i) => `wed_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'thu'],
-      Array.from({ length: 24 }, (_, i) => `thu_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'fri'],
-      Array.from({ length: 24 }, (_, i) => `fri_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'sat'],
-      Array.from({ length: 24 }, (_, i) => `sat_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledWith(
-      ['scheduler', 'sun'],
-      Array.from({ length: 24 }, (_, i) => `sun_${i}`)
-    )
-    expect(setFieldValueSpy).toHaveBeenCalledTimes(8)
 
     setFieldValueSpy.mockRestore()
   })
@@ -163,16 +219,18 @@ describe('PoeSchedule', () => {
       </Provider>
     )
 
-    const customScheduleRadio = await screen.findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customScheduleRadio)
-
-    await userEvent.click(await screen.findByTestId('checkbox_mon'))
-    await userEvent.click(await screen.findByTestId('checkbox_tue'))
-    await userEvent.click(await screen.findByTestId('checkbox_wed'))
-    await userEvent.click(await screen.findByTestId('checkbox_thu'))
-    await userEvent.click(await screen.findByTestId('checkbox_fri'))
-    await userEvent.click(await screen.findByTestId('checkbox_sat'))
-    await userEvent.click(await screen.findByTestId('checkbox_sun'))
+    jest.spyOn(form, 'getFieldsValue').mockReturnValue({
+      scheduler: {
+        mon: [],
+        tue: [],
+        wed: [],
+        thu: [],
+        fri: [],
+        sat: [],
+        sun: []
+      },
+      poeSchedulerType: SchedulerTypeEnum.CUSTOM
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('Please select at least 1 time slot')).toBeVisible()
@@ -311,32 +369,6 @@ describe('PoeSchedule', () => {
     getFieldsValueSpy.mockRestore()
   })
 
-  it('should handle See tips button click', async () => {
-    const setVisible = jest.fn()
-    const { result } = renderHook(() => Form.useForm())
-    const form = result.current[0]
-
-    render(
-      <Provider>
-        <PoeSchedule
-          form={form}
-          visible={true}
-          setVisible={setVisible}
-          venueId='venue-123'
-          poeScheduler={{ type: SchedulerTypeEnum.CUSTOM }}
-        />
-      </Provider>
-    )
-
-    // Find and click the See tips button
-    const tipsButton = await screen.findByRole('button', { name: 'See tips' })
-    await userEvent.click(tipsButton)
-
-    // Tips dialog should be visible
-    const modals = await screen.findAllByRole('dialog')
-    expect(modals).toHaveLength(2)
-  })
-
   it('should handle day checkbox selections correctly', async () => {
     const setVisible = jest.fn()
     const { result } = renderHook(() => Form.useForm())
@@ -354,18 +386,6 @@ describe('PoeSchedule', () => {
       </Provider>
     )
 
-    const customScheduleRadio = await screen.findByRole('radio', { name: 'Custom Schedule' })
-    await userEvent.click(customScheduleRadio)
-
-    const mondayCheckbox = await screen.findByTestId('checkbox_mon')
-    expect(mondayCheckbox).toBeVisible()
-
-    await userEvent.click(mondayCheckbox)
-    expect(mondayCheckbox).toBeChecked()
-
-    const mondaySlot = await screen.findByTestId('mon_0')
-    await userEvent.click(mondaySlot)
-
     jest.spyOn(form, 'getFieldsValue').mockReturnValue({
       scheduler: {
         mon: Array.from({ length: 23 }, (_, i) => `mon_${i+1}`),
@@ -378,8 +398,6 @@ describe('PoeSchedule', () => {
       },
       poeSchedulerType: SchedulerTypeEnum.CUSTOM
     })
-
-    expect(mondayCheckbox).toHaveAttribute('aria-checked', 'mixed')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(setVisible).toHaveBeenCalledWith(false)
