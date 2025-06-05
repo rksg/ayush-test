@@ -491,9 +491,9 @@ export function MspCustomers () {
         render: function (_: React.ReactNode, row: MspEc) {
           return row.accountTier === MspEcTierEnum.Essentials
             ? $t({ defaultMessage: 'Essentials' })
-            : row.accountTier === MspEcTierEnum.Professional
-              ? $t({ defaultMessage: 'Professional' })
-              : $t({ defaultMessage: 'Core' })
+            : row.accountTier === MspEcTierEnum.Core
+              ? $t({ defaultMessage: 'Core' })
+              : $t({ defaultMessage: 'Professional' })
         }
       }]),
       {
