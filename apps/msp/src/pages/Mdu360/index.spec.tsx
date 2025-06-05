@@ -7,7 +7,7 @@ import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import { DateRange, useDateFilter }  from '@acx-ui/utils'
 
-import { Mdu360 } from '.'
+import Mdu360 from '.'
 
 const mockNavigate = jest.fn()
 
@@ -76,9 +76,7 @@ describe('Mdu360', () => {
     await screen.findByText('Network Overview')
     await screen.findByText('Resident Experience')
     fireEvent.click(await screen.findByText('Resident Experience'))
-
     expect(mockNavigate).toBeCalledTimes(1)
-
     expect(mockNavigate).toHaveBeenCalledWith({ pathname: '/t1/v/mdu360/residentExperience' })
   })
 
