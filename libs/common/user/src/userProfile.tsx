@@ -35,6 +35,7 @@ type Profile = {
   activityAllVenuesEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
+  isCustomPrivilegeGroup?: boolean,
   hasAllVenues?: boolean,
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
@@ -73,6 +74,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled
   userProfile.isCustomRole = profile.isCustomRole
+  userProfile.isCustomPrivilegeGroup = profile.isCustomPrivilegeGroup
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
   userProfile.venuesList = profile?.venuesList
