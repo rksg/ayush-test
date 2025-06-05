@@ -157,6 +157,11 @@ export interface BetaStatus {
   startDate?: string
 }
 
+export interface EarlyAccessResponse {
+  betaStatus: boolean
+  alphaStatus: boolean
+}
+
 export interface BetaFeatures {
   betaFeatures: FeatureAPIResults[]
 }

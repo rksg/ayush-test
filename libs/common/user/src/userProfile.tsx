@@ -29,6 +29,7 @@ type Profile = {
   allowedOperations: string []
   accountTier?: string
   betaEnabled?: boolean
+  isAlphaUser?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
   activityAllVenuesEnabled?: boolean
@@ -68,6 +69,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.allowedOperations = profile.allowedOperations
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
+  userProfile.isAlphaUser = profile.isAlphaUser
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.activityAllVenuesEnabled = profile.activityAllVenuesEnabled

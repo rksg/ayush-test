@@ -16,7 +16,8 @@ import {
   BetaStatus,
   // FeatureAPIResults,
   BetaFeatures,
-  AllowedOperationsResponse
+  AllowedOperationsResponse,
+  EarlyAccessResponse
 } from './types'
 
 export const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -177,6 +178,11 @@ export const UserRbacUrlsInfo = {
     oldUrl: '/tenants/betaStatus',
     newApi: true
   },
+  getEarlyAccess: {
+    method: 'get',
+    url: '/tenants/self/query?earlyAccess',
+    newApi: true
+  },
   toggleBetaStatus: {
     method: 'PATCH',
     url: '/tenants/self',
@@ -242,6 +248,7 @@ export const {
   useGetBetaStatusQuery,
   useToggleBetaStatusMutation,
   useFeatureFlagStatesQuery,
+  useGetEarlyAccessQuery,
   useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
@@ -401,6 +408,14 @@ export const {
       transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
         ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
       providesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    getEarlyAccess: build.query<EarlyAccessResponse, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getEarlyAccess, params)
+        return {
+          ...req
+        }
+      }
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
