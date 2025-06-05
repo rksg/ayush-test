@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import { features } from 'process'
-
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
