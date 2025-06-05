@@ -28,8 +28,8 @@ import {
 } from '../AICanvas/index.utils'
 
 import { EditCanvasNameModal } from './EditCanvasNameModal'
-import { DashboardMessages } from './index.utils'
-import * as UI               from './styledComponents'
+import { DashboardMessages }   from './index.utils'
+import * as UI                 from './styledComponents'
 
 enum TabKey {
   Owned = 'owned',
