@@ -10,9 +10,15 @@ import {
   useGetIotControllerListQuery,
   useLazyGetIotControllerVenuesQuery
 } from '@acx-ui/rc/services'
-import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                        from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }                     from '@acx-ui/user'
+import {
+  defaultSort,
+  IotControllerStatus,
+  IotControllerStatusEnum,
+  sortProp,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 
@@ -65,7 +71,7 @@ export function IotController () {
         searchable: searchable,
         defaultSortOrder: 'ascend',
         render: function (_, row, __, highlightFn) {
-          return (
+          return row.status !== IotControllerStatusEnum.ONLINE ? row.name : (
             <TenantLink
               to={`/devices/iotController/${row.id}/details/overview`}>
               {highlightFn(row.name)}</TenantLink>
