@@ -30,11 +30,11 @@ const ApWiredClientOverviewTab = () => {
   const { clientInfo } = useApWiredClientContext()
 
   return (
-    <>
+    <div style={{ width: '460px' }}>
       <Subtitle level={4}>
         {$t({ defaultMessage: 'Client Details' })}
       </Subtitle>
-      <Descriptions labelWidthPercent={7}>
+      <Descriptions labelWidthPercent={25}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'MAC Address' })}
           children={clientInfo?.macAddress || noDataDisplay}
@@ -63,7 +63,7 @@ const ApWiredClientOverviewTab = () => {
       <Subtitle level={4} style={{ marginTop: '2em' }}>
         {$t({ defaultMessage: 'Connection' })}
       </Subtitle>
-      <Descriptions labelWidthPercent={7}>
+      <Descriptions labelWidthPercent={25}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'IP Address' })}
           children={clientInfo?.ipAddress || noDataDisplay}
@@ -115,7 +115,7 @@ const ApWiredClientOverviewTab = () => {
         setVisible={setLanPortDrawerState}
         portData={lanPortDrawerState!}
       />}
-    </>)
+    </div>)
 }
 
 export default ApWiredClientOverviewTab
