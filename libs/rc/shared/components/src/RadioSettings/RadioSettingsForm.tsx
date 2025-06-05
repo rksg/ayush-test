@@ -214,10 +214,6 @@ export function RadioSettingsForm (props:{
       }
     }
 
-    if (context === 'apGroup') {
-      return <></>
-    }
-
     return (
       <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
         {$t({ defaultMessage: 'Enable AFC:' })}

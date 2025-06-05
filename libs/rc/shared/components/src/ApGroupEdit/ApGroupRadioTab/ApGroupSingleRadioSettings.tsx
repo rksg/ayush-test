@@ -46,22 +46,14 @@ export function ApGroupSingleRadioSettings (props: ApGroupSingleRadioSettingsPor
           hidden
           children={<></>}
         />
-        { inherit5G
-          ? <SingleRadioSettings
-            radioType={radioType}
-            inherit5G={inherit5G}
-            disabled={disabled}
-            handleChanged={handleChanged}
-            isUseVenueSettings={isUseVenueSettings}
-          />
-          : <SingleRadioSettings
-            context='apGroup'
-            radioType={radioType}
-            disabled={disabled}
-            handleChanged={handleChanged}
-            isUseVenueSettings={isUseVenueSettings}
-          />
-        }
+        <SingleRadioSettings
+          context={inherit5G? 'venue' : 'apGroup'}
+          radioType={radioType}
+          inherit5G={inherit5G}
+          disabled={disabled}
+          handleChanged={handleChanged}
+          isUseVenueSettings={isUseVenueSettings}
+        />
 
         {/* Not supported yet*/}
         {/*<FieldLabel width='180px'>*/}
