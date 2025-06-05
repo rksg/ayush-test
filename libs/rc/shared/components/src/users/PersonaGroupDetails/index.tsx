@@ -18,25 +18,27 @@ import {
   useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
-  CertTemplateLink,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
   PersonaGroup,
   PersonaUrls,
-  PolicySetLink,
   useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useIsEdgeFeatureReady,
-  VenueLink
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
-import { DpskPoolLink }       from '../../CommonLinkHelper'
+import {
+  DpskPoolLink,
+  CertTemplateLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PolicySetLink,
+  VenueLink
+} from '../../CommonLinkHelper'
 import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
 
