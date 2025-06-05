@@ -37,6 +37,12 @@ export interface IotSerialNumberResult {
   serialNumber: string
 }
 
+export interface SerialNumberExistsResult {
+  requestId: string
+  serialNumber: string
+  existed: boolean
+}
+
 export interface IotControllerDashboard {
   summary?: {
     aps?: {
