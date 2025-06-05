@@ -42,7 +42,7 @@ export function AssociatedVenues () {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      filters: { tenantId: [params.tenantId], id: params.iotId }
+      filters: { tenantId: [params.tenantId], id: [params.iotId] }
     }
   }, {
     selectFromResult: ({ data, isLoading, isFetching }) => ({
