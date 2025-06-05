@@ -1,14 +1,34 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                 from '@acx-ui/components'
-import { useGetIotControllerListQuery }                              from '@acx-ui/rc/services'
-import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps }    from '@acx-ui/components'
+import { useGetIotControllerListQuery } from '@acx-ui/rc/services'
+import {
+  defaultSort,
+  IotControllerStatus,
+  IotControllerStatusEnum,
+  sortProp,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 export function VenueIotController () {
+  const params = useParams()
 
   const payload = {
-    filters: {}
+    fields: [
+      'id',
+      'name',
+      'inboundAddress',
+      'publicAddress',
+      'publicPort',
+      'tenantId',
+      'status',
+      'assocVenueCount'
+    ],
+    pageSize: 10,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: { tenantId: [params.tenantId], venueId: [params.venueId] }
   }
   const settingsId = 'venue-iot-controller-table'
   const tableQuery = useTableQuery({
@@ -35,7 +55,7 @@ export function VenueIotController () {
         searchable: searchable,
         defaultSortOrder: 'ascend',
         render: function (_, row, __, highlightFn) {
-          return (
+          return row.status !== IotControllerStatusEnum.ONLINE ? row.name : (
             <TenantLink
               to={`/devices/iotController/${row.id}/details/overview`}>
               {highlightFn(row.name)}</TenantLink>
@@ -51,13 +71,11 @@ export function VenueIotController () {
         dataIndex: 'publicAddress',
         key: 'publicAddress',
         render: function (_, row) {
+          if (!row.publicAddress || !row.publicPort) {
+            return '--'
+          }
           return row.publicAddress + ':' + row.publicPort
         }
-      },
-      {
-        title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
-        dataIndex: 'venueCount',
-        key: 'venueCount'
       }
     ]
 
