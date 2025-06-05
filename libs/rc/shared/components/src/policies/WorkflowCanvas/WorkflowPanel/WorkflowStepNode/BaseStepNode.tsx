@@ -100,17 +100,17 @@ export default function BaseStepNode (props: NodeProps
       customContent: {
         action: 'DELETE',
         entityName: selectedKey === 'deleteStepDescendants' ?
-          $t({ defaultMessage: 'Action\'s Children' })
+          $t({ defaultMessage: 'Action and Children' })
           : $t({ defaultMessage: 'Action' }),
         entityValue: $t(ActionTypeTitle[props.type as ActionType])
           ?? $t({ defaultMessage: 'Action' })
       },
       content: selectedKey === 'deleteStepDescendants' ?
-        $t({ defaultMessage: 'Do you want to delete all children of this action?' })
+        $t({ defaultMessage: 'Do you want to delete this action with all of its child actions?' })
         : $t({ defaultMessage: 'Do you want to delete this action?' }),
       onOk: () => {
         selectedKey === 'deleteStepDescendants' ?
-          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId, deleteSelectedStep: true } }).unwrap()
           : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
@@ -156,7 +156,7 @@ export default function BaseStepNode (props: NodeProps
                 items={[
                   { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Action Only' }) },
                   { key: 'deleteStepDescendants',
-                    label: $t({ defaultMessage: 'Delete Action\'s Children' }) }
+                    label: $t({ defaultMessage: 'Delete Action and Children' }) }
                 ]}
               />}
             trigger={'hover'}
