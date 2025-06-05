@@ -134,6 +134,10 @@ export default function SwitchPortProfileForm () {
   }
 
   const profileNameDuplicateValidator = async (name: string) => {
+    if (name && name.includes(' ')) {
+      return Promise.reject($t({ defaultMessage: 'Profile Name cannot contain spaces' }))
+    }
+
     const list = (await switchPortProfilesList({
       payload: {
         page: '1',
