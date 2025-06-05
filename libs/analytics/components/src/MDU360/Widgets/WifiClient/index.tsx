@@ -1,56 +1,70 @@
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
+import { getSelectedNodePath }                                                    from '@acx-ui/analytics/utils'
 import { DonutChart, ContentSwitcher, qualitativeColorSet, Card, Loader, NoData } from '@acx-ui/components'
 import { AnalyticsFilter }                                                        from '@acx-ui/utils'
 
-import { useTopNDeviceTypeQuery } from './services'
+import { useTopNWifiClientQuery } from './services'
 import * as UI                    from './styledComponents'
 
 const colors = qualitativeColorSet()
 
 const tabDetails = [
-  { label: 'Device Type', value: 'deviceType', children: null },
-  { label: 'Manufacture', value: 'manufacture', children: null }
+  { label: 'Device Type', value: 'deviceType' },
+  { label: 'Manufacture', value: 'manufacture' }
 ]
 
 export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) => {
   const { $t } = useIntl()
-  const [tab, setTab] = useState('deviceType')
+  const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
+
   const { startDate: start, endDate: end, filter } = filters
-  const queryResults = useTopNDeviceTypeQuery({
-    filter: filter,
-    start: start,
-    end: end,
+  const queryResults = useTopNWifiClientQuery({
+    path: getSelectedNodePath(filter),
+    start,
+    end,
     n: 5
   })
 
-  const pieData = queryResults?.data?.nodes?.map((d, i) => ({
-    value: d.count,
-    name: tab === 'deviceType' ? d.osType : d.manufacturer,
-    color: colors[i]
-  }))
+  const results = queryResults?.data?.nodes?.[0]
+
+  const getChartData = useCallback((data?: { name: string; value: number }[]) => {
+    return data?.map((d, i) => ({
+      name: d.name,
+      value: d.value,
+      color: colors[i]
+    })) ?? []
+  }, [])
+
+  const chartData = useMemo(() => {
+    if (!results) return []
+    return getChartData(results[selectedTab])
+  }, [results, selectedTab, getChartData])
 
   const title = $t({ defaultMessage: 'Wi-Fi Client' })
-
-  const centerText = tab === 'deviceType'
+  const centerText = selectedTab === 'deviceType'
     ? $t({ defaultMessage: 'Total Wi-Fi Clients' })
     : $t({ defaultMessage: 'Total Devices' })
 
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
-        {({ width, height }) => (
-          queryResults?.data?.nodes?.length ? (
+        {({ height, width }) => (
+          results ? (
             <Card type='default' title={title}>
               <div style={{ marginTop: -35 }}>
                 <ContentSwitcher
-                  key={tab}
-                  tabDetails={tabDetails.map(t => ({ ...t, children: null }))}
-                  value={tab}
-                  onChange={setTab}
+                  key={selectedTab}
+                  tabDetails={tabDetails.map(({ label, value }) => ({
+                    label,
+                    value,
+                    children: null
+                  }))}
+                  value={selectedTab}
+                  onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
                   size='small'
                   align='right'
                   noPadding
@@ -58,17 +72,20 @@ export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) 
               </div>
               <UI.FlexRow style={{ marginTop: 24 }}>
                 <DonutChart
-                  data={pieData!}
+                  data={chartData}
                   style={{ width: width, height: height }}
-                  legend='name-value'
+                  legend='name-bold-value'
                   size='small'
-                  showLegend={true}
-                  showTotal={true}
+                  showLegend
+                  showTotal
                   value={centerText}
                   labelTextStyle={{ overflow: 'breakAll', width: 240 }}
                 />
               </UI.FlexRow>
-            </Card>) : <NoData />
+            </Card>
+          ) : (
+            <NoData />
+          )
         )}
       </AutoSizer>
     </Loader>

@@ -1,19 +1,23 @@
 import { gql } from 'graphql-request'
 
-import { getSelectedNodePath } from '@acx-ui/analytics/utils'
-import { dataApi }             from '@acx-ui/store'
-import { NodesFilter }         from '@acx-ui/utils'
+import { dataApi }     from '@acx-ui/store'
+import { NetworkPath } from '@acx-ui/utils'
 
 interface HierarchyNodeData {
-  nodes: Array<{
-    osType: string
-    manufacturer: string
-    count: number
-  }>
+  nodes: {
+    manufacturer: {
+      name: string
+      value: number
+    }[]
+    deviceType: {
+      name: string
+      value: number
+    }[]
+  }[]
 }
 
-export interface TopNDeviceTypePayload {
-  filter: NodesFilter
+export interface Payload {
+  path: NetworkPath
   start: string
   end: string
   n: number
@@ -21,7 +25,7 @@ export interface TopNDeviceTypePayload {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    topNDeviceType: build.query<HierarchyNodeData, TopNDeviceTypePayload>({
+    topNWifiClient: build.query<HierarchyNodeData, Payload>({
       query: (payload) => ({
         document: gql`
           query Network(
@@ -32,17 +36,22 @@ export const api = dataApi.injectEndpoints({
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
-                nodes: topNDeviceType(n: $n) {
-                  osType
-                  manufacturer
-                  count
+                nodes: topNWifiClient(n: $n) {
+                  manufacturer {
+                    name
+                    value
+                  }
+                  deviceType {
+                    name
+                    value
+                  }
                 }
               }
             }
           }
           `,
         variables: {
-          path: getSelectedNodePath(payload.filter),
+          path: payload.path,
           start: payload.start,
           end: payload.end,
           n: payload.n
@@ -54,4 +63,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useTopNDeviceTypeQuery } = api
+export const { useTopNWifiClientQuery } = api
