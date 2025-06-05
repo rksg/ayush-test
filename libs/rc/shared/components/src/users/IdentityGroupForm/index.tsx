@@ -9,15 +9,19 @@ import {
   useIdentityGroupBreadcrumbs,
   useIdentityGroupPageHeaderTitle
 } from '@acx-ui/cloudpath/components'
-import { Loader, PageHeader, StepsForm }                                     from '@acx-ui/components'
-import { useGetIdentityGroupTemplateByIdQuery, useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
+import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
+import {
+  CommonAsyncResponse,
+  useGetIdentityGroupTemplateByIdQuery,
+  useGetPersonaGroupByIdQuery
+} from '@acx-ui/rc/services'
 import {
   PersonaGroup,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
   useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { usePersonaGroupAction } from '../PersonaGroupDrawer/usePersonaGroupActions'
 
@@ -42,7 +46,7 @@ export function IdentityGroupForm ({
   const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: editMode })
   const breadcrumb = useIdentityGroupBreadcrumbs(IdentityOperation.LIST)
   // eslint-disable-next-line max-len
-  const regularFallbackPath = getIdentityGroupRoutePath(IdentityOperation.LIST, false)
+  const regularFallbackPath = useTenantLink(getIdentityGroupRoutePath(IdentityOperation.LIST, false))
   const templateFallbackPath = useConfigTemplateTenantLink('')
   const previousPath = isTemplate ? templateFallbackPath : regularFallbackPath
 
@@ -65,23 +69,29 @@ export function IdentityGroupForm ({
   const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
 
   const handleSubmit = async () => {
-    let result
-    try {
-      await form.validateFields()
-      if (editMode) {
-        if (personaGroupId) {
-          await updatePersonaGroupMutation(personaGroupId, dataFromServer, form.getFieldsValue())
-        }
-      } else {
-        result = await createPersonaGroupMutation(form.getFieldsValue(), callback)
-      }
-
+    const formCallback = (result?: CommonAsyncResponse) => {
       if (modalMode) {
         callback?.(result?.id)
       } else {
         editMode
           ? navigate(-1)
           : navigate(previousPath, { replace: true })
+      }
+    }
+    try {
+      await form.validateFields()
+      if (editMode) {
+        if (personaGroupId) {
+          await updatePersonaGroupMutation(personaGroupId, dataFromServer, form.getFieldsValue())
+          formCallback?.()
+        }
+      } else {
+        await new Promise<CommonAsyncResponse>(async (resolve) => {
+          await createPersonaGroupMutation(form.getFieldsValue(), (r: CommonAsyncResponse) => {
+            formCallback(r)
+            resolve(r)
+          })
+        })
       }
     } catch (e) {
       return Promise.resolve()
