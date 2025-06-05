@@ -1551,7 +1551,7 @@ function useRbacProfileServiceActivation () {
   }
 }
 
-function useIdentityGroupOnNetworkActivation () {
+export function useIdentityGroupOnNetworkActivation () {
   const [ bindingPersonaGroupWithNetwork ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useBindingPersonaGroupWithNetworkMutation,
     useTemplateMutationFn: useBindingPersonaGroupTemplateWithNetworkMutation
