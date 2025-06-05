@@ -1,6 +1,6 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360, Mdu360 }                                                                         from '@acx-ui/analytics/components'
+import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
 import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
@@ -53,6 +53,7 @@ import PortalDetail                                from './pages/ConfigTemplates
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
+import Mdu360                                      from './pages/Mdu360'
 import { MspCustomers }                            from './pages/MspCustomers'
 import { MspRecCustomers }                         from './pages/MspRecCustomers'
 import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'

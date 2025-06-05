@@ -15,6 +15,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 describe('ResidentExperienceTab', () => {
 
   it('renders ResidentExperienceTab correct', () => {
+    // please remove MatchSnapshot test when the component is added widget
     expect(<Provider>
       <ResidentExperienceTab
         startDate='2023-02-01T00:00:00.000Z'
