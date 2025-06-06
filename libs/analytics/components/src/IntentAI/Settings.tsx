@@ -44,7 +44,7 @@ export const prepareNotificationPreferences = (
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateTenantSettingsMutation()
-  const [updatePrefrences, { isLoading: isUpdatingPreferences }] = useSetNotificationMutation()
+  const [updatePreferences, { isLoading: isUpdatingPreferences }] = useSetNotificationMutation()
   const [targetKeys, setTargetKeys] = useState<string[]>([])
   const [notificationChecked, setNotificationChecked] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -80,7 +80,7 @@ export function Settings ({ settings }: { settings: string }) {
       updateSettings({
         'enabled-intent-features': JSON.stringify(targetKeys)
       }),
-      updatePrefrences({ tenantId, preferences: notificationPreferences })
+      updatePreferences({ tenantId, preferences: notificationPreferences })
     ])
     // tenantSettingsResult is text format, notificationPreferencesResult is json format
     if (tenantSettingsResult?.data === 'Created' && notificationPreferencesResult?.data?.success) {
@@ -102,9 +102,10 @@ export function Settings ({ settings }: { settings: string }) {
         notificationPreferencesResult?.error && 'data' in notificationPreferencesResult.error
           ? getErrorMsgFromErrorResponse(notificationPreferencesResult.error as CatchErrorResponse)
           : notificationPreferencesResult?.error
+      const errMsg = [tenantSettingsError, notificationPreferencesError].filter(Boolean).join(', ')
       showToast({
         type: 'error',
-        content: tenantSettingsError || notificationPreferencesError
+        content: errMsg
       })
     }
   }
