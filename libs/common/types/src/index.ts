@@ -94,3 +94,7 @@ export interface NetworkVenueScheduler {
 
 export interface Scheduler extends Record<string, string[]> {}
 
+export enum SchedulerDeviceTypeEnum {
+  DEFAULT = 'DEFAULT',
+  SWITCH = 'SWITCH'
+}

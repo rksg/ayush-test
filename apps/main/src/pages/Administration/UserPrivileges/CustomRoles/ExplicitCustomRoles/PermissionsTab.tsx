@@ -156,7 +156,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
       (<UI.PermissionSummaryWrapper key={scope.key}>
         <Form.Item
           label={scope.title?.toString()}
-          children={<Descriptions labelWidthPercent={15}>
+          children={<Descriptions labelWidthPercent={20}>
             {scope.children?.map(s =>
               <Descriptions.Item
                 key={s.key}

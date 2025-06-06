@@ -1,8 +1,7 @@
 import { createContext } from 'react'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsAlphaUser }         from '@acx-ui/feature-toggle'
-import { getJwtTokenPayload }     from '@acx-ui/utils'
+import { useUserProfileContext }  from '@acx-ui/user'
 
 import { VenueFirmwareList }           from './VenueFirmwareList'
 import { VenueFirmwareListPerApModel } from './VenueFirmwareListPerApModel'
@@ -13,12 +12,11 @@ export const ApFirmwareContext = createContext({} as { isAlphaFlag: boolean, isB
 
 // @ts-ignore
 const ApFirmwareProvider = ({ children }) => {
-  const jwtPayload = getJwtTokenPayload()
+  const { isAlphaUser, betaEnabled } = useUserProfileContext()
   return (
     <ApFirmwareContext.Provider value={{
-      // eslint-disable-next-line max-len
-      isAlphaFlag: useIsAlphaUser(),
-      isBetaFlag: !!jwtPayload.isBetaFlag
+      isAlphaFlag: isAlphaUser || false,
+      isBetaFlag: !!betaEnabled
     }}>
       {children}
     </ApFirmwareContext.Provider>

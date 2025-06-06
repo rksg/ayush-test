@@ -287,6 +287,9 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
 
     const [, drag] = useDrag(() => ({
       type: 'DraggableRow',
+      canDrag: rbacOpsApiEnabled
+        ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.updateAdminGroups)])
+        : isPrimeAdminUser,
       item: {
         id: props['data-row-key']
       },

@@ -1,7 +1,11 @@
-import { Descriptions, Subtitle }           from '@acx-ui/components'
+import { useState } from 'react'
+
+import { Button, Descriptions, Subtitle }   from '@acx-ui/components'
 import { getDeviceTypeIcon, getOsTypeIcon } from '@acx-ui/rc/utils'
 import { TenantLink }                       from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }           from '@acx-ui/utils'
+import { LanPortProfileDetailsDrawer }      from '@acx-ui/wifi/components'
+import type { LanPortDetailState }          from '@acx-ui/wifi/components'
 
 import { useApWiredClientContext } from '../ApWiredClientContextProvider'
 
@@ -22,15 +26,15 @@ const getAuthStatus = (status: number | undefined) => {
 
 const ApWiredClientOverviewTab = () => {
   const { $t } = getIntl()
-
+  const [lanPortDrawerState, setLanPortDrawerState] = useState<LanPortDetailState>()
   const { clientInfo } = useApWiredClientContext()
 
   return (
-    <>
+    <div style={{ width: '460px' }}>
       <Subtitle level={4}>
         {$t({ defaultMessage: 'Client Details' })}
       </Subtitle>
-      <Descriptions labelWidthPercent={7}>
+      <Descriptions labelWidthPercent={25}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'MAC Address' })}
           children={clientInfo?.macAddress || noDataDisplay}
@@ -59,7 +63,7 @@ const ApWiredClientOverviewTab = () => {
       <Subtitle level={4} style={{ marginTop: '2em' }}>
         {$t({ defaultMessage: 'Connection' })}
       </Subtitle>
-      <Descriptions labelWidthPercent={7}>
+      <Descriptions labelWidthPercent={25}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'IP Address' })}
           children={clientInfo?.ipAddress || noDataDisplay}
@@ -77,7 +81,18 @@ const ApWiredClientOverviewTab = () => {
         <Descriptions.Item
           label={$t({ defaultMessage: 'Port' })}
           children={clientInfo?.portNumber ?
-            `LAN ${clientInfo?.portNumber}` : noDataDisplay
+            <Button type='link'
+              onClick={() => {
+                setLanPortDrawerState({
+                  detailVisible: true,
+                  serialNumber: clientInfo.apId,
+                  apName: clientInfo.apName,
+                  venueId: clientInfo.venueId,
+                  portId: clientInfo?.portNumber.toString()
+                })
+              }}>
+              {`LAN ${clientInfo?.portNumber}`}
+            </Button> : noDataDisplay
           }
         />
         <Descriptions.Item
@@ -95,7 +110,12 @@ const ApWiredClientOverviewTab = () => {
           children={clientInfo?.vlanId || noDataDisplay}
         />
       </Descriptions>
-    </>)
+      {lanPortDrawerState?.detailVisible && <LanPortProfileDetailsDrawer
+        visible={lanPortDrawerState?.detailVisible}
+        setVisible={setLanPortDrawerState}
+        portData={lanPortDrawerState!}
+      />}
+    </div>)
 }
 
 export default ApWiredClientOverviewTab

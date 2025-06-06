@@ -48,6 +48,11 @@ describe('IdentityProviderCreate', () => {
       )
     )
   })
+
+  afterEach(() => {
+    mockedUsedNavigate.mockClear()
+  })
+
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
@@ -82,7 +87,7 @@ describe('IdentityProviderCreate', () => {
       pathname: `/${params.tenantId}/t/policies/samlIdp/add`,
       hash: '',
       search: ''
-    }))
+    }, { state: { from: undefined } }))
   })
 
   it('samlIdpRadio should be disabled when SAML IdP is not supported', async () => {

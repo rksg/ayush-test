@@ -6,7 +6,7 @@ import { useRwgActions }                                                        
 import { useGetVenuesQuery, useRwgListQuery }                                                                                     from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess, getUserProfile, useUserProfileContext }                                                                  from '@acx-ui/user'
+import { filterByAccess, hasAccess, useUserProfileContext }                                                                       from '@acx-ui/user'
 import { getOpsApi }                                                                                                              from '@acx-ui/utils'
 
 
@@ -119,7 +119,6 @@ export function RWGTable () {
   const { tenantId } = useParams()
   const rwgActions = useRwgActions()
   const { isCustomRole } = useUserProfileContext()
-  const { rbacOpsApiEnabled } = getUserProfile()
 
   const rwgPayload = {
     filters: {}
@@ -202,14 +201,11 @@ export function RWGTable () {
 
   const count = tableQuery?.data?.totalCount || 0
 
-  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
-    : !isCustomRole
-
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway ({count})' }, { count })}
-        extra={(rbacOpsApiEnabled ? true : !isCustomRole) && filterByAccess([
+        extra={!isCustomRole && filterByAccess([
           <TenantLink to='/ruckus-wan-gateway/add'
             rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
@@ -226,10 +222,8 @@ export function RWGTable () {
           pagination={{ total: tableQuery?.data?.totalCount }}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='rowId'
-          rowActions={hasRowPermissions
-            ? filterByAccess(rowActions)
-            : undefined}
-          rowSelection={hasRowPermissions ? { ...rowSelection() } : undefined}
+          rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { ...rowSelection() }}
           onChange={handleTableChange}
         />
       </Loader>
