@@ -21,6 +21,12 @@ import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
 import { IntentSummaryProps, intentSummaryConfig }        from './Table'
 
+type IntentSubscriptions = {
+  [AiFeatures.RRM]?: boolean
+  [AiFeatures.AIOps]?: boolean
+  [AiFeatures.EquiFlex]?: boolean
+  [AiFeatures.EcoFlex]?: boolean
+}
 const iconMap = {
   [AiFeatures.RRM]: <AIDrivenRRM />,
   [AiFeatures.AIOps]: <AIOperation />,
@@ -41,6 +47,26 @@ export const prepareNotificationPreferences = (
   }
   return newPreferences
 }
+const defaultIntentSubscriptions: IntentSubscriptions = {
+  [AiFeatures.RRM]: true,
+  [AiFeatures.AIOps]: true,
+  [AiFeatures.EquiFlex]: true,
+  [AiFeatures.EcoFlex]: false
+}
+export const getEnabledIntentSubscriptionsFromDb = (tenantSettings: string) => {
+  const dbConfig = JSON.parse(tenantSettings) as IntentSubscriptions
+  const merged = { ...defaultIntentSubscriptions, ...dbConfig }
+  const enabledKeys = (Object.keys(merged) as (keyof typeof merged)[])
+    .filter((key) => merged[key])
+  return enabledKeys
+}
+export const convertToDbConfig = (targetKeys: string[]): string => {
+  const dbConfig = {} as IntentSubscriptions
+  (Object.values(AiFeatures) as string[]).forEach((key) => {
+    dbConfig[key as keyof IntentSubscriptions] = targetKeys.includes(key)
+  })
+  return JSON.stringify(dbConfig)
+}
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
   const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateTenantSettingsMutation()
@@ -54,7 +80,7 @@ export function Settings ({ settings }: { settings: string }) {
     .map(([key, value]) => ({ name: $t(value), key }))
 
   useEffect(() => {
-    setTargetKeys(JSON.parse(settings))
+    setTargetKeys(getEnabledIntentSubscriptionsFromDb(settings))
   }, [settings])
 
   const isRai = get('IS_MLISA_SA')
@@ -78,7 +104,7 @@ export function Settings ({ settings }: { settings: string }) {
   const saveData = async () => {
     const [tenantSettingsResult, notificationPreferencesResult] = await Promise.all([
       updateSettings({
-        'enabled-intent-features': JSON.stringify(targetKeys)
+        'enabled-intent-features': convertToDbConfig(targetKeys)
       }),
       updatePreferences({ tenantId, preferences: notificationPreferences })
     ])
@@ -112,7 +138,7 @@ export function Settings ({ settings }: { settings: string }) {
 
   const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent | undefined) => {
     e?.stopPropagation()
-    setTargetKeys(JSON.parse(settings))
+    setTargetKeys(getEnabledIntentSubscriptionsFromDb(settings))
     setNotificationPreferences(query.data!)
     setNotificationChecked(hasIntentEmailNotification(query.data!))
     setVisible(false)

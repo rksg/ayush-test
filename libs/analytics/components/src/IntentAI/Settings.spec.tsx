@@ -13,7 +13,8 @@ import { notificationApiURL, Provider, store }                   from '@acx-ui/s
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
 import { CatchErrorDetails }                                     from '@acx-ui/utils'
 
-import { Settings, prepareNotificationPreferences } from './Settings'
+import { AiFeatures }                                                                                       from './config'
+import { Settings, convertToDbConfig, getEnabledIntentSubscriptionsFromDb, prepareNotificationPreferences } from './Settings'
 
 const components = require('@acx-ui/components')
 jest.mock('@acx-ui/components', () => ({
@@ -60,10 +61,12 @@ describe('IntentAI Settings', () => {
     mockedUseUpdateTenantSettingsMutation.mockClear()
   })
   it('should render Settings and about intents drawer', async () => {
-    const settings = JSON.stringify(['Energy Saving'])
+    const settings = JSON.stringify({
+      [AiFeatures.EcoFlex]: true
+    })
     render(<Settings settings={settings}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+    const intentSubscriptions = await screen.findByText('Intent Subscriptions (4)') // default has 3, so total 4 with EcoFlex
     expect(intentSubscriptions).toBeVisible()
     await userEvent.click(intentSubscriptions)
     expect(await screen.findByText('Available Intents')).toBeVisible()
@@ -76,10 +79,12 @@ describe('IntentAI Settings', () => {
     expect(intentSubscriptions).toBeVisible()
   })
   it('should save settings', async () => {
-    const settings = JSON.stringify(['Energy Saving'])
+    const settings = JSON.stringify({
+      [AiFeatures.EcoFlex]: true
+    })
     render(<Settings settings={settings}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+    const intentSubscriptions = await screen.findByText('Intent Subscriptions (4)')
     expect(intentSubscriptions).toBeVisible()
     await userEvent.click(await screen.findByTestId('intent-subscriptions'))
     expect(await screen.findByText('Available Intents')).toBeVisible()
@@ -117,10 +122,12 @@ describe('IntentAI Settings', () => {
     }))
     mockedUseUpdateTenantSettingsMutation.mockImplementation(() =>
       [updateSettingsMock, { isLoading: false }])
-    const settings = JSON.stringify(['Energy Saving'])
+    const settings = JSON.stringify({
+      [AiFeatures.EcoFlex]: true
+    })
     render(<Settings settings={settings}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+    const intentSubscriptions = await screen.findByText('Intent Subscriptions (4)')
     expect(intentSubscriptions).toBeVisible()
     await userEvent.click(await screen.findByTestId('intent-subscriptions'))
     expect(await screen.findByText('Available Intents')).toBeVisible()
@@ -164,7 +171,9 @@ describe('IntentAI Settings', () => {
     it('should render the correct links in RAI', async () => {
       mockGet.mockReturnValue('true')
       mockRaiUserProfile.mockReturnValue({ selectedTenant: 'tenant-id' } as unknown as UserProfile)
-      const settings = JSON.stringify(['Energy Saving'])
+      const settings = JSON.stringify({
+        [AiFeatures.EcoFlex]: true
+      })
       render(
         <Provider>
           <MemoryRouter initialEntries={['/ai/intentAI']}>
@@ -177,7 +186,7 @@ describe('IntentAI Settings', () => {
           </MemoryRouter>
         </Provider>
       )
-      const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+      const intentSubscriptions = await screen.findByText('Intent Subscriptions (4)')
       expect(intentSubscriptions).toBeVisible()
       await userEvent.click(await screen.findByTestId('intent-subscriptions'))
       expect(await screen.findByRole('link')).toHaveAttribute(
@@ -187,7 +196,9 @@ describe('IntentAI Settings', () => {
       expect(sessionStorage.getItem('intent-subscription-forward-r1-show-drawer')).toBeNull()
     })
     it('should render the correct links in R1', async () => {
-      const settings = JSON.stringify(['Energy Saving'])
+      const settings = JSON.stringify({
+        [AiFeatures.EcoFlex]: true
+      })
       render(
         <Provider>
           <MemoryRouter initialEntries={['/tenant-id/t/analytics/intentAI']}>
@@ -200,7 +211,7 @@ describe('IntentAI Settings', () => {
           </MemoryRouter>
         </Provider>
       )
-      const intentSubscriptions = await screen.findByText('Intent Subscriptions (1)')
+      const intentSubscriptions = await screen.findByText('Intent Subscriptions (4)')
       expect(intentSubscriptions).toBeVisible()
       await userEvent.click(await screen.findByTestId('intent-subscriptions'))
       expect(await screen.findByRole('link')).toHaveAttribute(
@@ -239,5 +250,41 @@ describe('IntentAI Settings', () => {
         result = prepareNotificationPreferences(mockedIntentNotificationsWithoutIntentAI, false)
         expect(result).toEqual(mockedIntentNotificationsWithoutIntentAI)
       })
+  })
+})
+
+describe('Intent Subscription DB/UI Format Conversion', () => {
+  it('should use default config when user has not configured yet after parsing from DB', () => {
+    const dbConfig = {}
+    const result = getEnabledIntentSubscriptionsFromDb(JSON.stringify(dbConfig))
+    expect(result).toEqual([
+      AiFeatures.RRM,
+      AiFeatures.AIOps,
+      AiFeatures.EquiFlex
+    ])
+  })
+  it('should merge DB config with default config after parsing from DB', () => {
+    const dbConfig = {
+      [AiFeatures.RRM]: false,
+      [AiFeatures.AIOps]: true
+    }
+    const result = getEnabledIntentSubscriptionsFromDb(JSON.stringify(dbConfig))
+    expect(result).toEqual([
+      AiFeatures.AIOps,
+      AiFeatures.EquiFlex
+    ])
+  })
+  it('should parse from UI format to DB format', () => {
+    const uiConfig = [
+      AiFeatures.RRM,
+      AiFeatures.EcoFlex
+    ]
+    const result = convertToDbConfig(uiConfig)
+    expect(JSON.parse(result)).toEqual({
+      [AiFeatures.RRM]: true,
+      [AiFeatures.AIOps]: false,
+      [AiFeatures.EquiFlex]: false,
+      [AiFeatures.EcoFlex]: true
+    })
   })
 })
