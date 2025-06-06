@@ -132,7 +132,7 @@ export function WorkflowForm () {
         }
       }
     }
-  }, [])
+  }, [boundProfile])
 
   useEffect(()=>{
     if(accountingRadius){
