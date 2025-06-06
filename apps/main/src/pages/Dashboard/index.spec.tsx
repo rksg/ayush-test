@@ -508,6 +508,9 @@ describe('Dashboard', () => {
       await userEvent.click(canvasMoreBtn[1])
 
       await userEvent.click(await screen.findByRole('menuitem', { name: 'Clone as Private Copy' }))
+      expect(await screen.findByText('Name Your New Canvas')).toBeVisible()
+      const okBtn = await screen.findByRole('button', { name: 'OK' })
+      await userEvent.click(okBtn)
       expect(mockCloneCanvas).toBeCalled()
       await waitFor(async ()=>{
         const ownedTab = await screen.findByRole('tab', { name: 'My Canvases' })
