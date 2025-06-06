@@ -8,7 +8,9 @@ import {
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotControllerVenues,
   IotSerialNumberResult,
+  SerialNumberExistsResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -96,7 +98,7 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
-    getIotControllerSerialNumber: build.query<CommonResult, RequestPayload>({
+    getIotControllerSerialNumber: build.query<SerialNumberExistsResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(IotUrlsInfo.getIotControllerSerialNumber, params)
         return {
@@ -104,9 +106,25 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
-    getIotControllerVenues: build.query<CommonResult, RequestPayload>({
+    getIotControllerVenues: build.query<IotControllerVenues, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(IotUrlsInfo.getIotControllerVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenueAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenueAssociations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerApAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerApAssociations, params)
         return {
           ...req
         }
@@ -161,6 +179,10 @@ export const {
   useLazyGetIotControllerSerialNumberQuery,
   useGetIotControllerVenuesQuery,
   useLazyGetIotControllerVenuesQuery,
+  useGetIotControllerVenueAssociationsQuery,
+  useLazyGetIotControllerVenueAssociationsQuery,
+  useGetIotControllerApAssociationsQuery,
+  useLazyGetIotControllerApAssociationsQuery,
   useRefreshIotControllerMutation,
   useIotControllerLicenseStatusQuery,
   useIotControllerDashboardQuery,
