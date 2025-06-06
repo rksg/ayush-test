@@ -293,11 +293,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
             style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
           />}
         />}
-        {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+        {isR370UnsupportedFeatures &&
+        <ApCompatibilityDrawer
           visible={softGreDrawerVisible}
           type={ApCompatibilityType.ALONE}
           networkId={networkId}
-          featureName={InCompatibilityFeatures.SOFT_GRE}
+          featureNames={[InCompatibilityFeatures.SOFT_GRE]}
           onClose={() => setSoftGreDrawerVisible(false)}
         />}
       </Row>

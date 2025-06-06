@@ -34,7 +34,8 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
   useConfigTemplate,
-  ConfigTemplateType
+  ConfigTemplateType,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -58,6 +59,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.AAA)
   const params = useParams()
   const state = useLocation().state as State
   const { type, edit, networkView, backToNetwork, forceDisableRadsec } = props
@@ -143,7 +145,7 @@ export const AAAForm = (props: AAAFormProps) => {
         await saveEnforcementConfig(entityId)
       }
 
-      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
+      networkView ? backToNetwork?.(data) : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

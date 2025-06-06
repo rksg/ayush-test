@@ -17,10 +17,10 @@ import {
   roleDisplayText,
   AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { store }                                                                              from '@acx-ui/store'
-import { RolesEnum }                                                                          from '@acx-ui/types'
-import { filterByOperations, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi }                                                                          from '@acx-ui/utils'
+import { store }                                                                          from '@acx-ui/store'
+import { RolesEnum }                                                                      from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                                                      from '@acx-ui/utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -266,13 +266,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     }
   ]
 
-  const getActions = function () {
-    if ( rbacOpsApiEnabled ) {
-      return filterByOperations(actions)
-    } else {
-      return (hasCrossVenuesPermission() ? actions : [])
-    }
-  }
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : true
 
 
   return ( <>
@@ -288,11 +283,13 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         {hasAppTokenConfigured
           ? <Table
             columns={columns}
-            actions={getActions()}
+            actions={filterByAccess(actions)}
             dataSource={appTokenData}
             rowKey='id'
-            rowActions={filterByOperations(rowActions)}
-            rowSelection={getActions().length > 0 && { type: 'radio' }}
+            rowActions={hasRowPermissions
+              ? filterByAccess(rowActions)
+              : undefined}
+            rowSelection={hasRowPermissions ? { type: 'radio' } : undefined}
           />
           : <AddAppLink />}
       </Col>

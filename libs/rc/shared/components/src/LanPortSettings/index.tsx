@@ -338,7 +338,7 @@ export function LanPortSettings (props: {
               visible={drawerVisible}
               type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
               venueId={venueId}
-              featureName={InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID}
+              featureNames={[InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID]}
               onClose={() => setDrawerVisible(false)} />
           </>}
           rules={[{

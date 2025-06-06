@@ -1,4 +1,4 @@
-import { showSdLanCaptivePortalConflictModal } from './showSdLanCaptivePortalConflictModal'
+import { showSdLanNetworksTunnelConflictModal } from './showSdLanNetworksTunnelConflictModal'
 
 const mockShowActionModal = jest.fn()
 jest.mock('@acx-ui/components', () => ({
@@ -30,14 +30,14 @@ const tunneledWlans = [{
   forwardingTunnelProfileId: ''
 }]
 
-describe('showSdLanCaptivePortalConflictModal', () => {
+describe('showSdLanNetworksTunnelConflictModal', () => {
   beforeEach(() => {
     mockShowActionModal.mockClear()
     mockOk.mockClear()
   })
 
   it('test has conflict', () => {
-    showSdLanCaptivePortalConflictModal({
+    showSdLanNetworksTunnelConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
       currentNetworkName,
@@ -51,7 +51,7 @@ describe('showSdLanCaptivePortalConflictModal', () => {
   })
 
   it('test has no conflict', () => {
-    showSdLanCaptivePortalConflictModal({
+    showSdLanNetworksTunnelConflictModal({
       currentNetworkVenueId,
       currentNetworkId,
       currentNetworkName,

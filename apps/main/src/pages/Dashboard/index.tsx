@@ -81,7 +81,8 @@ import {
   hasRoles,
   getUserProfile,
   hasAllowedOperations,
-  isCoreTier
+  isCoreTier,
+  useUserProfileContext
 } from '@acx-ui/user'
 import {
   AnalyticsFilter,
@@ -144,8 +145,9 @@ export default function Dashboard () {
   const [initDashboardId, setInitDashboardId] = useState(false)
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
 
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
   const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
@@ -170,17 +172,23 @@ export default function Dashboard () {
   }, [dashboards])
 
   useEffect(() => {
-    if (isDashboardCanvasEnabled && !!dashboardId && dashboardId !== DEFAULT_DASHBOARD_ID) {
-      const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
-      if (selectedDashboard) {
-        const { canvasId, sections, groups } = getCanvasData(
-          selectedDashboard as unknown as Canvas[]
-        )
-        if (canvasId && sections) {
-          setCanvasId(canvasId)
-          setSections(sections)
-          setGroups(groups)
+    if (isDashboardCanvasEnabled && !!dashboardId && dashboardList.length) {
+      if (dashboardId !== DEFAULT_DASHBOARD_ID) {
+        const selectedDashboard = dashboardList.filter(item => item.id === dashboardId)
+        if (selectedDashboard) {
+          const { canvasId, sections, groups } = getCanvasData(
+            selectedDashboard as unknown as Canvas[]
+          )
+          if (canvasId && sections) {
+            setCanvasId(canvasId)
+            setSections(sections)
+            setGroups(groups)
+          }
         }
+      } else if (canvasId) {
+        setCanvasId('')
+        setSections([])
+        setGroups([])
       }
     }
   }, [dashboardId, dashboardList])
@@ -225,8 +233,9 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
@@ -236,6 +245,7 @@ function DashboardPageHeader (props: {
   const [importDashboardDrawerVisible, setImportDashboardDrawerVisible] = useState(false)
   const [updateDashboards] = useUpdateDashboardsMutation()
   const [patchDashboard] = usePatchDashboardMutation()
+  const isInitDashboardCheckedRef = useRef<boolean | undefined>(false)
   const shouldCleanupDashboardIdRef = useRef<string | undefined>(undefined)
 
   const hasCreatePermission = hasPermission({
@@ -325,8 +335,21 @@ function DashboardPageHeader (props: {
   }, [])
 
   useEffect(() => {
+    if (dashboardId && dashboardList.length && !isInitDashboardCheckedRef.current) {
+      const currentDashboard = dashboardList.find(item => item.id === dashboardId)
+      if (currentDashboard && hasDashboardChanged(currentDashboard)) {
+        shouldCleanupDashboardIdRef.current = dashboardId
+      }
+      isInitDashboardCheckedRef.current = true
+    }
+  }, [dashboardId])
+
+  useEffect(() => {
     onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
+
+  const hasDashboardChanged = (dashboard?: DashboardInfo) =>
+    !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
 
   const handleClearNotifications = async (value: string) => {
     await patchDashboard({
@@ -338,13 +361,10 @@ function DashboardPageHeader (props: {
   const handleChangeDashboard = async (value: string) => {
     const currentDashboard = dashboardList.find(item => item.id === dashboardId)
     const newDashboard = dashboardList.find(item => item.id === value)
-    const hasDiff = (dashboard?: DashboardInfo) =>
-      !!dashboard?.authorId && !!dashboard?.diffWidgetIds?.length
-
-    if (currentDashboard && hasDiff(currentDashboard)) {
+    if (currentDashboard && hasDashboardChanged(currentDashboard)) {
       handleClearNotifications(currentDashboard.id)
     }
-    if (newDashboard && hasDiff(newDashboard)) {
+    if (newDashboard && hasDashboardChanged(newDashboard)) {
       shouldCleanupDashboardIdRef.current = value
     }
     setDashboardId(value)
@@ -736,9 +756,10 @@ function CanvasDashboard (props: {
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
 }) {
   const { canvasId, sections, groups, setGroups } = props
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
 
   const { menuCollapsed } = useLayoutContext()
   const [layout, setLayout] = useState({

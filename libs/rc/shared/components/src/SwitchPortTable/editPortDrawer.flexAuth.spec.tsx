@@ -4,10 +4,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { switchApi }                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { switchApi }                                                                from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow, allMultipleEditableFields } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,8 +32,7 @@ import {
   vlansByVenue
 } from './__tests__/fixtures'
 import {
-  EditPortDrawer,
-  allMultipleEditableFields
+  EditPortDrawer
 } from './editPortDrawer'
 
 const params = {
@@ -240,7 +239,7 @@ describe('EditPortDrawer', () => {
         await screen.findByText('Port level override')
         expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
         expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-        expect(screen.queryByText('Authentication')).toBeNull()
+        expect(screen.queryByText('Port Authentication')).toBeNull()
       })
     })
 
@@ -281,7 +280,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
         })
 
@@ -312,7 +311,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(screen.queryByText('Authentication')).toBeNull()
+          expect(screen.queryByText('Port Authentication')).toBeNull()
         })
 
         it('should render correctly when the auth profile is applied', async () => {
@@ -354,7 +353,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -395,7 +394,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -448,7 +447,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -485,7 +484,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
           await userEvent.click(await screen.findByTestId('flex-enable-switch'))
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -541,7 +540,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -601,7 +600,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
           expect(await screen.findByRole('button', { name: 'Use Venue settings' })).toBeDisabled()
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -643,7 +642,7 @@ describe('EditPortDrawer', () => {
           })
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeDisabled()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -692,7 +691,7 @@ describe('EditPortDrawer', () => {
           await screen.findByText('Port level override')
           expect(await screen.findByText('VLAN-ID: 1 (Default VLAN)')).toBeVisible()
           expect(await screen.findByText('VLAN-ID: 2')).toBeVisible()
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
         })
       })
@@ -753,7 +752,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -806,7 +805,7 @@ describe('EditPortDrawer', () => {
 
           const flexAuthOverrideCheckbox
             = await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(flexAuthOverrideCheckbox).toBeVisible()
           expect(flexAuthOverrideCheckbox).toBeDisabled()
           expect(screen.queryAllByText(/Multiple values/)).toHaveLength(17)
@@ -865,7 +864,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           // expect(screen.queryAllByText(/Multiple values/)).toHaveLength(16)
 
           await userEvent.click(
@@ -921,7 +920,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeDisabled()
 
@@ -981,7 +980,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1079,7 +1078,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1148,7 +1147,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1235,7 +1234,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
@@ -1303,7 +1302,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')).not.toBeDisabled()
           await userEvent.click(await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox'))
@@ -1364,7 +1363,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).not.toBeChecked()
 
@@ -1453,7 +1452,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -1537,7 +1536,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Use Profile Settings')).toBeVisible()
@@ -1606,7 +1605,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1678,7 +1677,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(screen.queryByTestId('flex-enable-switch')).toBeNull() //Multiple Values
 
           await userEvent.click(
@@ -1749,7 +1748,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1830,7 +1829,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -1917,7 +1916,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
           expect(await screen.findByText('Customize')).toBeVisible()
@@ -2030,7 +2029,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2141,7 +2140,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2217,7 +2216,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeVisible()
           expect(await screen.findByTestId('flex-enable-switch')).toBeChecked()
 
@@ -2289,7 +2288,7 @@ describe('EditPortDrawer', () => {
           await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
           await screen.findByText('Edit Port')
 
-          expect(await screen.findByText('Authentication')).toBeVisible()
+          expect(await screen.findByText('Port Authentication')).toBeVisible()
           expect(screen.queryByTestId('flex-enable-switch')).toBeNull()
 
           await userEvent.click(

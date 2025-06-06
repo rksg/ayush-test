@@ -85,7 +85,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
     && !isDelegationMode() && (isMsp || isRec || (isLoginSSoMspEcEnabled && isMspEc)
     || (isLoginSSoTechpartnerEnabled && isTechPartner))
   const showApiKeySupport = hasPermission && isApiKeyEnabled
-  const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
+  const showBetaButton = hasPermission && betaButtonToggle && showRksSupport
   const showSoftDeleteButton = (rbacOpsApiEnabled ? hasAllowedOperations([
     getOpsApi(AdministrationUrlsInfo.deleteTenant)
   ]) : isPrimeAdminUser) && isSoftTenantDeleteEnabled &&
@@ -105,7 +105,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
         <StepsForm.TextContent>
           <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-          { (isPrimeAdminUser) && (
+          { (hasPermission) && (
             <>
               <Divider />
               <DefaultSystemLanguageFormItem />
@@ -119,7 +119,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
             </>
           )}
 
-          { isPrimeAdminUser && (
+          { hasPermission && (
             <>
               <Divider />
               <MapRegionFormItem />

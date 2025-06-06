@@ -42,7 +42,7 @@ interface LanPortProfileDetailsDrawerProps {
   portData: LanPortDetailState
 }
 
-const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
+export const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const {
@@ -190,21 +190,29 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
           <Form.Item
             label={$t({ defaultMessage: 'Accounting Service' })}
             children={
-              (!targetLanPort?.accountingRadiusId)
-                ? noDataDisplay
-                : (
-                  <TenantLink to={getPolicyDetailsLink({
-                    type: PolicyType.AAA,
-                    oper: PolicyOperation.DETAIL,
-                    policyId: targetLanPort.accountingRadiusId })}>
-                    {radiusNameMap.find(radius => radius.key === targetLanPort?.accountingRadiusId)?.value || noDataDisplay}
-                  </TenantLink>)
+              (<FormattedMessage
+                defaultMessage={'{status} {leftQuote}<profileLink></profileLink>{rightQuote}'}
+                values={{
+                  status: transformDisplayOnOff(!!targetLanPort?.accountingRadiusId),
+                  leftQuote: targetLanPort?.accountingRadiusId ? '(' : '',
+                  rightQuote: targetLanPort?.accountingRadiusId ? ')' : '',
+                  profileLink: () => targetLanPort?.accountingRadiusId ?
+                    <TenantLink to={getPolicyDetailsLink({
+                      type: PolicyType.AAA,
+                      oper: PolicyOperation.DETAIL,
+                      policyId: targetLanPort.accountingRadiusId })}>
+                      {radiusNameMap.find(
+                        radius => radius.key === targetLanPort?.accountingRadiusId)?.value ||
+                         noDataDisplay}
+                    </TenantLink> : ''
+                }}/>)
             }
           />
+          {targetLanPort?.accountingRadiusId &&
           <Form.Item
             label={$t({ defaultMessage: 'Proxy Service (Accounting)' })}
             children={transformDisplayOnOff(!!ethernetData?.enableAuthProxy)}
-          />
+          />}
 
           {ethernetData?.authType === EthernetPortAuthType.MAC_BASED &&
           <>
@@ -310,5 +318,3 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     />
   )
 }
-
-export default LanPortProfileDetailsDrawer

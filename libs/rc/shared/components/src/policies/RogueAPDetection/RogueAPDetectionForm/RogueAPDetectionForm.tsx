@@ -25,7 +25,8 @@ import {
   usePolicyPageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   usePolicyPreviousPath,
-  RoguePolicyRequest, useConfigTemplate
+  RoguePolicyRequest, useConfigTemplate,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -49,6 +50,7 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.ROGUE_AP_DETECTION)
   const params = useParams()
   const { edit, modalMode, modalCallBack } = props
 
@@ -102,7 +104,7 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
         }).unwrap()
       }
       const response = results.response as { id: string }
-      modalMode ? modalCallBack?.(response.id) : navigate(linkToInstanceList, { replace: true })
+      modalMode ? modalCallBack?.(response.id) : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

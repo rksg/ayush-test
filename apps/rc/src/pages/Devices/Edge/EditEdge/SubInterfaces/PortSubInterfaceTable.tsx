@@ -3,11 +3,10 @@ import { useContext } from 'react'
 import {
   useAddSubInterfacesMutation,
   useDeleteSubInterfacesMutation,
-  useGetSubInterfacesQuery,
   useImportSubInterfacesCSVMutation,
   useUpdateSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { convertEdgeSubInterfaceToApiPayload, EdgeSubInterface, useTableQuery } from '@acx-ui/rc/utils'
+import { convertEdgeSubInterfaceToApiPayload, SubInterface } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -19,6 +18,8 @@ interface PortSubInterfaceTableProps {
   ip: string
   mac: string
   portId: string
+  isSupportAccessPort?: boolean
+  data?: SubInterface[]
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
@@ -26,22 +27,12 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
   const { generalSettings } = useContext(EditEdgeDataContext)
   const { venueId, clusterId: edgeClusterId } = generalSettings!
 
-  const tableQuery = useTableQuery<EdgeSubInterface>({
-    useQuery: useGetSubInterfacesQuery,
-    defaultPayload: {},
-    apiParams: {
-      venueId: venueId!,
-      edgeClusterId: edgeClusterId!,
-      serialNumber,
-      portId
-    }
-  })
   const [addSubInterface] = useAddSubInterfacesMutation()
   const [updateSubInterface] = useUpdateSubInterfacesMutation()
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
   const [uploadCSV, uploadCSVResult] = useImportSubInterfacesCSVMutation()
 
-  const handleAdd = async (data: EdgeSubInterface) => {
+  const handleAdd = async (data: SubInterface) => {
     const payloadData = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
@@ -57,7 +48,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
     await addSubInterface(requestPayload).unwrap()
   }
 
-  const handleUpdate = async (data: EdgeSubInterface) => {
+  const handleUpdate = async (data: SubInterface) => {
     const payloadData = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
@@ -73,7 +64,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
     await updateSubInterface(requestPayload).unwrap()
   }
 
-  const handleDelete = async (data: EdgeSubInterface) => {
+  const handleDelete = async (data: SubInterface) => {
     return await deleteSubInterfaces({
       params: {
         venueId,
@@ -98,7 +89,6 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   return <SubInterfaceTable
     {...props}
-    tableQuery={tableQuery}
     handleAdd={handleAdd}
     handleUpdate={handleUpdate}
     handleDelete={handleDelete}

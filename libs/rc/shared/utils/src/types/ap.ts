@@ -742,6 +742,10 @@ export interface ApSmartMonitor {
   threshold: number
 }
 
+export interface ApIotController {
+  useVenueSettings: boolean
+}
+
 export interface ApIot {
   useVenueSettings: boolean,
   enabled: boolean,

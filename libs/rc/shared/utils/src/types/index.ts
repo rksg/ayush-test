@@ -305,7 +305,8 @@ export enum ApVenueStatusEnum {
   OFFLINE = '1_InSetupPhase_Offline',
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
-  TRANSIENT_ISSUE = '4_TransientIssue'
+  TRANSIENT_ISSUE = '4_TransientIssue',
+  IN_SETUP_PHASE_AND_OFFLINE = 'InSetupPhase_And_Offline' // for dashboard device widget only
 }
 
 export type ChartData = {

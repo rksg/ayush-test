@@ -16,12 +16,12 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
 import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
 import {
   aiOpsApis,
   hasCrossVenuesPermission,
-  hasPermission
-} from '@acx-ui/user'
+  hasPermission } from '@acx-ui/user'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
@@ -69,9 +69,13 @@ export const useKpiThresholdsQuery = (
 }
 
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
+  const isEnergySavingToggled = [
+    useIsSplitOn(Features.RUCKUS_AI_ENERGY_SAVING_TOGGLE),
+    useIsSplitOn(Features.ACX_UI_ENERGY_SAVING_TOGGLE)
+  ].some(Boolean)
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab as keyof typeof kpisForTab]
+  const { kpis } = kpisForTab(isMLISA, isEnergySavingToggled)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })

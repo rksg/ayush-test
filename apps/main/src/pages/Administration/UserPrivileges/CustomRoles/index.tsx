@@ -145,7 +145,9 @@ const CustomRoles = (props: CustomRolesTableProps) => {
       { isLoading: isLoading || !userProfileData,
         isFetching: isFetching || isDeleteRoleUpdating
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       <Table
         columns={columns}
         dataSource={customRoleData}

@@ -129,7 +129,7 @@ jest.mock('@acx-ui/rc/services', () => {
     useUpdateCanvasMutation: () => ([ mockedUpdate ]),
     usePatchCanvasMutation: () => ([ mockedPatch ]),
     useLazyGetCanvasQuery: () => ([ mockedGetCanvas ]),
-    useLazyGetCanvasByIdQuery: () => ([ mockedGetCanvasById, { isLoading: false } ]),
+    useLazyGetCanvasByIdQuery: () => ([ mockedGetCanvasById ]),
     useCreateWidgetMutation: () => [
       jest.fn(() => ({
         then: jest.fn().mockResolvedValue({

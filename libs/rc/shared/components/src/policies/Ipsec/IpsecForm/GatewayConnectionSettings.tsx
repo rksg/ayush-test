@@ -450,7 +450,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
       <ApCompatibilityDrawer
         visible={drawerVisible}
         type={ApCompatibilityType.ALONE}
-        featureName={InCompatibilityFeatures.IPSEC_NEW_CONFIGURABLE}
+        featureNames={[InCompatibilityFeatures.IPSEC_NEW_CONFIGURABLE]}
         onClose={() => setDrawerVisible(false)}
       />
     </>

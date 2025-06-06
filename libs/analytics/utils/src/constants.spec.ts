@@ -107,7 +107,8 @@ describe('constants', () => {
         [IncidentToggle.SwitchLoopDetectionIncidents]: false,
         [IncidentToggle.SwitchLLDPStatusIncidents]: false,
         [IncidentToggle.SwitchPortCongestionIncidents]: false,
-        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false,
+        [IncidentToggle.SwitchPortFlapIncidents]: false
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
@@ -144,6 +145,7 @@ describe('constants', () => {
         [IncidentToggle.SwitchDDoSIncidents]: true,
         [IncidentToggle.SwitchLoopDetectionIncidents]: true,
         [IncidentToggle.SwitchLLDPStatusIncidents]: true,
+        [IncidentToggle.SwitchPortFlapIncidents]: true,
         [IncidentToggle.SwitchPortCongestionIncidents]: true,
         [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
@@ -155,6 +157,7 @@ describe('constants', () => {
           's-switch-tcp-syn-ddos',
           'i-switch-loop-detection',
           'i-switch-lldp-status',
+          'i-switch-port-flap',
           'p-switch-port-congestion',
           'p-switch-uplink-port-congestion'
         ],

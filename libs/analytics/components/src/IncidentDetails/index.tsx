@@ -26,6 +26,7 @@ import { SwitchLoopDetection }        from './Details/SwitchLoopDetection'
 import { SwitchMemoryHigh }           from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }                from './Details/SwitchPoePd'
 import { SwitchPortCongestion }       from './Details/SwitchPortCongestion'
+import { SwitchPortFlap }             from './Details/SwitchPortFlap'
 import { SwitchTcpSynDDoS }           from './Details/SwitchTcpSynDDoS'
 import { SwitchUplinkPortCongestion } from './Details/SwitchUplinkPortCongestion'
 import { SwitchVlanMismatch }         from './Details/SwitchVlanMismatch'
@@ -53,6 +54,7 @@ export const incidentDetailsMap = {
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
   'i-switch-loop-detection': SwitchLoopDetection,
   'i-switch-lldp-status': SwitchLLDPStatus,
+  'i-switch-port-flap': SwitchPortFlap,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,
