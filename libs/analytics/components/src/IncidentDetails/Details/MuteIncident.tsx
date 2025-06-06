@@ -22,7 +22,7 @@ export function MuteIncident ({ incident } : { incident: Incident }) {
   const toggleCallback = async (checked: boolean) => {
     const { id, code, severity } = incident
     const { toggleMute } = await muteIncident(
-      { id, code, priority: calculateSeverity(severity), mute: checked }
+      [{ id, code, priority: calculateSeverity(severity), mute: checked }]
     ).unwrap() as unknown as MuteIncidentResponse
     if (toggleMute.success) {
       showToast({

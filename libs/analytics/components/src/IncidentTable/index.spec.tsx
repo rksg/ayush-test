@@ -20,7 +20,7 @@ import { DateRange }                           from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
-import { IncidentTable, downloadIncidentList } from './index'
+import { IncidentMutedStatus, IncidentTable, downloadIncidentList, getIncidentsMutedStatus } from './index'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -184,10 +184,7 @@ const filters : IncidentFilter = {
   filter: {}
 }
 
-const unmutedIncidents = incidentTests.filter(val => !val.isMuted)
-
 describe('IncidentTable', () => {
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -215,7 +212,7 @@ describe('IncidentTable', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findAllByText('P4')
-    expect(screen.getAllByText('P4')).toHaveLength(unmutedIncidents.length)
+    expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
   })
 
   it('should render empty table on undefined incidents', async () => {
@@ -246,7 +243,8 @@ describe('IncidentTable', () => {
     { name: 'Sub-Category', count: 2 },
     { name: 'Client Impact', count: 1 },
     { name: 'Impacted Clients', count: 1 },
-    { name: 'Scope', count: 1 }
+    { name: 'Scope', count: 1 },
+    { name: 'Visibility', count: 2 }
   ]
 
   it('should render column header', async () => {
@@ -273,7 +271,7 @@ describe('IncidentTable', () => {
     }
   })
 
-  it('should allow for muting', async () => {
+  it('should be able to mute incident', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -287,10 +285,12 @@ describe('IncidentTable', () => {
       }
     })
 
-    const hiddenCheckboxes = await screen.findAllByRole('radio', { hidden: true, checked: false })
-    expect(hiddenCheckboxes).toHaveLength(2)
+    const checkboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(checkboxes).toHaveLength(4)
 
-    fireEvent.click(hiddenCheckboxes[0])
+    fireEvent.click(checkboxes[2]) // incident with isMuted = false
     mockGraphqlMutation(dataApiURL, 'MutateIncident', {
       data: {
         toggleMute: {
@@ -301,7 +301,49 @@ describe('IncidentTable', () => {
       }
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Mute' }))
+    const muteButton = await screen.findByRole('button', { name: 'Mute' })
+    const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
+    expect(muteButton).toBeEnabled()
+    expect(unmuteButton).toBeDisabled()
+    fireEvent.click(muteButton)
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+  })
+
+  it('should be able to unmute incident', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const checkboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(checkboxes).toHaveLength(4)
+
+    fireEvent.click(checkboxes[1]) // incident with isMuted = true
+    mockGraphqlMutation(dataApiURL, 'MutateIncident', {
+      data: {
+        toggleMute: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        }
+      }
+    })
+
+    const muteButton = await screen.findByRole('button', { name: 'Mute' })
+    const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
+    expect(muteButton).toBeDisabled()
+    expect(unmuteButton).toBeEnabled()
+    fireEvent.click(muteButton)
     expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 
@@ -364,7 +406,7 @@ describe('IncidentTable', () => {
 
   })
 
-  it('should render muted incidents & reset to default', async () => {
+  it('should render all incidents and mute | unmute buttons on select', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -379,34 +421,15 @@ describe('IncidentTable', () => {
       }
     })
 
-    const before = await screen.findAllByRole('radio', { hidden: true, checked: false })
-    expect(before).toHaveLength(2)
-
-    const settingsButton = await screen.findByTestId('SettingsOutlined')
-    expect(settingsButton).toBeDefined()
-    fireEvent.click(settingsButton)
-
-    const showMutedIncidents = await screen.findByText('Show Muted Incidents')
-    expect(showMutedIncidents).toBeDefined()
-    fireEvent.click(showMutedIncidents)
-
-    const afterShowMuted = await screen.findAllByRole('radio', { hidden: true, checked: false })
-    expect(afterShowMuted).toHaveLength(3)
-
-    // check the action says umnute:
-    fireEvent.click(afterShowMuted[0])
+    const checkboxes = await screen.findAllByRole('checkbox', { checked: false })
+    expect(checkboxes).toHaveLength(4)
+    // check the action says mute and unmute:
+    fireEvent.click(checkboxes[0])
+    await screen.findByRole('button', { name: 'Mute' })
     await screen.findByRole('button', { name: 'Unmute' })
-
-    fireEvent.click(settingsButton)
-    const resetButton = await screen.findByText('Reset to default')
-    expect(resetButton).toBeDefined()
-    fireEvent.click(resetButton)
-
-    const afterReset = await screen.findAllByRole('radio', { hidden: true, checked: false })
-    expect(afterReset).toHaveLength(2)
   })
 
-  it('should not show muted when role = READ_ONLY', async () => {
+  it('should not show mute buttons when role = READ_ONLY', async () => {
     const profile = getUserProfile()
     setUserProfile({ ...profile, profile: {
       ...profile.profile, roles: [RolesEnum.READ_ONLY]
@@ -430,9 +453,10 @@ describe('IncidentTable', () => {
       )
     )
     expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Unmute')).not.toBeInTheDocument()
   })
 
-  it('should not show muted when wifi-u is missing on wireless incident', async () => {
+  it('should not show mute buttons when wifi-u is missing on wireless incident', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
@@ -455,9 +479,10 @@ describe('IncidentTable', () => {
       )
     )
     expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Unmute')).not.toBeInTheDocument()
   })
 
-  it('should not show muted when switch-u is missing on wired incident', async () => {
+  it('should not show mute buttons when switch-u is missing on wired incident', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
@@ -482,6 +507,7 @@ describe('IncidentTable', () => {
       )
     )
     expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Unmute')).not.toBeInTheDocument()
   })
 
   it('should render drawer when click on description', async () => {
@@ -683,5 +709,40 @@ describe('CSV Functions', () => {
       ['"Severity","Date","Muted"\n"P1","2023-08-21T05:37:30.000Z","false"\n"P3","2023-08-21T05:40:30.000Z","false"\n"P2","2023-08-21T05:39:30.000Z","true"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
+  })
+})
+
+describe('getIncidentsMutedStatus', () => {
+  it('should return all when no incidents', () => {
+    expect(getIncidentsMutedStatus([])).toBe(IncidentMutedStatus.All)
+  })
+
+  it('should return muted when all selected incidents has isMuted = true and isMuted = false',
+    () => {
+      expect(
+        getIncidentsMutedStatus([
+          { id: '1', code: '', severityLabel: '', isMuted: true },
+          { id: '2', code: '', severityLabel: '', isMuted: false }
+        ])
+      ).toBe(IncidentMutedStatus.All)
+    }
+  )
+
+  it('should return muted when all selected incidents isMuted = true', () => {
+    expect(
+      getIncidentsMutedStatus([
+        { id: '1', code: '', severityLabel: '', isMuted: true },
+        { id: '2', code: '', severityLabel: '', isMuted: true }
+      ])
+    ).toBe(IncidentMutedStatus.Muted)
+  })
+
+  it('should return muted when all selected incidents isMuted = false', () => {
+    expect(
+      getIncidentsMutedStatus([
+        { id: '1', code: '', severityLabel: '', isMuted: false },
+        { id: '2', code: '', severityLabel: '', isMuted: false }
+      ])
+    ).toBe(IncidentMutedStatus.Unmuted)
   })
 })

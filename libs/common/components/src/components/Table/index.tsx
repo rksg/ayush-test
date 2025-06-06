@@ -43,6 +43,7 @@ import type { ParamsType }        from '@ant-design/pro-provider'
 import type { SettingOptionType } from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
+  SelectProps,
   TablePaginationConfig
 } from 'antd'
 import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
@@ -95,6 +96,8 @@ export interface TableProps <RecordType>
     filterPersistence?: boolean
     highLightValue?: string
     preventRenderHeader?: boolean
+    optionLabelProp?: SelectProps['optionLabelProp']
+    columnsToHideChildrenIfParentFiltered?: (keyof RecordType)[]
   }
 
 export interface TableHighlightFnArgs {
@@ -153,10 +156,24 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
-  enablePagination = false, selectedFilters = {}, filterPersistence = false,
-  highLightValue, preventRenderHeader, ...props
+  type = 'tall',
+  columnState,
+  enableApiFilter,
+  iconButton,
+  onFilterChange,
+  settingsId,
+  enableResizableColumn = true,
+  onDisplayRowChange,
+  stickyHeaders,
+  stickyPagination,
+  enablePagination = false,
+  selectedFilters = {},
+  filterPersistence = false,
+  highLightValue,
+  preventRenderHeader,
+  optionLabelProp,
+  columnsToHideChildrenIfParentFiltered,
+  ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -217,10 +234,18 @@ function Table <RecordType extends Record<string, any>> ({
   }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    onDisplayRowChange?.((enableApiFilter
-      ? dataSource?.slice()
-      : getFilteredData<RecordType>(
-        dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
+    onDisplayRowChange?.(
+      (enableApiFilter
+        ? dataSource?.slice()
+        : getFilteredData<RecordType>(
+          dataSource,
+          filterValues,
+          activeFilters,
+          searchables,
+          searchValue,
+          columnsToHideChildrenIfParentFiltered
+        )) ?? []
+    )
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
 
   useEffect(() => {
@@ -550,9 +575,17 @@ function Table <RecordType extends Record<string, any>> ({
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
-            column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth,
-            settingsId, filterPersistence)
+            column,
+            i,
+            dataSource,
+            filterValues,
+            setFilterValues,
+            !!enableApiFilter,
+            column.filterableWidth ?? filterWidth,
+            settingsId,
+            filterPersistence,
+            optionLabelProp
+          )
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}
@@ -581,8 +614,18 @@ function Table <RecordType extends Record<string, any>> ({
         </Button>}
       { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
       { type === 'compactWidget' && <div>{$t({ defaultMessage: 'Total results:' })}
-        <span style={{ marginLeft: '2px' }}>{getFilteredData<RecordType>(
-          dataSource, filterValues, activeFilters, searchables, searchValue)?.length}</span>
+        <span style={{ marginLeft: '2px' }}>
+          {
+            getFilteredData<RecordType>(
+              dataSource,
+              filterValues,
+              activeFilters,
+              searchables,
+              searchValue,
+              columnsToHideChildrenIfParentFiltered
+            )?.length
+          }
+        </span>
       </div>
       }
     </UI.HeaderComps>
@@ -642,10 +685,17 @@ function Table <RecordType extends Record<string, any>> ({
     />}
     <ProTable<RecordType>
       {...props}
-      dataSource={enableApiFilter
-        ? dataSource
-        : getFilteredData<RecordType>(
-          dataSource, filterValues, activeFilters, searchables, searchValue)
+      dataSource={
+        enableApiFilter
+          ? dataSource
+          : getFilteredData<RecordType>(
+            dataSource,
+            filterValues,
+            activeFilters,
+            searchables,
+            searchValue,
+            columnsToHideChildrenIfParentFiltered
+          )
       }
       sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}

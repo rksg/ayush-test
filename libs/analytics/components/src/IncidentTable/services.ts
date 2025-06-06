@@ -104,6 +104,62 @@ export interface MutationResponse {
   }
 }
 
+const getIncidentPayloadName = (index: number) => ({
+  id: `incident${index}_id`,
+  mute: `incident${index}_mute`,
+  code: `incident${index}_code`,
+  priority: `incident${index}_priority`
+})
+
+function createToggleMuteMutation (payload: MutationPayload[]) {
+  let variableDefinitions = ''
+  let mutationBody = ''
+
+  payload.forEach((_, index) => {
+    const { id, mute, code, priority } = getIncidentPayloadName(index)
+    variableDefinitions += `
+      $${id}: String!,
+      $${mute}: Boolean!,
+      $${code}: String!,
+      $${priority}: String!
+    `
+    mutationBody += `
+      incident${index}: toggleMute(
+        id: $${id},
+        mute: $${mute},
+        code: $${code},
+        priority: $${priority}
+      ) {
+        success
+        errorMsg
+        errorCode
+      }
+    `
+  })
+
+  const mutationString = `
+    mutation MutateIncident(
+      ${variableDefinitions}
+    ) {
+      ${mutationBody}
+    }
+  `
+
+  const variables = payload.reduce((acc: Record<string, string | boolean>, payload, index) => {
+    const { id, mute, code, priority } = getIncidentPayloadName(index)
+    acc[`${id}`] = payload.id
+    acc[`${mute}`] = payload.mute
+    acc[`${code}`] = payload.code
+    acc[`${priority}`] = payload.priority
+    return acc
+  }, {})
+
+  return {
+    document: gql`${mutationString}`,
+    variables: variables
+  }
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsList: build.query<IncidentNodeData, IncidentFilter & IncidentsToggleFilter & {
@@ -160,30 +216,9 @@ export const api = dataApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     }),
-    muteIncidents: build.mutation<MutationResponse, MutationPayload>({
-      query: (payload) => ({
-        document: gql`
-          mutation MutateIncident(
-            $id: String!,
-            $mute: Boolean!,
-            $code: String!,
-            $priority: String!
-          ){
-            toggleMute (mute: $mute, code: $code, priority: $priority, id: $id) {
-              success
-              errorMsg
-              errorCode
-            }
-          }
-        `,
-        variables: {
-          id: payload.id,
-          mute: payload.mute,
-          code: payload.code,
-          priority: payload.priority
-        }
-      }),
-      transformResponse: (response: MutationResponse) => response,
+    muteIncidents: build.mutation<MutationResponse[], MutationPayload[]>({
+      query: createToggleMuteMutation,
+      transformResponse: (response: MutationResponse[]) => response,
       invalidatesTags: [
         { type: 'Monitoring', id: 'INCIDENTS_LIST' },
         { type: 'Monitoring', id: 'INCIDENT_DETAILS' }
