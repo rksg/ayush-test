@@ -680,18 +680,22 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                         </Typography.Text>
                         <Form.Item
                           noStyle
-                          name='forceUp'
                           valuePropName='checked'
                           children={<Tooltip
                             title={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC ?
                               $t(EditPortMessages.ONLY_ONE_PORT_CAN_BE_FORCE_UP) : ''}>
-                            <Switch
-                              disabled={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
+                            <Form.Item
+                              noStyle
+                              name='forceUp'
+                              valuePropName='checked'><Switch
+                                disabled={(forceUpPort !== '' &&
+                                  forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC}
-                              style={{ display: 'flex' }}
-                              onChange={(value) => value ?
-                                setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
+                                style={{ display: 'flex' }}
+                                onChange={(value) => value ?
+                                  setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
+                            </Form.Item>
                           </Tooltip>}
                         /></>
                     }
