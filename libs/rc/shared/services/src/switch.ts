@@ -2060,7 +2060,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(
           SwitchUrlsInfo.getAccessControlCount, params, customHeaders.v1)
         return { ...req }
-      }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLISTCOUNT' }]
     }),
     getSwitchMacAcls: build.query<TableResult<MacAcl>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2153,7 +2154,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' },
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLISTCOUNT' }
+      ]
     }),
     updateSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2164,7 +2168,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' },
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLISTCOUNT' }
+      ]
     }),
     deleteSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2175,7 +2182,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' },
+        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLISTCOUNT' }
+      ]
     })
   })
 })
