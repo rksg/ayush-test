@@ -87,6 +87,9 @@ export const ImportDashboardDrawer = (props: {
   const importedOwnedCanvasCount = dashboardList.filter(item => !item.authorId).length - 1
   const isCanvasLimitReached
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
+  const hasOnlyDefaultDashboard = dashboardList.length === 1
+  const hasOnlyOneCanvas
+    = hasOnlyDefaultDashboard && (ownedCanvasList.length + dashboardList.length === 2)
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
   const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
@@ -212,7 +215,7 @@ export const ImportDashboardDrawer = (props: {
     }, {
       label: $t({ defaultMessage: 'Delete' }),
       key: 'delete',
-      visible: isEditable
+      visible: isEditable && !hasOnlyOneCanvas
     }, {
       label: $t({ defaultMessage: 'Clone as Private Copy' }),
       key: 'clone',
