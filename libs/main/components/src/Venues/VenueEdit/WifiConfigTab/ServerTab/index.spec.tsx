@@ -53,6 +53,10 @@ jest.mock('./IotController', () => ({
   IotController: () => <div>IotController Component</div>
 }))
 
+jest.mock('./IotControllerV2', () => ({
+  IotControllerV2: () => <div>IotControllerV2 Component</div>
+}))
+
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
