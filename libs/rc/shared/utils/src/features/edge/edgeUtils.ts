@@ -891,3 +891,20 @@ export const getEdgeAppCurrentVersions = (data: Pick<DhcpStats, 'clusterAppVersi
   }
   return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
 }
+
+export const getNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
+  const allPools = [] as EdgeNatPool[]
+
+  const filteredPorts = portsData.filter(port => !lagData?.some(lag =>
+    lag.lagMembers?.some(member => member.portId === port.id)) )
+
+  const allNatPools = filteredPorts.flatMap(port => port.natPools ?? [])
+  const allLagNatPools = (lagData ?? []).flatMap(lag => lag.natPools ?? [])
+
+  return allPools.concat(allNatPools, allLagNatPools)
+    // filter out initial component
+    .filter(Boolean)
+    .filter((item: EdgeNatPool) => {
+      return item?.startIpAddress && item?.endIpAddress
+    })
+}
