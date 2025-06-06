@@ -28,7 +28,7 @@ export function ApGroupSingleRadioSettings (props: ApGroupSingleRadioSettingsPor
   const { $t } = useIntl()
 
   // eslint-disable-next-line max-len
-  const { useVenueSettingsFieldName } = props
+  const { useVenueSettingsFieldName, inherit5G } = props
   const { radioType, handleChanged, isUseVenueSettings, disabled } = props
 
   const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
@@ -47,8 +47,9 @@ export function ApGroupSingleRadioSettings (props: ApGroupSingleRadioSettingsPor
           children={<></>}
         />
         <SingleRadioSettings
-          context='apGroup'
+          context={inherit5G? 'venue' : 'apGroup'}
           radioType={radioType}
+          inherit5G={inherit5G}
           disabled={disabled}
           handleChanged={handleChanged}
           isUseVenueSettings={isUseVenueSettings}

@@ -159,6 +159,7 @@ export const TransferLayout = styled(Space)`
           .ant-table-tbody > tr > td {
             height: 25px;
             padding: 2px 8px;
+            min-width: 120px;
 
             .ant-tag {
               background: #f5f5f5;
