@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { venueApi }                              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { generatePath }                          from '@acx-ui/react-router-dom'
@@ -67,7 +66,6 @@ describe('VenueOverviewTab', () => {
   })
 
   it('switches between tabs', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
     const wifiWidgets = [
@@ -93,7 +91,6 @@ describe('VenueOverviewTab', () => {
   })
 
   it('should switch tab correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
     fireEvent.click(await screen.findByText('Switch'))
