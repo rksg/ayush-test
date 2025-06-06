@@ -68,9 +68,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                   from '@acx-ui/types'
-import { useUserProfileContext }       from '@acx-ui/user'
-import { AccountType, noDataDisplay  } from '@acx-ui/utils'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { getUserProfile, isCoreTier, useUserProfileContext } from '@acx-ui/user'
+import { AccountType, noDataDisplay  }                       from '@acx-ui/utils'
 
 import { AssignEcDrawer }            from '../AssignEcDrawer'
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
@@ -162,6 +162,8 @@ const defaultAddress: Address = {
 }
 
 export function ManageIntegrator () {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
@@ -170,7 +172,7 @@ export function ManageIntegrator () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
-  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
