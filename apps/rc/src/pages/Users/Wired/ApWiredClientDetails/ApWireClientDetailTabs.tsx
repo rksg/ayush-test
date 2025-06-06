@@ -22,8 +22,8 @@ function ApWiredClientDetailTabs () {
         key='overview'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Event' })}
-        key='event'
+        tab={$t({ defaultMessage: 'Events' })}
+        key='events'
       />
     </Tabs>
   )
