@@ -81,8 +81,8 @@ import {
   APT_QUERY_CACHE_TIME
 } from '@acx-ui/utils'
 
-import { SwitchUrlsInfo } from './switchUrls'
 import { SwitchRbacUrlsInfo } from './switchRbacUrls'
+import { SwitchUrlsInfo }     from './switchUrls'
 
 export type SwitchsExportPayload = {
   filters: Filter
