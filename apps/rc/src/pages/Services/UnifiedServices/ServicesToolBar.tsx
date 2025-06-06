@@ -6,6 +6,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
 import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 export enum ServiceSortOrder {
   ASC,
@@ -39,6 +40,7 @@ export interface ServicesToolBarProps {
 }
 
 export function ServicesToolBar (props: ServicesToolBarProps) {
+  const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const { setSearchTerm, setFilters, defaultSortOrder, setSortOrder , availableFilters = {} } = props
   const {
@@ -51,7 +53,9 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
     ]
   } = availableFilters
-  const { $t } = useIntl()
+
+  const sortedProducts = sortProductOptions(products)
+  const sortedCategories = sortCategoryOptions(categories)
 
   const handleSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
@@ -93,7 +97,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         style={{ width: 160 }}
         showSearch={false}
         maxTagCount='responsive'
-        options={products.map((product: RadioCardCategory) => ({
+        options={sortedProducts.map((product: RadioCardCategory) => ({
           label: $t(categoryMapping[product].text),
           value: product
         }))}
@@ -107,7 +111,7 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
         style={{ width: 260 }}
         showSearch={true}
         maxTagCount='responsive'
-        options={categories.map((category: UnifiedServiceCategory) => ({
+        options={sortedCategories.map((category: UnifiedServiceCategory) => ({
           label: $t(unifiedServiceCategoriesMap[category]),
           value: category
         }))}
@@ -132,4 +136,22 @@ export function ServicesToolBar (props: ServicesToolBarProps) {
       />
     </Space>
   )
+}
+
+
+const productOrder = [
+  RadioCardCategory.WIFI,
+  RadioCardCategory.SWITCH,
+  RadioCardCategory.EDGE
+]
+
+export function sortProductOptions (products: RadioCardCategory[]) {
+  return [...products].sort((a, b) => productOrder.indexOf(a) - productOrder.indexOf(b))
+}
+
+export function sortCategoryOptions (categories: UnifiedServiceCategory[]) {
+  const { $t } = getIntl()
+  return [...categories].sort((a, b) => {
+    return $t(unifiedServiceCategoriesMap[a]).localeCompare($t(unifiedServiceCategoriesMap[b]))
+  })
 }
