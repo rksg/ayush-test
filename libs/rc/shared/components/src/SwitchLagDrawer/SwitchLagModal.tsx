@@ -270,6 +270,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setVisible(false)
     setCurrentPortType(null)
     setFinalAvailablePorts([])
+    setSelectedPorts([])
     form.setFieldsValue(
       {
         name: '',
@@ -345,6 +346,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         console.log(err) // eslint-disable-line no-console
       }
     }
+    setSelectedPorts([])
   }
 
   const onPortTypeChange = (value: string) => {
