@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                              from '@acx-ui/types'
-import { hasRoles }                               from '@acx-ui/user'
-import { getIntl }                                from '@acx-ui/utils'
+import { Path, TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { hasRoles }                                     from '@acx-ui/user'
+import { getIntl }                                      from '@acx-ui/utils'
 
 import { LocationExtended }                                                               from '../../common'
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
@@ -52,8 +52,10 @@ export function useServicesBreadcrumb (): { text: string, link?: string }[] {
   return generateServicesBreadcrumb(isNewServiceCatalogEnabled, from)
 }
 
-// eslint-disable-next-line max-len
-export function useServicePreviousPath (type: ServiceType, oper: ServiceOperation): LocationExtended['state']['from'] {
+export function useServicePreviousPath (
+  type: ServiceType,
+  oper: ServiceOperation
+): LocationExtended['state']['from'] {
   const { isTemplate } = useConfigTemplate()
   const regularFallbackPath = useTenantLink(getServiceRoutePath({ type, oper }), 't')
   const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
@@ -61,6 +63,18 @@ export function useServicePreviousPath (type: ServiceType, oper: ServiceOperatio
   const location = useLocation()
 
   return (location as LocationExtended)?.state?.from ?? { pathname: fallbackPath.pathname }
+}
+
+export function useAfterServiceSaveRedirectPath (type: ServiceType): Path {
+  const { isTemplate } = useConfigTemplate()
+  const routeToList = useTenantLink(getServiceRoutePath({ type, oper: ServiceOperation.LIST }))
+  const previousPath = {
+    search: '',
+    hash: '',
+    ...useServicePreviousPath(type, ServiceOperation.LIST)
+  }
+
+  return isTemplate ? previousPath : routeToList
 }
 
 export function generateDpskManagementBreadcrumb () {

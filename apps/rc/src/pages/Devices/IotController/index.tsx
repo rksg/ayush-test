@@ -7,12 +7,18 @@ import {
   useIotControllerActions
 } from '@acx-ui/rc/components'
 import {
-  useGetIotControllerListQuery
-  // useLazyGetIotControllerVenuesQuery
+  useGetIotControllerListQuery,
+  useLazyGetIotControllerVenuesQuery
 } from '@acx-ui/rc/services'
-import { defaultSort, IotControllerStatus, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                        from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }                     from '@acx-ui/user'
+import {
+  defaultSort,
+  IotControllerStatus,
+  IotControllerStatusEnum,
+  sortProp,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import { AssocVenueDrawer } from './AssocVenueDrawer'
 
@@ -25,7 +31,7 @@ export function IotController () {
   const { isCustomRole } = useUserProfileContext()
   const [ assocVenueDrawerVisible, setAssocVenueDrawerVisible ] = useState(false)
   const [ venueIds, setVenueIds ] = useState<string[]>([])
-  // const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
+  const [ getIotControllerVenues ] = useLazyGetIotControllerVenuesQuery()
 
   const payload = {
     fields: [
@@ -36,7 +42,7 @@ export function IotController () {
       'publicPort',
       'tenantId',
       'status',
-      'assocVenueId'
+      'assocVenueCount'
     ],
     filters: { tenantId: [params.tenantId] }
   }
@@ -65,7 +71,7 @@ export function IotController () {
         searchable: searchable,
         defaultSortOrder: 'ascend',
         render: function (_, row, __, highlightFn) {
-          return (
+          return row.status !== IotControllerStatusEnum.ONLINE ? row.name : (
             <TenantLink
               to={`/devices/iotController/${row.id}/details/overview`}>
               {highlightFn(row.name)}</TenantLink>
@@ -97,14 +103,14 @@ export function IotController () {
         render: function (_, row) {
 
           const onClickHandler = async () => {
-            // TODO wait for api ready
-            // const venues = (await getIotControllerVenues({
-            //   params: { iotId: row.id }
-            // }, false)).data
-            // if (venues) {
-            //   setVenueIds()
-            // }
-            setVenueIds([])
+            const venues = (await getIotControllerVenues({
+              params: { iotId: row.id }
+            }, false)).data
+            if (venues) {
+              setVenueIds(venues.venueIds)
+            } else {
+              setVenueIds([])
+            }
             setAssocVenueDrawerVisible(true)
           }
 

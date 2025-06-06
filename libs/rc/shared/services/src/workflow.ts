@@ -27,7 +27,8 @@ import {
   WorkflowActionDefinition,
   WorkflowStep,
   WorkflowUrls,
-  FileDownloadResponse
+  FileDownloadResponse,
+  WorkflowAssignment
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }                               from '@acx-ui/store'
 import { MaybePromise }                                  from '@acx-ui/types'
@@ -123,6 +124,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'UPDATE_WORKFLOW',
             'INITIATE_PUBLISH_WORKFLOW',
             'DELETE_WORKFLOW',
+            'ATTACH_STEP',
             'CREATE_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
@@ -139,6 +141,30 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       providesTags: [
         { type: 'Workflow', id: 'ID' }
       ]
+    }),
+    getWorkflowProfiles: build.query<Workflow[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.searchWorkflowProfiles, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewAPITableResult<Workflow>) {
+        return result.content
+      }
+    }),
+    getWorkflowProfileBoundNetwork: build.query<WorkflowAssignment[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.searchWorkflowProfileBoundNetwork, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewAPITableResult<WorkflowAssignment>) {
+        return result.content
+      }
     }),
     // eslint-disable-next-line max-len
     updateWorkflow: build.mutation<CommonAsyncResponse, RequestPayload<Workflow> & { callback?: () => void }>({
@@ -412,6 +438,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       invalidatesTags: [{ type: 'Step' }]
     }),
 
+    attachStepBeneathStep: build.mutation<WorkflowStep, RequestPayload>({
+      query: commonQueryFn(WorkflowUrls.attachStepBeneathStep),
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+
     deleteWorkflowStepById: build.mutation({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.deleteWorkflowStep, params)
@@ -444,6 +475,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CREATE_STEP',
+            'ATTACH_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
             'IMPORT_WORKFLOW'
@@ -613,6 +645,8 @@ export const {
   useDeleteWorkflowsMutation,
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
+  useGetWorkflowProfilesQuery,
+  useGetWorkflowProfileBoundNetworkQuery,
   useUpdateWorkflowMutation,
   useUpdateWorkflowIgnoreErrorsMutation,
   useSearchWorkflowListQuery,
@@ -638,6 +672,7 @@ export const {
 export const {
   useCreateWorkflowStepMutation,
   useCreateWorkflowChildStepMutation,
+  useAttachStepBeneathStepMutation,
   useGetWorkflowStepByIdQuery,
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowStepsByIdQuery,

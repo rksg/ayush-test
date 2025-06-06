@@ -10,7 +10,7 @@ export enum Features {
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
-  AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
+  AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'removable-ff',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
@@ -174,7 +174,6 @@ export enum Features {
   SSO = 'ADMN-SSO',
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
-  SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
@@ -187,7 +186,6 @@ export enum Features {
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
-  SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
@@ -241,10 +239,10 @@ export enum Features {
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   WORKFLOW_CERTIFICATE_TEMPLATE_ACTION = 'workflow-cert-template-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
-  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'removable-ff',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
-  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'removable-ff',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
@@ -359,7 +357,9 @@ export enum Features {
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
-  DHCP_CONSOLIDATION = 'acx-ui-consolidated-dhcp-toggle'
+  DHCP_CONSOLIDATION = 'acx-ui-consolidated-dhcp-toggle',
+  WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
+  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -379,6 +379,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_HQOS = 'EDGE-HQOS',
   EDGE_L2OGRE = 'EDGE-L2OGRE',
   EDGE_NAT_IP_POOL = 'EDGE-NAT-IP-POOL',
+  EDGE_DUAL_WAN = 'EDGE-DUAL-WAN',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -416,6 +417,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_L2OGRE, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support L2GRE tunnel type' }), status: false },
   { key: TierFeatures.SERVICE_CATALOG_UPDATED, description: defineMessage({ defaultMessage: 'Service Catalog (Updated): Introduces a new layout and filtering logic for network services and policies, enabling clearer visibility and easier access to unified services for RUCKUS network deployments.' }), status: true },
   { key: TierFeatures.EDGE_NAT_IP_POOL, description: defineMessage({ defaultMessage: 'Edge NAT IP Pool: Enables NAT IP pooling, allowing more client sessions to be supported by dynamically allocating public IP addresses from a shared pool.' }), status: false },
+  { key: TierFeatures.EDGE_DUAL_WAN, description: defineMessage({ defaultMessage: 'Dual-WAN for RUCKUS Edge: RUCKUS Edge Dual-WAN enables support for two WAN links with active-backup functionality to ensure uninterrupted WAN connectivity. This feature includes monitoring mechanisms to actively check the status of the WAN links and automatically switch back to the primary active WAN link when its connection is restored.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

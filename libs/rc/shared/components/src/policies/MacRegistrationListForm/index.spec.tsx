@@ -353,7 +353,7 @@ describe('MacRegistrationListForm', () => {
   it('should navigate to the Select service page when clicking Cancel button', async () => {
     const { result: selectPath } = renderHook(() => {
       // eslint-disable-next-line max-len
-      return useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
+      return useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
     })
 
     render(

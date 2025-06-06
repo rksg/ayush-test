@@ -15,13 +15,14 @@ import { useAddResidentPortalMutation,
   useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
 import {
   ServiceType,
-  getServiceRoutePath,
   ServiceOperation,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  useServicePreviousPath,
+  useAfterServiceSaveRedirectPath,
+  useServicePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
@@ -45,13 +46,13 @@ interface ResidentPortalFormProps {
 export function ResidentPortalForm (props: ResidentPortalFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.RESIDENT_PORTAL,
-    oper: ServiceOperation.LIST
-  })
-  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
+
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.RESIDENT_PORTAL, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.RESIDENT_PORTAL)
+  const pageTitle = useServicePageHeaderTitle(!!editMode, ServiceType.RESIDENT_PORTAL)
 
   const [ addResidentPortal ] = useAddResidentPortalMutation()
   const [ updateResidentPortal ] = useUpdateResidentPortalMutation()
@@ -156,7 +157,7 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
 
       modalMode
         ? modalCallBack?.(result?._links?.fetch?.href)
-        : navigate(linkToServices, { replace: true })
+        : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -167,17 +168,14 @@ export function ResidentPortalForm (props: ResidentPortalFormProps) {
   return (
     <>
       {!modalMode && <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Resident Portal' })
-          : $t({ defaultMessage: 'Add Resident Portal' })
-        }
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
         <StepsFormLegacy<CreateResidentPortalFormFields>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
+          onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}>
           <StepsFormLegacy.StepForm<CreateResidentPortalFormFields>
             name='details'
