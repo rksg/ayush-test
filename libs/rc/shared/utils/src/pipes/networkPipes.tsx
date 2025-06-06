@@ -220,6 +220,10 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'SAML Identity Provider (IdP)',
     description: 'Guest network type - SAML Identity Provider (IdP)'
+  }),
+  [GuestNetworkTypeEnum.Workflow]: defineMessage({
+    defaultMessage: 'Workflow',
+    description: 'Guest network type - Workflow'
   })
 }
 
