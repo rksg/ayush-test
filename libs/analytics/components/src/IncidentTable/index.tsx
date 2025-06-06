@@ -197,7 +197,7 @@ export function IncidentTable ({ filters }: {
 
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
-  const [muteIncident] = useMuteIncidentsMutation()
+  const [muteIncident, { isLoading }] = useMuteIncidentsMutation()
   const [selectedRowsData, setSelectedRowsData] = useState<IncidentRowData[]>(
     []
   )
@@ -399,7 +399,12 @@ export function IncidentTable ({ filters }: {
   })
 
   return (
-    <Loader states={[queryResults]} style={{ height: 'auto' }}>
+    <Loader
+      states={[
+        { ...queryResults, isLoading: queryResults.isLoading || isLoading }
+      ]}
+      style={{ height: 'auto' }}
+    >
       <Table<IncidentTableRow>
         settingsId='incident-table'
         type='tall'
