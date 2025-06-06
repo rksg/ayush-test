@@ -67,7 +67,7 @@ interface ScheduleCardProps extends AntdModalProps {
   isShowTimezone?: boolean
   prefix?: boolean
   deviceType?: SchedulerDeviceTypeEnum
-  slotWidth?: number
+  slotwidth?: number
 }
 
 interface Schedule {
@@ -83,15 +83,15 @@ interface ScheduleTimeTickProps {
   timeTicks: string[]
   intervalUnit: 15 | 60
   intervalsCount: number
-  slotWidth: number
+  slotwidth: number
 }
 
 const ScheduleTimeTick: React.FC<ScheduleTimeTickProps> =
-({ top, showBorder, index, length, timeTicks, intervalUnit, intervalsCount, slotWidth }) => {
-  const timetickJSX = (<div style={{ width: `${slotWidth+80}%`, height: '25px', marginLeft: '-30px' }}>
+({ top, showBorder, index, length, timeTicks, intervalUnit, intervalsCount, slotwidth }) => {
+  const timetickJSX = (<div style={{ width: `${slotwidth+80}%`, height: '25px', marginLeft: '-30px' }}>
     {timeTicks.map((item: string, i: number) => {
       return (
-        <UI.Timetick intervalunit={intervalUnit} slotWidth={slotWidth} key={`timetick_${i}`}>{item}</UI.Timetick>
+        <UI.Timetick intervalunit={intervalUnit} slotwidth={slotwidth} key={`timetick_${i}`}>{item}</UI.Timetick>
       )
     })}
   </div>)
@@ -127,7 +127,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
   const { scheduler, venue, disabled, readonly=false, form, fieldNamePath, lazyQuery: getTimezone,
     localTimeZone=false, isShowTips=true, isShowTimezone=true, timelineLabelTop= true,
-    intervalUnit, prefix=true, deviceType=SchedulerDeviceTypeEnum.DEFAULT, slotWidth=20 } = props
+    intervalUnit, prefix=true, deviceType=SchedulerDeviceTypeEnum.DEFAULT, slotwidth=20 } = props
   const editabled = !disabled && !readonly
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
@@ -340,7 +340,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                     timeTicks={timeTicks}
                     intervalUnit={intervalUnit}
                     intervalsCount={intervalsCount}
-                    slotWidth={slotWidth}
+                    slotwidth={slotwidth}
                   />}
                   <Form.Item
                     key={`checkboxGroup_form_${item.key}`}
@@ -359,13 +359,13 @@ export function ScheduleCard (props: ScheduleCardProps) {
                             <div
                               id={`${item.key}_${i}`}
                               data-testid={`${item.key}_${i}`}
-                              style={{ width: intervalUnit === 15 ? '10px' : slotWidth, height: '32px' }}
+                              style={{ width: intervalUnit === 15 ? '10px' : slotwidth, height: '32px' }}
                             ></div>
                           </Tooltip>,
                           value: timeslot
                         }))}
                         disabled={!editabled}
-                        slotWidth={slotWidth}
+                        slotwidth={slotwidth}
                       />
                     }
                   />
@@ -379,7 +379,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                     timeTicks={timeTicks}
                     intervalUnit={intervalUnit}
                     intervalsCount={intervalsCount}
-                    slotWidth={slotWidth}
+                    slotwidth={slotwidth}
                   />}
                   {localTimeZone && i === scheduleList.length -1 &&
                   <div style={{ width: '100%', height: '25px' }}>

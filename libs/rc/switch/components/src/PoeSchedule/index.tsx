@@ -242,7 +242,7 @@ export const PoeSchedule = (props:ScheduleWeeklyProps) => {
                 readonly={readOnlyMode}
                 disabled={false}
                 deviceType={SchedulerDeviceTypeEnum.SWITCH}
-                slotWidth={30}
+                slotwidth={30}
               />
               }
             </Col>

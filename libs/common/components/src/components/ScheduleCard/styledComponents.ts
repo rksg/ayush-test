@@ -32,7 +32,7 @@ const channelChildUnit60 = `
   }
 `
 
-export const CheckboxGroup = styled(Checkbox.Group)<{ intervalunit: number, slotWidth: number }>`
+export const CheckboxGroup = styled(Checkbox.Group)<{ intervalunit: number, slotwidth: number }>`
 ${(props) => `
   .ant-checkbox-group-item{
 	  margin-right: 0;
@@ -50,7 +50,7 @@ ${(props) => `
   .ant-checkbox-wrapper {
     position: relative;
     font-size: 10px;
-    width: ${props.intervalunit===15?channelWidth:`${props.slotWidth}px`};
+    width: ${props.intervalunit===15?channelWidth:`${props.slotwidth}px`};
     height: 32px;
     background: var(--acx-neutrals-30);
     .channels > span + span {
@@ -122,9 +122,9 @@ const marginLeftChildSecondUnit60 = `
   }
 `
 
-export const Timetick = styled.div<{ intervalunit: number, slotWidth: number }>`
+export const Timetick = styled.div<{ intervalunit: number, slotwidth: number }>`
 ${(props) => `
-  width: ${props.intervalunit===15?timeTickWidth:`${(props.slotWidth*3)}px`};
+  width: ${props.intervalunit===15?timeTickWidth:`${(props.slotwidth*3)}px`};
   height: 15px;
   color: var(--acx-neutrals-60);
   float: left;

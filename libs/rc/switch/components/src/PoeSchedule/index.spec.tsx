@@ -51,7 +51,7 @@ jest.mock('@acx-ui/components', () => ({
     readonly,
     disabled,
     deviceType,
-    slotWidth
+    slotwidth
   }: {
     type: string
     scheduler?: {
@@ -75,7 +75,7 @@ jest.mock('@acx-ui/components', () => ({
     readonly?: boolean
     disabled?: boolean
     deviceType?: string
-    slotWidth?: number
+    slotwidth?: number
   }) => (
     <div
       data-testid='schedule-card'
@@ -92,7 +92,7 @@ jest.mock('@acx-ui/components', () => ({
       data-readonly={readonly}
       data-disabled={disabled}
       data-device-type={deviceType}
-      data-slot-width={slotWidth}
+      data-slot-width={slotwidth}
     >
       Schedule Card Mock
       {scheduler && <div data-testid='scheduler-data'>{JSON.stringify(scheduler)}</div>}
