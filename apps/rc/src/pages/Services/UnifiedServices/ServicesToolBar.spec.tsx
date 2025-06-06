@@ -1,5 +1,5 @@
 import { cleanup, logRoles, waitFor } from '@testing-library/react'
-import userEvent            from '@testing-library/user-event'
+import userEvent                      from '@testing-library/user-event'
 
 import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
@@ -160,9 +160,9 @@ describe('ServicesToolBar', () => {
           UnifiedServiceCategory.NETWORK_SERVICES
         ])
       ).toEqual([
-          UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-          UnifiedServiceCategory.NETWORK_SERVICES,
-          UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
+        UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+        UnifiedServiceCategory.NETWORK_SERVICES,
+        UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
       ])
 
       expect(
@@ -170,13 +170,13 @@ describe('ServicesToolBar', () => {
           UnifiedServiceCategory.USER_EXPERIENCE_PORTALS,
           UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
           UnifiedServiceCategory.NETWORK_SERVICES,
-          UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+          UnifiedServiceCategory.AUTHENTICATION_IDENTITY
         ])
       ).toEqual([
-          UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
-          UnifiedServiceCategory.NETWORK_SERVICES,
-          UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-          UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
+        UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
+        UnifiedServiceCategory.NETWORK_SERVICES,
+        UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
+        UnifiedServiceCategory.USER_EXPERIENCE_PORTALS
       ])
     })
   })

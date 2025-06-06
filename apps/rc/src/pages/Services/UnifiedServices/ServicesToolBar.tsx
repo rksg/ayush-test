@@ -6,7 +6,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { RadioCardCategory, Table, categoryMapping } from '@acx-ui/components'
 import { UnifiedServiceCategory }                    from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { getIntl }                                   from '@acx-ui/utils'
 
 export enum ServiceSortOrder {
   ASC,
