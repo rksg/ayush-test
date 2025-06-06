@@ -1,5 +1,5 @@
-import { cleanup, logRoles, waitFor } from '@testing-library/react'
-import userEvent                      from '@testing-library/user-event'
+import { cleanup, waitFor } from '@testing-library/react'
+import userEvent            from '@testing-library/user-event'
 
 import { RadioCardCategory }      from '@acx-ui/components'
 import { UnifiedServiceCategory } from '@acx-ui/rc/utils'
