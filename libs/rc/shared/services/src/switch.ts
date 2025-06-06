@@ -2168,10 +2168,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [
-        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' },
-        { type: 'SwitchMacAcl', id: 'ACCESSCONTROLLISTCOUNT' }
-      ]
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
     }),
     deleteSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
