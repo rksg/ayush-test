@@ -16,6 +16,7 @@ import {
   EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNatPool,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
@@ -553,7 +554,7 @@ export const getEdgeAppCurrentVersions = (data: Pick<DhcpStats, 'clusterAppVersi
   return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
 }
 
-export const getNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
+export const getEdgeNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
   const allPools = [] as EdgeNatPool[]
 
   const filteredPorts = portsData.filter(port => !lagData?.some(lag =>

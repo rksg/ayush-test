@@ -27,6 +27,7 @@ import {
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
 import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
+import { formFieldsPropsType }              from '../EdgeFormItem/PortCommonForm/types'
 import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
 import { useIsEdgeFeatureReady }            from '../useEdgeActions'
 
@@ -47,6 +48,7 @@ interface LagDrawerProps {
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
+  formFieldsProps?: formFieldsPropsType
 }
 
 const defaultFormValues = {
@@ -69,7 +71,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo, isSupportAccessPort
+    clusterInfo, isSupportAccessPort,
+    formFieldsProps
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -353,6 +356,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
+            ...formFieldsProps,
             // we should ONLY apply Edge gateway validator on node level edit LAG
             // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {

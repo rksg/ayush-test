@@ -10,11 +10,8 @@ import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from
 import {
   validateEdgeClusterLevelGateway,
   EdgePort, EdgeLag, SubInterface,
-  poolRangeOverlapValidator,
-  getNatPools,
-  EdgeSerialNumber
+  natPoolRangeClusterLevelValidator
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -104,45 +101,6 @@ const PortSettingView = (props: PortSettingViewProps) => {
     setActiveTab(value)
   }
 
-  // eslint-disable-next-line max-len
-  const natPoolClusterLevelValidator = async (allPortsData: Record<EdgeSerialNumber, EdgePort[]>, allLagData: Record<EdgeSerialNumber, EdgeLag[]>) => {
-    const { $t } = getIntl()
-
-    const nodeSerialNumbers = Object.keys(allPortsData)
-
-    // to check if there are any NAT pool ranges overlapped between edges
-    for (let i=0; i < nodeSerialNumbers.length; i++) {
-      if (!nodeSerialNumbers[i]) continue
-
-      for (let j=i+1; j < nodeSerialNumbers.length; j++) {
-        if (i === nodeSerialNumbers.length - 1) break
-
-        const node1Id = nodeSerialNumbers[i]
-        const node2Id = nodeSerialNumbers[j]
-
-        // eslint-disable-next-line max-len
-        const poolsToValidate = getNatPools(allPortsData[node1Id].concat(allPortsData[node2Id]), allLagData[node1Id].concat(allLagData[node2Id]))
-        if (!poolsToValidate?.length) {
-          continue
-        }
-
-        try {
-          await poolRangeOverlapValidator(poolsToValidate)
-        } catch (e) {
-          const edge1Name = clusterInfo?.edgeList?.find(i => i.serialNumber === node1Id)?.name
-          const edge2Name = clusterInfo?.edgeList?.find(i => i.serialNumber === node2Id)?.name
-          // eslint-disable-next-line max-len
-          return Promise.reject($t({ defaultMessage: 'NAT pool ranges on {edge1Name} overlap with those on {edge2Name}' }, {
-            edge1Name: edge1Name,
-            edge2Name: edge2Name
-          }))
-        }
-      }
-    }
-
-    return Promise.resolve()
-  }
-
   return (
     <Loader states={[{
       isLoading: isFetching || !clusterInfo
@@ -207,8 +165,8 @@ const PortSettingView = (props: PortSettingViewProps) => {
                       ? [{ validator: () => {
                         // eslint-disable-next-line max-len
                         const { ports: allPortsData, lags: allLagsData } = getAllPhysicalInterfaceFormData(form)
-
-                        return natPoolClusterLevelValidator(allPortsData, allLagsData)
+                        // eslint-disable-next-line max-len
+                        return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
                       } }] : []
                   }
                 }}

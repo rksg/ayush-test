@@ -11,7 +11,7 @@ import {
   convertIpToLong,
   EdgeClusterStatus,
   EdgeLag, EdgeNatPool, EdgePort,
-  getNatPools,
+  getEdgeNatPools,
   IncompatibilityFeatures,
   natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
 } from '@acx-ui/rc/utils'
@@ -54,7 +54,7 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const allNatPoolsWithoutCurrent= useMemo(() => {
     if (!isMultiNatIpEnabled) return undefined
 
-    return getNatPools(
+    return getEdgeNatPools(
       portsData.filter(port => port.id !== lagId && port.interfaceName !== physicalPortIfName
         && !lagMembers.some(m => m.portId === port.id)
       ),

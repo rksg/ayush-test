@@ -26,6 +26,7 @@ import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getOpsApi }                     from '@acx-ui/utils'
 
+import { formFieldsPropsType }   from '../EdgeFormItem/PortCommonForm/types'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { LagDrawer } from './LagDrawer'
@@ -49,6 +50,7 @@ interface EdgeLagTableProps {
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
+  formFieldsProps?: formFieldsPropsType
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
@@ -58,7 +60,8 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     onAdd, onEdit, onDelete,
     actionScopes, subInterfaceList,
     isClusterWizard = false,
-    clusterInfo, isSupportAccessPort
+    clusterInfo, isSupportAccessPort,
+    formFieldsProps
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -294,6 +297,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         isClusterWizard={isClusterWizard}
         clusterInfo={clusterInfo}
         isSupportAccessPort={isSupportAccessPort}
+        formFieldsProps={formFieldsProps}
       />
     </>
   )
