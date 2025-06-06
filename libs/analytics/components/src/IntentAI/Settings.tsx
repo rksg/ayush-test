@@ -15,6 +15,7 @@ import { get }                                           from '@acx-ui/config'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
 import { TenantLink }                                    from '@acx-ui/react-router-dom'
 import { getUserProfile as getR1UserProfile }            from '@acx-ui/user'
+import { CatchErrorResponse }                            from '@acx-ui/utils'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
@@ -42,14 +43,15 @@ export const prepareNotificationPreferences = (
 }
 export function Settings ({ settings }: { settings: string }) {
   const { $t } = useIntl()
-  const aiFeatures = Object.entries(aiFeaturesLabel)
-    .map(([key, value]) => ({ name: $t(value), key }))
+  const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateTenantSettingsMutation()
+  const [updatePrefrences, { isLoading: isUpdatingPreferences }] = useSetNotificationMutation()
   const [targetKeys, setTargetKeys] = useState<string[]>([])
   const [notificationChecked, setNotificationChecked] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
   const [form] = Form.useForm()
-
-  const [updateSettings, result] = useUpdateTenantSettingsMutation()
+  const aiFeatures = Object.entries(aiFeaturesLabel)
+    .map(([key, value]) => ({ name: $t(value), key }))
 
   useEffect(() => {
     setTargetKeys(JSON.parse(settings))
@@ -60,8 +62,6 @@ export function Settings ({ settings }: { settings: string }) {
     ? getRaiUserProfile().selectedTenant.id
     : getR1UserProfile().profile.tenantId
   const query = useGetPreferencesQuery({ tenantId })
-  const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
-  const [updatePrefrences] = useSetNotificationMutation()
   const hasIntentEmailNotification = (data: AnalyticsPreferences) => {
     return !!data?.intentAI?.all?.includes('email')
   }
@@ -82,17 +82,30 @@ export function Settings ({ settings }: { settings: string }) {
       }),
       updatePrefrences({ tenantId, preferences: notificationPreferences })
     ])
-    if (tenantSettingsResult.error || notificationPreferencesResult.error) {
-      showToast({
-        type: 'error',
-        content: JSON.stringify(tenantSettingsResult.error || notificationPreferencesResult.error)
-      })
-    } else {
+    // tenantSettingsResult is text format, notificationPreferencesResult is json format
+    if (tenantSettingsResult?.data === 'Created' && notificationPreferencesResult?.data?.success) {
       showToast({
         type: 'success',
         content: $t({ defaultMessage: 'Subscriptions saved successfully!' })
       })
       closeDrawer(undefined)
+    } else {
+      const getErrorMsgFromErrorResponse = (respData: CatchErrorResponse) => {
+        return respData.data.errors.map((error) => error.message).join(', ')
+      }
+      // rbac service hasn't followed CatchErrorResponse yet
+      const tenantSettingsError =
+        tenantSettingsResult?.error && 'data' in tenantSettingsResult.error
+          ? tenantSettingsResult.error.data
+          : tenantSettingsResult?.error
+      const notificationPreferencesError =
+        notificationPreferencesResult?.error && 'data' in notificationPreferencesResult.error
+          ? getErrorMsgFromErrorResponse(notificationPreferencesResult.error as CatchErrorResponse)
+          : notificationPreferencesResult?.error
+      showToast({
+        type: 'error',
+        content: tenantSettingsError || notificationPreferencesError
+      })
     }
   }
 
@@ -132,7 +145,7 @@ export function Settings ({ settings }: { settings: string }) {
         <Button type='default' onClick={closeDrawer}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button></div>}
-    > <Loader states={[result]}>
+    > <Loader states={[{ isLoading: isUpdatingSettings || isUpdatingPreferences }]}>
         <Form
           style={{ width: '55%' }}
           layout='vertical'

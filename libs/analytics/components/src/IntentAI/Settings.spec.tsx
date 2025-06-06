@@ -11,6 +11,7 @@ import { getUserProfile as getRaiUserProfile, UserProfile }      from '@acx-ui/a
 import { get }                                                   from '@acx-ui/config'
 import { notificationApiURL, Provider, store }                   from '@acx-ui/store'
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
+import { CatchErrorDetails }                                     from '@acx-ui/utils'
 
 import { Settings, prepareNotificationPreferences } from './Settings'
 
@@ -43,7 +44,7 @@ jest.mock('@acx-ui/analytics/services', () => ({
 
 describe('IntentAI Settings', () => {
   beforeEach(() => {
-    const updateSettingsMock = jest.fn(() => Promise.resolve('success'))
+    const updateSettingsMock = jest.fn(() => Promise.resolve({ data: 'Created' }))
     mockedUseUpdateTenantSettingsMutation.mockImplementation(() =>
       [updateSettingsMock, { isLoading: false }])
     mockServer.use(
@@ -131,16 +132,14 @@ describe('IntentAI Settings', () => {
       expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'error',
-          content: JSON.stringify({
-            status: 500,
-            data: JSON.stringify({ error })
-          })
+          content: JSON.stringify({ error })
         })
     })
   })
   it('should handle error on save settings for notification preferences', async () => {
-    const error = 'notification preferences server error'
-    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', { error }, false, true)
+    const errorMsg = 'notification preferences server error'
+    const errors = [{ message: errorMsg }] as CatchErrorDetails[]
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', { errors }, false, true)
     const settings = JSON.stringify(['Energy Saving'])
     render(<Settings settings={settings}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -151,10 +150,7 @@ describe('IntentAI Settings', () => {
       expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'error',
-          content: JSON.stringify({
-            status: 500,
-            data: { error }
-          })
+          content: errorMsg
         })
     })
   })
