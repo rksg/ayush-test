@@ -65,7 +65,7 @@ describe('AP Wired Client Details', () => {
     const overviewTab = screen.getByRole('tab', { name: 'Overview' })
     expect(overviewTab.getAttribute('aria-selected')).toBeTruthy()
 
-    const eventTab = screen.getByRole('tab', { name: 'Event' })
+    const eventTab = screen.getByRole('tab', { name: 'Events' })
     fireEvent.click(eventTab)
     expect(eventTab.getAttribute('aria-selected')).toBeTruthy()
   })
