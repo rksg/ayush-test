@@ -220,12 +220,14 @@ export function IncidentTable ({ filters }: {
 
   const muteSelectedIncidents = useCallback(async (mute: boolean) => {
     await muteIncident(
-      selectedRowsData.map(({ id, code, severityLabel }) => ({
-        id,
-        code,
-        priority: severityLabel,
-        mute
-      }))
+      selectedRowsData
+        .filter(({ isMuted }) => isMuted !== mute)
+        .map(({ id, code, severityLabel }) => ({
+          id,
+          code,
+          priority: severityLabel,
+          mute
+        }))
     ).unwrap()
   }, [muteIncident, selectedRowsData])
 
