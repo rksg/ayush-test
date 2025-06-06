@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { switchApi }                          from '@acx-ui/rc/services'
-import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { switchApi }                                           from '@acx-ui/rc/services'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider, store }                                     from '@acx-ui/store'
+import { mockServer, render, screen, within }                  from '@acx-ui/test-utils'
 
 import { switchDetailHeader } from './__tests__/fixtures'
 
@@ -60,7 +60,9 @@ const portlistData_7650 = {
     unitState: 'ONLINE',
     unitStatus: 'Standalone',
     usedInFormingStack: false,
-    vlanIds: '1'
+    vlanIds: '1',
+    poeScheduleEnabled: true,
+    isPoeSupported: 'true'
   }, {
     adminStatus: 'Up',
     broadcastIn: '0',
@@ -488,7 +490,9 @@ describe('SwitchPortTable', () => {
 
     it('should render EditPortDrawer correctly when FF is not enabled', async () => {
       render(<Provider>
-        <SwitchPortTable isVenueLevel={false} switchDetail={switchDetailHeader} />
+        <SwitchPortTable
+          isVenueLevel={false}
+          switchDetail={switchDetailHeader as unknown as SwitchViewModel} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/overview/ports' }
@@ -510,7 +514,9 @@ describe('SwitchPortTable', () => {
         ff => ff === Features.SWITCH_RBAC_API || ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
       )
       render(<Provider>
-        <SwitchPortTable isVenueLevel={false} switchDetail={switchDetailHeader} />
+        <SwitchPortTable
+          isVenueLevel={false}
+          switchDetail={switchDetailHeader as unknown as SwitchViewModel} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/overview/ports' }
@@ -526,5 +532,30 @@ describe('SwitchPortTable', () => {
       expect(mockedGetSwitchList).toBeCalled()
       expect(mockedGetFlexAuthProfileList).toBeCalled()
     })
+    it('should render poe schedule correctly when poe schedule FF is enabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(
+        ff => ff === Features.SWITCH_RBAC_API ||
+        ff === Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE
+      )
+      mockServer.use(
+        rest.post(
+          SwitchUrlsInfo.getSwitchPortlist.url,
+          (req, res, ctx) => res(ctx.json(portlistData_7650))
+        ),
+        rest.get(
+          SwitchUrlsInfo.getSwitchVlanUnion.url,
+          (req, res, ctx) => res(ctx.json({}))
+        )
+      )
+      render(<Provider>
+        <SwitchPortTable isVenueLevel={false} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:switchId' }
+      })
+
+      expect(await screen.findByText('PoE Schedule')).toBeVisible()
+      expect(await screen.findByText('Custom Schedule')).toBeVisible()
+    })
   })
 })
+

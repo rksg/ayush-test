@@ -42,7 +42,7 @@ interface LanPortProfileDetailsDrawerProps {
   portData: LanPortDetailState
 }
 
-const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
+export const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const {
@@ -318,5 +318,3 @@ const LanPortProfileDetailsDrawer = (props: LanPortProfileDetailsDrawerProps) =>
     />
   )
 }
-
-export default LanPortProfileDetailsDrawer

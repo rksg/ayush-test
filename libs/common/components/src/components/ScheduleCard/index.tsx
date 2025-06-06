@@ -20,11 +20,17 @@ import _           from 'lodash'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { ITimeZone, NetworkVenueScheduler, Scheduler }   from '@acx-ui/types'
+import {
+  ITimeZone,
+  NetworkVenueScheduler,
+  Scheduler,
+  SchedulerDeviceTypeEnum
+} from '@acx-ui/types'
 import { getVenueTimeZone, transformTimezoneDifference } from '@acx-ui/utils'
 
-import { Button }            from '../Button'
-import { ScheduleTipsModal } from '../ScheduleTipsModal'
+import { Button }                from '../Button'
+import { PoeSchedulerTipsModal } from '../PoeSchedulerTipsModal'
+import { ScheduleTipsModal }     from '../ScheduleTipsModal'
 
 import * as UI     from './styledComponents'
 import {
@@ -60,6 +66,8 @@ interface ScheduleCardProps extends AntdModalProps {
   isShowTips?: boolean
   isShowTimezone?: boolean
   prefix?: boolean
+  deviceType?: SchedulerDeviceTypeEnum
+  slotwidth?: number
 }
 
 interface Schedule {
@@ -75,14 +83,15 @@ interface ScheduleTimeTickProps {
   timeTicks: string[]
   intervalUnit: 15 | 60
   intervalsCount: number
+  slotwidth: number
 }
 
 const ScheduleTimeTick: React.FC<ScheduleTimeTickProps> =
-({ top, showBorder, index, length, timeTicks, intervalUnit, intervalsCount }) => {
-  const timetickJSX = (<div style={{ width: '100%', height: '25px', marginLeft: '-30px' }}>
+({ top, showBorder, index, length, timeTicks, intervalUnit, intervalsCount, slotwidth }) => {
+  const timetickJSX = (<div style={{ width: `${slotwidth+80}%`, height: '25px', marginLeft: '-30px' }}>
     {timeTicks.map((item: string, i: number) => {
       return (
-        <UI.Timetick intervalunit={intervalUnit} key={`timetick_${i}`}>{item}</UI.Timetick>
+        <UI.Timetick intervalunit={intervalUnit} slotwidth={slotwidth} key={`timetick_${i}`}>{item}</UI.Timetick>
       )
     })}
   </div>)
@@ -118,7 +127,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const { $t } = useIntl()
   const { scheduler, venue, disabled, readonly=false, form, fieldNamePath, lazyQuery: getTimezone,
     localTimeZone=false, isShowTips=true, isShowTimezone=true, timelineLabelTop= true,
-    intervalUnit, prefix=true } = props
+    intervalUnit, prefix=true, deviceType=SchedulerDeviceTypeEnum.DEFAULT, slotwidth=20 } = props
   const editabled = !disabled && !readonly
 
   const [scheduleList, setScheduleList] = useState<Schedule[]>([])
@@ -138,6 +147,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
   const arrCheckedList = [...checkedList]
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
+  const isSwtich = SchedulerDeviceTypeEnum.SWITCH === deviceType
 
   const initialValues = (scheduler: Scheduler) => {
     if (props.type === 'ALWAYS_ON') {
@@ -330,6 +340,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                     timeTicks={timeTicks}
                     intervalUnit={intervalUnit}
                     intervalsCount={intervalsCount}
+                    slotwidth={slotwidth}
                   />}
                   <Form.Item
                     key={`checkboxGroup_form_${item.key}`}
@@ -348,12 +359,13 @@ export function ScheduleCard (props: ScheduleCardProps) {
                             <div
                               id={`${item.key}_${i}`}
                               data-testid={`${item.key}_${i}`}
-                              style={{ width: intervalUnit === 15 ? '10px' : '40px', height: '32px' }}
+                              style={{ width: intervalUnit === 15 ? '10px' : slotwidth, height: '32px' }}
                             ></div>
                           </Tooltip>,
                           value: timeslot
                         }))}
                         disabled={!editabled}
+                        slotwidth={slotwidth}
                       />
                     }
                   />
@@ -367,6 +379,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                     timeTicks={timeTicks}
                     intervalUnit={intervalUnit}
                     intervalsCount={intervalsCount}
+                    slotwidth={slotwidth}
                   />}
                   {localTimeZone && i === scheduleList.length -1 &&
                   <div style={{ width: '100%', height: '25px' }}>
@@ -383,8 +396,10 @@ export function ScheduleCard (props: ScheduleCardProps) {
           </div>
         </Spin>
       </Card>
-      {isModalOpen &&
-      <ScheduleTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />}
+      {isModalOpen && (isSwtich
+        ? <PoeSchedulerTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />
+        : <ScheduleTipsModal isModalOpen={isModalOpen} onOK={() => setIsModalOpen(false)} />)
+      }
     </>
   )
 }

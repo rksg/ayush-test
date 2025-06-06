@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import { Space }   from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { Form, Space } from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
-  useSwitchPortlistQuery
+  useSwitchPortlistQuery,
+  useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
 import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
 import {
@@ -28,10 +29,11 @@ import {
   SwitchMessages,
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  PoeSchedulerType
 } from '@acx-ui/rc/utils'
 import { useParams }                                                   from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
+import { ErrorDisableRecoveryDrawer, PoeSchedule }                     from '@acx-ui/switch/components'
 import { SwitchScopes }                                                from '@acx-ui/types'
 import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
@@ -51,6 +53,7 @@ export function SwitchPortTable (props: {
   switchDetail?: SwitchViewModel
 }) {
   const { $t } = useIntl()
+  const [scheduleForm] = Form.useForm()
   const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -61,18 +64,22 @@ export function SwitchPortTable (props: {
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
+  const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [recoveryDrawerVisible, setRecoveryDrawerVisible] = useState(false)
   const [switchSupportErrorRecovery, setSwitchSupportErrorRecovery] = useState(false)
+  const [poeSchedulerModalVisible, setPoeSchedulerModalVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
+  const [poeScheduleData, setPoeScheduleData] = useState({} as PoeSchedulerType)
 
   const switchFirmware = switchDetail?.firmware
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+  const [getPortSetting] = useLazyGetPortSettingQuery()
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {
@@ -131,9 +138,31 @@ export function SwitchPortTable (props: {
     setData()
   }, [isVenueLevel, switchDetail])
 
+  const handleOpenPoeScheduler = async (portIdentifier: string, switchSerial: string) => {
+    const portSettingArray = await getPortSetting({
+      params: {
+        tenantId,
+        switchId: switchSerial,
+        venueId: vid
+      },
+      payload: [portIdentifier],
+      enableRbac: isSwitchRbacEnabled
+    }, true).unwrap() || []
+
+    if (Array.isArray(portSettingArray)) {
+      setPoeScheduleData(portSettingArray[0].poeScheduler || {})
+      setPoeSchedulerModalVisible(true)
+    }
+  }
+
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
+  ]
+
+  const poeCapabilityFilterOptions = [
+    { key: 'true', value: $t({ defaultMessage: 'PoE' }) },
+    { key: 'false', value: $t({ defaultMessage: 'Non-PoE' }) }
   ]
 
   const queryFields = SwitchPortViewModelQueryFields
@@ -319,7 +348,44 @@ export function SwitchPortTable (props: {
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
       <UI.TagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
     </Space>
-  }, {
+  },
+  ...(isSwitchTimeBasedPoeEnabled
+    ? [{
+      key: 'poeScheduleEnabled',
+      title: $t({ defaultMessage: 'PoE Schedule' }),
+      dataIndex: 'poeScheduleEnabled',
+      sorter: true,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.poeScheduleEnabled ?
+          <Button
+            type='link'
+            data-testid='edit-poe-schedule'
+            onClick={(event) => {
+              event.stopPropagation()
+              setSelectedPorts([row])
+              handleOpenPoeScheduler(row.portIdentifier, row.switchSerial)
+            }}
+            style={{ fontSize: '12px' }}
+          >
+            {$t({ defaultMessage: 'Custom Schedule' })}
+          </Button> :
+          noDataDisplay
+      }
+    },{
+      key: 'isPoeSupported',
+      title: $t({ defaultMessage: 'PoE Capability' }),
+      dataIndex: 'isPoeSupported',
+      sorter: true,
+      show: false,
+      filterMultiple: false,
+      filterable: poeCapabilityFilterOptions,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.isPoeSupported === 'true'
+          ? $t({ defaultMessage: 'PoE' }) : $t({ defaultMessage: 'Non-PoE' })
+      }
+    }] : []),
+  {
     key: 'signalIn',
     title: $t({ defaultMessage: 'Bandwidth IN (%)' }),
     dataIndex: 'signalIn',
@@ -518,6 +584,18 @@ export function SwitchPortTable (props: {
       switchList={switchList?.data}
       authProfiles={authenticationProfiles}
     />}
+
+    { poeSchedulerModalVisible &&
+      <PoeSchedule
+        form={scheduleForm}
+        visible={poeSchedulerModalVisible}
+        setVisible={setPoeSchedulerModalVisible}
+        venueId={vid}
+        poeScheduler={poeScheduleData}
+        readOnly={true}
+        portData={selectedPorts[0]}
+      />
+    }
 
   </Loader>
 }

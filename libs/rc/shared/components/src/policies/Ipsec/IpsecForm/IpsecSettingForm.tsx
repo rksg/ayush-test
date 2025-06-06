@@ -4,10 +4,21 @@ import { Col, Form, Input, Row, Tooltip } from 'antd'
 import { useIntl }                        from 'react-intl'
 import { useParams }                      from 'react-router-dom'
 
-import { Button, Loader, PasswordInput, Select, Subtitle, Tabs }                                                from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                                                           from '@acx-ui/icons'
-import { useGetIpsecViewDataListQuery, useLazyGetIpsecViewDataListQuery }                                       from '@acx-ui/rc/services'
-import { checkObjectNotExists, domainNameRegExp, Ipsec, IpSecAuthEnum, IpsecViewData, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { Button, Loader, PasswordInput, Select, Subtitle, Tabs }          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                     from '@acx-ui/icons'
+import { useGetIpsecViewDataListQuery, useLazyGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  checkObjectNotExists,
+  domainNameRegExp,
+  domainNameWithIPv6RegExp,
+  Ipsec,
+  IpSecAuthEnum,
+  IpsecViewData,
+  servicePolicyNameRegExp,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+
 
 import { TabLabel } from '../styledComponents'
 
@@ -61,6 +72,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
   const [authType, setAuthType] = useState('')
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   const { ipsecData, isLoading } = useGetIpsecViewDataListQuery(
     { params, payload: {
@@ -188,6 +201,13 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   ]
   const [activeTabKey, setActiveTabKey] = useState(moreSettingsTabsInfo[0]?.key)
 
+  const securityGatewayValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return domainNameWithIPv6RegExp(value)
+    }
+    return domainNameRegExp(value)
+  }
+
   return (
     <Loader states={[{ isLoading }]}>
       <Row>
@@ -218,7 +238,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
               </Tooltip>
             </>}
             rules={readMode ? undefined : [
-              { validator: (_, value) => domainNameRegExp(value),
+              { validator: (_, value) => securityGatewayValidator(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               }
             ]}

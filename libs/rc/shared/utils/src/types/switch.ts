@@ -17,6 +17,7 @@ export const SWITCH_SERIAL_SUFFIX_FOR_SPECIFIC_8100_MODEL = '([0-9A-Z]{2})(0[1-9
 
 export const SwitchPortViewModelQueryFields = [
   'adminStatus',
+  'authDefaultVlan',
   'broadcastIn',
   'broadcastOut',
   'cloudPort',
@@ -24,10 +25,12 @@ export const SwitchPortViewModelQueryFields = [
   'crcErr',
   'deviceStatus',
   'egressAclName',
+  'errorDisableStatus',
   'id',
   'inDiscard',
   'ingressAclName',
   'inErr',
+  'isPoeSupported',
   'lagId',
   'lagName',
   'mediaType',
@@ -38,7 +41,9 @@ export const SwitchPortViewModelQueryFields = [
   'neighborName',
   'opticsType',
   'outErr',
+  'poeCapability',
   'poeEnabled',
+  'poeScheduleEnabled',
   'poeTotal',
   'poeType',
   'poeUsage',
@@ -48,9 +53,13 @@ export const SwitchPortViewModelQueryFields = [
   'portSpeed',
   'signalIn',
   'signalOut',
+  'stackingNeighborPort',
   'status',
+  'stickyMacAclAllowCount',
+  'stickyMacAclAllowList',
   'switchId',
   'switchMac',
+  'switchMacAcl',
   'switchModel',
   'switchName',
   'switchPortProfileName',
@@ -556,6 +565,10 @@ export interface SwitchPortViewModel extends GridDataRow {
   switchMacAcl?: string
   stackingNeighborPort?: string
   lagForceUpPort?: boolean
+  poeCapability?: boolean
+  poeScheduleEnabled?: boolean
+  isPoeSupported?: string
+  poeScheduler?: PoeSchedulerType
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1160,4 +1173,16 @@ export interface MacAcl {
 	switchId?: string,
   customized?: boolean,
   sharedWithPolicyAndProfile?: boolean
+}
+
+interface PoeSchedulerType {
+  id?: string
+  type?: string
+  sun?: string
+  mon?: string
+  tue?: string
+  wed?: string
+  thu?: string
+  fri?: string
+  sat?: string
 }
