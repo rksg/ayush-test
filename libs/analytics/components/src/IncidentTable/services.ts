@@ -111,7 +111,7 @@ const getIncidentPayloadName = (index: number) => ({
   priority: `incident${index}_priority`
 })
 
-function createToggleMuteMutation (payload: MutationPayload[]) {
+export function createToggleMuteMutation (payload: MutationPayload[]) {
   let variableDefinitions = ''
   let mutationBody = ''
 
@@ -218,7 +218,6 @@ export const api = dataApi.injectEndpoints({
     }),
     muteIncidents: build.mutation<MutationResponse[], MutationPayload[]>({
       query: createToggleMuteMutation,
-      transformResponse: (response: MutationResponse[]) => response,
       invalidatesTags: [
         { type: 'Monitoring', id: 'INCIDENTS_LIST' },
         { type: 'Monitoring', id: 'INCIDENT_DETAILS' }

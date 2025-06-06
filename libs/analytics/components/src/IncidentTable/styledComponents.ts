@@ -1,14 +1,11 @@
 import styled, { css } from 'styled-components'
 
-
 import {
   IncidentSeverities,
   incidentSeverities
 } from '@acx-ui/analytics/utils'
 import { cssStr } from '@acx-ui/components'
 import { Link }   from '@acx-ui/react-router-dom'
-
-
 
 export type IncidentImpactedClientProps = {
   showImpactedClient: boolean

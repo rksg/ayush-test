@@ -293,7 +293,7 @@ describe('IncidentTable', () => {
     fireEvent.click(checkboxes[2]) // incident with isMuted = false
     mockGraphqlMutation(dataApiURL, 'MutateIncident', {
       data: {
-        toggleMute: {
+        incident0: {
           success: true,
           errorMsg: 'No Error',
           errorCode: '0'
@@ -321,15 +321,19 @@ describe('IncidentTable', () => {
       }
     })
 
-    const checkboxes = await screen.findAllByRole('checkbox', {
+    let unselectedCheckboxes = await screen.findAllByRole('checkbox', {
       checked: false
     })
-    expect(checkboxes).toHaveLength(4)
+    expect(unselectedCheckboxes).toHaveLength(4)
 
-    fireEvent.click(checkboxes[1]) // incident with isMuted = true
+    fireEvent.click(unselectedCheckboxes[1]) // incident with isMuted = true
+    unselectedCheckboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(unselectedCheckboxes).toHaveLength(3)
     mockGraphqlMutation(dataApiURL, 'MutateIncident', {
       data: {
-        toggleMute: {
+        incident0: {
           success: true,
           errorMsg: 'No Error',
           errorCode: '0'
@@ -341,6 +345,110 @@ describe('IncidentTable', () => {
     const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
     expect(muteButton).toBeDisabled()
     expect(unmuteButton).toBeEnabled()
+    fireEvent.click(unmuteButton)
+    unselectedCheckboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(unselectedCheckboxes).toHaveLength(4)
+  })
+
+  it('should be able to mute multiple incidents', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    let unselectedCheckboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(unselectedCheckboxes).toHaveLength(4)
+
+    fireEvent.click(unselectedCheckboxes[0]) // select all incidents
+
+    mockGraphqlMutation(dataApiURL, 'MutateIncident', {
+      data: {
+        incident0: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        },
+        incident1: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        },
+        incident2: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        }
+      }
+    })
+
+    const muteButton = await screen.findByRole('button', { name: 'Mute' })
+    const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
+    expect(muteButton).toBeEnabled()
+    expect(unmuteButton).toBeEnabled()
+    fireEvent.click(muteButton)
+    unselectedCheckboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(unselectedCheckboxes).toHaveLength(4)
+  })
+
+  it('should be able to unmute multiple incidents', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const checkboxes = await screen.findAllByRole('checkbox', {
+      checked: false
+    })
+    expect(checkboxes).toHaveLength(4)
+
+    fireEvent.click(checkboxes[0]) // select all incidents
+    mockGraphqlMutation(dataApiURL, 'MutateIncident', {
+      data: {
+        incident0: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        },
+        incident1: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        },
+        incident2: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        }
+      }
+    })
+
+    const muteButton = await screen.findByRole('button', { name: 'Mute' })
+    const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
+    expect(muteButton).toBeEnabled()
+    expect(unmuteButton).toBeEnabled()
+    unmuteButton.click()
   })
 
   const hiddenColumnHeaders = [
@@ -399,7 +507,61 @@ describe('IncidentTable', () => {
       expect(upCaret.length).toBe(1)
       fireEvent.click(titleElem)
     }
+  })
 
+  it('should reset columns on "Reset to default" click', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    // reset severity header
+    const headerList = await screen.findAllByText(columnHeaders[0].name)
+    expect(headerList.length).toBeGreaterThan(0)
+    const header = headerList[headerList.length - 1]
+    fireEvent.click(header)
+
+    for (let i = 0; i < hiddenColumnHeaders.length; i++) {
+      const header = hiddenColumnHeaders[i]
+
+      const settingsButton = await screen.findByTestId('SettingsOutlined')
+      expect(settingsButton).toBeTruthy()
+      fireEvent.click(settingsButton)
+
+      const allHeaderElem = await screen.findAllByText(header)
+      const elems = allHeaderElem.filter(elem => elem.className.includes('setting'))
+      expect(elems.length).toBeGreaterThanOrEqual(1)
+      const exposeTitleCheckbox = elems[0]
+
+      fireEvent.click(exposeTitleCheckbox)
+
+      const headerElems = await screen.findAllByText(header)
+      expect(headerElems.length).toBeGreaterThanOrEqual(1)
+      const titleElems = headerElems.filter(elem => elem.className.includes('column-title'))
+      expect(titleElems.length).toBeGreaterThanOrEqual(1)
+    }
+
+    const resetButton = await screen.findByRole('button', { name: 'Reset to default' })
+    expect(resetButton).toBeDefined()
+    fireEvent.click(resetButton)
+
+    for (let i = 0; i < columnHeaders.length; i++) {
+      const header = columnHeaders[i]
+      const headerElems = await screen.findAllByText(header.name)
+      expect(headerElems.length).toBeGreaterThanOrEqual(1)
+    }
+
+    const checkboxes = await screen.findAllByRole('checkbox', { checked: false })
+    expect(checkboxes).toHaveLength(5) // include hidden type column checkbox
   })
 
   it('should render all incidents and mute | unmute buttons on select', async () => {
