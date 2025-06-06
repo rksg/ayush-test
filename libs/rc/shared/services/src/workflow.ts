@@ -124,6 +124,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'UPDATE_WORKFLOW',
             'INITIATE_PUBLISH_WORKFLOW',
             'DELETE_WORKFLOW',
+            'ATTACH_STEP',
             'CREATE_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
@@ -437,6 +438,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       invalidatesTags: [{ type: 'Step' }]
     }),
 
+    attachStepBeneathStep: build.mutation<WorkflowStep, RequestPayload>({
+      query: commonQueryFn(WorkflowUrls.attachStepBeneathStep),
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+
     deleteWorkflowStepById: build.mutation({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.deleteWorkflowStep, params)
@@ -469,6 +475,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CREATE_STEP',
+            'ATTACH_STEP',
             'DELETE_STEP',
             'DELETE_STEP_DESCENDENTS',
             'IMPORT_WORKFLOW'
@@ -665,6 +672,7 @@ export const {
 export const {
   useCreateWorkflowStepMutation,
   useCreateWorkflowChildStepMutation,
+  useAttachStepBeneathStepMutation,
   useGetWorkflowStepByIdQuery,
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowStepsByIdQuery,

@@ -32,7 +32,6 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-
   priorNode?: NodeProps
 }
 

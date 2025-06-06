@@ -37,6 +37,12 @@ describe('IotControllerDetails', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     store.dispatch(iotApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        IotUrlsInfo.getIotControllerList.url,
+        (req, res, ctx) => res(ctx.json(iotControllerList.response))
+      )
+    )
   })
 
   it('should render correctly', async () => {
