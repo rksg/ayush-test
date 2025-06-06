@@ -10,7 +10,7 @@ import ApWiredClientOverviewTab         from './ApWiredClientOverviewTab'
 
 const tabs = {
   overview: ApWiredClientOverviewTab,
-  event: ApWiredClientEventTab
+  events: ApWiredClientEventTab
 }
 
 const ApWiredClientDetails = () => {

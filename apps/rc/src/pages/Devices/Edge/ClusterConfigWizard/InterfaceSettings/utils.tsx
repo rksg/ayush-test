@@ -154,7 +154,7 @@ export const getAvailableVipInterfaces = (
 }
 
 
-export const getPortFormCompatibilityFields = () => {
+export const getPortFormCompatibilityFields = (isEdgeCoreAccessSeparationReady: boolean) => {
   return [{
     key: 'ports',
     title: 'Number of Ports',
@@ -162,14 +162,16 @@ export const getPortFormCompatibilityFields = () => {
       <Typography.Text
         type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
-  }, {
-    key: 'corePorts',
-    title: 'Number of Core Ports',
-    render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
-      <Typography.Text
-        type={errors.corePorts.isError ? 'danger' : undefined}
-        children={errors.corePorts.value} />
-  }, {
+  }, ...(
+    isEdgeCoreAccessSeparationReady ? [] : [{
+      key: 'corePorts',
+      title: 'Number of Core Ports',
+      render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
+        <Typography.Text
+          type={errors.corePorts.isError ? 'danger' : undefined}
+          children={errors.corePorts.value} />
+    }]
+  ), {
     key: 'portTypes',
     title: 'Port Types',
     render: (errors:
@@ -188,7 +190,7 @@ export const getPortFormCompatibilityFields = () => {
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
 
-export const getLagFormCompatibilityFields = () => {
+export const getLagFormCompatibilityFields = (isEdgeCoreAccessSeparationReady: boolean) => {
   return [{
     key: 'lags',
     title: 'Number of LAGs',
@@ -196,15 +198,17 @@ export const getLagFormCompatibilityFields = () => {
       <Typography.Text
         type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
-  }, {
-    key: 'corePorts',
-    title: 'Number of Core Ports',
-    render: (errors:
+  }, ...(
+    isEdgeCoreAccessSeparationReady ? [] : [{
+      key: 'corePorts',
+      title: 'Number of Core Ports',
+      render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
-      <Typography.Text
-        type={errors.corePorts.isError ? 'danger' : undefined}
-        children={errors.corePorts.value} />
-  }, {
+        <Typography.Text
+          type={errors.corePorts.isError ? 'danger' : undefined}
+          children={errors.corePorts.value} />
+    }]
+  ), {
     key: 'portTypes',
     title: 'Port Types',
     render: (errors:
@@ -224,14 +228,16 @@ export const getLagFormCompatibilityFields = () => {
 }
 
 const getCompatibleCheckResult = (
-  countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>
+  countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>,
+  isEdgeCoreAccessSeparationReady?: boolean
 ): CompatibilityCheckResult => {
   let results = _.values(countResult)
   const targetData = results[0]
 
   const portsCheck = _.every(results,
     (result) => _.isEqual(result.errors.ports.value, targetData.errors.ports.value))
-  const corePortsCheck = _.every(results,
+  // ignore core ports check when edge core access FF is on
+  const corePortsCheck = isEdgeCoreAccessSeparationReady ? true : _.every(results,
     (result) => _.isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
 
   // append 'isError' data
@@ -280,7 +286,8 @@ const getCompatibleCheckResult = (
 export const interfaceCompatibilityCheck = (
   portSettings: InterfaceSettingsFormType['portSettings'],
   lagSettings: InterfaceSettingsFormType['lagSettings'],
-  nodeList: EdgeClusterStatus['edgeList']
+  nodeList: EdgeClusterStatus['edgeList'],
+  isEdgeCoreAccessSeparationReady: boolean
 ): CompatibilityCheckResult => {
   // eslint-disable-next-line max-len
   const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
@@ -326,12 +333,13 @@ export const interfaceCompatibilityCheck = (
     checkResult[serialNumber] = result
   })
 
-  return getCompatibleCheckResult(checkResult)
+  return getCompatibleCheckResult(checkResult, isEdgeCoreAccessSeparationReady)
 }
 
 export const lagSettingsCompatibleCheck = (
   lagSettings: InterfaceSettingsFormType['lagSettings'],
-  nodeList: EdgeClusterStatus['edgeList']
+  nodeList: EdgeClusterStatus['edgeList'],
+  isEdgeCoreAccessSeparationReady: boolean
 ): CompatibilityCheckResult => {
   // eslint-disable-next-line max-len
   const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
@@ -367,7 +375,7 @@ export const lagSettingsCompatibleCheck = (
     checkResult[serialNumber] = result
   })
 
-  return getCompatibleCheckResult(checkResult)
+  return getCompatibleCheckResult(checkResult, isEdgeCoreAccessSeparationReady)
 }
 
 const processLagSettings = (

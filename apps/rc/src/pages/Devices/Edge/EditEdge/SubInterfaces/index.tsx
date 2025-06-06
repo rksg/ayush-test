@@ -5,10 +5,10 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, NoData, Tabs, Tooltip } from '@acx-ui/components'
-import { Features }                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }         from '@acx-ui/rc/components'
-import { EdgePort }                      from '@acx-ui/rc/utils'
+import { Loader, NoData, Tabs, Tooltip }               from '@acx-ui/components'
+import { Features }                                    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                       from '@acx-ui/rc/components'
+import { EdgePort, LagSubInterface, PortSubInterface } from '@acx-ui/rc/utils'
 
 import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
 import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
@@ -31,9 +31,8 @@ export const SubInterfaces = () => {
     portData,
     portStatus,
     lagStatus,
-    isPortDataFetching,
-    isPortStatusFetching,
-    isLagStatusFetching,
+    subInterfaceData,
+    isFetching,
     isClusterFormed,
     isSupportAccessPort
   } = useContext(EditEdgeDataContext)
@@ -57,7 +56,7 @@ export const SubInterfaces = () => {
   return (
     <Loader states={[{
       isLoading: false,
-      isFetching: isPortDataFetching || isPortStatusFetching || isLagStatusFetching
+      isFetching
     }]}>
       {
         disabledWholeForm &&
@@ -100,6 +99,10 @@ export const SubInterfaces = () => {
                         mac={item.mac}
                         portId={portId}
                         isSupportAccessPort={isSupportAccessPort}
+                        data={
+                          subInterfaceData?.find(subInterfaceInfo =>
+                            (subInterfaceInfo as PortSubInterface).portId === portId)?.subInterfaces
+                        }
                       />
                     }
                     disabled={item.isLagMember}
@@ -120,6 +123,11 @@ export const SubInterfaces = () => {
                         mac={item.mac ?? ''}
                         lagId={item.lagId}
                         isSupportAccessPort={isSupportAccessPort}
+                        data={
+                          subInterfaceData?.find(subInterfaceInfo =>
+                            (subInterfaceInfo as LagSubInterface).lagId === item.lagId
+                          )?.subInterfaces
+                        }
                       />
                     }
                   />

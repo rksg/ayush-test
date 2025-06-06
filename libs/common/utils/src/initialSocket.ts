@@ -45,6 +45,7 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
     reconnection: true,
     reconnectionDelay: 1500,
     reconnectionAttempts: 5,
-    reconnectionDelayMax: 5000
+    reconnectionDelayMax: 5000,
+    forceNew: true
   })
 }
