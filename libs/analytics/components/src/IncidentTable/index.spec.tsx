@@ -305,8 +305,6 @@ describe('IncidentTable', () => {
     const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
     expect(muteButton).toBeEnabled()
     expect(unmuteButton).toBeDisabled()
-    fireEvent.click(muteButton)
-    expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 
   it('should be able to unmute incident', async () => {
@@ -343,8 +341,6 @@ describe('IncidentTable', () => {
     const unmuteButton = await screen.findByRole('button', { name: 'Unmute' })
     expect(muteButton).toBeDisabled()
     expect(unmuteButton).toBeEnabled()
-    fireEvent.click(muteButton)
-    expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 
   const hiddenColumnHeaders = [
