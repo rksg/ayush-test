@@ -285,6 +285,9 @@ export const EditPortMessages = {
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
+  }),
   TAGGED_VLAN_TOOLTIP: defineMessage({
     defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
   }),
@@ -354,6 +357,9 @@ export const MultipleEditPortMessages = {
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
 
