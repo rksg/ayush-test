@@ -28,6 +28,7 @@
     "rc-services": "libs/rc/shared/services",
     "rc-switch-services": "libs/rc/switch/services",
     "rc-switch-utils": "libs/rc/switch/utils",
+    "rc-common-utils": "libs/rc/common/utils",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
     "reports-components": "libs/reports/components",

@@ -39,6 +39,7 @@
       "@acx-ui/rc/services": ["libs/rc/shared/services/src/index.ts"],
       "@acx-ui/rc/switch/services": ["libs/rc/switch/services/src/index.ts"],
       "@acx-ui/rc/switch/utils": ["libs/rc/switch/utils/src/index.ts"],
+      "@acx-ui/rc/common/utils": ["libs/rc/common/utils/src/index.ts"],
       "@acx-ui/rc/utils": ["libs/rc/shared/utils/src/index.ts"],
       "@acx-ui/react-router-dom": ["libs/common/react-router-dom/src/index.ts"],
       "@acx-ui/reports/components": ["libs/reports/components/src/index.ts"],
