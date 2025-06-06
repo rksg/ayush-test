@@ -87,9 +87,7 @@ export const ImportDashboardDrawer = (props: {
   const importedOwnedCanvasCount = dashboardList.filter(item => !item.authorId).length - 1
   const isCanvasLimitReached
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
-  const hasOnlyDefaultDashboard = dashboardList.length === 1
-  const hasOnlyOneCanvas
-    = hasOnlyDefaultDashboard && (ownedCanvasList.length + dashboardList.length === 2)
+  const hasOnlyOneCanvas = importedOwnedCanvasCount === 0 && ownedCanvasList.length === 1
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
   const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
