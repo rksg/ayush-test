@@ -174,7 +174,6 @@ export enum Features {
   SSO = 'ADMN-SSO',
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
-  SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
