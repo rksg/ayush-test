@@ -54,7 +54,7 @@ describe('Mdu360', () => {
         startDate: '2023-02-01T00:00:00.000Z',
         endDate: '2023-02-01T00:00:00.000Z'
       })
-    }, [])
+    }, [setDateFilter])
     return <Provider><Mdu360 /></Provider>
   }
 

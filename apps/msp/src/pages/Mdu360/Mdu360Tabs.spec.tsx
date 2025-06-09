@@ -2,7 +2,7 @@
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { Mdu360Tabs } from '.'
+import Mdu360Tabs from './Mdu360Tabs'
 
 const mockNavigate = jest.fn()
 

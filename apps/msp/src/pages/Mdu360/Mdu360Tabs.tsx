@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
+import { ResidentExperienceTab }                 from '@acx-ui/analytics/components'
+import type { Mdu360TabPros }                    from '@acx-ui/analytics/components'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import ResidentExperienceTab from './ResidentExperienceTab'
 
-import type { Mdu360TabsPros } from './types'
 
-const Mdu360Tabs:React.FC<Mdu360TabsPros> = ({ startDate, endDate }) => {
+const Mdu360Tabs:React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
   const { $t } = useIntl()
   const basePath = useTenantLink('/mdu360', 'v')
   const navigate = useNavigate()

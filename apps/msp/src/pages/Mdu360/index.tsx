@@ -1,9 +1,10 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Mdu360Tabs }                                       from '@acx-ui/analytics/components'
 import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
 import { useDateFilter }                                    from '@acx-ui/utils'
+
+import Mdu360Tabs from './Mdu360Tabs'
 
 const Mdu360: React.FC<{}> = () => {
   const { $t } = useIntl()
