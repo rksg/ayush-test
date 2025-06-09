@@ -541,7 +541,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const res = _.get(result, 'response')
         return Array.isArray(res) ? res.pop() : result
       },
-      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+      providesTags: [{ type: 'SwitchPort', id: 'SETTING' }]
     }),
     getPortsSetting: build.query<PortsSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -557,7 +557,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+      providesTags: [{ type: 'SwitchPort', id: 'SETTING' }]
     }),
     cyclePoe: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -705,7 +705,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }, { type: 'SwitchPort', id: 'Setting' }]
+      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }, { type: 'SwitchPort', id: 'SETTING' }]
     }),
 
     importSwitches: build.mutation<{}, RequestFormData>({
