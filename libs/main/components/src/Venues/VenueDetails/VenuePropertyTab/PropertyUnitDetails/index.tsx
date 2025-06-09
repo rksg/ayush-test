@@ -5,6 +5,7 @@ import { Col, Form } from 'antd'
 import Paragraph     from 'antd/lib/typography/Paragraph'
 import { useIntl }   from 'react-intl'
 
+import { useIdentityListQuery }                                                                                   from '@acx-ui/cloudpath/components'
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
@@ -14,7 +15,6 @@ import {
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
-  useSearchPersonaListQuery,
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
@@ -45,11 +45,12 @@ export function PropertyUnitDetails () {
       }
     } })
 
+  const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
+
   const settingsId = 'property-units-identity-table'
-  const identitiesList = useTableQuery({
-    useQuery: useSearchPersonaListQuery,
-    pagination: { pageSize: 10, settingsId },
-    defaultPayload: { keyword: '' }
+  const identitiesList = useIdentityListQuery({
+    personaGroupId,
+    settingsId
   })
   useEffect(() => {
     setIdentitiesCount(identitiesList.data?.totalCount || 0)
@@ -61,14 +62,13 @@ export function PropertyUnitDetails () {
       ids: identities.data?.data.map(identity => identity.personaId) ?? []
     }
     identitiesList.setPayload(payload)
-  }, [identities.data])
+  }, [identities.data, personaGroupId])
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
   const [deletePersonaAssociation] = useRemoveUnitLinkedIdentityMutation()
-  const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
   const [configurePropertyUnitDrawerVisible, setConfigurePropertyUnitDrawerVisible] =
