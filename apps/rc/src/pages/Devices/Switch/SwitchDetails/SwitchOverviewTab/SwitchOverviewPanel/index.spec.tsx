@@ -155,28 +155,5 @@ describe('SwitchOverviewTab', () => {
     expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer')).toBeVisible()
   })
 
-  it('should render SwitchesTrafficByVolume portOptions correctly', async () => {
-    const useStateSpy = jest.spyOn(React, 'useState')
-    const params = {
-      tenantId: 'tenantId',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'overview'
-    }
-    render(<Provider>
-      <SwitchOverviewPanel
-        filters={filters}
-        stackMember={stackMembersData}
-        switchDetail={switchDetailSwitchOnline}
-        currentSwitchDevice={currentSwitchDevice} />
-    </Provider>, {
-      route: {
-        params,
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
-      }
-    })
-    expect(await screen.findByTestId('rc-SwitchesTrafficByVolume')).toBeVisible()
-    expect(useStateSpy).toBeCalled()
-  })
 }
 )

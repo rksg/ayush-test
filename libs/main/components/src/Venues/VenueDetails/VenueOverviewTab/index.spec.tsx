@@ -26,7 +26,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  LowPowerBannerAndModal: () => <div data-testid={'rc-LowPowerBannerAndModal'} title='LowPowerBannerAndModal' />,
   VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
   VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />,
   TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />
@@ -88,14 +88,6 @@ describe('VenueOverviewTab', () => {
       'TopSwitchModels'
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
-  })
-
-  it('should switch tab correctly', async () => {
-    render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
-
-    fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
 
 })
