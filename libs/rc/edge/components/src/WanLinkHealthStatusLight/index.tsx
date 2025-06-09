@@ -2,8 +2,8 @@ import { Space, Badge } from 'antd'
 import { cloneDeep }    from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { Tooltip }                                  from '@acx-ui/components'
-import { defaultSort, EdgeWanLinkHealthStatusEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                   from '@acx-ui/components'
+import { defaultSort, EdgeWanLinkHealthStatusEnum, convertIpToLong } from '@acx-ui/rc/utils'
 
 import { StyledWanLinkTargetWrapper } from './styledComponents'
 
@@ -36,7 +36,7 @@ export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLight
         ? <Space direction='vertical' style={{ padding: 4 }}>
           { // clone first to prevent issue if the given array is immutable
             cloneDeep(targetIpStatus)
-              .sort((a, b) => -defaultSort(a.ip, b.ip))
+              .sort((a, b) => defaultSort(convertIpToLong(a.ip), convertIpToLong(b.ip)))
               .map(({ ip, status }) => {
                 const config = EdgeWanLinkHealthStatusLightConfig[status]
                 return <StyledWanLinkTargetWrapper key={ip} size={10}>
