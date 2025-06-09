@@ -1,4 +1,5 @@
-import { ConfigTemplateView } from '@acx-ui/rc/components'
+
+import { ConfigTemplateView } from '@acx-ui/main/components'
 
 import { ApplyTemplateDrawer } from './Templates/ApplyTemplateDrawer'
 

@@ -5,13 +5,13 @@ import { useIntl }        from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                                 from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                                         from '@acx-ui/msp/utils'
 import {
   ConfigTemplateOverrideModal, CustomerFirmwareReminder, MAX_APPLICABLE_EC_TENANTS,
   overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
   useConfigTemplateOverride, useEcFilters, ConfigTemplatePageUI
-} from '@acx-ui/rc/components'
+} from '@acx-ui/main/components'
+import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'

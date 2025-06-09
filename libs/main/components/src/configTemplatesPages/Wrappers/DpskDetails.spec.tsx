@@ -16,8 +16,8 @@ import {
 
 import DpskDetails from './DpskDetails'
 
-jest.mock('../../services', () => ({
-  ...jest.requireActual('../../services'),
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   DpskOverview: () => <div>DPSK Overview</div>
 }))
 

@@ -2,6 +2,7 @@ import { MenuProps } from 'antd'
 import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
+import { ConfigTemplateLink, PolicyConfigTemplateLink, ServiceConfigTemplateLink, useConfigTemplateVisibilityMap } from '@acx-ui/rc/components'
 import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
@@ -15,7 +16,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { ConfigTemplateLink, PolicyConfigTemplateLink, ServiceConfigTemplateLink, useConfigTemplateVisibilityMap } from '../../configTemplates'
 
 import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'

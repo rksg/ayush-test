@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
-import { Features }       from '@acx-ui/feature-toggle'
-import { ConfigTemplate } from '@acx-ui/rc/utils'
+import { Button, Drawer }                                             from '@acx-ui/components'
+import { Features }                                                   from '@acx-ui/feature-toggle'
+import { AccessControlSubPolicyVisibility, withTemplateFeatureGuard } from '@acx-ui/rc/components'
+import { ConfigTemplate }                                             from '@acx-ui/rc/utils'
 
-import { withTemplateFeatureGuard }         from '../../../configTemplates'
-import { AccessControlSubPolicyVisibility } from '../../../policies'
 
 import { DetailsContent } from './DetailsContent'
 

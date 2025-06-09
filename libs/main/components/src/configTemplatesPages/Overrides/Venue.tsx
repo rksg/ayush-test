@@ -1,10 +1,11 @@
 import { Space } from 'antd'
 
 import { Tooltip }                          from '@acx-ui/components'
-import { VenuesForm }                       from '@acx-ui/main/components'
 import { useGetVenueTemplateQuery }         from '@acx-ui/rc/services'
 import { VenueExtended, WIFI_COUNTRY_CODE } from '@acx-ui/rc/utils'
 import { getIntl }                          from '@acx-ui/utils'
+
+import { VenuesForm } from '../..'
 
 export interface ConfigTemplateVenueOverrideProps {
   templateId: string

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                                                from '@acx-ui/msp/services'
+import { Brand360 }                                                                                    from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails, ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings }    from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                                                                   from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -25,9 +25,7 @@ import {
   CliProfileForm, ApGroupDetails, ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
-  EthernetPortProfileDetail,
-  ConfigTemplateDpskDetails,
-  ConfigTemplatePortalDetails
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
