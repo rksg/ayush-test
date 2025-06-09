@@ -72,8 +72,8 @@ import {
   MacAclRule,
   SwitchAccessControl
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi }  from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseSwitchServiceApi } from '@acx-ui/store'
+import { RequestPayload }       from '@acx-ui/types'
 import {
   createHttpRequest,
   batchApi,
@@ -113,7 +113,7 @@ const getSwitchUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
 }
 
-export const switchApi = baseSwitchApi.injectEndpoints({
+export const switchApi = baseSwitchServiceApi.injectEndpoints({
   endpoints: (build) => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
