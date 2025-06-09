@@ -15,6 +15,7 @@ export enum IncidentToggle {
   SwitchLLDPStatusIncidents = 'switch-lldp-status-incidents',
   SwitchPortCongestionIncidents = 'switch-port-congestion-incidents',
   SwitchUplinkPortCongestionIncidents = 'switch-uplink-port-congestion-incidents',
+  SwitchPortFlapIncidents = 'switch-port-flap-incidents'
 }
 
 export type IncidentsToggleFilter = {
@@ -43,6 +44,7 @@ const allIncidentCodes = [
   'i-switch-vlan-mismatch',
   'i-switch-loop-detection',
   'i-switch-lldp-status',
+  'i-switch-port-flap',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -89,6 +91,10 @@ const incidentsToggleMap: Record<
   [IncidentToggle.SwitchLLDPStatusIncidents]: {
     categories: ['all', 'infrastructure'],
     code: ['i-switch-lldp-status']
+  },
+  [IncidentToggle.SwitchPortFlapIncidents]: {
+    categories: ['all', 'infrastructure'],
+    code: ['i-switch-port-flap']
   },
   [IncidentToggle.SwitchPortCongestionIncidents]: {
     categories: ['all', 'performance'],
@@ -208,6 +214,7 @@ export const categoryCodeMap = {
       'i-switch-poe-pd',
       'i-switch-loop-detection',
       'i-switch-lldp-status',
+      'i-switch-port-flap',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]

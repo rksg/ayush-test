@@ -172,11 +172,11 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Wired Clients List' })
               }
             ] : [{
-              uri: '/users/wired/switch/clients',
-              label: $t({ defaultMessage: 'Switch Clients List' })
-            }, {
               uri: '/users/wired/wifi/clients',
               label: $t({ defaultMessage: 'AP Clients List' })
+            }, {
+              uri: '/users/wired/switch/clients',
+              label: $t({ defaultMessage: 'Switch Clients List' })
             }])
           ]
         },

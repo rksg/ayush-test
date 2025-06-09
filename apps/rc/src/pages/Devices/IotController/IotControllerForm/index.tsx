@@ -20,8 +20,8 @@ import {
 } from '@acx-ui/components'
 import {
   useAddIotControllerMutation,
-  useGetIotControllerQuery,
-  useLazyGetIotControllerListQuery,
+  useGetIotControllerListQuery,
+  useLazyGetIotControllerSerialNumberQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -29,6 +29,7 @@ import {
   checkObjectNotExists,
   redirectPreviousPage,
   IotControllerSetting,
+  IotControllerStatus,
   excludeSpaceRegExp,
   domainNameRegExp
 } from '@acx-ui/rc/utils'
@@ -65,12 +66,9 @@ export function IotControllerForm () {
   const [addIotController] = useAddIotControllerMutation()
   const [updateIotController] = useUpdateIotControllerMutation()
 
-  const [serialNumberEnabled, setSerialNumberEnabled] = useState(true)
+  const { iotId, action } = useParams()
 
-  const { tenantId, iotId, venueId, action } = useParams()
-  // eslint-disable-next-line max-len
-  const { data, isLoading: isIotControllerLoading } = useGetIotControllerQuery({ params: { tenantId, iotId, venueId } },
-    { skip: !iotId })
+  const isEditMode: boolean = action === 'edit'
 
   const onClickTestConnection = async () => {
     try {
@@ -91,6 +89,14 @@ export function IotControllerForm () {
       })
       const result = await currentTestConnectionFun.unwrap()
       if(result.serialNumber){
+        if (isEditMode) {
+          if (form.getFieldValue('serialNumber') === result.serialNumber) {
+            setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+          } else {
+            setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
+          }
+          return
+        }
         form.setFieldsValue({ iotSerialNumber: result.serialNumber })
         setTestConnectionStatus(TestConnectionStatusEnum.PASS)
       }
@@ -103,15 +109,67 @@ export function IotControllerForm () {
     setTestConnectionStatus(undefined)
   }
 
-  const [getIotControllerList] = useLazyGetIotControllerListQuery()
+  const { availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'serialNumber',
+        'publicAddress',
+        'publicPort',
+        'apiToken',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId] }
+    }
+  }, {
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item,
+        iotSerialNumber: item.serialNumber
+      }) as IotControllerStatus) ?? []
+    })
+  })
+
+  // form data
+  // eslint-disable-next-line max-len
+  const data = availableIotControllers?.find((item: IotControllerStatus) => item.id === iotId)
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject($t(validationMessages.name))
     }
     try {
-      const list = (await getIotControllerList({ params: { tenantId } })
-        .unwrap()).data?.map(n => ({ name: n.name }))
+      // filter for edit mode if iotId is not null
+      const list = availableIotControllers?.filter(n => n.id !== iotId).map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  // TODO : Add serial number check
+  const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
+
+  const serialNumberValidator = async (value: string) => {
+    try {
+      const serialNumberData = (await getSerialNumber({
+        params: { serialNumber: value }
+      }).unwrap())
+
+      if (serialNumberData?.existed) {
+        return Promise.reject($t({ defaultMessage: 'The serial number already exists' }))
+      } else {
+        return Promise.resolve()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -131,7 +189,8 @@ export function IotControllerForm () {
 
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values, id: data?.id }
+      // eslint-disable-next-line max-len
+      const formData = isEditMode ? { ...values, id: data?.id, publicAddress: '', publicPort: 443, apiToken: '' } : { ...values, id: data?.id }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -140,8 +199,6 @@ export function IotControllerForm () {
     }
   }
 
-  const isEditMode: boolean = action === 'edit'
-
   const loadForm: boolean = isEditMode ? !!data : true
 
   useEffect(() => {
@@ -149,6 +206,7 @@ export function IotControllerForm () {
       currentTestConnectionFun && currentTestConnectionFun.abort()
     }
   }, [])
+
 
   return (
     <>
@@ -173,7 +231,7 @@ export function IotControllerForm () {
       >
         <StepsForm.StepForm>
           <Loader states={[{
-            isLoading: isIotControllerLoading
+            isLoading
           }]}>
             <>
               <Row gutter={20}>
@@ -212,15 +270,9 @@ export function IotControllerForm () {
                     {$t({ defaultMessage: 'Enable Public IP address' })}
                     <Form.Item
                       name='publicEnabled'
+                      initialValue={data?.publicAddress ? data?.publicAddress?.length > 0 : false}
                       valuePropName={'checked'}
-                      children={<Switch
-                        onChange={(checked: boolean)=>{
-                          if(checked){
-                            setSerialNumberEnabled(false)
-                          } else {
-                            setSerialNumberEnabled(true)
-                          }
-                        }}/>}
+                      children={<Switch />}
                     />
                   </StepsForm.FieldLabel>
                   <UI.FieldTitle>
@@ -333,10 +385,15 @@ export function IotControllerForm () {
                       {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Serial Number' })
+                      },
+                      {
+                        // eslint-disable-next-line max-len
+                        validator: (_, value) => isEditMode ? Promise.resolve() : serialNumberValidator(value)
                       }
                     ]}
-                    children={<Input disabled={isEditMode || !serialNumberEnabled} />}
+                    children={<Input disabled={isEditMode || publicEnabled} />}
                     validateFirst
+                    validateTrigger={'onBlur'}
                   />
                 </Col>
               </Row>

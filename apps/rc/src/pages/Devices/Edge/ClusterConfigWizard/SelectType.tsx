@@ -43,11 +43,20 @@ export const SelectType = () => {
         const portSetting = clusterNetworkSettings.portSettings[i]
         const lagSetting = clusterNetworkSettings.lagSettings.find(item =>
           item.serialNumber === portSetting.serialNumber)
+        // eslint-disable-next-line max-len
+        const currentSubInterfaces = clusterNetworkSettings.subInterfaceSettings?.filter(
+          item => item.serialNumber === portSetting.serialNumber).flatMap(setting => {
+          const portSubInterfaces = setting.ports?.flatMap(item => item.subInterfaces) ?? []
+          const lagSubInterfaces = setting.lags?.flatMap(item => item.subInterfaces) ?? []
+          return portSubInterfaces.concat(lagSubInterfaces)
+        }) ?? []
         try {
           await validateEdgeGateway(
             portSetting.ports,
             lagSetting?.lags ?? [],
-            isDualWanEnabled
+            currentSubInterfaces,
+            isDualWanEnabled,
+            isEdgeCoreAccessSeparationReady
           )
         } catch (error) {
           break

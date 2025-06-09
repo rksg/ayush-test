@@ -1,5 +1,5 @@
 
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
@@ -32,6 +32,11 @@ export const EnhancedGeneralSettingsForm = () => {
   const venueId = Form.useWatch('venueId', form) || form.getFieldValue('venueId')
   const tunnelProfileId = Form.useWatch('vxlanTunnelProfileId', form)
 
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    setCurrentTunnelProfileData(availableTunnelProfiles?.find(tunnelProfile => tunnelProfile.id === tunnelProfileId))
+  }, [tunnelProfileId, availableTunnelProfiles])
+
   const onVenueChange = (value: string) => {
     setVenueId(value)
     form.setFieldsValue({
@@ -45,8 +50,6 @@ export const EnhancedGeneralSettingsForm = () => {
     // eslint-disable-next-line max-len
     const clusterInfo = getClusterInfoByTunnelProfileId(value)
     setVenueId(clusterInfo?.venueId ?? '')
-    // eslint-disable-next-line max-len
-    setCurrentTunnelProfileData(availableTunnelProfiles?.find(tunnelProfile => tunnelProfile.id === value))
     form.setFieldsValue({
       venueId: clusterInfo?.venueId,
       edgeClusterId: clusterInfo?.clusterId,

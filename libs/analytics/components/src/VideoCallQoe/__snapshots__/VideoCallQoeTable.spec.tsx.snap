@@ -84,7 +84,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
 
 .c1 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 
@@ -1194,7 +1194,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
 
 .c1 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 

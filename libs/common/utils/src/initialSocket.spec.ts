@@ -53,7 +53,8 @@ describe('Test websocket', () => {
       reconnection: true,
       reconnectionDelay: 1500,
       reconnectionAttempts: 5,
-      reconnectionDelayMax: 5000
+      reconnectionDelayMax: 5000,
+      forceNew: true
     })
 
     const mockCallback = jest.fn()

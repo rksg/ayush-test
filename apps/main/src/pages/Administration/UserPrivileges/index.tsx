@@ -28,10 +28,11 @@ import { getOpsApi }                                   from '@acx-ui/utils'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
-import CustomRoles      from './CustomRoles'
-import PriviledgeGroups from './PrivilegeGroups'
-import SsoGroups        from './SsoGroups'
-import UsersTable       from './UsersTable'
+import CustomRoles        from './CustomRoles'
+import PriviledgeGroups   from './PrivilegeGroups'
+import NewPrivilegeGroups from './PrivilegeGroups/NewPrivilegeGroups'
+import SsoGroups          from './SsoGroups'
+import UsersTable         from './UsersTable'
 
 
 const UserPrivileges = () => {
@@ -42,6 +43,8 @@ const UserPrivileges = () => {
   const mspUtils = MSPUtils()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const usePrivilegeGrouspPaginatedAPI
+  = useIsSplitOn(Features.ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API)
 
   const { data: userProfileData, isPrimeAdmin } = useUserProfileContext()
 
@@ -125,10 +128,15 @@ const UserPrivileges = () => {
     privilegeGroups: {
       title: $t({ defaultMessage: 'Privilege Groups ({privilegeGroupCount})' },
         { privilegeGroupCount }),
-      content: <PriviledgeGroups
-        isPrimeAdminUser={isPrimeAdminUser}
-        tenantType={tenantType}
-      />,
+      content: usePrivilegeGrouspPaginatedAPI ?
+        <NewPrivilegeGroups
+          isPrimeAdminUser={isPrimeAdminUser}
+          tenantType={tenantType}
+        />
+        : <PriviledgeGroups
+          isPrimeAdminUser={isPrimeAdminUser}
+          tenantType={tenantType}
+        />,
       visible: hasAllowedOperations([getOpsApi(AdminRbacUrlsInfo.getPrivilegeGroups)])
     },
     customRoles: {

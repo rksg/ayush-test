@@ -181,7 +181,7 @@ function useColumns (
       dataIndex: 'wifi-clients',
       children: [{
         key: 'clients',
-        width: 85,
+        width: 75,
         dataIndex: 'clients',
         title: <Table.SubTitle children={$t({ defaultMessage: 'Wireless' })} />,
         align: 'center' as AlignType,
@@ -193,7 +193,7 @@ function useColumns (
           />
       }, {
         key: 'apWiredClients',
-        width: 85,
+        width: 75,
         dataIndex: 'apWiredClients',
         title: <Table.SubTitle children={$t({ defaultMessage: 'AP Wired' })} />,
         align: 'center' as AlignType,

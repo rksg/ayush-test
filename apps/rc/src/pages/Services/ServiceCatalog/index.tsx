@@ -77,7 +77,7 @@ export default function ServiceCatalog () {
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.PIN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
             showDetailButton
@@ -87,7 +87,7 @@ export default function ServiceCatalog () {
         },
         {
           type: ServiceType.EDGE_SD_LAN,
-          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          categories: [RadioCardCategory.EDGE],
           helpIcon: isEdgeCompatibilityEnabled
             ? <ApCompatibilityToolTip
               title={''}

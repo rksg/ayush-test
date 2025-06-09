@@ -76,6 +76,7 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
+  privilegeGroupType?: CustomRoleType
   scopes?: string[],
   preferredNotifications?: {
     emailPreferences: boolean,
@@ -154,6 +155,11 @@ export interface CommonResponse {
 export interface BetaStatus {
   enabled?: string,
   startDate?: string
+}
+
+export interface EarlyAccessResponse {
+  betaStatus: boolean
+  alphaStatus: boolean
 }
 
 export interface BetaFeatures {

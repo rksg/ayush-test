@@ -19,6 +19,7 @@ describe('InterfaceSettings - Summary > sub-interface table', () => {
     render(
       <ClusterConfigWizardContext.Provider value={defaultCxtData}>
         <SubInterfaceTable
+          lagData={mockClusterConfigWizardData.lagSettings}
           portData={mockClusterConfigWizardData.portSettings}
           portSubInterfaceData={mockClusterConfigWizardData.portSubInterfaces as InterfaceSettingsFormType['portSubInterfaces']}
           lagSubInterfaceData={mockClusterConfigWizardData.lagSubInterfaces as unknown as InterfaceSettingsFormType['portSubInterfaces']}
@@ -46,6 +47,7 @@ describe('InterfaceSettings - Summary > sub-interface table', () => {
       render(
         <ClusterConfigWizardContext.Provider value={defaultCxtData}>
           <SubInterfaceTable
+            lagData={mockClusterConfigWizardData.lagSettings}
             portData={mockClusterConfigWizardData.portSettings}
             portSubInterfaceData={mockClusterConfigWizardData.portSubInterfaces as InterfaceSettingsFormType['portSubInterfaces']}
             lagSubInterfaceData={mockClusterConfigWizardData.lagSubInterfaces as unknown as InterfaceSettingsFormType['portSubInterfaces']}

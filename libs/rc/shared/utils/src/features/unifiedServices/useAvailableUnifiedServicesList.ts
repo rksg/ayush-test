@@ -232,7 +232,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.NETWORK_SERVICES,
         disabled: !isEdgeEnabled
       },
@@ -329,7 +329,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: ServiceType.PIN,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+        products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
         disabled: !isEdgePinReady
       },

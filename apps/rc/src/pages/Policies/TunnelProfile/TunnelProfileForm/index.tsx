@@ -1,6 +1,6 @@
 
-import { Col, FormInstance, Row }   from 'antd'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Col, FormInstance, Row } from 'antd'
+import { useNavigate }            from 'react-router-dom'
 
 import { PageHeader, StepsForm }               from '@acx-ui/components'
 import {
@@ -9,14 +9,12 @@ import {
 import {
   CommonResult,
   usePolicyListBreadcrumb,
-  getPolicyRoutePath,
-  LocationExtended,
   PolicyOperation,
   PolicyType,
-  redirectPreviousPage,
-  TunnelProfileFormType as TunnelProfileFormTypeBase
+  TunnelProfileFormType as TunnelProfileFormTypeBase,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 interface TunnelProfileFormProps {
   title: string
@@ -32,18 +30,13 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   // eslint-disable-next-line max-len
   const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode } = props
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.TUNNEL_PROFILE,
-    oper: PolicyOperation.LIST
-  })
-  const linkToTableView = useTenantLink(tablePath)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.TUNNEL_PROFILE)
+  const previousPath = usePolicyPreviousPath(PolicyType.TUNNEL_PROFILE, PolicyOperation.LIST)
 
   const handleFinish = async (data: TunnelProfileFormTypeBase) => {
     try{
       await onFinish(data)
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -58,7 +51,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       <StepsForm
         form={form}
         onFinish={handleFinish}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
+        onCancel={() => navigate(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
         initialValues={initialValues}
         editMode={editMode}
