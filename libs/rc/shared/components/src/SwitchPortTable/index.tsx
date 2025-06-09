@@ -55,7 +55,6 @@ export function SwitchPortTable (props: {
   const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
@@ -473,7 +472,7 @@ export function SwitchPortTable (props: {
     sorter: true,
     show: false
   },
-  ...(isSwitchV6AclEnabled ? [{
+  {
     key: 'vsixIngressAclName',
     title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
     dataIndex: 'vsixIngressAclName',
@@ -485,7 +484,7 @@ export function SwitchPortTable (props: {
     dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false
-  }] : []), {
+  }, {
     key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',
