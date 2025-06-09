@@ -178,6 +178,10 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   // eslint-disable-next-line max-len
   const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
     const payload = isL2GreEnabled ? getL2GreSubmitPayload(formData) : getSubmitPayload(formData)
+    const originFormData = formInitialValues as PersonalIdentityNetworkFormData
+    // eslint-disable-next-line max-len
+    const originData = isL2GreEnabled ? getL2GreSubmitPayload(originFormData) : getSubmitPayload(originFormData)
+
     try {
       await doEdgeClusterValidation(payload)
       await doSwitchValidation(formData, payload, gotoStep, skipValidation)
@@ -200,8 +204,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           }
           // need to catch basic service profile failed
         }] as unknown[]
-
-        if (props.editMode) funcArgs.unshift(formInitialValues! as PersonalIdentityNetworkFormData)
+        // getL2GreSubmitPayload
+        if (props.editMode) funcArgs.unshift(originData! as PersonalIdentityNetworkFormData)
         await props.onFinish.apply(null, funcArgs).catch(reject)
       })
 
@@ -312,6 +316,7 @@ const getL2GreSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },
+    networkIds: formData.networkIds,
     distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
       ds, ['accessSwitches', 'name'])),
     accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
