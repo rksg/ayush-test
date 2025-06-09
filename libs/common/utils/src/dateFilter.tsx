@@ -52,7 +52,6 @@ export const useDateFilter = ({
     } as const
   }, [read, write])
 
-  // useEffect 放副作用：更新 URL 和顯示 toast
   useEffect(() => {
     if (!showResetMsg) return
 
@@ -66,11 +65,11 @@ export const useDateFilter = ({
       showToast({
         key: 'dateFilterResetToast',
         type: 'success',
-        content: $t({
-          defaultMessage:
-            // eslint-disable-next-line max-len
-            'Note that your Calendar selection has been updated in line with current page default/max values.'
-        })
+        // eslint-disable-next-line max-len
+        content: $t(
+          // eslint-disable-next-line max-len
+          { defaultMessage: 'Note that your Calendar selection has been updated in line with current page default/max values.' }
+        )
       })
     }
   }, [showResetMsg, result.isSameOrAfter])
