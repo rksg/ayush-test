@@ -1,4 +1,6 @@
-import { useIntl } from 'react-intl'
+import { WarningOutlined } from '@ant-design/icons'
+import { Typography }      from 'antd'
+import { useIntl }         from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CountAndNamesTooltip }                                from '@acx-ui/rc/components'
@@ -72,11 +74,27 @@ export default function SwitchPortProfileTable () {
         searchable: true,
         defaultSortOrder: 'ascend',
         render: function (_, row, index, highlightFn) {
+          const re = new RegExp(/^(?:(?!\s).)*$/)
+          const hasSpaces = !re.test(row.name)
+
           return (
-            <TenantLink
-              to={`/policies/portProfile/switch/profiles/${row.id}/detail`}>
-              {highlightFn(row.name)}
-            </TenantLink>
+            <>
+              <TenantLink
+                to={`/policies/portProfile/switch/profiles/${row.id}/detail`}>
+                {highlightFn(row.name)}
+              </TenantLink>
+
+              {hasSpaces && (
+                <Tooltip
+                  // eslint-disable-next-line max-len
+                  title={$t({ defaultMessage: 'Port profile name cannot contain spaces,as this may lead to errors when the switch restarts. Please delete and re-create the port profile without spaces as soon as possible.' })}
+                >
+                  <Typography.Text type='danger' style={{ marginLeft: '5px' }}>
+                    <WarningOutlined />
+                  </Typography.Text>
+                </Tooltip>
+              )}
+            </>
           )
         }
       },

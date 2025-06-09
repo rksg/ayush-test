@@ -1,5 +1,7 @@
 
-import { useIntl } from 'react-intl'
+import { WarningOutlined } from '@ant-design/icons'
+import { Typography }      from 'antd'
+import { useIntl }         from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CountAndNamesTooltip }               from '@acx-ui/rc/components'
@@ -45,7 +47,24 @@ export default function SwitchOverviewPortProfiles (props: {
         title: $t({ defaultMessage: 'Name' }),
         dataIndex: 'name',
         sorter: true,
-        defaultSortOrder: 'ascend'
+        defaultSortOrder: 'ascend',
+        render: (_, row) => {
+          const re = new RegExp(/^(?:(?!\s).)*$/)
+          if (!re.test(row.name)) {
+            return <>{row.name}
+              <Tooltip
+                title={// eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Port profile name cannot contain spaces,as this may lead to errors when the switch restarts. Please delete and re-create the port profile without spaces as soon as possible.' })
+                }
+              >
+                <Typography.Text type='danger' style={{ marginLeft: '5px' }}>
+                  <WarningOutlined />
+                </Typography.Text>
+              </Tooltip>
+            </>
+          }
+          return row.name
+        }
       },
       {
         key: 'type',
