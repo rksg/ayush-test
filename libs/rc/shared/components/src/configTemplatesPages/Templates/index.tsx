@@ -11,8 +11,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
 import {
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,

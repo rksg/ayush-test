@@ -17,7 +17,7 @@ import { RolesEnum }                                             from '@acx-ui/t
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
 
-import { renderConfigTemplateDetailsComponent }     from '../../configTemplates'
+import { renderConfigTemplateDetailsComponent }    from '../../configTemplates'
 import {
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility,
   isAccessControlSubPolicy, subPolicyMappingType

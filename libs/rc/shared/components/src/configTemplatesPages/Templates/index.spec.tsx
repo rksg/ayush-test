@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                          from '@acx-ui/msp/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                         from '@acx-ui/msp/utils'
 import {
   CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
   ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo
