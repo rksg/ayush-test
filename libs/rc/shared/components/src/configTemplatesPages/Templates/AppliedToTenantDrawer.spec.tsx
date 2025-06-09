@@ -6,7 +6,6 @@ import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplate, ConfigTemplateUrlsInfo } f
 import { Provider }                                                            from '@acx-ui/store'
 import { mockServer, render, screen }                                          from '@acx-ui/test-utils'
 
-import { ConfigTemplateTabKey }                            from '..'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
@@ -20,8 +19,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('AppliedToTenantDrawer component', () => {
-  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
-  const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
+  const params = { tenantId: '__TENANT_ID' }
 
   beforeEach(() => {
     mockServer.use(

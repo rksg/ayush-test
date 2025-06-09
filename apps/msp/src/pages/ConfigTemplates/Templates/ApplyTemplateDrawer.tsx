@@ -3,14 +3,14 @@ import { useContext, useState } from 'react'
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                   from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                           from '@acx-ui/msp/utils'
+import { Button, Drawer, Loader, Table, TableProps }               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery }                                 from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                                         from '@acx-ui/msp/utils'
 import {
   ConfigTemplateOverrideModal, CustomerFirmwareReminder, MAX_APPLICABLE_EC_TENANTS,
   overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
-  useConfigTemplateOverride, useEcFilters
+  useConfigTemplateOverride, useEcFilters, ConfigTemplatePageUI
 } from '@acx-ui/rc/components'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
@@ -163,11 +163,11 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
     { hasReachedTheMaxRecord() &&
-      <UI.Warning>{
+      <ConfigTemplatePageUI.Warning>{
         // eslint-disable-next-line max-len
         $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
       }
-      </UI.Warning>
+      </ConfigTemplatePageUI.Warning>
     }
     <Loader states={[tableQuery]}>
       <Table<MspEc>

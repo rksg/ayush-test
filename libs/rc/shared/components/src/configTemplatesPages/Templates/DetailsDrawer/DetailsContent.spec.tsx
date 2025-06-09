@@ -7,7 +7,6 @@ import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateDriftType, ConfigTemplateTyp
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen }                                               from '@acx-ui/test-utils'
 
-import { ConfigTemplateTabKey }  from '../..'
 import { mockedMSPCustomerList } from '../../__tests__/fixtures'
 
 import { DetailsContent, DetailsItemList } from './DetailsContent'
@@ -23,8 +22,8 @@ jest.mock('./ActivationViewer', () => ({
 }))
 
 describe('DetailsContent', () => {
-  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
-  const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
+  const params = { tenantId: '__TENANT_ID' }
   const mockTemplate = {
     id: '1',
     name: 'Template 1',

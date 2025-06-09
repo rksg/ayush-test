@@ -17,7 +17,6 @@ export function getConfigTemplatePath (path = ''): string {
 }
 
 export const CONFIG_TEMPLATE_LIST_PATH = getConfigTemplatePath('templates')
-export const CONFIG_TEMPLATE_BUNDLE_LIST_PATH = getConfigTemplatePath('bundles')
 
 export function getConfigTemplateEditPath (type: ConfigTemplateType, id: string): string {
   const policyType = configTemplatePolicyTypeMap[type]

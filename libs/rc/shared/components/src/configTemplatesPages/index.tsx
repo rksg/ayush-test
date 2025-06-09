@@ -11,6 +11,7 @@ export *                                                    from './Overrides'
 
 export { CustomerFirmwareReminder } from './Templates/CustomerFirmwareReminder'
 export { useEcFilters }             from './Templates/templateUtils'
+export * as ConfigTemplatePageUI from './Templates/styledComponents'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void

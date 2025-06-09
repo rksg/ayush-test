@@ -9,9 +9,8 @@ import { overrideComponentMap } from './contentsMap'
 import { OverrideEntitiyType }  from './types'
 
 export { overrideDisplayViewMap } from './contentsMap'
-export {
-  OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride
-} from './utils'
+export type { OverrideValuesPerMspEcType } from './utils'
+export { transformOverrideValues, useConfigTemplateOverride } from './utils'
 
 export interface ConfigTemplateOverrideModalProps {
   templateId: string

@@ -1,17 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                          from '@acx-ui/msp/utils'
 import {
-  AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
-  ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo,
-  VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+  CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
+  ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { ConfigTemplateTabKey }                                                                        from '..'
-import { mockVenueTemplateList, mockedConfigTemplateList, mockedMSPCustomerList, mockedVenueTemplate } from '../__tests__/fixtures'
+import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
 import { ShowDriftsDrawerProps } from './ShowDriftsDrawer'
 
@@ -51,8 +50,8 @@ jest.mock('./CloneModal', () => ({
 }))
 
 describe('ConfigTemplateList component', () => {
-  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
-  const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
+  const params = { tenantId: '__TENANT_ID' }
 
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
@@ -71,7 +70,7 @@ describe('ConfigTemplateList component', () => {
   it('should render table with data', async () => {
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -89,7 +88,7 @@ describe('ConfigTemplateList component', () => {
   it('should render appliedToTenant Drawer with data', async () => {
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -122,7 +121,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>} />
       </Provider>, {
         route: { params, path }
       }
@@ -133,162 +132,7 @@ describe('ConfigTemplateList component', () => {
     await userEvent.click(within(targetRow).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
 
-    const applyTemplateDrawer = await screen.findByRole('dialog')
-
-    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
-    await userEvent.click(within(targetEcRow).getByRole('checkbox'))
-
-    // Check if the limitation of disallowing re-apply to the same customers is working
-    const reApplyRow = await within(applyTemplateDrawer).findByRole('row', { name: /Chill-Tel/i })
-    expect(within(reApplyRow).getByRole('checkbox')).toBeDisabled()
-
-
-    // Check if the maximum limitation is working
-    const targetEcRow2 = await within(applyTemplateDrawer).findByRole('row', { name: /Tal-Tel/i })
-    await userEvent.click(within(targetEcRow2).getByRole('checkbox'))
-    const targetEcRow3 = await within(applyTemplateDrawer).findByRole('row', { name: /Camel-Tel/i })
-    expect(within(targetEcRow3).getByRole('checkbox')).toBeDisabled()
-
-    await userEvent.click(await within(applyTemplateDrawer).findByRole('button', { name: /Next/ }))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
-
-    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
-    expect(await within(confirmationDrawer).findByText('- Template 1')).toBeVisible()
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
-
-    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(2))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
-  })
-
-  it('should override the Venue config template', async () => {
-    const applyFn = jest.fn()
-
-    mockServer.use(
-      rest.post(
-        ConfigTemplateUrlsInfo.applyConfigTemplate.url,
-        (req, res, ctx) => {
-          applyFn(req.body)
-          return res(ctx.json({ requestId: '123456789ABCDEFG' }))
-        }
-      ),
-      rest.get(
-        VenueConfigTemplateUrlsInfo.getVenueTemplate.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueTemplate))
-      ),
-      rest.post(
-        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueTemplateList))
-      ),
-      rest.get(
-        AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({ global: { mapRegion: 'TW' } }))
-      )
-    )
-
-    render(
-      <Provider>
-        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <ConfigTemplateList />
-        </ConfigTemplateContext.Provider>
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-
-    await userEvent.click(await screen.findByRole('row', { name: /Template 1/i })) // Network type config template
-    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
-
-    const applyTemplateDrawerForNetworkType = await screen.findByRole('dialog')
-
-    // eslint-disable-next-line max-len
-    await userEvent.click(await within(applyTemplateDrawerForNetworkType).findByRole('row', { name: /ec-1/i }))
-
-    // Only Venue template can be overridden
-    expect(
-      within(applyTemplateDrawerForNetworkType).queryByRole('button', { name: /Override Template/ })
-    ).toBeNull()
-
-    // eslint-disable-next-line max-len
-    await userEvent.click(await within(applyTemplateDrawerForNetworkType).findByRole('button', { name: /Cancel/ }))
-
-    await userEvent.click(await screen.findByRole('row', { name: /Venue Template/i }))
-    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
-
-    const applyTemplateDrawerForVenueType = await screen.findByRole('dialog')
-
-    // Verify if the override column is shown
-    expect(
-      await within(applyTemplateDrawerForVenueType).findByRole('columnheader',
-        { name: /Template Override Value/i })
-    ).toBeVisible()
-
-    // eslint-disable-next-line max-len
-    await userEvent.click(await within(applyTemplateDrawerForVenueType).findByRole('row', { name: /ec-1/i }))
-    // eslint-disable-next-line max-len
-    await userEvent.click(await within(applyTemplateDrawerForVenueType).findByRole('button', { name: /Override Template/ }))
-
-    // eslint-disable-next-line max-len
-    const venueOverrideDialog = await screen.findByRole('dialog', { name: /Override Venue Template/ })
-    // eslint-disable-next-line max-len
-    const venueNameInput = await within(venueOverrideDialog).findByDisplayValue(mockedVenueTemplate.name)
-
-    await userEvent.clear(venueNameInput)
-    await userEvent.type(venueNameInput, 'Overridden Venue Name')
-    await userEvent.click(within(venueOverrideDialog).getByRole('button', { name: /Add/ }))
-
-    // Verify if the overrides values is shown in the column
-    expect(
-      await within(applyTemplateDrawerForVenueType).findByRole('cell',
-        { name: /Overridden Venue Name/ })
-    ).toBeVisible()
-
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(applyTemplateDrawerForVenueType).getByRole('button', { name: /Next/ }))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
-
-    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
-    // eslint-disable-next-line max-len
-    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
-
-    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(1))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
-  })
-
-  it('should cancel Apply Template dialog', async () => {
-    render(
-      <Provider>
-        <ConfigTemplateList />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-
-    const targetRow = await screen.findByRole('row', { name: /Template 1/i })
-
-    await userEvent.click(within(targetRow).getByRole('radio'))
-    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
-
-    const applyTemplateDrawer = await screen.findByRole('dialog')
-    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
-
-    await userEvent.click(within(targetEcRow).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: /Next/ }))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
-
-    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
-    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Back/ }))
-
-    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(1))
-
-    await userEvent.click(within(applyTemplateDrawer).getByRole('button', { name: /Cancel/ }))
-
-    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByText('ApplyTemplateDrawer')).toBeInTheDocument()
   })
 
   it('should delete selected template', async () => {
@@ -306,7 +150,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -332,7 +176,7 @@ describe('ConfigTemplateList component', () => {
   it('should navigate to the edit page', async () => {
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -378,7 +222,7 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <ConfigTemplateList />
+          <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
         </ConfigTemplateContext.Provider>
       </Provider>, {
         route: { params, path }
@@ -405,7 +249,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -434,7 +278,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -453,7 +297,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
