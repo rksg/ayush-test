@@ -18,11 +18,11 @@ import {
   domainNameRegExp,
   DirectoryServerDiagnosisCommand,
   DirectoryServerDiagnosisCommandEnum,
-  IdentityAttributeMappingNameType
+  splitAttributeMappingsFromData
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { IdentityAttributesInput, excludedAttributeTypes } from '../../IdentityAttributesInput'
+import { IdentityAttributesInput } from '../../IdentityAttributesInput'
 
 import * as UI from './styledComponents'
 
@@ -68,35 +68,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   useEffect(() => {
     if (!policyId || !data) return
 
-    form.setFieldsValue(data)
+    const sourceData = splitAttributeMappingsFromData(data)
+    form.setFieldsValue(sourceData)
 
-    if (isSupportIdentityAttribute && data.attributeMappings) {
-      form.setFieldValue('identityName',
-        data.attributeMappings
-          .find(
-            mapping => mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
-          )?.mappedByName
-      )
-      form.setFieldValue('identityEmail',
-        data.attributeMappings
-          .find(
-            mapping => mapping.name === IdentityAttributeMappingNameType.EMAIL
-          )?.mappedByName
-      )
-      form.setFieldValue('identityPhone',
-        data.attributeMappings
-          .find(
-            mapping => mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
-          )?.mappedByName
-      )
-
-      // remove above three mappings from attributeMappings
-      form.setFieldValue('attributeMappings', data.attributeMappings.filter(
-        mapping => !excludedAttributeTypes.includes(
-          mapping.name as IdentityAttributeMappingNameType
-        )
-      ))
-    }
   }, [policyId, data, form])
 
   const nameValidator = async (value: string) => {
@@ -349,18 +323,6 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             />
           </Col>)
         }
-        {!readMode && isSupportIdentityAttribute && <Col span={16}>
-          <IdentityAttributesInput
-            form={form}
-            fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
-            description={
-              $t({ defaultMessage: 'Map user attributes from your AD/LDAP to identity attributes'+
-                                  ' in RUCKUS One using the exact values from your AD/LDAP.'+
-                                  ' Claim names are available in your AD/LDAP console.' })
-            }
-          />
-        </Col>
-        }
         <Col span={8} />
         <Col span={24}>
           <Space>
@@ -402,6 +364,18 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             }
           </Space>
         </Col>
+        {isSupportIdentityAttribute && <Col span={16}>
+          <IdentityAttributesInput
+            fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
+            attributeMappings={data?.attributeMappings ?? []}
+            description={
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Map user attributes from your IdP to identity attributes in RUCKUS One using the exact values from your IdP. Claim names are available in your IdP console.' })
+            }
+            readMode={readMode}
+          />
+        </Col>
+        }
       </Row>
     </Loader>
   )

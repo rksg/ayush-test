@@ -31,7 +31,7 @@ function DatePicker () {
 const ApWiredClientDetailPageHeader = () => {
   const { $t } = useIntl()
   const { activeTab } = useParams()
-  const enableTimeFilter = () => ['event'].includes(activeTab as string)
+  const enableTimeFilter = () => ['events'].includes(activeTab as string)
 
   const { clientInfo } = useApWiredClientContext()
 
@@ -43,7 +43,7 @@ const ApWiredClientDetailPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Clients' }), link: '' },
         { text: $t({ defaultMessage: 'Wired' }), link: '' },
-        { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wired/wifi/clients' }
+        { text: $t({ defaultMessage: 'AP Clients List' }), link: '/users/wired/wifi/clients' }
       ]}
       extra={[
         enableTimeFilter() && <DatePicker />

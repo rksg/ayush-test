@@ -33,7 +33,7 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
 
     expect(screen.getByText('Port1: Link Health Monitoring')).toBeInTheDocument()
     expect(screen.getByText('Protocol')).toBeInTheDocument()
-    expect(screen.getByText('Ping')).toBeInTheDocument()
+    expect(screen.getByText('ICMP (Ping)')).toBeInTheDocument()
     expect(screen.getByText('Target IP Addresses')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.2')).toBeInTheDocument()
@@ -59,7 +59,7 @@ describe('EdgeWanLinkHealthDetailsDrawer', () => {
 
     expect(screen.getByText('Port2: Link Health Monitoring')).toBeInTheDocument()
     expect(screen.getByText('Protocol')).toBeInTheDocument()
-    expect(screen.queryByText('Ping')).not.toBeInTheDocument()
+    expect(screen.queryByText('ICMP (Ping)')).not.toBeInTheDocument()
     expect(screen.getByText('Target IP Addresses')).toBeInTheDocument()
     expect(screen.queryByText('192.168.1.1')).not.toBeInTheDocument()
     expect(screen.getByText('Test Failure Condition')).toBeInTheDocument()

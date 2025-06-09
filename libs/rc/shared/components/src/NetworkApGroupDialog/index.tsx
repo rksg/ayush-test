@@ -293,7 +293,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                             visible={owe6gDrawerVisible}
                             type={ApCompatibilityType.ALONE}
                             networkId={network?.id}
-                            featureName={InCompatibilityFeatures.OWE_TRANSITION_6G}
+                            featureNames={[InCompatibilityFeatures.OWE_TRANSITION_6G]}
                             onClose={() => setOwe6gDrawerVisible(false)}
                           />
                         </>}

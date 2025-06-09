@@ -2,7 +2,7 @@
 import { FormInstance }                            from 'antd'
 import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import {
   isSdLanDmzUtilizedOnDiffVenue,
@@ -59,16 +59,24 @@ export const handleSdLanTunnelAction = async (
     } else {
       const isL2oGreReady = otherData.isL2oGreReady
       const currentFwdTunnelType = modalFormValues.sdLan?.forwardingTunnelType
-      const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+
+      let needSdLanConfigConflictCheck = false
+      if (isL2oGreReady) {
+        needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+        && !!venueSdLan?.tunneledWlans?.find(wlan =>
+          wlan.venueId !== network!.venueId && wlan.networkId === network!.id)
+      }else {
+        needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
         && isSdLanDmzUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId, currentFwdTunnelType)
+      }
 
       if (needSdLanConfigConflictCheck) {
-        const activatedDmz = (modalFormValues.sdLan.isGuestTunnelEnabled ||
-          currentFwdTunnelType === TunnelTypeEnum.VXLAN_GPE) ?? false
+        const activatedDmz = modalFormValues.sdLan.isGuestTunnelEnabled //for L2oGRE FF disabled
         showSdLanGuestFwdConflictModal({
           currentNetworkVenueId: network?.venueId!,
           currentNetworkId: network?.id!,
           currentNetworkName: '',
+          currentFwdTunnelType,
           activatedDmz: activatedDmz,
           tunneledWlans: venueSdLan!.tunneledWlans,
           tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,

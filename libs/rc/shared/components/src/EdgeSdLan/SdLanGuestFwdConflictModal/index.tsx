@@ -1,13 +1,14 @@
 import { find } from 'lodash'
 
-import { defaultRichTextFormatValues, showActionModal }                  from '@acx-ui/components'
-import { EdgeMvSdLanFormNetwork, EdgeSdLanTunneledWlan, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                       from '@acx-ui/utils'
+import { defaultRichTextFormatValues, showActionModal }  from '@acx-ui/components'
+import { EdgeMvSdLanFormNetwork, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
+import { getIntl }                                       from '@acx-ui/utils'
 
 interface showSdLanGuestFwdConflictModalProps {
   currentNetworkVenueId: string
   currentNetworkId: string
   currentNetworkName?: string
+  currentFwdTunnelType?: string
   activatedDmz: boolean
   tunneledWlans: EdgeSdLanTunneledWlan[] | EdgeMvSdLanFormNetwork | undefined
   tunneledGuestWlans: EdgeSdLanTunneledWlan[] | EdgeMvSdLanFormNetwork | undefined
@@ -20,6 +21,7 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
     currentNetworkVenueId,
     currentNetworkId,
     currentNetworkName,
+    currentFwdTunnelType,
     activatedDmz,
     tunneledWlans,
     tunneledGuestWlans,
@@ -66,17 +68,17 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
 
     impactVenueIds = (typedTunneledWlans)
       .filter(n => {
-        // eslint-disable-next-line max-len
-        const isDiffL2oGreDmzState =(((Boolean(n.forwardingTunnelProfileId) && (n.forwardingTunnelType === TunnelTypeEnum.VXLAN_GPE)) === !activatedDmz)
-          || (n.forwardingTunnelProfileId === '' && activatedDmz))
-        // eslint-disable-next-line max-len
-        const isDiffDmzState = (typedTunneledGuestWlans?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
+        let isDiffState = false
+        if (isL2oGreReady) {
+          isDiffState = n.forwardingTunnelType !== currentFwdTunnelType
+        }else{
+          // eslint-disable-next-line max-len
+          isDiffState = (typedTunneledGuestWlans?.some(g => g.networkId === currentNetworkId && g.venueId === n.venueId) === !activatedDmz)
+        }
+
         return n.networkId === currentNetworkId
          && n.venueId !== currentNetworkVenueId
-         && (isL2oGreReady === true ?
-           isDiffL2oGreDmzState
-           : isDiffDmzState
-         )}
+         && isDiffState }
       ).map(i => i.venueId)
   }
 

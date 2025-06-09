@@ -20,7 +20,8 @@ export const mockedNetworkId = '__networkId__'
 export const mockedSamlIdpProfile = {
   name: mockSamlIdpProfileName,
   metadata: Buffer.from('xmlContent').toString('base64'),
-  authenticationRequestSignedEnabled: true
+  authenticationRequestSignedEnabled: true,
+  wifiNetworkIds: []
 }
 
 export const mockedSamlIpdProfileList = {
@@ -32,8 +33,7 @@ export const mockedSamlIpdProfileList = {
       name: mockSamlIdpProfileName,
       authenticationRequestSignedEnabled: true,
       responseEncryptionEnabled: true,
-      encryptionCertificateId: mockCertId1,
-      wifiNetworkIds: [mockedNetworkId]
+      encryptionCertificateId: mockCertId1
     },
     {
       id: mockSamlIdpProfileId2,

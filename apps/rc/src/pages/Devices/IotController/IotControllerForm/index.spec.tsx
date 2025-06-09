@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { iotApi }                                                 from '@acx-ui/rc/services'
-import { IotUrlsInfo, IotControllerSetting, IotControllerStatus } from '@acx-ui/rc/utils'
-import { Provider, store }                                        from '@acx-ui/store'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { iotApi }                           from '@acx-ui/rc/services'
+import { IotUrlsInfo, IotControllerStatus } from '@acx-ui/rc/utils'
+import { Provider, store }                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,26 +21,17 @@ const successResponse = {
   requestId: 'request-id'
 }
 
-const iotController = {
+const serialNumberExists = {
   requestId: 'request-id',
-  response: {
-    data: {
-      id: 'bbc41563473348d29a36b76e95c50381',
-      name: 'ruckusdemos',
-      inboundAddress: '192.168.1.1',
-      publicAddress: 'ruckusdemos.cloud',
-      publicPort: 443,
-      apiToken: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      iotSerialNumber: 'rewqfdsafasd'
-    } as IotControllerSetting
-  }
+  serialNumber: 'rewqfdsafasd',
+  existed: false
 }
 
 const iotControllerList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
     data: [{
-      id: 'bbc41563473348d29a36b76e95c50381',
+      id: '123',
       name: 'ruckusdemos',
       inboundAddress: '192.168.1.1',
       serialNumber: 'rewqfdsafasd',
@@ -69,19 +60,28 @@ jest.mock('react-router-dom', () => ({
 
 describe('Iot Controller Form', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
+  const mockFn = jest.fn()
   const mockedReqFn = jest.fn()
 
   beforeEach(() => {
     store.dispatch(iotApi.util.resetApiState())
+    mockFn.mockClear()
     mockedReqFn.mockClear()
     initialize()
     mockServer.use(
       rest.post(IotUrlsInfo.getIotControllerList.url,
-        (req, res, ctx) => res(ctx.json(iotControllerList))),
+        (req, res, ctx) => {
+          mockFn()
+          return res(ctx.json(iotControllerList.response))
+        }),
       rest.post(IotUrlsInfo.addIotController.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
+        }),
+      rest.get(IotUrlsInfo.getIotControllerSerialNumber.url,
+        (_, res, ctx) => {
+          return res(ctx.status(200), ctx.json(serialNumberExists))
         }),
       rest.patch(IotUrlsInfo.updateIotController.url,
         (_, res, ctx) => {
@@ -135,15 +135,15 @@ describe('Iot Controller Form', () => {
 
   it('should edit iot controller successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const mockFn = jest.fn()
+    // const mockFn = jest.fn()
 
-    mockServer.use(
-      rest.get(IotUrlsInfo.getIotController.url,
-        (req, res, ctx) => {
-          mockFn()
-          return res(ctx.json(iotController))
-        })
-    )
+    // mockServer.use(
+    //   rest.get(IotUrlsInfo.getIotControllerList.url,
+    //     (req, res, ctx) => {
+    //       mockFn()
+    //       return res(ctx.json(iotController))
+    //     })
+    // )
 
     const params = {
       tenantId: 'tenant-id',

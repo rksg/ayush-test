@@ -9,6 +9,7 @@ import {
   Drawer,
   Loader,
   Table,
+  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
@@ -41,6 +42,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isRecToMspREcConversionEnabled =
     useIsSplitOn(Features.DURGA_TENANT_CONVERSION_REC_TO_MSP_REC)
+  const mspHspDisplayToggle = useIsSplitOn(Features.MSP_HSP_DISPLAY_UID_TOGGLE)
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
     enableRbac: isRbacEnabled },
@@ -100,7 +102,15 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
         {str.slice(index + 1)} </span>
     )
   }
-
+  const propertyIdColumn: TableColumn<MspRecCustomer, 'text'>[] = (!mspHspDisplayToggle ? [] :
+    [{
+      title: $t({ defaultMessage: 'Property ID' }),
+      dataIndex: 'propertyCode',
+      key: 'propertyCode',
+      sorter: { compare: sortProp('propertyCode', defaultSort) },
+      searchable: true,
+      defaultSortOrder: 'ascend'
+    }])
   const columns: TableProps<MspRecCustomer>['columns'] = [
     {
       title: $t({ defaultMessage: 'Property Name' }),
@@ -115,6 +125,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
           : row.account_name
       }
     },
+    ...(propertyIdColumn),
     {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'billing_street',

@@ -15,7 +15,9 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   ApplicationAuthenticationStatus,
-  getRoles
+  getRoles,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { RolesEnum }     from '@acx-ui/types'
 import { roleStringMap } from '@acx-ui/user'
@@ -57,7 +59,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     label: roleStringMap[item.name as RolesEnum]
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.name
-  }))
+  }))?.sort(sortProp('label', defaultSort))
 
   const onClose = () => {
     setVisible(false)

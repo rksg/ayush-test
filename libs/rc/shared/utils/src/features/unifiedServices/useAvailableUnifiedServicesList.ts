@@ -11,8 +11,8 @@ import { PolicyType }                            from '../../types'
 import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 
-import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType }                from './constants'
-import { buildUnifiedServices, isUnifiedServiceAvailable, useIsNewServicesCatalogEnabled } from './utils'
+import { UnifiedService, UnifiedServiceCategory, UnifiedServiceSourceType } from './constants'
+import { buildUnifiedServices, isUnifiedServiceAvailable }                  from './utils'
 
 
 type BaseAvailableUnifiedService = Pick<UnifiedService<MessageDescriptor>,
@@ -230,7 +230,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+        products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.NETWORK_SERVICES,
         disabled: !isEdgeEnabled
       },
@@ -319,7 +319,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
       {
         type: ServiceType.PIN,
         sourceType: UnifiedServiceSourceType.SERVICE,
-        products: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
+        products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.AUTHENTICATION_IDENTITY,
         disabled: !isEdgePinReady
       },
@@ -364,9 +364,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
 }
 
 export function useAvailableUnifiedServicesList (): Array<UnifiedService> {
-  const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const baseUnifiedServiceList = useBaseAvailableUnifiedServicesList()
 
-  return buildUnifiedServices(baseUnifiedServiceList, isNewServiceCatalogEnabled)
+  return buildUnifiedServices(baseUnifiedServiceList)
     .sort((a, b) => a.label.localeCompare(b.label))
 }

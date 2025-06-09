@@ -12,9 +12,10 @@ import {
   useDeleteTenantAuthenticationsMutation,
   useGetServerCertificatesQuery
 } from '@acx-ui/rc/services'
-import { downloadFile, SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams }                                       from '@acx-ui/react-router-dom'
-import { getTenantId, loadImageWithJWT }                                               from '@acx-ui/utils'
+import { AdministrationUrlsInfo, downloadFile, SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink, useParams }                                                               from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations }                                                                from '@acx-ui/user'
+import { getOpsApi, getTenantId, loadImageWithJWT }                                                            from '@acx-ui/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem/'
 
@@ -32,6 +33,7 @@ interface AuthServerFormItemProps {
 const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { tenantAuthenticationData } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
@@ -79,6 +81,21 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
     }
   }, [ssoData])
 
+  const createPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.addTenantAuthentications)
+    ]) : true
+
+  const deletePermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.deleteTenantAuthentications)
+    ]) : true
+
+  const editPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)
+    ]) : true
+
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col span={10}>
@@ -99,6 +116,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
               >
                 <Button type='link'
                   key='editsso'
+                  disabled={!editPermission}
                   onClick={() => {
                     setEditMode(true)
                     setDrawerVisible(true)
@@ -107,6 +125,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                 </Button>
                 <Button type='link'
                   key='deletesso'
+                  disabled={!deletePermission}
                   onClick={() => {
                     const adminWithSso = adminList?.filter(n =>
                       n.authenticationId !== undefined)
@@ -234,7 +253,9 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
         }
 
         {!hasSsoConfigured &&
-        <Button onClick={onSetUpValue}>{$t({ defaultMessage: 'Set Up' })}</Button>}
+        <Button
+          disabled={!createPermission}
+          onClick={onSetUpValue}>{$t({ defaultMessage: 'Set Up' })}</Button>}
       </Col>
     </Row>
 

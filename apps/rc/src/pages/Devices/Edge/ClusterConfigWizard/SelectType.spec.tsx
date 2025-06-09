@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
-import { Features }                                                                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                   from '@acx-ui/rc/components'
-import { edgeApi }                                                                 from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                         from '@acx-ui/store'
+import { Features }                                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
+import { edgeApi }                                                                                         from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, ClusterNetworkSettings, EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                 from '@acx-ui/store'
 import {
   render,
   screen,
@@ -325,6 +325,64 @@ describe('SelectType', () => {
     await checkDataRendered()
     expect(screen.queryByText('Sub-interface Settings')).toBeNull()
     expect(screen.getByText('LAG, Port, Sub-Interface & HA Settings')).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('cluster interface card should be available when there is a gateway on sub-interface', async () => {
+    const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
+    mockedOneNodeData.data[0].edgeList.splice(1, 1)
+
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
+
+    render(
+      <Provider>
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedOneNodeData.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: {
+            subInterfaceSettings: [{
+              serialNumber: 'mocked_serial_number_1',
+              ports: [{
+                portId: 'port_id_1',
+                subInterfaces: [{
+                  id: 'testId_1',
+                  interfaceName: 'port1.1',
+                  accessPortEnabled: true
+                }]
+              }]
+            },{
+              serialNumber: 'mocked_serial_number_2',
+              ports: [{
+                portId: 'port_id_2',
+                subInterfaces: [{
+                  id: 'testId2',
+                  interfaceName: 'port1.1',
+                  accessPortEnabled: true
+                }]
+              }]
+            }]
+          } as unknown as ClusterNetworkSettings,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <SelectType />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'clusterInterface'
+    )[0]
+    expect(cardIcon).toBeInTheDocument()
+    await userEvent.click(cardIcon)
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      // eslint-disable-next-line max-len
+      pathname: `/${params.tenantId}/t/devices/edge/cluster/${params.clusterId}/configure/clusterInterface`,
+      hash: '',
+      search: ''
+    })
   })
 })
 

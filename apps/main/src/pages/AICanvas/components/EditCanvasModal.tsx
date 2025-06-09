@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Col, Form, Input, Radio, Row, Space } from 'antd'
 
 import { GlobeOutlined, LockOutlined }                             from '@acx-ui/icons-new'
-import { useUpdateCanvasMutation }                                 from '@acx-ui/rc/services'
+import { usePatchCanvasMutation }                                  from '@acx-ui/rc/services'
 import { Canvas, trailingNorLeadingSpaces, validateDuplicateName } from '@acx-ui/rc/utils'
 import { getIntl }                                                 from '@acx-ui/utils'
 
@@ -18,7 +18,7 @@ export function EditCanvasModal (props:{
   const { $t } = getIntl()
   const { visible, handleCancel, editCanvas, canvasNameList } = props
   const [form] = Form.useForm()
-  const [updateCanvas] = useUpdateCanvasMutation()
+  const [patchCanvas] = usePatchCanvasMutation()
 
   useEffect(() => {
     if(editCanvas){
@@ -34,10 +34,9 @@ export function EditCanvasModal (props:{
   }
 
   const onFinish = async (value: { name:string, visible: boolean }) => {
-    await updateCanvas({
+    await patchCanvas({
       params: { canvasId: editCanvas.id },
       payload: {
-        ...editCanvas,
         name: value.name,
         visible: value.visible
       }

@@ -11,7 +11,7 @@ import {
   fireEvent,
   waitFor
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo, MFAStatus } from '@acx-ui/user'
+import { UserUrlsInfo, MFAStatus, setUserProfile, getUserProfile } from '@acx-ui/user'
 
 import { fakeMFATenantDetail, fakeTenantDetails } from '../__tests__/fixtures'
 
@@ -167,6 +167,10 @@ describe('Enable MFA Checkbox', () => {
   })
 
   it('should be disabled to click toggle MFA', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
     render(
       <Provider>
         <MFAFormItem
@@ -183,6 +187,10 @@ describe('Enable MFA Checkbox', () => {
   })
 
   it('should display correctly if no data', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
     render(
       <Provider>
         <MFAFormItem

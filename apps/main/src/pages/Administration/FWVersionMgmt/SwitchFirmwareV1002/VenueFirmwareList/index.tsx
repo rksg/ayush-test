@@ -37,12 +37,12 @@ import {
   SwitchFirmwareVersion1002,
   compareSwitchVersion,
   SwitchModelGroupDisplayText,
-  FirmwareRbacUrlsInfo
+  FirmwareRbacUrlsInfo, FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                               from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
-  filterByAccess,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasRoles
 } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
@@ -66,6 +66,8 @@ export function VenueFirmwareList () {
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport81Or81X = isSupport8100 || isSupport8100X
@@ -342,8 +344,9 @@ export function VenueFirmwareList () {
     }
   }]
 
-  const isPreferencesVisible
-  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isPreferencesVisible= rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateSwitchUpgradePreferences)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[tableQuery,

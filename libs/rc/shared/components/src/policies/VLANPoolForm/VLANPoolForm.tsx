@@ -22,7 +22,8 @@ import {
   usePolicyPreviousPath,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate
+  useConfigTemplate,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -39,6 +40,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.VLAN_POOL, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.VLAN_POOL)
   const params = useParams()
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
@@ -89,7 +91,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
         await updateInstance({ params, payload, enableRbac })
           .unwrap()
       }
-      networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
+      networkView ? backToNetwork?.(formData) : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

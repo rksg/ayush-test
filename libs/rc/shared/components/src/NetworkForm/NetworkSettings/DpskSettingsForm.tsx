@@ -23,7 +23,6 @@ import {
   TableResult,
   ServiceType,
   ServiceOperation,
-  useConfigTemplate,
   useTemplateAwareServicePermission
 } from '@acx-ui/rc/utils'
 
@@ -33,7 +32,7 @@ import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
-import { CloudpathServerForm }     from './CloudpathServerForm'
+import { RadiusSettings }          from './SharedComponent/RadiusSettings/RadiusSettings'
 
 const { Option } = Select
 
@@ -45,27 +44,23 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const dpskWlanSecurity = useWatch('dpskWlanSecurity', form)
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   useEffect(()=>{
-    // TODO: Remove deprecated codes below when RadSec feature is delivery
-    if(!supportRadsec && (editMode || cloneMode) && data){
-      setFieldsValue()
-    }
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
+
+    if(cloneMode && !form.getFieldValue('dpskServiceProfileId')) {
+      form.setFieldValue('dpskServiceProfileId', data?.dpskServiceProfileId)
+    }
   }, [data])
 
   useEffect(()=>{
-    if(supportRadsec && (editMode || cloneMode) && data){
+    if((editMode || cloneMode) && data){
       setFieldsValue()
     }
-  }, [supportRadsec, data?.id])
+  }, [data?.id])
 
   // only create mode
   useEffect(()=>{
@@ -111,47 +106,27 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
 
 function SettingsForm () {
   const form = Form.useFormInstance()
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
-  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
     form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
 
-    setData && setData({ ...data, isCloudpathEnabled: e.target.value })
-  }
-
-  const handleDpsk3NonProxyMode = (
-    dpskWlanSecurity: WlanSecurityEnum,
-    isCloudpathEnabled: boolean
-  ) => {
-    if(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed && isCloudpathEnabled) {
-      setData && setData({ ...data, enableAccountingProxy: false, enableAuthProxy: false })
+    // To set default value as true for DPSK while adding new network
+    if(!editMode && e.target.value) {
       form.setFieldsValue({
-        enableAccountingProxy: false,
-        enableAuthProxy: false
+        enableAccountingProxy: true,
+        enableAuthProxy: true
       })
     }
   }
-  useEffect(()=>{
-    !supportRadsec && form.setFieldsValue({ ...data })
-  },[data])
-
-  useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data })
-  },[data?.id])
 
   useEffect(() => {
     if (!isSupportDpsk3NonProxyMode && dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
       form.setFieldValue('isCloudpathEnabled', false)
-
-    handleDpsk3NonProxyMode(dpskWlanSecurity, isCloudpathEnabled)
 
   }, [dpskWlanSecurity, isCloudpathEnabled])
 
@@ -216,7 +191,7 @@ function SettingsForm () {
       </div>
       <div>
         {isCloudpathEnabled ?
-          <CloudpathServerForm
+          <RadiusSettings
             dpskWlanSecurity={dpskWlanSecurity}
           /> :
           <DpskServiceSelector />}

@@ -1,9 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonRbacUrlsInfo, PolicyOperation, PolicyType, SwitchRbacUrlsInfo, Venue, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                                                                       from '@acx-ui/store'
-import { mockServer, render, waitForElementToBeRemoved, screen }                                          from '@acx-ui/test-utils'
+import { apApi, switchApi } from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  PolicyOperation,
+  PolicyType,
+  SwitchRbacUrlsInfo,
+  Venue,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
 import { dummyApList, dummySwitchClientList, dummyVenue, mockedPolicyId1, mockedTenantId } from '../__tests__/fixtures'
 
@@ -23,6 +31,8 @@ describe('LbsServerVenueApsDrawer', () => {
   })
 
   beforeEach(async () => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonRbacUrlsInfo.getApsList.url,

@@ -48,7 +48,7 @@ export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum | undefined)
 
   switch (type) {
     case EdgeMultiWanProtocolEnum.PING:
-      return $t({ defaultMessage: 'Ping' })
+      return $t({ defaultMessage: 'ICMP (Ping)' })
     case EdgeMultiWanProtocolEnum.NONE:
     default:
       return ''

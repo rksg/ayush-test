@@ -13,6 +13,7 @@ import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvide
 import { InterfaceSettingsFormType }  from '../types'
 
 interface SubInterfaceTableProps {
+  lagData?: InterfaceSettingsFormType['lagSettings']
   portData?: InterfaceSettingsFormType['portSettings']
   portSubInterfaceData?: InterfaceSettingsFormType['portSubInterfaces']
   lagSubInterfaceData?: InterfaceSettingsFormType['lagSubInterfaces']
@@ -25,16 +26,20 @@ interface SubInterfaceTableData extends SubInterface {
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const { portSubInterfaceData = {}, lagSubInterfaceData = {}, portData = {} } = props
+  const { portSubInterfaceData = {}, lagSubInterfaceData = {}, portData = {}, lagData = [] } = props
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const tableData = [] as SubInterfaceTableData[]
   const edgeNodeList = clusterInfo?.edgeList
+  // eslint-disable-next-line max-len
+  const allLagMemberIds = lagData.flatMap(({ lags }) => lags.flatMap(lag => lag.lagMembers.map(member => member.portId)))
 
   Object.entries(portSubInterfaceData).forEach(([serialNumber, subInterfaces = {}]) => {
     Object.entries(subInterfaces).forEach(([portId, subInterface = []]) => {
+      // eslint-disable-next-line max-len
+      if(allLagMemberIds.includes(portId)) return
       subInterface.forEach((subInterface) => {
         // eslint-disable-next-line max-len
         const currentPortInfo = Object.values(portData?.[serialNumber])?.find(item => item[0].id === portId)?.[0]
@@ -50,6 +55,9 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   Object.entries(lagSubInterfaceData).forEach(([serialNumber, subInterfaces = {}]) => {
     Object.entries(subInterfaces).forEach(([lagId, subInterface = []]) => {
+      // eslint-disable-next-line max-len
+      const currentLagIds = lagData.find(item => item.serialNumber === serialNumber)?.lags.map(lag => String(lag.id)) ?? []
+      if(!currentLagIds.includes(lagId)) return
       subInterface.forEach((subInterface) => {
         tableData.push({
           ...subInterface,

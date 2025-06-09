@@ -10,11 +10,10 @@ import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 export function ReportList () {
   const { $t } = useIntl()
   const userProfileR1 = getUserProfile()
-  const { profile: userProfile, accountTier } = userProfileR1 ?
-    userProfileR1 : { profile: {}, accountTier: undefined }
+  const { accountTier } = userProfileR1 ?
+    userProfileR1 : { accountTier: undefined }
 
   const isCore = isCoreTier(accountTier)
-  const isSupportUser = Boolean(userProfile?.support)
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
@@ -103,10 +102,8 @@ export function ReportList () {
   return (
     <>
       <PageHeader
-        title={isCore && !isSupportUser ? $t({ defaultMessage: 'Business Insights' }) :
-          $t({ defaultMessage: 'Reports' })}
-        breadcrumb={isCore && !isSupportUser ? [] :
-          [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+        title={$t({ defaultMessage: 'Reports' })}
+        breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
         {reports.map(({ title, description, path, disabled }) => (

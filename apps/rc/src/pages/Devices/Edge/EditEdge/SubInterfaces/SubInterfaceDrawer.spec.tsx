@@ -17,6 +17,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
+
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
 const { mockEdgePortConfig } = EdgePortConfigFixtures
@@ -93,7 +95,6 @@ describe('EditEdge ports - sub-interface', () => {
         enabled: true,
         ipMode: 'DHCP',
         mac: '00:0c:29:b6:ad:04',
-        name: '',
         portType: 'LAN',
         vlan: 2
       })
@@ -133,7 +134,6 @@ describe('EditEdge ports - sub-interface', () => {
         ip: '1.1.1.1',
         ipMode: 'STATIC',
         mac: '00:0c:29:b6:ad:04',
-        name: '',
         portType: 'LAN',
         subnet: '255.255.255.0',
         vlan: 2
@@ -250,14 +250,24 @@ describe('EditEdge ports - sub-interface', () => {
     it('should show gateway field when access port is checked', async () => {
       render(
         <Provider>
-          <SubInterfaceDrawer
-            mac={mockedPortsConfig.mac}
-            visible={true}
-            setVisible={mockedSetVisible}
-            data={undefined}
-            handleAdd={mockedHandleAddFn}
-            handleUpdate={mockedHandleUpdateFn}
-          />
+          <EditEdgeDataContext.Provider value={{
+            portData: [{
+              id: 'port1',
+              enabled: true,
+              portType: 'LAN'
+            }]
+          } as EditEdgeDataContextType}>
+            <SubInterfaceDrawer
+              mac={mockedPortsConfig.mac}
+              visible={true}
+              setVisible={mockedSetVisible}
+              data={undefined}
+              handleAdd={mockedHandleAddFn}
+              handleUpdate={mockedHandleUpdateFn}
+              portId='port1'
+              isSupportAccessPort={true}
+            />
+          </EditEdgeDataContext.Provider>
         </Provider>, {
           route: {
             params,

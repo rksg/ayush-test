@@ -58,7 +58,8 @@ export interface VenueDetailHeader {
 		totalCount: number
 	},
 	edges: EdgeStatusSeverityStatistic,
-	totalClientCount: string
+	totalClientCount: string,
+	totalApWiredClientCount?: string,
 	venue: VenueDetail
 }
 
@@ -255,9 +256,17 @@ export type VenueApUsbStatus = {
 	usbPortEnable: boolean
 }
 
-export interface VenueApModelBandModeSettings {
+export interface VenueApModelBandModeSettings extends ApModelBandModeSettings{
+}
+
+export interface ApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
+}
+
+export interface ApGroupApModelBandModeSettings {
+	useVenueSettings: boolean,
+	apModelBandModeSettings: ApModelBandModeSettings[]
 }
 
 export type VenueApAntennaTypeSettings = {

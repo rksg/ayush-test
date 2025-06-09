@@ -30,6 +30,24 @@ const mockNodeProps: NodeProps<WorkflowStep> = {
   yPos: 0
 }
 
+const mockInvalidNodeProps: NodeProps<WorkflowStep> = {
+  id: 'mock-step-id',
+  type: 'AUP' as ActionType,
+  data: {
+    enrollmentActionId: 'mock-enrollment-action-id',
+    actionType: ActionType.AUP,
+    status: 'INVALID',
+    statusReasons: [{ statusCode: 'multiple.onboarding.steps',
+      statusReason: 'Test Status Reason 1234' }]
+  } as WorkflowStep,
+  selected: false,
+  dragging: false,
+  zIndex: 0,
+  isConnectable: false,
+  xPos: 0,
+  yPos: 0
+}
+
 jest.mock('reactflow', () => ({
   ...jest.requireActual('reactflow'),
   useNodeId: () => 'mock-step-id'
@@ -43,12 +61,12 @@ jest.mock('../../../../WorkflowActionPreviewModal', () => ({
 describe('BaseStepNode', () => {
   const spyDeleteStepFn = jest.fn()
   const spyDeleteIndividualStepFn = jest.fn()
-  const spyDeleteStepAndChildrenFn = jest.fn()
+  const spyDeleteStepChildrenFn = jest.fn()
 
   beforeEach(() => {
     spyDeleteStepFn.mockClear()
     spyDeleteIndividualStepFn.mockClear()
-    spyDeleteStepAndChildrenFn.mockClear()
+    spyDeleteStepChildrenFn.mockClear()
 
     mockServer.use(
       rest.delete(
@@ -63,9 +81,9 @@ describe('BaseStepNode', () => {
         }
       ),
       rest.delete(
-        WorkflowUrls.deleteWorkflowStepAndDescendants.url,
+        WorkflowUrls.deleteWorkflowStepDescendants.url,
         (_, res, ctx) => {
-          spyDeleteStepAndChildrenFn()
+          spyDeleteStepChildrenFn()
           return res(ctx.json({}))
         }
       )
@@ -93,6 +111,34 @@ describe('BaseStepNode', () => {
     expect(screen.getByTestId('expectedChild')).toBeVisible()
     expect(screen.getByTestId('StartFlag')).toBeVisible()
     expect(screen.getByTestId('EndFlag')).toBeVisible()
+
+    // selected style would not show up
+    expect(screen.queryByTestId('Plus')).toBeNull()
+    expect(screen.queryByTestId('MoreVertical')).toBeNull()
+  })
+
+  it('should render BaseStepNode in invalid state correctly', async () => {
+    render(
+      <Provider>
+        <ReactFlowProvider>
+          <BaseStepNode
+            {...mockInvalidNodeProps}
+            children={child}
+            data={{
+              ...mockInvalidNodeProps.data,
+              isStart: true,
+              isEnd: true
+            }}
+          />
+        </ReactFlowProvider>
+      </Provider>
+    )
+
+    // default style
+    expect(screen.getByTestId('expectedChild')).toBeVisible()
+    expect(screen.getByTestId('StartFlag')).toBeVisible()
+    expect(screen.getByTestId('EndFlag')).toBeVisible()
+    expect(screen.getByTestId('WarningCircleSolid')).toBeVisible()
 
     // selected style would not show up
     expect(screen.queryByTestId('Plus')).toBeNull()
@@ -172,16 +218,16 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
-    await userEvent.click(await screen.findByRole('button', { name: /Delete step only/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: /Delete Action Only/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action' }))
 
     await waitFor(() => expect(spyDeleteIndividualStepFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Action' })).toBeNull()
     })
   })
 
-  it('should delete step and children correctly', async () => {
+  it('should delete steps children correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
@@ -200,12 +246,13 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
-    await userEvent.click(await screen.findByRole('button', { name: /Delete step and children/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Step' }))
+    await userEvent.click(await screen.findByRole('menuitem',
+      { name: /Delete Action\'s Children/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action\'s Children' }))
 
-    await waitFor(() => expect(spyDeleteStepAndChildrenFn).toHaveBeenCalled())
+    await waitFor(() => expect(spyDeleteStepChildrenFn).toHaveBeenCalled())
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Delete Step' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'Delete Action\'s Children' })).toBeNull()
     })
   })
 

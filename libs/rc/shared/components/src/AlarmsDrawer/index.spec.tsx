@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
 
 import {
   Alarm,
@@ -71,9 +72,12 @@ const alarmListMeta = {
   ]
 }
 
+const mockedUseGetAlarmsListQuery = jest.fn()
+
 describe('AlarmsDrawer', () => {
   const requestMetasSpy = jest.fn()
   const deleteByVenue = jest.fn()
+  const deleteAll = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -82,7 +86,10 @@ describe('AlarmsDrawer', () => {
       ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
-        (_, res, ctx) => res(ctx.json(alarmList))
+        (_, res, ctx) => {
+          mockedUseGetAlarmsListQuery()
+          return res(ctx.json(alarmList))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
@@ -99,6 +106,7 @@ describe('AlarmsDrawer', () => {
       rest.patch(
         CommonUrlsInfo.clearAlarm.url,
         (_, res, ctx) => {
+          deleteAll()
           return res(ctx.json({}))}
       )
     )
@@ -121,9 +129,12 @@ describe('AlarmsDrawer', () => {
 
     expect(await screen.findByText('Some_Switch')).toBeVisible()
 
+    await waitFor(() => expect(mockedUseGetAlarmsListQuery).toBeCalled())
+    expect(await screen.findByText('Clear all alarms')).not.toBeDisabled()
+
     await userEvent.click((await screen.findByText('Clear all alarms')))
 
-    expect(deleteByVenue).toBeCalled()
+    expect(deleteAll).toBeCalled()
 
     const cancelButton = await screen.findByRole('button', { name: 'Close' })
     await userEvent.click(cancelButton)
