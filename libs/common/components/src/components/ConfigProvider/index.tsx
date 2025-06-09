@@ -18,13 +18,6 @@ import {
   getReSkinningElements
 } from '@acx-ui/utils'
 
-export const getAntdPopupContainer = (triggerNode: HTMLElement | undefined) => {
-  if (triggerNode?.closest('.ant-select-selector')) {
-    return triggerNode.parentElement ?? document.body
-  }
-  return document.body
-}
-
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
   lang?: LocaleProviderProps['lang']
 }
@@ -34,14 +27,8 @@ function AntConfigProviders (props: ConfigProviderProps) {
   const validateMessages = prepareAntdValidateMessages(useIntl())
 
   return (
-    <AntConfigProvider locale={locale.messages}
-      form={{ validateMessages }}
-      getPopupContainer={getAntdPopupContainer}
-    >
-      <AntProConfigProvider {...props}
-        locale={locale.messages}
-        form={{ validateMessages }}
-      />
+    <AntConfigProvider locale={locale.messages} form={{ validateMessages }}>
+      <AntProConfigProvider {...props} locale={locale.messages} form={{ validateMessages }} />
     </AntConfigProvider>
   )
 }
@@ -64,4 +51,3 @@ export function ConfigProvider (props: ConfigProviderProps) {
     </LocaleProvider>
   )
 }
-
