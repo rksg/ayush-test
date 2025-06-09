@@ -344,7 +344,9 @@ export function PersonaOverview (props:
                   data={[{
                     value: identityDeviceCount,
                     name: $t({ defaultMessage: 'Wi-Fi' }),
-                    color: cssStr('--acx-semantics-green-50')
+                    color: identityDeviceCount > 0
+                      ? cssStr('--acx-semantics-green-50')
+                      : cssStr('--acx-neutrals-50')
                   }]}
                 />
               )}
