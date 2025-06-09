@@ -32,6 +32,7 @@ import {
   useBindingPersonaGroupTemplateWithNetworkMutation,
   useBindingPersonaGroupWithNetworkMutation,
   useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
+  useBindingWorkflowOnNetworkMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
   useDeleteNetworkVenuesMutation,
   useDeleteNetworkVenuesTemplateMutation,
@@ -88,6 +89,7 @@ import { PortalTypeForm }         from './CaptivePortal/PortalTypeForm'
 import { SAMLForm }               from './CaptivePortal/SAMLForm'
 import { SelfSignInForm }         from './CaptivePortal/SelfSignInForm'
 import { WISPrForm }              from './CaptivePortal/WISPrForm'
+import { WorkflowForm }           from './CaptivePortal/WorkflowForm'
 import {
   useUpdateEdgeSdLanActivations
 } from './edgeUtils'
@@ -286,6 +288,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const activateIdentityGroupOnNetwork = useIdentityGroupOnNetworkActivation()
+  const activateWorkflowOnNetwork = useBindingWorkflowOnNetworkActivation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const { updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
@@ -645,6 +648,13 @@ export function NetworkForm (props:{
     return data
   }
 
+  const handleWlanWorkflow = (data: NetworkSaveData) => {
+    if (data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Workflow) {
+      return omit(data, ['guestPortal.workflowId', 'guestPortal.workflowName'])
+    }
+    return data
+  }
+
   const handleWlanSAMLProfile = (data: NetworkSaveData, SAMLFlag: boolean) => {
     if ((data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SAML)
       && SAMLFlag) {
@@ -707,7 +717,10 @@ export function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath){
+    if(
+      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
+      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow
+    ){
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -812,6 +825,8 @@ export function NetworkForm (props:{
         return <DirectoryServerForm directoryServerDataRef={directoryServerDataRef} />
       case GuestNetworkTypeEnum.SAML:
         return <SAMLForm />
+      case GuestNetworkTypeEnum.Workflow:
+        return <WorkflowForm />
       default:
       // eslint-disable-next-line no-console
         console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
@@ -943,6 +958,7 @@ export function NetworkForm (props:{
     // eslint-disable-next-line max-len
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
     const processBindingIdentityGroup = (data: NetworkSaveData) => handleWlanIdentityGroup(data, isWifiIdentityManagementEnable)
+    const processWorkflow = (data: NetworkSaveData) => handleWlanWorkflow(data)
     const processSAMLProfile = (data: NetworkSaveData) => handleWlanSAMLProfile(data, isSSOSamlEnabled)
     const processHostApprovalType = (data: NetworkSaveData) => handleCaptivePortalHostApproval(data)
     const processFns = [
@@ -951,6 +967,7 @@ export function NetworkForm (props:{
       processCloneMode,
       processClientIsolationAllowlist,
       processBindingIdentityGroup,
+      processWorkflow,
       processSAMLProfile,
       processHostApprovalType
     ]
@@ -1022,6 +1039,9 @@ export function NetworkForm (props:{
         )
       }
 
+      if(!isTemplate) {
+        beforeVenueActivationRequest.push(activateWorkflowOnNetwork(formData, networkId))
+      }
 
       await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
@@ -1073,7 +1093,8 @@ export function NetworkForm (props:{
 
     const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const dataRemoveIdentity = handleWlanIdentityGroup(dataWlan, isWifiIdentityManagementEnable)
-    const dataRemoveSAMLProfile = handleWlanSAMLProfile(dataRemoveIdentity, isSSOSamlEnabled)
+    const dataRemoveWorkflow = handleWlanWorkflow(dataRemoveIdentity)
+    const dataRemoveSAMLProfile = handleWlanSAMLProfile(dataRemoveWorkflow, isSSOSamlEnabled)
     const dataRemoveHostApprovalType = handleCaptivePortalHostApproval(dataRemoveSAMLProfile)
     const dataMore = handleGuestMoreSetting(dataRemoveHostApprovalType)
 
@@ -1208,6 +1229,10 @@ export function NetworkForm (props:{
 
       if (isWifiIdentityManagementEnable && (isTemplate ? isIdentityGroupTemplateEnabled : true)) {
         beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, payload.id))
+      }
+
+      if(!isTemplate) {
+        beforeVenueActivationRequest.push(activateWorkflowOnNetwork(formData, payload.id))
       }
 
       if(!isTemplate && isSSOSamlEnabled && formData.samlIdpProfilesId) {
@@ -1583,6 +1608,22 @@ export function useIdentityGroupOnNetworkActivation () {
           }).unwrap()
         }
       }
+    }
+    return null
+  }
+}
+
+function useBindingWorkflowOnNetworkActivation () {
+  const [bindingWorkflow] = useBindingWorkflowOnNetworkMutation()
+  return async (network?: NetworkSaveData, networkId?: string ) => {
+    if (
+      network &&
+      networkId &&
+      network.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+      network.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Workflow &&
+      network.guestPortal?.workflowId
+    ) {
+      return await bindingWorkflow({ params: { networkId, workflowId: network.guestPortal?.workflowId } }).unwrap()
     }
     return null
   }
