@@ -535,7 +535,7 @@ export function getEnhancedL2AclProfileListFn (isTemplate: boolean = false) : Qu
 
     // fill in the mac addresses
     const processFn = async (policy: L2AclPolicy) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         // eslint-disable-next-line max-len
@@ -587,7 +587,7 @@ export function getEnhancedL3AclProfileListFn (isTemplate: boolean = false) : Qu
 
     // fill in rules and network data
     const processFn = async (policy: L3AclPolicy) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         const l3AclPolicyDetail = createHttpRequest(
@@ -635,7 +635,7 @@ export function getEnhancedDeviceProfileListFn (isTemplate: boolean = false) : Q
 
     // fill in rules and network data
     const processFn = async (policy: DevicePolicy) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         const devicePolicyDetail = createHttpRequest(
@@ -684,7 +684,7 @@ export function getEnhancedApplicationProfileListFn (isTemplate: boolean = false
 
     // fill in rules and network data
     const processFn = async (policy: ApplicationPolicy) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         const applicationPolicyDetail = createHttpRequest(
