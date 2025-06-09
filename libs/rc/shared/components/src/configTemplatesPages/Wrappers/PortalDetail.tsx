@@ -3,12 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import {
-  PortalOverview,
-  PortalInstancesTable,
-  ServiceConfigTemplateDetailsLink
-} from '@acx-ui/rc/components'
-import { useGetPortalTemplateQuery } from '@acx-ui/rc/services'
+import { useGetPortalTemplateQuery }                    from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -17,6 +12,9 @@ import {
   getServiceAllowedOperation
 }  from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+
+import { ServiceConfigTemplateDetailsLink }     from '../../configTemplates'
+import { PortalInstancesTable, PortalOverview } from '../../services'
 
 export default function PortalServiceDetail () {
   const { $t } = useIntl()

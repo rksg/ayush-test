@@ -152,3 +152,190 @@ export const mockedMSPCustomerList = {
     }
   ]
 }
+
+export const mockPortalList = {
+  fields: [
+    'id',
+    'network',
+    'venues',
+    'health',
+    'abandonmentRate',
+    'clients',
+    'clientsPortal'
+  ],
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'NetA',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 88
+    },
+    {
+      id: '7',
+      name: 'NetB',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
+        name: 'Network B',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 64
+    },
+    {
+      id: '8',
+      name: 'NetC',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
+        name: 'Network C',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 1, names: [] },
+      clients: 86
+    },
+    {
+      id: '4',
+      name: 'NetD',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
+        name: 'Network E',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 2, names: [] },
+      clients: 70
+    }
+  ]
+}
+export const mockPortalDetailResult = {
+  id: 1,
+  name: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgImage: '',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing' +
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    },
+    displayLangCode: 'en',
+
+    alternativeLang: {
+      cs: true,
+      zh_TW: false,
+      fi: true,
+      fr: true,
+      de: true,
+      el: true,
+      hu: true,
+      it: false
+    }
+  }
+}
+
+export const mockedNetworkTemplates = {
+  fields: [
+    'id',
+    'name',
+    'nwSubType',
+    'captiveType',
+    'network',
+    'venues',
+    'clients'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'NetT',
+      nwSubType: 'guest',
+      captiveType: 'GuestPass',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 88
+    }
+  ]
+}
+
+export const mockedEnhancedPortalList = {
+  data: [{ id: 'test', name: 'test', displayLangCode: 'en', wifiNetworkIds: ['networkId'] }],
+  paging: { page: 1, pageSize: 10, totalCount: 1 }
+}
+
+
+export const mockedVenueTemplate = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  createdDate: '2022-07-08T04:59:22.351+00:00',
+  description: '',
+  floorPlans: [],
+  id: '4c778ed630394b76b17bce7fe230cf9f',
+  name: 'My Template Venue',
+  updatedDate: '2022-07-08T04:59:22.351+00:00'
+}
+
+export const mockVenueTemplateList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '069c06765c9841fcaf35bb5dbd2319eb',
+      name: 'My1stVenueTemplate1'
+    },
+    {
+      id: 'eb9555414ea444aa984d5399f0c1c892',
+      name: 'My1stVenueTemplate2'
+    }
+  ]
+}

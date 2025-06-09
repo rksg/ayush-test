@@ -5,8 +5,8 @@ import { renderHook }         from '@acx-ui/test-utils'
 import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+jest.mock('../../configTemplates', () => ({
+  ...jest.requireActual('../../configTemplates'),
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 

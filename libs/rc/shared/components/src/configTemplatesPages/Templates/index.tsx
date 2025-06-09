@@ -11,16 +11,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }               from '@acx-ui/msp/utils'
-import {
-  useAccessControlSubPolicyVisible,
-  ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-  isAccessControlSubPolicy,
-  AccessControlSubPolicyDrawers,
-  subPolicyMappingType, isNotAllowToApplyPolicy,
-  AccessControlSubPolicyVisibility
-} from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
 import {
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
@@ -56,8 +48,10 @@ import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-do
 import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
+import { CommonConfigTemplateDrawerProps }                                                                                                                                                                                  from '..'
+import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, isNotAllowToApplyPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '../../policies'
+
 import { AppliedToTenantDrawer }                            from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }                              from './ApplyTemplateDrawer'
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
 import { ShowDriftsDrawer }                                 from './ShowDriftsDrawer'
@@ -68,7 +62,13 @@ import {
 } from './templateUtils'
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
-export function ConfigTemplateList () {
+
+interface ConfigTemplateListProps {
+  ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+}
+
+export function ConfigTemplateList (props: ConfigTemplateListProps) {
+  const { ApplyTemplateDrawer } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()

@@ -3,24 +3,23 @@ import { useContext, useState } from 'react'
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
-import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery }                   from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                           from '@acx-ui/msp/utils'
+import {
+  ConfigTemplateOverrideModal, CustomerFirmwareReminder, MAX_APPLICABLE_EC_TENANTS,
+  overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
+  useConfigTemplateOverride, useEcFilters
+} from '@acx-ui/rc/components'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 import { AccountTier, AccountType }                          from '@acx-ui/utils'
 
-import HspContext                                                                         from '../../../HspContext'
-import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
-import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
-import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
-import { OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride } from '../Overrides/utils'
+import HspContext from '../../../HspContext'
 
-import { CustomerFirmwareReminder } from './CustomerFirmwareReminder'
-import * as UI                      from './styledComponents'
-import { useEcFilters }             from './templateUtils'
+import * as UI from './styledComponents'
 
 
 const mspUtils = MSPUtils()

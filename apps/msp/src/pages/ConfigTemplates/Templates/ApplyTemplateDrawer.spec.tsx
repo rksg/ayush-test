@@ -10,8 +10,8 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 
 import { ApplyTemplateConfirmationDrawer, ApplyTemplateDrawer } from './ApplyTemplateDrawer'
 
-jest.mock('./CustomerFirmwareReminder', () => ({
-  ...jest.requireActual('./CustomerFirmwareReminder'),
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
 }))
 

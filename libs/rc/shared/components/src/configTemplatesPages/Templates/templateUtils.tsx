@@ -3,13 +3,9 @@ import { useMemo } from 'react'
 import moment                               from 'moment'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { Button }                                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import {
-  ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility,
-  isAccessControlSubPolicy, renderConfigTemplateDetailsComponent, subPolicyMappingType
-} from '@acx-ui/rc/components'
+import { Button }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
 import {
   ConfigTemplate,
   ConfigTemplateDriftType,
@@ -20,6 +16,12 @@ import {
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
+
+import { renderConfigTemplateDetailsComponent }     from '../../configTemplates'
+import {
+  ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility,
+  isAccessControlSubPolicy, subPolicyMappingType
+} from '../../policies'
 
 import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
 

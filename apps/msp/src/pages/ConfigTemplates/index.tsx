@@ -1,21 +1,7 @@
-import { useIntl } from 'react-intl'
+import { ConfigTemplateView } from '@acx-ui/rc/components'
 
-import { PageHeader } from '@acx-ui/components'
+import { ApplyTemplateDrawer } from './Templates/ApplyTemplateDrawer'
 
-import { ConfigTemplateList } from './Templates'
-
-export enum ConfigTemplateTabKey {
-  TEMPLATES = 'templates',
-  BUNDLES = 'bundles'
-}
-
-export function ConfigTemplate () {
-  const { $t } = useIntl()
-
-  return (
-    <>
-      <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
-      <ConfigTemplateList />
-    </>
-  )
+export function ConfigTemplatePage () {
+  return <ConfigTemplateView ApplyTemplateDrawer={ApplyTemplateDrawer} />
 }

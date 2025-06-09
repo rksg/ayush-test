@@ -1,6 +1,7 @@
-import { Features }                 from '@acx-ui/feature-toggle'
-import { withTemplateFeatureGuard } from '@acx-ui/rc/components'
-import { ConfigTemplateType }       from '@acx-ui/rc/utils'
+import { Features }           from '@acx-ui/feature-toggle'
+import { ConfigTemplateType } from '@acx-ui/rc/utils'
+
+import { withTemplateFeatureGuard } from '../../../../configTemplates'
 
 import { activationViewerMap, isAllowedDisplayActivationType } from './constants'
 

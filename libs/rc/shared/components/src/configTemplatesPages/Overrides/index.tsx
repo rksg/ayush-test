@@ -8,6 +8,10 @@ import { getConfigTemplateTypeLabel } from '../Templates/templateUtils'
 import { overrideComponentMap } from './contentsMap'
 import { OverrideEntitiyType }  from './types'
 
+export { overrideDisplayViewMap } from './contentsMap'
+export {
+  OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride
+} from './utils'
 
 export interface ConfigTemplateOverrideModalProps {
   templateId: string
