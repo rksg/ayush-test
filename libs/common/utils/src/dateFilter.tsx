@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { message }         from 'antd'
 import { ArgsProps }       from 'antd/lib/message'
@@ -6,7 +6,6 @@ import moment              from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 }    from 'uuid'
 
-import { get } from '@acx-ui/config'
 
 import { DateRangeFilter, DateRange, getDateRangeFilter } from './dateUtil'
 import { getIntl }                                        from './intlUtil'
@@ -28,12 +27,11 @@ export const useDateFilter = ({
 } = {})=> {
   const { read, write } = useEncodedParameter<DateFilter>('period')
   const { $t } = getIntl()
-  const isRA = get('IS_MLISA_SA')
   const period = read()
 
   const [, setSearch] = useSearchParams()
 
-  return useMemo(() => {
+  const result = useMemo(() => {
     const earliestStartData = (earliestStart || moment().subtract(3, 'months').subtract(1, 'hour'))
     const isSameOrAfter = period && moment(period.startDate).isSameOrAfter(earliestStartData)
     const dateFilter = isSameOrAfter
@@ -45,34 +43,39 @@ export const useDateFilter = ({
         initiated: (new Date()).getTime() // for when we click same relative date again
       })
     }
-    const url = new URL(window.location.href)
-
-    const clearDateFilter = () => {
-      const newSearch = new URLSearchParams(window.location.search)
-      newSearch.delete('period')
-      setSearch(newSearch, { replace: true })
-    }
-
-    if(showResetMsg && url.searchParams.get('period') && !isSameOrAfter) {
-      clearDateFilter()
-      showToast({
-        key: 'dateFilterResetToast',
-        type: 'success',
-        // eslint-disable-next-line max-len
-        content: $t(
-          // eslint-disable-next-line max-len
-          { defaultMessage: 'Note that your Calendar selection has been updated in line with current page default/max values.' }
-        )
-      })
-    }
 
     return {
       dateFilter,
       setDateFilter,
+      isSameOrAfter,
       ...dateFilter
     } as const
-  }, isRA ? [read, write] : [read, write, period]) // eslint-disable-line react-hooks/exhaustive-deps
-  // if we add earliestStart as deps, the date will start sliding again
+  }, [read, write])
+
+  // useEffect 放副作用：更新 URL 和顯示 toast
+  useEffect(() => {
+    if (!showResetMsg) return
+
+    const url = new URL(window.location.href)
+
+    if (url.searchParams.get('period') && !result.isSameOrAfter) {
+      const newSearch = new URLSearchParams(url.search)
+      newSearch.delete('period')
+      setSearch(newSearch, { replace: true })
+
+      showToast({
+        key: 'dateFilterResetToast',
+        type: 'success',
+        content: $t({
+          defaultMessage:
+            // eslint-disable-next-line max-len
+            'Note that your Calendar selection has been updated in line with current page default/max values.'
+        })
+      })
+    }
+  }, [showResetMsg, result.isSameOrAfter])
+
+  return result
 }
 
 type ToastType = 'info' | 'success' | 'error'
