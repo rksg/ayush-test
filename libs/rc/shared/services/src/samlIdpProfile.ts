@@ -267,6 +267,7 @@ export const {
   useGetSamlIdpProfileByIdQuery,
   useLazyGetSamlIdpProfileByIdQuery,
   useGetSamlIdpProfileWithRelationsByIdQuery,
+  useLazyGetSamlIdpProfileWithRelationsByIdQuery,
   useGetSamlIdpProfileViewDataListQuery,
   useLazyGetSamlIdpProfileViewDataListQuery,
   useActivateSamlEncryptionCertificateMutation,

@@ -3788,6 +3788,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
+    getServerCertificate: build.query<ServerCertificate, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ServerCertificate', id: 'DETAIL' }]
     })
   })
 })
@@ -4043,5 +4053,6 @@ export const {
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
   useGenerateClientServerCertificatesMutation,
-  useUploadCertificateMutation
+  useUploadCertificateMutation,
+  useLazyGetServerCertificateQuery
 } = policyApi

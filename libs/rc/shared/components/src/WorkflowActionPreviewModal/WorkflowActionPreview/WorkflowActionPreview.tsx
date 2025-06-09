@@ -14,10 +14,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
+  ActionTypeTitle,
   DefaultUIConfiguration,
   GenericActionData,
   toReactFlowData,
-  ActionTypeTitle,
   UIConfiguration,
   WorkflowStep,
   WorkflowUrls
@@ -41,7 +41,8 @@ const previewMap = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
   [ActionType.DPSK]: DpskActionPreview,
   [ActionType.MAC_REG]: MacRegActionPreview,
-  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview,
+  [ActionType.SAML_AUTH]: undefined
 }
 
 export interface WorkflowActionPreviewProps {
@@ -276,8 +277,8 @@ function CommonPreviewContainer (props: {
   const ActionPreview = previewMap[step?.actionType ?? actionData?.actionType ?? ActionType.AUP]
 
   return (
-    <Loader states={[{ isLoading, isFetching }]}>
+    ActionPreview ? <Loader states={[{ isLoading, isFetching }]}>
       <ActionPreview data={actionData ?? data} uiConfiguration={ui}/>
-    </Loader>
+    </Loader> : <></>
   )
 }

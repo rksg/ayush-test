@@ -18,12 +18,14 @@ export interface ActionNavigationDrawerProps {
   selectedStepId?: string
 }
 
+const disablePreviewActionTypeSet = new Set<ActionType>([ ActionType.SAML_AUTH ])
 
 function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedId?: string)
 : DataNode[] {
   const dataNodes:DataNode[] = []
   const { $t } = getIntl()
-  nodes.filter(node => node.type !== 'START' as ActionType)
+  nodes.filter(node => node.type !== 'START' as ActionType
+  && !disablePreviewActionTypeSet.has(node.type as ActionType))
     .forEach(node => {
       dataNodes.push(
         {

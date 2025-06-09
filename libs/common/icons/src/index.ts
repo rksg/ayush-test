@@ -427,6 +427,7 @@ export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 export { ReactComponent as OweTransition } from './icons/OweTransition.svg'
+export { ReactComponent as SamlAuthActionTypeIcon } from './icons/SamlAuthActionTypeIcon.svg'
 
 
 export * from './styledComponents'

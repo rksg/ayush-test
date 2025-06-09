@@ -17,6 +17,8 @@ import { useWorkflowContext }         from '../WorkflowContextProvider'
 import * as UI               from './styledComponents'
 import { EditorToolbarIcon } from './styledComponents'
 
+const disablePreviewActionTypeSet = new Set<ActionType>([ ActionType.SAML_AUTH ])
+
 export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string })
 {
@@ -76,6 +78,8 @@ export default function BaseStepNode (props: NodeProps
     setIsPreviewOpen(false)
   }
 
+  const disablePreviewTooltip = disablePreviewActionTypeSet.has(props.type as ActionType)
+
   const stepToolBar = (
     <Space size={12} direction={'horizontal'}>
       <Tooltip title={$t({ defaultMessage: 'Edit this action' })}>
@@ -88,14 +92,16 @@ export default function BaseStepNode (props: NodeProps
           onClick={onEditClick}
         />
       </Tooltip>
-      <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
-        <Button
-          size={'small'}
-          type={'link'}
-          icon={<EditorToolbarIcon><EyeOpenOutlined/></EditorToolbarIcon>}
-          onClick={onPreviewClick}
-        />
-      </Tooltip>
+      {!disablePreviewTooltip &&
+        <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
+          <Button
+            size={'small'}
+            type={'link'}
+            icon={<EditorToolbarIcon><EyeOpenOutlined /></EditorToolbarIcon>}
+            onClick={onPreviewClick}
+          />
+        </Tooltip>
+      }
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
         <Button
           size={'small'}

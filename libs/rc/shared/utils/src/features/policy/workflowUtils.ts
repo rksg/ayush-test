@@ -9,7 +9,7 @@ import {
   DisplayMessageActionTypeIcon,
   DpskActionTypeIcon,
   MacRegActionTypeIcon,
-  CertTemplateActionTypeIcon
+  CertTemplateActionTypeIcon, SamlAuthActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -68,7 +68,8 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' }),
+  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
@@ -77,7 +78,8 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
   [ActionType.DPSK]: DpskActionTypeIcon,
   [ActionType.MAC_REG]: MacRegActionTypeIcon,
-  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon,
+  [ActionType.SAML_AUTH]: SamlAuthActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -86,7 +88,8 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' }),
+  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'SAML Authentication' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
@@ -95,7 +98,8 @@ export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' }),
-  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' })
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' }),
+  [ActionType.SAML_AUTH]: defineMessage({ defaultMessage: 'Prompts the user to authenticate through a SAML Identity Provider' })
 }
 
 export const AupActionDefaultValue: {
@@ -144,7 +148,8 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
   [ActionType.DPSK]: {},
   [ActionType.MAC_REG]: {},
-  [ActionType.CERT_TEMPLATE]: {}
+  [ActionType.CERT_TEMPLATE]: {},
+  [ActionType.SAML_AUTH]: {}
 }
 /* eslint-enable max-len */
 

@@ -22,8 +22,7 @@ import {
   MacRegistrationSettings,
   CertTemplateSettings
 } from './WorkflowActionSettingForm'
-
-
+import { SamlAuthSettings } from './WorkflowActionSettingForm/SamlAuthSettings'
 
 export interface StepDrawerProps {
   isEdit: boolean,
@@ -42,8 +41,11 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
   [ActionType.DPSK]: DpskSettings,
   [ActionType.MAC_REG]: MacRegistrationSettings,
-  [ActionType.CERT_TEMPLATE]: CertTemplateSettings
+  [ActionType.CERT_TEMPLATE]: CertTemplateSettings,
+  [ActionType.SAML_AUTH]: SamlAuthSettings
 }
+
+const disablePreviewActionTypeSet = new Set<ActionType>([ ActionType.SAML_AUTH ])
 
 export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
@@ -67,6 +69,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     isError: isActionError
   } ] = useLazyGetActionByIdQuery()
 
+  const disablePreview = disablePreviewActionTypeSet.has(actionType)
 
   useEffect(() => {
     formInstance.resetFields()
@@ -154,7 +157,7 @@ export default function StepDrawer (props: StepDrawerProps) {
               [getOpsApi(WorkflowUrls.createAction)] })}
           extra={
             <Button
-              disabled={isLoading}
+              disabled={isLoading || disablePreview}
               type={'link'}
               icon={<EyeOpenSolid/>}
               onClick={() => {
