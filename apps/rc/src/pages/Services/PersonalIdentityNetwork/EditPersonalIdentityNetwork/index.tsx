@@ -8,7 +8,7 @@ import { Loader, PageHeader }                                                   
 import { Features }                                                                                        from '@acx-ui/feature-toggle'
 import { useEdgePinActions, useIsEdgeFeatureReady }                                                        from '@acx-ui/rc/components'
 import { PersonalIdentityNetworkApiVersion, useGetEdgePinByIdQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }                     from '@acx-ui/rc/utils'
+import { ServiceType, useServiceListBreadcrumb }                                                           from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,
@@ -53,9 +53,6 @@ const EditPersonalIdentityNetwork = () => {
     })
   })
 
-  const tablePath = getServiceRoutePath(
-    { type: ServiceType.PIN, oper: ServiceOperation.LIST })
-
   const initFormValues = useMemo(() => {
     return {
       id: pinData?.id,
@@ -82,11 +79,7 @@ const EditPersonalIdentityNetwork = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Personal Identity Network Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Personal Identity Network' }), link: tablePath }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PIN)}
       />
       <PersonalIdentityNetworkFormDataProvider
         venueId={pinData?.venueId}

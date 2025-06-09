@@ -3,11 +3,13 @@ import React from 'react'
 import { Space, Typography }         from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
+import { LinkDocumentIcon } from '@acx-ui/icons'
 
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { SideNotes }            from '../../common/SideNotes'
+import { AiFeatures }           from '../../config'
 import { useIntentContext }     from '../../IntentContext'
+import ResourcesLinks           from '../../ResourcesLinks'
 import { useDownloadData }      from '../RRMGraph/DownloadRRMComparison'
 
 export const Introduction: React.FC = () => {
@@ -16,30 +18,12 @@ export const Introduction: React.FC = () => {
     latency, better signal quality, stable connections, enhanced user experience, longer battery
     life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading
     to higher data rates, higher SNR, consistent performance, and balanced network load.` })
-  const linkProps = { target: '_blank', rel: 'noreferrer' }
-  const resources = [
-    {
-      icon: <LinkVideoIcon />,
-      label: $t({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }),
-      link: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
-    },
-    {
-      icon: <LinkDocumentIcon />,
-      label: $t({ defaultMessage: 'RUCKUS AI User Guide' }),
-      // eslint-disable-next-line max-len
-      link: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
-    }
-  ].map((item, index) => (
-    <a {...linkProps} href={item.link} key={`resources-${index}`} target='_blank' rel='noreferrer'>
-      <Space>{item.icon}{item.label}</Space>
-    </a>
-  ))
   return <SideNotes>
     <SideNotes.Section title={$t({ defaultMessage: 'Benefits' })}>
       <Typography.Paragraph children={benefits} />
     </SideNotes.Section>
     <SideNotes.Section title={$t({ defaultMessage: 'Resources' })}>
-      <Typography.Paragraph children={resources} />
+      <Typography.Paragraph children={<ResourcesLinks feature={AiFeatures.RRM} />} />
     </SideNotes.Section>
   </SideNotes>
 }

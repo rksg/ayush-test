@@ -246,6 +246,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           data: {
             options: [],
             isLockedOptions: true,
+            isLockedIpsec: false,
             activationProfiles
           } as IpSecOptionsData }
 
@@ -295,6 +296,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
               options: options,
               id: ipsecProfileId,
               isLockedOptions: true,
+              isLockedIpsec: true,
               ...commonData
             } as IpSecOptionsData
           }
@@ -334,7 +336,8 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
               options: listData.map((item) =>
                 ({ value: item.id, label: item.name, disabled: true })) ,
               id: '',
-              isLockedOptions: true
+              isLockedOptions: true,
+              isLockedIpsec: false
             } as IpSecOptionsData
           }
         }
@@ -344,6 +347,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
               ({ value: item.value, label: item.label, disabled: false })) ,
             id: ipsecProfileId,
             isLockedOptions: false,
+            isLockedIpsec: false,
             ...commonData
           } as IpSecOptionsData
         }

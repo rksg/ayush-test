@@ -85,7 +85,11 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
                 validator: (_, value) => connectorNameRegExp(value)
               }]}
             >
-              <Input data-testid='name' />
+              <Input
+                data-testid='name'
+                onBlur={(e) => {
+                  e.target.value && form.setFieldsValue({ name: e.target.value.trim() })
+                }}/>
             </Form.Item>
             <Form.Item
               name='dataSource'

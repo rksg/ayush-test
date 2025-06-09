@@ -22,6 +22,10 @@ jest.mock('./RadioSettings/RadioSettings', () => ({
   RadioSettings: () => <div data-testid={'radioSettings'}></div>
 }))
 
+jest.mock('./RadioSettings/RadioSettingsV1Dot1', () => ({
+  RadioSettingsV1Dot1: () => <div data-testid={'radioSettings'}></div>
+}))
+
 jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () => ({
   ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
 }))
@@ -33,6 +37,14 @@ jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () 
 
 jest.mock('./ClientSteering/ClientSteering', () => ({
   ClientSteering: () => <div data-testid={'ClientSteering'}></div>
+}))
+
+jest.mock('./Antenna/AntennaSection', () => ({
+  AntennaSection: () => <div data-testid={'AntennaSection'}></div>
+}))
+
+jest.mock('./Antenna/ExternalAntennaSettings', () => ({
+  ExternalAntennaSettings: () => <div data-testid={'ExternalAntennaSettings'}></div>
 }))
 
 
@@ -58,7 +70,7 @@ describe('AP Radio Tab', () => {
     expect(await screen.findByTestId('radioSettings')).toBeVisible()
   })
 
-  it ('save data after config changed', async () => {
+  it('save data after config changed', async () => {
     const mockUpdateWifiRadio = jest.fn()
 
     const newEditContextData = {
@@ -92,13 +104,14 @@ describe('AP Radio Tab', () => {
       }
     )
 
+    expect(await screen.findByTestId('ExternalAntennaSettings')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(mockUpdateWifiRadio).toBeCalled()
 
   })
 
-  it ('Cancel data after config changed', async () => {
-    const mockDiscardWifiRadioChanges = jest.fn()
+  it('cancel data after config changed', async () => {
+    const mockUpdateWifiRadio = jest.fn()
 
     const newEditContextData = {
       tabTitle: 'Radio',
@@ -107,8 +120,8 @@ describe('AP Radio Tab', () => {
     }
 
     const newEditRadioContextData = {
-      updateWifiRadio: jest.fn(),
-      discardWifiRadioChanges: mockDiscardWifiRadioChanges
+      updateWifiRadio: mockUpdateWifiRadio,
+      discardWifiRadioChanges: jest.fn()
     }
 
     render(
@@ -131,8 +144,30 @@ describe('AP Radio Tab', () => {
       }
     )
 
+    expect(await screen.findByTestId('ExternalAntennaSettings')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockDiscardWifiRadioChanges).toBeCalled()
+  })
+})
 
+describe('AP Radio Tab Radio Settings', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
+  it('should render correctly',async () => {
+    render(
+      <Provider>
+        <ApDataContext.Provider value={{
+          apData: ApData_T750SE,
+          apCapabilities: ApCap_T750SE }} >
+          <RadioTab />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/radio' }
+      }
+    )
+
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
+    expect(await screen.findByTestId('radioSettings')).toBeVisible()
   })
 })

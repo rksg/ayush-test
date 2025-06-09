@@ -3,7 +3,6 @@ import {
   DpskWlanAdvancedCustomization,
   MaxRateEnum,
   NetworkSaveData,
-  NetworkSegmentTypeEnum,
   NetworkTypeEnum,
   NetworkVenue,
   RadioEnum,
@@ -121,7 +120,8 @@ describe('NetworkForm parser', () => {
       }
       const tunnelInfo = {
         enableVxLan: true,
-        tunnelType: NetworkSegmentTypeEnum.VXLAN
+        enableTunnel: false,
+        vxLanTunnels: undefined
       }
 
       const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData, tunnelInfo)
@@ -280,13 +280,15 @@ describe('NetworkForm parser', () => {
     const incomingData: NetworkSaveData = {
       type: NetworkTypeEnum.AAA,
       useCertificateTemplate: true,
-      certificateTemplateId: 'testId'
+      certificateTemplateId: 'testId',
+      certificateTemplateIds: ['id1', 'id2']
     } as unknown as NetworkSaveData
 
     // eslint-disable-next-line max-len
     expect(tranferSettingsToSave(incomingData, true)).toMatchObject({
       certificateTemplateId: 'testId',
-      useCertificateTemplate: true
+      useCertificateTemplate: true,
+      certificateTemplateIds: ['id1', 'id2']
     })
   })
 })

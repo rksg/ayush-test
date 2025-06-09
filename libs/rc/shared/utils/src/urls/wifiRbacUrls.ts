@@ -105,6 +105,15 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelCapabilities',
     newApi: true
   },
+  getApGroupApCapabilities: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelCapabilities',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getAp: {
     method: 'get',
     // url: '/venues/aps/:serialNumber?operational=false',
@@ -479,6 +488,33 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   bindingSpecificIdentityPersonaGroupWithNetwork: {
     method: 'PUT',
     url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId/identities/:identityId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingWorkflowOnNetwork: {
+    method: 'PUT',
+    url: '	/wifiNetworks/:networkId/workflowProfiles/:workflowId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueApIpMode: {
+    method: 'GET',
+    url: '/venues/:venueId/apIpModeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateVenueApIpMode: {
+    method: 'PUT',
+    url: '/venues/:venueId/apIpModeSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

@@ -24,7 +24,8 @@ import {
   fakeIncidentPortCongestion,
   fakeIncidentUplinkPortCongestion,
   fakeIncidentLoopDetection,
-  fakeIncidentLLDPStatus
+  fakeIncidentLLDPStatus,
+  fakeIncidentPortFlap
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { Provider }                            from '@acx-ui/store'
@@ -56,6 +57,7 @@ import { SwitchLoopDetection }        from './SwitchLoopDetection'
 import { SwitchMemoryHigh }           from './SwitchMemoryHigh'
 import { SwitchPoePd }                from './SwitchPoePd'
 import { SwitchPortCongestion }       from './SwitchPortCongestion'
+import { SwitchPortFlap }             from './SwitchPortFlap'
 import { SwitchTcpSynDDoS }           from './SwitchTcpSynDDoS'
 import { SwitchUplinkPortCongestion } from './SwitchUplinkPortCongestion'
 import { SwitchVlanMismatch }         from './SwitchVlanMismatch'
@@ -96,6 +98,10 @@ jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
 jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
   ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
 }))
+jest.mock('../Charts/ImpactedSwitchesTable', () => ({
+  ImpactedSwitchesTable: () => <div data-testid='impactedSwitchesTable' />
+}))
+
 
 jest.mock('../Charts/ImpactedSwitchesDonut/byParam', () => ({
   ImpactedSwitchesByParamDonut: () => <div data-testid='ImpactedSwitchesByParamDonut' />
@@ -248,6 +254,13 @@ describe('Test', () => {
         fakeIncident: fakeIncidentLLDPStatus,
         hasNetworkImpact: false,
         hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: SwitchPortFlap,
+        fakeIncident: fakeIncidentPortFlap,
+        hasNetworkImpact: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
@@ -453,6 +466,13 @@ describe('Test', () => {
     {
       component: SwitchLLDPStatus,
       fakeIncident: fakeIncidentLLDPStatus,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchPortFlap,
+      fakeIncident: fakeIncidentPortFlap,
       hasNetworkImpact: false,
       hasTimeSeries: false,
       charts: []

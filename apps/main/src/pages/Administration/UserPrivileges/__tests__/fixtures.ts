@@ -619,7 +619,7 @@ export const fakedScopeTree =[
           {
             id: 'cdf2fa2bf09840f993ff0f3eaac023y4',
             name: 'wired.network_control_services.web_authority-c',
-            description: 'Web Authority',
+            description: 'PIN Portal for Switch',
             category: 'Wired',
             parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac023x3'
           }
@@ -774,7 +774,7 @@ export const fakedScopeTree =[
           {
             id: 'cdf2fa2bf09840f993ff0f3eaac043y4',
             name: 'wired.network_control_services.web_authority-d',
-            description: 'Web Authority',
+            description: 'PIN Portal for Switch',
             category: 'Wired',
             parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac043x3'
           }
@@ -1762,7 +1762,7 @@ export const fakedScopeTree =[
           {
             id: 'cdf2fa2bf09840f993ff0f3eaac033y4',
             name: 'wired.network_control_services.web_authority-u',
-            description: 'Web Authority',
+            description: 'PIN Portal for Switch',
             category: 'Wired',
             parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac033x3'
           }
@@ -2323,7 +2323,7 @@ export const fakedScopeTree =[
           {
             id: 'cdf2fa2bf09840f993ff0f3eaac013y4',
             name: 'wired.network_control_services.web_authority-r',
-            description: 'Web Authority',
+            description: 'PIN Portal for Switch',
             category: 'Wired',
             parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac013x3'
           }

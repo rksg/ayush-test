@@ -1,6 +1,5 @@
 import {
   ClusterNetworkMultiWanSettings,
-  EdgeClusterStatus,
   EdgeLinkDownCriteriaEnum,
   EdgeMultiWanModeEnum,
   EdgeMultiWanProtocolEnum,
@@ -49,7 +48,7 @@ export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum | undefined)
 
   switch (type) {
     case EdgeMultiWanProtocolEnum.PING:
-      return $t({ defaultMessage: 'Ping' })
+      return $t({ defaultMessage: 'ICMP (Ping)' })
     case EdgeMultiWanProtocolEnum.NONE:
     default:
       return ''
@@ -75,9 +74,4 @@ export const getDisplayWanRole = (priority: number) => {
   const { $t } = getIntl()
   if (priority === 0) return ''
   return priority === 1 ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Backup' })
-}
-
-export const isMultiWanClusterPrerequisite = (clusterInfo: EdgeClusterStatus | undefined) => {
-  if (!clusterInfo) return false
-  return (clusterInfo.edgeList?.length ?? 0) === 1
 }

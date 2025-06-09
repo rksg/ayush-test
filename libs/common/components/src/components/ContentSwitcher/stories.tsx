@@ -24,3 +24,10 @@ const tabDetails: ContentSwitcherProps['tabDetails'] = [
 
 storiesOf('ContentSwitcher', module)
   .add('Basic',()=><ContentSwitcher tabDetails={tabDetails} size='small' align='left'/>)
+  .add('Persistent',()=><ContentSwitcher
+    tabId={'storybook-tab'}
+    tabDetails={tabDetails}
+    size='small'
+    align='left'
+    tabPersistence={true}
+  />)

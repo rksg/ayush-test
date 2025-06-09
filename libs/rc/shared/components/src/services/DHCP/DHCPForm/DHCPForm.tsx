@@ -42,6 +42,7 @@ export function DHCPForm (props: DHCPFormProps) {
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
+
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
@@ -78,6 +79,8 @@ export function DHCPForm (props: DHCPFormProps) {
         })
       }
       await saveOrUpdateDHCP({ params, payload, enableRbac: resolvedEnableRbac }).unwrap()
+
+      navigateToPreviousPage(true)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -114,12 +117,7 @@ export function DHCPForm (props: DHCPFormProps) {
           formRef={formRef}
           editMode={editMode}
           onCancel={navigateToPreviousPage}
-          onFinish={
-            async (data)=>{
-              await handleAddOrUpdateDHCP(data)
-              navigateToPreviousPage(true)
-            }
-          }
+          onFinish={handleAddOrUpdateDHCP}
         >
           <StepsFormLegacy.StepForm
             name='settings'

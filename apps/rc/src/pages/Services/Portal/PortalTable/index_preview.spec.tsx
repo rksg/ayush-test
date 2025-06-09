@@ -33,6 +33,16 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  PortalPreviewModal: () => <div data-testid='PortalPreviewModal' />,
+  SimpleListTooltip: () => <div data-testid='SimpleListTooltip' />,
+  getLanguage: () => 'English',
+  initialPortalData: {
+    network: [],
+    content: {}
+  }
+}))
+
 describe('PortalTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -82,11 +92,11 @@ describe('PortalTable', () => {
       }
     )
 
-    const targetPortal = mockedPortalList.content[0]
+    const targetPortal = mockedPortalList.content[1]
     expect(await screen.findByRole('button', { name: /Add Guest Portal/i })).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('row', { name: new RegExp(targetPortal.serviceName) })).toBeVisible()
-    await userEvent.click(await screen.findByLabelText('78f92fbf80334e8b83cddd3210db4920'))
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.serviceName) })
+    expect(row).toBeVisible()
+    await userEvent.click(row)
     expect(await screen.findByText('1 selected')).toBeVisible()
   })
 })

@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { directoryServerApi }                                                from '@acx-ui/rc/services'
 import { DirectoryServerUrls }                                               from '@acx-ui/rc/utils'
 import { Path }                                                              from '@acx-ui/react-router-dom'
@@ -120,5 +121,25 @@ describe('DirectoryServerSettingForm', () => {
     expect(await screen.findByText('Server Address')).toBeVisible()
     expect(await screen.findByText(`${currentData.host}:${currentData.port}`)).toBeVisible()
     expect(await screen.findByText('Off')).toBeVisible()
+  })
+
+  it('should render identity attributes mapping when FF enabled', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <DirectoryServerSettingForm
+            policyId={params.policyId}
+          />
+        </Form>
+      </Provider>,
+      { route: { params } }
+    )
+
+    expect(await screen.findByText('Identity Attributes & Claims Mapping')).toBeVisible()
   })
 })

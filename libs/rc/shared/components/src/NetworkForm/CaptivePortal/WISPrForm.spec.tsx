@@ -253,6 +253,153 @@ describe('CaptiveNetworkForm-WISPr', () => {
     })
   })
 
+  describe('RedirectUrlInput functionality', () => {
+
+    // Mock data for testing
+    const mockNetworkWithRedirectUrl = {
+      type: 'guest',
+      guestPortal: {
+        ...wisprDataWPA2.guestPortal,
+        redirectUrl: 'http://example.com'
+      },
+      tenantId: 'tenant-id',
+      id: 'network-id',
+      wlan: { ...wisprDataWPA2.wlan }
+    }
+
+    const mockNetworkWithoutRedirectUrl = {
+      ...mockNetworkWithRedirectUrl,
+      guestPortal: {
+        ...mockNetworkWithRedirectUrl.guestPortal,
+        redirectUrl: undefined
+      }
+    }
+
+    it('should set redirectCheckbox to true when in edit mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should set redirectCheckbox to true when in clone mode and redirectUrl exists', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: true,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      await waitFor(() => {
+        expect(checkbox).toBeChecked()
+      })
+    })
+
+    it('should not set redirectCheckbox to true when not in edit or clone mode', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: false,
+              cloneMode: false,
+              data: mockNetworkWithRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+
+    it('should not set redirectCheckbox to true when in edit mode but redirectUrl does not exist', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider
+            value={{
+              editMode: true,
+              cloneMode: false,
+              data: mockNetworkWithoutRedirectUrl,
+              isRuckusAiMode: false
+            }}
+          >
+            <MLOContext.Provider value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}>
+              <StepsFormLegacy>
+                <StepsFormLegacy.StepForm>
+                  <WISPrForm />
+                </StepsFormLegacy.StepForm>
+              </StepsFormLegacy>
+            </MLOContext.Provider>
+          </NetworkFormContext.Provider>
+        </Provider>
+      )
+
+      // Check if the redirectCheckbox is not checked
+      const checkbox = await screen.findByRole('checkbox', { name: /Redirect users to/ })
+      expect(checkbox).not.toBeChecked()
+    })
+  })
+
   describe('WISPr network with RBAC API', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
     const mockGetFun = jest.fn()

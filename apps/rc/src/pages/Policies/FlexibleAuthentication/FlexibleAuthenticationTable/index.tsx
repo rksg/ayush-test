@@ -13,13 +13,14 @@ import {
 import {
   FlexibleAuthentication,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyAllowedOperation,
   getPolicyRoutePath,
   SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
-  useTableQuery
+  useTableQuery,
+  policyTypeLabelWithCountMapping
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -165,18 +166,11 @@ const FlexibleAuthenticationTable = () => {
     <PageHeader
       title={
         $t(
-          { defaultMessage: 'Authentication ({count})' },
+          policyTypeLabelWithCountMapping[PolicyType.FLEX_AUTH],
           { count: tableQuery.data?.totalCount }
         )
       }
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }
-      ]}
-
+      breadcrumb={usePoliciesBreadcrumb()}
       extra={hasCrossVenuesPermission() && filterByAccess([<TenantLink
         scopeKey={[SwitchScopes.CREATE]}
         rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}
@@ -185,7 +179,7 @@ const FlexibleAuthenticationTable = () => {
           oper: PolicyOperation.CREATE
         })}
       >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Authentication' })}</Button>
+        <Button type='primary'>{$t({ defaultMessage: 'Add Port Authentication' })}</Button>
       </TenantLink>
       ])}
     />

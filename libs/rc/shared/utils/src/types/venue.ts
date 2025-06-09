@@ -58,7 +58,8 @@ export interface VenueDetailHeader {
 		totalCount: number
 	},
 	edges: EdgeStatusSeverityStatistic,
-	totalClientCount: string
+	totalClientCount: string,
+	totalApWiredClientCount?: string,
 	venue: VenueDetail
 }
 
@@ -255,12 +256,20 @@ export type VenueApUsbStatus = {
 	usbPortEnable: boolean
 }
 
-export interface VenueApModelBandModeSettings {
+export interface VenueApModelBandModeSettings extends ApModelBandModeSettings{
+}
+
+export interface ApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
 }
 
-export type VeuneApAntennaTypeSettings = {
+export interface ApGroupApModelBandModeSettings {
+	useVenueSettings: boolean,
+	apModelBandModeSettings: ApModelBandModeSettings[]
+}
+
+export type VenueApAntennaTypeSettings = {
 	model: string
 	antennaType: ApAntennaTypeEnum
 }
@@ -781,6 +790,17 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export enum IPModeEnum {
+  IPv4 = 'IPV4',
+  IPv6 = 'IPV6',
+  Dual = 'IPV4_IPV6',
+  NONE = 'NONE'
+}
+
+export interface VenueApIpMode {
+	mode: IPModeEnum
 }
 
 export interface VenueApRebootTimeout {

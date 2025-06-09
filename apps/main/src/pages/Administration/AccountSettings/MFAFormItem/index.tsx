@@ -12,9 +12,13 @@ import { store }                                       from '@acx-ui/store'
 import {
   MFAStatus,
   MfaDetailStatus,
+  getUserProfile,
+  getUserUrls,
+  hasAllowedOperations,
   hasCrossVenuesPermission,
   useToggleMFAMutation
 } from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -38,6 +42,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const navigate = useNavigate()
   const linkToUserProfile = useTenantLink('/userprofile/security')
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -88,7 +93,13 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
     ? tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
     : mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-  const isDisabled = !hasCrossVenuesPermission() || !isPrimeAdminUser ||
+
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(getUserUrls(mfaNewApiToggle).toggleMFA)
+    ]) : (hasCrossVenuesPermission() || isPrimeAdminUser)
+
+  const isDisabled = !hasPermission ||
     isUpdating || (isMspEc && isMfaEnabled)
 
   return (

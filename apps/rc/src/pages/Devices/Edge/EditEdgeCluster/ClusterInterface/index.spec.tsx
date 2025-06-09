@@ -57,7 +57,7 @@ describe('Edit Edge Cluster - ClusterInterface', () => {
     expect(screen.getByTestId('edit-cluster-interface-drawer')).toBeVisible()
   })
 
-  it('should apply successfully', async () => {
+  it('should apply static ip subnet successfully', async () => {
     const { result } = renderHook(() => Form.useForm())
     jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
     render(
@@ -77,14 +77,53 @@ describe('Edit Edge Cluster - ClusterInterface', () => {
         serialNumber: 'serialNumber-1',
         interfaceName: 'port3',
         ip: '192.168.14.135',
-        subnet: '255.255.255.0'
+        subnet: '255.255.255.0',
+        ipMode: 'STATIC'
       },
       {
         nodeName: 'Smart Edge 2',
         serialNumber: 'serialNumber-2',
         interfaceName: 'port3',
         ip: '192.168.14.12',
-        subnet: '255.255.255.0'
+        subnet: '255.255.255.0',
+        ipMode: 'STATIC'
+      }
+    ]
+    result.current[0].setFieldsValue({
+      clusterData: mockedClusterInterfaceData
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(mockedUpdateApi).toBeCalledWith(mockedClusterInterfaceData))
+  })
+
+  it('should apply one static one dhcp successfully', async () => {
+    const { result } = renderHook(() => Form.useForm())
+    jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
+    render(
+      <Provider>
+        <ClusterInterface
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    expect(await screen.findByRole('row', { name: /Smart Edge 1 Lag0 192.168.11.136 255.255.255.0/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /Smart Edge 2 Lag0 192.168.12.136 255.255.255.0/i })).toBeVisible()
+    const mockedClusterInterfaceData = [
+      {
+        nodeName: 'Smart Edge 1',
+        serialNumber: 'serialNumber-1',
+        interfaceName: 'port3',
+        ip: '192.168.14.135',
+        subnet: '255.255.255.0',
+        ipMode: 'STATIC'
+      },
+      {
+        nodeName: 'Smart Edge 2',
+        serialNumber: 'serialNumber-2',
+        interfaceName: 'port3',
+        ipMode: 'DHCP'
       }
     ]
     result.current[0].setFieldsValue({
@@ -115,14 +154,16 @@ describe('Edit Edge Cluster - ClusterInterface', () => {
           serialNumber: 'serialNumber-1',
           interfaceName: 'lag0',
           ip: '192.168.11.136',
-          subnet: '255.255.255.0'
+          subnet: '255.255.255.0',
+          ipMode: 'STATIC'
         },
         {
           nodeName: 'Smart Edge 2',
           serialNumber: 'serialNumber-2',
           interfaceName: 'port3',
           ip: '192.168.9.135',
-          subnet: '255.255.255.0'
+          subnet: '255.255.255.0',
+          ipMode: 'STATIC'
         }
       ]
     })
@@ -152,14 +193,16 @@ describe('Edit Edge Cluster - ClusterInterface', () => {
           serialNumber: 'serialNumber-1',
           interfaceName: 'port3',
           ip: '192.168.11.136',
-          subnet: '255.255.255.0'
+          subnet: '255.255.255.0',
+          ipMode: 'STATIC'
         },
         {
           nodeName: 'Smart Edge 2',
           serialNumber: 'serialNumber-2',
           interfaceName: 'port3',
           ip: '192.168.9.135',
-          subnet: '255.255.255.0'
+          subnet: '255.255.255.0',
+          ipMode: 'STATIC'
         }
       ]
     })

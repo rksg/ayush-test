@@ -1,21 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { IncidentsToggleFilter, calculateGranularity, incidentsToggle }   from '@acx-ui/analytics/utils'
-import { dataApi }                                                        from '@acx-ui/store'
-import { generateDomainFilter, emptyFilter, FilterNameNode, NodesFilter } from '@acx-ui/utils'
-
-const getDomainFilters = (tenantIds: string[]) => {
-  if (tenantIds.length === 0) {
-    return emptyFilter
-  } else {
-    return tenantIds.reduce((acc, id) => {
-      const domainNode: [FilterNameNode] = generateDomainFilter(id)
-      acc.networkNodes?.push(domainNode)
-      acc.switchNodes?.push(domainNode)
-      return acc
-    }, { networkNodes: [], switchNodes: [] } as NodesFilter)
-  }
-}
+import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                                                      from '@acx-ui/store'
 
 export interface Response {
   id?: string
@@ -35,7 +21,6 @@ export interface BrandTimeseriesPayload {
   end: string,
   ssidRegex: string,
   granularity?: 'all',
-  tenantIds: (string | undefined)[]
   isMDU?: boolean
 }
 export interface FranchisorTimeseries {
@@ -64,7 +49,6 @@ const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilt
     start,
     end,
     ssidRegex,
-    tenantIds,
     granularity
   } = payload
   return {
@@ -73,8 +57,7 @@ const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilt
     ssidRegex,
     granularity: granularity || calculateGranularity(start, end),
     severity: { gt: 0.9, lte: 1 },
-    code: incidentsToggle(payload),
-    filter: getDomainFilters(tenantIds as string[])
+    code: incidentsToggle(payload)
   }
 }
 
@@ -89,16 +72,16 @@ export const api = dataApi.injectEndpoints({
           $ssidRegex: String,
           $granularity: String,
           $severity:[Range],
-          $code: [String],
-          $filter: FilterInput) {
+          $code: [String]
+        ) {
           franchisorTimeseries(
             start: $start,
             end: $end,
             ssidRegex: $ssidRegex,
             granularity: $granularity,
             severity: $severity,
-            code: $code,
-            filter: $filter) {
+            code: $code
+          ) {
               time
               incidentCount
               timeToConnectSLA

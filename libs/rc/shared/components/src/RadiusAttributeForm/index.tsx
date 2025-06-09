@@ -30,6 +30,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const { $t } = useIntl()
   const { form, isEdit = false, editAttribute, getAttributeAssignments } = props
 
+
   const commonAttributeKey = 'Common Attributes'
 
   const { vendorList, vendorListIsLoading } = useRadiusAttributeVendorListQuery({ params: {} },{

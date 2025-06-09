@@ -125,7 +125,7 @@ describe('InterfaceTable', () => {
       'port3'
     )
     // eslint-disable-next-line max-len
-    expect((await screen.findAllByText('The selected port is not in the same subnet as other nodes.'))[0]).toBeVisible()
+    expect((await screen.findAllByText('Use IP addresses in the same subnet for cluster interface on all the edges in this cluster.'))[0]).toBeVisible()
   })
 
   it('should submit successfully', async () => {

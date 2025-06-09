@@ -206,7 +206,7 @@ describe('SwitchOverviewTab', () => {
 
     jest.mock('@acx-ui/rc/utils', () => ({
       ...jest.requireActual('@acx-ui/rc/utils'),
-      isFirmwareVersionAbove10010g2Or10020b: jest.fn(() => true)
+      isFirmwareVersionAbove10010gCd1Or10020bCd1: jest.fn(() => true)
     }))
 
     const params = {
@@ -224,7 +224,7 @@ describe('SwitchOverviewTab', () => {
           ...switchDetailsContextData,
           switchDetailHeader: {
             ...switchDetailsContextData.switchDetailHeader,
-            firmware: 'SPS10020b'
+            firmware: 'SPS10020b_cd1'
           }
         },
         setSwitchDetailsContextData: jest.fn()

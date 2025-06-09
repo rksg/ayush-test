@@ -24,6 +24,22 @@ storiesOf('RadioCard', module)
         />
       </GridCol>
     </GridRow>
+  ).add('default with category icon', () =>
+    <GridRow>
+      <GridCol col={{ span: 6 }}>
+        <RadioCard
+          value='service'
+          title='Service'
+          description={
+            'Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
+          }
+          categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+          categoryDisplayMode='icon'
+          // eslint-disable-next-line no-console
+          onClick={()=>console.log('Button clicked!')}
+        />
+      </GridCol>
+    </GridRow>
   )
   .add('radio', () =>
     <Radio.Group

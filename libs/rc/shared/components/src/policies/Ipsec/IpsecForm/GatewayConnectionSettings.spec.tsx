@@ -6,6 +6,14 @@ import { render, fireEvent, screen, renderHook }                         from '@
 
 import GatewayConnectionSettings from './GatewayConnectionSettings'
 
+jest.mock('../../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />
+}))
+
+jest.mock('../../../ApCompatibility/ApCompatibilityDrawer', () => ({
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 describe('GatewayConnectionSettings', () => {
   const renderComponent = (initialValues = {
     advancedOption: {

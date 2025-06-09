@@ -554,7 +554,8 @@ export enum PrivacyFeatureName {
 
 export interface PrivacySettings {
   featureName: PrivacyFeatureName,
-  isEnabled: boolean
+  isEnabled: boolean,
+  enforceDefault?: boolean
 }
 
 export interface PrivacyFeatures {

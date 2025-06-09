@@ -1,5 +1,9 @@
 "use strict";
 
+// How to run this test:
+// $ cd acx-ui
+// $ node tools/dev/eslint-custom-rule/enforce-venue-placeholder.test.js
+
 const {RuleTester} = require("eslint");
 const rule = require("./enforce-venue-placeholder");
 
@@ -43,6 +47,9 @@ ruleTester.run(
     }, {
       code: "intl.$t({ defaultMessage: 'venue' })",
       output: "intl.$t({ defaultMessage: '<venueSingular></venueSingular>' })",
+      errors: 1,
+    }, {
+      code: "intl.$t({ defaultMessage: 'Cannot delete Resident Portal while Venues' + ' are in use.' })",
       errors: 1,
     }],
   }

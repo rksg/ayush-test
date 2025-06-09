@@ -18,7 +18,7 @@ import {
   PolicyType,
   LbsServerProfileViewModel,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   useTableQuery,
   Venue,
@@ -95,13 +95,7 @@ export default function LbsServerProfileTable () {
           { defaultMessage: 'Location Based Service ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}

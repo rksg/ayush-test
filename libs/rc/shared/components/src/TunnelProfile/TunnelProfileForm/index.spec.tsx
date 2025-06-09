@@ -416,7 +416,7 @@ describe('TunnelProfileForm', () => {
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
       expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
-      await user.click(screen.getByRole('radio', { name: 'L2GRE' }))
+      await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
       expect(screen.getByText('Destination IP Address')).toBeInTheDocument()
       expect(screen.getByText('Gateway Path MTU')).toBeInTheDocument()
 
@@ -429,7 +429,7 @@ describe('TunnelProfileForm', () => {
       expect(screen.queryByText('Tunnel Keep Alive Retries')).not.toBeInTheDocument()
     })
 
-    it('should disabe L2GRE when network segment type is VNI', async () => {
+    it('should disabled VNI when tunnel type is L2GRE', async () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
@@ -438,12 +438,12 @@ describe('TunnelProfileForm', () => {
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
-      await user.click(screen.getByRole('radio', { name: 'VNI' }))
-      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
-      expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+      await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
     })
 
-    it('should lock disabed fields L2GRE ff enabled', async () => {
+    it('should lock disabled fields L2GRE ff enabled', async () => {
       const formInitValues = _.clone(defaultValues)
       formInitValues.disabledFields = []
       formInitValues.disabledFields.push('type')
@@ -458,7 +458,7 @@ describe('TunnelProfileForm', () => {
       expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
       expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
       expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeDisabled()
-      expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: /L2GRE/i })).toBeDisabled()
 
       expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
       expect(screen.getByRole('combobox', { name: 'Destination RUCKUS Edge cluster' }))

@@ -40,7 +40,11 @@ import {
   ScopeFeature,
   NotificationRecipientType,
   PrivacyFeatures,
-  PrivacySettings
+  PrivacySettings,
+  NewTableResult,
+  transferToTableResult,
+  TableChangePayload,
+  transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -791,6 +795,22 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
     }),
+    getMspEcPrivilegeGroupsPaginated: build.query<TableResult<PrivilegeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroupsPaginated, params)
+        return {
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse: (result: NewTableResult<PrivilegeGroup>) => {
+        return transferToTableResult<PrivilegeGroup>(result)
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
     getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
@@ -909,7 +929,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -959,7 +980,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
@@ -1053,6 +1075,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return response.privacyFeatures
       },
       invalidatesTags: [{ type: 'Privacy', id: 'DETAIL' }]
+    }),
+    deleteTenant: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteTenant, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1126,6 +1157,7 @@ export const {
   useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
+  useGetMspEcPrivilegeGroupsPaginatedQuery,
   useGetPrivilegeGroupsWithAdminsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
@@ -1149,5 +1181,6 @@ export const {
   useDeleteWebhookMutation,
   useWebhookSendSampleEventMutation,
   useGetPrivacySettingsQuery,
-  useUpdatePrivacySettingsMutation
+  useUpdatePrivacySettingsMutation,
+  useDeleteTenantMutation
 } = administrationApi

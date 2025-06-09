@@ -1,3 +1,5 @@
+import { AttributeMapping } from './identityAttributes'
+
 export interface SamlIdpProfileViewData {
     id: string
     name: string
@@ -27,9 +29,4 @@ export interface SamlIdpProfileFormType extends SamlIdpProfile {
     identityName?: string
     identityEmail?: string
     identityPhone?: string
-}
-
-export interface AttributeMapping {
-    name: string
-    mappedByName: string
 }

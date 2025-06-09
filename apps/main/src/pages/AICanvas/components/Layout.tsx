@@ -167,7 +167,7 @@ export default function Layout (props: LayoutProps) {
               if(c.id == shadowCard.id) {
                 c.widgetId = response.data.id
                 c.name = response.data.name
-                // TODO: time range
+                c.timeRange = response.data.defaultTimeRange
                 c.canvasId = canvasId
               }
             })

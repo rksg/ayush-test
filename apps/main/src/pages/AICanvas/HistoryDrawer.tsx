@@ -221,7 +221,10 @@ export default function HistoryDrawer (props: DrawerProps) {
       mask={true}
       maskClosable={true}
       getContainer={false}
-      style={{ position: 'absolute' }}
+      style={{
+        position: 'absolute',
+        margin: '0'
+      }}
     />
   )
 }

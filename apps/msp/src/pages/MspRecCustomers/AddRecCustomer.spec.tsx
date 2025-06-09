@@ -177,14 +177,8 @@ const fakedPrivilegeGroupList =
   ]
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
 const rcServices = require('@acx-ui/rc/services')
 const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),

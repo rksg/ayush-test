@@ -42,9 +42,6 @@ const tenantAuthenticationData = [
 ]
 
 const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
 
 describe('App Token Form Item', () => {
   let params: { tenantId: string }

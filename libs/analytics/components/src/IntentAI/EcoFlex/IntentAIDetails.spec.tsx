@@ -11,16 +11,19 @@ import {
 } from '../states'
 import { IntentDetail } from '../useIntentDetailsQuery'
 
-import { mockedIntentEcoFlex, mockedIntentEcoFlexStatusTrail } from './__tests__/fixtures'
-import { mockKpiData }                                         from './__tests__/mockedEcoFlex'
-import { configuration, kpis }                                 from './common'
-import * as EcoFlex                                            from './IEcoFlex'
+import { mockedIntentAIPowerSavePlan, mockedIntentEcoFlex, mockedIntentEcoFlexStatusTrail } from './__tests__/fixtures'
+import { mockKpiData }                                                                      from './__tests__/mockedEcoFlex'
+import { configuration, kpis }                                                              from './common'
+import * as EcoFlex                                                                         from './IEcoFlex'
 
 jest.mock('../IntentContext')
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
     { data: { intent: mockedIntentEcoFlexStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'ApPowerSaveDistribution', {
+    data: { intent: mockedIntentAIPowerSavePlan }
+  })
   const intent = _.merge({}, mockedIntentEcoFlex, data) as IntentDetail
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
@@ -31,6 +34,8 @@ const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
 describe('IntentAIDetails', () => {
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
+    global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
+    global.URL.revokeObjectURL = jest.fn()
   })
 
   // it('handle beyond data retention', async () => {
@@ -59,11 +64,12 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
 
-      expect(await screen.findByTestId('Benefits'))
-        .toHaveTextContent(/intelligent PowerSave modes for access points during off-peak hours/)
+      expect(await screen.findByTestId('Recommendation'))
+        .toHaveTextContent(/This recommendation aims to reduce power consumption/)
       expect(await screen.findByTestId('Potential Trade-off'))
         .toHaveTextContent(/Energy Saving enabled network will operate in reduced capacity during/)
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
+      expect(await screen.findByText('Download PowerSave Plan')).toBeVisible()
     }
 
     it('handle EcoFlex', async () => {
@@ -76,7 +82,44 @@ describe('IntentAIDetails', () => {
       await assertRenderCorrectly()
     })
 
-    it('handle active EquiFlex', async () => {
+    it('handle no data EcoFlex', async () => {
+      const { params } = mockIntentContextWith({ code: 'i-ecoflex', status: Statuses.na })
+      render(
+        <EcoFlex.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+      expect(screen.queryByText('Download PowerSave Plan')).toBeNull()
+    })
+
+    it('handle not data retention EcoFlex', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'i-ecoflex',
+        dataCheck: {
+          isDataRetained: false,
+          isHotTierData: true
+        } })
+      render(
+        <EcoFlex.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+      expect(screen.queryByText('Download PowerSave Plan')).toBeNull()
+    })
+
+    it('handle cold tier EcoFlex', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'i-ecoflex',
+        dataCheck: {
+          isDataRetained: true,
+          isHotTierData: false
+        } })
+      render(
+        <EcoFlex.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+      expect(screen.queryByText('Download PowerSave Plan')).toBeNull()
+    })
+
+    it('handle active EcoFlex', async () => {
       const { params } = mockIntentContextWith({
         code: 'i-ecoflex',
         status: Statuses.applyScheduled
@@ -106,7 +149,7 @@ describe('IntentAIDetails', () => {
       )
 
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-      expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Recommendation')).not.toBeInTheDocument()
       expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
       expect(await screen.findByTestId('Current Status')).toBeVisible()

@@ -17,9 +17,10 @@ import {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
-import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                                                                  from '@acx-ui/types'
-import { hasPermission }                                                                                                                                               from '@acx-ui/user'
+import { DHCPSaveData, DHCPUrls, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { WifiScopes }                                                                                                                                                            from '@acx-ui/types'
+import { hasPermission }                                                                                                                                                         from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                                             from '@acx-ui/utils'
 
 import { ReadonlySwitch } from './styledComponents'
 
@@ -170,7 +171,10 @@ export default function VenuePoolTable (
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (__, row) => {
-        if (!hasPermission({ scopes: [WifiScopes.UPDATE] })) {
+        if (!hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(DHCPUrls.bindVenueDhcpProfile)]
+        })) {
           return row.active ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
         }
 

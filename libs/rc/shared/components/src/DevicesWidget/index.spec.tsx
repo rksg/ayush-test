@@ -13,7 +13,10 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} />
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} />
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -26,7 +29,10 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} enableArrowClick/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -45,10 +51,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -67,10 +75,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -89,10 +99,12 @@ describe('Devices widget V2', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
           enableArrowClick
         />
       </Provider>,
@@ -109,7 +121,10 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]}/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]}/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -122,7 +137,10 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
+        {
+        // eslint-disable-next-line max-len
+          <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} iotControllerData={[]} enableArrowClick/>
+        }
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -145,10 +163,12 @@ describe('Devices widget V2 edge enabled', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={2}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -170,10 +190,12 @@ describe('Devices widget V2 edge enabled', () => {
           switchStackedData={[]}
           edgeStackedData={[]}
           rwgStackedData={{ chartData: [], stackedColors: [] }}
+          iotControllerStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
           rwgTotalCount={0}
+          iotControllerTotalCount={0}
         />
       </Provider>,
       { route: { params } })

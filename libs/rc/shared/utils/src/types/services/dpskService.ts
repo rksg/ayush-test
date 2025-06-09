@@ -1,7 +1,5 @@
 import { EnforceableFields, ExpirationDateEntity, ExpirationType } from '../..'
-import {
-  PassphraseFormatEnum
-} from '../../constants'
+import { PassphraseFormatEnum }                                    from '../../constants'
 
 export enum PolicyDefaultAccess {
   ACCEPT = 'ACCEPT',
@@ -11,6 +9,11 @@ export enum PolicyDefaultAccess {
 export enum DeviceNumberType {
   LIMITED,
   UNLIMITED
+}
+
+export enum DpskDetailsTabKey {
+  OVERVIEW = 'overview',
+  PASSPHRASE_MGMT = 'passphraseMgmt'
 }
 
 export interface CreateDpskFormFields {

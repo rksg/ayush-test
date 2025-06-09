@@ -670,6 +670,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
 
 // eslint-disable-next-line max-len
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
   const { networkId, clientMac, username } = props
   const intl = getIntl()
   const { passphraseClient } = useGetPassphraseClientQuery({
@@ -723,8 +724,11 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string, u
           <List<string>
             dataSource={passphraseClient.clientMac}
             renderItem={item => {
+              const linkPath = isSupportWifiWiredClient
+                ? `users/wired/switch/clients/${item}`
+                : `users/switch/clients/${item}`
               return <List.Item>
-                <TenantLink to={`users/switch/clients/${item}`}>{item}</TenantLink>
+                <TenantLink to={linkPath}>{item}</TenantLink>
               </List.Item>
             }}
           />

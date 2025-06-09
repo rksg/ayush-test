@@ -14,9 +14,11 @@ import { getOpsApi }                              from '@acx-ui/utils'
 import { ApDataContext, ApEditContext } from '..'
 
 import { AntennaSection }                 from './Antenna/AntennaSection'
+import { ExternalAntennaSettings }        from './Antenna/ExternalAntennaSettings'
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
 import { ClientSteering }                 from './ClientSteering/ClientSteering'
 import { RadioSettings }                  from './RadioSettings/RadioSettings'
+import { RadioSettingsV1Dot1 }            from './RadioSettings/RadioSettingsV1Dot1'
 
 export interface ApRadioContext {
   updateWifiRadio?: (data?: unknown) => void | Promise<void>
@@ -61,17 +63,20 @@ export function RadioTab () {
   } = useContext(ApEditContext)
 
   const { apCapabilities } = useContext(ApDataContext)
-
+  const isExtAntAp = !!apCapabilities?.externalAntenna
   const isAntTypeAP = (apCapabilities?.supportAntennaType) === true
-  // waiting for the feature is implemented and useing feature flag to control
+
+  const supportExtAnt = useIsSplitOn(Features.WIFI_AP_EXTERNAL_ANTENNA_TOGGLE) && isExtAntAp
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
-  const supportAntenna = supportAntTypeSelection
+
   const isStickyClientSteeringEnable = useIsSplitOn(Features.WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE)
+  const apGroupPhase1Toggle = useIsSplitOn(Features.WIFI_AP_GROUP_MORE_PARAMETER_PHASE1_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
   const antennaTitle = $t({ defaultMessage: 'Antenna' })
+  //const extAntennaTitle = $t({ defaultMessage: 'External Antenna' })
   const clientSteeringTitle = $t({ defaultMessage: 'Client Steering' })
 
   const anchorItems = [{
@@ -81,7 +86,11 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='radio-settings'>
           { wifiRadioTitle }
         </StepsFormLegacy.SectionTitle>
-        <RadioSettings isAllowEdit={isAllowEditRadioSettings} />
+        { apGroupPhase1Toggle
+          ? <RadioSettingsV1Dot1 isAllowEdit={isAllowEditRadioSettings} />
+          : <RadioSettings isAllowEdit={isAllowEditRadioSettings} />
+        }
+
       </>
     )
   },
@@ -116,16 +125,25 @@ export function RadioTab () {
       </>
     )
   },
-  ...(supportAntenna? [{
+  ...((supportAntTypeSelection)? [{
     title: antennaTitle,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='antenna'>
-          { antennaTitle }
+          {antennaTitle}
         </StepsFormLegacy.SectionTitle>
-        {
-          <AntennaSection />
-        }
+        {<AntennaSection />}
+      </>
+    )
+  }]: []),
+  ...((supportExtAnt)? [{
+    title: antennaTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='extAntennaTitle'>
+          {antennaTitle}
+        </StepsFormLegacy.SectionTitle>
+        {<ExternalAntennaSettings />}
       </>
     )
   }]: [])

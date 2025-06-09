@@ -1,6 +1,7 @@
 
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { ComplianceData, DeviceComplianceType } from '@acx-ui/msp/utils'
 import { TrialType }                            from '@acx-ui/rc/utils'
 
@@ -18,6 +19,8 @@ export default function RecTabContent (props: RecTabContentProps) {
   const { data, trialType, summaryTabSelected,
     myAccountTabSelected } = props
 
+  const iotFFToggle = useIsSplitOn(Features.ENTITLEMENT_IOT_CTRL_TOGGLE)
+
   const { totalActivePaidLicenseCount, nextTotalPaidExpiringLicenseCount, nextPaidExpirationDate,
     licensesUsed,
     licenseGap, totalActiveTrialLicenseCount, nextTotalTrialExpiringLicenseCount,
@@ -32,6 +35,8 @@ export default function RecTabContent (props: RecTabContentProps) {
     item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
   const rwgData = data.deviceCompliances.find(item =>
     item.deviceType === DeviceComplianceType.RWG)
+  const iotCtrlData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.IOT_CTRL)
   return <>
     { myAccountTabSelected && <>
       <UI.FieldLabelSubs width='275px'
@@ -59,11 +64,17 @@ export default function RecTabContent (props: RecTabContentProps) {
         <label>{virtualEdgeData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       <UI.FieldLabelSubs width='275px'
-        style={{ paddingBottom: '15px' }}>
+        style={!iotFFToggle ? { paddingBottom: '15px' } : {}}>
         <label>{$t({ defaultMessage: 'RWGs' })}</label>
         <label>{rwgData?.installedDeviceCount}</label>
         <label>{rwgData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
+      { iotFFToggle && <UI.FieldLabelSubs width='275px'
+        style={{ paddingBottom: '15px' }}>
+        <label>{$t({ defaultMessage: 'IoT Controllers' })}</label>
+        <label>{iotCtrlData?.installedDeviceCount}</label>
+        <label>{iotCtrlData?.usedLicenseCount}</label>
+      </UI.FieldLabelSubs>}
 
     </>}
     { summaryTabSelected &&

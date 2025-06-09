@@ -22,7 +22,6 @@ import {
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   AAAViewModalType,
   AAAPurposeEnum,
@@ -31,7 +30,8 @@ import {
   filterByAccessForServicePolicyMutation,
   CertificateStatusType,
   getPolicyAllowedOperation,
-  ConfigTemplateType
+  ConfigTemplateType,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -118,13 +118,7 @@ export default function AAATable () {
           $t({ defaultMessage: 'RADIUS Server ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}

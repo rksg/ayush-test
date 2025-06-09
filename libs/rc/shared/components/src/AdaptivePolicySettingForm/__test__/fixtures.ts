@@ -54,6 +54,23 @@ export const assignConditions = {
         criteriaType: CriteriaOption.STRING,
         regexStringCriteria: 'AA:BB:CC:DD:EE:FF'
       }
+    },
+    {
+      id: '18f71dd5-eb2f-4f5f-baa8-c33df6f4abdf',
+      policyId: '20214c9d-3334-471a-8fc5-c621f43b59b9',
+      templateAttributeId: 2020,
+      templateAttribute: {
+        id: 2020,
+        name: 'Radius User Name',
+        description: 'A regular expression defining the phone to limit this policy.',
+        attributeTextMatch: 'identity_phone',
+        attributeType: 'regex',
+        category: 'identity'
+      },
+      evaluationRule: {
+        criteriaType: CriteriaOption.STRING,
+        regexStringCriteria: 'AA:BB:CC:DD:EE:FF'
+      }
     }
   ]
 }
@@ -130,6 +147,30 @@ export const attributeList = {
       description: 'A regular expression defining the NAS Identifier(s) to limit this policy.',
       attributeTextMatch: 'NAS-IP-Address',
       attributeType: 'regex'
+    },
+    {
+      id: 2019,
+      name: 'Email',
+      description: 'A regular expression defining the email to limit this policy.',
+      attributeTextMatch: 'identity_email',
+      attributeType: 'regex',
+      category: 'identity'
+    },
+    {
+      id: 2020,
+      name: 'Phone',
+      description: 'A regular expression defining the phone number to limit this policy.',
+      attributeTextMatch: 'identity_phone',
+      attributeType: 'regex',
+      category: 'identity'
+    },
+    {
+      id: 2021,
+      name: 'Identity Name',
+      description: 'A regular expression defining the name to limit this policy.',
+      attributeTextMatch: 'identity_name',
+      attributeType: 'regex',
+      category: 'identity'
     }
   ]
 }

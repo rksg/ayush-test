@@ -150,7 +150,12 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, sel
     <Space size='small'>
       { isEditMode ? (
         <>
-          <Select onChange={handleVlanTypeChange} value={editingVlan.vlanType} placeholder={$t({ defaultMessage: 'Type' })}>
+          <Select
+            onChange={handleVlanTypeChange}
+            value={editingVlan.vlanType}
+            placeholder={$t({ defaultMessage: 'Type' })}
+            dropdownMatchSelectWidth={false}
+          >
             <Select.Option value={VlanType.Pool}>{$t({ defaultMessage: 'Pool' })}</Select.Option>
             <Select.Option value={VlanType.VLAN}>{$t({ defaultMessage: 'VLAN' })}</Select.Option>
           </Select>

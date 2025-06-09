@@ -74,6 +74,7 @@ export function ClientsTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -135,7 +136,7 @@ export function ClientsTable (props: {
     tableQuery.handleFilterChange(filters, search, groupBy)
   }
 
-  function getCols (intl: ReturnType<typeof useIntl>) {
+  function getCols (intl: ReturnType<typeof useIntl>, isSupportWifiWiredClient: boolean) {
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -144,7 +145,10 @@ export function ClientsTable (props: {
       sorter: true,
       fixed: 'left',
       render: (_, row) => {
-        return <TenantLink to={`users/switch/clients/${row.id}`}>{
+        const redirectPath = isSupportWifiWiredClient
+          ? `users/wired/switch/clients/${row.id}`
+          : `users/switch/clients/${row.id}`
+        return <TenantLink to={redirectPath}>{
           row?.dhcpClientHostName || row?.clientName || row?.clientMac || '--'
         }</TenantLink>
       }
@@ -382,7 +386,7 @@ export function ClientsTable (props: {
       ]}>
         <Table
           settingsId={settingsId}
-          columns={getCols(useIntl())}
+          columns={getCols(useIntl(), isSupportWifiWiredClient)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

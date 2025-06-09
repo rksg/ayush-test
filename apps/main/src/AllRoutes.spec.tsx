@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                 from '@acx-ui/msp/utils'
+import { MspUrlsInfo, MspRbacUrlsInfo }                                from '@acx-ui/msp/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { render, screen, cleanup, mockServer }                         from '@acx-ui/test-utils'
 import { RolesEnum }                                                   from '@acx-ui/types'
@@ -104,6 +104,10 @@ describe('AllRoutes', () => {
       }),
       rest.post(
         MspUrlsInfo.getVarDelegations.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getVarDelegations.url,
         (req, res, ctx) => res(ctx.json([]))
       ),
       rest.get(

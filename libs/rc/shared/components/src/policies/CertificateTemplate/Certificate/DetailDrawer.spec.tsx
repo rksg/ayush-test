@@ -68,7 +68,7 @@ describe('DetailDrawer', () => {
 
     await userEvent.click(screen.getByText('Usage'))
     expect(await screen.findByText('Issued')).toBeVisible()
-    expect(await screen.findByText('Adaptive Policy Set')).toBeVisible()
+    expect(await screen.findByText('Last RADIUS Policy')).toBeVisible()
   })
 
   it('should render certificate authority correctly', async () => {

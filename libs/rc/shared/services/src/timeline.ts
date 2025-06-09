@@ -40,6 +40,7 @@ const metaFields = [
   'recipientName',
   'edgeName',
   'remoteedgeName',
+  'remoteApName',
   'unitName'
 ]
 

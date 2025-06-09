@@ -129,6 +129,17 @@ const groupsData = [
   }
 ]
 
+const getCanvasQuery = {
+  data: [
+    currentCanvas,
+    {
+      id: '002',
+      name: 'Second Canvas',
+      content: ''
+    }
+  ]
+}
+
 describe('Canvas', () => {
   afterEach(() => {
     jest.clearAllMocks()
@@ -142,6 +153,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />
@@ -162,6 +174,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />
@@ -182,6 +195,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -208,6 +222,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -241,6 +256,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -259,6 +275,45 @@ describe('Canvas', () => {
     expect(mockedCreate).toHaveBeenCalledTimes(1)
   })
 
+  it('should display the disabled new canvas tooltip correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
+    const canvasQuery = {
+      data: [
+        currentCanvas,
+        ...Array.from({ length: 9 }, (_, i) => ({
+          id: String(i + 2),
+          name: `Canvas ${i + 2}`,
+          content: ''
+        }))
+      ]
+    }
+    render(
+      <Provider>
+        <Canvas
+          getCanvasQuery={canvasQuery}
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+          checkChanges={
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (hasChanges:boolean, callback:()=>void, handleSave:()=>void) => {callback()}}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('Layout cards')).toBeVisible()
+    expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
+    const canvasListButton = await screen.findByTestId('canvas-list')
+    await userEvent.click(canvasListButton)
+    const newCanvasButton = await screen.findByText('New Canvas')
+    expect(newCanvasButton).toBeInTheDocument()
+    await userEvent.hover(newCanvasButton)
+    expect(
+      await screen.findByRole('tooltip')
+    ).toHaveTextContent(/Maximum of 10 canvases reached./)
+  })
+
   it('should render canvas list and show manage canvases drawer correctly', async () => {
     const { result } = renderHook(() => {
       const [groups, setGroups] = useState(groupsData)
@@ -267,6 +322,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
           checkChanges={
@@ -301,6 +357,7 @@ describe('Canvas', () => {
     render(
       <Provider>
         <Canvas
+          getCanvasQuery={getCanvasQuery}
           groups={result.current.groups}
           setGroups={result.current.setGroups}
         />

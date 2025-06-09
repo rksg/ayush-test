@@ -9,7 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
@@ -34,7 +34,8 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
   useConfigTemplate,
-  ConfigTemplateType
+  ConfigTemplateType,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -58,6 +59,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.AAA)
   const params = useParams()
   const state = useLocation().state as State
   const { type, edit, networkView, backToNetwork, forceDisableRadsec } = props
@@ -70,8 +72,9 @@ export const AAAForm = (props: AAAFormProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const addRadSecActivations = useAddRadSecActivations()
   const updateRadSecActivations = useUpdateRadSecActivations()
   const { data } = useConfigTemplateQueryFnSwitcher({
@@ -142,7 +145,7 @@ export const AAAForm = (props: AAAFormProps) => {
         await saveEnforcementConfig(entityId)
       }
 
-      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
+      networkView ? backToNetwork?.(data) : navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

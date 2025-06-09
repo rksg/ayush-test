@@ -45,6 +45,8 @@ export interface DelegationEntitlementRecord {
   switchDeviceCount?: string;
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
+  virtualEdgeDeviceCount?: string;
+  iotCtrlDeviceCount?: string;
   availableLicenses?: number;
   adaptivePolicyCount?: number;
   piNetworkCount?: number;
@@ -495,8 +497,9 @@ export interface MspRecCustomer {
   kumo?: boolean,
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
-  email_id?: string
-  is_tenant_onboarded?: boolean
+  email_id?: string,
+  is_tenant_onboarded?: boolean,
+  propertyCode?: string
 }
 
 export enum MspEcTierEnum {
@@ -506,13 +509,15 @@ export enum MspEcTierEnum {
 }
 
 export interface MspEcWithVenue extends MspEc {
+  ecId?: string,
   isFirstLevel?: boolean,
   isUnauthorizedAccess?: boolean,
   allVenues?: boolean,
   children: {
     name: string,
     id: string,
-    selected: boolean
+    selected: boolean,
+    ecId?: string
   }[]
 }
 
@@ -531,7 +536,8 @@ export enum DeviceComplianceType {
   SLTN_PIN_FOR_IDENTITY = 'SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT = 'SLTN_PMS_INT',
   SLTN_SIS_INT = 'SLTN_SIS_INT',
-  SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC'
+  SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC',
+  IOT_CTRL = 'IOT_CTRL'
 }
 
 export interface SlnTableRow {
@@ -552,7 +558,9 @@ export const DeviceComplianceTypeLabels = {
   [DeviceComplianceType.SLTN_PMS_INT]: defineMessage({ defaultMessage: 'PMS Integration' }),
   [DeviceComplianceType.SLTN_SIS_INT]: defineMessage({ defaultMessage: 'SIS Integration' }),
   [DeviceComplianceType.SLTN_HYBRID_CLOUD_SEC]:
-    defineMessage({ defaultMessage: 'Hybrid Cloud Security' })
+    defineMessage({ defaultMessage: 'Hybrid Cloud Security' }),
+  [DeviceComplianceType.IOT_CTRL]:
+    defineMessage({ defaultMessage: 'IoT Controllers' })
 }
 
 export interface DeviceCompliance {
@@ -625,7 +633,8 @@ export enum ComplianceMspCustomersDevicesTypes {
   SLTN_PIN_FOR_IDENTITY='SLTN_PIN_FOR_IDENTITY',
   SLTN_PMS_INT='SLTN_PMS_INT',
   SLTN_SIS_INT='SLTN_SIS_INT',
-  SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC'
+  SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC',
+  IOT_CONTROLLER='IOT_CONTROLLER'
 }
 
 export interface LicenseAttentionNotes {

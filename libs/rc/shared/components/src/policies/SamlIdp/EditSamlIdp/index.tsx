@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { Col, Form, Row } from 'antd'
-import { cloneDeep }      from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import { Loader }                   from '@acx-ui/components'
@@ -13,10 +12,10 @@ import {
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useUpdateSamlIdpProfileMutation
 } from '@acx-ui/rc/services'
-import { SamlIdpAttributeMappingNameType, SamlIdpProfileFormType } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
+import { SamlIdpProfileFormType, splitAttributeMappingsFromData } from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 
-import { SamlIdpForm, requestPreProcess, excludedAttributeTypes } from '../SamlIdpForm'
+import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 
 export const EditSamlIdp = () => {
   const { $t } = useIntl()
@@ -88,38 +87,12 @@ export const EditSamlIdp = () => {
     if(!samlIdpProfileData) {
       return
     }
-    const sourceData = cloneDeep(samlIdpProfileData) as SamlIdpProfileFormType
+    const sourceData = splitAttributeMappingsFromData(samlIdpProfileData)
+
     form.setFieldsValue(sourceData)
     if (sourceData.metadataUrl) {
       form.setFieldValue('metadataContent', sourceData.metadataUrl)
     }
-
-    if (sourceData.attributeMappings) {
-      form.setFieldValue('identityName',
-        sourceData.attributeMappings
-          .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.DISPLAY_NAME
-          )?.mappedByName
-      )
-      form.setFieldValue('identityEmail',
-        sourceData.attributeMappings
-          .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.EMAIL
-          )?.mappedByName
-      )
-      form.setFieldValue('identityPhone',
-        sourceData.attributeMappings
-          .find(
-            mapping => mapping.name === SamlIdpAttributeMappingNameType.PHONE_NUMBER
-          )?.mappedByName
-      )
-
-      // remove above three mappings from attributeMappings
-      form.setFieldValue('attributeMappings', sourceData.attributeMappings.filter(
-        mapping => !excludedAttributeTypes.includes(mapping.name as SamlIdpAttributeMappingNameType)
-      ))
-    }
-
   }, [samlIdpProfileData])
 
   return (

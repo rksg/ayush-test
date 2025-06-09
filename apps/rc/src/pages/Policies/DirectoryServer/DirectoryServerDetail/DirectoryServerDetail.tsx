@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, PasswordInput, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { useGetDirectoryServerByIdQuery }                                   from '@acx-ui/rc/services'
 import {
   DirectoryServer,
@@ -8,11 +9,13 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  AttributeMapping,
+  IdentityAttributeMappingNameType,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -24,24 +27,12 @@ export default function DirectoryServerDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetDirectoryServerByIdQuery({ params })
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Directory Server' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.DIRECTORY_SERVER)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.DIRECTORY_SERVER,
@@ -73,6 +64,10 @@ interface DirectoryServerOverviewProps {
 function DirectoryServerOverview (props: DirectoryServerOverviewProps) {
   const { data } = props
   const { $t } = useIntl()
+
+  // eslint-disable-next-line max-len
+  const isSupportIdentityAttribute = useIsSplitOn(Features.WIFI_DIRECTORY_PROFILE_REUSE_COMPONENT_TOGGLE)
+
   const directoryServerInfo = [
     {
       title: $t({ defaultMessage: 'Service Type' }),
@@ -101,8 +96,47 @@ function DirectoryServerOverview (props: DirectoryServerOverviewProps) {
           value={data?.adminPassword}
         />
       )
+    }, {
+      // This is for the layout
+      title: ''
+    }, {
+      title: $t({ defaultMessage: 'Identity Name' }),
+      visible: isSupportIdentityAttribute,
+      content: () => {
+        return (
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.DISPLAY_NAME
+            )?.mappedByName)
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Email' }),
+      visible: isSupportIdentityAttribute,
+      content: () => {
+        return (
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.EMAIL
+            )?.mappedByName)
+        )
+      }
+    }, {
+      title: $t({ defaultMessage: 'Identity Phone' }),
+      visible: isSupportIdentityAttribute,
+      content: () => {
+        return (
+          transformDisplayText(
+            data?.attributeMappings?.find(
+              (mapping: AttributeMapping) =>
+                mapping.name === IdentityAttributeMappingNameType.PHONE_NUMBER
+            )?.mappedByName)
+        )
+      }
     }
   ]
 
-  return <SummaryCard data={directoryServerInfo} />
+  return <SummaryCard data={directoryServerInfo} colPerRow={6} />
 }

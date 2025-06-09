@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }                       from '@acx-ui/feature-to
 import { ExpandSquareDown, ExpandSquareUp }             from '@acx-ui/icons'
 import { useGetSigPackQuery, useUpdateSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                        from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier }                   from '@acx-ui/user'
 import { getIntl }                                      from '@acx-ui/utils'
 
 import * as UI                                                                                    from './styledComponents'
@@ -172,6 +173,8 @@ function getRemovedCount (changedAppsInfoMap: ChangedAppsInfoMap): number {
 }
 
 function useUpdateSigPack () {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ updateSigPack, { isLoading } ] = useUpdateSigPackMutation()
   const { data } = useGetSigPackQuery({
@@ -179,7 +182,7 @@ function useUpdateSigPack () {
     enableRbac: true
   }, {
     refetchOnMountOrArgChange: 300,
-    skip: !isWifiRbacEnabled
+    skip: !isWifiRbacEnabled || isCore
   })
   const payload = isWifiRbacEnabled
     ? { version: data?.latestVersion }

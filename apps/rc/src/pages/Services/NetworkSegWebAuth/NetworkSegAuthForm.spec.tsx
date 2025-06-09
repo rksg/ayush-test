@@ -57,7 +57,7 @@ describe( 'NetworkSegAuthForm', () => {
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))
-      .toHaveTextContent('Add Personal Identity Network Auth Page for Switch')
+      .toHaveTextContent('Add PIN Portal for Switch')
 
     fireEvent.change(screen.getByLabelText('Service Name'), { target: { value: 'Page Name2' } })
 
@@ -95,7 +95,7 @@ describe( 'NetworkSegAuthForm', () => {
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))
-      .toHaveTextContent('Edit Personal Identity Network Auth Page for Switch')
+      .toHaveTextContent('Edit PIN Portal for Switch')
 
     await waitFor(() =>
       expect(screen.getByDisplayValue(

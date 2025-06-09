@@ -81,9 +81,9 @@ export function NetworkOverviewTab ({ selectedVenues }: { selectedVenues?: strin
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
       {!isCore &&
-        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-          <TopApplicationsByTraffic filters={filters} />
-        </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <TopApplicationsByTraffic filters={filters} tabId={'network-overview-ap-top-traffic'} />
+      </GridCol>
       }
     </GridRow>
   </Loader>)

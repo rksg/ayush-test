@@ -49,6 +49,15 @@ describe('getToolTipText', () => {
       'An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption'
     )
   })
+
+  it('should return fallback message for unmapped errors', () => {
+    expect(
+      getToolTipText({
+        error: 'UNMAPPED_ERROR',
+        toolTipText: null
+      })
+    ).toContain('UNMAPPED_ERROR')
+  })
 })
 
 describe('getTableColumns', () => {

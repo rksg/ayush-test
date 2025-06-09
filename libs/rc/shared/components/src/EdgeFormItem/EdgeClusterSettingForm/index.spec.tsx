@@ -232,8 +232,7 @@ describe('EdgeClusterSettingForm', () => {
     expect(serialNumbers[1]).toHaveValue('serialNumber-2')
     expect(serialNumbers[0]).toBeDisabled()
     expect(serialNumbers[1]).toBeDisabled()
-    expect((await screen.findAllByText('model 1')).length).toBe(1)
-    expect((await screen.findAllByText('model 2')).length).toBe(1)
+    expect((await screen.findAllByText('vRUCKUS Edge')).length).toBe(2)
     expect(screen.queryByText(/The cluster function will operate/i)).not.toBeInTheDocument()
   })
 

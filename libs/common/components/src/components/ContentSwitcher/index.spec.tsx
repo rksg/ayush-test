@@ -58,4 +58,15 @@ describe('ContentSwitcher',()=>{
       extra={'Some text'} />)
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render component with persistent tab', async () => {
+    localStorage.setItem('tab-content-switcher', 'table')
+    render(
+      <ContentSwitcher
+        tabId={'tab'}
+        tabDetails={tabDetails}
+        tabPersistence={true}
+      />
+    )
+    expect(await screen.findByText('Table content')).toBeVisible()
+  })
 })

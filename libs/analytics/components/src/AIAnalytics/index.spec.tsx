@@ -1,9 +1,11 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { get }                                       from '@acx-ui/config'
-import { dataApi, dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }         from '@acx-ui/user'
+import { get }                                                   from '@acx-ui/config'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { dataApi, dataApiURL, Provider, store, rbacApiURL }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor, mockServer } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }                     from '@acx-ui/user'
 
 import { mockNetworkHierarchy } from './__tests__/fixtures'
 
@@ -35,6 +37,10 @@ jest.mock('../IntentAI', () => ({
   IntentAITabContent: () => <div data-testid='intentAI' />
 }))
 
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn()
+}))
 
 describe('NetworkAssurance', () => {
   beforeEach(() => {
@@ -44,6 +50,10 @@ describe('NetworkAssurance', () => {
     } as RaiPermissions)
     store.dispatch(dataApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
+    mockServer.use(
+      rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.text(
+        '[{"key": "enabled-intent-features", "value": "[]"}]')))
+    )
   })
   afterEach(() => {
     jest.resetAllMocks()
@@ -84,5 +94,30 @@ describe('NetworkAssurance', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/analytics/intentAI', hash: '', search: ''
     }))
+  })
+  it('should render IntentAI but not config settings button when no permission', async () => {
+    mockGet.mockReturnValue(true)
+    setRaiPermissions({
+      READ_INCIDENTS: true,
+      READ_INTENT_AI: true
+    } as RaiPermissions)
+    jest.mocked(useIsSplitOn).mockImplementation(() => true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('IntentAI')).toBeVisible()
+    expect(screen.queryByTestId('intent-subscriptions')).not.toBeInTheDocument()
+  })
+  it('should render IntentAI and config settings button', async () => {
+    mockGet.mockReturnValue(false)
+    setRaiPermissions({
+      READ_INCIDENTS: true,
+      READ_INTENT_AI: true,
+      WRITE_INTENT_AI: true
+    } as RaiPermissions)
+    jest.mocked(useIsSplitOn).mockImplementation(() => true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('IntentAI')).toBeVisible()
+    expect(await screen.findByTestId('intent-subscriptions')).toBeInTheDocument()
   })
 })

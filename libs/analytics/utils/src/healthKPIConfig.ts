@@ -3,8 +3,9 @@ import { identity, flow } from 'lodash'
 import moment             from 'moment-timezone'
 import { defineMessage }  from 'react-intl'
 
-import { get }       from '@acx-ui/config'
-import { formatter } from '@acx-ui/formatter'
+import { get }                                from '@acx-ui/config'
+import { formatter }                          from '@acx-ui/formatter'
+import { getUserProfile, isProfessionalTier } from '@acx-ui/user'
 
 const isMLISA = get('IS_MLISA_SA')
 
@@ -465,6 +466,26 @@ export const kpiConfig = {
       deltaSign: '+'
     }
   },
+  energySavingAPs: {
+    text: defineMessage({ defaultMessage: 'Energy Saving APs' }),
+    timeseries: {
+      apiMetric: 'onlineAPCountAndTotalAPCount'
+    },
+    barChart: createBarChartConfig('onlineAPCountAndTotalAPCount'),
+    pill: {
+      description: '',
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Energy Saving APs measures the percentage of APs operating in Energy Saving mode. These APs are dynamically managed by IntentAI to optimize energy consumption.{br}{br}The time-series graph displays the APs operating in Energy Saving mode across time. The bar chart captures daily Energy Saving AP percentage over the last 7 days of the selected date range.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'Energy Saving APs Count' }),
+      apiMetric: 'onlineAPCount',
+      format: formatter('countFormat'),
+      deltaSign: '+'
+    }
+  },
   switchReachability: {
     text: defineMessage({ defaultMessage: 'Switch Reachability' }),
     enableSwitchFirmwareFilter: true,
@@ -678,7 +699,15 @@ export const kpiConfig = {
     }
   }
 }
-export const kpisForTab = (isMLISA? : string) => {
+export const kpisForTab = (
+  isMLISA?: string,
+  isEnergySavingToggled?: boolean
+) => {
+  // only R1 has tier, RAI will be undefined
+  const { accountTier } = getUserProfile()
+  const isProfessionalTierUser = isProfessionalTier(accountTier)
+
+  const isShowEnergySaving = Boolean(isEnergySavingToggled && (isMLISA || isProfessionalTierUser))
   return {
     overview: {
       kpis: [
@@ -687,7 +716,8 @@ export const kpisForTab = (isMLISA? : string) => {
         'clientThroughput',
         'apCapacity',
         'apServiceUptime',
-        'onlineAPs'
+        'onlineAPs',
+        ...(isShowEnergySaving ? ['energySavingAPs'] : [])
       ]
     },
     connection: {
@@ -713,7 +743,8 @@ export const kpisForTab = (isMLISA? : string) => {
         'apToSZLatency',
         ...(isMLISA ? ['clusterLatency'] : []),
         'switchPoeUtilization',
-        'onlineAPs'
+        'onlineAPs',
+        ...(isShowEnergySaving ? ['energySavingAPs'] : [])
       ]
     }
   }

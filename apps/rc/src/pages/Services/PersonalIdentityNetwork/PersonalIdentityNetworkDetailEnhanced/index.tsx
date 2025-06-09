@@ -18,9 +18,8 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  MAX_DEVICE_PER_SEGMENT
+  MAX_DEVICE_PER_SEGMENT,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
@@ -105,17 +104,7 @@ const PersonalIdentityNetworkDetailEnhanced = () => {
     <>
       <PageHeader
         title={pinViewData && pinViewData.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Personal Identity Network' }),
-            link: getServiceRoutePath({
-              type: ServiceType.PIN,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PIN)}
         extra={[...(dhcpRelay ? [
           <Alert style={{ margin: 'auto' }} message={warningMsg} type='info' showIcon />
         ] : []),

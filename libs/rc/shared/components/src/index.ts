@@ -14,6 +14,7 @@ export { groupedFields } from './ApTable/config'
 export { newDefaultApPayload } from'./ApTable/NewApTable'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
 export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
+export { ApExtAntennaForm } from './ApExtAntennaForm'
 export { ApGroupTable  } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ApGroupEdit } from './ApGroupEdit'
@@ -85,7 +86,17 @@ export {
 export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
-export { SingleRadioSettings, RadioSettingsForm, LowPowerBannerAndModal } from './RadioSettings'
+export {
+  SingleRadioSettings,
+  RadioSettingsForm,
+  LowPowerBannerAndModal,
+  RadioLegends
+} from './RadioSettings'
+export {
+  getRadioTypeDisplayName,
+  isCurrentTabUseVenueSettings,
+  toggleState
+} from './RadioSettings/RadioSettingsContents'
 export {
   ClientAdmissionControlForm,
   ClientAdmissionControlLevelEnum,
@@ -205,6 +216,7 @@ export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsPr
 export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
+export { useIotControllerActions } from './useIotControllerActions'
 export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
 export {
   useRegisterMessageTemplates,
@@ -230,7 +242,6 @@ export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
   useEdgeMvSdLanActions,
-  useEdgeSdLanActions,
   useGetEdgeSdLanByEdgeOrClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
@@ -338,3 +349,5 @@ export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
 export * from './SoftGRETunnelSettings'
 export { ResourceBanner } from './ResourceBanner'
+export { BandManagement } from './BandManagement'
+export { IotControllerDrawer } from './IotControllerDrawer'

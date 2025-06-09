@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal,
+import {
   Loader,
   TableProps,
   Table,
@@ -11,14 +11,13 @@ import { showActionModal,
   Tooltip
 } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation, useLazyVenuesListQuery }       from '@acx-ui/rc/services'
+import { doProfileDelete, useDeleteNetworkMutation }              from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
   NetworkType,
   TableQuery,
   GuestNetworkTypeEnum,
-  checkVenuesNotInSetup,
   WlanSecurityEnum,
   WifiNetwork,
   WifiRbacUrlsInfo,
@@ -383,13 +382,6 @@ export function NetworkTable ({
   const [
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
-  const [venuesList] = useLazyVenuesListQuery()
-
-  async function getAdvertisedVenuesStatus (selectedNetwork: Network) {
-    const payload = { fields: ['name', 'status'], filters: { name: selectedNetwork.venues.names } }
-    const list = (await venuesList({ params: { tenantId }, payload }, true).unwrap()).data
-    return list
-  }
 
   // eslint-disable-next-line max-len
   const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>, actionType: 'edit' | 'delete' | 'clone') => {
@@ -426,45 +418,41 @@ export function NetworkTable ({
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
       rbacOpsIds: [deleteNetworkOpsApi],
-      onClick: async ([selected], clearSelection) => {
-        const isDeletingDPSK = isSelectedDpskNetwork([selected])
-        const isDeletingGuestPass = isSelectedGuestNetwork([selected])
-        const networkAdvertisedVenues = await getAdvertisedVenuesStatus(selected)
-        const hideConfirmation = selected?.venues?.count === 0
-          ? true : !checkVenuesNotInSetup(networkAdvertisedVenues)
-
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network' }),
-            entityValue: selected.name,
-            extraContent: <FormattedMessage
-              defaultMessage={`
-              <br></br>
-              {deletingGuestPass}
-              {deletingDPSK}
-              <br></br>
-              {confirmation}`}
-              values={{
-                deletingGuestPass: isDeletingGuestPass ? getDeleteMessage('deletingGuestPass') : '',
-                deletingDPSK: isDeletingDPSK ? getDeleteMessage('deletingDPSK') : '',
-                confirmation: !hideConfirmation ? getDeleteMessage('hasAdvertisedVenues') : '',
-                br: () => <br />
-              }}
-            />,
-            ...( !hideConfirmation && { confirmationText: 'Delete' })
-          },
-          onOk: () => deleteNetwork({
-            params: { tenantId, networkId: selected.id },
-            enableRbac: isUseWifiRbacApi
-          }).then(clearSelection)
-        })
+      onClick: ([selected], clearSelection) => {
+        doDelete([selected as WifiNetwork], clearSelection)
       },
       disabled: (selectedRows) => isActionDisabled(selectedRows, 'delete'),
       tooltip: getEnforcedActionMsg
     }
   ]
+
+  const doDelete = (selectedRows: WifiNetwork[], callback: () => void) => {
+    const isDeletingDPSK = isSelectedDpskNetwork(selectedRows)
+    const isDeletingGuestPass = isSelectedGuestNetwork(selectedRows)
+
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Network' }),
+      selectedRows[0].name,
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueApGroups', fieldText: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }],
+      async () => deleteNetwork({
+        params: { tenantId, networkId: selectedRows[0].id },
+        enableRbac: isUseWifiRbacApi
+      }).then(callback),
+      <FormattedMessage
+        defaultMessage={`
+            <br></br>
+            {deletingGuestPass}
+            {deletingDPSK}`}
+        values={{
+          deletingGuestPass: isDeletingGuestPass ? getDeleteMessage('deletingGuestPass') : '',
+          deletingDPSK: isDeletingDPSK ? getDeleteMessage('deletingDPSK') : '',
+          br: () => <br />
+        }}
+      />
+    )
+  }
 
   function toggleOnboardNetworks () {
     setExpandOnBoaroardingNetworks(!expandOnBoaroardingNetworks)

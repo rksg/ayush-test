@@ -79,5 +79,10 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'GET',
     url: '/clients/:clientMacAddress',
     newApi: true
+  },
+  getApWiredClients: {
+    method: 'post',
+    url: '/venues/aps/wiredClients/query',
+    newApi: true
   }
 }

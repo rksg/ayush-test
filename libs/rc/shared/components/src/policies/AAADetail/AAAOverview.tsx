@@ -3,7 +3,7 @@ import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 import { useParams }                                 from 'react-router-dom'
 
 import { SummaryCard }                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { useGetCertificateAuthoritiesQuery, useGetCertificateListQuery }                     from '@acx-ui/rc/services'
 import { AAAPolicyType, getPolicyRoutePath, PolicyOperation, PolicyType, useConfigTemplate } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
@@ -17,9 +17,10 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
   const { aaaProfile } = props
   const emptyResult: { key: string, value: string }[] = []
 
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const { certificateAuthorityNameMap } = useGetCertificateAuthoritiesQuery({
     params: { tenantId: params.tenantId },

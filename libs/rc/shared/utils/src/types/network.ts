@@ -175,7 +175,12 @@ export interface NetworkSaveData extends EnforceableFields {
   dsaeNetworkPairId?: string
   hotspot20Settings?: NetworkHotspot20Settings
   useCertificateTemplate?: boolean
+  /** @Deprecated:
+   * We allow multiple certificate templates to AAA. Please use `certificateTemplateIds`
+   * Once Features.MULTIPLE_CERTIFICATE_TEMPLATE is removed, it will be removed.
+   * */
   certificateTemplateId?: string
+  certificateTemplateIds?: string[]
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction

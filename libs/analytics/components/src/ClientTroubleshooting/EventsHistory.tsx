@@ -50,6 +50,13 @@ export type FormattedEvent = {
 const transformData = (
   clientInfo: ClientInfoData, filters: Filters, intl: IntlShape, isBtmEventsEnabled: boolean
 ) => {
+  const userProfileR1 = getUserProfile()
+  const { profile: userProfile, accountTier } = userProfileR1 ?
+    userProfileR1 : { profile: {}, accountTier: undefined }
+
+  const isCore = isCoreTier(accountTier)
+  const isSupportUser = Boolean(userProfile?.support)
+  const hasDownloadPermission = isCore ? isSupportUser: true
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
@@ -80,7 +87,7 @@ const transformData = (
       title: formatEventDesc(event, intl),
       icon: <>
         <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>
-        {typeof event.pcapFilename === 'string' && <UI.Download />}
+        {typeof event.pcapFilename === 'string' && hasDownloadPermission && <UI.Download />}
       </>,
       event
     }

@@ -1,13 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Tooltip }                                                                               from '@acx-ui/components'
-import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                            from '@acx-ui/rc/services'
-import { MtuTypeEnum, servicePolicyNameRegExp, checkObjectNotExists, SoftGreViewData, domainNameRegExp } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                 from '@acx-ui/utils'
+import { Loader, Tooltip }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useGetSoftGreViewDataListQuery, useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  MtuTypeEnum,
+  servicePolicyNameRegExp,
+  checkObjectNotExists,
+  SoftGreViewData,
+  domainNameRegExp,
+  domainNameWithIPv6RegExp,
+  transformDisplayOnOff,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
@@ -38,7 +48,9 @@ const defaultFields = [
   'keepAliveInterval',
   'keepAliveRetryTimes',
   'disassociateClientEnabled',
-  'activations'
+  'activations',
+  'gatewayFailbackEnabled',
+  'gatewaySecondaryToPrimaryTimer'
 ]
 
 const gatewayIpFields = [
@@ -53,10 +65,14 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const { $t } = useIntl()
   const { readMode, editMode, policyId } = props
   const params = useParams()
+  const isGatewayFailbackEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE)
   const form = Form.useFormInstance()
   const mtuType = Form.useWatch('mtuType')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
+  const [ fallbackEnable, setFallbackEnable ] = useState<boolean>(false)
+  const { isTemplate } = useConfigTemplate()
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
 
   const { softGreData, isLoading } = useGetSoftGreViewDataListQuery(
     { params, payload: {
@@ -76,6 +92,10 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
 
   useEffect(() => {
     if (!policyId || !softGreData) return
+
+    if (softGreData.gatewayFailbackEnabled) {
+      setFallbackEnable(softGreData.gatewayFailbackEnabled)
+    }
 
     form.setFieldsValue(softGreData)
 
@@ -112,11 +132,22 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
       )
   }
 
+  const gatewayIpAddressValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return domainNameWithIPv6RegExp(value)
+    }
+    return domainNameRegExp(value)
+  }
+
   const secondaryGWValidator = (value: string) => {
     const primaryGatewayAddress = form.getFieldValue('primaryGatewayAddress')
     return (value && primaryGatewayAddress && primaryGatewayAddress === value) ?
       Promise.reject($t( { defaultMessage: 'Primary and secondary gateways must be different. Please enter a new gateway IP address or FQDN.' })) :
       Promise.resolve()
+  }
+
+  const toggleFallbackEnable = (checked: boolean) => {
+    setFallbackEnable(checked)
   }
 
   return (
@@ -155,7 +186,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             label={$t({ defaultMessage: 'Primary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
               { required: true },
-              { validator: (_, value) => domainNameRegExp(value),
+              { validator: (_, value) => gatewayIpAddressValidator(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               },
               { validator: (_, value) => gatewayValidator(value) }
@@ -170,7 +201,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             {...(readMode? undefined : { name: 'secondaryGatewayAddress' })}
             label={$t({ defaultMessage: 'Secondary Gateway IP Address or FQDN' })}
             rules={readMode ? undefined : [
-              { validator: (_, value) => domainNameRegExp(value),
+              { validator: (_, value) => gatewayIpAddressValidator(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               },
               { validator: (_, value) => secondaryGWValidator(value) },
@@ -183,6 +214,82 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }
           />
         </Col>
+        {isGatewayFailbackEnabled && (
+          <Col span={isDrawerMode ? 16 : 11} >
+            <UI.StyledSpace style={{
+              display: readMode ? 'block' : 'flex',
+              justifyContent: readMode ? 'initial' : 'space-between'
+            }}>
+              <UI.FormItemWrapper>
+                <Form.Item
+                  label={$t({ defaultMessage: 'Fallback to Primary Gateway' })}
+                  tooltip={readMode ? null : $t(messageMapping.fallback_tooltip)}
+                />
+              </UI.FormItemWrapper>
+              <Form.Item
+                {...(readMode? undefined : { name: 'gatewayFailbackEnabled' })}
+                initialValue={false}
+                valuePropName='checked'
+                children={
+                  readMode
+                    ? transformDisplayOnOff(softGreData?.gatewayFailbackEnabled ?? false)
+                    : <Switch aria-label='Fallback to Primary Gateway' onClick={toggleFallbackEnable} />
+                }
+              />
+            </UI.StyledSpace>
+          </Col>
+        )}
+        {isGatewayFailbackEnabled && readMode && fallbackEnable && (
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Primary Availability Check Interval' })}
+              children={$t({ defaultMessage: '{minutes} minutes' },
+                { minutes: softGreData?.gatewaySecondaryToPrimaryTimer || noDataDisplay })}
+            />
+          </Col>
+        )}
+        {isGatewayFailbackEnabled && !readMode && fallbackEnable && (
+          <Col span={24}>
+            <Form.Item
+              label={
+                <>
+                  { $t({ defaultMessage: 'Primary Availability Check Interval' }) }
+                  <Tooltip.Question
+                    title={$t(messageMapping.primary_availability_check_tooltip)}
+                    placement='bottom'
+                  />
+                </>
+              }
+              required
+            >
+              <Space>
+                <Form.Item
+                  name='gatewaySecondaryToPrimaryTimer'
+                  initialValue={60}
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter Primary Availability Check Interval' })
+                    },
+                    {
+                      type: 'number', min: 60, max: 1440,
+                      message: $t({
+                        defaultMessage: 'Primary Availability Check Interval must be between 60 and 1440'
+                      })
+                    }
+                  ]}
+                  validateFirst
+                  noStyle
+                  children={<InputNumber
+                    aria-label='Primary Availability Check Interval'
+                    style={{ width: '60px' }}
+                  />}
+                />
+                <div>{$t({ defaultMessage: 'minutes' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
+        )}
         <Col span={24}>
           <Form.Item
             {...(readMode? undefined : { name: 'mtuType' })}

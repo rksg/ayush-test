@@ -36,6 +36,7 @@ export const SAMLForm = () => {
   const isSamlSsoEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
+  const [createdSamlIdpId, setCreatedSamlIdpId] = useState<string | undefined>(undefined)
 
   const { samlIdpOptions , idpViewDataList } = useGetSamlIdpProfileViewDataListQuery({
     payload: {
@@ -57,34 +58,34 @@ export const SAMLForm = () => {
   const form = Form.useFormInstance()
 
   const selectedSamlIdpProfilesId = Form.useWatch('samlIdpProfilesId', form)
-  useEffect(() => {
-    if(idpViewDataList && idpViewDataList.length > 0) {
-      if ((editMode || cloneMode) && data) {
-        const idp = idpViewDataList?.find((idp: SamlIdpProfileViewData) => {
-          return idp.wifiNetworkIds.includes(data.id ?? '')
-        })
 
-        if (idp) {
-          form.setFieldValue('samlIdpProfilesId', idp.id)
-          form.setFieldValue('samlIdpProfilesName', idp.name)
-        }
+  useEffect(() => {
+    const setFormFields = (idp: SamlIdpProfileViewData | undefined) => {
+      if (idp) {
+        form.setFieldValue('samlIdpProfilesId', idp.id)
+        form.setFieldValue('samlIdpProfilesName', idp.name)
       }
+    }
+
+    if (!idpViewDataList || idpViewDataList.length === 0) {
+      return
+    }
+
+    if ((editMode || cloneMode) && data) {
+      const idp = idpViewDataList.find((idp: SamlIdpProfileViewData) =>
+        idp.wifiNetworkIds.includes(data.id ?? '')
+      )
+      setFormFields(idp)
+    }
+
+    if (createdSamlIdpId) {
+      const idp = idpViewDataList.find((idp: SamlIdpProfileViewData) =>
+        idp.id === createdSamlIdpId
+      )
+      setFormFields(idp)
+      setCreatedSamlIdpId(undefined)
     }
   }, [idpViewDataList])
-
-  useEffect(() => {
-    if (selectedSamlIdpProfilesId && idpViewDataList) {
-      const idp = idpViewDataList.find((idp) => {
-        return idp.id === selectedSamlIdpProfilesId
-      })
-      if (idp) {
-        form.setFieldValue('samlIdpProfilesName', idp.name)
-      } else {
-        setDetailDrawerVisible(false)
-      }
-    }
-
-  }, [selectedSamlIdpProfilesId, idpViewDataList])
 
   return (
     <>
@@ -164,7 +165,7 @@ export const SAMLForm = () => {
             onClose={() => setAddDrawerVisible(false)}
             updateInstance={(createId: string) => {
               if(createId) {
-                form.setFieldValue('samlIdpProfilesId', createId)
+                setCreatedSamlIdpId(createId)
                 setAddDrawerVisible(false)
               }
             }}

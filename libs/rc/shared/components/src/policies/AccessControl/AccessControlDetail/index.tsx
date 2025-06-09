@@ -29,15 +29,23 @@ import AccessControlOverview       from './AccessControlOverview'
 export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const data = useGetAclPolicyInstance()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
+  let breadcrumbWithSwitchMacAcl = [...breadcrumb]
+  if (breadcrumbWithSwitchMacAcl.length >= 3) {
+    breadcrumbWithSwitchMacAcl[2] = {
+      ...breadcrumbWithSwitchMacAcl[2],
+      link: 'policies/accessControl/wifi'
+    }
+  }
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={breadcrumb}
+        breadcrumb={isSwitchMacAclEnabled ? breadcrumbWithSwitchMacAcl : breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
             // eslint-disable-next-line max-len

@@ -265,7 +265,7 @@ export const MSPUtils = () => {
           sum + (+(en.switchDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.EDGE:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (+(en.edgeDeviceCount || 0)), 0)
+          sum + (+(en.virtualEdgeDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.RWG:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (+(en.rwgDeviceCount || 0)), 0)
@@ -284,6 +284,9 @@ export const MSPUtils = () => {
       case ComplianceMspCustomersDevicesTypes.SLTN_HYBRID_CLOUD_SEC:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
           sum + (+(en.hybridCloudSecCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.IOT_CONTROLLER:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.iotCtrlDeviceCount || 0)), 0)
       default: return 0
     }
   }

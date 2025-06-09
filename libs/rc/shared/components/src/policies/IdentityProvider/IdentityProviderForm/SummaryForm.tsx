@@ -4,10 +4,10 @@ import { Col, Form, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { PasswordInput, StepsForm, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { useAaaPolicyQuery }                  from '@acx-ui/rc/services'
-import { AAAPolicyType, useConfigTemplate }   from '@acx-ui/rc/utils'
+import { PasswordInput, StepsForm, Subtitle }                     from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useAaaPolicyQuery }                                      from '@acx-ui/rc/services'
+import { AAAPolicyType, useConfigTemplate }                       from '@acx-ui/rc/utils'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 
@@ -90,8 +90,9 @@ type RadiusServerFieldsProps = {
 const RadiusServerFields = (props: RadiusServerFieldsProps) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const { aaaPolicy, isSecondary=false } = props
   const radiusServer = aaaPolicy && aaaPolicy[!isSecondary? 'primary': 'secondary' ]

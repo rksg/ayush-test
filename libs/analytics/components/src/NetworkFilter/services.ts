@@ -5,8 +5,11 @@ import type { AnalyticsFilter, PathNode, NetworkNode } from '@acx-ui/utils'
 
 // R1
 type NetworkData = PathNode & { id:string }
-type NetworkHierarchyFilter = Omit<AnalyticsFilter, 'filter'> &
-  { shouldQueryAp? : Boolean, shouldQuerySwitch? : Boolean }
+type NetworkHierarchyFilter = Omit<AnalyticsFilter, 'filter'> & {
+  shouldQueryAp?: Boolean
+  shouldQuerySwitch?: Boolean
+  shouldQueryEdge?: Boolean
+}
 export type ApOrSwitch = {
   name: string
   mac: string
@@ -14,8 +17,12 @@ export type ApOrSwitch = {
   model?: string
   firmware?: string
 }
-export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
-export type Child = NetworkData & ApsOrSwitches
+export type FilterDevices = {
+  aps?: ApOrSwitch[]
+  switches?: ApOrSwitch[]
+  edges?: Array<{ id: string, name: string }>
+}
+export type Child = NetworkData & FilterDevices
 interface VenuesResponse { network: { venueHierarchy: Child[] } }
 
 // RAI
@@ -40,26 +47,26 @@ const mergeNodes = (children: NetworkNode[]): NetworkNode[] => {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     venuesHierarchy: build.query<Child[], NetworkHierarchyFilter>({
-      query: payload => ({
-        document: gql`
-          query VenueHierarchy(
-            $start: DateTime,
-            $end: DateTime,
-            $querySwitch: Boolean,
-            $queryAp: Boolean
-          ) {
+      query: payload => {
+        const params = [
+          ['queryAp', Boolean(payload.shouldQueryAp)],
+          ['querySwitch', Boolean(payload.shouldQuerySwitch)],
+          ['queryEdge', Boolean(payload.shouldQueryEdge)]
+        ].filter(([, value]) => value).map(([key]) => `${key}: true`)
+        return {
+          document: gql`
+            query VenueHierarchy($start: DateTime, $end: DateTime) {
               network(start: $start, end: $end) {
-                venueHierarchy (queryAp: $queryAp, querySwitch: $querySwitch)
+                venueHierarchy ${params.length ? `(${params.join(', ')})`: ''}
+              }
             }
+          `,
+          variables: {
+            start: payload.startDate,
+            end: payload.endDate
           }
-        `,
-        variables: {
-          start: payload.startDate,
-          end: payload.endDate,
-          querySwitch: payload.shouldQuerySwitch,
-          queryAp: payload.shouldQueryAp
         }
-      }),
+      },
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_HIERARCHY' }],
       transformResponse: ({ network }: VenuesResponse) => network.venueHierarchy
     }),

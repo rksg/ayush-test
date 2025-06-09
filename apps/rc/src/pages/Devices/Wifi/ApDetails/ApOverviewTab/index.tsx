@@ -27,7 +27,7 @@ const apViewModelRbacPayloadFields = [
   'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
   'meshEnabled', 'lastUpdatedTime', 'deviceModelType', 'meshStatus',
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus',
-  'switchId', 'switchPort']
+  'switchId', 'switchPort', 'poePort']
 
 const apViewModelPayloadFields = [
   'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
@@ -113,9 +113,9 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
         <ConnectedClientsOverTime filters={filters} />
       </GridCol>
       {!isCore &&
-        <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-          <TopApplicationsByTraffic filters={filters} />
-        </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <TopApplicationsByTraffic filters={filters} tabId={'ap-overview-ap-top-traffic'} />
+      </GridCol>
       }
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSSIDsByTraffic filters={filters} />

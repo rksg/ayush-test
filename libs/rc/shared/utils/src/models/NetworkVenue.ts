@@ -46,6 +46,8 @@ export class NetworkVenue {
 
   vlanMembers?: string[]
 
+  oweTransWlanId?: number
+
   constructor () {
     this.dual5gEnabled = true
 

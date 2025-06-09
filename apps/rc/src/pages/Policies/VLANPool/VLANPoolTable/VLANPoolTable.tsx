@@ -13,7 +13,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -104,13 +104,7 @@ export default function VLANPoolTable () {
           $t({ defaultMessage: 'VLAN Pools ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
@@ -198,7 +192,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
-      sorter: true,
+      sorter: false,
       render: (__, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds

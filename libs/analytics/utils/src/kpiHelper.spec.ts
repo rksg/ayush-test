@@ -1,7 +1,7 @@
 import { formatter } from '@acx-ui/formatter'
 
-import { kpiDelta, limitRange } from './kpiHelper'
-import { TrendTypeEnum }        from './types/trendType'
+import { getDeltaValue, kpiDelta, limitRange } from './kpiHelper'
+import { TrendTypeEnum }                       from './types/trendType'
 
 describe('kpiDelta', () => {
   it('should return correct data', () => {
@@ -27,6 +27,51 @@ describe('kpiDelta', () => {
     expect(kpiDelta(0.40001, ...args))
       .toEqual({ trend: TrendTypeEnum.None, value: '=' })
     expect(kpiDelta(0.40006, ...args)) // rounding up
+      .toEqual({ trend: TrendTypeEnum.None, value: '-0.01%' })
+  })
+})
+
+describe('getDeltaValue', () => {
+  const tolerance = 5 / 100
+
+  it('should return correct data when forcePercentDisplay', () => {
+    expect(getDeltaValue(null, null, tolerance, '+', formatter('percentFormat'), true))
+      .toEqual({ trend: 'transparent', value: '--' })
+    expect(getDeltaValue(0, 0, tolerance, '+', formatter('countFormat'), true))
+      .toEqual({ trend: TrendTypeEnum.None, value: '=' })
+    expect(getDeltaValue(5, 10, tolerance, '+', formatter('countFormat'), true))
+      .toEqual({ trend: TrendTypeEnum.Positive, value: '+100%' })
+    expect(getDeltaValue(10, 5, tolerance, '+', formatter('countFormat'), true))
+      .toEqual({ trend: TrendTypeEnum.Negative, value: '-50%' })
+    expect(getDeltaValue(5, 10, tolerance, '-', formatter('countFormat'), true))
+      .toEqual({ trend: TrendTypeEnum.Negative, value: '+100%' })
+    expect(getDeltaValue(10, 5, tolerance, '-', formatter('countFormat'), true))
+      .toEqual({ trend: TrendTypeEnum.Positive, value: '-50%' })
+  })
+
+  it('should return correct data when not forcePercentDisplay', () => {
+    expect(getDeltaValue(null, null, 0, '+', formatter('percentFormat'), false))
+      .toEqual({ trend: 'transparent', value: '--' })
+    expect(getDeltaValue(0, 0, 0, '+', formatter('countFormat'), false))
+      .toEqual({ trend: TrendTypeEnum.None, value: '=' })
+    expect(getDeltaValue(5, 10, 0, '+', formatter('percentFormat'), false))
+      .toEqual({ trend: TrendTypeEnum.Positive, value: '+100%' })
+    expect(getDeltaValue(10, 5, 0, '+', formatter('percentFormat'), false))
+      .toEqual({ trend: TrendTypeEnum.Negative, value: '-50%' })
+    expect(getDeltaValue(5, 10, 0, '-', formatter('countFormat'), false))
+      .toEqual({ trend: TrendTypeEnum.Negative, value: '+5' })
+    expect(getDeltaValue(10, 5, 0, '-', formatter('countFormat'), false))
+      .toEqual({ trend: TrendTypeEnum.Positive, value: '-5' })
+  })
+  it('only take up to 4 digit decimal into consideration', () => {
+    const args = [0.4, tolerance, '+', formatter('percentFormat'), true] as const
+    expect(getDeltaValue(0.4000000000000005, ...args))
+      .toEqual({ trend: TrendTypeEnum.None, value: '=' })
+    expect(getDeltaValue(0.400005, ...args))
+      .toEqual({ trend: TrendTypeEnum.None, value: '=' })
+    expect(getDeltaValue(0.40001, ...args))
+      .toEqual({ trend: TrendTypeEnum.None, value: '=' })
+    expect(getDeltaValue(0.40006, ...args)) // rounding up
       .toEqual({ trend: TrendTypeEnum.None, value: '-0.01%' })
   })
 })

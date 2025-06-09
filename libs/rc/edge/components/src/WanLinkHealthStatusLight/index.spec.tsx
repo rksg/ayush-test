@@ -45,8 +45,8 @@ describe('EdgeWanLinkHealthStatusLight', () => {
     expect(upText).toBeInTheDocument()
     await userEvent.hover(upText)
     const tooltip = await screen.findByRole('tooltip')
-    expect(tooltip).toHaveTextContent(/192.168.1.3 Up/)
-    expect(tooltip.textContent).toBe('192.168.1.2  Down192.168.1.3  Up')
+    expect(tooltip).toHaveTextContent(/192.168.1.3Up/)
+    expect(tooltip.textContent).toBe('192.168.1.2Down192.168.1.3Up')
   })
 
   it('renders with empty targetIpStatus array', async () => {

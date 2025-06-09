@@ -51,10 +51,10 @@
 # Fallback to allow other users to approve pull requests in case Code Owners are not available (eg. holidays)
 #  1. Define a group with the special name `FallbackOwners` and add the people which can approve PRs for other Code Owners.
 #  2. In case a Code Owner is absent and the PR can not be merged because of a missing Code Owner approval, add extra reviewers from the FallbackOwners group to the PR. Any approval of such an extra reviewer counts towards any Code Owners merge check.
-@@@FallbackOwners @"GCHIU" @"JDENG1" @"yw1046" @"JSYU" @"PLIN" @"cl1092" @"rl1093" @"STAN2" @"MDEHEZ" @"VKANDHVAR" @"CBOKIL" @"jc1318"
+@@@FallbackOwners @"GCHIU" @"JDENG1" @"yw1046" @"JSYU" @"PLIN" @"cl1092" @"rl1093" @"STAN2" @"MDEHEZ" @"VKANDHVAR" @"CBOKIL" @"jc1318" @"jdangi"
 
 # @@@group1   	@user1 @user2
-@@@UI   @"KYEH" @"YGUO1" @"TLIN4" @"JCHIU1" @"JKAO1" @"ac1236" @"ELEU" @"sb1212" @"JCHEOW"
+@@@UI   @"KYEH" @"YGUO1" @"TLIN4" @"JCHIU1" @"JKAO1" @"ac1236" @"sb1212" @"JCHEOW"
 
 # @@@group2   	@user1 @user2
 

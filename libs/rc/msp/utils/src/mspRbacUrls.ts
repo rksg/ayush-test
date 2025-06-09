@@ -8,6 +8,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/tenants/query'
   },
+  getMspCustomersListWithoutDelegations: {
+    method: 'post',
+    url: '/ecs/query?delegations=false',
+    newApi: true,
+    opsApi: 'POST:/ecs/query?delegations=false'
+  },
   // getMspECList: {
   //   method: 'post',
   //   url: '/ecs/query?delegations=true',
@@ -301,6 +307,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/delegations/:delegationId',
     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    opsApi: 'PUT:/tenants/delegations/{id}',
     newApi: true
   },
   getGenerateLicenseUsageRpt: {

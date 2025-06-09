@@ -20,7 +20,7 @@ import {
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -226,11 +226,7 @@ export default function ConnectionMeteringTable () {
       ]}
     >
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         title={$t({ defaultMessage: 'Data Usage Metering' })}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink

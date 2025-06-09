@@ -54,12 +54,12 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   Switch,
   getSwitchModel,
   SwitchTable,
   SwitchStatusEnum,
-  isOperationalSwitch,
   SwitchViewModel,
   redirectPreviousPage,
   LocationExtended,
@@ -76,7 +76,9 @@ import {
   getStackUnitsMinLimitationV1002,
   getSwitchFwGroupVersionV1002,
   SwitchFirmwareModelGroup,
-  createSwitchSerialPattern
+  createSwitchSerialPattern,
+  createSwitchSerialPatternForSpecific8100Model,
+  isSpecific8100Model
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -123,12 +125,14 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
     isSupport7550Zippy, activeSerialNumber } = props
   const { $t } = getIntl()
 
-  const re = createSwitchSerialPattern({
-    isSupport8200AV: isSupport8200AV,
-    isSupport8100: isSupport8100,
-    isSupport8100X: isSupport8100X,
-    isSupport7550Zippy: isSupport7550Zippy
-  })
+  const re = (isSupport8100 && isSpecific8100Model(serialNumber))
+    ? createSwitchSerialPatternForSpecific8100Model()
+    : createSwitchSerialPattern({
+      isSupport8200AV: isSupport8200AV,
+      isSupport8100: isSupport8100,
+      isSupport8100X: isSupport8100X,
+      isSupport7550Zippy: isSupport7550Zippy
+    })
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }

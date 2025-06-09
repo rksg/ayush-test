@@ -11,8 +11,7 @@ import {
   getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   getTunnelTypeString,
   mtuRequestTimeoutUnitConversion,
@@ -40,10 +39,6 @@ const TunnelProfileDetail = () => {
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.TUNNEL_PROFILE,
-    oper: PolicyOperation.LIST
-  })
 
   const getTunnelProfilePayload = {
     filters: { id: [params.policyId] }
@@ -149,17 +144,7 @@ const TunnelProfileDetail = () => {
     <>
       <PageHeader
         title={tunnelProfileData.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.TUNNEL_PROFILE)}
         extra={
           filterByAccessForServicePolicyMutation([
             <TenantLink

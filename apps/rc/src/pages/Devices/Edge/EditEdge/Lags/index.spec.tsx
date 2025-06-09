@@ -87,7 +87,7 @@ describe('EditEdge - Lags', () => {
             lagStatus: mockEdgeLagStatusList.data,
             isFetching: false,
             clusterInfo: mockEdgeClusterList.data[0],
-            isCluster: true
+            isClusterFormed: true
           } as unknown as EditEdgeDataContextType}
         >
           <Lags />
@@ -109,7 +109,7 @@ describe('EditEdge - Lags', () => {
             lagStatus: mockEdgeLagStatusList.data,
             isFetching: false,
             clusterInfo: mockEdgeClusterList.data[0],
-            isCluster: true
+            isClusterFormed: true
           } as unknown as EditEdgeDataContextType}
         >
           <Lags />
@@ -131,7 +131,7 @@ describe('EditEdge - Lags', () => {
             lagStatus: mockEdgeLagStatusList.data,
             isFetching: false,
             clusterInfo: mockEdgeClusterList.data[0],
-            isCluster: true
+            isClusterFormed: true
           } as unknown as EditEdgeDataContextType}
         >
           <Lags />
@@ -153,7 +153,7 @@ describe('EditEdge - Lags', () => {
             lagStatus: mockEdgeLagStatusList.data,
             isFetching: false,
             clusterInfo: mockEdgeClusterList.data[0],
-            isCluster: true
+            isClusterFormed: true
           } as unknown as EditEdgeDataContextType}
         >
           <Lags />

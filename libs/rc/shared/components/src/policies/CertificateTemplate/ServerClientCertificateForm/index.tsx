@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm }                                                                                 from '@acx-ui/components'
-import { ExtendedKeyUsages, KeyUsages, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                            from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                  from '@acx-ui/components'
+import { ExtendedKeyUsages, KeyUsages, PolicyOperation, PolicyType, usePolicyListBreadcrumb, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                             from '@acx-ui/react-router-dom'
 
 import { GenerateCertificateFormSelection } from './CertificateStepForms/GenerateCertificateFormSelection'
 import useCertificateForm                   from './useCertificateForm'
@@ -23,23 +23,13 @@ export const ServerClientCertificateForm = (props: ServerClientCertificateFormPr
     oper: PolicyOperation.LIST
   }))
   const { modalMode=false, modalCallBack, keyUsages, extendedKeyUsages } = props
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SERVER_CERTIFICATES)
 
   return (
     <>
       {!modalMode && <PageHeader
         title={$t({ defaultMessage: 'Generate Certificate' })}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        }, {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }, {
-          text: $t({ defaultMessage: 'Certificate Template' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.SERVER_CERTIFICATES,
-            oper: PolicyOperation.LIST
-          })
-        }]}
+        breadcrumb={breadcrumb}
       />}
       <StepsForm form={generateCertificateForm}
         onFinish={async () => {

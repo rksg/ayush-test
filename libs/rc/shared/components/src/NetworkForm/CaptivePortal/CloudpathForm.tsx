@@ -9,8 +9,8 @@ import {
 import { useIntl } from 'react-intl'
 
 
-import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -41,9 +41,10 @@ export function CloudpathForm () {
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
@@ -56,7 +57,7 @@ export function CloudpathForm () {
     if(supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  },[data?.id, data?.wlan?.wlanSecurity])
+  },[supportRadsec, data?.id, data?.wlan?.wlanSecurity])
 
   const setFieldsValue = () => {
     if (!data) {

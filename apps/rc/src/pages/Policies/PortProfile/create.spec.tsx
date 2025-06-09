@@ -19,9 +19,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
   Features: {
     ETHERNET_PORT_PROFILE_TOGGLE: 'ETHERNET_PORT_PROFILE_TOGGLE',
     SWITCH_CONSUMER_PORT_PROFILE_TOGGLE: 'SWITCH_CONSUMER_PORT_PROFILE_TOGGLE'
+  },
+  TierFeatures: {
+    SERVICE_CATALOG_UPDATED: 'SERVICE_CATALOG_UPDATED'
   }
 }))
 
@@ -51,6 +55,9 @@ describe('CreatePortProfile', () => {
   })
 
   it('renders breadcrumb correctly', () => {
+    (featureToggle.useIsTierAllowed as jest.Mock).mockImplementation((feature) =>
+      feature !== featureToggle.TierFeatures.SERVICE_CATALOG_UPDATED
+    )
     renderComponent()
     expect(screen.getByText('Network Control')).toBeInTheDocument()
     expect(screen.getByText('Policies & Profiles')).toBeInTheDocument()

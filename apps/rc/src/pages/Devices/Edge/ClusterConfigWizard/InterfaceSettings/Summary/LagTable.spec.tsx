@@ -1,6 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
+import { Features }                                 from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import { EdgeGeneralFixtures, EdgeLag, EdgeStatus } from '@acx-ui/rc/utils'
 import { render, screen, within }                   from '@acx-ui/test-utils'
 
@@ -11,6 +13,11 @@ import { LagTable } from './LagTable'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 describe('InterfaceSettings - Summary > LagTable', () => {
   it('should render correctly', async () => {
@@ -98,5 +105,30 @@ describe('InterfaceSettings - Summary > LagTable', () => {
     await userEvent.hover(within(lagMembersCells[1]).getByText('1'))
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('Port1 (Enabled)')
+  })
+
+  describe('Core Access', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+    })
+
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should show core port and access port column when FF is on', async () => {
+      render(
+        <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+          <LagTable
+            data={mockClusterConfigWizardData.lagSettings}
+            portSettings={mockClusterConfigWizardData.portSettings}
+          />
+        </ClusterConfigWizardContext.Provider>
+      )
+
+      expect(screen.getByRole('columnheader', { name: 'Core Port' })).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Access Port' })).toBeVisible()
+    })
   })
 })

@@ -60,7 +60,7 @@ describe('VenueClientsTab', () => {
     const wifiTab = await screen.findByRole('tab', { name: 'Wireless' })
     expect(wifiTab.getAttribute('aria-selected')).toBeTruthy()
 
-    const switchTab = await screen.findByRole('tab', { name: 'Wired' })
+    const switchTab = await screen.findByRole('tab', { name: 'Switch Wired' })
     fireEvent.click(switchTab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

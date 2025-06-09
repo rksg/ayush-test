@@ -5,28 +5,32 @@ export const networkFilterResult = [{
   id: 'id1',
   name: 'venue',
   aps: [{ name: 'ap', mac: 'ap-mac' }],
-  switches: []
+  switches: [],
+  edges: []
 }, {
   id: 'id2',
   name: 'venue',
   aps: [],
-  switches: [{ name: 'switch', mac: 'switch-mac' }]
+  switches: [{ name: 'switch', mac: 'switch-mac' }],
+  edges: []
 }, {
   id: 'id3',
   name: 'venue1',
   aps: [{ name: 'ap2', mac: 'ap-mac2' }],
-  switches: []
+  switches: [],
+  edges: []
 }, {
   id: 'id4',
   name: 'swg',
   aps: [],
-  switches: [{ name: 'switch2', mac: 'switch-mac2' }]
-},
-{
+  switches: [{ name: 'switch2', mac: 'switch-mac2' }],
+  edges: []
+}, {
   id: 'id5',
   name: 'swg1',
   aps: [{ name: 'ap3', mac: 'ap-mac3' }],
-  switches: [{ name: 'switch3', mac: 'switch-mac3' }]
+  switches: [{ name: 'switch3', mac: 'switch-mac3' }],
+  edges: []
 }]
 
 export const recentNetworkFilterResult = {

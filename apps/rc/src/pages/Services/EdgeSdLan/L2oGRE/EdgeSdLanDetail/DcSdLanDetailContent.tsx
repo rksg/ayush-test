@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Card, SummaryCard, Tabs }                                    from '@acx-ui/components'
-import { EdgeServiceStatusLight, SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
+import { Card, SummaryCard, Tabs }              from '@acx-ui/components'
+import { EdgeServiceStatusLight, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   EdgeMvSdLanViewData,
   getPolicyDetailsLink,
@@ -69,12 +69,6 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>
       <SummaryCard data={sdLanInfo} />
-      <Card>
-        <SdLanTopologyDiagram
-          isGuestTunnelEnabled={false}
-          vertical={false}
-        />
-      </Card>
       <Card>
         <UI.InstancesContainer>
           <UI.InstancesTitle level={2}>

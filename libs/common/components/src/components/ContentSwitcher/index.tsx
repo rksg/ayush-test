@@ -13,6 +13,7 @@ interface TabDetail {
 }
 
 export interface ContentSwitcherProps {
+  tabId?: string
   defaultValue?: string
   formInitValue?: string
   tabDetails: Array<TabDetail>
@@ -22,6 +23,7 @@ export interface ContentSwitcherProps {
   value?: string
   onChange?: (value: string) => void
   noPadding?: boolean
+  tabPersistence?: boolean
 }
 
 const sizeSpaceMap = {
@@ -30,8 +32,8 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, formInitValue, size, align, value, onChange,
-    extra, noPadding } = props
+  const { tabId, tabDetails, defaultValue, formInitValue, size, align, value, onChange,
+    extra, noPadding, tabPersistence } = props
 
   const initValue = defaultValue || formInitValue
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
@@ -45,7 +47,10 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   })
   const isDefaultOptionVisible = options.find(o => o.value === initValue)
   const defaultActiveContent = isDefaultOptionVisible ? initValue : options[0].value
-  const [activeContent, setActiveContent] = useState(defaultActiveContent)
+  const storedTab = localStorage.getItem(`${tabId}-content-switcher`) as string
+    || defaultActiveContent
+  const [activeContent, setActiveContent] = useState(tabPersistence ?
+    storedTab : defaultActiveContent)
   const padding = size === 'small'
     ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
     : `${sizeSpaceMap[size!]} 0`
@@ -55,6 +60,9 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
       onChange(e.target.value)
     }
     setActiveContent(e.target.value)
+    if(tabId) {
+      localStorage.setItem(`${tabId}-content-switcher`, e.target.value)
+    }
   }
   return (
     <>

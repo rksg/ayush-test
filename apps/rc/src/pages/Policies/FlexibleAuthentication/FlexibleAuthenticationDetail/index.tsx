@@ -27,9 +27,8 @@ import {
   PolicyOperation,
   PolicyType,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePolicyListBreadcrumb,
   getPolicyAllowedOperation,
-  getPolicyRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
@@ -167,18 +166,7 @@ const FlexibleAuthenticationDetail = () => {
   return (<>
     <PageHeader
       title={profileDetail?.profileName}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        { text: $t({ defaultMessage: 'Policies & Profiles' })
-          , link: getPolicyListRoutePath(true) },
-        {
-          text: $t({ defaultMessage: 'Authentication' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.FLEX_AUTH,
-            oper: PolicyOperation.LIST
-          })
-        }
-      ]}
+      breadcrumb={usePolicyListBreadcrumb(PolicyType.FLEX_AUTH)}
       extra={hasCrossVenuesPermission() && filterByAccess([
         <TenantLink
           scopeKey={[SwitchScopes.UPDATE]}

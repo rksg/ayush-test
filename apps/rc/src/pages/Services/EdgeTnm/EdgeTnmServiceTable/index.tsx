@@ -15,13 +15,13 @@ import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '
 import {
   ServiceType,
   ServiceOperation,
-  getServiceListRoutePath,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
   EdgeTnmServiceData,
   transformDisplayNumber,
   getServiceDetailsLink,
-  EdgeTnmServiceStatusEnum
+  EdgeTnmServiceStatusEnum,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import {
@@ -71,10 +71,7 @@ export function EdgeTnmServiceTable () {
           $t({ defaultMessage: 'Thirdparty Network Management ({count})' },
             { count: transformDisplayNumber(data?.length) })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <Button type='primary'
             scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}

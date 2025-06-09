@@ -27,7 +27,8 @@ export const mockedEdgeLagList = {
       gateway: '',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     },
     {
       id: 2,
@@ -43,7 +44,8 @@ export const mockedEdgeLagList = {
       gateway: '1.0.0.0',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: true
+      lagEnabled: true,
+      natPools: []
     }
   ],
   paging: {

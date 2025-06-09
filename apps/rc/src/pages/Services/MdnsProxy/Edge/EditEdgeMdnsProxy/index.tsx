@@ -10,9 +10,9 @@ import {
   EdgeMdnsProxyViewData,
   ServiceOperation,
   ServiceType,
-  getServiceListRoutePath,
   getServiceRoutePath,
-  transformEdgeMdnsRulesToViewModelType
+  transformEdgeMdnsRulesToViewModelType,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -70,11 +70,7 @@ const EditEdgeMdnsProxy = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit mDNS Proxy for RUCKUS Edge Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Edge mDNS Proxy' }), link: routeToList }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_MDNS_PROXY)}
       />
       <Row>
         <Col span={24}>

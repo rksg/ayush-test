@@ -158,7 +158,7 @@ export const getCertificateDetails =
           },
           {
             type: RenderType.CONTENT,
-            title: $t({ defaultMessage: 'Adaptive Policy Set' }),
+            title: $t({ defaultMessage: 'Last RADIUS Policy' }),
             content: policySetData
           }
         ]

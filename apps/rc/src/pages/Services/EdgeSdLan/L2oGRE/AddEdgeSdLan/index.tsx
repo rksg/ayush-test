@@ -4,12 +4,11 @@ import { useIntl } from 'react-intl'
 import { PageHeader }          from '@acx-ui/components'
 import { useEdgeSdLanActions } from '@acx-ui/edge/components'
 import {
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation,
-  ServiceType
+  ServiceType,
+  useAfterServiceSaveRedirectPath,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
@@ -20,12 +19,7 @@ export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
-    oper: ServiceOperation.LIST
-  })
-
-  const linkToServiceList = useTenantLink(cfListRoute)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
   const [form] = Form.useForm()
 
@@ -70,11 +64,11 @@ export const AddEdgeSdLan = () => {
         }).catch(reject)
       })
 
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
-      navigate(linkToServiceList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     }
   }
 
@@ -82,11 +76,7 @@ export const AddEdgeSdLan = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add SD-LAN Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_SD_LAN)}
       />
       <EdgeSdLanFormContainer
         form={form}

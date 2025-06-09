@@ -24,7 +24,7 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
+  useServicesBreadcrumb,
   getServiceRoutePath,
   PolicyType,
   PolicyOperation,
@@ -306,13 +306,7 @@ export const EdgeSdLanTable = () => {
           { defaultMessage: 'SD-LAN ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}

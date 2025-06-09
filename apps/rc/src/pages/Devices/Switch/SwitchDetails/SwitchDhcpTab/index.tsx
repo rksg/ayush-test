@@ -9,9 +9,9 @@ import {
   useGetSwitchQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
+import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
   IP_ADDRESS_TYPE,
-  isOperationalSwitch,
   SwitchRbacUrlsInfo,
   VenueMessages
 } from '@acx-ui/rc/utils'

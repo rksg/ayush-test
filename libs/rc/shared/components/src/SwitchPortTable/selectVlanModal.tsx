@@ -54,6 +54,7 @@ export function SelectVlanModal (props: {
   defaultTabKey?: VlanModalType,
   authDefaultVlan?: string[],
   flexAuthEnabled?: boolean,
+  switchFirmwares?: string[]
 }) {
   const { $t } = getIntl()
   const params = useParams()
@@ -62,7 +63,7 @@ export function SelectVlanModal (props: {
     vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, venueId, switchFamilyModel,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
     showVoiceVlan, voiceVlan, isVoiceVlanInvalid, defaultTabKey = VlanModalType.UNTAGGED,
-    authDefaultVlan, flexAuthEnabled
+    authDefaultVlan, flexAuthEnabled, switchFirmwares
   } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
@@ -81,6 +82,8 @@ export function SelectVlanModal (props: {
 
   const [addVlan] = useAddVlanMutation()
   const [addSwitchesVlans] = useAddSwitchesVlansMutation()
+
+  const hasMultipleSwitchIds = new Set(switchIds ?? []).size > 1
 
   const onOk = async () => {
     form.setFieldsValue({
@@ -434,6 +437,8 @@ export function SelectVlanModal (props: {
       enablePortModelConfigure={false}
       setVlan={applyVlan}
       vlansList={getVlanList()}
+      switchFirmwares={switchFirmwares}
+      isMultiSwitchEdit={hasMultipleSwitchIds}
     />}
 
   </>

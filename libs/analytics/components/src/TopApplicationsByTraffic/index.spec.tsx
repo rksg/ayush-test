@@ -97,7 +97,8 @@ describe('TopApplicationsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
-    render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
+    render( <Provider>
+      <TopApplicationsByTraffic filters={filters} tabId={'ap-top-traffic'} /></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -111,7 +112,7 @@ describe('TopApplicationsByTrafficWidget', () => {
       } } }
     })
     const { asFragment } = render( <Provider>
-      <TopApplicationsByTraffic filters={filters}/>
+      <TopApplicationsByTraffic filters={filters} tabId={'ap-top-traffic'}/>
     </Provider>)
     await screen.findByText('No data to display')
     expect(asFragment()).toMatchSnapshot('NoData')
@@ -122,7 +123,8 @@ describe('TopApplicationsByTrafficWidget', () => {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
     const { asFragment } = render( <Provider> <TopApplicationsByTraffic
-      filters={filters}/></Provider>)
+      filters={filters}
+      tabId={'ap-top-traffic'}/></Provider>)
     await screen.findByText('Top Applications by Traffic')
     const contentSwitcher = asFragment()
       .querySelector('div.ant-card-body > div > div:nth-child(1) > div')
@@ -141,7 +143,9 @@ describe('TopApplicationsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
-    render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
+    render( <Provider> <TopApplicationsByTraffic
+      tabId={'ap-top-traffic'}
+      filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     expect(screen.queryByText('No permission to view application data')).not.toBeInTheDocument()
   })
@@ -157,7 +161,7 @@ describe('TopApplicationsByTrafficWidget', () => {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
     render( <Provider>
-      <TopApplicationsByTraffic filters={filters}/>
+      <TopApplicationsByTraffic tabId={'ap-top-traffic'} filters={filters}/>
     </Provider>)
     expect(screen.queryByText('No data to display')).not.toBeInTheDocument()
   })
@@ -173,7 +177,7 @@ describe('TopApplicationsByTrafficWidget', () => {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
     const { asFragment } = render( <Provider>
-      <TopApplicationsByTraffic filters={filters}/>
+      <TopApplicationsByTraffic tabId={'ap-top-traffic'} filters={filters}/>
     </Provider>)
     await screen.findByText('No permission to view application data')
     expect(asFragment()).toMatchSnapshot('No permission when privacy api is failed')
@@ -185,7 +189,9 @@ describe('TopApplicationsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
-    render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
+    render( <Provider> <TopApplicationsByTraffic
+      tabId={'ap-top-traffic'}
+      filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     expect(screen.queryByText('No permission to view application data')).not.toBeInTheDocument()
     process.env = originalEnv

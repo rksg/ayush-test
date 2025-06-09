@@ -22,7 +22,7 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
+  useServicesBreadcrumb,
   getServiceRoutePath,
   useTableQuery,
   DdosAttackType,
@@ -289,13 +289,7 @@ const FirewallTable = () => {
           { defaultMessage: 'Firewall ({count})' },
           { count: tableQuery.data?.totalCount }
         )}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({

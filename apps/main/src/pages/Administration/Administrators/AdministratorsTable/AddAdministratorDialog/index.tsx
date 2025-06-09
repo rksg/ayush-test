@@ -14,9 +14,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  sfdcEmailRegExp,
   TenantAuthenticationType,
-  TenantAuthentications
+  TenantAuthentications,
+  emailRegExp
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import { CatchErrorDetails } from '@acx-ui/utils'
@@ -217,7 +217,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                 required: true,
                 message: $t({ defaultMessage: 'Please enter email' })
               },
-              { validator: (_, value) => sfdcEmailRegExp(value) }
+              { validator: (_, value) => emailRegExp(value) }
             ]}>
             <Input
               placeholder={$t({ defaultMessage: 'Enter email address' })}

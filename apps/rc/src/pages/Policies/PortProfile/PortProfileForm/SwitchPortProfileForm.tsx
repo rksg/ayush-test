@@ -29,9 +29,11 @@ import {
   SwitchPortProfiles,
   useTableQuery,
   validateDuplicateVlanId,
-  validateVlanExcludingReserved
+  validateVlanExcludingReserved,
+  usePoliciesBreadcrumb,
+  LocationExtended
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
 
@@ -65,6 +67,7 @@ export default function SwitchPortProfileForm () {
     { params }, { skip: !editMode }
   )
   const [switchPortProfileMacOuisList] = useLazySwitchPortProfileMacOuisListQuery()
+  const previousPath = (useLocation() as LocationExtended)?.state?.from?.pathname
 
   const lldpTlvTableQuery = useTableQuery({
     useQuery: useSwitchPortProfileLldpTlvsListQuery,
@@ -319,11 +322,7 @@ export default function SwitchPortProfileForm () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute
@@ -335,7 +334,7 @@ export default function SwitchPortProfileForm () {
           form={form}
           onFinish={editMode ? handleUpdatePortProfile : handleAddPortProfile}
           onCancel={() =>
-            redirectPreviousPage(navigate, '', `${basePath.pathname}`)
+            redirectPreviousPage(navigate, previousPath, `${basePath.pathname}`)
           }
           buttonLabel={{
             submit: editMode

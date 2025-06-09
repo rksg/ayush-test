@@ -1,15 +1,15 @@
 import { FormInstance } from 'antd'
-import { useIntl }      from 'react-intl'
 
 import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
 import { EdgeDhcpSettingForm }           from '@acx-ui/rc/components'
 import {
   CommonResult,
   EdgeDhcpSettingFormData,
+  getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  getServiceListRoutePath,
-  getServiceRoutePath
+  useServiceListBreadcrumb,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -27,16 +27,18 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
     title, submitButtonLabel, onFinish, isSubmiting, form,
     isDataLoading = false
   } = props
-  const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
-  const tablePath = getServiceRoutePath(
-    { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.EDGE_DHCP, ServiceOperation.LIST)
+  const routeToList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_DHCP,
+    oper: ServiceOperation.LIST
+  }))
 
   const handleFinish = async (data: EdgeDhcpSettingFormData) => {
     try {
       await onFinish(data)
-      navigate(linkToServices, { replace: true })
+      navigate(routeToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -46,17 +48,13 @@ export const EdgeDhcpForm = (props: EdgeDhcpFormProps) => {
     <>
       <PageHeader
         title={title}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'DHCP for RUCKUS Edge' }), link: tablePath }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_DHCP)}
       />
       <Loader states={[{ isLoading: isDataLoading, isFetching: isSubmiting }]}>
         <StepsForm
           form={form}
           onFinish={handleFinish}
-          onCancel={() => navigate(linkToServices)}
+          onCancel={() => navigate(previousPath, { replace: true })}
           buttonLabel={{ submit: submitButtonLabel }}
         >
           <StepsForm.StepForm>

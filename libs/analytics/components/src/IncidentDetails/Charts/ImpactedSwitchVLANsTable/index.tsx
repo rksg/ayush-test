@@ -1,13 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
-import { Carousel, Popover } from 'antd'
-import { CarouselRef }       from 'antd/lib/carousel'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import { Carousel, Popover, Tooltip } from 'antd'
+import { CarouselRef }                from 'antd/lib/carousel'
+import _                              from 'lodash'
+import { useIntl }                    from 'react-intl'
 
 import { defaultSort, overlapsRollup, sortProp }                      from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, Table, TableProps, NoGranularityText } from '@acx-ui/components'
-import { getIntl }                                                    from '@acx-ui/utils'
+import { DownloadOutlined }                                           from '@acx-ui/icons'
+import { getIntl, handleBlobDownloadFile }                            from '@acx-ui/utils'
 
 import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
 
@@ -20,6 +21,52 @@ import {
 import * as UI from './styledComponents'
 
 import type { ChartProps } from '../types.d'
+
+// Define column definitions outside of components for reuse
+const getColumnDefinitions = ($t: (params: { defaultMessage: string }) => string) => [
+  {
+    key: 'name',
+    dataIndex: 'name',
+    title: $t({ defaultMessage: 'Local Device' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.name
+  },
+  {
+    key: 'mac',
+    dataIndex: 'mac',
+    title: $t({ defaultMessage: 'Local Device MAC' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.mac
+  },
+  {
+    key: 'portNumber',
+    dataIndex: 'portNumber',
+    title: $t({ defaultMessage: 'Local Port' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.portNumber
+  },
+  {
+    key: 'mismatchedVlans',
+    dataIndex: 'mismatchedVlans',
+    title: $t({ defaultMessage: 'Mismatch VLAN' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.mismatchedVlans.map(v => v.id).join(', ')
+  },
+  {
+    key: 'connectedDevicePort',
+    dataIndex: ['connectedDevice', 'port'],
+    title: $t({ defaultMessage: 'Peer Port' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.connectedDevice.port
+  },
+  {
+    key: 'connectedDeviceName',
+    dataIndex: ['connectedDevice', 'name'],
+    title: $t({ defaultMessage: 'Peer Device' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.connectedDevice.name
+  },
+  {
+    key: 'connectedDeviceMac',
+    dataIndex: ['connectedDevice', 'mac'],
+    title: $t({ defaultMessage: 'Peer Device MAC' }),
+    extractValue: (row: ImpactedSwitchPortRow) => row.connectedDevice.mac
+  }
+]
 
 export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
@@ -40,8 +87,43 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
 
   const [selected, setSelected] = useState(0)
 
+  const handleExportCSV = () => {
+    // Get column definitions
+    const columnDefinitions = getColumnDefinitions($t)
+
+    // Create CSV data using column definitions
+    const csvData = response.data.map(row => {
+      const rowData: Record<string, string> = {}
+      columnDefinitions.forEach(col => {
+        rowData[col.title] = col.extractValue(row)
+      })
+      return rowData
+    })
+
+    const csvContent = [
+      columnDefinitions.map(col => col.title).join(','),
+      ...csvData.map(row => Object.values(row).map(value => `"${value}"`).join(','))
+    ].join('\n')
+
+    handleBlobDownloadFile(new Blob([csvContent],
+      { type: 'text/csv;charset=utf-8;' }), `impacted-switch-vlans-${id}.csv`)
+  }
+
   return <Loader states={[response]}>
-    <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
+    <Card
+      type='no-border'
+      title={$t({ defaultMessage: 'Impacted Switches' })}
+    >
+      {!druidRolledup && response.data && response.data.length > 0 && (
+        <UI.ExportButtonContainer>
+          <Tooltip title={$t({ defaultMessage: 'Export to CSV' })}>
+            <Button
+              icon={<DownloadOutlined />}
+              onClick={handleExportCSV}
+            />
+          </Tooltip>
+        </UI.ExportButtonContainer>
+      )}
       {druidRolledup
         ? <NoGranularityText />
         : <>
@@ -57,8 +139,6 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   </Loader>
 }
 
-
-
 function VLANsTable (props: {
   data: ImpactedSwitchPortRow[]
   selected: number
@@ -70,39 +150,22 @@ function VLANsTable (props: {
     mismatchedVlans: uniqueVlans(item.mismatchedVlans, item.mismatchedUntaggedVlan)
   }))
 
-  const columns: TableProps<ImpactedSwitchPortRow>['columns'] = [{
-    key: 'name',
-    dataIndex: 'name',
-    title: $t({ defaultMessage: 'Local Device' })
-  }, {
-    key: 'mac',
-    dataIndex: 'mac',
-    title: $t({ defaultMessage: 'Local Device MAC' })
-  }, {
-    key: 'portNumber',
-    dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Local Port' })
-  }, {
-    key: 'mismatchedVlans',
-    dataIndex: 'mismatchedVlans',
-    title: $t({ defaultMessage: 'Mismatch VLAN' }),
-    render: (_, row) => formatList(
-      row.mismatchedVlans.map(v => v.id),
-      { style: 'narrow', type: 'conjunction' }
-    )
-  }, {
-    key: 'connectedDevicePort',
-    dataIndex: ['connectedDevice', 'port'],
-    title: $t({ defaultMessage: 'Peer Port' })
-  }, {
-    key: 'connectedDeviceName',
-    dataIndex: ['connectedDevice', 'name'],
-    title: $t({ defaultMessage: 'Peer Device' })
-  }, {
-    key: 'connectedDeviceMac',
-    dataIndex: ['connectedDevice', 'mac'],
-    title: $t({ defaultMessage: 'Peer Device MAC' })
-  }]
+  // Get column definitions from the shared function
+  const columnDefinitions = getColumnDefinitions($t)
+
+  // Add render function for mismatchedVlans column
+  const columns: TableProps<ImpactedSwitchPortRow>['columns'] = columnDefinitions.map(col => {
+    if (col.key === 'mismatchedVlans') {
+      return {
+        ...col,
+        render: (_, row) => formatList(
+          row.mismatchedVlans.map(v => v.id),
+          { style: 'narrow', type: 'conjunction' }
+        )
+      }
+    }
+    return col
+  })
 
   return <Table
     columns={columns}

@@ -1,18 +1,20 @@
-import { Key, useEffect, useState } from 'react'
+import { Key, ReactNode, useContext, useEffect, useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { Col, Row }            from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Loader, Table, TableProps, showActionModal }                             from '@acx-ui/components'
+import { Table, TableProps, showActionModal }                                     from '@acx-ui/components'
 import { Features }                                                               from '@acx-ui/feature-toggle'
+import { CheckMark }                                                              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgeSubInterface, EdgeUrlsInfo, TableQuery }                             from '@acx-ui/rc/utils'
-import { EdgeScopes, RequestPayload }                                             from '@acx-ui/types'
+import { EdgeUrlsInfo, SubInterface }                                             from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                          from '@acx-ui/user'
 import { getOpsApi }                                                              from '@acx-ui/utils'
 
-import * as UI from '../styledComponents'
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
+import * as UI                 from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
@@ -20,12 +22,15 @@ interface SubInterfaceTableProps {
   currentTab: string
   ip: string
   mac: string
-  tableQuery: TableQuery<EdgeSubInterface, RequestPayload<unknown>, unknown>
-  handleAdd: (data: EdgeSubInterface) => Promise<unknown>
-  handleUpdate: (data: EdgeSubInterface) => Promise<unknown>
-  handleDelete: (data: EdgeSubInterface) => Promise<unknown>
+  handleAdd: (data: SubInterface) => Promise<unknown>
+  handleUpdate: (data: SubInterface) => Promise<unknown>
+  handleDelete: (data: SubInterface) => Promise<unknown>
   handleUpload: (formData: FormData) => Promise<unknown>
   uploadResult: unknown
+  portId?: string
+  lagId?: number
+  isSupportAccessPort?: boolean
+  data?: SubInterface[]
 }
 
 interface UploadResultType {
@@ -39,22 +44,28 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const isEdgeSubInterfaceCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const {
     currentTab,
     ip,
     mac,
-    tableQuery,
+    data,
     handleAdd,
     handleUpdate,
     handleDelete,
     handleUpload,
-    uploadResult
+    uploadResult,
+    portId,
+    lagId
   } = props
-
+  const { subInterfaceData } = useContext(EditEdgeDataContext)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [importModalvisible, setImportModalvisible] = useState(false)
-  const [currentEditData, setCurrentEditData] = useState<EdgeSubInterface>()
+  const [currentEditData, setCurrentEditData] = useState<SubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
+
+  const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces)
 
   const closeDrawers = () => {
     setDrawerVisible(false)
@@ -72,15 +83,14 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     }
   }, [])
 
-  const columns: TableProps<EdgeSubInterface>['columns'] = [
+  const columns: TableProps<SubInterface>['columns'] = [
     {
       title: '#',
       key: '',
       dataIndex: 'index',
       width: 50,
       render: (_, __, index) => {
-        const pagination = tableQuery.pagination
-        return ++index + (pagination.page - 1) * pagination.pageSize
+        return index + 1
       }
     },
     {
@@ -109,10 +119,34 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: $t({ defaultMessage: 'VLAN' }),
       key: 'vlan',
       dataIndex: 'vlan'
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: SubInterface) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
-  const rowActions: TableProps<EdgeSubInterface>['rowActions'] = [
+  const rowActions: TableProps<SubInterface>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
       rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateSubInterfaces)],
@@ -158,7 +192,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     }]:[])
   ]
 
-  const openDrawer = (data?: EdgeSubInterface) => {
+  const openDrawer = (data?: SubInterface) => {
     setCurrentEditData(data)
     setDrawerVisible(true)
   }
@@ -185,7 +219,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={12}>
+        <Col span={14}>
           <SubInterfaceDrawer
             mac={mac}
             visible={drawerVisible}
@@ -193,25 +227,25 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             data={currentEditData}
             handleAdd={handleAdd}
             handleUpdate={handleUpdate}
+            portId={portId}
+            lagId={lagId}
+            allSubInterfaces={subInterfaceList}
           />
-          <Loader states={[tableQuery]}>
-            <Table<EdgeSubInterface>
-              actions={filterByAccess(actionButtons)}
-              dataSource={tableQuery?.data?.data}
-              pagination={tableQuery.pagination}
-              onChange={tableQuery.handleTableChange}
-              columns={columns}
-              rowActions={filterByAccess(rowActions)}
-              rowSelection={isSelectionVisible && {
-                type: 'radio',
-                selectedRowKeys: selectedRows,
-                onChange: (key: Key[]) => {
-                  setSelectedRows(key)
-                }
-              }}
-              rowKey='id'
-            />
-            { isEdgeSubInterfaceCSVEnabled &&
+          <Table<SubInterface>
+            actions={filterByAccess(actionButtons)}
+            dataSource={data}
+            columns={columns}
+            rowActions={filterByAccess(rowActions)}
+            rowSelection={isSelectionVisible && {
+              type: 'radio',
+              selectedRowKeys: selectedRows,
+              onChange: (key: Key[]) => {
+                setSelectedRows(key)
+              }
+            }}
+            rowKey='id'
+          />
+          { isEdgeSubInterfaceCSVEnabled &&
               <ImportFileDrawer
                 type={ImportFileDrawerType.EdgeSubInterface}
                 title={$t({ defaultMessage: 'Import from file' })}
@@ -224,7 +258,6 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
                 importRequest={importSubInterfaces}
                 onClose={() => setImportModalvisible(false)}
               />}
-          </Loader>
         </Col>
       </Row>
     </>

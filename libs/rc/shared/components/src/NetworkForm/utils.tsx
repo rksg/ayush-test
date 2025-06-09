@@ -5,7 +5,7 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   ComparisonObjectType,
@@ -59,7 +59,9 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation,
-  useUpdateRadiusServerTemplateSettingsMutation
+  useUpdateRadiusServerTemplateSettingsMutation,
+  useActivateCertificateTemplateMutation,
+  useDeactivateCertificateTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -440,7 +442,9 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
     case NetworkTypeEnum.AAA:
       return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+      return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
+        saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
+      )
   }
 
   return false
@@ -599,7 +603,7 @@ export function useWifiCalling (notReady: boolean) {
     return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
   }
 
-  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData) => {
+  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData, cloneMode?: boolean) => {
     if (!enableRbac || !networkId) return
 
     const { wifiCallingEnabled = false, wifiCallingIds: newIds = [] }
@@ -609,7 +613,7 @@ export function useWifiCalling (notReady: boolean) {
 
     if (wifiCallingEnabled) {
       if (originalEnabled) {
-        const activateIds = newIds.filter(id => !originalIds.includes(id))
+        const activateIds = cloneMode ? newIds : newIds.filter(id => !originalIds.includes(id))
         const deactivateIds = originalIds.filter(id => !newIds.includes(id))
 
         return Promise.all([
@@ -630,6 +634,49 @@ export function useWifiCalling (notReady: boolean) {
     wifiCallingIds,
     updateWifiCallingActivation
   }
+}
+
+export function useCertificateTemplateActivation () {
+  const [ activateTemplate ] = useActivateCertificateTemplateMutation()
+  const [ deactivateTemplate ] = useDeactivateCertificateTemplateMutation()
+
+  const activateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await activateTemplate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  const deactivateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await deactivateTemplate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  const updateCertificateTemplateActivation =
+    async (networkId?: string, formIds?: string[], existingIds: string[] = []) => {
+      if (!formIds) return  // no updated
+
+      const activateIds = _.difference(formIds, existingIds)
+      const deactivateIds = _.difference(existingIds, formIds)
+
+      const [preserveDeactivateId, ...restDeactivate] = deactivateIds
+      const [preserveActivateId, ...restActivate] = activateIds
+
+      await Promise.all(restDeactivate.map(id => deactivateCertificateTemplate(id, networkId)))
+      await Promise.all(restActivate.map(id => activateCertificateTemplate(id, networkId)))
+      if (preserveDeactivateId) {
+        await deactivateCertificateTemplate(preserveDeactivateId, networkId)
+      }
+      if (preserveActivateId) {
+        await activateCertificateTemplate(preserveActivateId, networkId)
+      }
+    }
+
+  return { activateCertificateTemplate, updateCertificateTemplateActivation }
 }
 
 // eslint-disable-next-line max-len
@@ -904,6 +951,7 @@ export const useUpdateSoftGreActivations = () => {
 export const useUpdateIpsecActivations = () => {
   const [ activateIpsec ] = useActivateIpsecMutation()
   const [ deactivateIpsec ] = useDeactivateIpsecMutation()
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
   const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
@@ -916,6 +964,8 @@ export const useUpdateIpsecActivations = () => {
         return deactivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
         return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      } else if (action.softGreProfileId && action.enableIpsec === false) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.softGreProfileId } })
       }
       return Promise.resolve()
     })

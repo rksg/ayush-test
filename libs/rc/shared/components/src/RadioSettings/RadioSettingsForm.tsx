@@ -66,7 +66,7 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
-  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType
+  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType && context !== 'apGroup'
 
   const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']
@@ -96,8 +96,7 @@ export function RadioSettingsForm (props:{
 
   const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
   const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
-
-  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && context === 'venue') ?
+  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && (context === 'venue' || context ==='apGroup')) ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
@@ -138,9 +137,12 @@ export function RadioSettingsForm (props:{
   }, [enableAfc])
 
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function formatter (value: any) {
-    return `${value}%`
+  function formatter () {
+    return `This configuration controls the responsiveness of ChannelFly technology
+    to interference considering the impact on the associated client.
+    ChannelFly avoids performing channel changes when a certain number of clients are associated to the AP on a per-radio basis.
+    Default CCF value of 33 means the channel changes may occur only when there are three or fewer associated clients.
+    For every 10% increase in CCF, AP allows channel change for 1 additional client connected.`
   }
 
   const onChangedByCustom = (fieldName: string) => {
@@ -197,7 +199,7 @@ export function RadioSettingsForm (props:{
                 visible={afcDrawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
-                featureName={InCompatibilityFeatures.AFC}
+                featureNames={[InCompatibilityFeatures.AFC]}
                 onClose={() => setAfcDrawerVisible(false)}
               />
             </>}
@@ -425,11 +427,12 @@ export function RadioSettingsForm (props:{
                 style={{ height: '16px', width: '16px' }}
               />}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={band320DrawerVisible}
               type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
               venueId={venueId}
-              featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
+              featureNames={[InCompatibilityFeatures.BANDWIDTH_320MHZ]}
               onClose={() => setBand320DrawerVisible(false)}
             />}
           </>
@@ -477,11 +480,17 @@ export function RadioSettingsForm (props:{
             />}
           />
           }
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
+            isMultiple
+            isRequirement
             visible={txDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.AUTO_CELL_SIZING}
+            featureNames={[
+              InCompatibilityFeatures.AUTO_CELL_SIZING,
+              InCompatibilityFeatures.AGGRESSIVE_TX_POWER
+            ]}
             onClose={() => setTxDrawerVisible(false)}
           />}
         </>}
@@ -541,7 +550,7 @@ export function RadioSettingsForm (props:{
                 visible={mrlDrawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
-                featureName={InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT}
+                featureNames={[InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT]}
                 onClose={() => setMrlDrawerVisible(false)}
               />
             </>}

@@ -5,19 +5,23 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
 import { ClusterHighAvailabilityModeEnum }         from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 import { InterfaceSettingsFormType }  from '../types'
 
-import { HaDisplayForm }    from './HaDisplayForm'
-import { LagTable }         from './LagTable'
-import { PortGeneralTable } from './PortGeneralTable'
-import { VipDisplayForm }   from './VipDisplayForm'
+import { HaDisplayForm }     from './HaDisplayForm'
+import { LagTable }          from './LagTable'
+import { PortGeneralTable }  from './PortGeneralTable'
+import { SubInterfaceTable } from './SubInterfaceTable'
+import { VipDisplayForm }    from './VipDisplayForm'
 
 export const Summary = () => {
   const { $t } = useIntl()
   const isEdgeHaAaOn = useIsSplitOn(Features.EDGE_HA_AA_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { form } = useStepFormContext()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
@@ -32,6 +36,8 @@ export const Summary = () => {
   // eslint-disable-next-line max-len
   const fallbackScheduleIntervalHours = form.getFieldValue(['fallbackSettings', 'schedule', 'intervalHours'])
   const loadDistribution = form.getFieldValue('loadDistribution')
+  const portSubInterfaces = form.getFieldValue('portSubInterfaces')
+  const lagSubInterfaces = form.getFieldValue('lagSubInterfaces')
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
@@ -50,6 +56,22 @@ export const Summary = () => {
     <Form.Item>
       <PortGeneralTable data={portSettings} />
     </Form.Item>
+    {
+      isEdgeCoreAccessSeparationReady &&
+      <>
+        <Subtitle level={4}>
+          { $t({ defaultMessage: 'Sub-Interface' }) }
+        </Subtitle>
+        <Form.Item>
+          <SubInterfaceTable
+            lagData={lagSettings}
+            portData={portSettings}
+            portSubInterfaceData={portSubInterfaces}
+            lagSubInterfaceData={lagSubInterfaces}
+          />
+        </Form.Item>
+      </>
+    }
     {
       isEdgeHaAaOn &&
       clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?

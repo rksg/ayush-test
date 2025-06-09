@@ -195,3 +195,11 @@ export const FootNote = styled.p`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
 `
+
+export const ExportButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  margin-top: -40px; /* Pull up to align with card title */
+  margin-right: 8px; /* Add some spacing from the right edge */
+`

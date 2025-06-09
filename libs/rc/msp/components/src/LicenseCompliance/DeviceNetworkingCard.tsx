@@ -4,6 +4,7 @@ import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { DeviceComplianceType, LicenseCardProps } from '@acx-ui/msp/utils'
 import { TrialType }                              from '@acx-ui/rc/utils'
 
@@ -12,6 +13,7 @@ import * as UI from './styledComponents'
 export function DeviceNetworkingCard (props: LicenseCardProps) {
   const { $t } = useIntl()
   const { title, subTitle, data, isMsp, trialType, footerContent } = props
+  const iotFFToggle = useIsSplitOn(Features.ENTITLEMENT_IOT_CTRL_TOGGLE)
 
   const wifiData = data.deviceCompliances.find(item =>
     item.deviceType === DeviceComplianceType.WIFI)
@@ -21,6 +23,8 @@ export function DeviceNetworkingCard (props: LicenseCardProps) {
     item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
   const rwgData = data.deviceCompliances.find(item =>
     item.deviceType === DeviceComplianceType.RWG)
+  const iotCtrlData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.IOT_CTRL)
 
   return <Col style={{ width: '385px', paddingLeft: 0, marginTop: '15px' }}>
     <Card>
@@ -60,11 +64,18 @@ export function DeviceNetworkingCard (props: LicenseCardProps) {
             <label>{virtualEdgeData?.usedLicenseCount}</label>
           </UI.FieldLabelSubs>
           <UI.FieldLabelSubs width='275px'
-            style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
+            style={!iotFFToggle ?
+              { paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-30)' } : {}}>
             <label>{$t({ defaultMessage: 'RWGs' })}</label>
             <label>{rwgData?.installedDeviceCount}</label>
             <label>{rwgData?.usedLicenseCount}</label>
           </UI.FieldLabelSubs>
+          { iotFFToggle && <UI.FieldLabelSubs width='275px'
+            style={{ paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-30)' }}>
+            <label>{$t({ defaultMessage: 'IoT Controllers' })}</label>
+            <label>{iotCtrlData?.installedDeviceCount}</label>
+            <label>{iotCtrlData?.usedLicenseCount}</label>
+          </UI.FieldLabelSubs> }
 
           <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
             <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>

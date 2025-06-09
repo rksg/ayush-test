@@ -16,9 +16,8 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  sortProp
+  sortProp,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -218,17 +217,7 @@ const EdgeDHCPDetail = () => {
     <>
       <PageHeader
         title={dhcpStats && dhcpStats?.serviceName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DHCP for RUCKUS Edge' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.EDGE_DHCP)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceDetailsLink({

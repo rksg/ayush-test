@@ -98,13 +98,13 @@ export const transformFromFormDataToApi = (
 
 const getSubnetInfo = (
   { id, ip, subnet, ipMode }: { id?: string, ip?: string, subnet?: string, ipMode: EdgeIpModeEnum }
-): { id?: string, ip: string, subnetMask: string } | undefined => {
+): { id?: string, ipMode: EdgeIpModeEnum, ip: string, subnetMask: string } | undefined => {
   if (ipMode === EdgeIpModeEnum.DHCP || !ip || !subnet) {
     return undefined
   }
 
   const [ipWithoutMask] = ip.split('/')
-  return { id: id, ip: ipWithoutMask, subnetMask: subnet }
+  return { id: id, ipMode, ip: ipWithoutMask, subnetMask: subnet }
 }
 
 export const extractSubnetFromEdgePortInfo = (portInfo: EdgePortInfo) => {
@@ -173,8 +173,8 @@ export const subInterfaceCompatibleCheck = (
     result.nodeId = serialNumber
     result.nodeName = nodeName
 
-    const nodePortSubInterfaces = portSubInterfaces[serialNumber]
-    const nodeLagSubInterfaces = lagSubInterfaces[serialNumber]
+    const nodePortSubInterfaces = portSubInterfaces[serialNumber] ?? {}
+    const nodeLagSubInterfaces = lagSubInterfaces[serialNumber] ?? {}
 
     const totalPortSubInterfaces = _.flatMap(nodePortSubInterfaces).length
     const totalLagSubInterfaces = _.flatMap(nodeLagSubInterfaces).length

@@ -11,10 +11,10 @@ import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip, PasswordInput }                      from '@acx-ui/components'
-import { get }                                                   from '@acx-ui/config'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AuthRadiusEnum, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip, PasswordInput }   from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features,  useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import { AAAInstance }                                              from '../../../AAAInstance'
@@ -42,8 +42,6 @@ export function WISPrAuthAccServer (props : {
   const authDropdownItems = aaaAuthListQuery?.data.map(m => ({ label: m.name, value: m.id })) ?? []
   const [ aaaList, setAaaList ]= useState(authDropdownItems)
   const context = useContext(WISPrAuthAccContext)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
 
   const [
     enableAccountingService,
@@ -58,7 +56,8 @@ export function WISPrAuthAccServer (props : {
   ]
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  // ACX-82810 disallow RADSEC for WISPr captive portal
+  const supportRadsec = false
   const primaryRadius = authRadius?.[AaaServerOrderEnum.PRIMARY]
   const secondaryRadius = authRadius?.[AaaServerOrderEnum.SECONDARY]
 

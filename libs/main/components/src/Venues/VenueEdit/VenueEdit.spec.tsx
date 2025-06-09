@@ -530,7 +530,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         await userEvent.click(toggle50G)
 
         fireEvent.click(await screen.findByRole('tab', { name: 'Advanced' }))
-        await showUnsavedChangesModal('Radio', buttonAction.SAVE_CHANGES)
+        await showUnsavedChangesModal('Radio', buttonAction.DISCARD_CHANGES)
       })
     })
 

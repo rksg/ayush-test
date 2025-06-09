@@ -8,7 +8,7 @@ import { Button, PageHeader } from '@acx-ui/components'
 import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -32,13 +32,7 @@ const EthernetPortProfile = () => {
             { count: tableTotalCount }
           )
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
 
         extra={
           filterByAccessForServicePolicyMutation([

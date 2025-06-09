@@ -33,13 +33,21 @@ module.exports = {
             );
 
             if (defaultMessageProperty) {
-              let messageValue = null
-              if (defaultMessageProperty.value.type === 'Literal') {
-                messageValue = defaultMessageProperty.value.value;
-              } else if (defaultMessageProperty.value.type === 'TemplateLiteral') {
-                // Collect the raw text from the template elements
-                messageValue = defaultMessageProperty.value.quasis.map(quasi => quasi.value.raw).join('');
+              // Helper function to extract text
+              function extractTextFromValue(node) {
+                if (node.type === 'Literal') {
+                  return node.value;
+                } else if (node.type === 'TemplateLiteral') {
+                  return node.quasis.map(quasi => quasi.value.raw).join('');
+                } else if (node.type === 'BinaryExpression') {
+                  const leftValue = extractTextFromValue(node.left);
+                  const rightValue = extractTextFromValue(node.right);
+                  return leftValue + rightValue;
+                }
+                return '';
               }
+
+              const messageValue = extractTextFromValue(defaultMessageProperty.value);
 
               // Regular expression to match "venue" or "venues"
               const invalidVenueRegex = /\b(venue|Venue|venues|Venues)\b/;

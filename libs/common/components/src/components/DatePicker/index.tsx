@@ -61,10 +61,10 @@ export const restrictDateToMonthsRange = (
   let endDate = values?.[1] || null
   if (endDate && startDate && endDate.diff(startDate, 'months', true) > maxMonthRange) {
     if (range === 'start') {
-      endDate = startDate.clone().add(maxMonthRange, 'months')
+      endDate = startDate.clone().add(convertMonthsToDays(maxMonthRange), 'days')
     }
     if (range === 'end') {
-      startDate = endDate.clone().subtract(maxMonthRange, 'months')
+      startDate = endDate.clone().subtract(convertMonthsToDays(maxMonthRange), 'days')
     }
   }
   return { startDate, endDate }
@@ -102,11 +102,14 @@ export const RangePicker = ({
   const rangeRef = useRef<RangeRef>(null)
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  let allowedDateRange = (showResetMsg && allowedMonthRange)
-    ? dateRangeForLast(allowedMonthRange,'months')
-    : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(1, 'month')
-      : dateRangeForLast(isReport ? 12 : 3, 'months'))
+  let allowedDateRange =
+    (showResetMsg && allowedMonthRange) ?
+      dateRangeForLast(convertMonthsToDays(allowedMonthRange), 'days')
+      : (accountTier === AccountTier.GOLD ? dateRangeForLast(30, 'days')
+        : isReport ? dateRangeForLast(12, 'months') // Use 12 months to represent a full year, not fixed 365 days
+          : dateRangeForLast(90, 'days')
+      )
+
 
   if (isCoreTier(accountTier)) {
     allowedDateRange = dateRangeForLast(14, 'days')
@@ -115,7 +118,7 @@ export const RangePicker = ({
   const disabledDate = useCallback(
     (current: Moment) => (
       (activeIndex === 1 && current.isAfter(
-        range.startDate?.clone().add(maxMonthRange || 3, 'months'))) ||
+        range.startDate?.clone().add(convertMonthsToDays(maxMonthRange || 3) , 'days'))) ||
       !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
     ),
     [allowedDateRange, activeIndex]
@@ -315,9 +318,21 @@ export const DateTimePicker = ({
 
 export function getDefaultEarliestStart (props?: { isReport?: boolean }) {
   const { accountTier } = getUserProfile()
-  const allowedDateRange = (accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1,'month')
-    : dateRangeForLast(props?.isReport ? 12 : 3, 'months')
-  )
+  const allowedDateRange =
+    (accountTier === AccountTier.GOLD ? dateRangeForLast(30, 'days')
+      : props?.isReport ? dateRangeForLast(12 , 'months') // Use 12 months to represent a full year, not fixed 365 days
+        : dateRangeForLast(90, 'days')
+    )
   return allowedDateRange[0].startOf('day')
+}
+
+/**
+ * Converts a number of months into an approximate number of days.
+ * Assumes 1 month = 30 days for simplicity.
+ *
+ * @param months - Number of months
+ * @returns Equivalent number of days
+ */
+const convertMonthsToDays = (months: number): number => {
+  return months * 30
 }

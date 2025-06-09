@@ -3,20 +3,24 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { venueApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }            from '@acx-ui/test-utils'
 
 import {
   venueData,
   venueSetting,
   venueApsList,
-  validChannelsData
+  validChannelsData,
+  venueApCompatibilitiesData,
+  mockedApModelFamilies
 } from '../../../../__tests__/fixtures'
 
 import { MeshNetwork } from '.'
+
+const { hover } = userEvent
 
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
@@ -44,7 +48,11 @@ describe('MeshNetwork', () => {
         (_, res, ctx) => res(ctx.json(validChannelsData))),
       rest.get(
         WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-        (_, res, ctx) => res(ctx.json(validChannelsData)))
+        (_, res, ctx) => res(ctx.json(validChannelsData))),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
+      )
     )
   })
   it('should render correctly', async () => {
@@ -163,5 +171,33 @@ describe('MeshNetwork', () => {
     await userEvent.click(await screen.findByTestId('radio6'))
     // zero touch mesh
     await userEvent.click(await screen.findByTestId('zero-touch-mesh-switch'))
+  })
+
+  it('Mesh 5g only and 6g only: r370 heterogeneous tooltips', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY ||
+      ff === Features.WIFI_R370_TOGGLE)
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json({ mesh: { enabled: true } }))),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
+      ))
+
+    render(<Provider><MeshNetwork /></Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    // enable mesh
+    await hover(await screen.queryAllByTestId('InformationSolid')[2])
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      // eslint-disable-next-line max-len
+      .toHaveTextContent(
+        'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 6GHz band.')
+    await screen.findByText('See the compatibility requirements.')
+    await userEvent.click(await screen.findByTestId('tooltip-button'))
   })
 })

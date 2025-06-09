@@ -2,54 +2,44 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useGetVenuesQuery }                                 from '@acx-ui/rc/services'
-import { ProfileLanVenueActivations, defaultSort, sortProp } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { useGetVenuesQuery, useGetVenuesTemplateListQuery } from '@acx-ui/rc/services'
+import {
+  ProfileLanVenueActivations,
+  defaultSort,
+  sortProp,
+  useConfigTemplate,
+  ConfigTemplateType
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../../configTemplates'
 
 interface VenueTableProps {
   venueActivations: ProfileLanVenueActivations[]
 }
 
-export const VenueTable = (props: VenueTableProps) => {
-  const { $t } = useIntl()
-  const { venueActivations } = props
+const useGetVenueNameMap = (venueGrouping: Record<string, Set<string>> ) => {
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
 
-  const venueGrouping = useMemo(()=>{
-    if(venueActivations.length > 0) {
+  const payload = {
+    fields: ['name', 'id'],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 2048,
+    filters: { id: Object.keys(venueGrouping) }
+  }
 
-      return venueActivations.reduce((acc, activation) => {
-        const { venueId, apModel } = activation
-        if (venueId !== undefined && apModel !== undefined) {
-          if (!acc[venueId]) {
-            acc[venueId] = []
-          }
-          acc[venueId].push(apModel)
-        }
-
-        return acc
-      }, {} as Record<string, string[]>)
-    }
-
-
-    return {}
-  }, [venueActivations])
   const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: tenantId },
     enableRbac: isWifiRbacEnabled,
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 2048,
-      filters: { id: Object.keys(venueGrouping) }
-    }
+    payload
   }, {
-    skip: !Object.keys(venueGrouping).length,
+    skip: !Object.keys(venueGrouping).length || isTemplate,
     selectFromResult: ({ data }) => ({
       venueNameMap: data?.data.reduce((venues, venue) => {
         venues[venue.id] = venue.name
@@ -58,12 +48,52 @@ export const VenueTable = (props: VenueTableProps) => {
     })
   } )
 
+  const { tempVenueNameMap } = useGetVenuesTemplateListQuery({
+    params: { tenantId: tenantId },
+    enableRbac: isWifiRbacEnabled,
+    payload
+  }, {
+    skip: !Object.keys(venueGrouping).length || !isTemplate,
+    selectFromResult: ({ data }) => ({
+      tempVenueNameMap: data?.data.reduce((venues, venue) => {
+        venues[venue.id] = venue.name
+        return venues
+      }, {} as Record<string, string>)
+    })
+  } )
+
+  return isTemplate? tempVenueNameMap : venueNameMap
+}
+
+export const VenueTable = (props: VenueTableProps) => {
+  const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const { venueActivations } = props
+
+  const venueGrouping = useMemo(()=>{
+    if(venueActivations.length > 0) {
+      return venueActivations.reduce((acc, activation) => {
+        const { venueId, apModel } = activation
+        if (venueId !== undefined && apModel !== undefined) {
+          if (!acc[venueId]) {
+            acc[venueId] = new Set()
+          }
+          acc[venueId].add(apModel)
+        }
+        return acc
+      }, {} as Record<string, Set<string>>)
+    }
+    return {}
+  }, [venueActivations])
+
+  const venueNameMap = useGetVenueNameMap(venueGrouping)
+
   const tableResult = useMemo(() => {
     if (venueNameMap && venueGrouping) {
       return Array.from(Object.entries(venueGrouping)).map(([id, apModels]) => ({
         id,
         name: venueNameMap[id],
-        apModels
+        apModels: Array.from(apModels)
       }))
     }
     return []
@@ -77,9 +107,9 @@ export const VenueTable = (props: VenueTableProps) => {
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) },
       render: (_, row) => {
-        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-          {row.name}
-        </TenantLink>
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id, row.name)
+          : <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },
     {

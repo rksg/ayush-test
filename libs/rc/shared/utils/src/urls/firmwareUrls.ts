@@ -7,7 +7,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/upgradeConfig/preferences',
     oldUrl: '/api/upgrade/tenant/:tenantId/preference',
-    newApi: true
+    newApi: true,
+    opsApi: 'GET:/upgradeConfig/preferences'
   },
   getSwitchUpgradePreferences: {
     method: 'get',
@@ -18,12 +19,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/upgradeConfig/preferences',
     oldUrl: '/api/upgrade/tenant/:tenantId/preference',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/upgradeConfig/preferences'
   },
   updateSwitchUpgradePreferences: {
     method: 'put',
     url: '/upgradeConfig/switchPreference',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/upgradeConfig/switchPreference'
   },
   getVenueVersionList: {
     method: 'get',

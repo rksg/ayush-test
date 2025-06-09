@@ -9,11 +9,10 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   ApMdnsProxyScopeData,
-  getServiceRoutePath,
-  getServiceListRoutePath,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -39,14 +38,7 @@ export default function MdnsProxyDetail () {
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'mDNS Proxy' }),
-            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.MDNS_PROXY)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}

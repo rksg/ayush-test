@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm }                                                   from '@acx-ui/components'
-import { PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                              from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                    from '@acx-ui/components'
+import { PolicyOperation, PolicyType, usePolicyListBreadcrumb, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
 
 import CertificateAuthoritySettings from './CertificateAuthoritySettings/CertificateAuthoritySettings'
 import useCertificateAuthorityForm  from './useCertificateAuthorityForm'
@@ -22,23 +22,13 @@ export const CertificateAuthorityForm = (props: CertificateAuthorityFormProps) =
     oper: PolicyOperation.LIST
   }))
   const { modalMode=false, modalCallBack } = props
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.CERTIFICATE_AUTHORITY)
 
   return (
     <>
       {!modalMode && <PageHeader
         title={$t({ defaultMessage: 'Add Certificate Authority' })}
-        breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Control' })
-        }, {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }, {
-          text: $t({ defaultMessage: 'Certificate Template' }),
-          link: getPolicyRoutePath({
-            type: PolicyType.CERTIFICATE_AUTHORITY,
-            oper: PolicyOperation.LIST
-          })
-        }]}
+        breadcrumb={breadcrumb}
       />}
       <StepsForm form={createCaForm}
         onFinish={async () => {

@@ -23,6 +23,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
 
   const isSwitchReport = ['switch','both'].includes(reportType)
   const isAPReport = ['ap','both'].includes(reportType)
+  const isEdgeReport = ['edge'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
   const isRA = get('IS_MLISA_SA')
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
@@ -45,7 +46,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
     />
   ]
   showFilter && !isNetworkFilterDisabled && component.unshift(
-    get('IS_MLISA_SA')
+    isRA
       ? <SANetworkFilter
         key={getShowWithoutRbacCheckKey('sa-network-filter')}
         shouldQueryAp={isAPReport}
@@ -56,6 +57,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={isSwitchReport}
         shouldQueryAp={isAPReport}
+        shouldQueryEdge={isEdgeReport}
         showRadioBand={isAPReport}
         multiple={true}
         filterFor={'reports'}

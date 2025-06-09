@@ -1,14 +1,20 @@
 import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridRow, GridCol } from '@acx-ui/components'
-import { baseUrlFor }       from '@acx-ui/config'
-import { CaretRightList }   from '@acx-ui/icons'
-import { TenantLink }       from '@acx-ui/react-router-dom'
+import { GridRow, GridCol }       from '@acx-ui/components'
+import { baseUrlFor }             from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CaretRightList }         from '@acx-ui/icons'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 const useLinkData = () => {
+  const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+  const switchClientUrl = isSupportWifiWiredClient
+    ? '/users/wired/switch/clients'
+    : '/users/switch/clients'
+
   const { $t } = useIntl()
   const linkData = [
     { title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), to: '/venues' },
@@ -16,7 +22,7 @@ const useLinkData = () => {
     { title: $t({ defaultMessage: 'APs' }), to: '/devices/wifi' },
     { title: $t({ defaultMessage: 'Switches' }), to: '/devices/switch' },
     { title: $t({ defaultMessage: 'Wi-Fi Clients' }), to: '/users/wifi/clients' },
-    { title: $t({ defaultMessage: 'Switch Clients' }), to: '/users/switch/clients' },
+    { title: $t({ defaultMessage: 'Switch Clients' }), to: switchClientUrl },
     { title: $t({ defaultMessage: 'Dashboard' }), to: '/dashboard' }
   ]
 

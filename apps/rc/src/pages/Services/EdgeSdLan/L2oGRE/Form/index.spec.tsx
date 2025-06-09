@@ -5,6 +5,7 @@ import { rest }        from 'msw'
 import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
 import { edgeSdLanApi }                 from '@acx-ui/rc/services'
 import {
+  EdgeCompatibilityFixtures,
   EdgeGeneralFixtures,
   EdgePinFixtures,
   EdgePinUrls,
@@ -36,6 +37,7 @@ import { EdgeSdLanFormContainer, EdgeSdLanFormProps } from '.'
 const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockPinStatsList } = EdgePinFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 
 const { click } = userEvent
 
@@ -107,8 +109,15 @@ describe('SD-LAN form', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (_, res, ctx) => res(ctx.json(mockEdgeClusterList))
-      )
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
     )
+  })
+
+  afterEach(() => {
+    mockedNavigate.mockClear()
   })
 
   it('should navigate to service list when click cancel', async () => {
@@ -135,11 +144,7 @@ describe('SD-LAN form', () => {
     const actions = within(await form.findByTestId('steps-form-actions'))
     await click(await actions.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => {
-      expect(mockedNavigate).toBeCalledWith({
-        hash: '',
-        pathname: '/t-id/t/'+targetPath,
-        search: ''
-      })
+      expect(mockedNavigate).toBeCalledWith('/t-id/t/' + targetPath)
     })
   })
 

@@ -1,4 +1,4 @@
-import { cloneDeep, isNil } from 'lodash'
+import { cloneDeep, isEqual, isNil } from 'lodash'
 
 import { Features }                                                                                                                                                       from '@acx-ui/feature-toggle'
 import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
@@ -134,26 +134,18 @@ export const useTunnelProfileActions = () => {
     }).unwrap()
   }
 
-  const updateTunnelProfileOperation = async (id:string, data: TunnelProfileFormType) => {
+  const updateTunnelProfileOperation = async (id:string,
+    data: TunnelProfileFormType,
+    initData: TunnelProfileFormType) => {
     try {
-      await new Promise(async (resolve, reject) => {
-        await handleUpdateTunnelProfile({
-          id,
-          data,
-          callback: (result) => {
-            // callback is after all RBAC related APIs sent
-            if (
-              isNil(result) ||
-            (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0)
-            {
-              reject(result)
-            } else {
-              resolve(true)
-            }
-          }
-        // need to catch basic service profile failed
-        }).catch(reject)
-      })
+      const compareResult = compareConfigChanges(data, initData)
+
+      if (compareResult.hasChanges) {
+        await handleUpdateTunnelProfile({ id,data })
+      }
+
+      handleTunnelProfileEdgeClusterAssociation(id, data, initData)
+
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -162,46 +154,48 @@ export const useTunnelProfileActions = () => {
 
   const handleUpdateTunnelProfile = async (req: {
     id: string
-    data: TunnelProfileFormType,
-    callback?: (res: (CommonResult
-      | CommonErrorsResult<CatchErrorDetails> | void)) => void
+    data: TunnelProfileFormType
   }) => {
-    const { id, data, callback } = req
+    const { id, data } = req
     const pathParams = { id }
-    const venueId = data.venueId
-    const clusterId = data.edgeClusterId
     const payload = requestPreProcess(data)
     return await updateTunnelProfile({
       params: pathParams,
-      payload,
-      callback: async () => {
-        const tunnelProfileId = id
-
-        if(!isEdgeL2greReady) {
-          callback?.()
-          return
-        }
-
-        if(clusterId && venueId && data?.tunnelType === TunnelTypeEnum.L2GRE) {
-          try {
-            // eslint-disable-next-line max-len
-            const reqResult = await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-            callback?.(reqResult)
-          } catch(error) {
-            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-          }
-          return
-        }
-
-        try {
-          // eslint-disable-next-line max-len
-          const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-          callback?.(reqResult)
-        } catch(error) {
-          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-        }
-      }
+      payload
     }).unwrap()
+  }
+
+  const handleTunnelProfileEdgeClusterAssociation = async (
+    id: string,
+    data: TunnelProfileFormType,
+    initData: TunnelProfileFormType
+  ): Promise<void> => {
+    const venueId = data.venueId
+    const clusterId = data.edgeClusterId
+    const tunnelProfileId = id
+
+    if (!isEdgeL2greReady) {
+      return
+    }
+
+    if (clusterId && venueId && data?.tunnelType === TunnelTypeEnum.L2GRE) {
+      try {
+        await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+      }
+      return
+    }
+    if(data.edgeClusterId === initData.edgeClusterId) {
+      return
+    }
+    try {
+      await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
+    }
   }
 
   const associationWithEdgeCluster = async (
@@ -240,6 +234,22 @@ export const useTunnelProfileActions = () => {
     } catch (error) {
       return error as CommonErrorsResult<CatchErrorDetails>
     }
+  }
+
+  const compareConfigChanges = (
+    data: TunnelProfileFormType,
+    initData: TunnelProfileFormType
+  ): { hasChanges: boolean } => {
+    const preUpdateData = cloneDeep(data)
+    delete preUpdateData.edgeClusterId
+    delete preUpdateData.venueId
+    delete preUpdateData.disabledFields
+
+    const initDataCopy = cloneDeep(initData)
+    delete initDataCopy.disabledFields
+    delete initDataCopy.edgeClusterId
+    const hasChanges = !isEqual(preUpdateData, initDataCopy)
+    return { hasChanges }
   }
 
   return {

@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
-import { mockServer, render, waitFor, screen }                             from '@acx-ui/test-utils'
+import { DirectoryServerUrls, PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo, SamlIdpProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                 from '@acx-ui/store'
+import { mockServer, render, waitFor, screen }                                                                      from '@acx-ui/test-utils'
 
-import { mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
+import { mockExternalIdentityList, mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
 import { PersonaOverview } from './PersonaOverview'
 
@@ -56,6 +56,28 @@ describe('PersonaOverview', () => {
         (_, res, ctx) => {
           searchClientQueryFn()
           return res(ctx.json({}))
+        }
+      ),
+      rest.post(
+        PersonaUrls.searchExternalIdentities.url.split('?')[0],
+        (_, res, ctx) => {
+          return res(ctx.json(mockExternalIdentityList))
+        }
+      ),
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            id: 'id'
+          }))
+        }
+      ),
+      rest.get(
+        DirectoryServerUrls.getDirectoryServer.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            id: 'id'
+          }))
         }
       )
     )

@@ -1,9 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
-import { Features }                                                                                                                                                                 from '@acx-ui/feature-toggle'
-import { EdgeIpModeEnum, EdgeLag, EdgeLagFixtures, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort, EdgePortConfigFixtures, EdgePortTypeEnum, VirtualIpSetting } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                 from '@acx-ui/store'
+import { Features }                    from '@acx-ui/feature-toggle'
+import {
+  EdgeIpModeEnum, EdgeLag,
+  EdgeLagFixtures, EdgePortConfigFixtures,
+  EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort,
+  EdgePortTypeEnum, VirtualIpSetting
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -174,6 +179,7 @@ describe('Edge LAG table drawer', () => {
         lagMembers: [],
         lagType: EdgeLagTypeEnum.LACP,
         natEnabled: false,
+        natPools: [],
         portType: EdgePortTypeEnum.LAN,
         subnet: '255.255.255.0'
       })
@@ -368,6 +374,7 @@ describe('Edge LAG table drawer', () => {
         }],
         lagType: EdgeLagTypeEnum.LACP,
         natEnabled: false,
+        natPools: [],
         portType: EdgePortTypeEnum.WAN,
         subnet: '255.255.255.0'
       })
@@ -431,6 +438,7 @@ describe('Edge LAG table drawer', () => {
         }],
         lagType: EdgeLagTypeEnum.LACP,
         natEnabled: false,
+        natPools: [],
         portType: EdgePortTypeEnum.LAN,
         subnet: '255.255.255.0'
       })

@@ -201,6 +201,12 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     url: '/certificates/:certId',
     opsApi: 'PATCH:/certificates/{id}'
   },
+  deleteServerCertificate: {
+    method: 'DELETE',
+    newApi: true,
+    url: '/certificates/:certId',
+    opsApi: 'DELETE:/certificates/{id}'
+  },
   downloadServerCertificate: {
     method: 'get',
     newApi: true,

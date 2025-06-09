@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { policyApi }                           from '@acx-ui/rc/services'
-import { AaaUrls }                             from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { policyApi }                                from '@acx-ui/rc/services'
+import { AaaUrls }                                  from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }      from '@acx-ui/test-utils'
 
 import {
   dummyAccounting,
@@ -52,7 +52,7 @@ describe('EthernetPortProfile AAASetting', () => {
     render(
       <Provider>
         <Form>
-          <EthernetPortAAASettings />
+          <EthernetPortAAASettings enableAuth={true}/>
         </Form>
       </Provider>
     )
@@ -108,10 +108,11 @@ describe('EthernetPortProfile RadSec AAASetting', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE ||
       ff === Features.WIFI_RADSEC_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <Form>
-          <EthernetPortAAASettings />
+          <EthernetPortAAASettings enableAuth={true}/>
         </Form>
       </Provider>
     )
@@ -143,5 +144,52 @@ describe('EthernetPortProfile RadSec AAASetting', () => {
       expect(enableAccountingProxy).toBeChecked()
     })
 
+  })
+})
+
+describe('EthernetPortProfile with Client Visibility', () => {
+
+  beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
+
+    mockServer.use(
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(dummyRadiusServiceList))
+      ),
+      rest.get(
+        AaaUrls.getAAAPolicy.url,
+        (req, res, ctx) => {
+          const { policyId } = req.params
+          return (policyId === mockAuthRadSecRadiusId)
+            ? res(ctx.json(dummyAuthRadSecRadius))
+            : res(ctx.json(dummyAccountingRadSecRadius))
+        }
+      )
+    )
+  })
+
+  it('Render component successfully if 802.1X authentication is OFF', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE ||
+      ff === Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE ||
+      ff === Features.WIFI_RADSEC_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form>
+          <EthernetPortAAASettings enableAuth={false}/>
+        </Form>
+      </Provider>
+    )
+
+    expect(screen.queryByText(mockAuthRadiusName)).not.toBeInTheDocument()
+    expect(screen.queryByText('192.168.0.101:1812')).not.toBeInTheDocument()
+
+    const enabledAccounting = screen.getByRole('switch', { name: 'Accounting Service' })
+    await userEvent.click(enabledAccounting)
+
+    const comboboxes = await screen.findAllByRole('combobox')
+    expect(comboboxes.length).toBe(1)
   })
 })

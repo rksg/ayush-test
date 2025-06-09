@@ -4,8 +4,8 @@ import { Form }    from 'antd'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PasswordInput }                                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
@@ -67,8 +67,9 @@ function AaaServerFields ({ serverType, data }: {
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
     data.authRadius?.secondary :

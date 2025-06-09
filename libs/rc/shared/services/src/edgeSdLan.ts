@@ -42,6 +42,8 @@ enum EdgeSdLanActivityEnum {
   DELETE = 'Delete SD-LAN',
   ACTIVATE_NETWORK = 'Activate network',
   DEACTIVATE_NETWORK = 'Deactivate network',
+  ACTIVATE_GUEST_EDGE = 'Activate guest edge',
+  DEACTIVATE_GUEST_EDGE = 'Deactivate guest edge'
 }
 
 export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
@@ -343,6 +345,17 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             params,
             versionHeader)
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.ACTIVATE_GUEST_EDGE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
       }
     }),
     deactivateEdgeSdLanDmzCluster: build.mutation<CommonResult, RequestPayload>({
@@ -413,6 +426,17 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeSdLanUrls.toggleEdgeSdLanDmz, params, versionHeader)
         return { ...req, body: JSON.stringify(payload) }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: EdgeSdLanActivityEnum.UPDATE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
       }
     }),
     getEdgeSdLanIsDmz: build.query<EdgeSdLanToggleDmzPayload, RequestPayload>({

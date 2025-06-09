@@ -14,10 +14,11 @@ import {
   PolicyOperation,
   PolicyType,
   TrafficClassSetting,
-  getPolicyListRoutePath,
-  getPolicyRoutePath
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { ScopeForm }                                 from '../HqosBandwidthForm/ScopeForm'
@@ -29,11 +30,8 @@ const EditEdgeHqosBandwidth = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
-  const qosListRoute = getPolicyRoutePath({
-    type: PolicyType.HQOS_BANDWIDTH,
-    oper: PolicyOperation.LIST
-  })
-  const linkToProfileList = useTenantLink(qosListRoute)
+  const previousPath = usePolicyPreviousPath(PolicyType.HQOS_BANDWIDTH, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.HQOS_BANDWIDTH)
   const [updateEdgeHqosProfile] = useUpdateEdgeHqosProfileMutation()
   const [activateEdgeCluster] = useActivateHqosOnEdgeClusterMutation()
   const [deactivateEdgeCluster] = useDeactivateHqosOnEdgeClusterMutation()
@@ -78,7 +76,7 @@ const EditEdgeHqosBandwidth = () => {
       && !isChangedTrafficClassSettings(
         reqConfig.trafficClassSettings??[], dbConfig.trafficClassSettings??[])
     ) {
-      navigate(linkToProfileList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
       return
     }
 
@@ -90,7 +88,7 @@ const EditEdgeHqosBandwidth = () => {
       }
 
       await updateEdgeHqosProfile({ params, payload }).unwrap()
-      navigate(linkToProfileList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -102,14 +100,14 @@ const EditEdgeHqosBandwidth = () => {
     const activateChangedClustersInfo = formData.activateChangedClustersInfo??{}
     const reqClusterIds = viewData.edgeClusterIds??[]
     if(!activateChangedClusters ) {
-      navigate(linkToProfileList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
       return
     }
 
     const changedKeys = Object.keys(activateChangedClusters)
     const activateClusterIds = changedKeys.filter(k => activateChangedClusters[k] === true)
     if(_.isEqual(reqClusterIds, activateClusterIds)) {
-      navigate(linkToProfileList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
       return
     }
 
@@ -146,12 +144,7 @@ const EditEdgeHqosBandwidth = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit HQoS Bandwidth Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'HQoS Bandwidth' }), link: qosListRoute }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.HQOS_BANDWIDTH)}
       />
       <Loader states={[{ isLoading }]}>
         <HqosBandwidthForm
@@ -159,7 +152,7 @@ const EditEdgeHqosBandwidth = () => {
           steps={steps}
           onFinish={handleFinish}
           editData={viewData}
-          onCancel={() => navigate(linkToProfileList)}
+          onCancel={() => navigate(previousPath)}
         />
       </Loader>
     </>

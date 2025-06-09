@@ -19,6 +19,7 @@ import {
   useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   CliFamilyModels,
+  ConfigTemplateType,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
   useTableQuery,
@@ -26,12 +27,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
+import { useEnforcedStatus } from '../configTemplates'
+
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 import * as UI                             from './styledComponents'
 
 const defaultPayload = {
   fields: ['check-all', 'name', 'city', 'country', 'switchProfileName',
-    'switches', 'activated', 'switchProfileId', 'status', 'id'],
+    'switches', 'activated', 'switchProfileId', 'status', 'id', 'isEnforced'],
   page: 1,
   pageSize: 25,
   sortField: 'name',
@@ -61,6 +64,7 @@ export function VenueSetting () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -85,6 +89,8 @@ export function VenueSetting () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      disabled: (rows) => hasEnforcedItem(rows),
+      tooltip: (rows) => getEnforcedActionMsg(rows),
       onClick: (rows) => {
         const tmpTableData = tableData.map(item => (
           { ...item, activated: { isActivated: rows.map(row => row.id).includes(item.id) } }))
@@ -97,6 +103,8 @@ export function VenueSetting () {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      disabled: (rows) => hasEnforcedItem(rows),
+      tooltip: (rows) => getEnforcedActionMsg(rows),
       onClick: (rows) => {
         const tmpTableData = tableData.map(item => (
           { ...item, activated: { isActivated: rows.map(row => row.id).includes(item.id) } }))
@@ -142,24 +150,32 @@ export function VenueSetting () {
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (_, row) {
-        return <Switch
-          checked={form.getFieldValue('venues').includes(row.id)}
-          onClick={(checked, event) => {
-            if(checked){
-              row.activated = { isActivated: true }
-              const mergedList = [...venueList, row.id]
-              setVenueList(mergedList)
-              form.setFieldValue('venues', mergedList)
-            }else{
-              row.activated = { isActivated: false }
-              const filterList = venueList.filter((item: string) => item !== row.id)
-              setVenueList(filterList)
-              form.setFieldValue('venues', filterList)
-            }
-            event.stopPropagation()
-          }}
-          disabled={venueAppliedToCli?.map(item => item.venueId).includes(row.id)}
-        />
+        const title = getEnforcedActionMsg([row]) ?? null
+        const disabled = venueAppliedToCli?.map(item => item.venueId).includes(row.id)
+          || hasEnforcedItem([row])
+
+        return <Tooltip
+          title={title}
+          placement='bottom'>
+          <Switch
+            checked={form.getFieldValue('venues').includes(row.id)}
+            onClick={(checked, event) => {
+              if(checked){
+                row.activated = { isActivated: true }
+                const mergedList = [...venueList, row.id]
+                setVenueList(mergedList)
+                form.setFieldValue('venues', mergedList)
+              }else{
+                row.activated = { isActivated: false }
+                const filterList = venueList.filter((item: string) => item !== row.id)
+                setVenueList(filterList)
+                form.setFieldValue('venues', filterList)
+              }
+              event.stopPropagation()
+            }}
+            disabled={disabled}
+          />
+        </Tooltip>
       }
     }
   ]

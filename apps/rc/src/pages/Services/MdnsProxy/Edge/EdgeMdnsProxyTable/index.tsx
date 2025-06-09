@@ -25,7 +25,6 @@ import {
   ServiceType,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceListRoutePath,
   getServiceRoutePath,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
@@ -35,7 +34,8 @@ import {
   MdnsProxyFeatureTypeEnum,
   EdgeServiceCompatibility,
   getServiceAllowedOperation,
-  IncompatibilityFeatures
+  IncompatibilityFeatures,
+  useServicesBreadcrumb
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -117,10 +117,7 @@ export function EdgeMdnsProxyTable () {
           $t({ defaultMessage: 'mDNS Proxy for RUCKUS Edge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}

@@ -63,8 +63,8 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
       invalidatesTags: [{ type: 'DirectoryServer', id: 'LIST' }]
     }),
     getDirectoryServerById: build.query<DirectoryServer, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DirectoryServerUrls.getDirectoryServer, params)
+      query: ({ params, customHeaders }) => {
+        const req = createHttpRequest(DirectoryServerUrls.getDirectoryServer, params, customHeaders)
         return {
           ...req
         }
@@ -109,6 +109,7 @@ export const directoryServerApi = baseDirectoryServerApi.injectEndpoints({
 export const {
   useCreateDirectoryServerMutation,
   useGetDirectoryServerByIdQuery,
+  useLazyGetDirectoryServerByIdQuery,
   useGetDirectoryServerViewDataListQuery,
   useLazyGetDirectoryServerViewDataListQuery,
   useDeleteDirectoryServerMutation,

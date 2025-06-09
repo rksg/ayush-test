@@ -33,8 +33,6 @@ const leftStyle = css`
 
 const modalLeftStyle = css`
   :root .ant-drawer {
-    height: 100%;
-    margin: 0;
     div.ant-drawer-content-wrapper {
       border-radius: 0px;
       .ant-drawer-content {
@@ -100,6 +98,9 @@ export const Drawer = styled(AntDrawer)<{ width: number | string }>`
     flex-direction: column;
 
     ${({ width }) => getStepsFormStyle(width)}
+  }
+  .ant-drawer-mask {
+    margin-top: calc(-1 * var(--acx-drawer-top-space));
   }
 `
 

@@ -23,7 +23,6 @@ import { getOpsApi }     from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
-import { CompatibilityCheck }   from './CompatibilityCheck'
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
@@ -213,9 +212,6 @@ export const SmartEdgeForm = () => {
                     children={
                       <Space>
                         {currentClusterInfo?.name}
-                        <CompatibilityCheck
-                          clusterData={currentClusterInfo}
-                        />
                       </Space>
                     }
                   />

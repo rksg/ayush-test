@@ -3,10 +3,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader }                                                                  from '@acx-ui/components'
-import { Features }                                                                    from '@acx-ui/feature-toggle'
-import { useEdgePinActions, useIsEdgeFeatureReady }                                    from '@acx-ui/rc/components'
-import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { PageHeader }                               from '@acx-ui/components'
+import { Features }                                 from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { ServiceType, useServiceListBreadcrumb }    from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,
@@ -32,19 +32,11 @@ const AddPersonalIdentityNetwork = () => {
   const [form] = Form.useForm()
   const { addPin } = useEdgePinActions()
 
-  const tablePath = getServiceRoutePath(
-    { type: ServiceType.PIN, oper: ServiceOperation.LIST })
-
-
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Personal Identity Network Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Personal Identity Network' }), link: tablePath }
-        ]}
+        breadcrumb={useServiceListBreadcrumb(ServiceType.PIN)}
       />
       <PersonalIdentityNetworkFormDataProvider>
         <PersonalIdentityNetworkForm

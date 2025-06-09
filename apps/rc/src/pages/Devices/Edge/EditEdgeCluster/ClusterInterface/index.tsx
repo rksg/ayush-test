@@ -10,6 +10,7 @@ import { useClusterInterfaceActions }           from '@acx-ui/rc/components'
 import {
   EdgeCluster,
   EdgeClusterStatus,
+  EdgeIpModeEnum,
   EdgePortInfo,
   EdgePortTypeEnum,
   EdgeUrlsInfo,
@@ -38,7 +39,8 @@ export interface ClusterInterfaceTableType {
   serialNumber: string
   interfaceName?: string
   ip?: string
-  subnet?: string
+  subnet?: string,
+  ipMode?: EdgeIpModeEnum
 }
 
 interface ClusterInterfaceFormType {
@@ -82,10 +84,11 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   }
 
   const getAllNodesSubnetInfo = (value?: ClusterInterfaceTableType[]) => {
-    return value?.map(item => ({
-      ip: item.ip,
-      subnet: item.subnet
-    })) ?? []
+    return value?.filter(itme => itme.ipMode === EdgeIpModeEnum.STATIC)
+      ?.map(item => ({
+        ip: item.ip,
+        subnet: item.subnet
+      })) ?? []
   }
 
   const handleFinish = async (data: ClusterInterfaceFormType) => {
@@ -189,12 +192,13 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      render: (_data, row) => row.ip
+      render: (_data, row) => row.ipMode === EdgeIpModeEnum.STATIC?row.ip:''
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
       key: 'subnet',
-      dataIndex: 'subnet'
+      dataIndex: 'subnet',
+      render: (_data, row) => row.ipMode === EdgeIpModeEnum.STATIC?row.subnet:''
     }
   ]
 

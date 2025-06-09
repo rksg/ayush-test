@@ -13,7 +13,7 @@ import {
   ClientIsolationViewModel, filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
+  usePoliciesBreadcrumb,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -90,13 +90,7 @@ export default function ClientIsolationTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Client Isolation' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
+        breadcrumb={usePoliciesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len

@@ -76,6 +76,7 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
+  privilegeGroupType?: CustomRoleType
   scopes?: string[],
   preferredNotifications?: {
     emailPreferences: boolean,
@@ -156,6 +157,11 @@ export interface BetaStatus {
   startDate?: string
 }
 
+export interface EarlyAccessResponse {
+  betaStatus: boolean
+  alphaStatus: boolean
+}
+
 export interface BetaFeatures {
   betaFeatures: FeatureAPIResults[]
 }
@@ -210,6 +216,7 @@ export enum raiPermissionsList {
   'WRITE_DATA_STUDIO',
   'READ_DATA_CONNECTOR',
   'WRITE_DATA_CONNECTOR',
+  'DELETE_DATA_CONNECTOR',
   'READ_DATA_CONNECTOR_STORAGE',
   'WRITE_DATA_CONNECTOR_STORAGE',
   'READ_REPORTS',

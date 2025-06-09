@@ -95,7 +95,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-  const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
@@ -103,8 +102,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelType = useWatch('tunnelType')
-  const networkSegementType = useWatch('type')
-  const isVniType = networkSegementType === NetworkSegmentTypeEnum.VXLAN
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -150,14 +147,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
-  clusterServiceData
-    // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
-    .some(item => {
-      form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
-      return true
-    })
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
@@ -193,15 +182,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       if (isEdgeNatTraversalP1Ready) {
         form.setFieldsValue({ natTraversalEnabled: false })
       }
-      if (isEdgeL2greReady) {
-        form.setFieldsValue({ tunnelType: TunnelTypeEnum.VXLAN_GPE })
-      }
     }
   }
 
   const handleTunnelTypeChange = (e: RadioChangeEvent) => {
     if (e.target.value === TunnelTypeEnum.L2GRE) {
-      form.setFieldsValue({ mtuType: MtuTypeEnum.MANUAL })
+      form.setFieldsValue({
+        mtuType: MtuTypeEnum.MANUAL,
+        type: NetworkSegmentTypeEnum.VLAN_VXLAN
+      })
     }
   }
 
@@ -240,40 +229,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             validateFirst
           />
         </Col>
-        {/* <Col span={14}>
-        <Form.Item
-          name='tag'
-          label={$t({ defaultMessage: 'Tags' })}
-          children={<Select mode='tags' />}
-        />
-      </Col> */}
-        { isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
-        <Col span={24}>
-          <Form.Item
-            name='type'
-            label={$t({ defaultMessage: 'Network Segment Type' })}
-            initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
-            children={
-              <Radio.Group disabled={isDefaultTunnelProfile
-                    || !!disabledFields?.includes('type')}
-              onChange={handleNetworkSegmentTypeChange}
-              >
-                <Space direction='vertical'>
-                  <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
-                    {$t({ defaultMessage: 'VLAN to VNI map' })}
-                  </Radio>
-                  { isEdgePinHaReady &&
-                    <Radio value={NetworkSegmentTypeEnum.VXLAN}>
-                      {$t({ defaultMessage: 'VNI' })}
-                    </Radio>
-                  }
-                </Space>
-              </Radio.Group>
-            }
-          />
-        </Col>
-        }
         { isEdgeL2greReady &&
           <Col span={24}>
             <Form.Item
@@ -289,8 +244,40 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                     <Radio value={TunnelTypeEnum.VXLAN_GPE}>
                       {$t({ defaultMessage: 'VxLAN GPE' })}
                     </Radio>
-                    <Radio value={TunnelTypeEnum.L2GRE} disabled={isVniType} >
+                    <Radio value={TunnelTypeEnum.L2GRE}>
                       {$t({ defaultMessage: 'L2GRE' })}
+                      {<ApCompatibilityToolTip
+                        title={$t(MessageMapping.tunnel_type_l2ogre_tooltip)}
+                        placement='bottom'
+                        showDetailButton
+                        // eslint-disable-next-line max-len
+                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.L2OGRE)}
+                      />}
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              }
+            />
+          </Col>
+        }
+        { isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+          <Col span={24}>
+            <Form.Item
+              name='type'
+              label={$t({ defaultMessage: 'Network Segment Type' })}
+              initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
+              tooltip={$t(MessageMapping.network_segment_type_tooltip)}
+              children={
+                <Radio.Group disabled={isDefaultTunnelProfile
+                      || !!disabledFields?.includes('type')}
+                onChange={handleNetworkSegmentTypeChange}
+                >
+                  <Space direction='vertical'>
+                    <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
+                      {$t({ defaultMessage: 'VLAN to VNI map' })}
+                    </Radio>
+                    <Radio value={NetworkSegmentTypeEnum.VXLAN} disabled={isL2greType}>
+                      {$t({ defaultMessage: 'VNI' })}
                     </Radio>
                   </Space>
                 </Radio.Group>

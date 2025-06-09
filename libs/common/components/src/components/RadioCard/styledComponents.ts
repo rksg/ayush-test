@@ -110,6 +110,14 @@ export const Category = styled.div<{ color: string }>`
   font-size: var(--acx-body-6-font-size);
 `
 
+export const CategoryIcon = styled.div<{ color: string }>`
+  background: var(${props => props.color});
+  height: 20px;
+  border-radius: 2px;
+  padding: 2px 4px;
+  color: var(--acx-primary-white);
+`
+
 export const Description = styled.div`
   color: var(--acx-neutrals-60);
   font-size: var(--acx-body-4-font-size);

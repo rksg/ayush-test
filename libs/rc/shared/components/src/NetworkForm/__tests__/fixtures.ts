@@ -1597,6 +1597,7 @@ export const dpskListResponse = {
   },
   sort: []
 }
+export const mockedDpskNetworkName = '__mockedDpskNetworkName__'
 
 export const partialDpskNetworkEntity: NetworkSaveData = {
   type: NetworkTypeEnum.DPSK,
@@ -1608,6 +1609,20 @@ export const partialDpskNetworkEntity: NetworkSaveData = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
   dpskServiceProfileId: dpskListResponse.content[1].id,
   name: 'JackyDPSK',
+  id: '1887fef21cdf485cbe2583b8c5ec97f1'
+}
+
+export const partialDpskNetworkEntity2: NetworkSaveData = {
+  type: NetworkTypeEnum.DPSK,
+  isCloudpathEnabled: false,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    vlanId: 1,
+    ssid: mockedDpskNetworkName
+  },
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  dpskServiceProfileId: dpskListResponse.content[2].id,
+  name: mockedDpskNetworkName,
   id: '1887fef21cdf485cbe2583b8c5ec97f1'
 }
 
@@ -2089,6 +2104,21 @@ export const mockPolicySetList = {
   ]
 }
 
+export const mockedRadsecAAA = {
+  id: '3',
+  name: 'RadSec AAA',
+  primary: {
+    ip: '123.123.123.2',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
+  },
+  type: 'AUTHENTICATION'
+}
+
 export const mockAAAPolicyListResponse = {
   page: 1,
   totalCount: 3,
@@ -2106,20 +2136,55 @@ export const mockAAAPolicyListResponse = {
       secondary: '2.3.3.4:1187',
       id: '2'
     },
-    {
-      id: '3',
-      name: 'RadSec AAA',
-      primary: {
-        ip: '123.123.123.2',
-        port: 2083
-      },
-      radSecOptions: {
-        tlsEnabled: true,
-        cnSanIdentity: 'cnSan',
-        ocspUrl: 'aaa.com'
-      },
-      type: 'AUTHENTICATION'
-    }
+    mockedRadsecAAA
+  ]
+}
+
+export const mockedAccountingServiceName1 = '__mocked_accounting_service_name1__'
+export const mockedAccountingServiceName2 = '__mocked_accounting_service_name2__'
+export const mockedAccountingRadsecName1 = '__mocked_account_radsec_service_name1__'
+
+export const mockedAccountingServiceId1 = '__mocked_accounting_service_Id1__'
+export const mockedAccountingServiceId2 = '__mocked_accounting_service_Id2__'
+export const mockedAccountingRadsecId1 = '__mocked_account_radsec_service_Id1__'
+
+export const mockedAccountingService1 = {
+  name: mockedAccountingServiceName1,
+  type: 'ACCOUNTING',
+  primary: '201.1.1.1:1812',
+  id: mockedAccountingServiceId1
+}
+
+export const mockedAccountingService2 = {
+  name: mockedAccountingServiceName2,
+  type: 'ACCOUNTING',
+  primary: '201.1.1.2:1812',
+  secondary: '201.2.1.2:1187',
+  id: mockedAccountingServiceId2
+}
+
+export const mockedAccountingRadsecService1 = {
+  id: mockedAccountingRadsecId1,
+  name: mockedAccountingRadsecName1,
+  primary: {
+    ip: '201.1.2.1',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
+  },
+  type: 'ACCOUNTING'
+}
+
+export const mockAAAPolicyAccountingListResponse = {
+  page: 1,
+  totalCount: 3,
+  data: [
+    mockedAccountingService1,
+    mockedAccountingService2,
+    mockedAccountingRadsecService1
   ]
 }
 

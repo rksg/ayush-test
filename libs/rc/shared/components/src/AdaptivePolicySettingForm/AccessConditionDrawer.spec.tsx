@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { AccessCondition, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { mockServer, render, screen }               from '@acx-ui/test-utils'
@@ -42,7 +43,6 @@ describe('AccessConditionDrawer', () => {
   })
 
   it('should render drawer with the giving data', async () => {
-
     render(
       <Provider>
         <AccessConditionDrawer
@@ -71,8 +71,71 @@ describe('AccessConditionDrawer', () => {
     expect(inputs[0]).toHaveValue(condition.id)
     expect(inputs[1]).toHaveValue(condition.templateAttribute.name)
     expect(inputs[2]).toHaveValue('STRING')
-    expect(inputs[3]).toHaveValue(condition.evaluationRule.regexStringCriteria)
+    expect(inputs[5]).toHaveValue(condition.evaluationRule.regexStringCriteria)
 
     await userEvent.click(saveButton)
   })
+
+  it('should cancel the drawer successfully when ff is on', async () => {
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
+    render(
+      <Provider>
+        <AccessConditionDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          isEdit={false}
+          setAccessConditions={jest.fn()}
+          templateId={200}
+          accessConditions={[] as AccessCondition []}/>
+      </Provider>,
+      {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
+        }, path: '/:tenantId/:policyId' }
+      }
+    )
+    const cancelButton = screen.getByText('Cancel')
+    expect(cancelButton).toBeInTheDocument()
+    await userEvent.click(cancelButton)
+  })
+
+  it('should render drawer with the giving data when ff is on', async () => {
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.IDENTITY_COMMON_ATTRIBUTES_TOGGLE)
+    render(
+      <Provider>
+        <AccessConditionDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          isEdit={true}
+          setAccessConditions={jest.fn()}
+          templateId={200}
+          editCondition={assignConditions.content[3]}
+          accessConditions={[] as AccessCondition []}/>
+      </Provider>,
+      {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
+        }, path: '/:tenantId/:policyId' }
+      }
+    )
+
+    const saveButton = screen.getByText('Done')
+    expect(saveButton).toBeInTheDocument()
+
+    const condition = assignConditions.content[3]
+
+    const inputs = await screen.findAllByRole('textbox')
+    expect(inputs[0]).toHaveValue(condition.id)
+    expect(inputs[1]).toHaveValue(condition.templateAttribute.name)
+    expect(inputs[2]).toHaveValue('STRING')
+    expect(inputs[5]).toHaveValue(condition.evaluationRule.regexStringCriteria)
+    await screen.findByLabelText('Sub-type Attributes')
+
+    await userEvent.click(saveButton)
+  })
+
 })

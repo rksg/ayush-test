@@ -286,6 +286,7 @@ exports[`Brand360 resets SLAs 1`] = `
 .c6 > .ant-picker .ant-picker-active-bar {
   background: var(--acx-accents-blue-50);
   margin-left: 33px;
+  max-width: 100%;
 }
 
 .c6 .ant-picker-dropdown .ant-picker-header-super-prev-btn,

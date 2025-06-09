@@ -5,7 +5,6 @@ import moment      from 'moment-timezone'
 import { get }                                                            from '@acx-ui/config'
 import { dataApi, dataApiURL, intentAIApi, intentAIUrl, Provider, store } from '@acx-ui/store'
 import {
-  fireEvent,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
@@ -127,7 +126,8 @@ describe('IntentAIForm', () => {
       metadata: {
         preferences: {
           enabled: true,
-          excludedAPs: [[{ name: 'name', type: 'zone' }]],
+          // Must select partial APs (cannot select all APs)
+          excludedAPs: [[{ name: 'name', type: 'zone' }, { name: 'name', type: 'apMac' }]],
           excludedHours: []
         }
       } as IntentDetail['metadata']
@@ -142,9 +142,6 @@ describe('IntentAIForm', () => {
     const radioEnabled = await screen.findByRole('radio', { name: 'Reduction in energy footprint' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
-    const currInput = await screen.findByDisplayValue('USD')
-    fireEvent.change(currInput, { target: { value: 'SGD' } })
-    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     expect(container).toMatchSnapshot('step 2')
     await click(actions.getByRole('button', { name: 'Next' }))
 
@@ -171,7 +168,7 @@ describe('IntentAIForm', () => {
         /PowerSave will not be triggered for the specific APs set in the Settings./
       )
     ).toBeVisible()
-    expect(await screen.findByText('Projected energy reduction')).toBeVisible()
+    expect(await screen.findByText('Projection')).toBeVisible()
 
     await click(actions.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText(/has been updated/)).toBeVisible()
@@ -186,7 +183,7 @@ describe('IntentAIForm', () => {
         preferences: {
           averagePowerPrice: { currency: 'SGD', value: 0 },
           crrmFullOptimization: true,
-          excludedAPs: [[{ name: 'name', type: 'zone' }]]
+          excludedAPs: [[{ name: 'name', type: 'zone' }, { name: 'name', type: 'apMac' }]]
         },
         scheduledAt: '',
         dataEndTime: '2024-08-08T12:00:00.000Z'
@@ -207,7 +204,6 @@ describe('IntentAIForm', () => {
     )
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
-    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
 
@@ -255,7 +251,13 @@ describe('IntentAIForm', () => {
         dataEndTime: ''
       } as IntentDetail['metadata']
     })
-    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    render(<IntentAIForm />, {
+      route: {
+        params,
+        path: '/intentAI',
+        wrapRoutes: false
+      }, wrapper: Provider
+    })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 

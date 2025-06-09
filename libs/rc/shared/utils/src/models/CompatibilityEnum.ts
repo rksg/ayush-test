@@ -27,7 +27,11 @@ export enum IncompatibilityFeatures {
   PIN_DS = 'PIN_DS',
   PIN_AS = 'PIN_AS',
   EDGE_MDNS_PROXY = 'MDNS_PROXY', // edge mDNS
-  ARP_TERMINATION = 'ARP_TERMINATION'
+  ARP_TERMINATION = 'ARP_TERMINATION',
+  L2OGRE = 'L2oGRE',
+  DUAL_WAN = 'Dual WAN',
+  MULTI_NAT_IP = 'Multi NAT IP',
+  CORE_ACCESS_SEPARATION = 'Core/Access Ports Separation'
 }
 
 export enum IncompatibilityFeatureGroups {
@@ -42,5 +46,6 @@ export enum EdgeCompatibilityFeatureEnum {
   HQOS = 'HQoS',
   DHCP = 'DHCP',
   MDNS_PROXY = 'MDNS_PROXY',
-  ARP_TERMINATION = 'ARP_TERMINATION'
+  ARP_TERMINATION = 'ARP_TERMINATION',
+  DUAL_WAN = 'Dual WAN'
 }

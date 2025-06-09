@@ -9,7 +9,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                           from '@acx-ui/icons'
 import { GuestNetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages } from '@acx-ui/rc/utils'
 
@@ -21,9 +21,10 @@ export function AuthAccServerSetting () {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const onChange = (value: boolean, fieldName: string) => {
     if(!value){
@@ -65,7 +66,7 @@ export function AuthAccServerSetting () {
         onChange(true, 'enableAuthProxy')
       }
     }
-  },[authRadius])
+  },[supportRadsec, authRadius])
   useEffect(()=>{
     if(accountingRadius){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
@@ -74,7 +75,7 @@ export function AuthAccServerSetting () {
         onChange(true, 'enableAccountingProxy')
       }
     }
-  },[accountingRadius])
+  },[supportRadsec, accountingRadius])
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>

@@ -116,6 +116,7 @@ export const BannerVersion = styled.div`
   background-color: var(--acx-accents-orange-10);
   width: fit-content;
   padding: 7px 15px 15px 15px;
+  margin-bottom: 10px;
 `
 
 export const BannerVersionName = styled.span`

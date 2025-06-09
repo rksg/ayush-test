@@ -1,15 +1,17 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Popover, Space }                                   from 'antd'
+import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
-import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
-import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls }             from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                                   from '@acx-ui/user'
-import { getOpsApi }                                                                             from '@acx-ui/utils'
+import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
+import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
+  useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission }                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                                  from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -23,6 +25,9 @@ export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string })
 {
   const { $t } = useIntl()
+  const workflowValidationEnhancementFFToggle =
+    useIsSplitOn(Features.WORKFLOW_ENHANCED_VALIDATION_ENABLED)
+
   const nodeId = useNodeId()
   const nodes = useNodes()
   const isOverMaximumSteps = useMemo(() => nodes.length >= MaxTotalSteps, [nodes])
@@ -32,6 +37,23 @@ export default function BaseStepNode (props: NodeProps
     stepDrawerState, workflowId
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
+  const [ deleteAndDetachStep, { isLoading: isDeleteDetachStepLoading }]
+    = useDeleteWorkflowStepByIdV2Mutation()
+  const [ deleteStepDescendants, { isLoading: isDeleteStepDescendantsLoading }]
+    = useDeleteWorkflowStepDescendantsByIdMutation()
+
+  const { isNodeValid, validationErrors } = useMemo(() => {
+    if(props.data?.statusReasons) {
+      // @ts-ignore
+      const validationErrors = props.data?.statusReasons.filter(
+        // @ts-ignore
+        reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+      return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
+    }
+
+    return { isNodeValid: true, validationErrors: undefined }
+
+  }, [props.data])
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -70,6 +92,32 @@ export default function BaseStepNode (props: NodeProps
     })
   }
 
+  const onDeleteStepClick = (selectedKey:string) => {
+    onPreviewClose()
+    onHandleNode(props)
+    stepDrawerState.onClose()
+
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: selectedKey === 'deleteStepDescendants' ?
+          $t({ defaultMessage: 'Action\'s Children' })
+          : $t({ defaultMessage: 'Action' }),
+        entityValue: $t(ActionTypeTitle[props.type as ActionType])
+          ?? $t({ defaultMessage: 'Action' })
+      },
+      content: selectedKey === 'deleteStepDescendants' ?
+        $t({ defaultMessage: 'Do you want to delete all children of this action?' })
+        : $t({ defaultMessage: 'Do you want to delete this action?' }),
+      onOk: () => {
+        selectedKey === 'deleteStepDescendants' ?
+          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+          : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+      }
+    })
+  }
+
   const onPreviewClick = () => {
     setIsPreviewOpen(true)
   }
@@ -103,22 +151,53 @@ export default function BaseStepNode (props: NodeProps
         </Tooltip>
       }
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
-        <Button
-          size={'small'}
-          type={'link'}
-          rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
-          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
-          icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
-          onClick={onDeleteClick}
-        />
+        {workflowValidationEnhancementFFToggle ?
+          <Popover
+            zIndex={1000}
+            content={
+              <UI.DeleteMenu
+                theme='dark'
+                selectable={false}
+                onClick={(e) => onDeleteStepClick(e.key)}
+                items={[
+                  { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Action Only' }) },
+                  { key: 'deleteStepDescendants',
+                    label: $t({ defaultMessage: 'Delete Action\'s Children' }) }
+                ]}
+              />}
+            trigger={'hover'}
+            placement={'bottomLeft'}
+            color={'var(--acx-primary-black)'}
+            overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
+          >
+            <Button
+              size={'small'}
+              type={'link'}
+              rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+              disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+              icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+            />
+          </Popover>
+          :
+          <Button
+            size={'small'}
+            type={'link'}
+            rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+            disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+            icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+            onClick={onDeleteClick}
+          />
+        }
       </Tooltip>
     </Space>)
 
 
   return (
-    <UI.StepNode selected={props.selected}>
+    <UI.StepNode selected={props.selected}
+      invalid={workflowValidationEnhancementFFToggle && !isNodeValid}>
       <Loader states={[
-        { isLoading: false, isFetching: isDeleteStepLoading }
+        { isLoading: false, isFetching: (isDeleteStepLoading
+          || isDeleteDetachStepLoading || isDeleteStepDescendantsLoading) }
       ]}>
         {props.children}
       </Loader>
@@ -173,14 +252,29 @@ export default function BaseStepNode (props: NodeProps
         position={Position.Bottom}
       />
 
+      {(!isNodeValid && workflowValidationEnhancementFFToggle) &&
+        <Tooltip
+          showArrow={false}
+          align={{ offset: [10, 10] }}
+          // @ts-ignore
+          title={validationErrors?.map(reason =>
+            <Row>{ reason.statusReason }</Row>)}>
+          <UI.InvalidIcon>
+            <WarningCircleSolid />
+          </UI.InvalidIcon>
+        </Tooltip>
+      }
+
       {props.data.isStart &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <StartFlag />
         </UI.FlagIcon>
       }
 
       {props.data.isEnd &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <EndFlag />
         </UI.FlagIcon>
       }

@@ -18,8 +18,10 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
+  RadiusAttributeGroup, RulesManagementUrlsInfo, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getOpsApi }      from '@acx-ui/utils'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -87,7 +89,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         sorter: { compare: sortProp('name', defaultSort) },
         render: function (_, row) {
           return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
-            $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
+          //eslint-disable-next-line max-len
+            $t({ defaultMessage: '{category, select, identity {Identity Name/} other {}}{name} (Regex)' },
+              { name: row.name, category: row.templateAttribute?.category })
         }
       },
       {
@@ -140,6 +144,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const rowActions: TableProps<AccessCondition>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      // eslint-disable-next-line max-len
+      rbacOpsIds: editMode ? [getOpsApi(RulesManagementUrlsInfo.updateConditions)] : [getOpsApi(RulesManagementUrlsInfo.addConditions)],
       onClick: (selectedRows, clearSelection) => {
         setEditConditionMode(true)
         setAccessConditionsVisible(true)
@@ -149,6 +155,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      // eslint-disable-next-line max-len
+      rbacOpsIds: editMode ? [getOpsApi(RulesManagementUrlsInfo.deleteConditions)] : [getOpsApi(RulesManagementUrlsInfo.addConditions)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -239,13 +247,14 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowKey='id'
                 columns={useColumns()}
                 dataSource={evaluationRules}
-                rowActions={rowActions}
-                rowSelection={{ type: 'radio' }}
+                rowActions={filterByAccess(rowActions)}
+                rowSelection={filterByAccess(rowActions).length > 0 && { type: 'radio' }}
                 actions={[{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
                   tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
                   label: $t({ defaultMessage: 'Add' }),
+                  rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.addConditions)],
                   onClick: () => {
                     setEditConditionMode(false)
                     setEditCondition(undefined)

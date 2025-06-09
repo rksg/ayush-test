@@ -234,7 +234,7 @@ describe('WifiSoftGreSelectOption', () => {
     await waitFor(() => expect(screen.queryByText(/Please choose a different one./)).toBeNull())
   })
 
-  it(`should all profiles can be selected 
+  it(`should all profiles can be selected
     since only one network is used`, async () => {
     const venueId = 'venueId-1'
     const networkId = 'network_6'
@@ -262,7 +262,7 @@ describe('WifiSoftGreSelectOption', () => {
   })
 
 
-  it(`should only 3 profiles are selected, 
+  it(`should only 3 profiles are selected,
     since the Venue/Map/Network activations reached the maximum 3`, async () => {
     const venueId = 'venueId-3'
     const networkId = 'network_13'

@@ -165,6 +165,23 @@ export interface ClientInfo {
   connectedTimeParssed: boolean // form GUI
 }
 
+export type ApWiredClientInfo = {
+  apId: string
+  apMacAddress: string
+  apName: string
+  hostname: string
+  ipAddress: string
+  macAddress: string
+  portNumber: number
+  venueId: string
+  venueName: string
+  vlanId: number
+
+  deviceType: string
+  osType: string
+  authStatus: number
+}
+
 type VenueInformation = {
   id: string
   name: string

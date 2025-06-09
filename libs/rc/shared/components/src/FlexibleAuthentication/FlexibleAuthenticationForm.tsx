@@ -15,16 +15,16 @@ import {
   FlexibleAuthentication,
   FlexAuthMessages,
   FlexAuthVlanLabel,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   whitespaceOnlyRegExp,
-  PolicyOperation,
   PolicyType,
-  validateVlanExcludingReserved
+  validateVlanExcludingReserved,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle,
+  PolicyOperation,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import {
-  useNavigate,
-  useTenantLink
+  useNavigate
 } from '@acx-ui/react-router-dom'
 
 import {
@@ -51,15 +51,11 @@ export const FlexibleAuthenticationForm = (props: {
 }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/policies/')
-  const flexAuthRoute = getPolicyRoutePath({
-    type: PolicyType.FLEX_AUTH,
-    oper: PolicyOperation.LIST
-  })
-
   const { useWatch } = Form
   const [form] = Form.useForm()
   const { editMode, onFinish } = props
+  const pageTitle = usePolicyPageHeaderTitle(editMode ?? false, PolicyType.FLEX_AUTH)
+  const previousPath = usePolicyPreviousPath(PolicyType.FLEX_AUTH, PolicyOperation.LIST)
 
   const authFormWatchValues = [
     useWatch<string>('authenticationType', form),
@@ -98,26 +94,14 @@ export const FlexibleAuthenticationForm = (props: {
   return (
     <>
       <PageHeader
-        title={
-          $t({ defaultMessage: '{action} Authentication' }, {
-            action: editMode ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' })
-          })
-        }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Authentication' }), link: flexAuthRoute }
-        ]}
+        title={pageTitle}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.FLEX_AUTH)}
       />
 
       <StepsForm
         form={form}
         onFinish={onFinish}
-        onCancel={() =>
-          navigate(`${basePath.pathname}/authentication/list`)
-        }
+        onCancel={() => navigate(previousPath)}
         style={{ width: '280px' }}
         buttonLabel={{
           submit: editMode ?

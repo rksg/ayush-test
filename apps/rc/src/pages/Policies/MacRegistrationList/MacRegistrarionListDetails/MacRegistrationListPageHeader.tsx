@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader }               from '@acx-ui/components'
 import { useGetMacRegListQuery }            from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink, getPolicyListRoutePath,
-  getPolicyRoutePath,
+  getPolicyDetailsLink,
+  usePolicyListBreadcrumb,
   PolicyOperation,
   PolicyType,
   filterByAccessForServicePolicyMutation,
@@ -18,24 +18,12 @@ import MacRegistrationListTabs from './MacRegistrationListTabs'
 function MacRegistrationListPageHeader () {
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
-
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
   return (
     <PageHeader
       title={macRegistrationListQuery.data?.name || ''}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },
-        { text: $t({ defaultMessage: 'MAC Registration Lists' }),
-          link: tablePath
-        }
-      ]}
+      breadcrumb={usePolicyListBreadcrumb(PolicyType.MAC_REGISTRATION_LIST)}
       extra={filterByAccessForServicePolicyMutation([
         <TenantLink
           to={getPolicyDetailsLink({

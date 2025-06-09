@@ -1,13 +1,8 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
 import { ServiceOperation, ServiceType } from '../../constants'
-import { PolicyType }                    from '../../types'
+import { DpskDetailsTabKey, PolicyType } from '../../types'
 import { policyTypePathMapping }         from '../policy'
-
-export enum DpskDetailsTabKey {
-  OVERVIEW = 'overview',
-  PASSPHRASE_MGMT = 'passphraseMgmt'
-}
 
 export interface ServiceRoutePathProps {
   type: ServiceType;
@@ -43,7 +38,8 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.PIN]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
   [ServiceType.RESIDENT_PORTAL]: 'residentPortal',
-  [ServiceType.EDGE_OLT]: 'optical' // temporary type before PoC done.
+  [ServiceType.EDGE_OLT]: 'optical', // temporary type before PoC done.
+  [ServiceType.PORTAL_PROFILE]: 'portalProfile'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {

@@ -396,9 +396,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       switchDetailHeader?.model) {
       let count = 16
       const model = switchDetailHeader.model.slice(3, 7)
-      if (['7250', '7450', '7650', '7750', '7850', '7550', '8200'].includes(model)) {
+      if (['7250', '7450', '7650', '7750', '7850', '7550'].includes(model)) {
         count = 16
-      } else if (['7150'].includes(model)) {
+      } else if (['7150', '8100', '8200'].includes(model)) {
         count = 8
       }
       if (selectedPorts.length > count) {
@@ -669,6 +669,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 isSwitchLevelVlanEnabled
               )
             }
+            switchFirmwares={switchDetailHeader?.firmware ? [switchDetailHeader.firmware] : []}
           />
       }
     </>

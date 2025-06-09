@@ -733,7 +733,7 @@ describe('restrictDateTo3Months', () => {
       endDate: moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
     })
   })
-  it('changes the range if longer than 3 months', () => {
+  it('changes the range if longer than 90 days', () => {
     expect(JSON.stringify(restrictDateToMonthsRange([
       moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
       moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
@@ -744,7 +744,7 @@ describe('restrictDateTo3Months', () => {
       moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
       moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
     ], 'end', 3))).toEqual(
-      '{"startDate":"2023-04-16T14:30:00.000Z","endDate":"2023-07-16T14:30:00.000Z"}'
+      '{"startDate":"2023-04-17T14:30:00.000Z","endDate":"2023-07-16T14:30:00.000Z"}'
     )
   })
 })
@@ -756,17 +756,18 @@ describe('getDefaultEarliestStart', () => {
   })
   afterEach(() => jest.restoreAllMocks())
 
-  it('should return the earliest start date for GOLD account tier with 1 month range', () => {
+  it('should return the earliest start date for GOLD account tier with 30 days range', () => {
     setUserProfile({
       allowedOperations: [],
       profile: getUserProfile().profile,
       accountTier: AccountTier.GOLD
     })
     const result = getDefaultEarliestStart()
-    expect(result.isSame(moment('2025-03-01'), 'day')).toBe(true)
+    expect(result.isSame(moment('2025-03-02'), 'day')).toBe(true)
   })
 
-  it('should return the earliest start date for other tiers with 3 or 12 months range', () => {
+  // eslint-disable-next-line max-len
+  it('should return the earliest start date for other tiers with 90 days or 12 months range', () => {
     setUserProfile({
       allowedOperations: [],
       profile: getUserProfile().profile,

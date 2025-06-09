@@ -22,7 +22,7 @@ import {
   SWITCH_TYPE,
   StackMember,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010g2Or10020b
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -162,7 +162,7 @@ export function SwitchOverviewTab () {
       {switchDetail &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
           {switchMacAclEnabled &&
-            isFirmwareVersionAbove10010g2Or10020b(switchDetail.firmware) ?
+            isFirmwareVersionAbove10010gCd1Or10020bCd1(switchDetail.firmware) ?
             <Tabs
               data-testid='MacACLsTabs'
               onChange={onCategoryTabChange}

@@ -8,8 +8,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  usePolicyListBreadcrumb,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType
@@ -24,24 +23,12 @@ export default function ClientIsolationDetail () {
   const params = useParams()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data } = useGetClientIsolationQuery({ params, enableRbac })
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Client Isolation' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.CLIENT_ISOLATION)}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.CLIENT_ISOLATION,

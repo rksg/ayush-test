@@ -57,6 +57,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ detailIpsecDrawerVisible, setDetailIpsecDrawerVisible ] = useState<boolean>(false)
   const [ addIpsecDrawerVisible, setAddIpsecDrawerVisible ] = useState<boolean>(false)
   const [ isLocked, setIsLocked ] = useState<boolean>(false)
+  const [ isLockedIpsec, setIsLockedIpsec ] = useState<boolean>(false)
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
   const [ ipsecOption, setIpsecOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
@@ -129,6 +130,9 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
       }
     }
 
+    if (ipsecOptionsDataQuery.data) {
+      setIsLockedIpsec(ipsecOptionsDataQuery.data.isLockedIpsec)
+    }
     if (form.getFieldValue(['ipsec', 'enableIpsec'])) {
       setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
     }
@@ -145,14 +149,13 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
     setEnableIpsec(false)
     if (ipsecOption.length > 0) {
       const enabledIpsecOption = ipsecOption.filter(opt => opt.disabled === false).length
-      if (ipsecOption.length > 1 && enabledIpsecOption === 1) {
+      if (isLockedIpsec) {
         setSoftGreDisabled(true)
         setIpsecDisabled(true)
         form.setFieldValue(['ipsec', 'enableIpsec'], true)
         setEnableIpsec(true)
-        const option = ipsecOption.find(item => item.disabled === false)
-        form.setFieldValue(['ipsec', 'newProfileId'], option?.value
-        )
+        const option = ipsecOption.find(item => item.disabled === false) || ipsecOption[0]
+        form.setFieldValue(['ipsec', 'newProfileId'], option?.value)
         form.setFieldValue(['ipsec', 'newProfileName'], option?.label)
       } else if (enabledIpsecOption === 0) {
         setIpsecDisabled(true)
@@ -290,11 +293,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
             style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
           />}
         />}
-        {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+        {isR370UnsupportedFeatures &&
+        <ApCompatibilityDrawer
           visible={softGreDrawerVisible}
           type={ApCompatibilityType.ALONE}
           networkId={networkId}
-          featureName={InCompatibilityFeatures.SOFT_GRE}
+          featureNames={[InCompatibilityFeatures.SOFT_GRE]}
           onClose={() => setSoftGreDrawerVisible(false)}
         />}
       </Row>

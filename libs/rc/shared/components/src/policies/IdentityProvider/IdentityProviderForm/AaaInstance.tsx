@@ -7,7 +7,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { PasswordInput }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }  from '@acx-ui/feature-toggle'
 import { AAAViewModalType, AaaServerOrderEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 
@@ -52,8 +52,9 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const primaryRadius = watchedRadius?.[AaaServerOrderEnum.PRIMARY]
   const secondaryRadius = watchedRadius?.[AaaServerOrderEnum.SECONDARY]
 

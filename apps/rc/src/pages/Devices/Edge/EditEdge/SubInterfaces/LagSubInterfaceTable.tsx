@@ -3,11 +3,10 @@ import { useContext } from 'react'
 import {
   useAddLagSubInterfacesMutation,
   useDeleteLagSubInterfacesMutation,
-  useGetLagSubInterfacesQuery,
   useImportLagSubInterfacesCSVMutation,
   useUpdateLagSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { EdgeSubInterface, convertEdgeSubInterfaceToApiPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { SubInterface, convertEdgeSubInterfaceToApiPayload } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -19,6 +18,8 @@ interface LagSubInterfaceTableProps {
   ip: string
   mac: string
   lagId: number
+  isSupportAccessPort?: boolean
+  data?: SubInterface[]
 }
 
 export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
@@ -26,22 +27,12 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const { generalSettings } = useContext(EditEdgeDataContext)
   const { venueId, clusterId: edgeClusterId } = generalSettings!
 
-  const tableQuery = useTableQuery<EdgeSubInterface>({
-    useQuery: useGetLagSubInterfacesQuery,
-    defaultPayload: {},
-    apiParams: {
-      venueId: venueId!,
-      edgeClusterId: edgeClusterId!,
-      serialNumber,
-      lagId: lagId.toString()
-    }
-  })
   const [addSubInterface] = useAddLagSubInterfacesMutation()
   const [updateSubInterface] = useUpdateLagSubInterfacesMutation()
   const [deleteSubInterfaces] = useDeleteLagSubInterfacesMutation()
   const [uploadCSV, uploadCSVResult] = useImportLagSubInterfacesCSVMutation()
 
-  const handleAdd = async (data: EdgeSubInterface) => {
+  const handleAdd = async (data: SubInterface) => {
     const payloadData = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
@@ -56,7 +47,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
     await addSubInterface(requestPayload).unwrap()
   }
 
-  const handleUpdate = async (data: EdgeSubInterface) => {
+  const handleUpdate = async (data: SubInterface) => {
     const { id, ...payloadData } = convertEdgeSubInterfaceToApiPayload(data)
 
     const requestPayload = {
@@ -72,7 +63,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
     await updateSubInterface(requestPayload).unwrap()
   }
 
-  const handleDelete = async (data: EdgeSubInterface) => {
+  const handleDelete = async (data: SubInterface) => {
     return await deleteSubInterfaces({
       params: {
         venueId,
@@ -96,7 +87,6 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
 
   return <SubInterfaceTable
     {...props}
-    tableQuery={tableQuery}
     handleAdd={handleAdd}
     handleUpdate={handleUpdate}
     handleDelete={handleDelete}

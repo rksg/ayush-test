@@ -33,6 +33,20 @@ const mockTableResult = {
   }]
 }
 
+const mockDhcpDetailsResult = {
+  id: '843b2eca8aa7405db8719c25ca1dbda6',
+  serviceName: 'My DHCP 1',
+  dhcpMode: 'EnableOnMultipleAPs',
+  dhcpPools: [{
+    name: 'My DHCP 1',
+    vlanId: 1,
+    subnetAddress: '237.84.2.178',
+    subnetMask: '244.178.44.111',
+    startIpAddress: '237.84.2.178',
+    endIpAddress: '244.178.44.111'
+  }]
+}
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -68,6 +82,10 @@ describe('DHCPTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
+      rest.get(
+        DHCPUrls.getDHCProfileDetail.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpDetailsResult))
+      ),
       rest.post(
         DHCPUrls.getDHCPProfilesViewModel.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))

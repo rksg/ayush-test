@@ -15,9 +15,8 @@ import {
   Persona, PolicyOperation, PolicyType,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
-import { RolesEnum }                      from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
 
 import { AdaptivePolicySetForm }                                         from '../../AdaptivePolicySetForm'
 import { ExpirationDateSelector }                                        from '../../ExpirationDateSelector'
@@ -176,7 +175,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               <Form.Item name='isUseSingleIdentity'
                 valuePropName='checked'
                 initialValue={false}
-                label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
+                // eslint-disable-next-line max-len
+                label={$t({ defaultMessage: 'Use single identity association to all onboarded devices' })}>
                 <Switch disabled={!identityGroupId}/>
               </Form.Item>
             </GridCol>
@@ -248,9 +248,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           />
         </GridCol>
         {
-          (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
           // eslint-disable-next-line max-len
-          hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) &&
+          hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? []) &&
           <>
             <Space align='center'>
               <Button

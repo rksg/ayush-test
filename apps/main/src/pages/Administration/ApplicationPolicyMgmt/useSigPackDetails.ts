@@ -7,6 +7,7 @@ import {
   ApplicationInfo,
   ApplicationUpdateType
 } from '@acx-ui/rc/utils'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 
 export type ChangedAppsInfoMap = {
   [appType in ApplicationUpdateType]?: {
@@ -16,10 +17,14 @@ export type ChangedAppsInfoMap = {
 }
 
 export function useSigPackDetails () {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { data, isFetching, isLoading } = useGetSigPackQuery({
     params: { changesIncluded: 'true' },
     enableRbac: isWifiRbacEnabled
+  }, {
+    skip: isCore
   })
 
   const updatedCount = (): number => {

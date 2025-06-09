@@ -7,30 +7,38 @@ import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   getPolicyAllowedOperation,
   getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  LocationExtended,
   PolicyOperation,
   PolicyType,
-  PortProfileTabsEnum
+  PortProfileTabsEnum,
+  usePoliciesBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }       from '@acx-ui/user'
+import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                    from '@acx-ui/user'
 
 export default function CreatePortProfile () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const createEthernetPortProfilePath =
-    useTenantLink(`${getPolicyListRoutePath(true)}/ethernetPortProfile/create`)
+  const fromPage = (useLocation() as LocationExtended)?.state?.from
+  const createEthernetPortProfilePath = useTenantLink(
+    getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })
+  )
   const createSwitchPortProfilePath =
     useTenantLink(`${getPolicyListRoutePath(true)}/portProfile/switch/profiles/add`)
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/wifi'
-  const policiesPageLink = useTenantLink(`${getPolicyListRoutePath(true) + '/select'}`)
+  const policiesPageLink = useTenantLink(getSelectPolicyRoutePath(true))
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const handleCreatePortProfile = async () => {
     const type = form.getFieldValue('portProfileType')
-    navigate(type === PortProfileTabsEnum.WIFI ?
-      createEthernetPortProfilePath : createSwitchPortProfilePath)
+    navigate(type === PortProfileTabsEnum.WIFI
+      ? createEthernetPortProfilePath
+      : createSwitchPortProfilePath,
+    { state: { from: fromPage } })
   }
 
   const wifiPortProfileOids = getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)
@@ -48,11 +56,7 @@ export default function CreatePortProfile () {
           )
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
+          ...usePoliciesBreadcrumb(),
           {
             text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute

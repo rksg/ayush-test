@@ -15,6 +15,13 @@ interface PermissionsTabProps {
   permissions: ScopePermission[]
 }
 
+// use these arrays to include permission feature key which is not applicable
+// to toggle checkbox. this needs generic solution. as we are rendering checkbox
+// based on feature not based on feature permission.
+
+const exludeCreatePermissions: (string | number)[] = ['wifi.venue.wifi', 'wifi.wifi.access_points']
+const exludeDeletePermissions: (string | number)[] = ['wifi.venue.wifi', 'wifi.wifi.access_points']
+
 export const PermissionsTab = (props: PermissionsTabProps) => {
   const { $t } = useIntl()
 
@@ -75,7 +82,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
       key: 'create',
       width: '12%',
       render: (_, row) => {
-        return <Form.Item
+        return !exludeCreatePermissions.includes(row.key) ? <Form.Item
           className='grid-item'
           valuePropName='checked'>
           <UI.PermissionCheckbox
@@ -83,6 +90,8 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'create')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'create', e.target.checked)} />
+        </Form.Item> :<Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
         </Form.Item>
       }
     },
@@ -109,7 +118,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
       key: 'delete',
       width: '12%',
       render: (_, row) => {
-        return <Form.Item
+        return !exludeDeletePermissions.includes(row.key) ? <Form.Item
           className='grid-item'
           valuePropName='checked'>
           <UI.PermissionCheckbox
@@ -117,6 +126,8 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
             indeterminate={getIndeterminate(row.key.toString(), 'delete')}
             onChange={(e) =>
               updatePermissions(row.key.toString(), 'delete', e.target.checked)} />
+        </Form.Item>: <Form.Item className='grid-item'>
+          <UI.PermissionCheckbox checked={false} disabled={true}/>
         </Form.Item>
       }
     }
@@ -128,13 +139,13 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
     if (scopePermission?.read) {
       list.push($t({ defaultMessage: 'Read Only' }))
     }
-    if (scopePermission?.create) {
+    if (scopePermission?.create && !exludeCreatePermissions.includes(key)) {
       list.push($t({ defaultMessage: ', Create' }))
     }
     if (scopePermission?.update) {
       list.push($t({ defaultMessage: ', Edit' }))
     }
-    if (scopePermission?.delete) {
+    if (scopePermission?.delete && !exludeDeletePermissions.includes(key)) {
       list.push($t({ defaultMessage: ', Delete' }))
     }
     return list
@@ -145,7 +156,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
       (<UI.PermissionSummaryWrapper key={scope.key}>
         <Form.Item
           label={scope.title?.toString()}
-          children={<Descriptions labelWidthPercent={15}>
+          children={<Descriptions labelWidthPercent={20}>
             {scope.children?.map(s =>
               <Descriptions.Item
                 key={s.key}

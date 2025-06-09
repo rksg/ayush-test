@@ -267,9 +267,10 @@ function useCardData (): PolicyCardData[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useEnhancedRoguePoliciesQuery({
         params, payload: defaultPayload, enableRbac
-      }).data?.totalCount,
+      }, { skip: isCore }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })),
+      disabled: isCore
     },
     {
       type: PolicyType.SYSLOG,
@@ -300,7 +301,7 @@ function useCardData (): PolicyCardData[] {
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
-      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      categories: [RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
       }, { skip: !isEdgeEnabled }).data?.totalCount,
@@ -408,7 +409,7 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isSwitchPortProfileEnabled
     },
     {

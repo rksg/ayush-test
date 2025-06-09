@@ -17,10 +17,6 @@ export const ClickableWrapper = styled.div`
   width: 100%;
 `
 
-export const DownloadWrapper = styled.div`
-  width: fit-content;
-`
-
 export const GraphWrapper = styled.div`
   position: relative;
   display: grid;

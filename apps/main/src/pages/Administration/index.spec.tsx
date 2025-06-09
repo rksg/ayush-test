@@ -32,62 +32,30 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
-jest.mock('./AccountSettings', () => ({
-  ...jest.requireActual('./AccountSettings'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-AccountSettings'></div>
-  }
-}))
-jest.mock('./Administrators', () => ({
-  ...jest.requireActual('./Administrators'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-Administrators'></div>
-  }
-}))
-jest.mock('./FWVersionMgmt', () => ({
-  ...jest.requireActual('./FWVersionMgmt'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-FWVersionMgmt'></div>
-  }
-}))
-jest.mock('./OnpremMigration', () => ({
-  ...jest.requireActual('./OnpremMigration'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-OnpremMigration'></div>
-  }
-}))
-jest.mock('./LocalRadiusServer', () => ({
-  ...jest.requireActual('./LocalRadiusServer'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-LocalRadiusServer'></div>
-  }
-}))
-jest.mock('./Notifications', () => ({
-  ...jest.requireActual('./Notifications'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-Notifications'></div>
-  }
-}))
-jest.mock('./Privacy', () => ({
-  ...jest.requireActual('./Privacy'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-privacy'></div>
-  }
-}))
-jest.mock('./Subscriptions', () => ({
-  ...jest.requireActual('./Subscriptions'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-Subscriptions'></div>
-  }
-}))
+jest.mock('./AccountSettings', () => () => {
+  return <div data-testid='mocked-AccountSettings'></div>
+})
+jest.mock('./Administrators', () => () => {
+  return <div data-testid='mocked-Administrators'></div>
+})
+jest.mock('./FWVersionMgmt', () => () => {
+  return <div data-testid='mocked-FWVersionMgmt'></div>
+})
+jest.mock('./OnpremMigration', () => () => {
+  return <div data-testid='mocked-OnpremMigration'></div>
+})
+jest.mock('./LocalRadiusServer', () => () => {
+  return <div data-testid='mocked-LocalRadiusServer'></div>
+})
+jest.mock('./Notifications', () => () => {
+  return <div data-testid='mocked-Notifications'></div>
+})
+jest.mock('./Privacy', () => () => {
+  return <div data-testid='mocked-Privacy'></div>
+})
+jest.mock('./Subscriptions', () => () => {
+  return <div data-testid='mocked-Subscriptions'></div>
+})
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object
     .keys(jest.requireActual('@acx-ui/analytics/components'))

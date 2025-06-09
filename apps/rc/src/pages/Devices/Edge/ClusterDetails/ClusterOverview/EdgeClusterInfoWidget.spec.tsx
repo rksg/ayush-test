@@ -1,7 +1,14 @@
 /* eslint-disable max-len */
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+
+import { EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { render, screen }                         from '@acx-ui/test-utils'
 
 import { EdgeClusterInfoWidget } from './EdgeClusterInfoWidget'
+
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 // Mock the components used
 jest.mock('@acx-ui/edge/components', () => ({
@@ -14,26 +21,40 @@ jest.mock('./ClusterDetailsDrawer', () => ({
   EdgeClusterDetailsDrawer: () => <div data-testid='cluster-details-drawer'>EdgeClusterDetailsDrawer</div>
 }))
 
+const mockCluster = cloneDeep(mockEdgeClusterList.data[0]) as EdgeClusterStatus
+mockCluster.name = 'Test Cluster'
 describe('EdgeClusterInfoWidget', () => {
-  it('renders cluster name', () => {
-    render(
-      <EdgeClusterInfoWidget
-        currentCluster={{ name: 'Test Cluster', edgeList: [] }}
-        clusterPortsSetting={[]}
-        isEdgeClusterLoading={false}
-        isPortListLoading={false}
-      />
-    )
+  it('renders cluster model - virtual Edge', () => {
+    render(<EdgeClusterInfoWidget
+      currentCluster={mockCluster}
+      clusterPortsSetting={[]}
+      isEdgeClusterLoading={false}
+      isPortListLoading={false}
+    />)
 
-    expect(screen.getByText('Test Cluster')).toBeInTheDocument()
+    expect(screen.getByText('Virtual RUCKUS Edge')).toBeInTheDocument()
   })
 
-  it('calls onClickWidget when EdgePortsWidget is clicked', () => {
+  it('renders cluster model - physical Edge', () => {
+    const mockData = cloneDeep(mockCluster) as EdgeClusterStatus
+    mockData.edgeList?.forEach(edge => edge.model = 'E114')
+
+    render(<EdgeClusterInfoWidget
+      currentCluster={mockData}
+      clusterPortsSetting={[]}
+      isEdgeClusterLoading={false}
+      isPortListLoading={false}
+    />)
+
+    expect(screen.getByText('RUCKUS Edge 114')).toBeInTheDocument()
+  })
+
+  it('calls onClickWidget when EdgePortsWidget is clicked', async () => {
     const mockOnClickWidget = jest.fn()
 
     render(
       <EdgeClusterInfoWidget
-        currentCluster={{ name: 'Test Cluster', edgeList: [] }}
+        currentCluster={mockCluster}
         clusterPortsSetting={[]}
         isEdgeClusterLoading={false}
         isPortListLoading={false}
@@ -41,16 +62,16 @@ describe('EdgeClusterInfoWidget', () => {
       />
     )
 
-    fireEvent.click(screen.getByTestId('ports-widget'))
+    await userEvent.click(screen.getByTestId('ports-widget'))
     expect(mockOnClickWidget).toHaveBeenCalledWith('port')
   })
 
-  it('calls onClickWidget when EdgeAlarmWidget is clicked', () => {
+  it('calls onClickWidget when EdgeAlarmWidget is clicked', async () => {
     const mockOnClickWidget = jest.fn()
 
     render(
       <EdgeClusterInfoWidget
-        currentCluster={{ name: 'Test Cluster', edgeList: [] }}
+        currentCluster={mockCluster}
         clusterPortsSetting={[]}
         isEdgeClusterLoading={false}
         isPortListLoading={false}
@@ -58,21 +79,21 @@ describe('EdgeClusterInfoWidget', () => {
       />
     )
 
-    fireEvent.click(screen.getByTestId('alarm-widget'))
+    await userEvent.click(screen.getByTestId('alarm-widget'))
     expect(mockOnClickWidget).toHaveBeenCalledWith('alarm')
   })
 
-  it('opens details drawer when More Details button is clicked', () => {
+  it('opens details drawer when More Details button is clicked', async () => {
     render(
       <EdgeClusterInfoWidget
-        currentCluster={{ name: 'Test Cluster', edgeList: [] }}
+        currentCluster={mockCluster}
         clusterPortsSetting={[]}
         isEdgeClusterLoading={false}
         isPortListLoading={false}
       />
     )
 
-    fireEvent.click(screen.getByText('More Details'))
+    await userEvent.click(screen.getByText('More Details'))
     expect(screen.getByTestId('cluster-details-drawer')).toBeInTheDocument()
   })
 })

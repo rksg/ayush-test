@@ -59,7 +59,11 @@ export default function AdaptivePolicyDetail () {
           <Form.Item>
             <SummaryCard.Item
               //eslint-disable-next-line max-len
-              title={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}
+              title={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name :
+                //eslint-disable-next-line max-len
+                $t({ defaultMessage: '{category, select, identity {Identity Name/} other {}}{name} (Regex)' },
+                  //eslint-disable-next-line max-len
+                  { name: condition.templateAttribute?.name, category: condition.templateAttribute?.category })}
               content={criteria}
             />
           </Form.Item>

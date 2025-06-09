@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
@@ -28,8 +28,9 @@ export function DpskSummaryForm (props: {
   const $t = intl.$t
 
   const { isTemplate } = useConfigTemplate()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,

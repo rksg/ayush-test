@@ -2,16 +2,18 @@ import { Form }       from 'antd'
 import { capitalize } from 'lodash'
 import { useIntl }    from 'react-intl'
 
-import { Drawer }                    from '@acx-ui/components'
-import { EdgeMultiWanConfigStatus  } from '@acx-ui/rc/utils'
+import { Drawer }                   from '@acx-ui/components'
+import { EdgeMultiWanConfigStats  } from '@acx-ui/rc/utils'
 
 import { getWanProtocolString, getWanLinkDownCriteriaString } from '../utils/dualWanUtils'
+
+import { StyledWanLinkListWrapper } from './styledComponents'
 
 interface EdgeWanLinkHealthDetailsDrawerProps {
   visible: boolean
   setVisible: (ifName: string | undefined) => void
   portName: string | undefined
-  data: EdgeMultiWanConfigStatus | undefined
+  data: EdgeMultiWanConfigStats | undefined
 }
 
 export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDrawerProps) => {
@@ -36,11 +38,11 @@ export const EdgeWanLinkHealthDetailsDrawer = (props: EdgeWanLinkHealthDetailsDr
       <Form.Item
         label={$t({ defaultMessage: 'Target IP Addresses' })}
         children={
-          <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+          <StyledWanLinkListWrapper>
             {data?.monitorTargets?.map((ip) => {
               return <li key={ip} children={ip} />
             })}
-          </ul>
+          </StyledWanLinkListWrapper>
         }
       />
       <Form.Item

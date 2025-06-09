@@ -1,5 +1,5 @@
-import { Input, List as AntList }    from 'antd'
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { Input, List as AntList, Modal } from 'antd'
+import styled, { createGlobalStyle }     from 'styled-components/macro'
 
 import { Select, Tabs as AcxTabs } from '@acx-ui/components'
 import { ArrowChevronRight }       from '@acx-ui/icons'
@@ -30,11 +30,7 @@ export const DashboardSelectDropdown = createGlobalStyle`
       display: flex;
       align-items: center;
       padding: 8px 32px 8px 12px !important;
-      &.default {
-        .ant-select-item-option-content {
-          padding-left: 0;
-        }
-      }
+
       &.hasUpdated:after {
         content: '';
         display: inline-block;
@@ -56,6 +52,7 @@ export const DashboardSelectDropdown = createGlobalStyle`
         bottom: 50%;
         left: 0;
         margin: auto;
+        color: var(--acx-neutrals-70);
       }
     }
   }
@@ -91,15 +88,13 @@ export const DashboardList = styled.div`
       opacity: 0 !important;
     }
   }
-
-  
 `
 
 export const DashboardItem = styled.div`
   display: flex;
   align-items: center;
   height: 76px;
-  padding: 0 20px 0 12px;
+  padding: 0 16px 0 12px;
   border-radius: 8px;
   border: 1px solid var(--acx-neutrals-20);
   background: var(--acx-neutrals-10);
@@ -133,6 +128,9 @@ export const DashboardItem = styled.div`
     overflow: hidden;
   }
   .title {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
     font-size: var(--acx-subtitle-4-font-size);
     line-height: var(--acx-subtitle-4-line-height);
     font-weight: var(--acx-subtitle-4-font-weight);
@@ -140,6 +138,16 @@ export const DashboardItem = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    svg {
+      margin-left: 8px;
+      flex-shrink: 0;
+      color: var(--acx-neutrals-70);
+    }
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
   .desp {
     display: flex;
@@ -156,20 +164,40 @@ export const DashboardItem = styled.div`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
     }
     .name {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    button {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: transparent;
+      justify-content: center;
+      transition: .2s;
+      &:hover {
+        color: var( --acx-neutrals-70);
+        background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
+      }
+    }
     svg {
+      width: 100%;
       path {
         color: var( --acx-neutrals-70);
       }
@@ -210,8 +238,9 @@ export const SearchInput = styled(Input)`
 `
 
 export const Tabs = styled(AcxTabs)`
+  margin-top: 4px;
   .ant-tabs-nav {
-    margin: 4px 0 12px !important;
+    margin: 0px 0 12px !important;
   }
   .ant-tabs-nav-wrap {
     justify-content: center;
@@ -225,10 +254,17 @@ export const CanvasListItem = styled(AntList.Item)`
   border: 1px solid var(--acx-neutrals-20) !important;
   background: var(--acx-neutrals-10);
   margin-bottom: 6px;
-  padding: 12px 15px !important;
-
+  padding: 12px 16px 12px 15px !important;
+  justify-content: space-between !important;
   .ant-checkbox-inner {
     background: var(--acx-primary-white);
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    max-width: calc(100% - 20px);
+    gap: 12px;
   }
 
   .ant-checkbox-wrapper {
@@ -243,6 +279,8 @@ export const CanvasListItem = styled(AntList.Item)`
   .info {
     white-space: nowrap;
     overflow: hidden;
+    flex: 1;
+    cursor: default;
   }
   .title {
     display: inline-flex;
@@ -256,6 +294,7 @@ export const CanvasListItem = styled(AntList.Item)`
     svg {
       margin-left: 8px;
       flex-shrink: 0;
+      color: var(--acx-neutrals-70);
     }
     .name {
       text-overflow: ellipsis;
@@ -290,21 +329,63 @@ export const CanvasListItem = styled(AntList.Item)`
   }
   .author {
     overflow: hidden;
+    span {
+      display: inline-flex;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
     svg {
       flex-shrink: 0;
       margin-right: 4px;
     }
     .name {
-      text-overflow: ellipsis;
-      overflow: hidden;
+      display: block;
     }
   }
   .action {
     display: inline-flex;
     align-items: center;
+    button {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background: transparent;
+      justify-content: center;
+      transition: .2s;
+      &:hover {
+        color: var( --acx-neutrals-70);
+        background: var( --acx-neutrals-20);
+        svg path {
+          color: var( --acx-neutrals-70);
+        }
+      }
+    }
     svg {
+      width: 100%;
       path {
         color: var( --acx-neutrals-70);
+      }
+    }
+  }
+`
+
+export const EditCanvasNameModal = styled(Modal)`
+  .ant-modal-content {
+    .ant-modal-body {
+      padding-top: 4px;
+    }
+    .ant-radio-wrapper {
+      .label {
+        display: flex;
+        align-item: center;
+        svg {
+          margin-left: 5px;
+        }
+      }
+      .desp {
+        padding: 8px 0px;
+        color: var(--acx-neutrals-60);
       }
     }
   }

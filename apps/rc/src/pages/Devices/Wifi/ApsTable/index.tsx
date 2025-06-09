@@ -14,11 +14,11 @@ import {
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
-import { WifiScopes }                             from '@acx-ui/types'
-import { hasPermission }                          from '@acx-ui/user'
-import { getOpsApi }                              from '@acx-ui/utils'
+import { COUNT_ALL_REQ_CONTENT, usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                    from '@acx-ui/types'
+import { hasPermission }                                                 from '@acx-ui/user'
+import { getOpsApi }                                                     from '@acx-ui/utils'
 
 const apsCountQueryPayload = {
   fields: ['serialNumber', 'name'],
@@ -38,6 +38,7 @@ const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] =
   const rbacQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: apsCountQueryPayload,
+    ...COUNT_ALL_REQ_CONTENT,
     option: { skip: !isUseWifiRbacApi }
   })
 

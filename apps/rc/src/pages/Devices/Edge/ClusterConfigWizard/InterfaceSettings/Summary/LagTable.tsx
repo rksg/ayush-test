@@ -1,16 +1,17 @@
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 
 import { Col, Row } from 'antd'
 import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { Table, TableProps, Tooltip }                                                                 from '@acx-ui/components'
+import { Features }                                                                                   from '@acx-ui/feature-toggle'
+import { CheckMark }                                                                                  from '@acx-ui/icons'
+import { useIsEdgeFeatureReady }                                                                      from '@acx-ui/rc/components'
 import { EdgeIpModeEnum, EdgeLag, EdgePortTypeEnum, getEdgePortDisplayName, getEdgePortIpModeString } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 import { InterfaceSettingsFormType }  from '../types'
-
-
 
 interface LagTableProps {
   data: InterfaceSettingsFormType['lagSettings']
@@ -27,12 +28,16 @@ interface LagTableData {
   portType: EdgePortTypeEnum
   ipMode: EdgeIpModeEnum
   ip?: string
+  corePortEnabled?: boolean
+  accessPortEnabled?: boolean
 }
 
 export const LagTable = (props: LagTableProps) => {
   const { data, portSettings } = props
   const { $t } = useIntl()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const tableData = [] as LagTableData[]
 
@@ -52,7 +57,9 @@ export const LagTable = (props: LagTableProps) => {
         lagMembers: lag.lagMembers,
         portType: lag.portType,
         ipMode: lag.ipMode,
-        ip: lag.ip
+        ip: lag.ip,
+        corePortEnabled: lag.corePortEnabled,
+        accessPortEnabled: lag.accessPortEnabled
       })
     }
   }
@@ -109,7 +116,31 @@ export const LagTable = (props: LagTableProps) => {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
       dataIndex: 'adminStatus'
-    }
+    },
+    ...(
+      isEdgeCoreAccessSeparationReady ?
+        [
+          {
+            title: $t({ defaultMessage: 'Core Port' }),
+            align: 'center' as const,
+            key: 'corePortEnabled',
+            dataIndex: 'corePortEnabled',
+            render: (_data: ReactNode, row: LagTableData) => {
+              return row.corePortEnabled && <CheckMark width={20} height={20} />
+            }
+          },
+          {
+            title: $t({ defaultMessage: 'Access Port' }),
+            align: 'center' as const,
+            key: 'accessPortEnabled',
+            dataIndex: 'accessPortEnabled',
+            render: (_data: ReactNode, row: LagTableData) => {
+              return row.accessPortEnabled && <CheckMark width={20} height={20} />
+            }
+          }
+        ]
+        : []
+    )
   ]
 
   const getToolTipContent = (

@@ -32,16 +32,16 @@ import {
   sortProp,
   defaultSort,
   usePollingTableQuery,
-  SwitchFirmwareStatusType
+  SwitchFirmwareStatusType, FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                               from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
-  filterByAccess,
+  filterByAccess, getUserProfile, hasAllowedOperations,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
-import { noDataDisplay } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 
@@ -70,6 +70,8 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const {
@@ -291,8 +293,9 @@ export const VenueFirmwareTable = (
     scopes: [SwitchScopes.UPDATE]
   })
 
-  const isPreferencesVisible
-    = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isPreferencesVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(FirmwareUrlsInfo.updateSwitchUpgradePreferences)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[tableQuery,

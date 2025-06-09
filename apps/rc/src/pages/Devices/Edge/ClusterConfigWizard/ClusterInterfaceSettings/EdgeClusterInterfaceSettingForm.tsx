@@ -16,7 +16,7 @@ import {
   optionSorter,
   subnetMaskIpRegExp,
   validateClusterInterface,
-  validateSubnetIsConsistent,
+  validateConfiguredSubnetIsConsistent,
   validateUniqueIp
 } from '@acx-ui/rc/utils'
 
@@ -71,7 +71,9 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
 
   const getAllNodesSubnetInfo = () => {
     const allSubnetInfo = Object.values(form.getFieldsValue(true))
-      .map(item => {
+      .filter(item =>
+        (item as EdgeClusterInterfaceSettingFormType).ipMode === EdgeIpModeEnum.STATIC
+      ).map(item => {
         return {
           ip: (item as EdgeClusterInterfaceSettingFormType).ip,
           subnet: (item as EdgeClusterInterfaceSettingFormType).subnet
@@ -184,9 +186,7 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
                     },
                     {
                       validator: (_, value) =>
-                        validateSubnetIsConsistent(getAllNodesSubnetInfo(), value),
-                      message: $t({ defaultMessage: `The ip setting is not 
-                      in the same subnet as other nodes.` })
+                        validateConfiguredSubnetIsConsistent(getAllNodesSubnetInfo(), value)
                     },
                     {
                       validator: (_, value) =>

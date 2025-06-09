@@ -1,10 +1,10 @@
 import _             from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { NetworkTypeEnum, WlanSecurityEnum }                  from '../../constants'
-import { RadioEnum, RadioTypeEnum }                           from '../../contents'
-import { SchedulerTypeEnum }                                  from '../../models/SchedulerTypeEnum'
-import { Venue, ApVenueStatusEnum, Network, NetworkSaveData } from '../../types'
+import { NetworkTypeEnum, WlanSecurityEnum } from '../../constants'
+import { RadioEnum, RadioTypeEnum }          from '../../contents'
+import { SchedulerTypeEnum }                 from '../../models/SchedulerTypeEnum'
+import { Network, NetworkSaveData }          from '../../types'
 
 export const generateDefaultNetworkVenue = (venueId: string, networkId:string) => {
   return {
@@ -38,13 +38,6 @@ export const generateAlphanumericString = (length: number) => {
     generatedString += chars.substring(randomNumber, randomNumber+1)
   }
   return generatedString
-}
-
-export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
-  const venuesNotInSetup = networkAdvertisedVenues?.filter(v => {
-    return v.status !== ApVenueStatusEnum.IN_SETUP_PHASE
-  })
-  return venuesNotInSetup && venuesNotInSetup.length > 0
 }
 
 export const isOweTransitionNetwork = (data: Network | NetworkSaveData): boolean => {

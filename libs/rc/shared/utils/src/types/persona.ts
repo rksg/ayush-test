@@ -47,6 +47,11 @@ export interface Persona {
   expirationDate?: string | null,
   unit?: string | null,
   phoneNumber?: string
+  firstName?: string
+  lastName?: string
+  displayName? : string
+  externalIdentityId?: string
+  lastLoginAt?: string
 }
 
 export interface IdentityClient {
@@ -115,4 +120,24 @@ export interface PersonaEthernetPort {
   portIndex: number,
   name?: string,
   createdAt?: string
+}
+
+
+export interface ExternalIdentity {
+  id: string,
+  userId: string,
+  identityProviderId: string,
+  identityProviderType: string,
+  firstName?: string,
+  lastName?: string
+  displayName?: string
+  userPrincipalName?: string
+  email?: string
+  phoneNumber?: string
+  organization?: string
+  title?: string
+  department?: string
+  address?: string
+  roles: string[] | null
+  groups: string[] | null
 }

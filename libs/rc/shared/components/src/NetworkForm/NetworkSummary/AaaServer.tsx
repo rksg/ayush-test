@@ -5,7 +5,7 @@ import { get }                from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import { PasswordInput }                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { AaaServerOrderEnum, AaaServerTypeEnum, NetworkSaveData, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -17,8 +17,9 @@ export function AaaServer ( props: {
   const intl = useIntl()
   const { serverType, summaryData } = props
   const { isTemplate } = useConfigTemplate()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const primaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
   const secondaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])
   return (

@@ -9,12 +9,10 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
@@ -32,18 +30,15 @@ import MdnsProxyForm from './MdnsProxyForm'
 
 
 const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/' + mockedTenantId,
-  search: '',
-  hash: ''
-}
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (to: To): Path => {
-    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
-  }
+  useNavigate: () => mockedUseNavigate
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useServicePreviousPath: () => ({ pathname: '/previous/path' })
 }))
 
 jest.mock('antd', () => {
@@ -295,12 +290,6 @@ describe('MdnsProxyForm', () => {
   })
 
   it('should navigate to the table view when clicking Cancel button', async () => {
-    const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getServiceRoutePath({
-        type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
-      }))
-    })
-
     render(
       <Provider>
         <MdnsProxyForm editMode={false} />
@@ -311,6 +300,6 @@ describe('MdnsProxyForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
+    expect(mockedUseNavigate).toHaveBeenCalledWith('/previous/path')
   })
 })

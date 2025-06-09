@@ -128,6 +128,10 @@ const DEFAULT_CANVAS = [
                 height: 6
               },
               {
+                width: 3,
+                height: 7
+              },
+              {
                 width: 4,
                 height: 8
               }
@@ -170,8 +174,12 @@ const DEFAULT_CANVAS = [
                 height: 8
               },
               {
-                width: 4,
+                width: 3,
                 height: 12
+              },
+              {
+                width: 4,
+                height: 16
               }
             ],
             gridx: 0,
@@ -318,6 +326,10 @@ const DEFAULT_CANVAS = [
                 height: 6
               },
               {
+                width: 3,
+                height: 7
+              },
+              {
                 width: 4,
                 height: 10
               }
@@ -444,12 +456,14 @@ jest.mock('@acx-ui/components', () => {
   const Loader = jest.requireActual('@acx-ui/components').Loader
   const TooltipWrapper = jest.requireActual('@acx-ui/components').TooltipWrapper
   const Card = jest.requireActual('@acx-ui/components').Card
+  const Button = jest.requireActual('@acx-ui/components').Button
   return {
     cssNumber,
     cssStr,
     Loader,
     TooltipWrapper,
     Card,
+    Button,
     BarChart: () => <div data-testid='BarChart' />,
     DonutChart: () => <div data-testid='DonutChart' />,
     StackedAreaChart: () => <div data-testid='StackedAreaChart' />,
@@ -510,7 +524,6 @@ describe('Layout', () => {
       </Provider>
     )
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
-    expect(await screen.findByTestId('StackedAreaChart')).toBeVisible()
     expect(await screen.findByTestId('Table')).toBeVisible()
     const dragItem = await screen.findByTestId('DonutChart')
     const dropItem = await screen.findByTestId('dropGroup')
@@ -541,11 +554,9 @@ describe('Layout', () => {
       </Provider>
     )
     expect(await screen.findByTestId('DonutChart')).toBeVisible()
-    const increaseCard = await screen.findByTestId('increaseCard')
-    await userEvent.click(increaseCard)
-    expect(mockedSetGroups).toBeCalled()
-    const decreaseCard = await screen.findByTestId('decreaseCard')
-    await userEvent.click(decreaseCard)
+    const slider = await screen.findByRole('slider')
+    slider.focus()
+    await userEvent.click(await screen.findByText('2x'))
     expect(mockedSetGroups).toBeCalled()
     const deleteCard = await screen.findByTestId('deleteCard')
     await userEvent.click(deleteCard)

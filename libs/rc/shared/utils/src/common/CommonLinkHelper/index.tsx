@@ -7,7 +7,8 @@ import { noDataDisplay }      from '@acx-ui/utils'
 
 import { ServiceOperation, ServiceType }                       from '../../constants'
 import { getPolicyDetailsLink, MacRegistrationDetailsTabKey  } from '../../features/policy/policyRouteUtils'
-import { DpskDetailsTabKey, getServiceDetailsLink }            from '../../features/service/serviceRouteUtils'
+import { getServiceDetailsLink }                               from '../../features/service/serviceRouteUtils'
+import { DpskDetailsTabKey }                                   from '../../types'
 import { PolicyType, PolicyOperation }                         from '../../types/policies/common'
 
 

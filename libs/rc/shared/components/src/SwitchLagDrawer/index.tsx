@@ -24,9 +24,8 @@ import {
   useGetLagListQuery,
   useSwitchDetailHeaderQuery
 }                            from '@acx-ui/rc/services'
+import { Lag, isOperationalSwitch } from '@acx-ui/rc/switch/utils'
 import {
-  isOperationalSwitch,
-  Lag,
   SwitchRbacUrlsInfo
 }      from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'

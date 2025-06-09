@@ -63,9 +63,9 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
     }),
 
     getSamlIdpProfileById: build.query<SamlIdpProfile, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, customHeaders }) => {
         const req = createHttpRequest(
-          SamlIdpProfileUrls.getSamlIdpProfile, params
+          SamlIdpProfileUrls.getSamlIdpProfile, params, customHeaders
         )
 
         return {

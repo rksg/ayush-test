@@ -27,12 +27,12 @@ import {
   getScopeKeyByService,
   getServiceAllowedOperation,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   getServiceRoutePath,
   IncompatibilityFeatures,
   PersonalIdentityNetworksViewData,
   ServiceOperation,
   ServiceType,
+  useServicesBreadcrumb,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -299,10 +299,7 @@ const PersonalIdentityNetworkTable = () => {
           $t({ defaultMessage: 'Personal Identity Network ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={useServicesBreadcrumb()}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink state={{ from: location }}
             to={getServiceRoutePath({

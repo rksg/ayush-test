@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
@@ -613,6 +613,38 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       providesTags: [{ type: 'EthernetPortProfileTemplate', id: 'LIST' }]
     }),
+    getEthernetPortProfileTemplateWithRelationsById:
+    build.query<EthernetPortProfile | null, RequestPayload>({
+      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const viewDataReq = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEthernetPortProfileViewDataList, params)
+        const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+
+        const ethernetPortProfile = await fetchWithBQ(
+          createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEthernetPortProfile, params)
+        )
+        const ethernetPortProfileData = ethernetPortProfile.data as EthernetPortProfile
+
+        if (ethernetPortProfileData && ethList.data) {
+          ethernetPortProfileData.authRadiusId = ethList.data?.[0]?.authRadiusId
+          ethernetPortProfileData.accountingRadiusId = ethList.data?.[0]?.accountingRadiusId
+          ethernetPortProfileData.apSerialNumbers = ethList.data?.[0]?.apSerialNumbers
+          ethernetPortProfileData.venueActivations = ethList.data?.[0]?.venueActivations
+        }
+
+        return ethernetPortProfileData
+          ? { data: ethernetPortProfileData }
+          : { error: ethernetPortProfile.error } as QueryReturnValue<
+          EthernetPortProfile, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
+      },
+      providesTags: [{ type: 'EthernetPortProfileTemplate', id: 'DETAIL' }]
+    }),
     getEthernetPortProfileTemplate: build.query<EthernetPortProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEthernetPortProfile, params)
@@ -724,6 +756,7 @@ export const {
   useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useGetEthernetPortProfileTemplateListQuery,
   useGetEthernetPortProfilesTemplateWithOverwritesQuery,
+  useGetEthernetPortProfileTemplateWithRelationsByIdQuery,
   useGetEthernetPortProfileTemplateQuery,
   useAddEthernetPortProfileTemplateMutation,
   useUpdateEthernetPortProfileTemplateMutation,

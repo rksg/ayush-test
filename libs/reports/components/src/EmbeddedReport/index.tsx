@@ -24,15 +24,15 @@ import { REPORT_BASE_RELATIVE_URL, refreshJWT }               from '@acx-ui/stor
 import { RolesEnum as RolesEnumR1, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile as getUserProfileR1,
   UserProfile as UserProfileR1, CustomRoleType, hasPermission,
-  aiOpsApis } from '@acx-ui/user'
-import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext } from '@acx-ui/utils'
+  aiOpsApis, isCoreTier } from '@acx-ui/user'
+import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext, AccountTier } from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
   ReportType,
-  reportTypeDataStudioMapping,
   reportTypeMapping,
-  networkFilterDisabledReports
+  networkFilterDisabledReports,
+  getDataStudioReportName
 } from '../mapping/reportsMapping'
 
 interface ReportProps {
@@ -55,6 +55,7 @@ const getReportType = (reportName: ReportType) => {
   return {
     isApReport: ['ap', 'both'].includes(mode),
     isSwitchReport: ['switch', 'both'].includes(mode),
+    isEdgeReport: ['edge'].includes(mode),
     isRadioBandDisabled: bandDisabledReports.includes(reportName),
     isNetworkFilterDisabled: networkFilterDisabledReports.includes(reportName)
   }
@@ -67,6 +68,7 @@ export const getSupersetRlsClause = (
 ) => {
   const { isApReport,
     isSwitchReport,
+    isEdgeReport,
     isRadioBandDisabled,
     isNetworkFilterDisabled } = getReportType(reportName)
   const clause = {
@@ -89,6 +91,7 @@ export const getSupersetRlsClause = (
     const switchGroupIds: string[] = []
     const apMacs: string[] = []
     const switchMacs: string[] = []
+    const edgeIds: string[] = []
 
     paths.forEach((path) => {
       switch (path.length) {
@@ -104,6 +107,8 @@ export const getSupersetRlsClause = (
             apMacs.push(`'${path[2].name}'`)
           } else if (path[2].type === 'switch') {
             switchMacs.push(`'${path[2].name}'`)
+          } else if (path[2].type === 'edge') {
+            edgeIds.push(`'${path[2].name}'`)
           }
           break
       }
@@ -122,6 +127,14 @@ export const getSupersetRlsClause = (
       }
       if (switchMacs.length) {
         clause.networkClause += `"switchId" in (${switchMacs.join(', ')}) OR `
+      }
+    }
+    if (isEdgeReport) {
+      if (zoneIds.length) {
+        clause.networkClause += `"zoneName" in (${zoneIds.join(', ')}) OR `
+      }
+      if (edgeIds.length) {
+        clause.networkClause += `"edgeId" in (${edgeIds.join(', ')}) OR `
       }
     }
     clause.networkClause = clause.networkClause.slice(0, -4)
@@ -195,11 +208,47 @@ export const getRLSClauseForSA = (
   }
 }
 
+/**
+ * Generate a unique query identifier based on user/tenant information without exposing actual IDs
+ * Uses a simple hash function for browser compatibility and includes session stability
+ */
+export const generateUniqueQueryId = (
+  userInfo: string,
+  tenantInfo: string,
+  reportName: string
+): string => {
+  // Create a session-stable identifier that doesn't change on every request
+  const sessionId = sessionStorage.getItem('userSessionId') ||
+    (() => {
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+      sessionStorage.setItem('userSessionId', newSessionId)
+      return newSessionId
+    })()
+
+  const combinedInfo = `${userInfo}-${tenantInfo}-${reportName}-${sessionId}`
+  let hash = 0
+  for (let i = 0; i < combinedInfo.length; i++) {
+    const char = combinedInfo.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  return `qid_${Math.abs(hash).toString(36)}_${Date.now().toString(36).slice(-4)}`
+}
+
 export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
   const isRA = get('IS_MLISA_SA')
-  const embedDashboardName = reportTypeDataStudioMapping[reportName]
+  const { accountTier = undefined } = getUserProfileR1() || {}
+  const isCore = isCoreTier(accountTier as AccountTier)
+  const reportsCoreTierToggle =
+    useIsSplitOn(Features.ACX_UI_REPORTS_CORE_TIER_TOGGLE) && !isRA
+
+  const embedDashboardName = getDataStudioReportName(
+    reportName,
+    accountTier as AccountTier,
+    reportsCoreTierToggle
+  )
   const systems = useSystems()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
@@ -294,11 +343,17 @@ export function EmbeddedReport (props: ReportProps) {
         bands as RadioBand[]
       )
 
+    // Generate unique query identifier without exposing actual IDs
+    const uniqueQueryId = isRA
+      ? generateUniqueQueryId(userId, selectedTenant.id, reportName)
+      : generateUniqueQueryId(externalId, tenantId, reportName)
+
     const guestTokenPayload = {
       user: {
         firstName,
         lastName,
-        email
+        email,
+        acxAccountTier: accountTier
       },
       resources: [
         {
@@ -316,13 +371,8 @@ export function EmbeddedReport (props: ReportProps) {
             '"__time"',
             '<',
             `'${convertDateTimeToSqlFormat(endDate)}'`,
-            ...(
-              isRA
-                ? ['AND', `'${userId}' = '${userId}'`, 'AND',
-                  `'${selectedTenant.id}' = '${selectedTenant.id}'`] // For RAI, selectedTenant id to cover supertenant use case
-                : ['AND', `'${tenantId}' = '${tenantId}'`,
-                  'AND', `'${externalId}' = '${externalId}'` ] // For R1, externalId is userId
-            )
+            'AND',
+            `'${uniqueQueryId}' = '${uniqueQueryId}'` // Tautology using unique query ID for cache differentiation
           ].join(' ')
         },
         ...(rlsClause || networkClause || radioBandClause
@@ -363,6 +413,7 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   const isR1RoleReadOnly = () => {
+    if (isCore) return true
     const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
     if (customRoleType === CustomRoleType.SYSTEM) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)

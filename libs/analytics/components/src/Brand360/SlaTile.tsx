@@ -13,6 +13,7 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { useBrand360Config }                       from '@acx-ui/analytics/services'
 import { Card }                                    from '@acx-ui/components'
 import { UpArrow, DownArrow, InformationOutlined } from '@acx-ui/icons'
 import { getUserProfile, isCoreTier }              from '@acx-ui/user'
@@ -93,10 +94,10 @@ const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | und
   return calculateMean(keys, currData)
 }
 
-const groupBySliceType = (type: SliceType, data?: Response[]) => {
+const groupBySliceType = (type: SliceType, lspLabel: string, data?: Response[]) => {
   if (!data || !data.length) return {}
   return type === 'lsp'
-    ? groupBy(transformToLspView(data), type)
+    ? groupBy(transformToLspView(data, lspLabel), type)
     : groupBy(transformToPropertyView(data), type)
 }
 
@@ -170,7 +171,8 @@ export function SlaTile ({
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
   const name = sliceType === 'lsp' ? lsp : property
-  const groupedData = groupBySliceType(sliceType, tableData)
+  const { names } = useBrand360Config()
+  const groupedData = groupBySliceType(sliceType, names.lsp, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
 

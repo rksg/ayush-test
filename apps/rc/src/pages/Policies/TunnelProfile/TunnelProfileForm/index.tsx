@@ -1,7 +1,6 @@
 
-import { Col, FormInstance, Row }   from 'antd'
-import { useIntl }                  from 'react-intl'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Col, FormInstance, Row } from 'antd'
+import { useNavigate }            from 'react-router-dom'
 
 import { PageHeader, StepsForm }               from '@acx-ui/components'
 import {
@@ -9,15 +8,13 @@ import {
 } from '@acx-ui/rc/components'
 import {
   CommonResult,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  LocationExtended,
+  usePolicyListBreadcrumb,
   PolicyOperation,
   PolicyType,
-  redirectPreviousPage,
-  TunnelProfileFormType as TunnelProfileFormTypeBase
+  TunnelProfileFormType as TunnelProfileFormTypeBase,
+  useAfterPolicySaveRedirectPath,
+  usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
 
 interface TunnelProfileFormProps {
   title: string
@@ -32,20 +29,14 @@ interface TunnelProfileFormProps {
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   // eslint-disable-next-line max-len
   const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode } = props
-  const { $t } = useIntl()
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.TUNNEL_PROFILE,
-    oper: PolicyOperation.LIST
-  })
-  const linkToTableView = useTenantLink(tablePath)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.TUNNEL_PROFILE)
+  const previousPath = usePolicyPreviousPath(PolicyType.TUNNEL_PROFILE, PolicyOperation.LIST)
 
   const handleFinish = async (data: TunnelProfileFormTypeBase) => {
     try{
       await onFinish(data)
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+      navigate(redirectPathAfterSave, { replace: true })
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -55,22 +46,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     <>
       <PageHeader
         title={title}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={usePolicyListBreadcrumb(PolicyType.TUNNEL_PROFILE)}
       />
       <StepsForm
         form={form}
         onFinish={handleFinish}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
+        onCancel={() => navigate(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
         initialValues={initialValues}
         editMode={editMode}

@@ -206,7 +206,7 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
           key: 'wired.network_control_services',
           children: [
             {
-              title: $t({ defaultMessage: 'Web Authority' }),
+              title: $t({ defaultMessage: 'PIN Portal for Switch' }),
               key: 'wired.network_control_services.web.authority'
             }
           ]

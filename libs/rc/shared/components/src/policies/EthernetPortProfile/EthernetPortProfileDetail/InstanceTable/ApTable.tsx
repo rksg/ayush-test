@@ -17,7 +17,7 @@ export const ApTable = (props: ApTableProps) => {
   const { apSerialNumbers } = props
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const [isApNumersLoading, setIsApNumbersLoading ] = useState(true)
+  const [isApNumbersLoading, setIsApNumbersLoading ] = useState(true)
   const defaultTablePayload = {
     fields: [
       'name',
@@ -39,7 +39,7 @@ export const ApTable = (props: ApTableProps) => {
     search: {},
     enableRbac: isWifiRbacEnabled,
     option: {
-      skip: isApNumersLoading
+      skip: isApNumbersLoading
     }
   })
 
