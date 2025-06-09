@@ -40,7 +40,6 @@ export enum Features {
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
   DATA_PLANE = 'dataPlane',
   DASHBOARD_NEW_API_TOGGLE = 'acx-ui-new-dashboard-apis-toggle',
-  DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EARLY_ACCESS_FEATURE_LIST_TOGGLE = 'acx-ui-selective-early-access-toggle',
