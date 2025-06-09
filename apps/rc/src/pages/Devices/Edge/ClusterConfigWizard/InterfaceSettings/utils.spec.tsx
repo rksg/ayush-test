@@ -1,5 +1,5 @@
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
+import userEvent        from '@testing-library/user-event'
+import _, { cloneDeep } from 'lodash'
 
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import {
@@ -972,6 +972,47 @@ describe('data transformer', () => {
         }
       }).filter(item => Boolean(item)),
       subInterfaceSettings: expectedSubInterfaceData
+    })
+  })
+
+  it('should empty sub-interface list when the port is marked as a lag member', () => {
+    const mockData = _.cloneDeep(mockGivenData)
+
+    // eslint-disable-next-line max-len
+    mockData.lagSettings[0].lags[0].portType = EdgePortTypeEnum.WAN
+    mockData.lagSettings[0].lags[0].corePortEnabled = true
+    mockData.lagSettings[0].lags[0].lagMembers = [{
+      portId: 'port_id_0',
+      portEnabled: true
+    }]
+    mockData.portSubInterfaces = mockSubInterfaceFormData.portSubInterfaces
+    mockData.lagSubInterfaces = mockSubInterfaceFormData.lagSubInterfaces
+    const result = transformFromFormToApiData(
+      mockData as unknown as InterfaceSettingsFormType,
+      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      true
+    )
+
+    const expectLags = getExpectLags(mockData.lagSettings, true)
+    const expectPorts = getExpectedPorts(mockData.portSettings, true)
+    const expectedSubInterfaceSettings = cloneDeep(expectedSubInterfaceData)
+    // eslint-disable-next-line max-len
+    expectedSubInterfaceSettings.find(item => item.serialNumber === mockData.lagSettings[0].serialNumber)!.ports
+      .find(item => item.portId === 'port_id_0')!.subInterfaces = []
+
+    expect(result).toStrictEqual({
+      lagSettings: expectLags,
+      portSettings: expectPorts,
+      multiWanSettings: undefined,
+      virtualIpSettings: mockData.vipConfig?.map(item => {
+        if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
+        return {
+          virtualIp: item.vip,
+          timeoutSeconds: mockData.timeout,
+          ports: item.interfaces
+        }
+      }).filter(item => Boolean(item)),
+      subInterfaceSettings: expectedSubInterfaceSettings
     })
   })
 })
