@@ -1661,7 +1661,10 @@ function PolicyRoutes () {
       {<>
         <Route
           path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
-          element={<EthernetPortProfile />}
+          element={isSwitchPortProfileEnabled
+            ? <TenantNavigate replace to={'policies/portProfile/wifi'} />
+            : <EthernetPortProfile />
+          }
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })}
@@ -1693,10 +1696,6 @@ function PolicyRoutes () {
               <CreatePortProfile />
             </AuthRoute>
           }
-        />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
-          element={<TenantNavigate replace to='policies/portProfile/wifi' />}
         />
         <Route
           path='policies/portProfile/:activeTab/'

@@ -15,6 +15,12 @@ export interface Workflow {
   statusReasons?: StatusReason[]
 }
 
+export interface WorkflowAssignment {
+  assignmentResourceType: string
+  assignmentResourceId: string
+  links: { rel: string, href: string }[]
+}
+
 export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED' | 'VALIDATE'
 
 export interface PublishDetail {
