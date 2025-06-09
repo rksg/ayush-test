@@ -14,7 +14,7 @@ import {
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import LanPortProfileDetailsDrawer from '.'
+import { LanPortProfileDetailsDrawer } from '.'
 
 const LanPortSetting = {
   poeMode: 'Auto',

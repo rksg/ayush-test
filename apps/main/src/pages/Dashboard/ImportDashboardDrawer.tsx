@@ -14,7 +14,6 @@ import {
   MoreVertical
 }                    from '@acx-ui/icons-new'
 import {
-  useCloneCanvasMutation,
   useDeleteCanvasMutation,
   useGetCanvasesQuery,
   useLazyGetCanvasesQuery,
@@ -28,8 +27,9 @@ import {
   MAXIMUM_DASHBOARD
 } from '../AICanvas/index.utils'
 
-import { DashboardMessages } from './index.utils'
-import * as UI               from './styledComponents'
+import { EditCanvasNameModal } from './EditCanvasNameModal'
+import { DashboardMessages }   from './index.utils'
+import * as UI                 from './styledComponents'
 
 enum TabKey {
   Owned = 'owned',
@@ -81,15 +81,16 @@ export const ImportDashboardDrawer = (props: {
   const [selectedItem, setSelectedItem] = useState({} as CanvasInfo)
   const [selectedCanvases, setSelectedCanvases] = useState<React.Key[]>([])
   const [searchText, setSearchText] = useState('')
+  const [editCanvasVisible, setEditCanvasVisible] = useState(false)
 
   const maximumImportCount = MAXIMUM_DASHBOARD - dashboardList.length
   const importedOwnedCanvasCount = dashboardList.filter(item => !item.authorId).length - 1
   const isCanvasLimitReached
     = (importedOwnedCanvasCount + ownedCanvasList.length) >= MAXIMUM_OWNED_CANVAS
+  const hasOnlyOneCanvas = importedOwnedCanvasCount === 0 && ownedCanvasList.length === 1
 
   const [ getCanvases, getCanvasesState ] = useLazyGetCanvasesQuery()
   const [ getCanvasById ] = useLazyGetCanvasByIdQuery()
-  const [ cloneCanvas ] = useCloneCanvasMutation()
   const [ deleteCanvas ] = useDeleteCanvasMutation()
 
   const getCanvasesQuery = useGetCanvasesQuery({
@@ -158,6 +159,13 @@ export const ImportDashboardDrawer = (props: {
     )
   }
 
+  const cloneCallback = async () => {
+    const { owned } = await getCanvasList()
+    setOwnedCanvasList(owned)
+    setSelectedCanvases([])
+    setActiveTab(TabKey.Owned)
+  }
+
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     switch (e.key) {
       case 'edit':
@@ -180,14 +188,7 @@ export const ImportDashboardDrawer = (props: {
         })
         break
       case 'clone':
-        await cloneCanvas({
-          params: { canvasId: selectedItem.id },
-          payload: {}
-        })
-        const { owned } = await getCanvasList()
-        setOwnedCanvasList(owned)
-        setSelectedCanvases([])
-        setActiveTab(TabKey.Owned)
+        setEditCanvasVisible(true)
         break
       default: // view
         await getCanvasById({
@@ -212,7 +213,7 @@ export const ImportDashboardDrawer = (props: {
     }, {
       label: $t({ defaultMessage: 'Delete' }),
       key: 'delete',
-      visible: isEditable
+      visible: isEditable && !hasOnlyOneCanvas
     }, {
       label: $t({ defaultMessage: 'Clone as Private Copy' }),
       key: 'clone',
@@ -324,7 +325,7 @@ export const ImportDashboardDrawer = (props: {
     }
   }, [canvasList, visible])
 
-  return <Drawer
+  return <><Drawer
     title={$t({ defaultMessage: 'Select Canvases for your Dashboards' })}
     width={420}
     onBackClick={props.onBackClick}
@@ -387,4 +388,13 @@ export const ImportDashboardDrawer = (props: {
       </Space>
     }
   />
+  {
+    editCanvasVisible && <EditCanvasNameModal
+      visible={editCanvasVisible}
+      handleCancel={()=> {setEditCanvasVisible(false)}}
+      editCanvas={selectedItem}
+      callback={cloneCallback}
+    />
+  }
+  </>
 }

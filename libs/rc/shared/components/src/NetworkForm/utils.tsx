@@ -443,7 +443,9 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
     case NetworkTypeEnum.AAA:
       return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+      return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
+        saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
+      )
   }
 
   return false
