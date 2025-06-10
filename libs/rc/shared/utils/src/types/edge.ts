@@ -665,6 +665,8 @@ export interface SubInterface {
   gateway?: string
 }
 
+export type EdgeInterface = EdgePort | EdgeLag | SubInterface
+
 export interface ClusterArpTerminationSettings {
   enabled: boolean
   agingTimeSec: number

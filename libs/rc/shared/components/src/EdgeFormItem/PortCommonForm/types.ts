@@ -1,6 +1,6 @@
 import { FormItemProps } from 'antd'
 
-import { EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeInterface, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 export interface formFieldsPropsType {
   [key: string]: FormItemProps & {
@@ -10,5 +10,7 @@ export interface formFieldsPropsType {
       value: EdgePortTypeEnum
     }[]
     disabled?: boolean,
+    // eslint-disable-next-line max-len
+    customValidator?: (currentInterfaceData: EdgeInterface, interfaceList?: EdgeInterface[]) => Promise<string | void>
   }
 }

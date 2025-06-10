@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { Form, Space }             from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, findIndex } from 'lodash'
-import { useIntl }                 from 'react-intl'
+import { Form, Space }                  from 'antd'
+import TextArea                         from 'antd/lib/input/TextArea'
+import _, { cloneDeep, findIndex, get } from 'lodash'
+import { useIntl }                      from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -273,6 +273,29 @@ export const LagDrawer = (props: LagDrawerProps) => {
         existedLag.id !== data?.id)) // keep the edit mode data as a selection
   }
 
+  const natPoolClusterLevelValidator = () => {
+    const currentData = form.getFieldsValue(true) as EdgeLag
+    const updatedLagList = getMergedLagData(existedLagList, currentData)
+    // eslint-disable-next-line max-len
+    return get(formFieldsProps, 'natStartIp')?.customValidator?.(currentData, updatedLagList)
+  }
+
+  const gatewayCheckFromNodeLevel = () => {
+    const currentData = form.getFieldsValue(true) as EdgeLag
+    const updatedLagList = getMergedLagData(existedLagList, currentData)
+
+    const dryRunPorts = cloneDeep(portList ?? [])
+    currentData.lagMembers.forEach(member => {
+      const idx = findIndex(dryRunPorts, { id: member.portId })
+      if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
+    })
+
+    return validateEdgeGateway(
+      dryRunPorts, updatedLagList, subInterfaceList,
+      isDualWanEnabled, isEdgeCoreAccessSeparationReady
+    )
+  }
+
   const drawerContent = <Form
     layout='vertical'
     form={form}
@@ -346,17 +369,22 @@ export const LagDrawer = (props: LagDrawerProps) => {
       shouldUpdate={(prev, cur) => forceUpdateCondition(prev, cur)}
     >
       {({ getFieldsValue }) => {
-        const allValues = getFieldsValue(true) as EdgeLag
+        const currentLagData = getFieldsValue(true) as EdgeLag
+        const updatedLagList = getMergedLagData(existedLagList, currentLagData)
 
         return <EdgePortCommonForm
           formRef={form}
           portsData={portList}
-          lagData={getMergedLagData(existedLagList, allValues)}
+          lagData={updatedLagList}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
-            ...formFieldsProps,
+            natStartIp: {
+              rules: isClusterWizard && get(formFieldsProps, 'natStartIp')
+                ? [{ validator: natPoolClusterLevelValidator }]
+                : undefined
+            },
             // we should ONLY apply Edge gateway validator on node level edit LAG
             // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {
@@ -364,19 +392,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
               disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
               rules: isClusterWizard
                 ? undefined
-                :[{ validator: () => {
-                  const dryRunPorts = cloneDeep(portList ?? [])
-                  allValues.lagMembers.forEach(member => {
-                    const idx = findIndex(dryRunPorts, { id: member.portId })
-                    if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
-                  })
-
-                  // eslint-disable-next-line max-len
-                  return validateEdgeGateway(
-                    dryRunPorts, getMergedLagData(existedLagList, allValues), subInterfaceList,
-                    isDualWanEnabled, isEdgeCoreAccessSeparationReady
-                  )
-                } }]
+                :[{ validator: gatewayCheckFromNodeLevel }]
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
