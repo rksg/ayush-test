@@ -490,7 +490,7 @@ export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: 
   if (!lagData) return []
 
   const lagWithGateways = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
     && (lag.portType === EdgePortTypeEnum.WAN
       || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? lag.accessPortEnabled : lag.corePortEnabled)))
   )
