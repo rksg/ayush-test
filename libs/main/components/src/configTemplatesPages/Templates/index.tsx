@@ -52,7 +52,6 @@ import { ConfigTemplateViewProps } from '..'
 
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
-import { ShowDriftsDrawer }                                 from './ShowDriftsDrawer'
 import {
   ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
   getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel,
@@ -62,7 +61,7 @@ import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
-  const { ApplyTemplateDrawer, AppliedToDrawer, appliedToColumn } = props
+  const { ApplyTemplateDrawer, AppliedToDrawer, ShowDriftsDrawer, appliedToColumn } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -230,6 +229,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         setVisible={setDetailsDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
+        ShowDriftsDrawer={ShowDriftsDrawer}
       />}
     </>
   )

@@ -8,12 +8,12 @@ import { ConfigTemplate }          from '@acx-ui/rc/utils'
 import { ConfigTemplateList } from './Templates'
 
 export * from './Wrappers'
-export { MAX_APPLICABLE_EC_TENANTS }                        from './constants'
-export *                                                    from './Overrides'
+export * from './constants'
+export * from './Overrides'
 
-export { CustomerFirmwareReminder } from './Templates/CustomerFirmwareReminder'
 export { useEcFilters }             from './Templates/templateUtils'
 export * as ConfigTemplatePageUI from './Templates/styledComponents'
+export { DriftInstance } from './Templates/ShowDriftsDrawer/DriftInstance'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void
@@ -23,6 +23,7 @@ export interface CommonConfigTemplateDrawerProps {
 export interface ConfigTemplateViewProps {
   ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   AppliedToDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  ShowDriftsDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   // eslint-disable-next-line max-len
   appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
 }
@@ -36,6 +37,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
       <ConfigTemplateList
         ApplyTemplateDrawer={props.ApplyTemplateDrawer}
         AppliedToDrawer={props.AppliedToDrawer}
+        ShowDriftsDrawer={props.ShowDriftsDrawer}
         appliedToColumn={props.appliedToColumn}
       />
     </>

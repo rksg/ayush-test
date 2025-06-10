@@ -7,12 +7,14 @@ import { getIntl, getOpsApi }                          from '@acx-ui/utils'
 
 import { AppliedToTenantDrawer } from './Templates/AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './Templates/ApplyTemplateDrawer'
+import { ShowDriftsDrawer }      from './Templates/ShowDriftsDrawer'
 
 
 export function ConfigTemplatePage () {
   return <ConfigTemplateView
     ApplyTemplateDrawer={ApplyTemplateDrawer}
     AppliedToDrawer={AppliedToTenantDrawer}
+    ShowDriftsDrawer={ShowDriftsDrawer}
     appliedToColumn={getAppliedToColumn()}
   />
 }

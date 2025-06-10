@@ -11,11 +11,6 @@ import { mockedMSPCustomerList } from '../../__tests__/fixtures'
 
 import { DetailsContent, DetailsItemList } from './DetailsContent'
 
-
-jest.mock('../ShowDriftsDrawer', () => ({
-  ShowDriftsDrawer: jest.fn(() => <div>Drift Drawer</div>)
-}))
-
 jest.mock('./ActivationViewer', () => ({
   ProtectedActivationViewer: jest.fn(() => <div>Activation Viewer</div>),
   ApGroupVenueViewer: jest.fn(() => <div>AP Group Venue</div>)
@@ -49,6 +44,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={mockTemplate}
         setAccessControlSubPolicyVisible={jest.fn()}
+        ShowDriftsDrawer={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 
@@ -67,6 +63,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, lastApplied: 1690598405000 }}
         setAccessControlSubPolicyVisible={jest.fn()}
+        ShowDriftsDrawer={() => <div>Drift Drawer</div>}
       />
     </Provider>, { route: { params, path } })
 
@@ -84,6 +81,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, isEnforced: true }}
         setAccessControlSubPolicyVisible={jest.fn()}
+        ShowDriftsDrawer={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 
@@ -99,6 +97,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, type: ConfigTemplateType.AP_GROUP }}
         setAccessControlSubPolicyVisible={jest.fn()}
+        ShowDriftsDrawer={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 

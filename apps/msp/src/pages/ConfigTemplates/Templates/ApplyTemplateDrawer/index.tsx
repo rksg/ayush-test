@@ -6,9 +6,9 @@ import { useIntl }        from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
-  ConfigTemplateOverrideModal, CustomerFirmwareReminder, MAX_APPLICABLE_EC_TENANTS,
+  ConfigTemplateOverrideModal, MAX_APPLICABLE_EC_TENANTS,
   overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
-  useConfigTemplateOverride, useEcFilters, ConfigTemplatePageUI,
+  useConfigTemplateOverride, useEcFilters,
   CommonConfigTemplateDrawerProps
 } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
@@ -18,9 +18,9 @@ import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/ut
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 import { AccountTier, AccountType }                          from '@acx-ui/utils'
 
-import HspContext from '../../../HspContext'
-
-import * as UI from './styledComponents'
+import HspContext                   from '../../../../HspContext'
+import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
+import * as UI                      from '../styledComponents'
 
 
 const mspUtils = MSPUtils()
@@ -159,11 +159,11 @@ export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
     { hasReachedTheMaxRecord() &&
-      <ConfigTemplatePageUI.Warning>{
+      <UI.Warning>{
         // eslint-disable-next-line max-len
         $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
       }
-      </ConfigTemplatePageUI.Warning>
+      </UI.Warning>
     }
     <Loader states={[tableQuery]}>
       <Table<MspEc>

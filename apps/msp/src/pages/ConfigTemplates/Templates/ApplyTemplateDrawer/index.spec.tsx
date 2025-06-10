@@ -5,13 +5,12 @@ import { ConfigTemplateType }         from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import HspContext                                          from '../../../HspContext'
-import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
+import HspContext                                               from '../../../../HspContext'
+import { mockedConfigTemplateList, mockedMSPCustomerList }      from '../../__tests__/fixtures'
+import { ApplyTemplateConfirmationDrawer, ApplyTemplateDrawer } from '../ApplyTemplateDrawer'
 
-import { ApplyTemplateConfirmationDrawer, ApplyTemplateDrawer } from './ApplyTemplateDrawer'
-
-jest.mock('@acx-ui/main/components', () => ({
-  ...jest.requireActual('@acx-ui/main/components'),
+jest.mock('../CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('../CustomerFirmwareReminder'),
   CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
 }))
 

@@ -10,7 +10,7 @@ import { AccessControlSubPolicyVisibility }                            from '@ac
 import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                               from '@acx-ui/utils'
 
-import { ShowDriftsDrawer }                                                                                                                               from '../ShowDriftsDrawer'
+import { ConfigTemplateViewProps }                                                                                                                        from '../..'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
 import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
@@ -20,11 +20,12 @@ interface DetailsContentProps {
   template: ConfigTemplate
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  ShowDriftsDrawer: ConfigTemplateViewProps['ShowDriftsDrawer']
 }
 
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
-  const { template, setAccessControlSubPolicyVisible } = props
+  const { template, setAccessControlSubPolicyVisible, ShowDriftsDrawer } = props
   const dateFormatter = useFormatTemplateDate()
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)

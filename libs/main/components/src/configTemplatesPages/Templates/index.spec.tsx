@@ -14,8 +14,6 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 import { ConfigTemplateViewProps }                         from '..'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
-import { ShowDriftsDrawerProps } from './ShowDriftsDrawer'
-
 import { ConfigTemplateList } from '.'
 
 jest.mock('../constants', () => ({
@@ -29,16 +27,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => mockedLocation
-}))
-
-jest.mock('./ShowDriftsDrawer', () => ({
-  ...jest.requireActual('./ShowDriftsDrawer'),
-  ShowDriftsDrawer: (props: ShowDriftsDrawerProps) => {
-    return <div data-testid='ShowDriftsDrawer'>
-      <span>{props.selectedTemplate.name}</span>
-      <button onClick={() => props.setVisible(false)}>Cancel</button>
-    </div>
-  }
 }))
 
 jest.mock('./DetailsDrawer', () => ({
@@ -83,6 +71,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -105,6 +94,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={() => <div>AppliedToDrawer</div>}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={{
             ...mockedAppliedToColumn,
             customRender: (_, cb) => {
@@ -141,6 +131,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -174,6 +165,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -204,6 +196,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -254,6 +247,7 @@ describe('ConfigTemplateList component', () => {
           <ConfigTemplateList
             ApplyTemplateDrawer={jest.fn()}
             AppliedToDrawer={jest.fn()}
+            ShowDriftsDrawer={jest.fn()}
             appliedToColumn={mockedAppliedToColumn}
           />
         </ConfigTemplateContext.Provider>
@@ -285,6 +279,14 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={(props: { setVisible: (visible: boolean) => void }) => {
+            return <>
+              <div>ShowDriftsDrawer</div>
+              <Button type='link' onClick={() => { props.setVisible(false) }}>
+                CancelDriftsDrawer
+              </Button>
+            </>
+          }}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -300,14 +302,14 @@ describe('ConfigTemplateList component', () => {
 
     // Display Show Drifts by clicking the row action
     await userEvent.click(await screen.findByRole('button', { name: /Show Drifts/ }))
-    const showDriftsDrawer = await screen.findByTestId('ShowDriftsDrawer')
+    expect(screen.getByText('ShowDriftsDrawer')).toBeInTheDocument()
 
-    await userEvent.click(within(showDriftsDrawer).getByRole('button', { name: /Cancel/i }))
-    expect(screen.queryByTestId('ShowDriftsDrawer')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /CancelDriftsDrawer/ }))
+    expect(screen.queryByText('ShowDriftsDrawer')).not.toBeInTheDocument()
 
     // Display Show Drifts by clicking the in-row link
     await userEvent.click(within(row).getByRole('button', { name: /Drift Detected/ }))
-    expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
+    expect(screen.getByText('ShowDriftsDrawer')).toBeInTheDocument()
   })
 
   it('should show details drawer', async () => {
@@ -318,6 +320,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -341,6 +344,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={jest.fn()}
+          ShowDriftsDrawer={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
