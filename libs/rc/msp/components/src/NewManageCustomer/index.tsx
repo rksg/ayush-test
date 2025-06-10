@@ -188,6 +188,7 @@ export function NewManageCustomer () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -461,7 +462,7 @@ export function NewManageCustomer () {
   }, [techPartners])
 
   const setServiceTier = (serviceTier: MspEcTierEnum) => {
-    return isMDU ? MspEcTierEnum.Core
+    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
       : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
   }
 
