@@ -11,6 +11,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
+  defaultRichTextFormatValues,
   Button,
   Loader,
   PageHeader,
@@ -345,7 +346,7 @@ export function IotControllerForm () {
                       label={<>{$t({ defaultMessage: 'API Token' })}
                         <Tooltip.Question
                           title={// eslint-disable-next-line max-len
-                            <div><div>{$t({ defaultMessage: 'The path for API Token to copy from vRIoT controller is as below' })}</div><div><strong>vRIoT Admin Page -&gt Account -&gt API Token (Copy the Token)</strong></div><div>{$t({ defaultMessage: 'If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}</div></div>}
+                            $t({ defaultMessage: 'The path for API Token to copy from vRIoT controller is as below<br></br><b>vRIoT Admin Page -> Account -> API Token (Copy the Token)</b><br></br>If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' }, defaultRichTextFormatValues)}
                           placement='right'
                           iconStyle={{
                             width: 16,
