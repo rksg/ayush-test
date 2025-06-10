@@ -10,7 +10,7 @@ import {  useLazyGetActionByIdQuery } from '@acx-ui/rc/services'
 import {
   ActionType,
   ActionTypeTitle,
-  disablePreviewActionType,
+  DisablePreviewActionType,
   GenericActionData,
   useGetActionDefaultValueByType,
   WorkflowUrls
@@ -27,9 +27,11 @@ import {
   DisplayMessageSetting,
   DpskSettings,
   MacRegistrationSettings,
-  CertTemplateSettings
+  CertTemplateSettings,
+  SamlAuthSettings
 } from './WorkflowActionSettingForm'
-import { SamlAuthSettings } from './WorkflowActionSettingForm/SamlAuthSettings'
+
+
 
 export interface StepDrawerProps {
   isEdit: boolean,
@@ -75,7 +77,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     isError: isActionError
   } ] = useLazyGetActionByIdQuery()
 
-  const disablePreview = disablePreviewActionType.has(actionType)
+  const disablePreview = DisablePreviewActionType.has(actionType)
 
   useEffect(() => {
     formInstance.resetFields()

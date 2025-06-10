@@ -6,7 +6,7 @@ import {
   Node
 } from 'reactflow'
 
-import { ActionType, ActionTypeTitle, disablePreviewActionType, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionType, ActionTypeTitle, DisablePreviewActionType, WorkflowStep } from '@acx-ui/rc/utils'
 import { getIntl }                                                             from '@acx-ui/utils'
 
 
@@ -23,7 +23,7 @@ function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedI
   const dataNodes:DataNode[] = []
   const { $t } = getIntl()
   nodes.filter(node => node.type !== 'START' as ActionType
-  && !disablePreviewActionType.has(node.type as ActionType))
+  && !DisablePreviewActionType.has(node.type as ActionType))
     .forEach(node => {
       dataNodes.push(
         {

@@ -12,7 +12,7 @@ import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepById
 import {
   ActionType,
   ActionTypeTitle,
-  disablePreviewActionType,
+  DisablePreviewActionType,
   MaxAllowedSteps,
   MaxTotalSteps,
   StepStatusCodes,
@@ -132,7 +132,7 @@ export default function BaseStepNode (props: NodeProps
     setIsPreviewOpen(false)
   }
 
-  const disablePreviewTooltip = disablePreviewActionType.has(props.type as ActionType)
+  const disablePreviewTooltip = DisablePreviewActionType.has(props.type as ActionType)
 
   const stepToolBar = (
     <Space size={12} direction={'horizontal'}>
