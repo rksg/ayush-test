@@ -20,6 +20,8 @@ const defaultClientPagination = {
   pageSize: TABLE_MAX_PAGE_SIZE
 }
 
+export const MAX_CLIENTS_PER_PAGE = 1000
+
 const onboardingTypesMapping: { [key: string]: string } = {
   'dpsk': 'DPSK',
   'OpenNetwork': 'Open Network',
@@ -54,7 +56,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const tableQuery = usePollingTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
-    pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
+    pagination: { pageSize: MAX_CLIENTS_PER_PAGE },  // Design intent: Only show 1000 clients
     sorter: {
       sortField: 'updatedAt',
       sortOrder: 'DESC'
