@@ -60,9 +60,9 @@ export const EnhancedGeneralSettingsForm = () => {
 
   return (
     <Row>
-      <Col span={10}>
+      <Col span={12}>
         <Row gutter={20}>
-          <Col span={20}>
+          <Col span={18}>
             <StepsForm.Title>{$t({ defaultMessage: 'General Settings' })}</StepsForm.Title>
             <Form.Item
               name='name'
@@ -82,7 +82,7 @@ export const EnhancedGeneralSettingsForm = () => {
         {
           isL2GreEnabled ?
             <Row gutter={20} align='middle'>
-              <Col span={20} >
+              <Col span={18} >
                 <Form.Item
                   name='vxlanTunnelProfileId'
                   label={$t({ defaultMessage: 'Tunnel Profile' })}
@@ -115,7 +115,7 @@ export const EnhancedGeneralSettingsForm = () => {
                 </Col>
               </Row>
               <Row gutter={20}>
-                <Col span={20}>
+                <Col span={18}>
                   <Form.Item
                     name='venueId'
                     label={
