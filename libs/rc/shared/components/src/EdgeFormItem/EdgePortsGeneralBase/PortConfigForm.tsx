@@ -8,7 +8,7 @@ import TextArea    from 'antd/lib/input/TextArea'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { EdgeClusterStatus, EdgeIpModeEnum, EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
@@ -24,6 +24,7 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   disabled?: boolean,
   clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]
+  isSupportAccessPort?: boolean
 }
 
 const { useWatch, useFormInstance } = Form
@@ -39,7 +40,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     disabled,
     formFieldsProps,
     subInterfaceList = [],
-    clusterInfo
+    clusterInfo,
+    isSupportAccessPort
   } = props
 
   const { $t } = useIntl()
@@ -49,12 +51,13 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     return [
       // eslint-disable-next-line max-len
       ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
-        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+        .map(lag => ({ id: lag.id, ip: lag.ip!, subnetMask: lag.subnet! })),
       // eslint-disable-next-line max-len
       ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
-          ip: subInterface.ip ?? '',
-          subnetMask: subInterface.subnet ?? ''
+          id: subInterface.id ?? '',
+          ip: subInterface.ip!,
+          subnetMask: subInterface.subnet!
         }))
     ]
   }, [lagData, subInterfaceList])
@@ -117,18 +120,24 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 ? _.get(form.getFieldsValue(true), portsDataRootPath)
                 : form.getFieldsValue(true)
 
+              const portsData = _.flatten(Object.values(allPortsValues)) as EdgePort[]
+              // eslint-disable-next-line max-len
+              const portsToBeValidated = portsData.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
+                .map(port => ({ id: port.id, ip: port.ip, subnetMask: port.subnet }))
+
               return <EdgePortCommonForm
                 formRef={form}
-                portsData={_.flatten(Object.values(allPortsValues))}
+                portsData={portsData}
                 lagData={lagData}
                 isEdgeSdLanRun={isEdgeSdLanRun}
                 formListItemKey={formListItemKey}
                 fieldHeadPath={fieldHeadPath}
                 portsDataRootPath={portsDataRootPath}
-                formListID={id}
                 formFieldsProps={formFieldsProps}
-                subnetInfoForValidation={subnetInfoForValidation}
+                subnetInfoForValidation={subnetInfoForValidation.concat(portsToBeValidated)}
                 clusterInfo={clusterInfo}
+                subInterfaceList={subInterfaceList}
+                isSupportAccessPort={isSupportAccessPort}
               />
             }}
           </Form.Item>

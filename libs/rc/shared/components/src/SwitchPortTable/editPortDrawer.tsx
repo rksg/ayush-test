@@ -63,14 +63,19 @@ import {
   SwitchUrlsInfo,
   isFirmwareVersionAbove10010gOr10020b,
   isFirmwareVersionAbove10010gCd1Or10020bCd1,
-  useTableQuery
+  useTableQuery,
+  SchedulerTypeEnum,
+  PoeSchedulerType,
+  allMultipleEditableFields,
+  PolicyType,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { store }              from '@acx-ui/store'
-import { MacACLDrawer }       from '@acx-ui/switch/components'
-import { SwitchScopes }       from '@acx-ui/types'
-import { hasPermission }      from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { store }                             from '@acx-ui/store'
+import { MacACLDrawer, PoeSchedule }         from '@acx-ui/switch/components'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import {
   AuthenticationType,
@@ -153,17 +158,6 @@ const poePriorityOptions = [
   { label: '3', value: 3 }
 ]
 
-export const allMultipleEditableFields = [
-  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
-  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
-  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
-  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl'
-]
-
 interface ProfileVlans {
   tagged: string[],
   untagged: string,
@@ -232,7 +226,9 @@ export function EditPortDrawer ({
     authTimeoutAction,
     authTimeoutActionCheckbox,
     criticalVlanCheckbox,
-    portSecurity
+    portSecurity,
+    poeScheduler,
+    poeSchedulerCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -247,6 +243,7 @@ export function EditPortDrawer ({
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -320,6 +317,9 @@ export function EditPortDrawer ({
   const [drawerMACAclVisible, setDrawerMACAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
   const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
+  const [drawerPoeSchedule, setDrawerPoeSchedule] = useState(false)
+  const [poeScheduleData, setPoeScheduleData] = useState({} as PoeSchedulerType)
+  const [multiPoeScheduleData, setMultiPoeScheduleData] = useState([] as PoeSchedulerType[])
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -335,10 +335,13 @@ export function EditPortDrawer ({
   useLazyPortProfileOptionsForMultiSwitchesQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
+  const authenticationBreadcrumb = usePolicyListBreadcrumb(PolicyType.FLEX_AUTH)
+  const authenticationPath = authenticationBreadcrumb.map(item => item.text).join(' --> ')
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity,
+    poeScheduler
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -664,6 +667,7 @@ export function EditPortDrawer ({
     setCyclePoeEnable(portSetting.poeEnable)
     setAggregatePortsData(aggregatedData as AggregatePortSettings)
     setIsAppliedAuthProfile(!!portSetting.authenticationProfileId)
+    setPoeScheduleData(portSetting?.poeScheduler || {})
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -741,6 +745,8 @@ export function EditPortDrawer ({
     setLldpQosList(portSetting?.lldpQos ?? [])
     setPortEditStatus('')
     setIsAppliedAuthProfile(!hasMultipleValueFields?.includes('authenticationProfileId'))
+    setMultiPoeScheduleData(
+      portsSetting?.map(s => s?.poeScheduler).filter(s => s !== undefined) as PoeSchedulerType[])
 
     form.setFieldsValue({
       ...portSetting,
@@ -767,10 +773,13 @@ export function EditPortDrawer ({
         return isCloudPort ? $t({ defaultMessage: 'Uplink port cannot be disabled' }) : ''
       case 'poeEnable':
         return disablePoeCapability
-          ? (isMultipleEdit
+          ? (isSwitchTimeBasedPoeEnabled ? (isMultipleEdit
+            ? $t(MultipleEditPortMessages.POE_CAPABILITY_SCHEDULE_DISABLE)
+            : $t(EditPortMessages.POE_CAPABILITY_SCHEDULE_DISABLE)
+          ) : (isMultipleEdit
             ? $t(MultipleEditPortMessages.POE_CAPABILITY_DISABLE)
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
-          ) : ''
+          )) : ''
       case 'useVenuesettings':
         return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
@@ -873,6 +882,8 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !checkboxEnabled) ||
             getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
               flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+      case 'poeScheduler':
+        return (isMultipleEdit && !poeSchedulerCheckbox) || disablePoeCapability
       default:
         return isMultipleEdit && !checkboxEnabled
     }
@@ -934,6 +945,7 @@ export function EditPortDrawer ({
         return !isFirmwareAbove10010gCd1Or10020bCd1
       case 'switchMacAcl':
         return !isFirmwareAbove10010gCd1Or10020bCd1 || isCloudPort
+      case 'poeScheduler': return disablePoeCapability
       default: return false
     }
   }
@@ -1105,7 +1117,7 @@ export function EditPortDrawer ({
       store.dispatch(
         switchApi.util.invalidateTags([
           { type: 'SwitchPort', id: 'LIST' },
-          { type: 'SwitchPort', id: 'Setting' }
+          { type: 'SwitchPort', id: 'SETTING' }
         ])
       )
       onClose()
@@ -1380,6 +1392,35 @@ export function EditPortDrawer ({
     }
   }
 
+  const renderPoeScheduleStatus = () => {
+    if(multiPoeScheduleData.length > 0) {
+      const allCustomSchedule = multiPoeScheduleData.every(
+        schedule => schedule?.type === SchedulerTypeEnum.CUSTOM
+      )
+      const allNoSchedule = multiPoeScheduleData.every(
+        schedule => schedule?.type === SchedulerTypeEnum.NO_SCHEDULE
+      )
+      const sameCustomScheduleId = allCustomSchedule &&
+      multiPoeScheduleData.every(
+        schedule => schedule?.id === multiPoeScheduleData[0]?.id
+      )
+
+      if (sameCustomScheduleId) {
+        return $t({ defaultMessage: 'Custom Schedule' })
+      } else if (allNoSchedule) {
+        return noDataDisplay
+      } else {
+        return <MultipleText />
+      }
+    }else{
+      if(poeScheduler?.type === SchedulerTypeEnum.CUSTOM){
+        return $t({ defaultMessage: 'Custom Schedule' })
+      }else{
+        return noDataDisplay
+      }
+    }
+  }
+
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       {
@@ -1533,7 +1574,9 @@ export function EditPortDrawer ({
                 label={<>
                   {$t({ defaultMessage: 'Profile' })}
                   <Tooltip.Question
-                    title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
+                    title={
+                      $t(EditPortMessages.GUIDE_TO_AUTHENTICATION, { path: authenticationPath })
+                    }
                   />
                 </>}
                 validateFirst
@@ -2181,6 +2224,68 @@ export function EditPortDrawer ({
           />
         })}
 
+        {isSwitchTimeBasedPoeEnabled && <>
+          {getFieldTemplate({
+            field: 'poeScheduler',
+            extraLabel: isMultipleEdit ? true : false,
+            content: <Form.Item
+              noStyle
+              children={isMultipleEdit ?
+                <>
+                  <span data-testid='poe-multiple-schedule-status'>
+                    {renderPoeScheduleStatus()}</span>
+                  <Button
+                    hidden={!poeSchedulerCheckbox}
+                    type='link'
+                    data-testid='edit-poe-schedule'
+                    onClick={() => {
+                      setPoeScheduleData({
+                        type: SchedulerTypeEnum.CUSTOM,
+                        sun: '111111111111111111111111',
+                        mon: '111111111111111111111111',
+                        tue: '111111111111111111111111',
+                        wed: '111111111111111111111111',
+                        thu: '111111111111111111111111',
+                        fri: '111111111111111111111111',
+                        sat: '111111111111111111111111'
+                      })
+                      setDrawerPoeSchedule(true) }}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    {$t({ defaultMessage: 'Edit' })}
+                  </Button>
+                </>
+                : <Space>
+                  <Form.Item
+                    label={$t({ defaultMessage: 'PoE Schedule' })}
+                    labelCol={{ span: 24 }}
+                    children={<Space style={{ fontSize: '12px' }}>
+                      <span data-testid='poe-schedule-status'>
+                        {poeScheduler?.type === SchedulerTypeEnum.NO_SCHEDULE ?
+                          noDataDisplay : $t({ defaultMessage: 'Custom Schedule' })}</span>
+                      <Button
+                        type='link'
+                        data-testid='edit-poe-schedule'
+                        onClick={() => {
+                          if(poeScheduler){
+                            setPoeScheduleData(poeScheduler)
+                          }
+                          setDrawerPoeSchedule(true) }}
+                        disabled={getFieldDisabled('poeEnable') && getFieldDisabled('poeScheduler')}
+                      >
+                        {$t({ defaultMessage: 'Edit' })}
+                      </Button>
+                    </Space>
+                    }
+                  />
+                </Space>
+              }
+            />
+          })}
+          <Form.Item name='poeScheduler' hidden/>
+        </>
+        }
+
         { getFieldTemplate({
           field: 'poeClass',
           content: <Form.Item
@@ -2762,7 +2867,17 @@ export function EditPortDrawer ({
         vlansOptions={vlansOptions}
       />}
 
-
+      { drawerPoeSchedule &&
+        <PoeSchedule
+          form={form}
+          visible={drawerPoeSchedule}
+          setVisible={setDrawerPoeSchedule}
+          venueId={switchDetail?.venueId}
+          poeScheduler={poeScheduleData}
+          setMultiPoeScheduleData={setMultiPoeScheduleData}
+          readOnly={false}
+        />
+      }
       {/* { // TODO: enhance ^_^?
         addProfileDrawerVisible && <Drawer
         title={$t({ defaultMessage: 'Add Profile' })}

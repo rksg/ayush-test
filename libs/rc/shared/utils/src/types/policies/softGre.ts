@@ -32,6 +32,8 @@ export interface SoftGreViewData {
   activations: SoftGreActivation[]
   venueActivations: ProfileLanVenueActivations[]
   apActivations: ProfileLanApActivations[]
+  gatewayFailbackEnabled?: boolean
+  gatewaySecondaryToPrimaryTimer?: number
 }
 
 export interface VenueTableUsageBySoftGre extends SoftGreActivation {

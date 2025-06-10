@@ -24,8 +24,7 @@ import {
   Regions,
   URLProtocolRegExp,
   AuthRadiusEnum,
-  WisprPage,
-  GuestPortal
+  WisprPage
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -180,12 +179,6 @@ export function WISPrForm () {
     }
   }
 
-  const configureRedirectUrlDetails = (guestPortal?: GuestPortal) => {
-    if (guestPortal?.redirectUrl) {
-      form.setFieldValue('redirectCheckbox', true)
-    }
-  }
-
   const isEditDataNotReady = (): boolean => {
     return !(editMode || cloneMode) || !data || !externalProviders
   }
@@ -221,7 +214,6 @@ export function WISPrForm () {
     configureAuthRadiusDetails(existingData.guestPortal?.wisprPage)
     configureAccountingRadiusDetails(existingData)
     configureAuthTypeDetails(existingData.guestPortal?.wisprPage)
-    configureRedirectUrlDetails(existingData.guestPortal)
     configureProviderDetails(externalProviders!, existingData.guestPortal?.wisprPage)
 
     isDataPopulatedRef.current = true

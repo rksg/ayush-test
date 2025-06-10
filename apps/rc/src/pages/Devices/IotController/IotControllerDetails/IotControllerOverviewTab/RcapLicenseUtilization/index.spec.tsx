@@ -27,7 +27,7 @@ describe('RcapLicenseUtilization Widget', () => {
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_PHASE_2_TOGGLE)
   it('should render donut chart', async () => {
     mockServer.use(
-      rest.get(IotUrlsInfo.getIotControllerDashboard.url,
+      rest.get(IotUrlsInfo.getIotControllerLicenseStatus.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
 
@@ -51,7 +51,7 @@ describe('RcapLicenseUtilization Widget', () => {
 
   it('should render "No RCAP License Utilization" when no data exist', async () => {
     mockServer.use(
-      rest.get(IotUrlsInfo.getIotControllerDashboard.url,
+      rest.get(IotUrlsInfo.getIotControllerLicenseStatus.url,
         (req, res, ctx) => res(ctx.json(noData)))
     )
     params = {

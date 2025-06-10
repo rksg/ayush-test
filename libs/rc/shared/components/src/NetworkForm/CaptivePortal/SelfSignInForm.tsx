@@ -163,9 +163,6 @@ export function SelfSignInForm () {
       if (data.guestPortal?.socialDomains?.[0]) {
         form.setFieldValue('allowedDomainsCheckbox', true)
       }
-      if (data.guestPortal?.redirectUrl) {
-        form.setFieldValue('redirectCheckbox', true)
-      }
       const allowedSignValueTemp = []
       if (data.guestPortal?.enableSmsLogin && !isRestEnableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')

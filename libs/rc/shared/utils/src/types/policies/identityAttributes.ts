@@ -1,0 +1,14 @@
+export enum IdentityAttributeMappingNameType {
+    DISPLAY_NAME = 'displayName',
+    FIRST_NAME = 'firstName',
+    LAST_NAME = 'lastName',
+    EMAIL = 'email',
+    ROLES = 'roles',
+    GROUPS = 'groups',
+    PHONE_NUMBER = 'phoneNumber'
+}
+
+export interface AttributeMapping {
+    name: IdentityAttributeMappingNameType
+    mappedByName: string
+}

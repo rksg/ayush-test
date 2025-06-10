@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom'
-import { Provider }                          from '@acx-ui/store'
-import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { Features, useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo }                  from '@acx-ui/msp/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { render, screen, fireEvent, within, mockServer } from '@acx-ui/test-utils'
 
 import { SelectRecCustomerDrawer } from './SelectRecCustomer'
 
@@ -17,7 +21,9 @@ const list = {
       billing_country: 'United States',
       billing_postal_code: '33172',
       billing_state: 'FL',
-      billing_street: '11275 Northwest 12th Street,'
+      billing_street: '11275 Northwest 12th Street,',
+      is_tenant_onboarded: true,
+      propertyCode: 'BNACD'
     },
     {
       account_name: 'Springhill Suites Las Vegas',
@@ -26,25 +32,38 @@ const list = {
       billing_country: 'United States',
       billing_postal_code: '95035',
       billing_state: 'CA',
-      billing_street: '1480 Falcon Drive'
+      billing_street: '1480 Falcon Drive',
+      is_tenant_onboarded: true,
+      propertyCode: 'ACBD'
+    },
+    {
+      account_name: 'Hillton Max Mumbai',
+      account_id: '0012J00002ZKO68QWE',
+      billing_city: 'Mumbai',
+      billing_country: 'India',
+      billing_postal_code: '00001',
+      billing_state: 'MH',
+      billing_street: '1480 Falcon Drive',
+      is_tenant_onboarded: false,
+      propertyCode: 'NYDV'
     }
   ]
 }
 
-const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/msp/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-}))
-
 describe('SelectRecCustomerDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    services.useGetAvailableMspRecCustomersQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
-    })
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
+    mockServer.use(
+      rest.get(MspRbacUrlsInfo.getAvailableMspRecCustomers.url, (req, res, ctx) => {
+        return res(ctx.json(list))
+      }),
+      rest.get(MspUrlsInfo.getAvailableMspRecCustomers.url, (req, res, ctx) => {
+        return res(ctx.json(list))
+      })
+    )
   })
   afterEach(() => {
     jest.clearAllMocks()
@@ -177,6 +196,32 @@ describe('SelectRecCustomerDrawer', () => {
       })
 
     await screen.findByText('Aloft Lexington')
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.child_accounts.length)
+  })
+
+  it('should highlight non onborded rec customers with *', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.DURGA_TENANT_CONVERSION_REC_TO_MSP_REC
+    )
+    render(
+      <Provider>
+        <SelectRecCustomerDrawer visible={true}
+          setVisible={jest.fn()}
+          setSelected={jest.fn()}
+          tenantId={params.tenantId}
+          multiSelectionEnabled={true} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
+      })
+
+    await screen.findByRole('cell',{ name: '* Hillton Max Mumbai' })
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!

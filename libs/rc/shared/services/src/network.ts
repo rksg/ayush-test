@@ -1595,15 +1595,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return response as ExternalProviders
       }
     }),
-    getCertificateTemplateNetworkBinding: build.query<CertificateTemplate, RequestPayload> ({
+    getCertificateTemplateNetworkBinding: build.query<TableResult<CertificateTemplate>, RequestPayload> ({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.queryCertificateTemplate, params)
         return {
           ...req
         }
-      },
-      transformResponse: (response: TableResult<CertificateTemplate>) => {
-        return response?.data[0]
       }
     }),
     getMacRegistrationPoolNetworkBinding: build.query<TableResult<MacRegistrationPool>, RequestPayload> ({
@@ -1622,6 +1619,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
         return {
           ...req
+        }
+      }
+    }),
+    deactivateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deactivateCertificateTemplate, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1819,6 +1825,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       query: ({ params }) => {
         const headers = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
+    }),
+    bindingWorkflowOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingWorkflowOnNetwork, params, headers)
         return {
           ...req
         }
@@ -2170,6 +2185,7 @@ export const {
   useGetCertificateTemplateNetworkBindingQuery,
   useGetMacRegistrationPoolNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
+  useDeactivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
@@ -2187,7 +2203,8 @@ export const {
   useVenueWifiRadioActiveNetworksQuery,
   useLazyVenueWifiRadioActiveNetworksQuery,
   useBindingPersonaGroupWithNetworkMutation,
-  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
+  useBindingWorkflowOnNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

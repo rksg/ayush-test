@@ -18,10 +18,9 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath,
-  useConfigTemplate,
-  getServiceRoutePath
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams, useNavigate, useTenantLink, Path } from '@acx-ui/react-router-dom'
+import { useParams, useNavigate } from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -43,10 +42,6 @@ export function DHCPForm (props: DHCPFormProps) {
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
-  const routeToList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.DHCP,
-    oper: ServiceOperation.LIST
-  }))
 
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
@@ -85,7 +80,7 @@ export function DHCPForm (props: DHCPFormProps) {
       }
       await saveOrUpdateDHCP({ params, payload, enableRbac: resolvedEnableRbac }).unwrap()
 
-      navigateToPreviousPage(true, routeToList)
+      navigateToPreviousPage(true)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -104,9 +99,8 @@ export function DHCPForm (props: DHCPFormProps) {
     })
   }
 
-  // eslint-disable-next-line max-len
-  const navigateToPreviousPage = (replaceCurrentPath = false, targetPath: string | Path = previousPath) => {
-    navigate(targetPath, {
+  const navigateToPreviousPage = (replaceCurrentPath = false) => {
+    navigate(previousPath, {
       replace: replaceCurrentPath,
       ...(returnParams ? { state: { from: { returnParams } } } : {})
     })

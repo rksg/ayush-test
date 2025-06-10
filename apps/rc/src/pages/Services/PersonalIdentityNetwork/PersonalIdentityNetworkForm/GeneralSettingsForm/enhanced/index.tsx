@@ -1,5 +1,5 @@
 
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
@@ -32,6 +32,11 @@ export const EnhancedGeneralSettingsForm = () => {
   const venueId = Form.useWatch('venueId', form) || form.getFieldValue('venueId')
   const tunnelProfileId = Form.useWatch('vxlanTunnelProfileId', form)
 
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    setCurrentTunnelProfileData(availableTunnelProfiles?.find(tunnelProfile => tunnelProfile.id === tunnelProfileId))
+  }, [tunnelProfileId, availableTunnelProfiles])
+
   const onVenueChange = (value: string) => {
     setVenueId(value)
     form.setFieldsValue({
@@ -45,8 +50,6 @@ export const EnhancedGeneralSettingsForm = () => {
     // eslint-disable-next-line max-len
     const clusterInfo = getClusterInfoByTunnelProfileId(value)
     setVenueId(clusterInfo?.venueId ?? '')
-    // eslint-disable-next-line max-len
-    setCurrentTunnelProfileData(availableTunnelProfiles?.find(tunnelProfile => tunnelProfile.id === value))
     form.setFieldsValue({
       venueId: clusterInfo?.venueId,
       edgeClusterId: clusterInfo?.clusterId,
@@ -57,9 +60,9 @@ export const EnhancedGeneralSettingsForm = () => {
 
   return (
     <Row>
-      <Col span={10}>
+      <Col span={12}>
         <Row gutter={20}>
-          <Col span={20}>
+          <Col span={18}>
             <StepsForm.Title>{$t({ defaultMessage: 'General Settings' })}</StepsForm.Title>
             <Form.Item
               name='name'
@@ -79,7 +82,7 @@ export const EnhancedGeneralSettingsForm = () => {
         {
           isL2GreEnabled ?
             <Row gutter={20} align='middle'>
-              <Col span={20} >
+              <Col span={18} >
                 <Form.Item
                   name='vxlanTunnelProfileId'
                   label={$t({ defaultMessage: 'Tunnel Profile' })}
@@ -112,7 +115,7 @@ export const EnhancedGeneralSettingsForm = () => {
                 </Col>
               </Row>
               <Row gutter={20}>
-                <Col span={20}>
+                <Col span={18}>
                   <Form.Item
                     name='venueId'
                     label={

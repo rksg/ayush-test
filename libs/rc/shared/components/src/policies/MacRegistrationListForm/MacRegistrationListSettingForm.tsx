@@ -175,7 +175,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               <Form.Item name='isUseSingleIdentity'
                 valuePropName='checked'
                 initialValue={false}
-                label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
+                // eslint-disable-next-line max-len
+                label={$t({ defaultMessage: 'Use single identity association to all onboarded devices' })}>
                 <Switch disabled={!identityGroupId}/>
               </Form.Item>
             </GridCol>

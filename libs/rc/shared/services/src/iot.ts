@@ -1,12 +1,16 @@
 import {
   onSocketActivityChanged,
   onActivityMessageReceived,
+  ActivePluginsData,
   CommonResult,
   TableResult,
+  RcapLicenseUtilizationData,
   IotControllerDashboard,
   IotControllerSetting,
   IotControllerStatus,
+  IotControllerVenues,
   IotSerialNumberResult,
+  SerialNumberExistsResult,
   IotUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseIotApi }     from '@acx-ui/store'
@@ -26,13 +30,14 @@ export const iotApi = baseIotApi.injectEndpoints({
           body: payload
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'IotController', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddIotController',
-            'DeleteIotController',
-            'UpdateIotController'
+            'Add IoT Controller',
+            'Delete IoT Controller',
+            'Update IoT Controller'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(iotApi.util.invalidateTags([{ type: 'IotController', id: 'LIST' }]))
@@ -63,10 +68,11 @@ export const iotApi = baseIotApi.injectEndpoints({
       providesTags: [{ type: 'IotController', id: 'DETAIL' }]
     }),
     updateIotController: build.mutation<IotControllerSetting, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(IotUrlsInfo.updateIotController, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'IotController', id: 'LIST' }]
@@ -92,16 +98,66 @@ export const iotApi = baseIotApi.injectEndpoints({
         }
       }
     }),
+    getIotControllerSerialNumber: build.query<SerialNumberExistsResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerSerialNumber, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenues: build.query<IotControllerVenues, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenues, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerVenueAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerVenueAssociations, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getIotControllerApAssociations: build.query<IotControllerStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IotUrlsInfo.getIotControllerApAssociations, params)
+        return {
+          ...req
+        }
+      }
+    }),
     refreshIotController: build.mutation<void, void>({
       queryFn: async () => {
         return { data: undefined }
       },
-      invalidatesTags: [{ type: 'IotController', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerLicenseStatus: build.query<RcapLicenseUtilizationData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerLicenseStatus, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
     }),
     iotControllerDashboard: build.query<IotControllerDashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(IotUrlsInfo.getIotControllerDashboard, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'IotController', id: 'Overview' }]
+    }),
+    iotControllerPlugins: build.query<ActivePluginsData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(IotUrlsInfo.getIotControllerPlugins, params),
           body: payload
         }
       },
@@ -119,6 +175,16 @@ export const {
   useUpdateIotControllerMutation,
   useDeleteIotControllerMutation,
   useTestConnectionIotControllerMutation,
+  useGetIotControllerSerialNumberQuery,
+  useLazyGetIotControllerSerialNumberQuery,
+  useGetIotControllerVenuesQuery,
+  useLazyGetIotControllerVenuesQuery,
+  useGetIotControllerVenueAssociationsQuery,
+  useLazyGetIotControllerVenueAssociationsQuery,
+  useGetIotControllerApAssociationsQuery,
+  useLazyGetIotControllerApAssociationsQuery,
   useRefreshIotControllerMutation,
-  useIotControllerDashboardQuery
+  useIotControllerLicenseStatusQuery,
+  useIotControllerDashboardQuery,
+  useIotControllerPluginsQuery
 } = iotApi

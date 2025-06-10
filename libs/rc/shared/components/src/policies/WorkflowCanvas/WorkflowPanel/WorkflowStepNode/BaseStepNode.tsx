@@ -1,17 +1,17 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Popover, Space }                                   from 'antd'
+import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
-import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
-import { useDeleteWorkflowStepAndDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
+import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
+import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                       from '@acx-ui/user'
-import { getOpsApi }                                                                 from '@acx-ui/utils'
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission }                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                                  from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -37,8 +37,21 @@ export default function BaseStepNode (props: NodeProps
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
   const [ deleteAndDetachStep, { isLoading: isDeleteDetachStepLoading }]
     = useDeleteWorkflowStepByIdV2Mutation()
-  const [ deleteStepAndDescendants, { isLoading: isDeleteStepAndDescendantsLoading }]
-    = useDeleteWorkflowStepAndDescendantsByIdMutation()
+  const [ deleteStepDescendants, { isLoading: isDeleteStepDescendantsLoading }]
+    = useDeleteWorkflowStepDescendantsByIdMutation()
+
+  const { isNodeValid, validationErrors } = useMemo(() => {
+    if(props.data?.statusReasons) {
+      // @ts-ignore
+      const validationErrors = props.data?.statusReasons.filter(
+        // @ts-ignore
+        reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+      return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
+    }
+
+    return { isNodeValid: true, validationErrors: undefined }
+
+  }, [props.data])
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -77,7 +90,7 @@ export default function BaseStepNode (props: NodeProps
     })
   }
 
-  const onDeleteStepClick = (deleteChildren:Boolean) => {
+  const onDeleteStepClick = (selectedKey:string) => {
     onPreviewClose()
     onHandleNode(props)
     stepDrawerState.onClose()
@@ -86,16 +99,18 @@ export default function BaseStepNode (props: NodeProps
       type: 'confirm',
       customContent: {
         action: 'DELETE',
-        entityName: $t({ defaultMessage: 'Step' }),
+        entityName: selectedKey === 'deleteStepDescendants' ?
+          $t({ defaultMessage: 'Action\'s Children' })
+          : $t({ defaultMessage: 'Action' }),
         entityValue: $t(ActionTypeTitle[props.type as ActionType])
-          ?? $t({ defaultMessage: 'Step' })
+          ?? $t({ defaultMessage: 'Action' })
       },
-      content: deleteChildren ?
-        $t({ defaultMessage: 'Do you want to delete this step and all of its children?' })
-        : $t({ defaultMessage: 'Do you want to delete this step?' }),
+      content: selectedKey === 'deleteStepDescendants' ?
+        $t({ defaultMessage: 'Do you want to delete all children of this action?' })
+        : $t({ defaultMessage: 'Do you want to delete this action?' }),
       onOk: () => {
-        deleteChildren ?
-          deleteStepAndDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
+        selectedKey === 'deleteStepDescendants' ?
+          deleteStepDescendants({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
           : deleteAndDetachStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
@@ -133,18 +148,17 @@ export default function BaseStepNode (props: NodeProps
         {workflowValidationEnhancementFFToggle ?
           <Popover
             zIndex={1000}
-            content={<Space size={12} direction={'vertical'}>
-              <UI.WhiteTextButton
-                size={'small'}
-                type={'link'}
-                onClick={() => onDeleteStepClick(false)}
-              >{$t({ defaultMessage: 'Delete step only' })}</UI.WhiteTextButton>
-              <UI.WhiteTextButton
-                size={'small'}
-                type={'link'}
-                onClick={() => onDeleteStepClick(true)}
-              >{$t({ defaultMessage: 'Delete step and children' })}</UI.WhiteTextButton>
-            </Space>}
+            content={
+              <UI.DeleteMenu
+                theme='dark'
+                selectable={false}
+                onClick={(e) => onDeleteStepClick(e.key)}
+                items={[
+                  { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Action Only' }) },
+                  { key: 'deleteStepDescendants',
+                    label: $t({ defaultMessage: 'Delete Action\'s Children' }) }
+                ]}
+              />}
             trigger={'hover'}
             placement={'bottomLeft'}
             color={'var(--acx-primary-black)'}
@@ -173,10 +187,11 @@ export default function BaseStepNode (props: NodeProps
 
 
   return (
-    <UI.StepNode selected={props.selected}>
+    <UI.StepNode selected={props.selected}
+      invalid={workflowValidationEnhancementFFToggle && !isNodeValid}>
       <Loader states={[
         { isLoading: false, isFetching: (isDeleteStepLoading
-          || isDeleteDetachStepLoading || isDeleteStepAndDescendantsLoading) }
+          || isDeleteDetachStepLoading || isDeleteStepDescendantsLoading) }
       ]}>
         {props.children}
       </Loader>
@@ -231,14 +246,29 @@ export default function BaseStepNode (props: NodeProps
         position={Position.Bottom}
       />
 
+      {(!isNodeValid && workflowValidationEnhancementFFToggle) &&
+        <Tooltip
+          showArrow={false}
+          align={{ offset: [10, 10] }}
+          // @ts-ignore
+          title={validationErrors?.map(reason =>
+            <Row>{ reason.statusReason }</Row>)}>
+          <UI.InvalidIcon>
+            <WarningCircleSolid />
+          </UI.InvalidIcon>
+        </Tooltip>
+      }
+
       {props.data.isStart &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <StartFlag />
         </UI.FlagIcon>
       }
 
       {props.data.isEnd &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <EndFlag />
         </UI.FlagIcon>
       }

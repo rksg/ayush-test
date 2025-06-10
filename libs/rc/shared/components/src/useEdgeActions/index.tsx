@@ -17,7 +17,6 @@ import { EdgeStatus, EdgeStatusEnum,
 import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
 export const useIsEdgeReady = () => {
   return useIsEdgeReadyFromUtils()
 }

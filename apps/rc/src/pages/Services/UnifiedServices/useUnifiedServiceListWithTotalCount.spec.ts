@@ -39,6 +39,22 @@ describe('useUnifiedServiceListWithTotalCount', () => {
         (_, res, ctx) => res(ctx.json({ totalCount: 1, data: [] }))
       ),
       rest.post(
+        AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 2, data: [] }))
+      ),
+      rest.post(
+        AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 3, data: [] }))
+      ),
+      rest.post(
+        AccessControlUrls.getDevicePolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 4, data: [] }))
+      ),
+      rest.post(
+        AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 5, data: [] }))
+      ),
+      rest.post(
         DHCPUrls.queryDhcpProfiles.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
@@ -67,5 +83,9 @@ describe('useUnifiedServiceListWithTotalCount', () => {
     // eslint-disable-next-line max-len
     const dhcpService = result.current.unifiedServiceListWithTotalCount.find(s => s.type === ServiceType.DHCP)
     expect(dhcpService).toBeUndefined()
+
+    // eslint-disable-next-line max-len
+    const aaaService = result.current.unifiedServiceListWithTotalCount.find(s => s.type === PolicyType.ACCESS_CONTROL)
+    expect(aaaService?.totalCount).toBe(15)
   })
 })

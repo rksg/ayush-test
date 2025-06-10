@@ -29,8 +29,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
   }
   const profileDetailPath = '/:tenantId/' + getPolicyRoutePath({
     type: PolicyType.FLEX_AUTH,
-    oper: PolicyOperation.DETAIL,
-    policyId: params.policyId
+    oper: PolicyOperation.DETAIL
   })
 
   beforeEach(() => {
@@ -72,7 +71,7 @@ describe('FlexibleAuthenticationDetail', ()=>{
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Authentication' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Port Authentication' })).toBeVisible()
   })
 
   it('should render correctly when some data fields are empty.', async () => {

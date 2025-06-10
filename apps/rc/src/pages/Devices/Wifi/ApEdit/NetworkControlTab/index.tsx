@@ -17,9 +17,10 @@ import { getOpsApi }            from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
-import { ApSnmp }        from './ApSnmp'
-import { IotController } from './IotContoller'
-import { MdnsProxy }     from './MdnsProxy/MdnsProxy'
+import { ApSnmp }          from './ApSnmp'
+import { IotController }   from './IotContoller'
+import { IotControllerV2 } from './IotControllerV2'
+import { MdnsProxy }       from './MdnsProxy/MdnsProxy'
 
 
 
@@ -41,6 +42,7 @@ export function NetworkControlTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
+  const isIotV2Enabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
 
   const activateMdnsProxyApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
   const deactivateMdnsProxyApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
@@ -94,7 +96,7 @@ export function NetworkControlTab () {
         </>
       )
     },
-    ...((isIotFeatureEnabled && isSupportIoT) ? [{
+    ...((isIotFeatureEnabled && isSupportIoT && !isIotV2Enabled) ? [{
       title: apIotTitle,
       content: (
         <>
@@ -102,6 +104,17 @@ export function NetworkControlTab () {
             { apIotTitle }
           </StepsFormLegacy.SectionTitle>
           <IotController isAllowEdit={isAllowEditApIot} />
+        </>
+      )
+    }]: []),
+    ...((isIotFeatureEnabled && isSupportIoT && isIotV2Enabled) ? [{
+      title: apIotTitle,
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle>
+            { apIotTitle }
+          </StepsFormLegacy.SectionTitle>
+          <IotControllerV2 isAllowEdit={isAllowEditApIot} />
         </>
       )
     }]: [])

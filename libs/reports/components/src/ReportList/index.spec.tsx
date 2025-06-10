@@ -57,7 +57,7 @@ describe('ReportList', () => {
     })
     render(<ReportList />, { route: { path, params } })
     expect(await screen.findByText('Business Insights')).toBeVisible()
-    expect(screen.queryByText('Reports')).toBeNull()
+    expect(screen.queryByText('Reports')).toBeVisible()
 
   })
 
@@ -124,11 +124,15 @@ describe('ReportList', () => {
       .toBe('Silver_AP Details')
     expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.CORE, true))
       .toBe('Access Points')
+    expect(getDataStudioReportName(ReportType.OVERVIEW, AccountTier.CORE, true))
+      .toBe('Silver_Overview')
   })
   it('should return correct embedDashboardName for non-Core tier', () => {
     expect(getDataStudioReportName(ReportType.AP_DETAIL, AccountTier.GOLD, true)).toBe('AP Details')
     expect(getDataStudioReportName(ReportType.ACCESS_POINT, AccountTier.GOLD,true))
       .toBe('Access Points')
+    expect(getDataStudioReportName(ReportType.OVERVIEW, AccountTier.GOLD, true))
+      .toBe('Overview')
 
   })
   it('should return correct embedDashboardName where FF toggle is disabled', () => {

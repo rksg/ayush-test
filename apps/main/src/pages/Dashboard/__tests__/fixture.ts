@@ -51,6 +51,7 @@ export const dashboardList = [
     name: 'Dashboard 3',
     content: '',
     author: 'dogdog dog',
+    authorId: 'author-id-1',
     visible: true,
     updatedDate: '2025-04-17T09:38:31.718+00:00',
     widgetCount: 0,

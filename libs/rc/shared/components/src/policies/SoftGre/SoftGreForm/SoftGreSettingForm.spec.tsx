@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { softGreApi }                                                        from '@acx-ui/rc/services'
 import { SoftGreUrls }                                                       from '@acx-ui/rc/utils'
 import { Path }                                                              from '@acx-ui/react-router-dom'
@@ -38,6 +39,7 @@ const user = userEvent.setup()
 describe('SoftGreSettingForm', () => {
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     mockServer.use(
       rest.post(
@@ -121,5 +123,99 @@ describe('SoftGreSettingForm', () => {
     await user.clear(secondaryGatewayField)
     await user.type(secondaryGatewayField,'128.0.0.1')
     expect(errMsg).not.toBeInTheDocument()
+  })
+
+  it('renders the Fallback to Primary Gateway toggle', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    expect(screen.getByText(/Fallback to Primary Gateway/i)).toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })).toBeInTheDocument()
+  })
+
+  it('shows Primary Availability Check Interval input when fallback is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
+    await user.click(toggle)
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('spinbutton', { name: 'Primary Availability Check Interval' })).toBeEnabled()
+  })
+
+  it('hides Primary Availability Check Interval input when fallback is disabled', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
+    user.click(toggle) // enable
+    user.click(toggle) // disable
+    expect(screen.queryByText(/Primary Availability Check Interval/i)).not.toBeInTheDocument()
+  })
+
+  it('validates Primary Availability Check Interval is between 60 and 1440', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const toggle = screen.getByRole('switch', { name: 'Fallback to Primary Gateway' })
+    await user.click(toggle)
+
+    // Find the interval input
+    const input = screen.getByRole('spinbutton', { name: 'Primary Availability Check Interval' })
+
+    // Try a value below the minimum
+    await user.clear(input)
+    await user.type(input, '30')
+    input.blur()
+    expect(await screen.findByText(/must be between 60 and 1440/i)).toBeInTheDocument()
+
+    // Try a value above the maximum
+    await user.clear(input)
+    await user.type(input, '2000')
+    input.blur()
+    expect(await screen.findByText(/must be between 60 and 1440/i)).toBeInTheDocument()
+
+    // Try a valid value
+    await user.clear(input)
+    await user.type(input, '120')
+    input.blur()
+    expect(screen.queryByText(/must be between 60 and 1440/i)).not.toBeInTheDocument()
   })
 })

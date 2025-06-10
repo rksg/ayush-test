@@ -37,9 +37,45 @@ export const IotUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'PATCH:/iotControllers/diagnosisCommands'
   },
+  getIotControllerSerialNumber: {
+    method: 'get',
+    url: '/iotControllers/serialNumber/:serialNumber',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/serialNumber/{id}'
+  },
+  getIotControllerVenues: {
+    method: 'get',
+    url: '/iotControllers/:iotId/venueIds',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}/venueIds'
+  },
+  getIotControllerVenueAssociations: {
+    method: 'get',
+    url: '/iotControllers/venueAssociations/:venueId',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/venueAssociations/{id}'
+  },
+  getIotControllerApAssociations: {
+    method: 'get',
+    url: '/iotControllers/apAssociations/:apId',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/apAssociations/{id}'
+  },
+  getIotControllerLicenseStatus: {
+    method: 'get',
+    url: '/iotControllers/:iotId/licenseStatus',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
+  },
   getIotControllerDashboard: {
     method: 'get',
     url: '/iotControllers/:iotId/dashboard',
+    newApi: true,
+    opsApi: 'GET:/iotControllers/{id}'
+  },
+  getIotControllerPlugins: {
+    method: 'get',
+    url: '/iotControllers/:iotId/plugins',
     newApi: true,
     opsApi: 'GET:/iotControllers/{id}'
   }

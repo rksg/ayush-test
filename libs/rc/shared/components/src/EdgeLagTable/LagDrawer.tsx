@@ -46,6 +46,7 @@ interface LagDrawerProps {
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
+  isSupportAccessPort?: boolean
 }
 
 const defaultFormValues = {
@@ -68,7 +69,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo
+    clusterInfo, isSupportAccessPort
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -92,15 +93,16 @@ export const LagDrawer = (props: LagDrawerProps) => {
     return [
       // eslint-disable-next-line max-len
       ...portList.filter(port => port.enabled && Boolean(port.ip) && Boolean(port.subnet) && port.ipMode === EdgeIpModeEnum.STATIC)
-        .map(port => ({ ip: port.ip, subnetMask: port.subnet })),
+        .map(port => ({ id: port.id, ip: port.ip, subnetMask: port.subnet })),
       // eslint-disable-next-line max-len
       ...existedLagList.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet) && lag.ipMode === EdgeIpModeEnum.STATIC)
-        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+        .map(lag => ({ id: lag.id, ip: lag.ip!, subnetMask: lag.subnet! })),
       // eslint-disable-next-line max-len
       ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet) && subInterface.ipMode === EdgeIpModeEnum.STATIC)
         .map(subInterface => ({
-          ip: subInterface.ip ?? '',
-          subnetMask: subInterface.subnet ?? ''
+          id: subInterface.id ?? '',
+          ip: subInterface.ip!,
+          subnetMask: subInterface.subnet!
         }))
     ]
   }, [portList, existedLagList, subInterfaceList])
@@ -108,7 +110,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   useEffect(() => {
     if(visible) {
       form.resetFields()
-      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList)
+      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList)
       const hasCorePortEnabled = !!corePortInfo.key
 
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
@@ -345,9 +347,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
         return <EdgePortCommonForm
           formRef={form}
-          fieldHeadPath={[]}
-          portsDataRootPath={[]}
-          formListItemKey=''
           portsData={portList}
           lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
@@ -369,7 +368,10 @@ export const LagDrawer = (props: LagDrawerProps) => {
                   })
 
                   // eslint-disable-next-line max-len
-                  return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
+                  return validateEdgeGateway(
+                    dryRunPorts, getMergedLagData(existedLagList, allValues), subInterfaceList,
+                    isDualWanEnabled, isEdgeCoreAccessSeparationReady
+                  )
                 } }]
             },
             corePortEnabled: {
@@ -381,6 +383,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
             }
           }}
           subnetInfoForValidation={subnetInfoForValidation}
+          subInterfaceList={subInterfaceList}
+          isSupportAccessPort={isSupportAccessPort}
         />
       }}
     </Form.Item>

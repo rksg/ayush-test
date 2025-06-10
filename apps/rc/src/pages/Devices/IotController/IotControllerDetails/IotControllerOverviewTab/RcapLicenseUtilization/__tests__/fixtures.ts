@@ -1,33 +1,11 @@
 const data = {
-  summary: {
-    aps: {
-      summary: {
-        online: 1,
-        offline: 1
-      },
-      totalCount: 2
-    },
-    rcapLicenseUtilization: {
-      summary: {
-        used: 1,
-        available: 1
-      },
-      totalCount: 2
-    }
-  }
+  requestId: '3b7304ad-4610-4ca7-b1d9-d6d05b7125f2',
+  rcapCountRequired: 0,
+  rcapCountAvailable: 1000000
 }
 
 const noData = {
-  summary: {
-    aps: {
-      summary: {},
-      totalCount: 0
-    },
-    rcapLicenseUtilization: {
-      summary: {},
-      totalCount: 0
-    }
-  }
+  requestId: '3b7304ad-4610-4ca7-b1d9-d6d05b7125f2'
 }
 
 export { data, noData }

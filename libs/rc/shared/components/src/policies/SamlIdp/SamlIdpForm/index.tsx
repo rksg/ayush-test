@@ -8,31 +8,28 @@ import { cloneDeep }                                          from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
-import { DeleteOutlined }                                         from '@acx-ui/icons'
 import { useGetServerCertificatesQuery }                          from '@acx-ui/rc/services'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
   SamlIdpProfileFormType,
   SamlIdpMessages,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   usePolicyListBreadcrumb,
   KeyUsages,
   ServerCertificate,
   KeyUsageType,
   HttpURLRegExp,
-  getSamlIdpAttributeMappingNameTypeOptions,
-  SamlIdpAttributeMappingNameType,
-  AttributeMapping
+  combineAttributeMappingsToData,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, useNavigate } from '@acx-ui/react-router-dom'
 
 import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
 import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
+import { IdentityAttributesInput }       from '../../IdentityAttributesInput'
 
-import { Description, ImportXMLFileDrawer } from './styledComponents'
+import { ImportXMLFileDrawer } from './styledComponents'
 
 interface SamlIdpFormProps {
     title: string
@@ -43,12 +40,6 @@ interface SamlIdpFormProps {
     isEditMode?: boolean
     isEmbedded?: boolean
   }
-
-export const excludedAttributeTypes = [
-  SamlIdpAttributeMappingNameType.DISPLAY_NAME,
-  SamlIdpAttributeMappingNameType.EMAIL,
-  SamlIdpAttributeMappingNameType.PHONE_NUMBER
-]
 
 export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const { $t } = useIntl()
@@ -61,14 +52,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
     isEmbedded = false
   } = props
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.SAML_IDP,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
+
+  const previousPath = usePolicyPreviousPath(PolicyType.SAML_IDP, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SAML_IDP)
+
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
 
   const [encryptCertFormVisible, setEncryptCertFormVisible] = useState(false)
@@ -77,12 +65,8 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const isSigningCertificateEnabled = useWatch('signingCertificateEnabled', formRef)
   const isEncryptionCertificateEnabled = useWatch('encryptionCertificateEnabled', formRef)
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
-  const attributeMappings = useWatch('attributeMappings', formRef)
 
   const fieldColSpan = isEmbedded ? 20 : 12
-
-  const maxMappingCount =
-    getSamlIdpAttributeMappingNameTypeOptions().length - excludedAttributeTypes.length // TODO: 3 for testing, should be 64 for production
 
   const { encryptionCertificateOptions, signingCertificateOptions } =
     useGetServerCertificatesQuery(
@@ -118,13 +102,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
 
-    handleCancel()
+    handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = () => {
-    (onCancel)?
-      onCancel() :
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+  const handleCancel = (prev: string | Path) => {
+    (onCancel) ? onCancel() : navigate(prev)
   }
 
   const handleImportRequest = (formData: FormData, values: object, content?: string)=> {
@@ -153,7 +135,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>
@@ -364,122 +346,10 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
           </Row>
           <Row>
             <Col span={fieldColSpan}>
-              <StepsForm.FieldLabel width={'280px'}>
-                {$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
-              </StepsForm.FieldLabel>
-
-              <Description>
-                {$t({ defaultMessage: 'Map user attributes from your IdP to identity attributes'+
-                    ' in RUCKUS One using the exact values from your IdP.'+
-                    ' Claim names are available in your IdP console.' })}
-              </Description>
-
-              <Form.Item
-                name='identityName'
-                label={
-                  <>
-                    {$t({ defaultMessage: 'Identity Name' })}
-                    <Tooltip.Question
-                      title={$t(SamlIdpMessages.IDENTITY_NAME)}
-                      placement='bottom'
-                      iconStyle={{ width: 16, height: 16 }}
-                    />
-                  </>
-                }
-                initialValue={$t({ defaultMessage: 'displayName' })}
-                rules={[{ max: 255 }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name='identityEmail'
-                label={$t({ defaultMessage: 'Identity Email' })}
-                initialValue={$t({ defaultMessage: 'email' })}
-                rules={[{ max: 255 }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name='identityPhone'
-                label={$t({ defaultMessage: 'Identity Phone' })}
-                initialValue={$t({ defaultMessage: 'phone' })}
-                rules={[{ max: 255 }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.List
-                name='attributeMappings'
-              >
-                {
-                  (fields, { add, remove }) => (
-                    <Row gutter={[16, 20]}>
-                      {
-                        fields.map((field, index) => (
-                          <Col key={`attribute-mapping-${field.key}`} span={24}>
-                            <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <StepsForm.FieldLabel width='280px'>
-                                {$t(
-                                  { defaultMessage: 'Identity Attribute {number}' },
-                                  { number: index + 1 }
-                                )}
-                              </StepsForm.FieldLabel>
-                              <Button
-                                type='link'
-                                onClick={() => remove(index)}
-                                icon={<DeleteOutlined />}
-                              />
-                            </Space>
-                            <Form.Item
-                              name={[index, 'name']}
-                              label={$t({ defaultMessage: 'Attribute Type' })}
-                              rules={[{ required: true }]}
-                            >
-                              <Select
-                                options={
-                                  getSamlIdpAttributeMappingNameTypeOptions()
-                                    .filter(option => {
-                                      const value = option.value as SamlIdpAttributeMappingNameType
-
-                                      if (excludedAttributeTypes.includes(value)) return false
-
-                                      const selectedTypes = attributeMappings
-                                        ?.map((mapping: AttributeMapping, i: number) => {
-                                          // Skip current row
-                                          if (i === index) return null
-                                          return mapping?.name
-                                        })
-                                        .filter(Boolean) ?? []
-                                      return !selectedTypes.includes(value)
-                                    })
-                                }
-                              />
-                            </Form.Item>
-                            <Form.Item
-                              {...field}
-                              name={[index, 'mappedByName']}
-                              label={$t({ defaultMessage: 'Claim Name' })}
-                              rules={[{ required: true }, { min: 1, max: 255 }]}
-                            >
-                              <Input />
-                            </Form.Item>
-                          </Col>
-                        ))
-                      }
-                      <Col span={24}>
-                        {fields.length < maxMappingCount &&
-                          <Button
-                            type='link'
-                            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-                            onClick={() => add()}
-                            children={$t({ defaultMessage: 'Add custom field' })}
-                          />
-                        }
-                      </Col>
-                    </Row>
-                  )
-                }
-              </Form.List>
+              <IdentityAttributesInput
+                fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
+                description={$t(SamlIdpMessages.IDENTITY_DESCRIPTION)}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -515,20 +385,6 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   }
   delete result.metadataContent
 
-  //Add three identity attributes to attributeMappings
-  const identityMappings = [
-    // eslint-disable-next-line max-len
-    result.identityName && { name: SamlIdpAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
-    // eslint-disable-next-line max-len
-    result.identityEmail && { name: SamlIdpAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
-    // eslint-disable-next-line max-len
-    result.identityPhone && { name: SamlIdpAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
-  ].filter(Boolean) as AttributeMapping[]
+  return combineAttributeMappingsToData(result)
 
-  result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
-  delete result.identityName
-  delete result.identityEmail
-  delete result.identityPhone
-
-  return result
 }

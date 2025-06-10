@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CertificateUrls, PolicyOperation, PolicyType, getPolicyRoutePath, PersonaUrls } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                                                       from '@acx-ui/react-router-dom'
-import { Provider }                                                                      from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor }                               from '@acx-ui/test-utils'
+import { CertificateUrls, PolicyOperation, PolicyType, getPolicyRoutePath, PersonaUrls, Persona } from '@acx-ui/rc/utils'
+import { Path, To, useTenantLink }                                                                from '@acx-ui/react-router-dom'
+import { Provider }                                                                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                                        from '@acx-ui/test-utils'
 
 import {
   certificateAuthorityList,
@@ -25,6 +25,32 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useTenantLink: (to: To): Path => {
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
+  }
+}))
+
+const mockPersona = {
+  id: 'test-id-123',
+  name: 'testccc-123',
+  email: 'test@example.com',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
+jest.mock('../../../../users/IdentitySelector/SelectPersonaDrawer', () => ({
+  SelectPersonaDrawer: ({ onCancel, onSubmit }: {
+    identityGroupId?: string,
+    identityId?: string,
+    onSubmit?: (persona?: Persona) => void,
+    onCancel?: () => void
+  }) => {
+    return (
+      <div role='dialog' data-testid='select-persona-drawer'>
+        <button onClick={() => onSubmit?.(mockPersona)}>
+          Submit
+        </button>
+        <button onClick={onCancel}>Cancel</button>
+      </div>
+    )
   }
 }))
 
@@ -68,10 +94,10 @@ describe('CertificateForm', () => {
     await userEvent.click(select)
     const certificateTemplate = await screen.findByText('certificateTemplate1')
     await userEvent.click(certificateTemplate)
-    const selectIdentity = screen.getByRole('combobox', { name: 'Identity' })
+    const selectIdentity = screen.getByTestId('identity-selector')
     await userEvent.click(selectIdentity)
-    const identity = await screen.findByText('testccc-123')
-    await userEvent.click(identity)
+    const submitButton = screen.getByText('Submit')
+    await userEvent.click(submitButton)
     await userEvent.click(screen.getByRole('combobox', { name: 'CSR Source' }))
     await userEvent.click(await screen.findByText('Copy & Paste CSR'))
     await userEvent.type(screen.getByLabelText('Certificate Signing Request'), 'testCSR')

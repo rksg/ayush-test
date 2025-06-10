@@ -30,7 +30,21 @@ export const mockDirectoryServerTable = {
         type: DirectoryServerProfileEnum.AD,
         host: 'ldap.test1.com',
         port: 636,
-        domainName: 'ou=mathematicians,dc=example,dc=com'
+        domainName: 'ou=mathematicians,dc=example,dc=com',
+        attributeMappings: [
+          {
+            name: 'displayName',
+            mappedByName: 'displayName'
+          },
+          {
+            name: 'email',
+            mappedByName: 'email'
+          },
+          {
+            name: 'phoneNumber',
+            mappedByName: 'phone'
+          }
+        ]
       },
       {
         id: '49d2173ae5d943daa454af8de40fd4d9',

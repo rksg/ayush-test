@@ -53,6 +53,7 @@ import PortalDetail                                from './pages/ConfigTemplates
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
+import Mdu360                                      from './pages/Mdu360'
 import { MspCustomers }                            from './pages/MspCustomers'
 import { MspRecCustomers }                         from './pages/MspRecCustomers'
 import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
@@ -155,6 +156,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
+      <Route path='mdu360/*' element={<Mdu360 />} />
       {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>

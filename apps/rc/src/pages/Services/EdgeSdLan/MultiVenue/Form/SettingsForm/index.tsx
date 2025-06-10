@@ -91,6 +91,7 @@ export const SettingsForm = () => {
       if (guestEdgeClusterId) {
       // eslint-disable-next-line max-len
         const guestEdgeClusterVenueId = clusterData.filter(i => i.clusterId === guestEdgeClusterId)[0].venueId
+        updateData.originGuestEdgeClusterVenueId = guestEdgeClusterVenueId
         updateData.guestEdgeClusterVenueId = guestEdgeClusterVenueId
       }
 

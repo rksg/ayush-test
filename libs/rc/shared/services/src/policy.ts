@@ -2670,7 +2670,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
 
           const apSnmpViewModelData = rbacApSnmpViewModels.map((profile) => {
-            const { communityNames, userNames, venueIds, apNames } = profile
+            const { communityNames, userNames, venueIds, apNames, apActivations } = profile
             const venueNames: string[] = []
             venueIds?.forEach(venueId => {
               const venueName = venueId && venueIdNameMap.get(venueId)
@@ -2685,7 +2685,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
               v2Agents: convertToCountAndNumber(communityNames),
               v3Agents: convertToCountAndNumber(userNames),
               venues: convertToCountAndNumber(venueNames),
-              aps: convertToCountAndNumber(apNames)
+              aps: convertToCountAndNumber(apNames),
+              venueIds: venueIds,
+              apActivations: apActivations
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>
@@ -3740,6 +3742,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
     }),
+    deleteServerCertificate: build.mutation<ServerCertificate, RequestPayload>({
+      query: ({ params }) => {
+        const headers = { ...defaultCertTempVersioningHeaders }
+        const req = createHttpRequest(CertificateUrls.deleteServerCertificate, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+    }),
     downloadServerCertificate: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -4046,6 +4058,7 @@ export const {
   useGenerateCertificateToIdentityMutation,
   useGetServerCertificatesQuery,
   useUpdateServerCertificateMutation,
+  useDeleteServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
   useGenerateClientServerCertificatesMutation,

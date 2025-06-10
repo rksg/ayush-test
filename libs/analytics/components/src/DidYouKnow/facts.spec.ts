@@ -10,10 +10,10 @@ describe('Facts data format', () => {
     const data = [{
       input: { prefix: 'value', values: ['0.3173076923076923'],
         valueFormatter: formatter('percentFormat') },
-      output: { value0: '<b>31.73%</b>' }
+      output: { value0: '<b>31.73%</b>', values: ['<b>31.73%</b>'], valuesSize: 1 }
     }, {
       input: { prefix: 'label', values: ['CIOT_WPA2'] },
-      output: { label0: '<b>CIOT_WPA2</b>' }
+      output: { label0: '<b>CIOT_WPA2</b>', labels: ['<b>CIOT_WPA2</b>'], labelsSize: 1 }
     }]
     data.forEach(({ input, output }) =>
       expect(
@@ -25,31 +25,52 @@ describe('Facts data format', () => {
   type Data = {
     input: {
       key: keyof typeof factsConfig,
-      options: object
+      options: Record<string, string[] | string | number>
     }
     output: string
   }
   const data: Data[] = [{
-    input: { key: 'topApplicationsByTraffic', options: {
-      label0: '<b>Youtube.com</b>',
-      label1: '<b>common-internet-file-system</b>',
-      label2: '<b>windows_update</b>'
-    } },
-    output: 'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>,'+
-    ' <b>common-internet-file-system</b> and <b>windows_update</b>.'
+    input: {
+      key: 'topApplicationsByTraffic',
+      options: {
+        label0: '<b>Youtube.com</b>',
+        label1: '<b>common-internet-file-system</b>',
+        label2: '<b>windows_update</b>',
+        labelsSize: 3,
+        labels: [
+          '<b>Youtube.com</b>',
+          '<b>common-internet-file-system</b>',
+          '<b>windows_update</b>'
+        ]
+      }
+    },
+    output: 'Top applications in terms of user traffic last week were <b>Youtube.com</b>,'+
+    ' <b>common-internet-file-system</b>, and <b>windows_update</b>.'
   }, {
-    input: { key: 'topApplicationsByClients', options: {
-      label0: '<b>dns</b>',
-      label1: '<b>google_api</b>',
-      label2: '<b>google_gen</b>'
-    } },
-    output: 'Top 3 applications in terms of users last week were <b>dns</b>,'+
-    ' <b>google_api</b> and <b>google_gen</b>.'
+    input: {
+      key: 'topApplicationsByClients',
+      options: {
+        label0: '<b>dns</b>',
+        label1: '<b>google_api</b>',
+        label2: '<b>google_gen</b>',
+        labelsSize: 3,
+        labels: [
+          '<b>dns</b>',
+          '<b>google_api</b>',
+          '<b>google_gen</b>'
+        ]
+      }
+    },
+    output: 'Top applications in terms of users last week were <b>dns</b>,'+
+    ' <b>google_api</b>, and <b>google_gen</b>.'
   }, {
-    input: { key: 'busiestSsidByClients', options: {
-      value0: '<b>32%</b>',
-      label0: '<b>CIOT_WPA2</b>'
-    } },
+    input: {
+      key: 'busiestSsidByClients',
+      options: {
+        value0: '<b>32%</b>',
+        label0: '<b>CIOT_WPA2</b>'
+      }
+    },
     output: 'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>,'+
     ' accounting for <b>32%</b> of total users.'
   }, {
@@ -58,13 +79,22 @@ describe('Facts data format', () => {
     } },
     output: 'The average session duration last week was <b>41 m 46 s</b>.'
   }, {
-    input: { key: 'topIncidentsZones', options: {
-      label0: '<b>760-AP</b>',
-      label1: '<b>Divya-1</b>',
-      label2: '<b>R760_AP_SV</b>'
-    } },
-    output: 'Top 3 zones with the highest number of incidents last week were '+
-    '<b>760-AP</b>, <b>Divya-1</b> and <b>R760_AP_SV</b>.'
+    input: {
+      key: 'topIncidentsZones',
+      options: {
+        label0: '<b>760-AP</b>',
+        label1: '<b>Divya-1</b>',
+        label2: '<b>R760_AP_SV</b>',
+        labelsSize: 3,
+        labels: [
+          '<b>760-AP</b>',
+          '<b>Divya-1</b>',
+          '<b>R760_AP_SV</b>'
+        ]
+      }
+    },
+    output: 'Top venues with highest number of incidents last week were '+
+    '<b>760-AP</b>, <b>Divya-1</b>, and <b>R760_AP_SV</b>.'
   }, {
     input: { key: 'userTrafficThroughAPs', options: {
       value0: '<b>97%</b>'
@@ -96,13 +126,18 @@ describe('Facts data format', () => {
     } },
     output: 'Average daily L3 authentication failure percentage last week was --.'
   }, {
-    input: { key: 'topIncidentsApGroups', options: {
-      label0: 'N/A',
-      label1: 'N/A',
-      label2: 'N/A'
-    } },
-    output: 'Top 3 AP groups with the highest number of incidents last week were'+
-    ' N/A, N/A and N/A.'
+    input: {
+      key: 'topIncidentsApGroups',
+      options: {
+        label0: 'N/A',
+        label1: 'N/A',
+        label2: 'N/A',
+        labelsSize: 3,
+        labels: ['N/A', 'N/A', 'N/A']
+      }
+    },
+    output: 'Top AP groups with highest number of incidents last week were'+
+    ' N/A, N/A, and N/A.'
   }]
   data.forEach(({ input, output }) => {
     const { result } = renderHook(() => formatText( useIntl(), input.options, input.key ))
@@ -188,10 +223,10 @@ describe('Facts data format', () => {
     /* eslint-disable max-len */
     const output = { current: {
       busiestSsidByTraffic: 'Most trafficked WLAN (user traffic) last week was <b>wp3</b>, accounting for <b>27%</b> of user traffic.',
-      topIncidentsZones: 'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b> and <b>R760_AP_SV</b>.',
-      topApplicationsByTraffic: 'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b> and <b>windows_update</b>.',
+      topIncidentsZones: 'Top venues with highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b>, and <b>R760_AP_SV</b>.',
+      topApplicationsByTraffic: 'Top applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b>, and <b>windows_update</b>.',
       userTrafficThroughAPs: '<b>96%</b> of user traffic went through 15% of APs last week.',
-      topApplicationsByClients: 'Top 3 applications in terms of users last week were <b>dns</b>, <b>google_api</b> and <b>google_gen</b>.',
+      topApplicationsByClients: 'Top applications in terms of users last week were <b>dns</b>, <b>google_api</b>, and <b>google_gen</b>.',
       airtimeUtilization: 'Average daily airtime utilization last week was 2.4 GHz: <b>53.8%</b>, 5 GHz: <b>10.09%</b>, and 6(5) GHz: <b>6.62%</b>, which is a change of 2.4 GHz: <b>-8.63%</b>, 5 GHz: <b>0.54%</b>, and 6(5) GHz: <b>-1.74%</b> compared to the previous week.',
       busiestSsidByClients: 'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b> of total users.',
       avgSessionDuration: 'The average session duration last week was <b>46 m 37 s</b>.'
@@ -280,11 +315,11 @@ describe('Facts data format', () => {
     /* eslint-disable max-len */
     const output = { current: {
       userTrafficThroughAPs: '<b>96%</b> of user traffic went through 15% of APs last week.',
-      topApplicationsByClients: 'Top 3 applications in terms of users last week were <b>dns</b>, <b>google_api</b> and <b>google_gen</b>.',
+      topApplicationsByClients: 'Top applications in terms of users last week were <b>dns</b>, <b>google_api</b>, and <b>google_gen</b>.',
       avgSessionDuration: 'The average session duration last week was <b>45 m 41 s</b>.',
       airtimeUtilization: 'Average daily airtime utilization last week was 2.4 GHz: <b>53.78%</b>, 5 GHz: <b>10.1%</b>, and 6(5) GHz: <b>6.64%</b>, which is a change of 2.4 GHz: <b>-8.62%</b>, 5 GHz: <b>0.6%</b>, and 6(5) GHz: <b>-1.74%</b> compared to the previous week.',
-      topIncidentsZones: 'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b> and <b>R760_AP_SV</b>.',
-      topApplicationsByTraffic: 'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b> and <b>windows_update</b>.',
+      topIncidentsZones: 'Top venues with highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b>, and <b>R760_AP_SV</b>.',
+      topApplicationsByTraffic: 'Top applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b>, and <b>windows_update</b>.',
       busiestSsidByClients: 'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b> of total users.',
       busiestSsidByTraffic: 'Most trafficked WLAN (user traffic) last week was <b>wp3</b>, accounting for <b>26%</b> of user traffic.'
     } }

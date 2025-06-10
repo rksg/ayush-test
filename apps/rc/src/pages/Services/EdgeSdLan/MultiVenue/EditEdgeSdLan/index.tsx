@@ -1,6 +1,6 @@
-import { Form }       from 'antd'
-import { omit, pick } from 'lodash'
-import { useIntl }    from 'react-intl'
+import { Form }                            from 'antd'
+import { cloneDeep, get, omit, pick, set } from 'lodash'
+import { useIntl }                         from 'react-intl'
 
 import { Loader, PageHeader, StepsFormGotoStepFn }               from '@acx-ui/components'
 import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
@@ -43,8 +43,9 @@ export const EditEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => {
+  const handleFinish = async (_: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => {
     try {
+      const formData = form.getFieldsValue(true) as EdgeMvSdLanFormModel
       if (formData.isGuestTunnelEnabled && !formData.guestTunnelProfileId) {
         gotoStep(1)
         return
@@ -53,12 +54,17 @@ export const EditEdgeSdLan = () => {
       const payload = {
         ...omit(edgeSdLanFormRequestPreProcess(formData), 'edgeClusterId'),
         id: params.serviceId,
+        ...pick(formData, ['edgeClusterVenueId', 'guestEdgeClusterVenueId']), // for RBAC API
         ...(formData.isGuestTunnelEnabled
           ? {} : pick(data, ['guestEdgeClusterId', 'guestTunnelProfileId', 'guestNetworks']))
       } as EdgeMvSdLanExtended
 
+      // for RBAC API
+      const originData = cloneDeep(data)
+      set(originData!, 'guestEdgeClusterVenueId', get(formData, 'originGuestEdgeClusterVenueId'))
+
       await new Promise(async (resolve, reject) => {
-        await editEdgeSdLan(data! as EdgeMvSdLanExtended, {
+        await editEdgeSdLan(originData! as EdgeMvSdLanExtended, {
           payload,
           callback: (result) => {
             // callback is after all RBAC related APIs sent

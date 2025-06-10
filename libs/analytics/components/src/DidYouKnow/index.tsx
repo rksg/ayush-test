@@ -6,6 +6,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Loader }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
@@ -30,9 +31,16 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const [offset, setOffset] = useState(0)
   const [loaded, setLoaded] = useState<string[]>([])
   const [content, setContent] = useState<Record<string, string>>({})
+  const userProfileR1 = getUserProfile()
+  const { accountTier } = userProfileR1 ?
+    userProfileR1 : { accountTier: undefined }
+
+  const isCore = isCoreTier(accountTier)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const factListQuery = useAvailableFactsQuery(filters)
-  const factsList = factListQuery.data
+  const factsList = (factListQuery.data ?? []).filter(factArray =>
+    !isCore || !factArray.includes('topApplicationsByClients')
+  )
   const factsQuery = useFactsQuery(factsList, loaded, offset, filters)
 
   useEffect(() => {

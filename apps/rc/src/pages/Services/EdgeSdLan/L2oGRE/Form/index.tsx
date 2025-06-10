@@ -5,11 +5,11 @@ import { FormInstance } from 'antd'
 
 import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import {
-  getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { EdgeSdLanContextProvider } from './EdgeSdLanContextProvider'
 import { NetworkActivationType }    from './NetworkSelectionForm/VenueNetworkTable/NetworksDrawer'
@@ -37,10 +37,8 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
   const isEditMode = Boolean(editData)
-  const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN,
-    oper: ServiceOperation.LIST
-  }))
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.EDGE_SD_LAN, ServiceOperation.LIST)
 
   useEffect(() => {
     if (isEditMode) {
@@ -54,7 +52,7 @@ const EdgeSdLanForm = (props: EdgeSdLanFormProps) => {
 
   return (<StepsForm
     form={form}
-    onCancel={() => navigate(linkToServiceList)}
+    onCancel={() => navigate(previousPath)}
     onFinish={handleFinish}
     editMode={isEditMode}
   >

@@ -7,13 +7,13 @@ import {
   ColumnType,
   Loader,
   PageHeader,
-  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { CountAndNamesTooltip }   from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteApSnmpPolicyMutation,
   useGetApSnmpViewModelQuery
 } from '@acx-ui/rc/services'
@@ -40,7 +40,8 @@ const rbacSnmpFields = [
   'userNames',
   'apSerialNumbers',
   'apNames',
-  'venueIds'
+  'venueIds',
+  'apActivations'
 ]
 
 export default function SnmpAgentTable () {
@@ -141,35 +142,26 @@ export default function SnmpAgentTable () {
       scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
       rbacOpsIds: getPolicyAllowedOperation(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
       onClick: (selectedRows, clearSelection) => {
-        const ids = selectedRows.map(row => row.id)
-        const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
-          const numOfActivityVenues = r.venues?.count || 0
-          return numOfActivityVenues > 0
-        })
-
-        if ( hasSnmpActivityVenues ) {
-          showActionModal({
-            type: 'confirm',
-            title: $t({ defaultMessage: 'Delete a SNMP agent that is currently in use?' }),
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?'
-            }),
-            onOk: () => {
-              deleteFn({
-                params: { tenantId, policyId: ids[0] },
-                enableRbac: isUseRbacApi
-              }).then(clearSelection)
-            },
-            onCancel: () => { clearSelection() },
-            okText: $t({ defaultMessage: 'Delete' })
-          })
-        } else {
-          deleteFn({
-            params: { tenantId, policyId: ids[0] },
-            enableRbac: isUseRbacApi
-          }).then(clearSelection)
-        }
+        doProfileDelete(
+          selectedRows,
+          $t({ defaultMessage: 'SNMP Agent' }),
+          selectedRows[0].name,
+          [{
+            fieldName: 'venueIds',
+            fieldText: $t({ defaultMessage: '<venuePlural></venuePlural>' })
+          },
+          {
+            fieldName: 'apActivations',
+            fieldText: $t({ defaultMessage: 'aps' })
+          }],
+          async () => {
+            const ids = selectedRows.map(row => row.id)
+            await deleteFn({
+              params: { tenantId, policyId: ids[0] },
+              enableRbac: isUseRbacApi
+            }).then(clearSelection)
+          }
+        )
       }
     }
   ]

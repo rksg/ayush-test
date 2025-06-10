@@ -36,6 +36,8 @@ const Ports = () => {
   const { serialNumber } = useParams()
   const { $t } = useIntl()
   const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
 
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
@@ -44,7 +46,8 @@ const Ports = () => {
   const editEdgeContext = useContext(EdgeEditContext.EditContext)
   const {
     clusterInfo, portData, portStatus,
-    lagData, isFetching, isClusterFormed, clusterConfig
+    lagData, isFetching, isClusterFormed, clusterConfig,
+    isSupportAccessPort, subInterfaceData
   } = useContext(EditEdgeDataContext)
 
   const [updatePortConfig] = useUpdatePortConfigMutation()
@@ -54,6 +57,8 @@ const Ports = () => {
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+
+  const subInterfaceList = subInterfaceData?.flatMap(item => item.subInterfaces) ?? []
 
   const handleFormChange = async (changedValues: Object) => {
     // due to form.List, must use the trailing 0
@@ -127,7 +132,8 @@ const Ports = () => {
   const handleFinish = async () => {
     const formData = flatMap(form.getFieldsValue(true)) as EdgePortWithStatus[]
     formData.forEach((item, idx) => {
-      formData[idx] = convertEdgeNetworkIfConfigToApiPayload(item) as EdgePortWithStatus
+      // eslint-disable-next-line max-len
+      formData[idx] = convertEdgeNetworkIfConfigToApiPayload(item, isEdgeCoreAccessSeparationReady) as EdgePortWithStatus
     })
 
     try {
@@ -202,6 +208,8 @@ const Ports = () => {
               disabled={disabledWholeForm}
               vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
               clusterInfo={clusterInfo!}
+              isSupportAccessPort={isSupportAccessPort}
+              subInterfaceList={subInterfaceList}
             />
           </StepsForm.StepForm>
         </StepsForm>

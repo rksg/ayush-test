@@ -23,6 +23,12 @@ interface CloudpathServerFormProps {
   dpskWlanSecurity?: WlanSecurityEnum
 }
 
+/*
+ * There have RadiusSettings forked from this file and remove setData,
+ * This file still be used for OpenSettingsForm and use setData in each UI action.
+ * If you want to modify this file please also reflect to RadiusSettings
+ * Once we can refactor OpenSettingsForm, we could reuse the RadiusSettings
+ */
 export function CloudpathServerForm (props: CloudpathServerFormProps) {
   const labelWidth = '250px'
   const { $t } = useIntl()

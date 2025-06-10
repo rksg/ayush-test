@@ -34,17 +34,22 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [PolicyType.LBS_SERVER_PROFILE]: defineMessage({ defaultMessage: 'Location Based Service Server' }),
   [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'Workflow' }),
-  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template' }),
+  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Management' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'SoftGRE' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'Ethernet Port Profile' }),
-  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Authentication' }),
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Port Authentication' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Directory Server' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
   [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'IPsec' }),
   [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Identity Provider' })
+}
+
+export const policyTypeLabelWithCountMapping: Record<PolicyType, MessageDescriptor> = {
+  ...policyTypeLabelMapping,
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Port Authentication ({count})' })
 }

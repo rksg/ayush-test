@@ -14,7 +14,6 @@ import {
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useDeleteLayer2AclMutation, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   MacAcl,
@@ -25,6 +24,7 @@ import {
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -165,7 +165,7 @@ export function SwitchLayer2ACL () {
       }, { replace: false })
     }
   }]
-  const allowedActions = filterByAccessForServicePolicyMutation(actions)
+  const allowedActions = filterByAccess(actions)
 
   const rowActions: TableProps<MacAcl>['rowActions'] = [
     {
@@ -235,6 +235,8 @@ export function SwitchLayer2ACL () {
     }
   ]
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <Loader
       states={[tableQuery]}
@@ -249,10 +251,8 @@ export function SwitchLayer2ACL () {
         pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
         actions={allowedActions}
-        rowActions={rowActions}
-        rowSelection={{
-          type: 'checkbox'
-        }}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         stickyHeaders={false}
       />
     </Loader>

@@ -21,7 +21,9 @@ export * from './edgeHqosProfile'
 export * from './softGre'
 export * from './directoryServer'
 export * from './ipsec'
+export * from './identityAttributes'
 export * from './samlIdpProfile'
+
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'

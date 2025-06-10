@@ -351,6 +351,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
+  getApGroupBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateApGroupBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/apModelBandModeSettings',
+    newApi: true
+  },
   getApAntennaTypeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
@@ -521,6 +531,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
     opsApi: 'PUT:/wifiNetworks/{id}/certificateTemplates/{id}'
+  },
+  deactivateCertificateTemplate: {
+    method: 'DELETE',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
+    opsApi: 'DELETE:/wifiNetworks/{id}/certificateTemplates/{id}',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   bindClientIsolation: {
     method: 'PUT',

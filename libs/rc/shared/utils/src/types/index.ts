@@ -21,6 +21,7 @@ import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
+export * from './apGroup'
 export * from './venue'
 export * from './network'
 export * from './any-network'
@@ -105,6 +106,7 @@ export interface Venue extends EnforceableFields {
   activatedApsId?: string[]
   dhcp?: { enabled: boolean }
   clients?: number
+  apWiredClients?: number
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
@@ -305,7 +307,8 @@ export enum ApVenueStatusEnum {
   OFFLINE = '1_InSetupPhase_Offline',
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
-  TRANSIENT_ISSUE = '4_TransientIssue'
+  TRANSIENT_ISSUE = '4_TransientIssue',
+  IN_SETUP_PHASE_AND_OFFLINE = 'InSetupPhase_And_Offline' // for dashboard device widget only
 }
 
 export type ChartData = {

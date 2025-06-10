@@ -31,7 +31,8 @@ import {
   WifiNetworkMessages,
   hexRegExp,
   passphraseRegExp,
-  generateHexKey, useConfigTemplate
+  generateHexKey, useConfigTemplate,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -46,6 +47,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AccountingServiceInput }  from '../SharedComponent/AccountingServiceInput'
 import * as UI                     from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
@@ -58,6 +60,9 @@ const labelWidth = '250px'
 export function PskSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const macAddressAuthentication = useWatch(['wlan', 'macAddressAuthentication'])
+  const isMacRegistrationList = useWatch(['wlan', 'isMacRegistrationList'])
+  const enableAccountingService = useWatch('enableAccountingService')
   useEffect(()=>{
     if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
       form.setFieldsValue({
@@ -90,7 +95,12 @@ export function PskSettingsForm () {
         <SettingsForm />
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram />
+        <NetworkDiagram
+          type={NetworkTypeEnum.PSK}
+          enableMACAuth={macAddressAuthentication}
+          isMacRegistrationList={isMacRegistrationList}
+          enableAccountingService={enableAccountingService}
+        />
       </Col>
     </Row>
     {!(editMode) && !(isRuckusAiMode) && <Row>
@@ -145,6 +155,8 @@ function SettingsForm () {
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
     <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
       {isDeprecateWep && key === 'WEP' ?
@@ -254,7 +266,13 @@ function SettingsForm () {
     }
   }, [cloneMode, editMode, form, wlanSecurity])
 
+
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  // eslint-disable-next-line max-len
+  const isLegacyDisplayAccountingService = !!macAddressAuthentication && (isTemplate || !isMacRegistrationList)
+  const isDisplayAccountingService = (isSupportNetworkRadiusAccounting ||
+    (!isSupportNetworkRadiusAccounting && isLegacyDisplayAccountingService)
+  )
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -365,18 +383,22 @@ function SettingsForm () {
               placement='bottom'
               onClick={() => setDrawerVisible(true)}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={drawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={networkId}
-              featureName={InCompatibilityFeatures.MAC_AUTH}
+              featureNames={[InCompatibilityFeatures.MAC_AUTH]}
               onClose={() => setDrawerVisible(false)}
             />}
           </Space>
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}
             valuePropName='checked'>
-            <Switch disabled={editMode} onChange={onMacAuthChange} />
+            <Switch
+              data-testid={'macAddressAuthentication-switch'}
+              disabled={editMode}
+              onChange={onMacAuthChange} />
           </Form.Item>
         </UI.FieldLabel>
         {macAddressAuthentication && <>
@@ -410,7 +432,22 @@ function SettingsForm () {
             />
             <MACAuthService />
           </>}
+
         </>}
+        { isDisplayAccountingService &&
+          <AccountingServiceInput
+            isProxyModeConfigurable={isSupportNetworkRadiusAccounting}
+            labelWidth={labelWidth}
+            enableToggleOnChange={(checked) => {
+              setData && setData({ ...data, enableAccountingService: checked })
+            }}
+            proxyModeToggleOnChange={(checked) => {
+              setData && setData({ ...data, enableAccountingProxy: checked })
+            }}
+            excludeRadSec={!isSupportNetworkRadiusAccounting}
+          />
+        }
+
       </div>
       { ( isWifiIdentityManagementEnable &&
           !isMacRegistrationList &&
@@ -423,17 +460,6 @@ function SettingsForm () {
 
 function MACAuthService () {
   const { $t } = useIntl()
-  const { data, setData } = useContext(NetworkFormContext)
-  const form = Form.useFormInstance()
-  const enableAccountingService = useWatch<boolean>(['enableAccountingService'])
-
-  useEffect(()=>{
-    form.setFieldsValue(data)
-  },[data])
-
-  const onChange = (value: boolean) => {
-    setData && setData({ ...data, enableAccountingService: value })
-  }
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -442,22 +468,6 @@ function MACAuthService () {
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'
           excludeRadSec={true}/>
-      </div>
-      <div>
-        <UI.FieldLabel width={labelWidth}>
-          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-          <Form.Item
-            name='enableAccountingService'
-            valuePropName='checked'
-            style={{ marginTop: '-5px', marginBottom: '0' }}
-            children={<Switch onChange={onChange} />}
-          />
-        </UI.FieldLabel>
-        {enableAccountingService &&
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'
-            excludeRadSec={true}/>
-        }
       </div>
     </Space>
   )

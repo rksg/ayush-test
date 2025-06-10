@@ -154,11 +154,12 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
                 placement='right'
                 onClick={() => setDrawerVisible(true)}
               />}
-              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              {isR370UnsupportedFeatures &&
+              <ApCompatibilityDrawer
                 visible={drawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
-                featureName={InCompatibilityFeatures.SMART_MONITOR}
+                featureNames={[InCompatibilityFeatures.SMART_MONITOR]}
                 onClose={() => setDrawerVisible(false)}
               />}
             </Space>

@@ -13,7 +13,14 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { getStreamingWordingKey } from './index.utils'
+import {
+  getMenuWidth,
+  getCalculatedColumnWidth,
+  getCanvasData,
+  getStreamingWordingKey,
+  MENU_COLLAPSED_WIDTH,
+  MENU_EXPANDED_WIDTH
+} from './index.utils'
 
 import AICanvas from '.'
 
@@ -376,8 +383,12 @@ describe('AICanvas', () => {
     expect(canvasExpandIcon).toBeVisible()
     fireEvent.click(canvasExpandIcon)
     expect(await screen.findByText('Canvas')).toBeVisible()
+
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
+    await waitFor(() => expect(searchInput).toHaveTextContent('hello'))
+    expect(await screen.findByText('5/300')).toBeVisible()
+
     const searchBtn = await screen.findByTestId('search-button')
     await waitFor(() => expect(searchBtn).not.toBeDisabled())
     fireEvent.click(searchBtn)
@@ -448,5 +459,25 @@ describe('Test utils', () => {
     expect(getStreamingWordingKey('4.3')).toBe('PROCESSING_DATA_RETRY_3_2')
     expect(getStreamingWordingKey('4')).toBe('FINALIZING_RESULT')
     expect(getStreamingWordingKey('5')).toBe('FINALIZING_RESULT')
+  })
+
+  it('Test getMenuWidth', async () => {
+    expect(getMenuWidth(true)).toBe(MENU_COLLAPSED_WIDTH)
+    expect(getMenuWidth(false)).toBe(MENU_EXPANDED_WIDTH)
+  })
+
+  it('Test getCalculatedColumnWidth', async () => {
+    expect(getCalculatedColumnWidth(true, 1200)).toBe(267)
+  })
+
+  it('Test getCanvasData', async () => {
+    expect(getCanvasData([])).toStrictEqual({})
+    expect(getCanvasData([currentCanvas])).toEqual(
+      expect.objectContaining({
+        canvasId: '001',
+        groups: expect.anything(),
+        sections: expect.anything()
+      })
+    )
   })
 })

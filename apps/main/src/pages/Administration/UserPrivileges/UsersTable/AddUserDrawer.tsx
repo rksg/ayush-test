@@ -21,7 +21,9 @@ import {
   PrivilegeGroup,
   CustomGroupType,
   generalPhoneRegExp,
-  emailRegExp
+  emailRegExp,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import { CatchErrorDetails } from '@acx-ui/utils'
@@ -182,6 +184,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
     label: $t(item.label),
     value: item.value
   }))
+    ?.sort(sortProp('label', defaultSort))
 
   return (
     <Drawer

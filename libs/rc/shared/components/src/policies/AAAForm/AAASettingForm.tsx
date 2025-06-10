@@ -14,7 +14,7 @@ import { useGetCertificateAuthoritiesQuery,
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
-  networkWifiIpRegExp, networkWifiSecretRegExp,
+  networkWifiIpRegExp, networkWifiDualModeIpRegExp, networkWifiSecretRegExp,
   policyTypeLabelMapping, PolicyType,
   useConfigTemplate,
   hasPolicyPermission,
@@ -60,6 +60,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
   const { useWatch } = Form
   const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
   const [enableSecondaryServer, type, tlsEnabled, ocspValidationEnabled]
@@ -318,6 +319,13 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     }
     return Promise.resolve()
   }
+  const radiusIpValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return networkWifiDualModeIpRegExp(value)
+    }
+    return networkWifiIpRegExp(value)
+  }
+
   return (
     <GridRow>
       <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
@@ -555,7 +563,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                   { required: true },
                   { validator: async (_, value) => {
                     await radiusIpPortValidator(true)
-                    return networkWifiIpRegExp(value)
+                    return radiusIpValidator(value)
                   } }
                 ]}
                 label={$t({ defaultMessage: 'IP Address' })}
@@ -615,7 +623,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                   { required: true },
                   { validator: async (_, value) => {
                     await radiusIpPortValidator(false)
-                    return networkWifiIpRegExp(value)
+                    return radiusIpValidator(value)
                   } }
                 ]}
                 label={$t({ defaultMessage: 'IP Address' })}

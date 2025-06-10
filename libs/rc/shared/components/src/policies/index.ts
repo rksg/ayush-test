@@ -14,6 +14,7 @@ export * from './WifiOperator'
 export * from './IdentityProvider'
 export * from './EthernetPortProfile'
 export * from './LbsServerProfile'
+export * from './IdentityAttributesInput'
 export * from './SamlIdp'
 
 export { WorkflowPanel } from './WorkflowCanvas/WorkflowPanel'

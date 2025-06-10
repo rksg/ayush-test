@@ -2,8 +2,10 @@ import { isUndefined } from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { SummaryCard }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { MtuTypeEnum,  SoftGreViewData } from '@acx-ui/rc/utils'
 import { noDataDisplay }                 from '@acx-ui/utils'
+
 
 interface SoftGreDetailContentProps {
   data: SoftGreViewData | undefined
@@ -11,6 +13,7 @@ interface SoftGreDetailContentProps {
 export default function SoftGreDetailContent (props: SoftGreDetailContentProps) {
   const { data } = props
   const { $t } = useIntl()
+  const isGatewayFailbackEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_GATEWAY_FAILBACK_TOGGLE)
 
   const softGreInfo = [
     {
@@ -25,6 +28,15 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
       title: $t({ defaultMessage: 'Secondary Gateway' }),
       content: data?.secondaryGatewayAddress || noDataDisplay
     },
+    ...(isGatewayFailbackEnabled ? [{
+      title: $t({ defaultMessage: 'Fallback To Primary Gateway' }),
+      content: data?.gatewayFailbackEnabled
+        ? $t(
+          { defaultMessage: 'On ({timer} mins)' },
+          { timer: data?.gatewaySecondaryToPrimaryTimer }
+        )
+        : $t({ defaultMessage: 'Off' })
+    }] : []),
     {
       title: $t({ defaultMessage: 'Disassociate Clients' }),
       content: data?.disassociateClientEnabled ?
@@ -46,5 +58,5 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
     }
   ]
 
-  return data ? <SummaryCard data={softGreInfo} colPerRow={6} /> : null
+  return data ? <SummaryCard data={softGreInfo} colPerRow={4} /> : null
 }

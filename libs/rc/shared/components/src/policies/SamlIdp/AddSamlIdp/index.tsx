@@ -1,8 +1,12 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useActivateSamlEncryptionCertificateMutation, useActivateSamlSigningCertificateMutation, useCreateSamlIdpProfileMutation } from '@acx-ui/rc/services'
-import { SamlIdpProfileFormType }                                                                                                   from '@acx-ui/rc/utils'
+import {
+  useActivateSamlEncryptionCertificateMutation,
+  useActivateSamlSigningCertificateMutation,
+  useCreateSamlIdpProfileMutation
+} from '@acx-ui/rc/services'
+import { SamlIdpProfileFormType } from '@acx-ui/rc/utils'
 
 import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 

@@ -61,3 +61,9 @@ export function Select (props: SelectProps) {
 
 Select.Option = AntSelect.Option
 Select.OptGroup = AntSelect.OptGroup
+Select.getPopupContainer = (triggerNode: HTMLElement | undefined) => {
+  if (triggerNode?.closest('.ant-select-selector')) {
+    return triggerNode.parentElement ?? document.body
+  }
+  return document.body
+}

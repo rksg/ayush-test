@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { Button, StepsForm }                                                                              from '@acx-ui/components'
+import { Features }                                                                                       from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                                          from '@acx-ui/rc/components'
 import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgePinFixtures, EdgePinUrls, EdgeSdLanFixtures, EdgeSdLanUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
@@ -128,7 +129,7 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
   })
 
   it('switch should be disabled when there is PIN configured', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -164,15 +165,12 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     const mockedSdlanData = cloneDeep(mockedMvSdLanDataList[0])
     mockedSdlanData.edgeClusterId = 'mockClusterId'
 
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
         (_, res, ctx) => res(ctx.json(mockDhcpStatsData))
-      ),
-      rest.post(
-        EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,

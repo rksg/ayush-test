@@ -36,7 +36,7 @@ describe('getDualWanModeString', () => {
 describe('getWanProtocolString', () => {
   it('returns "Ping" for EdgeMultiWanProtocolEnum.PING', () => {
     const result = getWanProtocolString(EdgeMultiWanProtocolEnum.PING)
-    expect(result).toBe('Ping')
+    expect(result).toBe('ICMP (Ping)')
   })
 
   it('returns empty string for EdgeMultiWanProtocolEnum.NONE', () => {

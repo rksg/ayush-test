@@ -39,7 +39,7 @@ jest.mock('./SubInterfaceForm', () => ({
   SubInterfaceForm: () => <div data-testid='rc-SubInterfaceForm' />
 }))
 jest.mock('./PortForm', () => ({
-  PortForm: jest.fn()
+  PortForm: jest.fn().mockImplementation(() => <div data-testid='rc-PortForm' />)
 }))
 jest.mock('./HaSettingForm', () => ({
   HaSettingForm: () => <div data-testid='rc-HaSettingForm' />
@@ -189,7 +189,7 @@ describe('InterfaceSettings', () => {
     await userEvent.click(nextBtn)
     within(stepsForm).getByTestId('rc-PortForm')
     await userEvent.click(nextBtn)
-    within(stepsForm).getByTestId('rc-SubInterfaceForm')
+    await within(stepsForm).findByTestId('rc-SubInterfaceForm')
     await userEvent.click(nextBtn)
     await within(stepsForm).findByTestId('rc-HaSettingForm')
     await userEvent.click(nextBtn)

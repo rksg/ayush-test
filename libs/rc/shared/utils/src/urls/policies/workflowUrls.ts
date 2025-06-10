@@ -16,16 +16,18 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
   | 'createWorkflow' | 'updateWorkflow' | 'deleteWorkflow'
   | 'searchInProgressWorkflows' | 'getWorkflowUIConfig'
   | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig' | 'getWorkflowUIConfigImage'
-  | 'cloneWorkflow' | 'nestedCloneWorkflow'
+  | 'cloneWorkflow' | 'nestedCloneWorkflow' | 'searchWorkflowProfiles'
+  | 'searchWorkflowProfileBoundNetwork'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
   | 'queryActions' | 'uploadFile' | 'deleteFile' | 'getFile'
 
 type WorkflowStepUrlType = 'createWorkflowOption' | 'getWorkflowOptionById'
-  | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'deleteSplitOptionById'
+  | 'getWorkflowOptionsByStepId' | 'createWorkflowStepUnderOption' | 'attachStepBeneathStep'
+  | 'deleteSplitOptionById'
   | 'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep'
-  | 'deleteWorkflowStepAndDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
+  | 'deleteWorkflowStepDescendants' | 'getWorkflowStepsById' | 'getWorkflowStepById'
 
 type WorkflowActionDefinitionUrlType = 'getWorkflowActionDefinitions'
   | 'getWorkflowActionDefinitionById' | 'getWorkflowActionRequiredDefinitions'
@@ -39,6 +41,24 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   searchInProgressWorkflows: {
     method: 'post',
     url: `${WorkflowBaseUrl}/query${paginationParams}&${excludeContent}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  searchWorkflowProfiles: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/query`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  searchWorkflowProfileBoundNetwork: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/assignments/query`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -174,6 +194,16 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     },
     opsApi: 'POST:/workflows/{id}/steps/{id}/nextSteps'
   },
+  attachStepBeneathStep: {
+    method: 'put',
+    url: `${WorkflowStepBaseUrl}/:stepId/nextSteps/:detachedStepId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/workflows/{id}/steps/{id}/nextSteps/{id}'
+  },
   deleteWorkflowStep: {
     method: 'delete',
     url: `${WorkflowStepBaseUrl}/:stepId`,
@@ -184,7 +214,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     },
     opsApi: 'DELETE:/workflows/{id}/steps/{id}'
   },
-  deleteWorkflowStepAndDescendants: {
+  deleteWorkflowStepDescendants: {
     method: 'delete',
     url: `${WorkflowStepBaseUrl}/:stepId/descendantSteps`,
     newApi: true,
