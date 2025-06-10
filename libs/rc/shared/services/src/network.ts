@@ -1829,6 +1829,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    bindingWorkflowOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingWorkflowOnNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -2194,7 +2203,8 @@ export const {
   useVenueWifiRadioActiveNetworksQuery,
   useLazyVenueWifiRadioActiveNetworksQuery,
   useBindingPersonaGroupWithNetworkMutation,
-  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
+  useBindingWorkflowOnNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

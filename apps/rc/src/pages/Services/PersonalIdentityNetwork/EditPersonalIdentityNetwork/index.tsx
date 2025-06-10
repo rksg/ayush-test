@@ -33,23 +33,25 @@ const EditPersonalIdentityNetwork = () => {
 
   const {
     data: pinData,
-    isLoading: isPinDataLoading,
     isFetching: isPinDataFetching
   } = useGetEdgePinByIdQuery({
     params,
     customHeaders: isL2GreEnabled ? PersonalIdentityNetworkApiVersion.v1001 : undefined
   })
 
-  const getTunnelProfilePayload = {
-    fields: ['destinationEdgeClusterId'],
-    filters: { id: [params.serviceId] }
-  }
-  const { currentTunnelProfileData } = useGetTunnelProfileViewDataListQuery({
-    payload: getTunnelProfilePayload
+  const {
+    currentTunnelProfileData,
+    isFetching: isTunnelFetching
+  } = useGetTunnelProfileViewDataListQuery({
+    payload: {
+      fields: ['destinationEdgeClusterId'],
+      filters: { id: [pinData?.vxlanTunnelProfileId] }
+    }
   }, {
     skip: !isL2GreEnabled || !pinData?.vxlanTunnelProfileId,
-    selectFromResult: ({ data }) => ({
-      currentTunnelProfileData: data?.data?.[0]
+    selectFromResult: ({ data, isFetching }) => ({
+      currentTunnelProfileData: data?.data?.[0],
+      isFetching
     })
   })
 
@@ -84,7 +86,7 @@ const EditPersonalIdentityNetwork = () => {
       <PersonalIdentityNetworkFormDataProvider
         venueId={pinData?.venueId}
       >
-        <Loader states={[{ isLoading: isPinDataLoading || isPinDataFetching }]}>
+        <Loader states={[{ isLoading: isPinDataFetching || isTunnelFetching }]}>
           <PersonalIdentityNetworkForm
             form={form}
             steps={pinWizardSteps}
