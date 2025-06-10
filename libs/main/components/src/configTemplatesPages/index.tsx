@@ -13,7 +13,6 @@ export * from './Overrides'
 
 export { useEcFilters }             from './Templates/templateUtils'
 export * as ConfigTemplatePageUI from './Templates/styledComponents'
-export { DriftInstance } from './Templates/ShowDriftsDrawer/DriftInstance'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void

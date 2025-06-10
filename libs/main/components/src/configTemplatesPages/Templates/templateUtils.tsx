@@ -18,10 +18,7 @@ import { RolesEnum }                                             from '@acx-ui/t
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
 
-
-import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
-
-
+import { configTemplateDriftTypeLabelMap } from './driftDetails/contents'
 
 export const useEcFilters = () => {
   const { data: userProfile } = useUserProfileContext()
