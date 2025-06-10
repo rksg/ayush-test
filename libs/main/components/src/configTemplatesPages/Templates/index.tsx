@@ -12,7 +12,6 @@ import {
   Button
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                                                                                                                                                                      from '@acx-ui/msp/utils'
 import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, isNotAllowToApplyPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -46,7 +45,7 @@ import {
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
+import { filterByAccess }                          from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
 import { ConfigTemplateViewProps } from '..'
@@ -63,7 +62,7 @@ import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
-  const { ApplyTemplateDrawer, AppliedToDrawer } = props
+  const { ApplyTemplateDrawer, AppliedToDrawer, appliedToColumn } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -188,7 +187,8 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
             setSelectedTemplates,
             setAccessControlSubPolicyVisible,
             setDetailsDrawerVisible,
-            setShowDriftsDrawerVisible
+            setShowDriftsDrawerVisible,
+            appliedToColumn
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -242,6 +242,7 @@ interface TemplateColumnProps {
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
   setShowDriftsDrawerVisible: (visible: boolean) => void
   setDetailsDrawerVisible: (visible: boolean) => void
+  appliedToColumn: ConfigTemplateViewProps['appliedToColumn']
 }
 
 function useColumns (props: TemplateColumnProps) {
@@ -251,7 +252,8 @@ function useColumns (props: TemplateColumnProps) {
     setSelectedTemplates,
     setAccessControlSubPolicyVisible,
     setShowDriftsDrawerVisible,
-    setDetailsDrawerVisible
+    setDetailsDrawerVisible,
+    appliedToColumn
   } = props
   const dateFormatter = useFormatTemplateDate()
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
@@ -297,26 +299,12 @@ function useColumns (props: TemplateColumnProps) {
       }
     },
     {
-      key: 'appliedOnTenants',
-      title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'appliedOnTenants',
-      sorter: true,
-      align: 'center',
+      ...appliedToColumn,
       render: function (_, row) {
-        const count = row.appliedOnTenants?.length ?? 0
-
-        if (count === 0) return 0
-
-        if (!hasAllowedOperations([getOpsApi(MspUrlsInfo.getMspCustomersList)])) return count
-
-        return <Button
-          type='link'
-          onClick={() => {
-            setSelectedTemplates([row])
-            setAppliedToDrawerVisible(true)
-          }}>
-          {count}
-        </Button>
+        return appliedToColumn.customRender(row, () => {
+          setSelectedTemplates([row])
+          setAppliedToDrawerVisible(true)
+        })
       }
     },
     ...(enforcementEnabled ? [{

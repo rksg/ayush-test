@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { PageHeader }     from '@acx-ui/components'
-import { ConfigTemplate } from '@acx-ui/rc/utils'
+import { PageHeader, TableColumn } from '@acx-ui/components'
+import { ConfigTemplate }          from '@acx-ui/rc/utils'
 
 import { ConfigTemplateList } from './Templates'
 
@@ -21,6 +23,8 @@ export interface CommonConfigTemplateDrawerProps {
 export interface ConfigTemplateViewProps {
   ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   AppliedToDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  // eslint-disable-next-line max-len
+  appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
 }
 
 export function ConfigTemplateView (props: ConfigTemplateViewProps) {
@@ -32,6 +36,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
       <ConfigTemplateList
         ApplyTemplateDrawer={props.ApplyTemplateDrawer}
         AppliedToDrawer={props.AppliedToDrawer}
+        appliedToColumn={props.appliedToColumn}
       />
     </>
   )

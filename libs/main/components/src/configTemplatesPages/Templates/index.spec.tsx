@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Button }                                                              from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                         from '@acx-ui/msp/utils'
 import {
@@ -10,6 +11,7 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
+import { ConfigTemplateViewProps }                         from '..'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
 import { ShowDriftsDrawerProps } from './ShowDriftsDrawer'
@@ -52,6 +54,14 @@ jest.mock('./CloneModal', () => ({
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
   const params = { tenantId: '__TENANT_ID' }
+  const mockedAppliedToColumn: ConfigTemplateViewProps['appliedToColumn'] = {
+    key: 'appliedOnTenants',
+    title: 'Applied To',
+    dataIndex: 'appliedOnTenants',
+    sorter: true,
+    align: 'center',
+    customRender: jest.fn()
+  }
 
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
@@ -70,7 +80,11 @@ describe('ConfigTemplateList component', () => {
   it('should render table with data', async () => {
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -91,6 +105,12 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={jest.fn()}
           AppliedToDrawer={() => <div>AppliedToDrawer</div>}
+          appliedToColumn={{
+            ...mockedAppliedToColumn,
+            customRender: (_, cb) => {
+              return <Button type='link' onClick={() => { cb() }}>AppliedTo</Button>
+            }
+          }}
         />
       </Provider>, {
         route: { params, path }
@@ -98,7 +118,7 @@ describe('ConfigTemplateList component', () => {
     )
 
     const row = await screen.findByRole('row', { name: /Template 1/i })
-    const appliedToButton = await within(row).findByRole('button', { name: /2/i })
+    const appliedToButton = await within(row).findByRole('button', { name: /AppliedTo/i })
     await userEvent.click(appliedToButton)
     expect(await screen.findByText(/AppliedToDrawer/i)).toBeVisible()
   })
@@ -121,6 +141,7 @@ describe('ConfigTemplateList component', () => {
         <ConfigTemplateList
           ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>}
           AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
         route: { params, path }
@@ -150,7 +171,11 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -176,7 +201,11 @@ describe('ConfigTemplateList component', () => {
   it('should navigate to the edit page', async () => {
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -222,7 +251,11 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+          <ConfigTemplateList
+            ApplyTemplateDrawer={jest.fn()}
+            AppliedToDrawer={jest.fn()}
+            appliedToColumn={mockedAppliedToColumn}
+          />
         </ConfigTemplateContext.Provider>
       </Provider>, {
         route: { params, path }
@@ -249,7 +282,11 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -278,7 +315,11 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -297,7 +338,11 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={jest.fn()}
+          appliedToColumn={mockedAppliedToColumn}
+        />
       </Provider>, {
         route: { params, path }
       }
