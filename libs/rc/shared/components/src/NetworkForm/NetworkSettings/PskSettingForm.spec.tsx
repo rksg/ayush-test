@@ -265,7 +265,7 @@ describe('NetworkForm', () => {
 
     const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
     fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
-    await userEvent.click(await screen.findByRole('switch'))
+    await userEvent.click(screen.getByTestId('macAddressAuthentication-switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
   })
@@ -303,7 +303,7 @@ describe('NetworkForm', () => {
 
     const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
     fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
-    await userEvent.click(await screen.findByRole('switch'))
+    await userEvent.click(screen.getByTestId('macAddressAuthentication-switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
 
@@ -349,18 +349,18 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const securityProtocols = await screen.findByRole('combobox', { name: 'Security Protocol' })
+    const securityProtocols = screen.getByRole('combobox', { name: 'Security Protocol' })
 
     fireEvent.mouseDown(securityProtocols)
 
-    const option = screen.getAllByText('WPA3')[0]
+    const option = screen.getByRole('option', { name: 'WPA3' })
 
     await userEvent.click(option)
 
     const passphraseTextbox = await screen.findAllByLabelText('Passphrase')
     fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
 
-    await userEvent.click(await screen.findByRole('switch'))
+    await userEvent.click(screen.getByTestId('macAddressAuthentication-switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
     await userEvent.click((await screen.findAllByRole('switch'))[1])
