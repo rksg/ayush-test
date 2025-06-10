@@ -247,7 +247,8 @@ export function ManageCustomer () {
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
   const isMDU = acx_account_vertical === AccountVertical.MDU
 
-  const isCore = mspServiceTierFFtoggle && (originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU)
+  const isCore = mspServiceTierFFtoggle &&
+    (originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: userProfile } = useUserProfileContext()
