@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { Form, Space }             from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, findIndex } from 'lodash'
-import { useIntl }                 from 'react-intl'
+import { Form, Space }        from 'antd'
+import TextArea               from 'antd/lib/input/TextArea'
+import _, { cloneDeep, find } from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
 import { Features }                        from '@acx-ui/feature-toggle'
@@ -362,14 +362,19 @@ export const LagDrawer = (props: LagDrawerProps) => {
                 ? undefined
                 :[{ validator: () => {
                   const dryRunPorts = cloneDeep(portList ?? [])
+                  let dryRunSubInterfaces = subInterfaceList
                   allValues.lagMembers.forEach(member => {
-                    const idx = findIndex(dryRunPorts, { id: member.portId })
-                    if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
+                    const targetPortItem = find(dryRunPorts, { id: member.portId })
+                    if(targetPortItem) {
+                      targetPortItem.portType = EdgePortTypeEnum.UNCONFIGURED
+                      dryRunSubInterfaces = dryRunSubInterfaces.filter(subInterface =>
+                        subInterface.interfaceName?.split('.')[0] !== targetPortItem.interfaceName)
+                    }
                   })
 
                   // eslint-disable-next-line max-len
                   return validateEdgeGateway(
-                    dryRunPorts, getMergedLagData(existedLagList, allValues), subInterfaceList,
+                    dryRunPorts, getMergedLagData(existedLagList, allValues), dryRunSubInterfaces,
                     isDualWanEnabled, isEdgeCoreAccessSeparationReady
                   )
                 } }]
