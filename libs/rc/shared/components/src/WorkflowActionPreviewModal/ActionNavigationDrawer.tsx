@@ -6,8 +6,8 @@ import {
   Node
 } from 'reactflow'
 
-import { ActionType, ActionTypeTitle, WorkflowStep } from '@acx-ui/rc/utils'
-import { getIntl }                                   from '@acx-ui/utils'
+import { ActionType, ActionTypeTitle, disablePreviewActionType, WorkflowStep } from '@acx-ui/rc/utils'
+import { getIntl }                                                             from '@acx-ui/utils'
 
 
 export interface ActionNavigationDrawerProps {
@@ -18,14 +18,12 @@ export interface ActionNavigationDrawerProps {
   selectedStepId?: string
 }
 
-const disablePreviewActionTypeSet = new Set<ActionType>([ ActionType.SAML_AUTH ])
-
 function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedId?: string)
 : DataNode[] {
   const dataNodes:DataNode[] = []
   const { $t } = getIntl()
   nodes.filter(node => node.type !== 'START' as ActionType
-  && !disablePreviewActionTypeSet.has(node.type as ActionType))
+  && !disablePreviewActionType.has(node.type as ActionType))
     .forEach(node => {
       dataNodes.push(
         {

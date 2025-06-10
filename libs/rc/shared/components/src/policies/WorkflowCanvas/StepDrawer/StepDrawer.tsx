@@ -4,12 +4,19 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                       from '@acx-ui/components'
-import { EyeOpenSolid }                                                                                 from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                                   from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasPermission }                                                                                from '@acx-ui/user'
-import { getOpsApi }                                                                                    from '@acx-ui/utils'
+import { Button, Drawer, Loader }     from '@acx-ui/components'
+import { EyeOpenSolid }               from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery } from '@acx-ui/rc/services'
+import {
+  ActionType,
+  ActionTypeTitle,
+  disablePreviewActionType,
+  GenericActionData,
+  useGetActionDefaultValueByType,
+  WorkflowUrls
+} from '@acx-ui/rc/utils'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
@@ -44,7 +51,7 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.SAML_AUTH]: SamlAuthSettings
 }
 
-const disablePreviewActionTypeSet = new Set<ActionType>([ ActionType.SAML_AUTH ])
+
 
 export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
@@ -68,7 +75,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     isError: isActionError
   } ] = useLazyGetActionByIdQuery()
 
-  const disablePreview = disablePreviewActionTypeSet.has(actionType)
+  const disablePreview = disablePreviewActionType.has(actionType)
 
   useEffect(() => {
     formInstance.resetFields()

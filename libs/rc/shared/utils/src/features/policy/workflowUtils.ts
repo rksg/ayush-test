@@ -153,6 +153,9 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 }
 /* eslint-enable max-len */
 
+export const disablePreviewActionType =
+  new Set<ActionType>([ ActionType.SAML_AUTH ])
+
 export const composeNext = (
   mode: WorkflowPanelMode,
   stepId: string,
