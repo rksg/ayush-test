@@ -18,7 +18,7 @@ import {
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo, SEARCH } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
