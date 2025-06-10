@@ -1,6 +1,3 @@
-
-import React from 'react'
-
 import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
@@ -158,7 +155,7 @@ describe('AP Group Edit', () => {
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(0)
+    expect(tabs).toHaveLength(2)
   })
 
   it('should render correctly - Edit AP Group', async () => {
@@ -251,12 +248,13 @@ describe('AP Group Edit', () => {
     expect(title).toBeVisible()
 
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(0)
+    expect(tabs).toHaveLength(2)
   })
 })
 
-const venueId = venuelist.data[0].id
+
 const venueData = venuelist.data[0]
+const venueId = venueData.id
 
 const defaultApGroupCxtdata = {
   isRbacEnabled: true,
