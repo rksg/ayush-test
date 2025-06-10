@@ -1,4 +1,4 @@
-import { difference, isEqual, omit } from 'lodash'
+import { difference, isEqual, pick } from 'lodash'
 
 import { Features }          from '@acx-ui/feature-toggle'
 import {
@@ -26,6 +26,21 @@ const differenceNetworks = (first: string[], second: string[]) => {
 const customHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1.1+json'
 }
+
+const pinProfileDiffCheckFields = [
+  'name',
+  'edgeClusterInfo',
+  'vxlanTunnelProfileId',
+  'distributionSwitchInfos',
+  'accessSwitchInfos'
+]
+
+const pinProfileDiffCheckFields_l2gre = [
+  'name',
+  'networkSegmentConfiguration',
+  'distributionSwitchInfos',
+  'accessSwitchInfos'
+]
 
 export const useEdgePinActions = () => {
   const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
@@ -93,10 +108,12 @@ export const useEdgePinActions = () => {
       | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { callback } = req
+    // `vxlanTunnelProfileId` is uneditable after L2GRE FF turned on
     const { id: serviceId, vxlanTunnelProfileId, ...payload } = req.payload
 
     try {
-      const isProfileNoChange = isEqual(omit(originData, 'networkIds'), omit(payload, 'networkIds'))
+      // eslint-disable-next-line max-len
+      const isProfileNoChange = isPinProfileChanged(originData, req.payload as PersonalIdentityNetworkFormData)
 
       if (isProfileNoChange) {
         // eslint-disable-next-line max-len
@@ -106,6 +123,7 @@ export const useEdgePinActions = () => {
         const updateResult = await updatePin({
           ...(isL2GreEnabled ? { customHeaders } : {}),
           params: { serviceId },
+          // eslint-disable-next-line max-len
           payload: isL2GreEnabled ? payload : { ...payload, vxlanTunnelProfileId }
         }).unwrap()
 
@@ -119,6 +137,12 @@ export const useEdgePinActions = () => {
       callback?.(error as CommonErrorsResult<CatchErrorDetails>)
       return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
     }
+  }
+
+  // eslint-disable-next-line max-len
+  const isPinProfileChanged = (originData: PersonalIdentityNetworkFormData, payload: PersonalIdentityNetworkFormData) => {
+    const checkFields = isL2GreEnabled ? pinProfileDiffCheckFields_l2gre : pinProfileDiffCheckFields
+    return isEqual(pick(originData, checkFields), pick(payload, checkFields))
   }
 
   return {

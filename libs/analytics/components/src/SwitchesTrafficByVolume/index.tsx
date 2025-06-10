@@ -35,7 +35,6 @@ export function SwitchesTrafficByVolume ({
   selectedPorts?: string[]
 }) {
   const { $t } = useIntl()
-  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
@@ -65,7 +64,7 @@ export function SwitchesTrafficByVolume ({
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         {
-          supportPortTraffic && enableSelectPort && portOptions && portOptions.length > 1 &&
+          enableSelectPort && portOptions && portOptions.length > 1 &&
           <UI.SelectPort>
             <Select
               defaultValue={null}

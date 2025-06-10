@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
-  ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
   ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
@@ -186,7 +185,6 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
-  SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'removable-ff',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
@@ -203,7 +201,7 @@ export enum Features {
   VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
   WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
-  WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
+  WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -214,7 +212,7 @@ export enum Features {
   WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
-  WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'wifi-eda-tls-key-enhance-mode-config-toggle',
+  WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'removable-ff',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
