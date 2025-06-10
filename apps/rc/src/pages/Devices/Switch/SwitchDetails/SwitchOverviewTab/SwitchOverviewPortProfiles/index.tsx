@@ -54,7 +54,7 @@ export default function SwitchOverviewPortProfiles (props: {
             return <>{row.name}
               <Tooltip
                 title={// eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Port profile name cannot contain spaces,as this may lead to errors when the switch restarts. Please delete and re-create the port profile without spaces as soon as possible.' })
+                  $t({ defaultMessage: 'Port profile name cannot contain spaces, as this may lead to errors when the switch restarts. Please delete and re-create the port profile without spaces as soon as possible.' })
                 }
               >
                 <Typography.Text type='danger' style={{ marginLeft: '5px' }}>
