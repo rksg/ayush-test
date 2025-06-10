@@ -208,6 +208,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const { data: librarySettings } = useApplicationLibrarySettingsQuery({
     enableRbac
+  }, {
+    skip: !visible
   })
 
   const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
@@ -220,15 +222,17 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useTemplateMutationFn: useUpdateAppPolicyTemplateMutation
   })
 
+  const onlyForQueryList = !(onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
+
   const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(
-    editMode.isEdit, resolvedRbacEnabled
+    editMode.isEdit, resolvedRbacEnabled, onlyForQueryList
   )
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
     // eslint-disable-next-line max-len
-    skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
+    skip: !visible || skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
     extraParams: {
       applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
     },
@@ -776,13 +780,14 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   )
 }
 
-const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
+// eslint-disable-next-line max-len
+const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, onlyForQueryList: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>({
     useQueryFn: useGetEnhancedApplicationProfileListQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateListQuery,
-    skip: isEdit,
+    skip: !onlyForQueryList || isEdit,
     payload: QUERY_DEFAULT_PAYLOAD,
     enableRbac: enableRbac
   })

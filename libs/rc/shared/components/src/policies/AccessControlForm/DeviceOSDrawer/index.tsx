@@ -183,14 +183,16 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useTemplateMutationFn: useUpdateDevicePolicyTemplateMutation
   })
 
+  const onlyForQueryList = !(onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
+
   const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(
-    editMode.isEdit, resolvedRbacEnabled
+    editMode.isEdit, resolvedRbacEnabled, onlyForQueryList
   )
 
   const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDevicePolicyQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
-    skip: skipFetch,
+    skip: !visible || skipFetch,
     extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId },
     enableRbac: resolvedRbacEnabled
   })
@@ -738,13 +740,14 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   )
 }
 
-const useGetDeviceAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
+// eslint-disable-next-line max-len
+const useGetDeviceAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, onlyForQueryList: boolean): {
   deviceSelectOptions: JSX.Element[], deviceList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>({
     useQueryFn: useGetEnhancedDeviceProfileListQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateListQuery,
-    skip: isEdit,
+    skip: !onlyForQueryList || isEdit,
     payload: QUERY_DEFAULT_PAYLOAD,
     enableRbac: enableRbac
   })
