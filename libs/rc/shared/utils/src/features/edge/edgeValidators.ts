@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService } from '../../ipUtilsService'
-import { EdgeIpModeEnum } from '../../models/EdgeEnum'
+import { IpUtilsService }                   from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../models/EdgeEnum'
 import {
   EdgeLag,
   EdgeNatPool,
@@ -382,4 +382,22 @@ async function isSubnetAvailable (subnetMask: string) {
 
 const isUnique = (value: string, index: number, array: string[]) => {
   return array.indexOf(value) === array.lastIndexOf(value)
+}
+
+export const validateCoreAndAccessPortsConfiguration = (
+  portsData: EdgePort[],
+  lagData: EdgeLag[],
+  subInterfaceData: SubInterface[]
+) => {
+  const corePortCount = portsData.filter(port => port.enabled && port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled).length +
+    lagData.filter(lag => lag.lagEnabled && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled).length +
+    subInterfaceData.filter(subInterface => subInterface.corePortEnabled).length
+  const accessPortCount = portsData.filter(port => port.enabled && port.portType === EdgePortTypeEnum.LAN && port.accessPortEnabled).length +
+    lagData.filter(lag => lag.lagEnabled && lag.portType === EdgePortTypeEnum.LAN && lag.accessPortEnabled).length +
+    subInterfaceData.filter(subInterface => subInterface.accessPortEnabled).length
+  if(corePortCount !== accessPortCount) {
+    const { $t } = getIntl()
+    return Promise.reject($t({ defaultMessage: 'Core and Access ports must be configured simultaneously.' }))
+  }
+  return Promise.resolve()
 }
