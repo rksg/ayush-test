@@ -3,26 +3,29 @@ import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSelectedNodePath }                                                    from '@acx-ui/analytics/utils'
 import { DonutChart, ContentSwitcher, qualitativeColorSet, Card, Loader, NoData } from '@acx-ui/components'
-import { AnalyticsFilter }                                                        from '@acx-ui/utils'
 
 import { useTopNWifiClientQuery } from './services'
 
 const colors = qualitativeColorSet()
+
+interface WifiClientFilters {
+  startDate: string;
+  endDate: string;
+}
 
 const tabDetails = [
   { label: 'Device Type', value: 'deviceType' },
   { label: 'Manufacture', value: 'manufacturer' }
 ]
 
-export const WifiClient: React.FC<{ filters: AnalyticsFilter }> = ({ filters }) => {
+export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   const { $t } = useIntl()
   const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
 
-  const { startDate: start, endDate: end, filter } = filters
+  const { startDate: start, endDate: end } = filters
   const queryResults = useTopNWifiClientQuery({
-    path: getSelectedNodePath(filter),
+    path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
     start,
     end,
     n: 5
