@@ -52,12 +52,19 @@ import WISPrWithAlwaysAcceptDiagram    from '../assets/images/network-wizard-dia
 import WISPrWithOweDiagram             from '../assets/images/network-wizard-diagrams/wispr-owe.png'
 import WISPrWithPskDiagram             from '../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                    from '../assets/images/network-wizard-diagrams/wispr.png'
+import WorkflowWithOweDiagram          from '../assets/images/network-wizard-diagrams/workflow-owe.png'
+import WorkflowProxyWithOweDiagram     from '../assets/images/network-wizard-diagrams/workflow-proxy-owe.png'
+import WorkflowProxyWithPskDiagram     from '../assets/images/network-wizard-diagrams/workflow-proxy-psk.png'
+import WorkflowProxyDiagram            from '../assets/images/network-wizard-diagrams/workflow-proxy.png'
+import WorkflowWithPskDiagram          from '../assets/images/network-wizard-diagrams/workflow-psk.png'
+import WorkflowDiagram                 from '../assets/images/network-wizard-diagrams/workflow.png'
 import NetworkFormContext              from '../NetworkFormContext'
 import { Diagram }                     from '../styledComponents'
 
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
+  forceHideAAAButton?: boolean;
 }
 
 interface DefaultDiagramProps extends DiagramProps {
@@ -158,6 +165,17 @@ function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   }
 }
 
+function getWorkflowDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
+  props: AaaDiagramProps) {
+  let useProxy = props.enableAccountingProxy
+  if(useProxy) {
+    return wisprWithPsk ? WorkflowProxyWithPskDiagram :
+      (wisprWithOwe ? WorkflowProxyWithOweDiagram : WorkflowProxyDiagram)
+  } else {
+    return wisprWithPsk ? WorkflowWithPskDiagram :
+      (wisprWithOwe ? WorkflowWithOweDiagram : WorkflowDiagram)
+  }
+}
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
   const wlanSecurity = props.wlanSecurity as WlanSecurityEnum
@@ -183,7 +201,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
       : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram),
     [GuestNetworkTypeEnum.SAML]: wisprWithOwe ? SAMLWithOweDiagram
-      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram)
+      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram),
+    [GuestNetworkTypeEnum.Workflow]: getWorkflowDiagram(wisprWithPsk, wisprWithOwe, props)
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
@@ -193,9 +212,10 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const title = data?.type ? $t(networkTypes[data?.type]) : undefined
+  const { forceHideAAAButton = false } = props
 
   const showButtons = !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
-  && data?.enableAccountingService
+  && data?.enableAccountingService && forceHideAAAButton
   const enableMACAuth = data?.wlan?.macAddressAuthentication
 
   const diagram = getDiagram({
