@@ -40,10 +40,15 @@ import {
   layer3ProtocolLabelMapping,
   Layer3ProtocolType,
   networkWifiIpRegExp,
+  networkWifiDualModeIpRegExp,
+  dualModeSubnetMaskIpRegExp,
+  customizePromiseAny,
   PolicyOperation,
   PolicyType,
   portRegExp,
   subnetMaskIpRegExp,
+  ipv6RegExp,
+  ipv6PrefixRegExp,
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
@@ -163,6 +168,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { lockScroll, unlockScroll } = useScrollLock()
@@ -787,16 +793,18 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => networkWifiIpRegExp(value) }
+                    { validator: (_, value) => networkAddressValidator(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
                 </Form.Item>
                 <Form.Item
                   name='sourceMask'
+                  validateFirst
                   rules={[
                     { required: true },
-                    { validator: (_, value) => subnetMaskIpRegExp(value) }
+                    { validator: (_, value) => subnetMaskValidator(value) },
+                    { validator: (_, value) => sourceIpModeValidator(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Mask' })}/>
@@ -814,7 +822,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
               name='sourceIp'
               rules={[
                 { required: true },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
+                { validator: (_, value) => networkAddressValidator(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
@@ -868,19 +876,21 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
                     },
-                    { validator: (_, value) => networkWifiIpRegExp(value) }
+                    { validator: (_, value) => networkAddressValidator(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
                 </Form.Item>
                 <Form.Item
                   name='destMask'
+                  validateFirst
                   rules={[
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify mask' })
                     },
-                    { validator: (_, value) => subnetMaskIpRegExp(value) }
+                    { validator: (_, value) => subnetMaskValidator(value) },
+                    { validator: (_, value) => destIpModeValidator(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
@@ -900,7 +910,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
                 }) },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
+                { validator: (_, value) => networkAddressValidator(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
@@ -1036,6 +1046,44 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       }
     }
     return Promise.all(validationList.map(value => portRegExp(value)))
+  }
+
+  const subnetMaskValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return dualModeSubnetMaskIpRegExp(value)
+    }
+    return subnetMaskIpRegExp(value)
+  }
+
+  const networkAddressValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      return networkWifiDualModeIpRegExp(value)
+    }
+    return networkWifiIpRegExp(value)
+  }
+
+  const ipModeValidator = (address: string, subnetMask: string)=>{
+    return customizePromiseAny([
+      Promise.all([networkWifiIpRegExp(address), subnetMaskIpRegExp(subnetMask)]),
+      Promise.all([ipv6RegExp(address), ipv6PrefixRegExp(subnetMask)])],
+    new Error($t({ defaultMessage: 'Ip mode must same between address and subnet mask.' }))
+    )
+  }
+
+  const sourceIpModeValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      const address = drawerForm.getFieldValue('sourceNetworkAddress')
+      return ipModeValidator(address, value)
+    }
+    return Promise.resolve()
+  }
+
+  const destIpModeValidator = (value: string)=>{
+    if (isApIpModeFFEnabled && !isTemplate) {
+      const address = drawerForm.getFieldValue('destNetworkAddress')
+      return ipModeValidator(address, value)
+    }
+    return Promise.resolve()
   }
 
   const hasCreatePermission = useTemplateAwarePolicyPermission(
