@@ -9,7 +9,6 @@ export enum Features {
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
-  AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'removable-ff',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',

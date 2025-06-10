@@ -174,7 +174,7 @@ describe('AP Group Edit', () => {
     render(
       <Provider>
         <ApGroupEditContext.Provider value={{
-          isEditMode: true, isApGroupTableFlag: true, venueId: venuelist.data[0].id
+          isEditMode: true, venueId: venuelist.data[0].id
         }}>
           <ApGroupEdit />
         </ApGroupEditContext.Provider>
@@ -263,7 +263,6 @@ const defaultApGroupCxtdata = {
   previousPath: '/ap-groups',
   setPreviousPath: jest.fn(),
   isEditMode: false,
-  isApGroupTableFlag: false,
   isWifiRbacEnabled: false,
   editContextData: {
     tabTitle: 'Radio',
@@ -398,7 +397,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupEdit />
         </ApGroupEditContext.Provider>
