@@ -4,10 +4,11 @@ import { cloneDeep } from 'lodash'
 import { EdgeIpModeEnum, EdgePortTypeEnum }            from '../../models/EdgeEnum'
 import { EdgeLag, EdgePort, EdgeStatus, SubInterface } from '../../types'
 
-import { mockMultiWanPortConfigs }          from './__tests__/fixtures/dualWan'
-import { mockedEdgeLagList }                from './__tests__/fixtures/lag'
-import { mockEdgePortConfig }               from './__tests__/fixtures/portsConfig'
-import { MAX_EDGE_DUAL_WAN_PORT }           from './constants'
+import { mockMultiWanPortConfigs }    from './__tests__/fixtures/dualWan'
+import { mockEdgeClusterList }        from './__tests__/fixtures/general'
+import { mockedEdgeLagList }          from './__tests__/fixtures/lag'
+import { mockEdgePortConfig }         from './__tests__/fixtures/portsConfig'
+import { MAX_EDGE_DUAL_WAN_PORT }     from './constants'
 import {
   edgeSerialNumberValidator,
   lanPortSubnetValidator,
@@ -21,7 +22,8 @@ import {
   validateUniqueIp,
   interfaceSubnetValidator,
   edgeWanSyncIpModeValidator,
-  validateCoreAndAccessPortsConfiguration
+  validateCoreAndAccessPortsConfiguration,
+  natPoolRangeClusterLevelValidator
 } from './edgeValidators'
 
 describe('edgeSerialNumberValidator', () => {
@@ -1012,6 +1014,126 @@ describe('poolRangeOverlapValidator', () => {
   })
 })
 
+describe('natPoolRangeClusterLevelValidator', () => {
+  const mockEdgeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
+  const mockEdge1Id = mockEdgeList[0].serialNumber
+  const mockEdge2Id = mockEdgeList[1].serialNumber
+  const mockPortsEmptyPool = mockEdgePortConfig.ports
+  const mockLagsEmptyPool = mockedEdgeLagList.content
+
+  describe('negative test cases', () => {
+    it('should return false if ranges are overlapped - port only', async () => {
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+      const mockPortData2 = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData2[0].natPools = [{ startIpAddress: '1.1.1.20', endIpAddress: '1.3.1.50' }]
+
+      // node1 port overlapped with node2 port
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortData,
+        [mockEdge2Id]: mockPortData2
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+
+      await expect(result).rejects.toEqual(`NAT pool ranges on ${mockEdgeList[0].name} overlap with those on ${mockEdgeList[1].name}`)
+    })
+
+    it('should return false if ranges are overlapped - Port & Lag', async () => {
+      const mockLagData = cloneDeep(mockLagsEmptyPool) as EdgeLag[]
+      mockLagData[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData[0].natPools = [{ startIpAddress: '1.1.1.30', endIpAddress: '1.3.1.50' }]
+
+      // node2 port overlapped with node1 LAG
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortsEmptyPool,
+        [mockEdge2Id]: mockPortData
+      }, {
+        [mockEdge1Id]: mockLagData,
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+
+      await expect(result).rejects.toEqual(`NAT pool ranges on ${mockEdgeList[0].name} overlap with those on ${mockEdgeList[1].name}`)
+    })
+  })
+
+  describe('positive test cases', () => {
+    it('should return false if no ranges are provided', async () => {
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData.forEach(port => {
+        port.natPools = undefined
+      })
+
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortData,
+        [mockEdge2Id]: mockPortData
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if ranges are empty', async () => {
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortsEmptyPool,
+        [mockEdge2Id]: mockPortsEmptyPool
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('should return false if only 1 node with NAT range provided', async () => {
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortsEmptyPool,
+        [mockEdge2Id]: mockPortData
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped', async () => {
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+      const mockPortData2 = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData2[0].natPools = [{ startIpAddress: '1.3.1.2', endIpAddress: '1.3.1.30' }]
+
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortData,
+        [mockEdge2Id]: mockPortData2
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: []
+      }, mockEdgeList)
+      await expect(result).resolves.toEqual(undefined)
+    })
+
+    it('ranges are not overlapped - case2', async () => {
+      const mockPortData = cloneDeep(mockPortsEmptyPool) as EdgePort[]
+      mockPortData[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+      const mockLagData = cloneDeep(mockLagsEmptyPool) as EdgeLag[]
+      mockLagData[0].natPools = [{ startIpAddress: '1.1.2.1', endIpAddress: '1.1.2.30' }]
+
+      const result = natPoolRangeClusterLevelValidator({
+        [mockEdge1Id]: mockPortData,
+        [mockEdge2Id]: mockPortsEmptyPool
+      }, {
+        [mockEdge1Id]: [],
+        [mockEdge2Id]: mockLagData
+      }, mockEdgeList)
+      await expect(result).resolves.toEqual(undefined)
+    })
+  })
+})
 describe('natPoolSizeValidator', () => {
   describe('negative test cases', () => {
     it('should return false if size > 128', async () => {
