@@ -347,7 +347,7 @@ export enum Features {
   ENTITLEMENT_IOT_CTRL_TOGGLE = 'entitlement-iot-ctrl-toggle',
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
-  DEVICE_PROVISION_MANAGEMENT = 'device-provision-management'
+  DEVICE_PROVISION_MANAGEMENT = 'device-provision-management',
   SSO_GROUP_LIMIT100 = 'sso-group-limit100',
   RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
   ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
