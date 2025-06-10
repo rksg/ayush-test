@@ -195,7 +195,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
@@ -682,12 +681,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           }
         }
         ] : [])}
-        iconButton={exportDevice ? {
+        iconButton={{
           icon: <DownloadOutlined />,
           disabled,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: exportCsv
-        } : undefined}
+        }}
         filterPersistence={true}
       />
       <SwitchCliSession
