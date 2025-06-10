@@ -71,11 +71,6 @@ export function IotControllerForm () {
   const isEditMode: boolean = action === 'edit'
 
   const onClickTestConnection = async () => {
-    try {
-      await form.validateFields(['adminDomainName', 'adminPassword', 'host'])
-    } catch (error) {
-      return
-    }
     setTestConnectionStatus(undefined)
     const { publicAddress, publicPort, apiToken } = form.getFieldsValue()
     const payload = {
@@ -90,20 +85,28 @@ export function IotControllerForm () {
       const result = await currentTestConnectionFun.unwrap()
       if(result.serialNumber){
         if (isEditMode) {
-          if (form.getFieldValue('serialNumber') === result.serialNumber) {
+          if (form.getFieldValue('iotSerialNumber') === result.serialNumber) {
             setTestConnectionStatus(TestConnectionStatusEnum.PASS)
           } else {
             setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
           }
-          return
+        } else {
+          form.setFieldsValue({ iotSerialNumber: result.serialNumber })
+          setTestConnectionStatus(TestConnectionStatusEnum.PASS)
         }
-        form.setFieldsValue({ iotSerialNumber: result.serialNumber })
-        setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+      } else {
+        setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
       }
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
   }
+
+  useEffect(() => {
+    if (testConnectionStatus !== undefined) {
+      form.validateFields(['apiToken'])
+    }
+  }, [testConnectionStatus])
 
   const handleChange = () => {
     setTestConnectionStatus(undefined)
@@ -175,9 +178,18 @@ export function IotControllerForm () {
     }
   }
 
+  const apiTokenValidator = async () => {
+    // eslint-disable-next-line max-len
+    if (form.getFieldValue('publicEnabled') && testConnectionStatus !== TestConnectionStatusEnum.PASS) {
+      return Promise.reject($t({ defaultMessage: 'Please test connection first' }))
+    }
+    return Promise.resolve()
+  }
+
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values }
+      // eslint-disable-next-line max-len
+      const formData = form.getFieldValue('publicEnabled') ? { ...values } : { ...values, apiToken: null, publicAddress: null, publicPort: null }
       await addIotController({ params: { ...params },
         payload: formData }).unwrap()
 
@@ -190,7 +202,7 @@ export function IotControllerForm () {
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
       // eslint-disable-next-line max-len
-      const formData = isEditMode ? { ...values, id: data?.id, publicAddress: '', publicPort: 443, apiToken: '' } : { ...values, id: data?.id }
+      const formData = form.getFieldValue('publicEnabled') ? { ...values, id: data?.id } : { ...values, id: data?.id, apiToken: null, publicAddress: null, publicPort: null }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -332,9 +344,8 @@ export function IotControllerForm () {
                       initialValue={data?.apiToken}
                       label={<>{$t({ defaultMessage: 'API Token' })}
                         <Tooltip.Question
-                          title={$t({ defaultMessage:
-                            // eslint-disable-next-line max-len
-                            'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
+                          title={// eslint-disable-next-line max-len
+                            <div><div>{$t({ defaultMessage: 'The path for API Token to copy from vRIoT controller is as below' })}</div><div><strong>vRIoT Admin Page -&gt Account -&gt API Token (Copy the Token)</strong></div><div>{$t({ defaultMessage: 'If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}</div></div>}
                           placement='right'
                           iconStyle={{
                             width: 16,
@@ -343,7 +354,11 @@ export function IotControllerForm () {
                         />
                       </>}
                       rules={[
-                        { validator: (_, value) => excludeSpaceRegExp(value) }
+                        { validator: (_, value) => excludeSpaceRegExp(value) },
+                        {
+                          // eslint-disable-next-line max-len
+                          validator: () => apiTokenValidator()
+                        }
                       ]}
                       children={<PasswordInput onChange={handleChange} />}
                     />
