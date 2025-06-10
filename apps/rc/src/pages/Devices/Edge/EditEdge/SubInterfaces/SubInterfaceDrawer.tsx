@@ -65,10 +65,16 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
   const { isPortEnabled, hasCorePort, hasAccessPort } = useMemo(() => {
     let isPortEnabled = false
+    const allSubInterfacesWithoutCurrent = allSubInterfaces?.filter(s => s.id !== data?.id)
+
     const hasCorePort = portData?.some(p => p.corePortEnabled) ||
-      lagData?.some(l => l.corePortEnabled) || allSubInterfaces?.some(s => s.corePortEnabled)
+      lagData?.some(l => l.corePortEnabled) ||
+      allSubInterfacesWithoutCurrent?.some(s => s.corePortEnabled)
+
     const hasAccessPort = portData?.some(p => p.accessPortEnabled) ||
-      lagData?.some(l => l.accessPortEnabled) || allSubInterfaces?.some(s => s.accessPortEnabled)
+      lagData?.some(l => l.accessPortEnabled) ||
+      allSubInterfacesWithoutCurrent?.some(s => s.accessPortEnabled)
+
     if(portId !== undefined) {
       const port = portData?.find(p => p.id === portId)
       isPortEnabled = port?.enabled ?? false
@@ -76,12 +82,13 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
       const lag = lagData?.find(l => l.id === lagId)
       isPortEnabled = lag?.lagEnabled ?? false
     }
+
     return {
       isPortEnabled,
       hasCorePort,
       hasAccessPort
     }
-  }, [portData, lagData, portId, lagId, allSubInterfaces])
+  }, [portData, lagData, portId, lagId, allSubInterfaces, data?.id])
 
   const hasWanPort = getEdgeWanInterfaceCount(portData, lagData) > 0
   const isSdLanRun = !!edgeSdLanData
