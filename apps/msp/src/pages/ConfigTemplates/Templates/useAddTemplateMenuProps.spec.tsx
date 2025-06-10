@@ -6,7 +6,6 @@ import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, u
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 

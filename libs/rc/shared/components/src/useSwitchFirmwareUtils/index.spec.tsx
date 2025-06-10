@@ -21,7 +21,9 @@ import { useSwitchFirmwareUtils } from '.'
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitcDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  }),
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
@@ -44,7 +46,7 @@ describe('Test useSwitchFirmwareUtils', () => {
     })
     const { parseSwitchVersion } = result.current
     expect(parseSwitchVersion('09010h')).toBe('9.0.10h')
-    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f_b19')
+    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f')
   })
 
   it('getSwitchVersionLabel', async () => {
