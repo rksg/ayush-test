@@ -1,40 +1,21 @@
 import { useIntl } from 'react-intl'
 
-import {
-  Button,
-  Drawer,
-  Loader,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import {
-  useMspCustomerListQuery
-} from '@acx-ui/msp/services'
-import {
-  MspEc
-} from '@acx-ui/msp/utils'
-import {
-  useTableQuery,
-  ConfigTemplate
-} from '@acx-ui/rc/utils'
-
-import { useEcFilters } from './templateUtils'
+import { Button, Drawer, Loader, Table, TableProps }     from '@acx-ui/components'
+import { CommonConfigTemplateDrawerProps, useEcFilters } from '@acx-ui/main/components'
+import { useMspCustomerListQuery }                       from '@acx-ui/msp/services'
+import { MspEc }                                         from '@acx-ui/msp/utils'
+import { useTableQuery }                                 from '@acx-ui/rc/utils'
 
 
-interface ApplyTemplateDrawerProps {
-  setVisible: (visible: boolean) => void
-  selectedTemplates: ConfigTemplate[]
-}
-
-export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
+export const AppliedToTenantDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const { $t } = useIntl()
-  const { setVisible, selectedTemplates } = props
+  const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()
 
   const mspEcTenantsPayload = {
     filters: {
       ...ecFilters,
-      id: [...(selectedTemplates[0].appliedOnTenants ?? [])]
+      id: [...(selectedTemplate.appliedOnTenants ?? [])]
     },
     fields: [
       'check-all',

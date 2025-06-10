@@ -3,12 +3,13 @@ import { useContext, useState } from 'react'
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateOverrideModal, CustomerFirmwareReminder, MAX_APPLICABLE_EC_TENANTS,
   overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
-  useConfigTemplateOverride, useEcFilters, ConfigTemplatePageUI
+  useConfigTemplateOverride, useEcFilters, ConfigTemplatePageUI,
+  CommonConfigTemplateDrawerProps
 } from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
 import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
@@ -24,12 +25,7 @@ import * as UI from './styledComponents'
 
 const mspUtils = MSPUtils()
 
-interface ApplyTemplateDrawerProps {
-  setVisible: (visible: boolean) => void
-  selectedTemplate: ConfigTemplate
-}
-
-export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
+export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const { $t } = useIntl()
   const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()

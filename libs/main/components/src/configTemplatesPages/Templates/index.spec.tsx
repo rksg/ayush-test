@@ -70,7 +70,7 @@ describe('ConfigTemplateList component', () => {
   it('should render table with data', async () => {
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -88,22 +88,19 @@ describe('ConfigTemplateList component', () => {
   it('should render appliedToTenant Drawer with data', async () => {
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={jest.fn()}
+          AppliedToDrawer={() => <div>AppliedToDrawer</div>}
+        />
       </Provider>, {
         route: { params, path }
       }
     )
 
-    expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
     const row = await screen.findByRole('row', { name: /Template 1/i })
-    expect(row).toBeVisible()
-    const appliedToButton = await within(row).findByRole('button', {
-      name: /2/i
-    })
+    const appliedToButton = await within(row).findByRole('button', { name: /2/i })
     await userEvent.click(appliedToButton)
-    expect(await screen.findByText(/applied to ec tenants/i)).toBeVisible()
-    await userEvent.click(screen.getByText('Cancel'))
-    expect(screen.queryByText(/applied to ec tenants/i)).toBeNull()
+    expect(await screen.findByText(/AppliedToDrawer/i)).toBeVisible()
   })
 
   it('should apply template', async () => {
@@ -121,7 +118,10 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>} />
+        <ConfigTemplateList
+          ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>}
+          AppliedToDrawer={jest.fn()}
+        />
       </Provider>, {
         route: { params, path }
       }
@@ -150,7 +150,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -176,7 +176,7 @@ describe('ConfigTemplateList component', () => {
   it('should navigate to the edit page', async () => {
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -222,7 +222,7 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-          <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+          <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
         </ConfigTemplateContext.Provider>
       </Provider>, {
         route: { params, path }
@@ -249,7 +249,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -278,7 +278,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }
@@ -297,7 +297,7 @@ describe('ConfigTemplateList component', () => {
 
     render(
       <Provider>
-        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} />
+        <ConfigTemplateList ApplyTemplateDrawer={jest.fn()} AppliedToDrawer={jest.fn()} />
       </Provider>, {
         route: { params, path }
       }

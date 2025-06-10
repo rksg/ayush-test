@@ -18,8 +18,9 @@ export interface CommonConfigTemplateDrawerProps {
   selectedTemplate: ConfigTemplate
 }
 
-interface ConfigTemplateViewProps {
+export interface ConfigTemplateViewProps {
   ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  AppliedToDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
 }
 
 export function ConfigTemplateView (props: ConfigTemplateViewProps) {
@@ -30,6 +31,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
       <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
       <ConfigTemplateList
         ApplyTemplateDrawer={props.ApplyTemplateDrawer}
+        AppliedToDrawer={props.AppliedToDrawer}
       />
     </>
   )

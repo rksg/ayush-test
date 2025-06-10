@@ -42,7 +42,7 @@ describe('AppliedToTenantDrawer component', () => {
       <Provider>
         <AppliedToTenantDrawer
           setVisible={mockSetVisible}
-          selectedTemplates={[selectedTemplate] as ConfigTemplate[]} />
+          selectedTemplate={selectedTemplate as ConfigTemplate} />
       </Provider>, {
         route: { params, path }
       }

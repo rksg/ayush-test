@@ -49,9 +49,8 @@ import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-do
 import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
-import { CommonConfigTemplateDrawerProps } from '..'
+import { ConfigTemplateViewProps } from '..'
 
-import { AppliedToTenantDrawer }                            from './AppliedToTenantDrawer'
 import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
 import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
 import { ShowDriftsDrawer }                                 from './ShowDriftsDrawer'
@@ -63,18 +62,14 @@ import {
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
-interface ConfigTemplateListProps {
-  ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
-}
-
-export function ConfigTemplateList (props: ConfigTemplateListProps) {
-  const { ApplyTemplateDrawer } = props
+export function ConfigTemplateList (props: ConfigTemplateViewProps) {
+  const { ApplyTemplateDrawer, AppliedToDrawer } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
-  const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
+  const [ appliedToDrawerVisible, setAppliedToDrawerVisible ] = useState(false)
   // eslint-disable-next-line max-len
   const { visible: cloneModalVisible, setVisible: setCloneModalVisible, canClone } = useCloneConfigTemplate()
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
@@ -189,7 +184,7 @@ export function ConfigTemplateList (props: ConfigTemplateListProps) {
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToTenantDrawerVisible,
+            setAppliedToDrawerVisible,
             setSelectedTemplates,
             setAccessControlSubPolicyVisible,
             setDetailsDrawerVisible,
@@ -216,10 +211,10 @@ export function ConfigTemplateList (props: ConfigTemplateListProps) {
         setVisible={setShowDriftsDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
-      {appliedToTenantDrawerVisible &&
-      <AppliedToTenantDrawer
-        setVisible={setAppliedToTenantDrawerVisible}
-        selectedTemplates={selectedTemplates}
+      {appliedToDrawerVisible &&
+      <AppliedToDrawer
+        setVisible={setAppliedToDrawerVisible}
+        selectedTemplate={selectedTemplates[0]}
       />}
       {cloneModalVisible &&
       <ConfigTemplateCloneModal
@@ -241,7 +236,7 @@ export function ConfigTemplateList (props: ConfigTemplateListProps) {
 }
 
 interface TemplateColumnProps {
-  setAppliedToTenantDrawerVisible: (visible: boolean) => void,
+  setAppliedToDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
@@ -252,7 +247,7 @@ interface TemplateColumnProps {
 function useColumns (props: TemplateColumnProps) {
   const { $t } = useIntl()
   const {
-    setAppliedToTenantDrawerVisible,
+    setAppliedToDrawerVisible,
     setSelectedTemplates,
     setAccessControlSubPolicyVisible,
     setShowDriftsDrawerVisible,
@@ -318,7 +313,7 @@ function useColumns (props: TemplateColumnProps) {
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
-            setAppliedToTenantDrawerVisible(true)
+            setAppliedToDrawerVisible(true)
           }}>
           {count}
         </Button>
