@@ -1014,8 +1014,8 @@ export function ManageCustomer () {
                 return (
                   (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
                   (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!isMDU && value !== MspEcTierEnum.Core) &&
-                  (!isMDU && !isHospitality &&
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
                   (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
                 ) &&
                 <Radio
