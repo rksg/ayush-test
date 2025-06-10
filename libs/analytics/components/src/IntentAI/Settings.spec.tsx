@@ -13,8 +13,8 @@ import { notificationApiURL, Provider, store }                   from '@acx-ui/s
 import { render, screen, mockServer, waitFor, mockRestApiQuery } from '@acx-ui/test-utils'
 import { CatchErrorDetails }                                     from '@acx-ui/utils'
 
-import { AiFeatures }                                                                                       from './config'
-import { Settings, convertToDbConfig, getEnabledIntentSubscriptionsFromDb, prepareNotificationPreferences } from './Settings'
+import { AiFeatures }                                                                                            from './config'
+import { Settings, convertToIntentSubscriptions, getEnabledIntentSubscriptions, prepareNotificationPreferences } from './Settings'
 
 const components = require('@acx-ui/components')
 jest.mock('@acx-ui/components', () => ({
@@ -256,8 +256,8 @@ describe('IntentAI Settings', () => {
 describe('Intent Subscription DB/UI Format Conversion', () => {
   it('should use default config when user has not configured yet after parsing from DB', () => {
     const dbConfig = {}
-    const result = getEnabledIntentSubscriptionsFromDb(JSON.stringify(dbConfig))
-    expect(result).toEqual([
+    const uiConfig = getEnabledIntentSubscriptions(JSON.stringify(dbConfig))
+    expect(uiConfig).toEqual([
       AiFeatures.RRM,
       AiFeatures.AIOps,
       AiFeatures.EquiFlex
@@ -268,8 +268,8 @@ describe('Intent Subscription DB/UI Format Conversion', () => {
       [AiFeatures.RRM]: false,
       [AiFeatures.AIOps]: true
     }
-    const result = getEnabledIntentSubscriptionsFromDb(JSON.stringify(dbConfig))
-    expect(result).toEqual([
+    const uiConfig = getEnabledIntentSubscriptions(JSON.stringify(dbConfig))
+    expect(uiConfig).toEqual([
       AiFeatures.AIOps,
       AiFeatures.EquiFlex
     ])
@@ -279,8 +279,8 @@ describe('Intent Subscription DB/UI Format Conversion', () => {
       AiFeatures.RRM,
       AiFeatures.EcoFlex
     ]
-    const result = convertToDbConfig(uiConfig)
-    expect(JSON.parse(result)).toEqual({
+    const dbConfig = convertToIntentSubscriptions(uiConfig)
+    expect(JSON.parse(dbConfig)).toEqual({
       [AiFeatures.RRM]: true,
       [AiFeatures.AIOps]: false,
       [AiFeatures.EquiFlex]: false,

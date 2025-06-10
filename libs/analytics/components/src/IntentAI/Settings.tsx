@@ -53,17 +53,17 @@ const defaultIntentSubscriptions: IntentSubscriptions = {
   [AiFeatures.EquiFlex]: true,
   [AiFeatures.EcoFlex]: false
 }
-export const getEnabledIntentSubscriptionsFromDb = (tenantSettings: string) => {
+export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
   const dbConfig = JSON.parse(tenantSettings) as IntentSubscriptions
   const merged = { ...defaultIntentSubscriptions, ...dbConfig }
   const enabledKeys = (Object.keys(merged) as (keyof typeof merged)[])
     .filter((key) => merged[key])
   return enabledKeys
 }
-export const convertToDbConfig = (targetKeys: string[]): string => {
+export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
   const dbConfig = {} as IntentSubscriptions
   (Object.values(AiFeatures) as string[]).forEach((key) => {
-    dbConfig[key as keyof IntentSubscriptions] = targetKeys.includes(key)
+    dbConfig[key as keyof IntentSubscriptions] = enabledKeys.includes(key)
   })
   return JSON.stringify(dbConfig)
 }
@@ -80,7 +80,7 @@ export function Settings ({ settings }: { settings: string }) {
     .map(([key, value]) => ({ name: $t(value), key }))
 
   useEffect(() => {
-    setTargetKeys(getEnabledIntentSubscriptionsFromDb(settings))
+    setTargetKeys(getEnabledIntentSubscriptions(settings))
   }, [settings])
 
   const isRai = get('IS_MLISA_SA')
@@ -104,7 +104,7 @@ export function Settings ({ settings }: { settings: string }) {
   const saveData = async () => {
     const [tenantSettingsResult, notificationPreferencesResult] = await Promise.all([
       updateSettings({
-        'enabled-intent-features': convertToDbConfig(targetKeys)
+        'enabled-intent-features': convertToIntentSubscriptions(targetKeys)
       }),
       updatePreferences({ tenantId, preferences: notificationPreferences })
     ])
@@ -138,7 +138,7 @@ export function Settings ({ settings }: { settings: string }) {
 
   const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent | undefined) => {
     e?.stopPropagation()
-    setTargetKeys(getEnabledIntentSubscriptionsFromDb(settings))
+    setTargetKeys(getEnabledIntentSubscriptions(settings))
     setNotificationPreferences(query.data!)
     setNotificationChecked(hasIntentEmailNotification(query.data!))
     setVisible(false)
