@@ -27,7 +27,7 @@ const lldpTlv = {
 
 const mockedTableResult = {
   id: 'profile1',
-  name: 'Profile One',
+  name: 'ProfileOne',
   type: 'Standard',
   untaggedVlan: '10',
   taggedVlans: ['20', '30'],
@@ -88,7 +88,7 @@ describe('SwitchPortProfileForm', () => {
 
     const profileName = await screen.findByLabelText(/Profile Name/)
     const untaggedVlan = await screen.findByLabelText(/Untagged VLAN/)
-    await userEvent.type(profileName, 'Test Profile')
+    await userEvent.type(profileName, 'TestProfile')
     await userEvent.type(untaggedVlan, '100')
 
     const saveButton = await screen.findByRole('button', { name: /Add/ })
@@ -122,7 +122,7 @@ describe('SwitchPortProfileForm', () => {
     )
 
     const profileName = await screen.findByLabelText(/Profile Name/)
-    fireEvent.change(profileName, { target: { value: 'Updated Profile' } })
+    fireEvent.change(profileName, { target: { value: 'UpdatedProfile' } })
 
     const untaggedVlan = await screen.findByLabelText(/Untagged VLAN/)
     fireEvent.change(untaggedVlan, { target: { value: '200' } })
@@ -164,7 +164,7 @@ describe('SwitchPortProfileForm', () => {
     )
 
     const profileName = await screen.findByLabelText(/Profile Name/)
-    fireEvent.change(profileName, { target: { value: 'Profile One' } })
+    fireEvent.change(profileName, { target: { value: 'ProfileOne' } })
     const saveButton = await screen.findByRole('button', { name: /Add/ })
     await userEvent.click(saveButton)
 

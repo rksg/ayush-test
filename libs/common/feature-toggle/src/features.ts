@@ -174,12 +174,11 @@ export enum Features {
   SSO = 'ADMN-SSO',
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
-  SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
-  SWITCH_LEVEL_VLAN = 'switch-level-vlan',
+  SWITCH_LEVEL_VLAN = 'removable-ff',
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_PORT_HYPERLINK = 'switch-port-hyperlink-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
@@ -187,9 +186,8 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
-  SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
-  SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
+  SWITCH_PROFILE_ONBOARD_ONLY= 'removable-ff',
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
@@ -358,6 +356,7 @@ export enum Features {
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
+  WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle'
 }
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { cloneDeep, omit, uniq }                   from 'lodash'
+import { cloneDeep, omit, sortBy, uniq }           from 'lodash'
 import { Params }                                  from 'react-router-dom'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -717,11 +717,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const venueIds = uniq(filters.map(item => item.venueId))
         const isTemplate = payloadData[0].isTemplate
-        const venueApgroupMap = await getVenueApgroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
+        const venueApGroupMap = await getVenueApGroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
-        const apGroupIds = venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+        const apGroupIds = venueApGroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
 
         let networkVenuesApGroupList = [] as NetworkVenue[]
         const apGroupNetworkListParams = {
@@ -751,35 +751,40 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         let aggregatedList: NetworkVenue[] | undefined
 
-        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Network
           const venueId = filters[0].venueId
           const networkVenueData = networkVenuesApGroupList[0]
           const networkVenue = omit(networkVenueData, ['networkId', 'id'])
 
           aggregatedList = [{
             ...networkVenue,
-            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+            apGroups: cloneDeep(venueApGroupMap.get(venueId))
           }]
 
         } else {
           aggregatedList = networkVenuesApGroupList.map(networkVenue => {
             const { venueId, apGroups=[] } = networkVenue
-            const newApgroups = cloneDeep(apGroups)
+            const customApGroups: NetworkApGroup[] = []
+            const defaultApGroups: NetworkApGroup[] = []
 
-            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+            const currentApGroupsDefaultValue = venueApGroupMap.get(venueId!)
             currentApGroupsDefaultValue?.forEach(apGroupDefaultValue => {
               const customApGroup = apGroups.find(item => item.apGroupId === apGroupDefaultValue.apGroupId)
-              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroupDefaultValue.apGroupId)
               if (!customApGroup) {
-                newApgroups.push(cloneDeep(apGroupDefaultValue))
+                defaultApGroups.push(cloneDeep(apGroupDefaultValue))
               } else {
-                newApgroups[customApGroupIndex] = { ...apGroupDefaultValue, ...customApGroup }
+                customApGroups.push({ ...apGroupDefaultValue, ...customApGroup })
               }
             })
 
+            const newApGroups = [
+              ...sortBy(customApGroups, ['apGroupName']),
+              ...defaultApGroups
+            ]
+
             return {
               ...networkVenue,
-              apGroups: newApgroups
+              apGroups: newApGroups
             }
           })
         }
@@ -801,11 +806,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const venueIds = uniq(filters.map(item => item.venueId))
         const isTemplate = payloadData[0].isTemplate
-        const venueApgroupMap = await getVenueApgroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
+        const venueApGroupMap = await getVenueApGroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
-        const apGroupIds = venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+        const apGroupIds = venueApGroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
 
         let networkVenuesApGroupList = [] as NetworkVenue[]
         const apGroupNetworkListParams = {
@@ -835,35 +840,40 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         let aggregatedList: NetworkVenue[] | undefined
 
-        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Network
           const venueId = filters[0].venueId
           const networkVenueData = networkVenuesApGroupList[0]
           const networkVenue = omit(networkVenueData, ['networkId', 'id'])
 
           aggregatedList = [{
             ...networkVenue,
-            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+            apGroups: cloneDeep(venueApGroupMap.get(venueId))
           }]
 
         } else {
           aggregatedList = networkVenuesApGroupList.map(networkVenue => {
             const { venueId, apGroups=[] } = networkVenue
-            const newApgroups = cloneDeep(apGroups)
+            const customApGroups: NetworkApGroup[] = []
+            const defaultApGroups: NetworkApGroup[] = []
 
-            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+            const currentApGroupsDefaultValue = venueApGroupMap.get(venueId!)
             currentApGroupsDefaultValue?.forEach(apGroupDefaultValue => {
               const customApGroup = apGroups.find(item => item.apGroupId === apGroupDefaultValue.apGroupId)
-              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroupDefaultValue.apGroupId)
               if (!customApGroup) {
-                newApgroups.push(cloneDeep(apGroupDefaultValue))
+                defaultApGroups.push(cloneDeep(apGroupDefaultValue))
               } else {
-                newApgroups[customApGroupIndex] = { ...apGroupDefaultValue, ...customApGroup }
+                customApGroups.push({ ...apGroupDefaultValue, ...customApGroup })
               }
             })
 
+            const newApGroups = [
+              ...sortBy(customApGroups, ['apGroupName']),
+              ...defaultApGroups
+            ]
+
             return {
               ...networkVenue,
-              apGroups: newApgroups
+              apGroups: newApGroups
             }
           })
         }
@@ -2722,8 +2732,8 @@ export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?:
   return scheduleSlotIndexMap
 }
 
-export const getVenueApgroupMapWithDefaultValue = async (venueIds: string[], params: Params<string> | undefined, isTemplate: boolean = false, fetchWithBQ: any) => {
-  let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+export const getVenueApGroupMapWithDefaultValue = async (venueIds: string[], params: Params<string> | undefined, isTemplate: boolean = false, fetchWithBQ: any) => {
+  let venueApGroupMap = new Map<string, NetworkApGroup[]>()
   const apGroupUrlInfo = isTemplate
     ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
     : WifiRbacUrlsInfo.getApGroupsList
@@ -2751,10 +2761,10 @@ export const getVenueApgroupMapWithDefaultValue = async (venueIds: string[], par
             }[]
           }
 
-    const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+    const apGroupsDefaultValue = apGroupListData.data.map((d) => {
       return {
         apGroupId: d.id,
-        ...(d.name && { apGroupName: d.name }),
+        apGroupName: d.name,
         isDefault: !d.name,
         radio: 'Both',
         radioTypes: ['2.4-GHz', '5-GHz'],
@@ -2765,8 +2775,8 @@ export const getVenueApgroupMapWithDefaultValue = async (venueIds: string[], par
       } as NetworkApGroup
     })
 
-    venueApgroupMap.set(venueId, apgroupsDefaultValue)
+    venueApGroupMap.set(venueId, apGroupsDefaultValue)
   }
 
-  return venueApgroupMap
+  return venueApGroupMap
 }
