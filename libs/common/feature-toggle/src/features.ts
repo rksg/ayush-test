@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
-  ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
   ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
