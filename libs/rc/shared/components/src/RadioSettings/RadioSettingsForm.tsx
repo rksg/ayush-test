@@ -66,7 +66,7 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
-  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType
+  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType && context !== 'apGroup'
 
   const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']

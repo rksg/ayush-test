@@ -23,12 +23,12 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }                                              from '@acx-ui/msp/utils'
-import { getConfigTemplatePath, hasConfigTemplateAccess }               from '@acx-ui/rc/utils'
-import { TenantType }                                                   from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles  }              from '@acx-ui/user'
-import { AccountType, AccountVertical, getOpsApi, getJwtTokenPayload  } from '@acx-ui/utils'
+import { MspRbacUrlsInfo }                                 from '@acx-ui/msp/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess }  from '@acx-ui/rc/utils'
+import { TenantType }                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                       from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles  } from '@acx-ui/user'
+import { AccountType, getOpsApi  }                         from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -42,14 +42,12 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
-  const { acx_account_vertical } = getJwtTokenPayload()
   const isVar = tenantType === AccountType.VAR
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
-  const isMDU = acx_account_vertical === AccountVertical.MDU
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE), tenantType)
   const { rbacOpsApiEnabled } = getUserProfile()
@@ -91,13 +89,6 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     }] : []),
-    ...(isMDU) ? [{
-      uri: '/mdu360',
-      label: $t({ defaultMessage: 'MDU 360' }),
-      tenantType: 'v' as TenantType,
-      inactiveIcon: SpeedIndicatorOutlined,
-      activeIcon: SpeedIndicatorSolid
-    }] : [],
     {
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,

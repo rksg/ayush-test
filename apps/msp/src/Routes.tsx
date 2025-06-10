@@ -1,6 +1,6 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360, Mdu360 }                                                                         from '@acx-ui/analytics/components'
+import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
 import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
@@ -43,7 +43,7 @@ import { DataStudio }                                                           
 import { Provider }                                                              from '@acx-ui/store'
 import { SwitchScopes }                                                          from '@acx-ui/types'
 import { AuthRoute }                                                             from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload }                      from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
 import { hspReducer }                              from './HspReducer'
@@ -53,6 +53,7 @@ import PortalDetail                                from './pages/ConfigTemplates
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
+import Mdu360                                      from './pages/Mdu360'
 import { MspCustomers }                            from './pages/MspCustomers'
 import { MspRecCustomers }                         from './pages/MspRecCustomers'
 import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
@@ -69,16 +70,12 @@ export function Init () {
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
 
-  const { tenantType, acx_account_vertical } = getJwtTokenPayload()
+  const { tenantType } = getJwtTokenPayload()
 
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   const isShowBrand360 = isBrand360Enabled && state.isHsp && !isInstaller
 
-  const isShowMdu360 = acx_account_vertical === AccountVertical.MDU
-
-  const linkTo = isShowMdu360 ? '/mdu360' : isShowBrand360 ? '/brand360' : '/dashboard'
-
-  const basePath = useTenantLink(linkTo, 'v')
+  const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
     to={{ pathname: basePath.pathname }}

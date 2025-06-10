@@ -51,4 +51,3 @@ export function ConfigProvider (props: ConfigProviderProps) {
     </LocaleProvider>
   )
 }
-
