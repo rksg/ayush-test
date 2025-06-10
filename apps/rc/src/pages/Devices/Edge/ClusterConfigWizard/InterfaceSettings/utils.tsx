@@ -494,25 +494,30 @@ const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
         }))
     } as NodeSubInterfaces)
   })
-  Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
-    // eslint-disable-next-line max-len
-    const lagSettingsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-    // eslint-disable-next-line max-len
+  const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
+    result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
+    return result
+  }, {} as { [serialNumber: string]: string[] })
+  Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
+    const lagMemberIdsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+      ?.flatMap(lag => lag.lagMembers.map(member => member.portId))
+    const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
     const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
     if(currentSubInterfaceItem) {
-      // eslint-disable-next-line max-len
-      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).filter(([portId]) => {
-        return !lagSettingsOfCurrentNode?.some(lag => lag.lagMembers.some(member => member.portId === portId))
-      }).map(([portId, subInterfaces]) => ({
-        portId: portId,
-        subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+      currentSubInterfaceItem.ports = portIds.map(portId => ({
+        portId,
+        subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+          preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+          []
       }))
     } else {
       subInterfaceSettings.push({
         serialNumber,
-        ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
-          portId: portId,
-          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        ports: portIds.map(portId => ({
+          portId,
+          subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+            preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+            []
         }))
       } as NodeSubInterfaces)
     }
