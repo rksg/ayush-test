@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../models/EdgeEnum'
-import { EdgeLag, EdgePort, EdgeStatus }    from '../../types'
+import { EdgeIpModeEnum, EdgePortTypeEnum }            from '../../models/EdgeEnum'
+import { EdgeLag, EdgePort, EdgeStatus, SubInterface } from '../../types'
 
 import { mockMultiWanPortConfigs }    from './__tests__/fixtures/dualWan'
 import { mockEdgeClusterList }        from './__tests__/fixtures/general'
@@ -22,6 +22,7 @@ import {
   validateUniqueIp,
   interfaceSubnetValidator,
   edgeWanSyncIpModeValidator,
+  validateCoreAndAccessPortsConfiguration,
   natPoolRangeClusterLevelValidator
 } from './edgeValidators'
 
@@ -1235,5 +1236,33 @@ describe('edgeWanSyncIpModeValidator', () => {
     const ports: EdgePort[] = []
     const lags: EdgeLag[] = []
     await expect(edgeWanSyncIpModeValidator(ports, lags)).resolves.toEqual(undefined)
+  })
+})
+
+describe('validateCoreAndAccessPortsConfiguration', () => {
+  const portData = [{
+    enabled: true,
+    portType: EdgePortTypeEnum.LAN,
+    corePortEnabled: true,
+    accessPortEnabled: true
+  }] as EdgePort[]
+  const lagData = [{
+    lagEnabled: true,
+    portType: EdgePortTypeEnum.LAN,
+    corePortEnabled: false,
+    accessPortEnabled: false
+  }] as EdgeLag[]
+  const SubInterfaceData = [{
+    corePortEnabled: false,
+    accessPortEnabled: false
+  }] as SubInterface[]
+  it('resolves when core and access ports are configured simultaneously', async () => {
+    await expect(validateCoreAndAccessPortsConfiguration(portData, lagData, SubInterfaceData)).resolves.toEqual(undefined)
+  })
+
+  it('reject when core port count is not equal to access port count', async () => {
+    const invalidPortData = cloneDeep(portData)
+    invalidPortData[0].corePortEnabled = false
+    await expect(validateCoreAndAccessPortsConfiguration(invalidPortData, lagData, SubInterfaceData)).rejects.toEqual('Core and Access ports must be configured simultaneously.')
   })
 })
