@@ -22,12 +22,13 @@ import {
   convertEdgeNetworkIfConfigToApiPayload,
   getEdgePortTypeOptions,
   isInterfaceInVRRPSetting,
-  validateEdgeGateway
+  validateEdgeGateway,
+  getMergedLagTableDataFromLagForm,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
 import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
-import { formFieldsPropsType }              from '../EdgeFormItem/PortCommonForm/types'
 import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
 import { useIsEdgeFeatureReady }            from '../useEdgeActions'
 
@@ -48,7 +49,7 @@ interface LagDrawerProps {
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
 }
 
 const defaultFormValues = {
@@ -275,14 +276,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const natPoolClusterLevelValidator = () => {
     const currentData = form.getFieldsValue(true) as EdgeLag
-    const updatedLagList = getMergedLagData(existedLagList, currentData)
     // eslint-disable-next-line max-len
-    return get(formFieldsProps, 'natStartIp')?.customValidator?.(currentData, updatedLagList)
+    return get(get(formFieldsProps, 'natStartIp')?.rules?.[0], 'validator')?.(undefined, currentData)
   }
 
   const gatewayCheckFromNodeLevel = () => {
     const currentData = form.getFieldsValue(true) as EdgeLag
-    const updatedLagList = getMergedLagData(existedLagList, currentData)
+    const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentData)
 
     const dryRunPorts = cloneDeep(portList ?? [])
     currentData.lagMembers.forEach(member => {
@@ -370,7 +370,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     >
       {({ getFieldsValue }) => {
         const currentLagData = getFieldsValue(true) as EdgeLag
-        const updatedLagList = getMergedLagData(existedLagList, currentLagData)
+        const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentLagData)
 
         return <EdgePortCommonForm
           formRef={form}
@@ -437,21 +437,4 @@ const forceUpdateCondition = (prev:unknown, cur: unknown) => {
         || _.get(prev, 'lagMembers') !== _.get(cur, 'lagMembers')
         || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
         || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
-}
-
-// Merge changed lag data and current lag data form api
-const getMergedLagData = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
-  let updatedLagData
-  if (lagData) {
-    updatedLagData = _.cloneDeep(lagData)
-    const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
-    if (targetIdx !== -1) {
-      updatedLagData[targetIdx] = changedLag
-    } else {
-      updatedLagData.push(changedLag)
-    }
-  } else {
-    updatedLagData = [changedLag]
-  }
-  return updatedLagData
 }

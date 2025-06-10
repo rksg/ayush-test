@@ -20,13 +20,13 @@ import {
   getEdgePortDisplayName,
   getEdgePortIpModeString,
   isInterfaceInVRRPSetting,
-  sortProp
+  sortProp,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getOpsApi }                     from '@acx-ui/utils'
 
-import { formFieldsPropsType }   from '../EdgeFormItem/PortCommonForm/types'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { LagDrawer } from './LagDrawer'
@@ -50,7 +50,7 @@ interface EdgeLagTableProps {
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
   isSupportAccessPort?: boolean
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {

@@ -13,7 +13,7 @@ import {
   validateEdgeAllPortsEmptyLag,
   natPoolRangeClusterLevelValidator,
   useIsEdgeFeatureReady,
-  EdgeInterface
+  getMergedLagTableDataFromLagForm
 } from '@acx-ui/rc/utils'
 import { EdgeScopes } from '@acx-ui/types'
 
@@ -210,15 +210,18 @@ const LagSettingView = (props: LagSettingViewProps) => {
               isSupportAccessPort={isSupportAccessPort}
               formFieldsProps={{
                 natStartIp: {
-                  customValidator: isMultiNatIpEnabled
-                    ? (_lagData: EdgeInterface, nodeLagList?: EdgeInterface[]) => {
+                  rules: isMultiNatIpEnabled
+                    ? [{ validator: (_, currentData: EdgeLag) => {
                       // eslint-disable-next-line max-len
                       const { ports: allPortsData, lags: allLagsData } = getAllPhysicalInterfaceFormData(form)
-                      allLagsData[serialNumber] = nodeLagList as EdgeLag[]
+
+                      // eslint-disable-next-line max-len
+                      const mergedData = getMergedLagTableDataFromLagForm(allLagsData[serialNumber], currentData as EdgeLag)
+                      allLagsData[serialNumber] = mergedData
 
                       // eslint-disable-next-line max-len
                       return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
-                    } : undefined
+                    } }] : []
                 }
               }}
             />

@@ -570,3 +570,20 @@ export const getEdgeNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | unde
       return item?.startIpAddress && item?.endIpAddress
     })
 }
+
+// Merge changed LAG data / new LAG data with current LAGs table data
+export const getMergedLagTableDataFromLagForm = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
+  let updatedLagData
+  if (lagData) {
+    updatedLagData = _.cloneDeep(lagData)
+    const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
+    if (targetIdx !== -1) {
+      updatedLagData[targetIdx] = changedLag
+    } else {
+      updatedLagData.push(changedLag)
+    }
+  } else {
+    updatedLagData = [changedLag]
+  }
+  return updatedLagData
+}

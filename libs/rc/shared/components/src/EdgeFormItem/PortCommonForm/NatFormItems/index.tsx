@@ -4,8 +4,8 @@ import { Form, Row, Col, Switch, Input, Space, FormItemProps } from 'antd'
 import { get, omit }                                           from 'lodash'
 import { useIntl }                                             from 'react-intl'
 
-import { cssStr, StepsFormLegacy }                                       from '@acx-ui/components'
-import { Features }                                                      from '@acx-ui/feature-toggle'
+import { cssStr, StepsFormLegacy } from '@acx-ui/components'
+import { Features }                from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   convertIpToLong,
@@ -13,19 +13,19 @@ import {
   EdgeLag, EdgeNatPool, EdgePort,
   getEdgeNatPools,
   IncompatibilityFeatures,
-  natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
+  natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { ApCompatibilityToolTip }                         from '../../../ApCompatibility/ApCompatibilityToolTip'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { useIsEdgeFeatureReady }                          from '../../../useEdgeActions'
 import { StyledNoMarginFormItem }                         from '../styledComponents'
-import { formFieldsPropsType }                            from '../types'
 
 export interface NatFormItemsProps {
   parentNamePath: string[],
   getFieldFullPath: (fieldName: string) => string[],
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
   clusterInfo: EdgeClusterStatus,
   portsData: EdgePort[],
   lagData: EdgeLag[] | undefined,
