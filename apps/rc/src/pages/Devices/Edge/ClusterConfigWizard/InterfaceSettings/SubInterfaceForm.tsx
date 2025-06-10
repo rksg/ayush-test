@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Form, Space, Typography } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { useStepFormContext }                                                       from '@acx-ui/components'
 import { Features }                                                                 from '@acx-ui/feature-toggle'
@@ -51,9 +51,9 @@ const SubInterfaceSettingView = () => {
   const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
   // eslint-disable-next-line max-len
-  const portSubInterfaceSettings = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
+  const portSubInterfaceSettings = Form.useWatch('portSubInterfaces', form) as InterfaceSettingsFormType['portSubInterfaces']
   // eslint-disable-next-line max-len
-  const lagSubInterfaceSettings = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
+  const lagSubInterfaceSettings = Form.useWatch('lagSubInterfaces', form) as InterfaceSettingsFormType['lagSubInterfaces']
   const allInterface = getAllInterfaceAsPortInfoFromForm(form)
 
   const {

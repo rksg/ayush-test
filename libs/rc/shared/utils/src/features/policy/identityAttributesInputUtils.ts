@@ -97,7 +97,7 @@ export function combineAttributeMappingsToData<T extends {
 }> (
   data: T
 ) {
-  if(!data || !data.attributeMappings) {
+  if(!data) {
     return data
   }
 
