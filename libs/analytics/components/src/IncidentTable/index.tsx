@@ -165,12 +165,6 @@ const mutedStatusFilterOptions = ($t: IntlShape['$t']) => [
       </UI.OptionItemWithIcon>
     ),
     label: $t({ defaultMessage: 'Muted' })
-  },
-  {
-    id: IncidentMutedStatus.All,
-    key: 'true,false',
-    value: $t({ defaultMessage: 'All' }),
-    label: $t({ defaultMessage: 'All' })
   }
 ]
 
@@ -221,7 +215,7 @@ export function IncidentTable ({ filters }: {
   const muteSelectedIncidents = useCallback(async (mute: boolean) => {
     await muteIncident(
       selectedRowsData
-        .filter(({ isMuted }) => isMuted !== mute)
+        // .filter(({ isMuted }) => isMuted !== mute)
         .map(({ id, code, severityLabel }) => ({
           id,
           code,
