@@ -988,7 +988,7 @@ export function NewManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={isMDU ? MspEcTierEnum.Core
+      initialValue={(mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
         : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
@@ -999,7 +999,7 @@ export function NewManageCustomer () {
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
                 return (
-                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
                   (isHospitality && value === MspEcTierEnum.Professional) ||
                   ((!isMDU && value !== MspEcTierEnum.Core) &&
                   (!isMDU && !isHospitality &&
