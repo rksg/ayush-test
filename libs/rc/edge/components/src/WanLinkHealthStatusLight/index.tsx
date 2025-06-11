@@ -39,7 +39,7 @@ export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLight
               .sort((a, b) => defaultSort(convertIpToLong(a.ip), convertIpToLong(b.ip)))
               .map(({ ip, status }) => {
                 const config = EdgeWanLinkHealthStatusLightConfig[status]
-                return <StyledWanLinkTargetWrapper key={ip} size={10}>
+                return <StyledWanLinkTargetWrapper key={ip} >
                   <span>{ip}</span>
                   <Badge
                     key={ip}
