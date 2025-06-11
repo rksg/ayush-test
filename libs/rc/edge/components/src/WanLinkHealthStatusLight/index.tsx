@@ -1,8 +1,9 @@
 import { Space, Badge } from 'antd'
+import { cloneDeep }    from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { Tooltip }                                  from '@acx-ui/components'
-import { defaultSort, EdgeWanLinkHealthStatusEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                   from '@acx-ui/components'
+import { defaultSort, EdgeWanLinkHealthStatusEnum, convertIpToLong } from '@acx-ui/rc/utils'
 
 import { StyledWanLinkTargetWrapper } from './styledComponents'
 
@@ -32,20 +33,21 @@ export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLight
       placement='bottom'
       dottedUnderline
       title={targetIpStatus
-        ? <Space direction='vertical'>
-          {targetIpStatus
-            .sort((a, b) => defaultSort(a.ip, b.ip))
-            .map(({ ip, status }) => {
-              const config = EdgeWanLinkHealthStatusLightConfig[status]
-              return <StyledWanLinkTargetWrapper key={ip} size={10}>
-                <span>{ip}</span>
-                <Badge
-                  key={ip}
-                  color={config.color}
-                  text={config.text}
-                />
-              </StyledWanLinkTargetWrapper>
-            })}
+        ? <Space direction='vertical' style={{ padding: 4 }}>
+          { // clone first to prevent issue if the given array is immutable
+            cloneDeep(targetIpStatus)
+              .sort((a, b) => defaultSort(convertIpToLong(a.ip), convertIpToLong(b.ip)))
+              .map(({ ip, status }) => {
+                const config = EdgeWanLinkHealthStatusLightConfig[status]
+                return <StyledWanLinkTargetWrapper key={ip} >
+                  <span>{ip}</span>
+                  <Badge
+                    key={ip}
+                    color={config.color}
+                    text={config.text}
+                  />
+                </StyledWanLinkTargetWrapper>
+              })}
         </Space>
         : ''}
     >

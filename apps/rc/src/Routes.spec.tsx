@@ -12,7 +12,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   getServiceCatalogRoutePath,
-  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
+  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -97,6 +98,14 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable', () => () =
 
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => () => {
   return <div data-testid='MdnsProxyDetail' />
+})
+
+jest.mock('./pages/Services/MdnsProxyConsolidation', () => () => {
+  return <div data-testid='MdnsProxyConsolidation' />
+})
+
+jest.mock('./pages/Services/MdnsProxyConsolidation/create', () => () => {
+  return <div data-testid='CreateMdnsProxyService' />
 })
 
 jest.mock('./pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable', () => () => {
@@ -436,10 +445,20 @@ jest.mock('./pages/Devices/Edge/ClusterDetails', () => () => {
   return <div data-testid='ClusterDetails' />
 })
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useMdnsProxyStateMap: jest.fn()
+}))
+
 describe('RcRoutes: Devices', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.SERVICE_CATALOG_UPDATED)
+    jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
   })
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -759,6 +778,35 @@ describe('RcRoutes: Devices', () => {
         }
       })
       expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
+    })
+
+    describe('should navigate to mDNS Proxy Consolidation page', () => {
+      beforeEach(() => {
+        jest.mocked(useMdnsProxyStateMap).mockReturnValue({
+          [ServiceType.MDNS_PROXY]: false,
+          [ServiceType.EDGE_MDNS_PROXY]: false,
+          [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+        })
+      })
+      test('should navigate to mDNS Proxy Consolidation page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.LIST }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('MdnsProxyConsolidation')).toBeVisible()
+      })
+
+      test('should navigate to mDNS Proxy Consolidation create page', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY_CONSOLIDATION, oper: ServiceOperation.CREATE }),
+            wrapRoutes: false
+          }
+        })
+        expect(screen.getByTestId('CreateMdnsProxyService')).toBeVisible()
+      })
     })
 
     test('should navigate to create DPSK page', async () => {
