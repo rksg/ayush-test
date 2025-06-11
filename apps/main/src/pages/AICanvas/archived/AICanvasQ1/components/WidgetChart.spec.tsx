@@ -349,8 +349,12 @@ describe('WidgetChart', () => {
           height: 8
         },
         {
-          width: 4,
+          width: 3,
           height: 12
+        },
+        {
+          width: 4,
+          height: 16
         }
       ]
     })

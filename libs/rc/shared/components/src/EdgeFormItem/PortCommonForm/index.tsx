@@ -22,7 +22,8 @@ import {
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
   validateGatewayInSubnet,
-  edgeWanSyncIpModeValidator
+  edgeWanSyncIpModeValidator,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { ApCompatibilityToolTip }                           from '../../ApCompatibility'
@@ -30,9 +31,8 @@ import { EdgeCompatibilityDrawer, EdgeCompatibilityType }   from '../../Compatib
 import { useIsEdgeFeatureReady }                            from '../../useEdgeActions'
 import { getEnabledAccessPortInfo, getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
-import { EdgeNatFormItems }    from './NatFormItems'
-import * as UI                 from './styledComponents'
-import { formFieldsPropsType } from './types'
+import { EdgeNatFormItems } from './NatFormItems'
+import * as UI              from './styledComponents'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
@@ -43,7 +43,7 @@ export interface EdgePortCommonFormProps {
   isEdgeSdLanRun: boolean,
   isListForm?: boolean,
   formListItemKey?: string,
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
   subnetInfoForValidation?: { id: string | number | undefined, ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]

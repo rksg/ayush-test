@@ -26,6 +26,8 @@ import {
   mockUnit
 } from '../__tests__/fixtures'
 
+import { MAX_CLIENTS_PER_PAGE } from './IdentityClientTable'
+
 import PersonaDetails from './'
 
 Object.assign(navigator, {
@@ -51,6 +53,7 @@ jest.mock('./MacAddressTab', () => ({
 }))
 jest.mock('./IdentityClientTable', () => ({
   __esModule: true,
+  MAX_CLIENTS_PER_PAGE: 1000,
   default: () => <div data-testid='IdentityClientTable'></div>
 }))
 jest.mock('@acx-ui/rc/components', () => ({
@@ -139,7 +142,8 @@ describe('Identity Details', () => {
         PersonaUrls.searchIdentityClients.url.split('?')[0],
         (_, res, ctx) => {
           getIdentityClientFn()
-          return res(ctx.json({ data: [], totalElements: 101 }))
+          const overMaxNumberOfClients = MAX_CLIENTS_PER_PAGE + 1
+          return res(ctx.json({ data: [], totalElements: overMaxNumberOfClients }))
         }
       ),
       rest.post(
@@ -192,7 +196,7 @@ describe('Identity Details', () => {
 
     expect(screen.getByTestId('PersonaOverview')).toBeInTheDocument()
 
-    fireEvent.click(await screen.findByRole('tab', { name: /Devices\(100\)/i }))
+    fireEvent.click(await screen.findByRole('tab', { name: /Devices\(1000\)/i }))
     expect(screen.getByTestId('IdentityClientTable')).toBeInTheDocument()
 
     fireEvent.click(await screen.findByRole('tab', { name: /DPSK Passphrases\(1\)/i }))
