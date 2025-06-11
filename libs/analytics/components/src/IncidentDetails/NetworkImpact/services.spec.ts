@@ -1,4 +1,3 @@
-import { IncidentToggle }    from '@acx-ui/analytics/utils'
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
@@ -150,8 +149,7 @@ describe('networkImpactChartsApi', () => {
     })
     const { status, data, error } = await store.dispatch(
       networkImpactChartsApi.endpoints.networkImpactCharts.initiate({
-        ...payload,
-        toggles: { [IncidentToggle.AirtimeIncidents]: true }
+        ...payload
       })
     )
     expect(status).toBe('fulfilled')
