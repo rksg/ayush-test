@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Typography } from 'antd'
 
-import { Drawer, Loader }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drawer, Loader }             from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   EdgeMvSdLanViewData,
   EdgePinUrls,
@@ -16,8 +17,9 @@ import { TenantLink }         from '@acx-ui/react-router-dom'
 import { hasPermission }      from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { SpaceWrapper }          from '../SpaceWrapper'
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { SpaceWrapper }                                                                                from '../SpaceWrapper'
+import { useIsEdgeFeatureReady }                                                                       from '../useEdgeActions'
 
 
 import { EdgeSdLanSelectOption }                          from './EdgeSdLanSelectOption'
@@ -27,8 +29,6 @@ import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { usePermissionResult }                            from './usePermissionResult'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreSelectOption                            from './WifiSoftGreSelectOption'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
