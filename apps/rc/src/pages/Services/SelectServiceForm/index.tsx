@@ -16,12 +16,14 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   isServiceCardEnabled,
-  isServiceCardSetEnabled
+  isServiceCardSetEnabled,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }       from '@acx-ui/user'
 
-import { ServiceCard } from '../ServiceCard'
+import { ServiceCard }     from '../ServiceCard'
+import { ServiceCardItem } from '../ServiceCatalog'
 
 import * as UI from './styledComponents'
 
@@ -41,10 +43,10 @@ export default function SelectServiceForm () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const { isLimitReached: isWifiCallingLimitReached } = useIsWifiCallingProfileLimitReached()
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -58,7 +60,7 @@ export default function SelectServiceForm () {
     })
   }
 
-  const set = [
+  const set: Array<ServiceCardItem> = [
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
@@ -101,12 +103,21 @@ export default function SelectServiceForm () {
     {
       title: $t({ defaultMessage: 'Application' }),
       items: [
-        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.MDNS_PROXY,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
+        },
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady,
+          disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
           isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+        },
+        {
+          type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,

@@ -29,12 +29,12 @@ import { getOpsApi }                                    from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
-import CertificateTab       from './CertificateTab'
-import DpskPassphraseTab    from './DpskPassphraseTab'
-import IdentityClientTable  from './IdentityClientTable'
-import LegacyPersonaDetails from './LegacyPersonaDetails'
-import MacAddressTab        from './MacAddressTab'
-import { PersonaOverview }  from './PersonaOverview'
+import CertificateTab                                from './CertificateTab'
+import DpskPassphraseTab                             from './DpskPassphraseTab'
+import IdentityClientTable, { MAX_CLIENTS_PER_PAGE } from './IdentityClientTable'
+import LegacyPersonaDetails                          from './LegacyPersonaDetails'
+import MacAddressTab                                 from './MacAddressTab'
+import { PersonaOverview }                           from './PersonaOverview'
 
 export const IdentityDetailsContext = createContext({} as {
   setDeviceCount: (count: number) => void,
@@ -161,9 +161,9 @@ function PersonaDetails () {
 
   useEffect(() => {
     if (identityClientsQuery?.data) {
-      setDeviceCount(identityClientsQuery.data?.totalCount > 100
-        ? 100
-        : identityClientsQuery.data?.totalCount ?? 0)
+      setDeviceCount((identityClientsQuery.data?.totalCount ?? 0) > MAX_CLIENTS_PER_PAGE
+        ? MAX_CLIENTS_PER_PAGE
+        : (identityClientsQuery.data?.totalCount ?? 0))
     }
   }, [identityClientsQuery.data])
 

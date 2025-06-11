@@ -3,10 +3,10 @@ import { useContext, useMemo } from 'react'
 import { Form, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                         from '@acx-ui/components'
-import { Features }                                   from '@acx-ui/feature-toggle'
-import { NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { validateEdgeClusterLevelGateway }            from '@acx-ui/rc/utils'
+import { useStepFormContext }                                                       from '@acx-ui/components'
+import { Features }                                                                 from '@acx-ui/feature-toggle'
+import { NodesTabs, TypeForm, useIsEdgeFeatureReady }                               from '@acx-ui/rc/components'
+import { validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { SubInterfaceSettingsForm }   from '../SubInterfaceSettings/SubInterfaceSettingsForm'
@@ -88,14 +88,20 @@ const SubInterfaceSettingView = () => {
     <StyledHiddenFormItem
       name='clusterGatewayValidate'
       rules={[
-        { validator: () => {
-          return validateEdgeClusterLevelGateway(
+        {
+          validator: () => validateEdgeClusterLevelGateway(
             allPortsData, allLagsData, allSubInterfaceData,
             clusterInfo?.edgeList ?? [], isDualWanEnabled, isEdgeCoreAccessSeparationReady
           )
-        } }
+        },
+        {
+          validator: () => validateCoreAndAccessPortsConfiguration(
+            allPortsData, allLagsData, allSubInterfaceData
+          )
+        }
       ]}
       children={<input hidden/>}
+      validateFirst
     />
     <NodesTabs
       nodeList={clusterInfo?.edgeList}
