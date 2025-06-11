@@ -273,4 +273,18 @@ describe('MdnsProxyTable', () => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
+
+  it('should render table without Header when hideHeader is true', async () => {
+    render(
+      <Provider>
+        <MdnsProxyTable hideHeader={true} />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    expect(screen.queryByText(`mDNS Proxy (${mockedTableResult.totalCount})`)).toBeNull()
+    expect(screen.queryByRole('button', { name: /Add mDNS Proxy Service/ })).toBeNull()
+  })
 })

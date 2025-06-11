@@ -57,15 +57,15 @@ jest.mock('antd', () => {
 })
 
 
-const venueId = venuelist.data[0].id
+
 const venueData = venuelist.data[0]
+const venueId = venueData.id
 
 const defaultApGroupCxtdata = {
   isRbacEnabled: true,
   previousPath: '/ap-groups',
   setPreviousPath: jest.fn(),
   isEditMode: false,
-  isApGroupTableFlag: false,
   isWifiRbacEnabled: false,
   editContextData: {
     tabTitle: 'Radio',
@@ -158,7 +158,7 @@ describe('AP Group Edit Radio', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupRadioTab />
         </ApGroupEditContext.Provider>
@@ -199,7 +199,7 @@ describe('AP Group Edit Radio', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupRadioTab />
         </ApGroupEditContext.Provider>
@@ -243,7 +243,7 @@ describe('AP Group Edit Radio', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupRadioTab />
         </ApGroupEditContext.Provider>
@@ -283,7 +283,7 @@ describe('AP Group Edit Radio', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupRadioTab />
         </ApGroupEditContext.Provider>
