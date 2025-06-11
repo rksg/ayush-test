@@ -83,9 +83,9 @@ export function IdentityDetailsLink (
     ? <TenantLink
       to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
     >
-      {name ?? personaId}
+      {name || personaId}
     </TenantLink>
-    : <>{name ?? (showNoData && noDataDisplay)}</>
+    : <>{name || (showNoData && noDataDisplay)}</>
 }
 
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {
