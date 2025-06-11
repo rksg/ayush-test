@@ -7,7 +7,6 @@ export enum Features {
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
   ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
-  AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'removable-ff',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
@@ -350,7 +349,8 @@ export enum Features {
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
-  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle'
+  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
+  MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
