@@ -1,6 +1,3 @@
-
-import React from 'react'
-
 import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
@@ -158,7 +155,7 @@ describe('AP Group Edit', () => {
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(0)
+    expect(tabs).toHaveLength(2)
   })
 
   it('should render correctly - Edit AP Group', async () => {
@@ -174,7 +171,7 @@ describe('AP Group Edit', () => {
     render(
       <Provider>
         <ApGroupEditContext.Provider value={{
-          isEditMode: true, isApGroupTableFlag: true, venueId: venuelist.data[0].id
+          isEditMode: true, venueId: venuelist.data[0].id
         }}>
           <ApGroupEdit />
         </ApGroupEditContext.Provider>
@@ -251,19 +248,19 @@ describe('AP Group Edit', () => {
     expect(title).toBeVisible()
 
     const tabs = screen.queryAllByRole('tab')
-    expect(tabs).toHaveLength(0)
+    expect(tabs).toHaveLength(2)
   })
 })
 
-const venueId = venuelist.data[0].id
+
 const venueData = venuelist.data[0]
+const venueId = venueData.id
 
 const defaultApGroupCxtdata = {
   isRbacEnabled: true,
   previousPath: '/ap-groups',
   setPreviousPath: jest.fn(),
   isEditMode: false,
-  isApGroupTableFlag: false,
   isWifiRbacEnabled: false,
   editContextData: {
     tabTitle: 'Radio',
@@ -398,7 +395,7 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupEdit />
         </ApGroupEditContext.Provider>

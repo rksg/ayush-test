@@ -67,7 +67,6 @@ export function ApGroupGeneralTab () {
   const { isTemplate } = useConfigTemplate()
   const {
     isEditMode,
-    isApGroupTableFlag,
     isRbacEnabled,
     setEditContextData,
     venueId
@@ -81,9 +80,7 @@ export function ApGroupGeneralTab () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = usePathBasedOnConfigTemplate('/devices/', '')
-  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
-    ? `${basePath.pathname}/wifi/apgroups`
-    : `${basePath.pathname}/wifi`)
+  const navigatePathName = isTemplate ? basePath.pathname : `${basePath.pathname}/wifi/apgroups`
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
@@ -283,7 +280,7 @@ export function ApGroupGeneralTab () {
         isDirty: false
       })
 
-      if (!isEditMode || !isApGroupTableFlag) {
+      if (!isEditMode) {
         navigate(navigatePathName, { replace: true })
       }
     } catch (error) {
@@ -315,7 +312,7 @@ export function ApGroupGeneralTab () {
   }
 
   const handleFormChanged = async () => {
-    if (isEditMode && isApGroupTableFlag) {
+    if (isEditMode) {
       const curFormData = formRef.current?.getFieldsValue()
       const oldFormData = oldFormDataRef.current
 
@@ -419,7 +416,7 @@ export function ApGroupGeneralTab () {
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              {(!isApGroupTableFlag || !isEditMode) &&
+              {(!isEditMode) &&
                 <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
               }
               <Form.Item
