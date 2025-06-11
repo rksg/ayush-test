@@ -64,7 +64,6 @@ export function useMenuConfig () {
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
@@ -216,10 +215,10 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'AP List' }),
               isActiveCheck: new RegExp('^/devices/wifi(?!(/[reports|apgroup]))')
             },
-            ...(showApGroupTable? [{
+            {
               uri: '/devices/wifi/apgroups',
               label: $t({ defaultMessage: 'AP Group List' })
-            }] : []),
+            },
             {
               uri: '/devices/wifi/reports/aps',
               label: $t({ defaultMessage: 'AP Report' })
