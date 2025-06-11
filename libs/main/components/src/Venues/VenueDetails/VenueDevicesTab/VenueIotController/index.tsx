@@ -7,12 +7,10 @@ import {
 } from '@acx-ui/rc/components'
 import { useGetIotControllerListQuery } from '@acx-ui/rc/services'
 import {
-  defaultSort,
   getIotControllerStatus,
   transformDisplayText,
   IotControllerStatus,
   IotControllerStatusEnum,
-  sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -61,7 +59,7 @@ export function VenueIotController () {
         title: $t({ defaultMessage: 'IoT Controller' }),
         key: 'name',
         dataIndex: 'name',
-        sorter: { compare: sortProp('name', defaultSort) },
+        sorter: true,
         fixed: 'left',
         searchable: searchable,
         defaultSortOrder: 'ascend',
@@ -90,13 +88,13 @@ export function VenueIotController () {
       },{
         title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
         dataIndex: 'inboundAddress',
-        sorter: { compare: sortProp('inboundAddress', defaultSort) },
+        sorter: true,
         key: 'inboundAddress'
       },
       {
         title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
         dataIndex: 'publicAddress',
-        sorter: { compare: sortProp('publicAddress', defaultSort) },
+        sorter: true,
         key: 'publicAddress',
         render: function (_, row) {
           if (!row.publicAddress || !row.publicPort) {
