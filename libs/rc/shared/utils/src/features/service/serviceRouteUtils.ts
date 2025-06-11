@@ -39,7 +39,8 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
   [ServiceType.RESIDENT_PORTAL]: 'residentPortal',
   [ServiceType.EDGE_OLT]: 'optical', // temporary type before PoC done.
-  [ServiceType.PORTAL_PROFILE]: 'portalProfile'
+  [ServiceType.PORTAL_PROFILE]: 'portalProfile',
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: 'mdnsProxyConsolidation'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {
