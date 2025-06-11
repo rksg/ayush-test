@@ -19,7 +19,7 @@ describe('useIncidentToggles', () => {
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     expect(renderHook(() => useIncidentToggles()).result.current).toEqual({
-      [IncidentToggle.AirtimeIncidents]: false,
+      [IncidentToggle.AirtimeIncidents]: true,
       [IncidentToggle.SwitchDDoSIncidents]: false,
       [IncidentToggle.SwitchLoopDetectionIncidents]: false,
       [IncidentToggle.SwitchLLDPStatusIncidents]: false,

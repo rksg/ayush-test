@@ -3,8 +3,6 @@ import _       from 'lodash'
 import moment  from 'moment'
 
 import { getFilterPayload }                 from '@acx-ui/analytics/utils'
-import { get }                              from '@acx-ui/config'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { dataApi }                          from '@acx-ui/store'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
@@ -99,22 +97,18 @@ export function useFactsQuery (
   loaded: string[],
   offset: number,
   filters: PathFilter | DashboardFilter) {
-  const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
-  const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
 
   const hasData = Boolean(factsSets?.length &&
     factsSets[offset].every(key => loaded.includes(key)))
 
   return useCustomFactsQuery(
-    { ...filters, requestedList: factsSets?.[offset] ?? [], weekRange },
+    { ...filters, requestedList: factsSets?.[offset] ?? [], weekRange: true },
     { skip: hasData || _.isEmpty(factsSets) }
   )
 }
 
 export function useAvailableFactsQuery (filters: PathFilter | DashboardFilter) {
-  const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
-  const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
-  return useCustomAvailableFactsQuery({ ...filters, weekRange })
+  return useCustomAvailableFactsQuery({ ...filters, weekRange: true })
 }
 
 const getBaseVariables = (payload: (PathFilter | DashboardFilter) & { weekRange: boolean }) => {

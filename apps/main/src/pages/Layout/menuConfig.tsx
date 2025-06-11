@@ -55,7 +55,6 @@ export function useMenuConfig () {
   const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
     accountTier } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
-  const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
@@ -120,7 +119,7 @@ export function useMenuConfig () {
               uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
-            ...(isAnltAdvTier && showConfigChange ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : []),

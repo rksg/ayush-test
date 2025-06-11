@@ -1,8 +1,7 @@
 import { gql } from 'graphql-request'
-import _       from 'lodash'
 
-import { Incident, IncidentsToggleFilter, IncidentToggle } from '@acx-ui/analytics/utils'
-import { dataApi }                                         from '@acx-ui/store'
+import { Incident, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                         from '@acx-ui/store'
 
 import {
   NetworkImpactChartConfig,
@@ -52,8 +51,7 @@ const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayloa
 export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkImpactCharts: build.query<ResultType, RequestPayload>({
-      query: ({ charts, incident, toggles }) => {
-        const useTotal = _.get(toggles, IncidentToggle.AirtimeIncidents, false)
+      query: ({ charts, incident }) => {
         const queries = charts.filter(c => !c.disabled).map((
           { chart, query, type, dimension, showTotal }) => {
           switch(query){
@@ -68,7 +66,7 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
             default:
               return [
                 gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
-                  count ${showTotal && useTotal ? 'total' : ''} data { key value }
+                  count ${showTotal ? 'total' : ''} data { key value }
                 }`
               ]
           }

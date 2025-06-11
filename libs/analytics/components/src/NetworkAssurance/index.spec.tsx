@@ -166,16 +166,6 @@ describe('NetworkAssurance', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('ConfigChange')).toBeVisible()
   })
-  it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('Config Change')).toBeNull()
-
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('Config Change')).toBeNull()
-  })
   it('should render header with correct options for health pages', async () => {
     const tabs = ['overview', 'wireless', 'wired']
     for(const tab of tabs) {
