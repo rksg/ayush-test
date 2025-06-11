@@ -1,9 +1,9 @@
 import { Space, Badge } from 'antd'
 import { cloneDeep }    from 'lodash'
-import { useIntl }      from 'react-intl'
 
 import { Tooltip }                                                   from '@acx-ui/components'
 import { defaultSort, EdgeWanLinkHealthStatusEnum, convertIpToLong } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                    from '@acx-ui/utils'
 
 import { StyledWanLinkTargetWrapper } from './styledComponents'
 
@@ -13,22 +13,10 @@ type EdgeWanLinkHealthStatusLightProps = {
 }
 
 export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLightProps) => {
-  const { $t } = useIntl()
   const { status, targetIpStatus } = props
 
-  const EdgeWanLinkHealthStatusLightConfig = {
-    [EdgeWanLinkHealthStatusEnum.UP]: {
-      color: 'var(--acx-semantics-green-50)',
-      text: $t({ defaultMessage: 'Up' })
-    },
-    [EdgeWanLinkHealthStatusEnum.DOWN]: {
-      color: 'var(--acx-semantics-red-50)',
-      text: $t({ defaultMessage: 'Down' })
-    }
-  }
-
   return <Badge
-    color={EdgeWanLinkHealthStatusLightConfig[status].color}
+    color={getEdgeWanLinkHealthStatusLightConfig(status).color}
     text={<Tooltip
       placement='bottom'
       dottedUnderline
@@ -38,8 +26,8 @@ export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLight
             cloneDeep(targetIpStatus)
               .sort((a, b) => defaultSort(convertIpToLong(a.ip), convertIpToLong(b.ip)))
               .map(({ ip, status }) => {
-                const config = EdgeWanLinkHealthStatusLightConfig[status]
-                return <StyledWanLinkTargetWrapper key={ip} size={10}>
+                const config = getEdgeWanLinkHealthStatusLightConfig(status)
+                return <StyledWanLinkTargetWrapper key={ip} >
                   <span>{ip}</span>
                   <Badge
                     key={ip}
@@ -51,7 +39,30 @@ export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLight
         </Space>
         : ''}
     >
-      {EdgeWanLinkHealthStatusLightConfig[status].text}
+      {getEdgeWanLinkHealthStatusLightConfig(status).text}
     </Tooltip>}
   />
+}
+
+const getEdgeWanLinkHealthStatusLightConfig = (status: EdgeWanLinkHealthStatusEnum | string) => {
+  const { $t } = getIntl()
+
+  switch (status) {
+    case EdgeWanLinkHealthStatusEnum.UP:
+      return {
+        color: 'var(--acx-semantics-green-50)',
+        text: $t({ defaultMessage: 'Up' })
+      }
+    case EdgeWanLinkHealthStatusEnum.DOWN:
+      return {
+        color: 'var(--acx-semantics-red-50)',
+        text: $t({ defaultMessage: 'Down' })
+      }
+    case EdgeWanLinkHealthStatusEnum.INVALID:
+    default:
+      return {
+        color: 'var(--acx-neutrals-50)',
+        text: noDataDisplay
+      }
+  }
 }
