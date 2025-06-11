@@ -105,6 +105,19 @@ describe('DonutChart - small', () => {
     await screen.findByText(/5.1K/)
     await screen.findByText(/5K/)
   })
+  it('should render legend in "name-bold-value" format', async () => {
+    render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      title='Donut Chart'
+      legend={'name-bold-value'}
+      showLegend
+      subTitle='Donut Chart subTitle'
+    />)
+    data.forEach(async item => {
+      expect(await screen.findByText(`${item.name}: ${item.value}`)).toBeTruthy()
+    })
+  })
   it('should render legend in "name-value" format', async () => {
     render(<DonutChart
       style={{ width: 238, height: 176 }}
