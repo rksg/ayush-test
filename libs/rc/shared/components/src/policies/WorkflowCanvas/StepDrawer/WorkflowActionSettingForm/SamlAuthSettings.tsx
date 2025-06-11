@@ -61,15 +61,14 @@ export function SamlAuthSettings () {
   }, [form, getSamlIdpProfile])
 
   useEffect(() => {
-    const formSamlIdpProfileId = form.getFieldValue('samlIdpProfileId')
-    if (formSamlIdpProfileId && samlProfileLists) {
-      if (samlProfileLists?.data.find(item => item.id === formSamlIdpProfileId)) {
+    if (samlIdpProfileId && samlProfileLists) {
+      if (samlProfileLists?.data.find(item => item.id === samlIdpProfileId)) {
         getSamlIdpProfile({
-          params: { id: formSamlIdpProfileId }
+          params: { id: samlIdpProfileId }
         }).then(response => {
           if (response.data) {
             const samlIdpData = response.data as SamlIdpProfileFormType
-            form.setFieldValue('samlIdpProfileId', formSamlIdpProfileId)
+            form.setFieldValue('samlIdpProfileId', samlIdpProfileId)
             setSamlRequestSigned(samlIdpData.signingCertificateEnabled)
             setSamlResponseEncryption(samlIdpData.encryptionCertificateEnabled)
             setSignedServerCertId(samlIdpData.signingCertificateId ?? '')
@@ -78,7 +77,7 @@ export function SamlAuthSettings () {
         })
       }
     }
-  }, [samlProfileLists])
+  }, [form, samlProfileLists, samlIdpProfileId])
 
   useEffect(() => {
     setSignedServerCertName(undefined)
