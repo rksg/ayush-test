@@ -3,8 +3,8 @@ import _ from 'lodash'
 
 import { ExpirationType, PassphraseFormatEnum } from '@acx-ui/rc/utils'
 
-import { mockQueryApi }            from './__tests__/fixtures'
-import { addDpskFn, updateDpskFn } from './dpsk'
+import { mockQueryApi }                                        from './__tests__/fixtures'
+import { addDpskFn, addDpskWithIdentityGroupFn, updateDpskFn } from './dpsk'
 
 
 const mockedCreateHttpRequest = jest.fn()
@@ -241,6 +241,47 @@ describe('dpsk.utils', () => {
         body: JSON.stringify(mockProps.queryArgs.payload)
       }))
       expect(result).toEqual({ data: { response: { id: '987654321' } } })
+    })
+  })
+
+  describe('addDpskWithIdentityGroupFn', () => {
+    const mockProps = {
+      queryArgs: {
+        params: {
+          serviceId: '987654321'
+        },
+        payload: {
+          id: '987654321',
+          name: 'name',
+          passphraseLength: 16,
+          passphraseFormat: PassphraseFormatEnum.NUMBERS_ONLY,
+          expirationType: ExpirationType.DAYS_AFTER_TIME,
+          expirationOffset: 1,
+          identityGroupId: '123123123'
+        },
+        enableRbac: true
+      },
+      apiInfo: {
+        url: '/templates/identityGroups/:identityGroupId/dpskServices',
+        opsApi: 'POST:/templates/identityGroups/{id}/dpskServices',
+        method: 'post',
+        newApi: true,
+        defaultHeaders: {
+          'Accept': 'application/vnd.ruckus.v1+json',
+          'Content-Type': 'application/vnd.ruckus.v1+json'
+        }
+      },
+      fetchWithBQ: jest.fn()
+    }
+
+    it('should call template api to create pool with identity group', async () => {
+      mockProps.fetchWithBQ.mockResolvedValueOnce({ data: { id: '987654321' } } )
+      const result = await addDpskWithIdentityGroupFn(true)(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
+      expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.apiInfo, mockProps.queryArgs.params)
+      expect(mockProps.fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
+        body: JSON.stringify(_.omit(mockProps.queryArgs.payload, 'identityGroupId'))
+      }))
+      expect(result).toEqual({ data: { id: '987654321' } } )
     })
   })
 })
