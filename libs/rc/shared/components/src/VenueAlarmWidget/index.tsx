@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card, DonutChart, NoActiveData }       from '@acx-ui/components'
-import type { DonutChartData }                                  from '@acx-ui/components'
-import { useIsSplitOn, Features }                               from '@acx-ui/feature-toggle'
-import {  useAlarmSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader, Card, DonutChart, NoActiveData } from '@acx-ui/components'
+import type { DonutChartData }                            from '@acx-ui/components'
+import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
+import {  useAlarmSummariesQuery }                        from '@acx-ui/rc/services'
 import {
   Alarm,
   EventSeverityEnum
@@ -54,9 +54,7 @@ export function VenueAlarmWidget () {
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   // Alarms list query
-  const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
-  const query = isNewAlarmQueryEnabled ? useAlarmSummariesQuery : useDashboardV2OverviewQuery
-  const overviewV2Query = query({
+  const overviewV2Query = useAlarmSummariesQuery({
     params: useParams(),
     payload: {
       filters: {

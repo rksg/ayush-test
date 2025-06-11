@@ -1117,7 +1117,7 @@ export function EditPortDrawer ({
       store.dispatch(
         switchApi.util.invalidateTags([
           { type: 'SwitchPort', id: 'LIST' },
-          { type: 'SwitchPort', id: 'Setting' }
+          { type: 'SwitchPort', id: 'SETTING' }
         ])
       )
       onClose()
