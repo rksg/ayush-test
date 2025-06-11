@@ -205,7 +205,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             {isR370VenueSoftGre &&
               <ApCompatibilityDrawer
                 visible={softGreDrawerVisible}
-                type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                type={ApCompatibilityType.VENUE}
                 venueId={venueId}
                 featureNames={[InCompatibilityFeatures.VENUE_SOFT_GRE]}
                 onClose={() => setSoftGreDrawerVisible(false)}

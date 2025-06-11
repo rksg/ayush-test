@@ -48,6 +48,7 @@ describe('SoftGRETunnelSettings', () => {
     expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
     await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
     expect(await screen.findByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
+    expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
   })
   it('Should not display softgre tunnel banner', () => {
     render(
