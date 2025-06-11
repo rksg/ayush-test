@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   BasicServiceSetPriorityEnum,
   NetworkSaveData,
