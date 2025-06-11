@@ -154,14 +154,14 @@ export const SummaryForm = () => {
       { $t({ defaultMessage: 'Distribution Switch ({num})' },
         { num: distributionSwitchInfos?.length??0 }) }
     </Subtitle>
-    { distributionSwitchInfos?.length && <Form.Item>
+    { !!distributionSwitchInfos?.length && <Form.Item>
       <DistributionSwitchTable type='form'
         dataSource={distributionSwitchInfos} /></Form.Item>}
     <Subtitle level={4}>
       { $t({ defaultMessage: 'Access Switch ({num})' },
         { num: accessSwitchData?.length??0 }) }
     </Subtitle>
-    { accessSwitchData?.length && <Form.Item>
+    { !!accessSwitchData?.length && <Form.Item>
       <AccessSwitchTable type='form'
         dataSource={accessSwitchData} />
     </Form.Item>}
