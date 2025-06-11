@@ -100,7 +100,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
         </Typography>
         <Form.Item
           name='tunnelType'
-          label={$t({ defaultMessage: 'Network Topology' })}
+          label={$t({ defaultMessage: 'Tunneling Method' })}
           initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {

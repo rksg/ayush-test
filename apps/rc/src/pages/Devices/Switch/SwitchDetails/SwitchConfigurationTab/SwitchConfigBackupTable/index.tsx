@@ -11,7 +11,7 @@ import {
   useDownloadConfigBackupMutation,
   useGetSwitchConfigBackupListQuery,
   useRestoreConfigBackupMutation
-}          from '@acx-ui/rc/services'
+}          from '@acx-ui/rc/switch/services'
 import {
   BACKUP_DISABLE_TOOLTIP,
   BACKUP_IN_PROGRESS_TOOLTIP,
