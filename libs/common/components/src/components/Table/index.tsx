@@ -566,7 +566,7 @@ function Table <RecordType extends Record<string, any>> ({
   }))
 
   const headerItems = hasHeaderItems ? <>
-    <UI.HeaderItems>
+    <div>
       <Space size={12}>
         {Boolean(searchables.length) && highLightValue === undefined &&
           renderSearch<RecordType>(
@@ -595,7 +595,7 @@ function Table <RecordType extends Record<string, any>> ({
           style={{ width: filterWidth }}
         />}
       </Space>
-    </UI.HeaderItems>
+    </div>
     <UI.HeaderComps>
       {(
         Boolean(activeFilters.length) ||

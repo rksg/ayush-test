@@ -389,7 +389,8 @@ export function IncidentTable ({ filters }: {
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,
-      filterable: mutedStatusFilterOptions($t)
+      filterable: mutedStatusFilterOptions($t),
+      filterableWidth: 100
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
@@ -442,7 +443,7 @@ export function IncidentTable ({ filters }: {
         columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => setSelectedRowsData([])}
-        filterableWidth={150}
+        filterableWidth={135}
         searchableWidth={240}
         optionLabelProp='label'
         columnsToHideChildrenIfParentFiltered={['isMuted']}
