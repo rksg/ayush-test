@@ -11,13 +11,16 @@ import {
   IdentityClient, SORTER, sortProp,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
+import { TABLE_MAX_PAGE_SIZE } from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 
 const defaultClientPagination = {
   page: 1,
-  pageSize: 100
+  pageSize: TABLE_MAX_PAGE_SIZE
 }
+
+export const MAX_CLIENTS_PER_PAGE = 1000
 
 const onboardingTypesMapping: { [key: string]: string } = {
   'dpsk': 'DPSK',
@@ -53,7 +56,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const tableQuery = usePollingTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
-    pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
+    pagination: { pageSize: MAX_CLIENTS_PER_PAGE },  // Design intent: Only show 1000 clients
     sorter: {
       sortField: 'updatedAt',
       sortOrder: 'DESC'
@@ -92,7 +95,10 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       // ES data as major sorted data
       esClients.forEach(esClient => {
         const identityClient = identityClientMap.get(toClientMacFormat(esClient.macAddress))
-        if (identityClient && identityClient.networkId === esClient.networkInformation.id) {
+        if (identityClient
+          && identityClient.networkId === esClient.networkInformation.id
+          && identityClient.identityId === esClient.identityId
+        ) {
           identityClientMap.delete(toClientMacFormat(esClient.macAddress))
           aggregatedClients.push({
             ...identityClient,
@@ -118,7 +124,10 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
         ...defaultRbacClientPayload,
         ...defaultClientPagination,
         ...esSorter,
-        filters: { macAddress: [...clientMacs] }  // should be lowered case
+        filters: {
+          macAddress: [...clientMacs], // should be lowered case
+          identityId: [personaId] // fetch the latest identity-associated clients
+        }
       }
     })
       .then(result => {

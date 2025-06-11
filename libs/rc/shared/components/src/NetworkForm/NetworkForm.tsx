@@ -356,7 +356,7 @@ export function NetworkForm (props:{
 
   const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
     { params: { networkId: data?.id } },
-    { skip: !saveState?.wlan?.macAddressAuthentication }
+    { skip: !saveState?.wlan?.macAddressAuthentication || !data?.id }
   )
 
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({

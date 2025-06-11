@@ -12,7 +12,6 @@ import {
   DidYouKnow,
   IncidentsDashboardv2,
   SwitchesTrafficByVolume,
-  SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
   TopEdgesByResources,
   TopEdgesByTraffic,
@@ -553,15 +552,10 @@ function DashboardMapWidget () {
 
 function SwitchWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
-  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        {
-          supportPortTraffic ?
-            <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
-            :<SwitchesTrafficByVolumeLegacy filters={dashboardFilters} vizType={'area'} />
-        }
+        <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={dashboardFilters}/>

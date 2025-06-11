@@ -1,3 +1,5 @@
+import { FormItemProps } from 'antd'
+
 import type { TimeStamp } from '@acx-ui/types'
 
 import {
@@ -668,4 +670,15 @@ export interface SubInterface {
 export interface ClusterArpTerminationSettings {
   enabled: boolean
   agingTimeSec: number
+}
+
+export interface EdgeFormFieldsPropsType {
+  [key: string]: FormItemProps & {
+    title?: string
+    options?: {
+      label: string,
+      value: EdgePortTypeEnum
+    }[]
+    disabled?: boolean,
+  }
 }
