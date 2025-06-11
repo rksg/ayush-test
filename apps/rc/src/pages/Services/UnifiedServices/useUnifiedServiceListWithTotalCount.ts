@@ -122,7 +122,8 @@ function useUnifiedServiceTotalCountMap (
     [ServiceType.WEBAUTH_SWITCH]: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled }, { skip: !typeSet.has(ServiceType.WEBAUTH_SWITCH) }),
     [ServiceType.PORTAL_PROFILE]: usePortalProfileTotalCount(params, !typeSet.has(ServiceType.PORTAL_PROFILE)),
     [ServiceType.RESIDENT_PORTAL]: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, { skip: !typeSet.has(ServiceType.RESIDENT_PORTAL) }),
-    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION))
+    [ServiceType.DHCP_CONSOLIDATION]: useDhcpConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.DHCP_CONSOLIDATION)),
+    [ServiceType.MDNS_PROXY_CONSOLIDATION]: useMdnsProxyConsolidationTotalCount(defaultQueryArgs, !typeSet.has(ServiceType.MDNS_PROXY_CONSOLIDATION))
   }
 
   return {
@@ -251,7 +252,7 @@ function useGetEdgeTnmServiceTotalCount (isDisabled?: boolean): TotalCountQueryR
 }
 
 
-function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean) {
+function usePortalProfileTotalCount (params: Readonly<Params<string>>, isDisabled?: boolean): TotalCountQueryResult {
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
@@ -290,5 +291,21 @@ export function useDhcpConsolidationTotalCount (
   return {
     data: { totalCount: Number(dhcpData?.totalCount ?? 0) + Number(edgeDhcpData?.totalCount ?? 0) },
     isFetching: dhcpIsFetching || edgeDhcpIsFetching
+  }
+}
+export function useMdnsProxyConsolidationTotalCount (
+  defaultQueryArgs: RequestPayload,
+  isDisabled?: boolean
+) : TotalCountQueryResult {
+
+  const { data: mdnsProxyData, isFetching: mdnsProxyFetching } =
+    useGetEnhancedMdnsProxyListQuery(defaultQueryArgs, { skip: isDisabled })
+
+  const { data: edgeMdnsProxyData, isFetching: edgeMdnsProxyIsFetching } =
+    useGetEdgeMdnsProxyViewDataListQuery(defaultQueryArgs, { skip: isDisabled })
+
+  return {
+    data: { totalCount: Number(mdnsProxyData?.totalCount ?? 0) + Number(edgeMdnsProxyData?.totalCount ?? 0) },
+    isFetching: mdnsProxyFetching || edgeMdnsProxyIsFetching
   }
 }

@@ -13,9 +13,15 @@ const mockedUseDhcpStateMap = jest.fn().mockReturnValue({
   [ServiceType.EDGE_DHCP]: false,
   [ServiceType.DHCP_CONSOLIDATION]: false
 })
+const mockedUseMdnsProxyStateMap = jest.fn().mockReturnValue({
+  [ServiceType.MDNS_PROXY]: true,
+  [ServiceType.EDGE_MDNS_PROXY]: false,
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+})
 jest.mock('../service', () => ({
   ...jest.requireActual('../service'),
-  useDhcpStateMap: () => mockedUseDhcpStateMap()
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
+  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
@@ -52,6 +58,11 @@ describe('useAvailableUnifiedServicesList', () => {
       [ServiceType.DHCP]: true,
       [ServiceType.EDGE_DHCP]: false,
       [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
     })
   })
   it('should return a non-empty list of services and policies', () => {
@@ -123,5 +134,39 @@ describe('useAvailableUnifiedServicesList', () => {
     expect(dhcpProxyConsolidation?.disabled).toBe(false)
     expect(dhcpProxy?.disabled).toBe(true)
     expect(edgeDhcpProxy?.disabled).toBe(true)
+  })
+
+  it('should disable mDNS Proxy Consolidation service', () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: true,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
+
+    const { result } = renderHook(() => useAvailableUnifiedServicesList())
+    // eslint-disable-next-line max-len
+    const mDNSProxyConsolidation = result.current.find(s => s.type === ServiceType.MDNS_PROXY_CONSOLIDATION)
+    const mDNSProxy = result.current.find(s => s.type === ServiceType.MDNS_PROXY)
+    const edgeMDNSProxy = result.current.find(s => s.type === ServiceType.EDGE_MDNS_PROXY)
+    expect(mDNSProxyConsolidation?.disabled).toBe(true)
+    expect(mDNSProxy?.disabled).toBe(false)
+    expect(edgeMDNSProxy?.disabled).toBe(false)
+  })
+
+  it('should enable mDNS Proxy Consolidation service', () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: false,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+    })
+
+    const { result } = renderHook(() => useAvailableUnifiedServicesList())
+    // eslint-disable-next-line max-len
+    const mDNSProxyConsolidation = result.current.find(s => s.type === ServiceType.MDNS_PROXY_CONSOLIDATION)
+    const mDNSProxy = result.current.find(s => s.type === ServiceType.MDNS_PROXY)
+    const edgeMDNSProxy = result.current.find(s => s.type === ServiceType.EDGE_MDNS_PROXY)
+    expect(mDNSProxyConsolidation?.disabled).toBe(false)
+    expect(mDNSProxy?.disabled).toBe(true)
+    expect(edgeMDNSProxy?.disabled).toBe(true)
   })
 })

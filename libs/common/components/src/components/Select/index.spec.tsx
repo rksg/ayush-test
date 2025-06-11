@@ -104,3 +104,38 @@ describe('Select', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 })
+
+describe('Select.getPopupContainer', () => {
+  it('returns parent element if triggerNode has parent with class .ant-select-selector', () => {
+    const triggerNode = document.createElement('div')
+    const parentElement = document.createElement('div')
+    parentElement.classList.add('ant-select-selector')
+    parentElement.appendChild(triggerNode)
+    document.body.appendChild(parentElement)
+    const result = Select.getPopupContainer(triggerNode)
+    expect(result).toBe(parentElement)
+  })
+
+  it('returns parent element if triggerNode has class .ant-select-selector', () => {
+    const triggerNode = document.createElement('div')
+    triggerNode.classList.add('ant-select-selector')
+    const parentElement = document.createElement('div')
+    parentElement.appendChild(triggerNode)
+    document.body.appendChild(parentElement)
+    const result = Select.getPopupContainer(triggerNode)
+    expect(result).toBe(parentElement)
+  })
+
+  // eslint-disable-next-line max-len
+  it('returns document.body if triggerNode has class .ant-select-selector but parent element is null', () => {
+    const triggerNode = document.createElement('div')
+    triggerNode.classList.add('ant-select-selector')
+    const result = Select.getPopupContainer(triggerNode)
+    expect(result).toBe(document.body)
+  })
+
+  it('returns document.body if triggerNode is undefined', () => {
+    const result = Select.getPopupContainer(undefined)
+    expect(result).toBe(document.body)
+  })
+})

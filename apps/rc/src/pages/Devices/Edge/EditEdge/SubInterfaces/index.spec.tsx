@@ -10,7 +10,8 @@ import {
   EdgePortConfigFixtures,
   EdgeSubInterface,
   EdgeSubInterfaceFixtures,
-  EdgeUrlsInfo
+  EdgeUrlsInfo,
+  SubInterface
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -42,10 +43,19 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 jest.mock('./SubInterfaceDrawer', () => (
-  ({ visible, data }: { visible: boolean, data?: EdgeSubInterface }) =>
+  ({ visible, data, handleAdd, handleUpdate }: {
+    visible: boolean,
+    data?: EdgeSubInterface,
+    handleAdd: (data: SubInterface) => Promise<unknown>
+    handleUpdate: (data: SubInterface) => Promise<unknown>
+  }) =>
     <div data-testid='subDialog'>
       <label>{visible?'visible':'invisible'}</label>
       <div>{data?.vlan+''}</div>
+      {/* eslint-disable-next-line max-len */}
+      <button onClick={() => handleAdd(mockEdgeSubInterfaces.content[0] as unknown as SubInterface)}>Add</button>
+      {/* eslint-disable-next-line max-len */}
+      <button onClick={() => handleUpdate(mockEdgeSubInterfaces.content[0] as unknown as SubInterface)}>Update</button>
     </div>
 ))
 jest.mock('../ClusterNavigateWarning', () => ({
@@ -102,6 +112,11 @@ const defaultEditEdgeSingleNodeCtxData = {
   isClusterFormed: false
 } as unknown as EditEdgeDataContextType
 
+const mockAddSubInterface = jest.fn()
+const mockUpdateSubInterface = jest.fn()
+const mockAddLagSubInterface = jest.fn()
+const mockUpdateLagSubInterface = jest.fn()
+
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string }
   beforeEach(() => {
@@ -127,6 +142,34 @@ describe('EditEdge ports - sub-interface', () => {
       rest.delete(
         EdgeUrlsInfo.deleteLagSubInterfaces.url,
         (_req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.addSubInterfaces.url,
+        (_req, res, ctx) => {
+          mockAddSubInterface()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.patch(
+        EdgeUrlsInfo.updateSubInterfaces.url,
+        (_req, res, ctx) => {
+          mockUpdateSubInterface()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.addLagSubInterfaces.url,
+        (_req, res, ctx) => {
+          mockAddLagSubInterface()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.patch(
+        EdgeUrlsInfo.updateLagSubInterfaces.url,
+        (_req, res, ctx) => {
+          mockUpdateLagSubInterface()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -179,6 +222,27 @@ describe('EditEdge ports - sub-interface', () => {
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 
+  it('should create SubInterface successfully', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={defaultEditEdgeClusterCtxData}
+          >
+            <SubInterfaces />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+      })
+    expect(screen.getByTestId('ClusterNavigateWarning')).toBeVisible()
+    expect((await screen.findAllByRole('row')).length).toBe(11)
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockAddSubInterface).toBeCalledTimes(1))
+  })
+
   it('Delete a sub-interface', async () => {
     const user = userEvent.setup()
     render(
@@ -229,6 +293,8 @@ describe('EditEdge ports - sub-interface', () => {
     const dialog = await screen.findByTestId('subDialog')
     expect(within(dialog).queryByText('visible')).toBeValid()
     expect(within(dialog).queryByText('2')).toBeValid()
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Update' }))
+    await waitFor(() => expect(mockUpdateSubInterface).toBeCalledTimes(1))
   })
 
   it('should be able to import by CSV', async () => {
@@ -308,6 +374,56 @@ describe('EditEdge ports - sub-interface', () => {
     const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
     await userEvent.click(lagTab)
     expect((await screen.findAllByRole('row')).length).toBe(11)
+  })
+
+  it('should create LAG SubInterface successfully', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={defaultEditEdgeSingleNodeCtxData}
+          >
+            <SubInterfaces />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+      })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
+    await userEvent.click(lagTab)
+    expect((await screen.findAllByRole('row')).length).toBe(11)
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockAddLagSubInterface).toBeCalledTimes(1))
+  })
+
+  it('should update LAG SubInterface successfully', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={defaultEditEdgeSingleNodeCtxData}
+          >
+            <SubInterfaces />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/sub-interface' }
+      })
+    const lagTab = await screen.findByRole('tab', { name: 'LAG 1' })
+    await userEvent.click(lagTab)
+    const rows = await screen.findAllByRole('row')
+    expect(rows.length).toBe(11)
+    await userEvent.click(within(rows[1]).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const dialog = (await screen.findAllByTestId('subDialog'))[1]
+    expect(within(dialog).queryByText('visible')).toBeValid()
+    expect(within(dialog).queryByText('2')).toBeValid()
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Update' }))
+    await waitFor(() => expect(mockUpdateLagSubInterface).toBeCalledTimes(1))
   })
 
   it('Delete a LAG sub-interface', async () => {
