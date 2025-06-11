@@ -192,10 +192,10 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useTemplateMutationFn: useUpdateL3AclPolicyTemplateMutation
   })
 
-  const onlyForQueryList = !(onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
+  const notForQueryList = (onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
 
   const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(
-    editMode.isEdit, resolvedRbacEnabled, onlyForQueryList
+    editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -1154,13 +1154,13 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 }
 
 // eslint-disable-next-line max-len
-const useGetL3AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, onlyForQueryList: boolean): {
+const useGetL3AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, notForQueryList: boolean): {
   layer3SelectOptions: JSX.Element[], layer3List: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>({
     useQueryFn: useGetEnhancedL3AclProfileListQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateListQuery,
-    skip: !onlyForQueryList || isEdit,
+    skip: notForQueryList || isEdit,
     payload: QUERY_DEFAULT_PAYLOAD,
     enableRbac: enableRbac
   })

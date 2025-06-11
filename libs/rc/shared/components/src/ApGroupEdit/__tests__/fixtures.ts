@@ -4496,6 +4496,63 @@ export const venueRadioCustomization = {
 }
 
 export const apGroupRadioCustomization = {
+  radioParamsDual5G: {
+    enabled: false,
+    inheritParamsLower5G: true,
+    radioParamsLower5G: {
+      allowedIndoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      allowedOutdoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20
+    },
+    inheritParamsUpper5G: true,
+    radioParamsUpper5G: {
+      allowedIndoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      allowedOutdoorChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20
+    }
+  },
   radioParams24G: {
     allowedChannels: [
       '1',
@@ -4509,7 +4566,7 @@ export const apGroupRadioCustomization = {
     useVenueSettings: true,
     enabled: true
   },
-  radioParams50G: {
+  radioParams5G: {
     combineChannels: false,
     useVenueSettings: true,
     allowedIndoorChannels: [
@@ -4569,65 +4626,6 @@ export const apGroupRadioCustomization = {
     method: 'BACKGROUND_SCANNING',
     changeInterval: 33,
     scanInterval: 20
-  },
-  radioParamsDual5G: {
-    enabled: false,
-    inheritParamsLower5G: true,
-    radioParamsLower5G: {
-      allowedIndoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
-      allowedOutdoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
-      channelBandwidth: 'AUTO',
-      txPower: 'MAX',
-      method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
-      scanInterval: 20,
-      useVenueSettings: true
-    },
-    inheritParamsUpper5G: true,
-    radioParamsUpper5G: {
-      allowedIndoorChannels: [
-        '100',
-        '104',
-        '108',
-        '112',
-        '116',
-        '120',
-        '124',
-        '128',
-        '132',
-        '136',
-        '140',
-        '144',
-        '149',
-        '153',
-        '157',
-        '161'
-      ],
-      allowedOutdoorChannels: [
-        '100',
-        '104',
-        '108',
-        '112',
-        '116',
-        '120',
-        '124',
-        '128',
-        '132',
-        '136',
-        '140',
-        '144',
-        '149',
-        '153',
-        '157',
-        '161'
-      ],
-      channelBandwidth: 'AUTO',
-      txPower: 'MAX',
-      method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
-      scanInterval: 20,
-      useVenueSettings: true
-    }
   },
   radioParams6G: {
     useVenueSettings: true,

@@ -222,10 +222,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useTemplateMutationFn: useUpdateAppPolicyTemplateMutation
   })
 
-  const onlyForQueryList = !(onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
+  const notForQueryList = (onlyAddMode.enable || drawerViewModeId !== '' || isOnlyViewMode)
 
   const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(
-    editMode.isEdit, resolvedRbacEnabled, onlyForQueryList
+    editMode.isEdit, resolvedRbacEnabled, notForQueryList
   )
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -781,13 +781,13 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 }
 
 // eslint-disable-next-line max-len
-const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, onlyForQueryList: boolean): {
+const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean, notForQueryList: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>({
     useQueryFn: useGetEnhancedApplicationProfileListQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateListQuery,
-    skip: !onlyForQueryList || isEdit,
+    skip: notForQueryList || isEdit,
     payload: QUERY_DEFAULT_PAYLOAD,
     enableRbac: enableRbac
   })

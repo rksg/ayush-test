@@ -52,9 +52,12 @@ const mockedApGroupListReq = jest.fn()
 const setEditContextDataFn = jest.fn()
 const setEditRadioContextDataFn = jest.fn()
 const mockedGetApGroupRadioCustomization = jest.fn()
+const mockedVenueRadioCustomization = jest.fn()
 const mockedUpdateApGroupRadioCustomization = jest.fn()
 const mockedGetApGroupDefaultRegulatoryChannels = jest.fn()
 const mockedGetApGroupBandModeSettings = jest.fn()
+const mockedGetWifiCapabilities = jest.fn()
+const mockedGetVenue = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -115,7 +118,24 @@ describe('AP Group Edit', () => {
   it('should render correctly - Add ApGroup', async () => {
     mockServer.use(
       rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps)))
+        (_, res, ctx) => {
+          mockedGetWifiCapabilities()
+          return res(ctx.json(venueCaps))
+        }),
+      rest.get(
+        CommonRbacUrlsInfo.getVenue.url,
+        (_, res, ctx) => {
+          mockedGetVenue()
+          return res(ctx.json(venuelist.data[0]))
+        }
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => {
+          mockedGetVenue()
+          return res(ctx.json(venuelist.data[0]))
+        }
+      )
     )
     const params = {
       tenantId: 'tenant-id',
@@ -131,6 +151,10 @@ describe('AP Group Edit', () => {
         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
       }
     )
+
+    await waitFor(() => { expect(mockedGetWifiCapabilities).toHaveBeenCalled() })
+    await waitFor(() => { expect(mockedGetVenue).toHaveBeenCalled() })
+
     const title = await screen.findByText('Add AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
@@ -140,7 +164,10 @@ describe('AP Group Edit', () => {
   it('should render correctly - default Edit ApGroup', async () => {
     mockServer.use(
       rest.get(WifiRbacUrlsInfo.getWifiCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps)))
+        (_, res, ctx) => {
+          mockedGetWifiCapabilities()
+          return res(ctx.json(venueCaps))
+        })
     )
     const params = {
       tenantId: 'tenant-id',
@@ -155,6 +182,9 @@ describe('AP Group Edit', () => {
         route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/' }
       }
     )
+
+    await waitFor(() => { expect(mockedGetWifiCapabilities).toHaveBeenCalled() })
+
     const title = await screen.findByText('Edit AP Group')
     expect(title).toBeVisible()
     const tabs = screen.queryAllByRole('tab')
@@ -336,6 +366,10 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(
+        WifiUrlsInfo.getWifiCapabilities.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
       // rbac
       rest.post(CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
@@ -353,7 +387,10 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
         (_, res, ctx) => res(ctx.json(validRadioChannels))),
       rest.get(
         WifiRbacUrlsInfo.getVenueRadioCustomization.url,
-        (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        (_, res, ctx) => {
+          mockedVenueRadioCustomization()
+          return res(ctx.json(venueRadioCustomization))
+        }),
       rest.get(WifiRbacUrlsInfo.getApGroupRadioCustomization.url,
         (_, res, ctx) => {
           mockedGetApGroupRadioCustomization()
@@ -380,18 +417,26 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
         }),
       rest.get(
         WifiRbacUrlsInfo.getApGroupApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apGroupApCaps)))
+        (_, res, ctx) => res(ctx.json(apGroupApCaps))),
+      rest.get(
+        WifiRbacUrlsInfo.getWifiCapabilities.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
-  it('should render correctly with unsaved dialogs', async () => {
+  it('should render correctly with invalid Changes', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       // rbac
       rest.post(CommonRbacUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(WifiRbacUrlsInfo.getApGroupRadioCustomization.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        })
     )
 
     render(
@@ -429,12 +474,66 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
 
 
     const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
-    expect(channelSelect.getAttribute('disabled')).toBe('')
+    expect(channelSelect.getAttribute('disabled')).toBeNull()
 
     const saveButton = screen.getByRole('button', { name: 'Save' })
     await userEvent.click(saveButton)
 
     await screen.findByText('You Have Invalid Changes')
+    expect(saveButton).toBeVisible()
+  })
+
+  it('should render correctly with unsaved dialogs', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      // rbac
+      rest.post(CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(WifiRbacUrlsInfo.getApGroupRadioCustomization.url,
+        (_, res, ctx) => {
+          mockedGetApGroupRadioCustomization()
+          return res(ctx.json({
+            ...apGroupRadioCustomization
+          }))
+        })
+    )
+
+    render(
+      <Provider>
+        <ApGroupEditContext.Provider value={{
+          ...defaultApGroupCxtdata,
+          isEditMode: true, isApGroupTableFlag: true
+        }}>
+          <ApGroupEdit />
+        </ApGroupEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action/:activeTab' }
+      }
+    )
+
+    await waitFor(() => { expect(mockedApGroupListReq).toHaveBeenCalled() })
+    await waitFor(() => { expect(mockedGetApGroupBandModeSettings).toHaveBeenCalled() })
+    await waitFor(() => { expect(mockedVenueRadioCustomization).toHaveBeenCalled() })
+    await waitFor(() => { expect(mockedGetApGroupRadioCustomization).toHaveBeenCalled() })
+
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: /wi\-fi radio settings/i })).toBeVisible()
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    expect(screen.getByRole('tab', { name: /2\.4 ghz/i })).toBeVisible()
+    expect(screen.getByRole('tab', { name: '5 GHz' })).toBeVisible()
+
+    const customizeBandMode = screen.getByText(/customize settings/i)
+    userEvent.click(customizeBandMode)
+
+    expect(await screen.findByRole('tab', { name: 'Radio *' })).toBeVisible()
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    await userEvent.click(saveButton)
+    await waitFor(() => expect(mockedUpdateApGroupRadioCustomization).toBeCalled())
     expect(saveButton).toBeVisible()
   })
 })
