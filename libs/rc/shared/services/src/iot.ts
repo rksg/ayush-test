@@ -35,9 +35,9 @@ export const iotApi = baseIotApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddIotController',
-            'DeleteIotController',
-            'UpdateIotController'
+            'Add IoT Controller',
+            'Delete IoT Controller',
+            'Update IoT Controller'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(iotApi.util.invalidateTags([{ type: 'IotController', id: 'LIST' }]))

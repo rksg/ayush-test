@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { EdgeWanLinkHealthStatusEnum } from '@acx-ui/rc/utils'
-import { render, screen }              from '@acx-ui/test-utils'
+import { render, screen, waitFor }     from '@acx-ui/test-utils'
 
 import { EdgeWanLinkHealthStatusLight } from './index'
 
@@ -46,7 +46,7 @@ describe('EdgeWanLinkHealthStatusLight', () => {
     await userEvent.hover(upText)
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toHaveTextContent(/192.168.1.3Up/)
-    expect(tooltip.textContent).toBe('192.168.1.2Down192.168.1.3Up')
+    await waitFor(() => expect(tooltip.textContent).toBe('192.168.1.2Down192.168.1.3Up'))
   })
 
   it('renders with empty targetIpStatus array', async () => {

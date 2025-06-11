@@ -1,9 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -40,7 +39,6 @@ describe('AlarmsButton', () => {
   })
 
   it('should render AlarmsButton correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ALARM_NEW_API_TOGGLE)
     render(<Provider>
       <AlarmsButton />
     </Provider>, { route: { params } })
