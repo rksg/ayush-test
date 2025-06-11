@@ -15,12 +15,7 @@ import { TimeSeriesChartTypes }                             from '../TimeSeries/
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [
-  ...commonAttributes,
-  Attributes.ApImpactCount,
-  Attributes.EventEndTime
-]
-
+const attributeList = [Attributes.ApImpactCount, ...commonAttributes()]
 const networkImpactCharts: NetworkImpactProps['charts'] = [{
   chart: NetworkImpactChartTypes.APModelByAP,
   query: NetworkImpactQueryTypes.TopN,
@@ -32,11 +27,9 @@ const networkImpactCharts: NetworkImpactProps['charts'] = [{
   type: 'apInfra',
   dimension: 'apFwVersions'
 }]
-
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.ApWanThroughputImpactChart
 ]
-
 const buffer = {
   front: { value: 6, unit: 'hours' as unitOfTime.Base },
   back: { value: 6, unit: 'hours' as unitOfTime.Base }

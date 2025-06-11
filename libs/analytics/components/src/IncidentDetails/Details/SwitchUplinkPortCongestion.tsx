@@ -3,20 +3,19 @@ import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchUplinkTable }      from '../Charts/ImpactedSwitchUplinkTable'
-import { ImpactedUplinkPortDetails }      from '../Charts/ImpactedUplinkPortDetails'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { FixedAutoSizer }            from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchUplinkTable } from '../Charts/ImpactedSwitchUplinkTable'
+import { ImpactedUplinkPortDetails } from '../Charts/ImpactedUplinkPortDetails'
+import { IncidentAttributes }        from '../IncidentAttributes'
+import { Insights }                  from '../Insights'
+import { TimeSeries }                from '../TimeSeries'
+import { TimeSeriesChartTypes }      from '../TimeSeries/config'
 
 import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
-
+const attributeList = commonAttributes()
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.SwitchUplinkPortCongestionChart
 ]
@@ -24,7 +23,6 @@ const timeSeriesCharts: TimeSeriesChartTypes[] = [
 export const SwitchUplinkPortCongestion = (incident: Incident) => {
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
-
   const buffer = getTimeseriesBuffer(start, end)
 
   const isEnabled = [

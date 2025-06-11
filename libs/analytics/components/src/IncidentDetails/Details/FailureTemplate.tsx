@@ -14,12 +14,7 @@ import { TimeSeriesChartTypes }                             from '../TimeSeries/
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [
-  ...commonAttributes,
-  Attributes.ClientImpactCount,
-  Attributes.EventEndTime
-]
-
+const attributeList = [Attributes.ClientImpactCount, ...commonAttributes()]
 const networkImpactCharts: NetworkImpactProps['charts'] = [{
   chart: NetworkImpactChartTypes.WLAN,
   query: NetworkImpactQueryTypes.TopN,
@@ -41,13 +36,11 @@ const networkImpactCharts: NetworkImpactProps['charts'] = [{
   type: 'client',
   dimension: 'radios'
 }]
-
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.FailureChart,
   TimeSeriesChartTypes.ClientCountChart,
   TimeSeriesChartTypes.AttemptAndFailureChart
 ]
-
 const buffer = {
   front: { value: 6, unit: 'hours' as unitOfTime.Base },
   back: { value: 6, unit: 'hours' as unitOfTime.Base }

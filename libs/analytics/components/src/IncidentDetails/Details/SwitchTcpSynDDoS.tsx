@@ -3,20 +3,19 @@ import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchDDoSTable }        from '../Charts/ImpactedSwitchDDoS'
-import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { FixedAutoSizer }          from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
+import { ImpactedSwitchesDonut }   from '../Charts/ImpactedSwitchesDonut'
+import { IncidentAttributes }      from '../IncidentAttributes'
+import { Insights }                from '../Insights'
+import { TimeSeries }              from '../TimeSeries'
+import { TimeSeriesChartTypes }    from '../TimeSeries/config'
 
 import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
-
+const attributeList = commonAttributes()
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.SwitchImpactedPortsCount
 ]

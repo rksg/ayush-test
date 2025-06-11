@@ -19,12 +19,7 @@ import { IncidentHeader }   from './IncidentHeader'
 export const controllerType = get('IS_MLISA_SA')
   ? { smartZone: 'Controller' }
   : { smartZone: 'Ruckus One' }
-
-const attributeList = [
-  ...commonAttributes,
-  Attributes.ApImpactCount,
-  Attributes.EventEndTime
-]
+const attributeList = [Attributes.ApImpactCount, ...commonAttributes()]
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.ChannelChangeCount
 ]
@@ -35,6 +30,7 @@ const buffer = {
 
 export const ChannelDist = (incident: Incident) => {
   const { $t } = useIntl()
+
   const heatMapChartsConfig = [
     {
       key: 'apDistribution',

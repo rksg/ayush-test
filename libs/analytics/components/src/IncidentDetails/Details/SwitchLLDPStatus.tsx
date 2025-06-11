@@ -2,17 +2,17 @@ import type { Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
-import { ImpactedSwitchesByParamDonut }   from '../Charts/ImpactedSwitchesDonut/byParam'
-import { ImpactedSwitchLLDPTable }        from '../Charts/ImpactedSwitchLLDPStatus'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { FixedAutoSizer }               from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchesDonut }        from '../Charts/ImpactedSwitchesDonut'
+import { ImpactedSwitchesByParamDonut } from '../Charts/ImpactedSwitchesDonut/byParam'
+import { ImpactedSwitchLLDPTable }      from '../Charts/ImpactedSwitchLLDPStatus'
+import { IncidentAttributes }           from '../IncidentAttributes'
+import { Insights }                     from '../Insights'
 
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
+const attributeList = commonAttributes()
 
 export const SwitchLLDPStatus = (incident: Incident) => {
   const isEnabled = [

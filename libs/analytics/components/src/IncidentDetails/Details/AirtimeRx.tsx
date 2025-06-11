@@ -1,4 +1,4 @@
-import moment, { unitOfTime } from 'moment-timezone'
+import { unitOfTime } from 'moment-timezone'
 
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
@@ -14,44 +14,40 @@ import { TimeSeriesChartTypes }                             from '../TimeSeries/
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
+const networkImpactCharts: NetworkImpactProps['charts'] = [
+  {
+    chart: NetworkImpactChartTypes.AirtimeRx,
+    query: NetworkImpactQueryTypes.Distribution,
+    type: 'airtimeMetric',
+    dimension: 'airtimeRx'
+  },
+  {
+    chart: NetworkImpactChartTypes.AirtimeClientsByAP,
+    query: NetworkImpactQueryTypes.Distribution,
+    type: 'airtimeClientsByAP',
+    dimension: 'summary'
+  },
+  {
+    chart: NetworkImpactChartTypes.APModelByAP,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'apInfra',
+    dimension: 'apModels'
+  }
+]
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.AirtimeUtilizationChart
+]
+const buffer = {
+  front: { value: 0, unit: 'hours' as unitOfTime.Base },
+  back: { value: 0, unit: 'hours' as unitOfTime.Base }
+}
+
 export const AirtimeRx = (incident: Incident) => {
   const attributeList = [
-    Attributes.ApImpactCount,
     Attributes.ClientImpactCount,
-    ...commonAttributes,
-    ...((moment(incident.startTime).isSame(incident.impactedStart))
-      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
+    Attributes.ApImpactCount,
+    ...commonAttributes(incident)
   ]
-
-  const networkImpactCharts: NetworkImpactProps['charts'] = [
-    {
-      chart: NetworkImpactChartTypes.AirtimeRx,
-      query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtimeMetric',
-      dimension: 'airtimeRx'
-    },
-    {
-      chart: NetworkImpactChartTypes.AirtimeClientsByAP,
-      query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtimeClientsByAP',
-      dimension: 'summary'
-    },
-    {
-      chart: NetworkImpactChartTypes.APModelByAP,
-      query: NetworkImpactQueryTypes.TopN,
-      type: 'apInfra',
-      dimension: 'apModels'
-    }
-  ]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.AirtimeUtilizationChart
-  ]
-
-  const buffer = {
-    front: { value: 0, unit: 'hours' as unitOfTime.Base },
-    back: { value: 0, unit: 'hours' as unitOfTime.Base }
-  }
 
   return <>
     <IncidentHeader incident={incident} />

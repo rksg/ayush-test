@@ -6,17 +6,16 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
 import { SwitchDetail,
   ImpactedSwitchPortConjestionTable }     from '../Charts/ImpactedSwitchPortCongestion/index'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { IncidentAttributes }   from '../IncidentAttributes'
+import { Insights }             from '../Insights'
+import { TimeSeries }           from '../TimeSeries'
+import { TimeSeriesChartTypes } from '../TimeSeries/config'
 
 import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
-
+const attributeList = commonAttributes()
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.SwitchImpactedPortsCount
 ]

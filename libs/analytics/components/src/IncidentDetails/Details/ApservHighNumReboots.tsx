@@ -15,12 +15,10 @@ import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
 const attributeList = [
-  ...commonAttributes,
-  Attributes.ApImpactCount,
   Attributes.ClientImpactCount,
-  Attributes.EventEndTime
+  Attributes.ApImpactCount,
+  ...commonAttributes()
 ]
-
 const networkImpactCharts: NetworkImpactProps['charts'] = [{
   chart: NetworkImpactChartTypes.APModelByAP,
   query: NetworkImpactQueryTypes.TopN,

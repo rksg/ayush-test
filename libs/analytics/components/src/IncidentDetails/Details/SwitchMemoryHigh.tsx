@@ -3,22 +3,20 @@ import { unitOfTime } from 'moment-timezone'
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { SwitchDetail }                   from '../Charts/SwitchDetail'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { SwitchDetail }         from '../Charts/SwitchDetail'
+import { IncidentAttributes }   from '../IncidentAttributes'
+import { Insights }             from '../Insights'
+import { TimeSeries }           from '../TimeSeries'
+import { TimeSeriesChartTypes } from '../TimeSeries/config'
 
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
-
+const attributeList = commonAttributes()
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.SwitchMemoryUtilizationChart
 ]
-
 const buffer = {
   front: { value: 10, unit: 'days' as unitOfTime.Base },
   back: { value: 1, unit: 'second' as unitOfTime.Base }

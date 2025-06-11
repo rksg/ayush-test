@@ -14,12 +14,7 @@ import { TimeSeriesChartTypes }                             from '../TimeSeries/
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [
-  ...commonAttributes,
-  Attributes.ApImpactCount,
-  Attributes.EventEndTime
-]
-
+const attributeList = [Attributes.ApImpactCount, ...commonAttributes()]
 const networkImpactCharts: NetworkImpactProps['charts'] = [{
   chart: NetworkImpactChartTypes.APModelByAP,
   query: NetworkImpactQueryTypes.TopN,
@@ -41,7 +36,6 @@ const networkImpactCharts: NetworkImpactProps['charts'] = [{
   type: 'apDowntime',
   dimension: 'reason'
 }]
-
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.ApDisconnectionCountChart,
   TimeSeriesChartTypes.DowntimeEventTypeDistributionChart

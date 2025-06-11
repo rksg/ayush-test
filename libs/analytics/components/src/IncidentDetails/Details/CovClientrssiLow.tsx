@@ -15,49 +15,45 @@ import { TimeSeriesChartTypes }                             from '../TimeSeries/
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [
-  ...commonAttributes,
-  Attributes.ClientImpactCount,
-  Attributes.EventEndTime
-]
-
-const networkImpactCharts: NetworkImpactProps['charts'] = [{
-  chart: NetworkImpactChartTypes.WLAN,
-  query: NetworkImpactQueryTypes.TopN,
-  type: 'client',
-  dimension: 'ssids'
-}, {
-  chart: NetworkImpactChartTypes.OS,
-  query: NetworkImpactQueryTypes.TopN,
-  type: 'client',
-  dimension: 'osType'
-}, {
-  chart: NetworkImpactChartTypes.APModel,
-  query: NetworkImpactQueryTypes.TopN,
-  type: 'client',
-  dimension: 'apModels'
-}, {
-  chart: NetworkImpactChartTypes.APVersion,
-  query: NetworkImpactQueryTypes.TopN,
-  type: 'client',
-  dimension: 'apFwVersions'
-}, {
-  chart: NetworkImpactChartTypes.Radio,
-  query: NetworkImpactQueryTypes.TopN,
-  type: 'client',
-  dimension: 'radios'
-}]
-
-const timeSeriesCharts: TimeSeriesChartTypes[] = [
-  TimeSeriesChartTypes.RssQualityByClientsChart
-]
-
-const buffer = {
-  front: { value: 0, unit: 'hours' as unitOfTime.Base },
-  back: { value: 0, unit: 'hours' as unitOfTime.Base }
-}
-
 export const CovClientrssiLow = (incident: Incident) => {
+  const attributeList = [
+    Attributes.ClientImpactCount,
+    ...commonAttributes()
+  ]
+  const networkImpactCharts: NetworkImpactProps['charts'] = [{
+    chart: NetworkImpactChartTypes.WLAN,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'client',
+    dimension: 'ssids'
+  }, {
+    chart: NetworkImpactChartTypes.OS,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'client',
+    dimension: 'osType'
+  }, {
+    chart: NetworkImpactChartTypes.APModel,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'client',
+    dimension: 'apModels'
+  }, {
+    chart: NetworkImpactChartTypes.APVersion,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'client',
+    dimension: 'apFwVersions'
+  }, {
+    chart: NetworkImpactChartTypes.Radio,
+    query: NetworkImpactQueryTypes.TopN,
+    type: 'client',
+    dimension: 'radios'
+  }]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.RssQualityByClientsChart
+  ]
+  const buffer = {
+    front: { value: 0, unit: 'hours' as unitOfTime.Base },
+    back: { value: 0, unit: 'hours' as unitOfTime.Base }
+  }
+
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

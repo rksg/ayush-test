@@ -1,16 +1,16 @@
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchVLANsDetails }     from '../Charts/ImpactedSwitchVLANDetails'
-import { ImpactedSwitchVLANsTable }       from '../Charts/ImpactedSwitchVLANsTable'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchVLANsDetails } from '../Charts/ImpactedSwitchVLANDetails'
+import { ImpactedSwitchVLANsTable }   from '../Charts/ImpactedSwitchVLANsTable'
+import { IncidentAttributes }         from '../IncidentAttributes'
+import { Insights }                   from '../Insights'
 
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
+const attributeList = commonAttributes()
 
 export const SwitchVlanMismatch = (incident: Incident) => {
   return <>

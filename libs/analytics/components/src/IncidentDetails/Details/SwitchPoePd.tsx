@@ -1,15 +1,15 @@
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
-import { PoePdTable }                     from '../Charts/PoePdTable'
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { FixedAutoSizer }     from '../../DescriptionSection/styledComponents'
+import { PoePdTable }         from '../Charts/PoePdTable'
+import { IncidentAttributes } from '../IncidentAttributes'
+import { Insights }           from '../Insights'
 
 import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
-const attributeList = [...commonAttributes, Attributes.EventEndTime]
+const attributeList = commonAttributes()
 
 export const SwitchPoePd = (incident: Incident) => {
   return <>

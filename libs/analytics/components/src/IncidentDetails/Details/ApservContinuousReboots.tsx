@@ -15,12 +15,10 @@ import { commonAttributes } from './constants'
 import { IncidentHeader }   from './IncidentHeader'
 
 const attributeList = [
-  ...commonAttributes,
-  Attributes.ApImpactCount,
   Attributes.ClientImpactCount,
-  Attributes.EventEndTime
+  Attributes.ApImpactCount,
+  ...commonAttributes()
 ]
-
 const networkImpactCharts: NetworkImpactProps['charts'] = [{
   chart: NetworkImpactChartTypes.APModelByAP,
   query: NetworkImpactQueryTypes.TopN,
@@ -42,12 +40,10 @@ const networkImpactCharts: NetworkImpactProps['charts'] = [{
   type: 'apRebootEvent',
   dimension: 'reason'
 }]
-
 const timeSeriesCharts: TimeSeriesChartTypes[] = [
   TimeSeriesChartTypes.ApRebootBySystemChart,
   TimeSeriesChartTypes.ConnectedClientsChart
 ]
-
 const buffer = {
   front: { value: 6, unit: 'hours' as unitOfTime.Base },
   back: { value: 6, unit: 'hours' as unitOfTime.Base }
