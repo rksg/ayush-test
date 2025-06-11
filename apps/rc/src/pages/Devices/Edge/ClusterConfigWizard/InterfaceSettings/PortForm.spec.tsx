@@ -1,13 +1,20 @@
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
+import userEvent           from '@testing-library/user-event'
+import { Form }            from 'antd'
+import { cloneDeep, find } from 'lodash'
 
-import { StepsForm }                                                                                                                            from '@acx-ui/components'
-import { Features }                                                                                                                             from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                                from '@acx-ui/rc/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen, waitFor }                                                                                                              from '@acx-ui/test-utils'
+import { StepsForm }                                   from '@acx-ui/components'
+import { Features }                                    from '@acx-ui/feature-toggle'
+import { EdgePortsGeneralBase, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import {
+  EdgeClusterStatus, EdgeFormFieldsPropsType,
+  EdgeGeneralFixtures, EdgePortConfigFixtures,
+  EdgePortTypeEnum, EdgeSdLanFixtures,
+  EdgeSdLanViewDataP2, EdgeStatus
+} from '@acx-ui/rc/utils'
+import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { mockClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }  from '../ClusterConfigWizardDataProvider'
 
 import { PortForm }                   from './PortForm'
 import { transformFromApiToFormData } from './utils'
@@ -21,9 +28,8 @@ const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgePortsGeneralBase: (
-  ) => <div data-testid='rc-EdgePortsGeneralBase'>
-  </div>,
+  // eslint-disable-next-line max-len
+  EdgePortsGeneralBase: jest.fn().mockImplementation(() => <div data-testid='rc-EdgePortsGeneralBase'></div>),
   useIsEdgeFeatureReady: jest.fn()
 }))
 
@@ -88,7 +94,7 @@ describe('InterfaceSettings - PortForm', () => {
   })
 
   it('should be empty when node port data not exist', async () => {
-    const lostSomePortConfig = _.cloneDeep(mockedHaWizardNetworkSettings)
+    const lostSomePortConfig = cloneDeep(mockedHaWizardNetworkSettings)
     delete lostSomePortConfig.portSettings[nodeList[1].serialNumber]
 
     render(
@@ -115,7 +121,7 @@ describe('InterfaceSettings - PortForm', () => {
   })
 
   it('should be blocked when node does not exist valid gateway setting', async () => {
-    const mockNoWanPortData = _.cloneDeep(mockedHaWizardNetworkSettings)
+    const mockNoWanPortData = cloneDeep(mockedHaWizardNetworkSettings)
     Object.keys(mockNoWanPortData.portSettings).forEach(sn => {
       Object.keys(mockNoWanPortData.portSettings[sn]).forEach(port => {
         if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.WAN) {
@@ -159,7 +165,7 @@ describe('InterfaceSettings - PortForm', () => {
     // eslint-disable-next-line max-len
     it('should not be blocked when node does not exist valid gateway setting when access port FF is on', async () => {
       const mockFinishFn = jest.fn()
-      const mockNoWanPortData = _.cloneDeep(mockedHaWizardNetworkSettings)
+      const mockNoWanPortData = cloneDeep(mockedHaWizardNetworkSettings)
       Object.keys(mockNoWanPortData.portSettings).forEach(sn => {
         Object.keys(mockNoWanPortData.portSettings[sn]).forEach(port => {
           if (mockNoWanPortData.portSettings[sn][port][0].portType === EdgePortTypeEnum.WAN) {
@@ -189,6 +195,67 @@ describe('InterfaceSettings - PortForm', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Add' }))
       // eslint-disable-next-line max-len
       await waitFor(() => expect(mockFinishFn).toBeCalledTimes(1))
+    })
+  })
+
+  describe('when multi NAT IP enabled', () => {
+    const MockComponent = ({ formFieldsProps }: { formFieldsProps?: EdgeFormFieldsPropsType }) => {
+      return <Form.Item
+        data-testid='port-table'
+        name='test-nat-pool-overlap'
+        {...formFieldsProps?.natStartIp}
+        children={<span></span>}
+      />
+    }
+
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MULTI_NAT_IP_TOGGLE)
+      jest.mocked(EdgePortsGeneralBase).mockImplementation((props) => <MockComponent {...props}/>)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    const mockNatPoolOverlapData = cloneDeep(mockClusterConfigWizardData)
+    const node1Sn = mockedHaNetworkSettings.portSettings[0].serialNumber
+    const node2Sn = mockedHaNetworkSettings.portSettings[1].serialNumber
+
+    // mock 2 ports in diff node pool overlapped
+    mockNatPoolOverlapData.portSettings[node1Sn].port1[0].portType = EdgePortTypeEnum.WAN
+    mockNatPoolOverlapData.portSettings[node1Sn].port1[0].natEnabled = true
+    // eslint-disable-next-line max-len
+    mockNatPoolOverlapData.portSettings[node1Sn].port1[0].natPools = [{ startIpAddress: '1.1.1.2', endIpAddress: '1.1.1.30' }]
+
+    mockNatPoolOverlapData.portSettings[node2Sn].port1[0].portType = EdgePortTypeEnum.WAN
+    mockNatPoolOverlapData.portSettings[node2Sn].port1[0].natEnabled = true
+    // eslint-disable-next-line max-len
+    mockNatPoolOverlapData.portSettings[node2Sn].port1[0].natPools = [{ startIpAddress: '1.1.1.10', endIpAddress: '1.1.1.20' }]
+
+    it('should validate if NAT pool overlap between edges', async () => {
+      render(
+        <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+          <StepsForm initialValues={mockNatPoolOverlapData}>
+            <StepsForm.StepForm>
+              <PortForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+        })
+
+      expect(screen.getByText('Port General Settings')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+      const error = await screen.findByRole('alert')
+      expect(error).toBeVisible()
+      const edge1Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node1Sn })?.name
+      const edge2Name = find(mockEdgeClusterList.data[0].edgeList, { serialNumber: node2Sn })?.name
+
+      // eslint-disable-next-line max-len
+      expect(error).toHaveTextContent(`NAT pool ranges on ${edge1Name} overlap with those on ${edge2Name}`)
     })
   })
 })

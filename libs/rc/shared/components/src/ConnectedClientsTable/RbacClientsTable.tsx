@@ -245,6 +245,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       sorter: true,
       render: (_: React.ReactNode, row: ClientInfo) => {
         return <IdentityDetailsLink
+          showNoData
           personaId={row.identityId}
           personaGroupId={row.identityGroupId}
           name={row.identityName}
