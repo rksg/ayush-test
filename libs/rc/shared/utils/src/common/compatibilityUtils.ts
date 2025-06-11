@@ -32,7 +32,8 @@ export const getCompatibilityFeatureDisplayName = (
       return $t({ defaultMessage: 'Access Switch' })
     case IncompatibilityFeatures.ARP_TERMINATION:
       return $t({ defaultMessage: 'ARP Termination' })
-    case IncompatibilityFeatures.TUNNEL_PROFILE, IncompatibilityFeatureGroups.TUNNEL_PROFILE:
+    case IncompatibilityFeatures.TUNNEL_PROFILE:
+    case IncompatibilityFeatureGroups.TUNNEL_PROFILE:
       return $t({ defaultMessage: 'Tunnel Profile' })
     case IncompatibilityFeatures.DUAL_WAN:
       return $t({ defaultMessage: 'Dual WAN' })
