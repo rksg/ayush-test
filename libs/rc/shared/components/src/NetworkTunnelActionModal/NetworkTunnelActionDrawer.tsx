@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Typography } from 'antd'
 
@@ -27,6 +27,8 @@ import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { usePermissionResult }                            from './usePermissionResult'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreSelectOption                            from './WifiSoftGreSelectOption'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
@@ -39,6 +41,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
+  const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
   const { hasEdgeSdLanPermission, hasSoftGrePermission } = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
@@ -100,7 +105,26 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
         </Typography>
         <Form.Item
           name='tunnelType'
-          label={$t({ defaultMessage: 'Tunneling Method' })}
+          label={<>
+            {$t({ defaultMessage: 'Tunneling Method' })}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              showDetailButton
+              placement='top'
+              onClick={() => setSoftGreDrawerVisible(true)}
+              icon={<QuestionMarkCircleOutlined
+                style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
+              />}
+            />}
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
+              visible={softGreDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={networkId}
+              featureNames={[InCompatibilityFeatures.NETWORK_SOFT_GRE]}
+              onClose={() => setSoftGreDrawerVisible(false)}
+            />}
+          </>}
           initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {

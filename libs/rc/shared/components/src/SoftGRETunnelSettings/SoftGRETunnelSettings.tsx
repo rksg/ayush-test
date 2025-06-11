@@ -15,6 +15,8 @@ import {
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+
 import { IPSecProfileSettings }   from './IPSecProfileSettings'
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -28,6 +30,7 @@ interface SoftGRETunnelSettingsProps {
   toggleButtonToolTip?: string
   softGREProfileOptionList?: DefaultOptionType[];
   apModel?: string
+  venueId?: string
   serialNumber?: string
   isUnderAPNetworking: boolean
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
@@ -47,6 +50,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     toggleButtonToolTip,
     softGREProfileOptionList,
     apModel,
+    venueId,
     serialNumber,
     isUnderAPNetworking,
     optionDispatch,
@@ -57,6 +61,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   } = props
 
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370VenueSoftGre = isR370UnsupportedFeatures && !serialNumber
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
   const ipsecFieldName = ['lan', index, 'ipsecEnabled']
@@ -66,6 +72,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const ipsecProfileId = useWatch<string>(['lan', index, 'ipsecProfileId'], form)
   const [isSoftGreProfileDisabled, setSoftGreProfileDisabled] = useState(false)
   const [isIpsecDisabled, setIsIpsecDisabled] = useState(false)
+  const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
 
   function usePrevious (value: {
     data: SoftGreIpsecProfile[];
@@ -172,21 +179,37 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
 
   }, [usedProfileData])
 
+  const tooltipInfo = (toggleButtonToolTip ||
+    $t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway. '+
+  'Please note that the uplink port does not support ' +
+  'SoftGRE tunneling, which will cause the AP(s) to disconnect.' }))
+
   return (
     <>
       <StepsForm.StepForm>
         <FieldLabel width='220px'>
           <Space>
             {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
-            <Tooltip.Question
-              title={toggleButtonToolTip ||
-                $t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway. '+
-              'Please note that the uplink port does not support ' +
-              'SoftGRE tunneling, which will cause the AP(s) to disconnect.' })
-              }
+            {!isR370VenueSoftGre && <Tooltip.Question
+              title={tooltipInfo}
               placement='right'
               iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
+            />}
+            {isR370VenueSoftGre &&
+              <ApCompatibilityToolTip
+                title={tooltipInfo}
+                showDetailButton
+                placement='right'
+                onClick={() => setSoftGreDrawerVisible(true)}
+              />}
+            {isR370VenueSoftGre &&
+              <ApCompatibilityDrawer
+                visible={softGreDrawerVisible}
+                type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                venueId={venueId}
+                featureNames={[InCompatibilityFeatures.VENUE_SOFT_GRE]}
+                onClose={() => setSoftGreDrawerVisible(false)}
+              />}
           </Space>
           <Form.Item
             valuePropName='checked'
