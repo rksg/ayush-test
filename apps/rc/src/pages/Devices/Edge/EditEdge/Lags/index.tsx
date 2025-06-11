@@ -21,7 +21,7 @@ const Lags = () => {
   const {
     portData, lagData, lagStatus, isFetching,
     clusterInfo, isClusterFormed, clusterConfig,
-    subInterfaceData
+    subInterfaceData, isSupportAccessPort
   } = useContext(EditEdgeDataContext)
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -93,6 +93,7 @@ const Lags = () => {
           onDelete={handleDelete}
           clusterInfo={clusterInfo!}
           subInterfaceList={subInterfaceList}
+          isSupportAccessPort={isSupportAccessPort}
         />
       </Form>
     </Loader>
