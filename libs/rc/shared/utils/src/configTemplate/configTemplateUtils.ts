@@ -12,7 +12,7 @@ import { ConfigTemplateUrlsInfo }                    from '../urls'
 
 import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
 import {
-  configTemplateApGroupOperationMap,
+  configTemplateApGroupOperationMap, configTemplateIdentityGroupOperationMap,
   configTemplateNetworkOperationMap, ConfigTemplateOperation, configTemplatePolicyOperationMap,
   configTemplatePolicyTypeMap, configTemplateServiceOperationMap, configTemplateServiceTypeMap,
   configTemplateSwitchProfileOperationMap, configTemplateVenueOperationMap
@@ -137,6 +137,8 @@ export function hasConfigTemplateAllowedOperation (type: ConfigTemplateType, ope
     return hasAllowedOperations([getOpsApi(configTemplateSwitchProfileOperationMap[oper])])
   } else if (type === ConfigTemplateType.AP_GROUP) {
     return hasAllowedOperations([getOpsApi(configTemplateApGroupOperationMap[oper])])
+  } else if (type === ConfigTemplateType.IDENTITY_GROUP) {
+    return hasAllowedOperations([getOpsApi(configTemplateIdentityGroupOperationMap[oper])])
   }
 
   return false

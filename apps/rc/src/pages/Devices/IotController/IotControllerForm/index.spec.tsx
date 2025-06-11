@@ -21,6 +21,12 @@ const successResponse = {
   requestId: 'request-id'
 }
 
+const serialNumberExists = {
+  requestId: 'request-id',
+  serialNumber: 'rewqfdsafasd',
+  existed: false
+}
+
 const iotControllerList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
@@ -73,6 +79,10 @@ describe('Iot Controller Form', () => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }),
+      rest.get(IotUrlsInfo.getIotControllerSerialNumber.url,
+        (_, res, ctx) => {
+          return res(ctx.status(200), ctx.json(serialNumberExists))
+        }),
       rest.patch(IotUrlsInfo.updateIotController.url,
         (_, res, ctx) => {
           mockedReqFn()
@@ -112,6 +122,8 @@ describe('Iot Controller Form', () => {
     const passwordInput = screen.getByLabelText('API Token')
     // eslint-disable-next-line max-len
     await fireEvent.change(passwordInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
+
+    await userEvent.click(await screen.findByText('Validate'))
 
     const serialInput = screen.getByLabelText('IoT Controller Serial Number')
     // eslint-disable-next-line max-len
@@ -157,6 +169,8 @@ describe('Iot Controller Form', () => {
 
     const URLInput = screen.getByLabelText('FQDN / IP (AP Inbound IP address)')
     await fireEvent.change(URLInput, { target: { value: 'newtest.com' } })
+
+    await userEvent.click(await screen.findByText('Validate'))
 
     const serialInput = screen.getByLabelText('IoT Controller Serial Number')
     // eslint-disable-next-line max-len

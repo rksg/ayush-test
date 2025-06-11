@@ -117,6 +117,7 @@ function SettingsForm () {
   const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   // eslint-disable-next-line max-len
   const isOpenNetworkIntegrateIdentityGroupEnable = useIsSplitOn(Features.WIFI_OPEN_NETWORK_INTEGRATE_IDENTITY_GROUP_TOGGLE)
   const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
@@ -315,8 +316,10 @@ function SettingsForm () {
         </>}
         {(isOpenNetworkIntegrateIdentityGroupEnable &&
           !isMacRegistrationList &&
-          !isTemplate ) &&
-          <IdentityGroup comboWidth='200px' />}
+            (isTemplate ? isIdentityGroupTemplateEnabled : true) ) &&
+          <div>
+            <IdentityGroup comboWidth='200px' />
+          </div>}
       </div>
     </>
   )

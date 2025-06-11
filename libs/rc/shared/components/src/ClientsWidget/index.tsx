@@ -1,5 +1,4 @@
 import { Space }              from 'antd'
-import { countBy }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
@@ -7,7 +6,7 @@ import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
 import type { DonutChartData }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useClientSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { useClientSummariesQuery }                              from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
@@ -16,8 +15,7 @@ import * as UI from '../DevicesWidget/styledComponents'
 
 export const getAPClientStackedBarChartData = (
   overviewData: Dashboard | undefined,
-  { $t }: IntlShape,
-  isNewDashboardQueryEnabled: boolean
+  { $t }: IntlShape
 ): ChartData[] => {
   const seriesMapping = [
     { name: $t({ defaultMessage: 'Unknown' }) },
@@ -25,17 +23,7 @@ export const getAPClientStackedBarChartData = (
     { name: $t({ defaultMessage: 'Average' }) },
     { name: $t({ defaultMessage: 'Good' }) }
   ] as Array<{ name: string, color: string }>
-  const clientDto = overviewData?.summary?.clients?.clientDto?.map(item=>{
-    if(item.healthCheckStatus === undefined){
-      return {
-        ...item,
-        healthCheckStatus: 'Unknown'
-      }
-    }
-    return item
-  })
-  const counts = isNewDashboardQueryEnabled ?
-    overviewData?.summary?.clients?.summary : countBy(clientDto, client => client.healthCheckStatus)
+  const counts = overviewData?.summary?.clients?.summary
   const series: ChartData['series'] = []
   seriesMapping.forEach(({ name }, index) => {
     series.push({
@@ -86,13 +74,10 @@ export function ClientsWidgetV2 () {
   const intl = useIntl()
   const { venueIds } = useDashboardFilter()
 
-  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
-  const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
-
-  const queryResults = query({
+  const queryResults = useClientSummariesQuery({
     params: useParams(),
     payload: {
       filters: {
@@ -103,7 +88,7 @@ export function ClientsWidgetV2 () {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: {
-        apData: getAPClientStackedBarChartData(data, intl, isNewDashboardQueryEnabled),
+        apData: getAPClientStackedBarChartData(data, intl),
         switchData: getSwitchClientStackedBarChartData(data, intl),
         apClientCount: data?.summary?.clients?.totalCount || 0,
         switchClientCount: data?.summary?.switchClients?.totalCount || 0

@@ -4,10 +4,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { switchApi }                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { switchApi }                                                                from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo, SwitchRow, allMultipleEditableFields } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,8 +32,7 @@ import {
   vlansByVenue
 } from './__tests__/fixtures'
 import {
-  EditPortDrawer,
-  allMultipleEditableFields
+  EditPortDrawer
 } from './editPortDrawer'
 
 const params = {

@@ -12,7 +12,6 @@ import {
   DidYouKnow,
   IncidentsDashboardv2,
   SwitchesTrafficByVolume,
-  SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
   TopEdgesByResources,
   TopEdgesByTraffic,
@@ -81,7 +80,8 @@ import {
   hasRoles,
   getUserProfile,
   hasAllowedOperations,
-  isCoreTier
+  isCoreTier,
+  useUserProfileContext
 } from '@acx-ui/user'
 import {
   AnalyticsFilter,
@@ -144,8 +144,9 @@ export default function Dashboard () {
   const [initDashboardId, setInitDashboardId] = useState(false)
   const [dashboardList, setDashboardList] = useState([] as DashboardInfo[])
 
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
   const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
@@ -231,8 +232,9 @@ function DashboardPageHeader (props: {
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
@@ -550,15 +552,10 @@ function DashboardMapWidget () {
 
 function SwitchWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
-  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        {
-          supportPortTraffic ?
-            <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
-            :<SwitchesTrafficByVolumeLegacy filters={dashboardFilters} vizType={'area'} />
-        }
+        <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={dashboardFilters}/>
@@ -753,9 +750,10 @@ function CanvasDashboard (props: {
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
 }) {
   const { canvasId, sections, groups, setGroups } = props
+  const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser
+  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
 
   const { menuCollapsed } = useLayoutContext()
   const [layout, setLayout] = useState({

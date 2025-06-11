@@ -7,7 +7,6 @@ import {
   ConnectedClientsOverTime,
   IncidentBySeverity,
   NetworkHistory,
-  SwitchesTrafficByVolumeLegacy,
   TopSwitchModels,
   TopApplicationsByTraffic,
   TopSSIDsByClient,
@@ -182,15 +181,10 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
 
 function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
-  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        {
-          supportPortTraffic ?
-            <SwitchesTrafficByVolume filters={filters} />
-            :<SwitchesTrafficByVolumeLegacy filters={filters} />
-        }
+        <SwitchesTrafficByVolume filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={filters} />
