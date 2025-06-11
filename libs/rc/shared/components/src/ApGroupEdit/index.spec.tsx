@@ -435,8 +435,6 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
     await userEvent.click(saveButton)
 
     await screen.findByText('You Have Invalid Changes')
-    screen.logTestingPlaygroundURL()
-
     // await waitFor(() => expect(mockedUpdateApGroupRadioCustomization).toBeCalled())
     expect(saveButton).toBeVisible()
   })
