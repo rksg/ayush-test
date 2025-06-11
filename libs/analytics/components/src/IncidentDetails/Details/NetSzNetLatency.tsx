@@ -5,20 +5,12 @@ import { FixedAutoSizer }                 from '../../DescriptionSection/styledC
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [...commonAttributes, Attributes.EventEndTime]
 
 export const NetSzNetLatency = (incident: Incident) => {
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

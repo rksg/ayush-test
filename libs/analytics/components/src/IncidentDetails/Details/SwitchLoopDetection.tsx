@@ -9,21 +9,12 @@ import { ImpactedVlanTable  }             from '../Charts/ImpactedSwitchLoopDete
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [...commonAttributes, Attributes.EventEndTime]
 
 export const SwitchLoopDetection = (incident: Incident) => {
-
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE)

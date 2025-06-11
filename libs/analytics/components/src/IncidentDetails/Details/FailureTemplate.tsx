@@ -11,52 +11,49 @@ import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpa
 import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [
+  ...commonAttributes,
+  Attributes.ClientImpactCount,
+  Attributes.EventEndTime
+]
+
+const networkImpactCharts: NetworkImpactProps['charts'] = [{
+  chart: NetworkImpactChartTypes.WLAN,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'client',
+  dimension: 'ssids'
+}, {
+  chart: NetworkImpactChartTypes.Reason,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'client',
+  dimension: 'reasonCodes'
+}, {
+  chart: NetworkImpactChartTypes.ClientManufacturer,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'client',
+  dimension: 'manufacturer'
+}, {
+  chart: NetworkImpactChartTypes.Radio,
+  query: NetworkImpactQueryTypes.TopN,
+  type: 'client',
+  dimension: 'radios'
+}]
+
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.FailureChart,
+  TimeSeriesChartTypes.ClientCountChart,
+  TimeSeriesChartTypes.AttemptAndFailureChart
+]
+
+const buffer = {
+  front: { value: 6, unit: 'hours' as unitOfTime.Base },
+  back: { value: 6, unit: 'hours' as unitOfTime.Base }
+}
 
 export const FailureTemplate = (incident: Incident) => {
-  const attributeList = [
-    Attributes.ClientImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-  const networkImpactCharts: NetworkImpactProps['charts'] = [{
-    chart: NetworkImpactChartTypes.WLAN,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'client',
-    dimension: 'ssids'
-  }, {
-    chart: NetworkImpactChartTypes.Reason,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'client',
-    dimension: 'reasonCodes'
-  }, {
-    chart: NetworkImpactChartTypes.ClientManufacturer,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'client',
-    dimension: 'manufacturer'
-  }, {
-    chart: NetworkImpactChartTypes.Radio,
-    query: NetworkImpactQueryTypes.TopN,
-    type: 'client',
-    dimension: 'radios'
-  }]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.FailureChart,
-    TimeSeriesChartTypes.ClientCountChart,
-    TimeSeriesChartTypes.AttemptAndFailureChart
-  ]
-  const buffer = {
-    front: { value: 6, unit: 'hours' as unitOfTime.Base },
-    back: { value: 6, unit: 'hours' as unitOfTime.Base }
-  }
-
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

@@ -325,7 +325,8 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
-      filterable: true
+      filterable: true,
+      filterableWidth: 130
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
@@ -389,8 +390,7 @@ export function IncidentTable ({ filters }: {
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,
-      filterable: mutedStatusFilterOptions($t),
-      filterableWidth: 100
+      filterable: mutedStatusFilterOptions($t)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
@@ -443,7 +443,7 @@ export function IncidentTable ({ filters }: {
         columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => setSelectedRowsData([])}
-        filterableWidth={135}
+        filterableWidth={100}
         searchableWidth={240}
         optionLabelProp='label'
         columnsToHideChildrenIfParentFiltered={['isMuted']}

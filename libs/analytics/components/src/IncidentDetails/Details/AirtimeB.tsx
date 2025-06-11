@@ -12,21 +12,16 @@ import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpa
 import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
 
 export const AirtimeB = (incident: Incident) => {
   const attributeList = [
-    Attributes.ClientImpactCount,
     Attributes.ApImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
+    Attributes.ClientImpactCount,
+    ...commonAttributes,
     ...((moment(incident.startTime).isSame(incident.impactedStart))
-      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime]),
-    Attributes.Visibility
+      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
   ]
   const rogueEnabled = incident.metadata.rootCauseChecks?.checks
     .some(check => check.isRogueDetectionEnabled)

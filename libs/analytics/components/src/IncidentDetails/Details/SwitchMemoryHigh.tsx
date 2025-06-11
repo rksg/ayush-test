@@ -10,29 +10,21 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const attributeList = [...commonAttributes, Attributes.EventEndTime]
+
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.SwitchMemoryUtilizationChart
+]
+
+const buffer = {
+  front: { value: 10, unit: 'days' as unitOfTime.Base },
+  back: { value: 1, unit: 'second' as unitOfTime.Base }
+}
 
 export const SwitchMemoryHigh = (incident: Incident) => {
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchMemoryUtilizationChart
-  ]
-
-  const buffer = {
-    front: { value: 10, unit: 'days' as unitOfTime.Base },
-    back: { value: 1, unit: 'second' as unitOfTime.Base }
-  }
-
   return <>
     <IncidentHeader incident={incident} />
     <GridRow>

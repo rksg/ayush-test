@@ -11,28 +11,19 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
+import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
+const attributeList = [...commonAttributes, Attributes.EventEndTime]
+
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.SwitchImpactedPortsCount
+]
+
 export const SwitchTcpSynDDoS = (incident: Incident) => {
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchImpactedPortsCount
-  ]
-
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
-
   const buffer = getTimeseriesBuffer(start, end)
 
   const isEnabled = [

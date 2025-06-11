@@ -13,33 +13,28 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
 
 export const controllerType = get('IS_MLISA_SA')
   ? { smartZone: 'Controller' }
   : { smartZone: 'Ruckus One' }
+
+const attributeList = [
+  ...commonAttributes,
+  Attributes.ApImpactCount,
+  Attributes.EventEndTime
+]
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.ChannelChangeCount
+]
+const buffer = {
+  front: { value: 0, unit: 'hours' as unitOfTime.Base },
+  back: { value: 0, unit: 'hours' as unitOfTime.Base }
+}
+
 export const ChannelDist = (incident: Incident) => {
   const { $t } = useIntl()
-  const attributeList = [
-    Attributes.ApImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.ChannelChangeCount
-  ]
-
-  const buffer = {
-    front: { value: 0, unit: 'hours' as unitOfTime.Base },
-    back: { value: 0, unit: 'hours' as unitOfTime.Base }
-  }
-
   const heatMapChartsConfig = [
     {
       key: 'apDistribution',

@@ -11,33 +11,24 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
+import { commonAttributes }    from './constants'
 import { IncidentHeader }      from './IncidentHeader'
 import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
-export const SwitchPortCongestion = (incident: Incident) => {
-  const attributeList = [
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    Attributes.EventEndTime,
-    Attributes.Visibility
-  ]
+const attributeList = [...commonAttributes, Attributes.EventEndTime]
 
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.SwitchImpactedPortsCount
+]
+
+export const SwitchPortCongestion = (incident: Incident) => {
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE)
   ].some(Boolean)
 
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchImpactedPortsCount
-  ]
-
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
-
   const buffer = getTimeseriesBuffer(start, end)
 
   return isEnabled ? <>
