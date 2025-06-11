@@ -29,7 +29,6 @@ import {
   NewMspEntitlementSummary,
   MspAggregations,
   MspEcAlarmList,
-  RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
   MspRbacUrlsInfo,
