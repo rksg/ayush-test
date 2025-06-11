@@ -7,12 +7,17 @@ import { useIntl }                 from 'react-intl'
 import { Loader, useStepFormContext }                                       from '@acx-ui/components'
 import { Features }                                                         from '@acx-ui/feature-toggle'
 import { EdgePortsGeneralBase, NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { validateEdgeClusterLevelGateway, EdgePort, EdgeLag, SubInterface } from '@acx-ui/rc/utils'
+import {
+  validateEdgeClusterLevelGateway,
+  EdgePort, EdgeLag, SubInterface,
+  natPoolRangeClusterLevelValidator
+} from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 import { StyledHiddenFormItem }                                           from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
+import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
@@ -51,6 +56,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
   const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
+  const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
 
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
   const {
@@ -102,19 +108,18 @@ const PortSettingView = (props: PortSettingViewProps) => {
       {
         !isEdgeCoreAccessSeparationReady &&
         <StyledHiddenFormItem
-          name='clusterGatewayValidate'
+          name='clusterLevelValidate'
           rules={[
-            { validator: () => {
+            { validator: async () => {
               // eslint-disable-next-line max-len
-              const allPortsValues = portSettings?Object.values(portSettings).flatMap(port => Object.values(port)):[]
+              const allPortsValues = portSettings ? Object.values(portSettings).flatMap(port => Object.values(port)):[]
               const allLagsValues = nodesLagData.map(lag => lag.lags)
               const allPortsData = _.flatten(allPortsValues) as EdgePort[]
               const allLagsData =_.flatten(allLagsValues) as EdgeLag[]
-              // eslint-disable-next-line max-len
+
               return validateEdgeClusterLevelGateway(
                 allPortsData, allLagsData ?? [], [],
-                clusterInfo?.edgeList ?? [], isDualWanEnabled, isEdgeCoreAccessSeparationReady
-              )
+                clusterInfo?.edgeList ?? [], isDualWanEnabled, isEdgeCoreAccessSeparationReady)
             } }
           ]}
           children={<input hidden/>}
@@ -154,6 +159,17 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 isClusterWizard
                 clusterInfo={clusterInfo!}
                 isSupportAccessPort={isSupportAccessPort}
+                formFieldsProps={{
+                  natStartIp: {
+                    rules: isMultiNatIpEnabled
+                      ? [{ validator: () => {
+                        // eslint-disable-next-line max-len
+                        const { ports: allPortsData, lags: allLagsData } = getAllPhysicalInterfaceFormData(form)
+                        // eslint-disable-next-line max-len
+                        return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
+                      } }] : []
+                  }
+                }}
               />
               : <div />
           }

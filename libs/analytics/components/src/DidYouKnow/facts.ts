@@ -1,3 +1,4 @@
+import { castArray } from 'lodash'
 import { IntlShape } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
@@ -34,16 +35,39 @@ export const factsConfig = {
   }
 }
 
-export function formatText ( { $t }: IntlShape, options: object,
-  key: keyof typeof factsConfig) {
+export function formatText (
+  { $t, formatList }: IntlShape,
+  options: Record<string, string[] | string | number>,
+  key: keyof typeof factsConfig
+) {
   switch (key) {
     case 'topApplicationsByClients':
-      return($t({ defaultMessage: 'Top 3 applications in terms of users last week were ' +
-        '{label0}, {label1} and {label2}.' }, { ...options }))
+      return($t({
+        defaultMessage: `Top {labelsSize, plural,
+          one {application}
+          other {applications}
+        } in terms of users last week {labelsSize, plural,
+          one {was {labelsText}}
+          other {were {labelsText}}
+        }.`
+      }, {
+        ...options,
+        labelsText: formatList(castArray(options.labels), { type: 'conjunction', style: 'long' })
+      }))
 
     case 'topApplicationsByTraffic':
-      return($t({ defaultMessage: 'Top 3 applications in terms of user traffic last week were ' +
-      '{label0}, {label1} and {label2}.' }, { ...options }))
+      return($t({
+        defaultMessage: `Top {labelsSize, plural,
+          one {application}
+          other {applications}
+        } in terms of user traffic last week {labelsSize, plural,
+          one {was {labelsText}}
+          other {were {labelsText}}
+        }.`
+      }, {
+        ...options,
+        labelsText: formatList(castArray(options.labels), { type: 'conjunction', style: 'long' })
+      }))
 
     case 'l3AuthFailure':
       return($t({ defaultMessage:
@@ -51,14 +75,32 @@ export function formatText ( { $t }: IntlShape, options: object,
         '{value0}.' }, { ...options }))
 
     case 'topIncidentsZones':
-      return($t({ defaultMessage:
-        'Top 3 zones with the highest number of incidents last week were ' +
-        '{label0}, {label1} and {label2}.' }, { ...options }))
+      return($t({
+        defaultMessage: `Top {labelsSize, plural,
+          one {<venueSingular></venueSingular>}
+          other {<venuePlural></venuePlural>}
+        } with highest number of incidents last week {labelsSize, plural,
+          one {was {labelsText}}
+          other {were {labelsText}}
+        }.`
+      }, {
+        ...options,
+        labelsText: formatList(castArray(options.labels), { type: 'conjunction', style: 'long' })
+      }))
 
     case 'topIncidentsApGroups':
-      return($t({ defaultMessage:
-        'Top 3 AP groups with the highest number of incidents last week were ' +
-        '{label0}, {label1} and {label2}.' }, { ...options }))
+      return($t({
+        defaultMessage: `Top {labelsSize, plural,
+          one {AP group}
+          other {AP groups}
+        } with highest number of incidents last week {labelsSize, plural,
+          one {was {labelsText}}
+          other {were {labelsText}}
+        }.`
+      }, {
+        ...options,
+        labelsText: formatList(castArray(options.labels), { type: 'conjunction', style: 'long' })
+      }))
 
     case 'busiestSsidByClients':
       return($t({ defaultMessage: 'Busiest WLAN in terms of users last week was {label0}, ' +
@@ -85,12 +127,15 @@ export function formatText ( { $t }: IntlShape, options: object,
   }
 }
 
-export const toObject = (prefix: string, list: string[],
-  formatter?:CallableFunction) => {
+export const toObject = (prefix: string, list: string[], formatter?:CallableFunction) => {
+  const results: Record<string, string[] | string | number> = {
+    [`${prefix}s`]: list.map(item => `<b>${formatter ? formatter(item) : item}</b>`),
+    [`${prefix}sSize`]: list.length
+  }
   return list.reduce((acc, item, i) => ({
     ...acc,
     [`${prefix}${i}`]: formatter ? '<b>'+formatter(item)+'</b>' : '<b>'+item+'</b>'
-  }), {})
+  }), results)
 }
 
 export function getFactsData (data: DidYouKnowData[]): Record<string, string> {
