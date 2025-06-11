@@ -96,7 +96,7 @@ export interface MutationPayload {
 
 export interface MutationResponse {
   data: {
-    toggleMute: {
+    [key: string]: {
       success: boolean,
       errorMsg: string,
       errorCode: string

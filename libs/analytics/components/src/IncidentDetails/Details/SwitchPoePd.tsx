@@ -16,7 +16,8 @@ export const SwitchPoePd = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    Attributes.EventEndTime,
+    Attributes.Visibility
   ]
 
   return <>

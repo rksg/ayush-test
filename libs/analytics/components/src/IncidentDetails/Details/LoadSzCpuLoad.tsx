@@ -15,7 +15,8 @@ export const LoadSzCpuLoad = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    Attributes.EventEndTime,
+    Attributes.Visibility
   ]
 
   return <>

@@ -476,6 +476,12 @@ export const Header = styled.div`
   background-color: var(--acx-primary-white);
 `
 
+export const HeaderItems = styled.div`
+  width: 100%;
+  overflow-x: scroll;
+  margin-right: 12px;
+`
+
 export const HeaderComps = styled.div`
   display: flex;
   gap: 12px;

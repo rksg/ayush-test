@@ -377,7 +377,15 @@ export function IncidentTable ({ filters }: {
       key: 'isMuted',
       align: 'center',
       render: (_, { isMuted }) =>
-        isMuted ? <EyeSlashOutlined height={18} /> : <EyeOpenOutlined height={18} />,
+        isMuted ? (
+          <Tooltip title={$t({ defaultMessage: 'Muted' })}>
+            <EyeSlashOutlined height={18} />
+          </Tooltip>
+        ) : (
+          <Tooltip title={$t({ defaultMessage: 'Unmuted' })}>
+            <EyeOpenOutlined height={18} />
+          </Tooltip>
+        ),
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,

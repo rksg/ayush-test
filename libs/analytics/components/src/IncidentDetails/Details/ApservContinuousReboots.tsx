@@ -23,7 +23,8 @@ export const ApservContinuousReboots = (incident: Incident) => {
     Attributes.Scope,
     Attributes.Duration,
     Attributes.EventStartTime,
-    Attributes.EventEndTime
+    Attributes.EventEndTime,
+    Attributes.Visibility
   ]
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
