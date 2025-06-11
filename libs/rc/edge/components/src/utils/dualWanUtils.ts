@@ -3,9 +3,10 @@ import {
   EdgeLinkDownCriteriaEnum,
   EdgeMultiWanModeEnum,
   EdgeMultiWanProtocolEnum,
-  EdgeWanLinkHealthCheckPolicy
+  EdgeWanLinkHealthCheckPolicy,
+  EdgeWanPortRoleStatusEnum
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 export const multiWanLimitations = {
   MIN_HEALTH_CHECK_INTERVAL: 1, // seconds
@@ -51,7 +52,7 @@ export const getWanProtocolString = (type: EdgeMultiWanProtocolEnum | undefined)
       return $t({ defaultMessage: 'ICMP (Ping)' })
     case EdgeMultiWanProtocolEnum.NONE:
     default:
-      return ''
+      return noDataDisplay
   }
 }
 
@@ -66,7 +67,7 @@ export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum | un
       return $t({ defaultMessage: 'One or more of the targets were unreachable' })
     case EdgeLinkDownCriteriaEnum.INVALID:
     default:
-      return ''
+      return noDataDisplay
   }
 }
 
@@ -74,4 +75,18 @@ export const getDisplayWanRole = (priority: number) => {
   const { $t } = getIntl()
   if (priority === 0) return ''
   return priority === 1 ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Backup' })
+}
+
+export const getWanLinkStatusString = (wanPortStatus: EdgeWanPortRoleStatusEnum | undefined) => {
+  const { $t } = getIntl()
+
+  switch (wanPortStatus) {
+    case EdgeWanPortRoleStatusEnum.ACTIVE:
+      return $t({ defaultMessage: 'Active' })
+    case EdgeWanPortRoleStatusEnum.BACKUP:
+      return $t({ defaultMessage: 'Backup' })
+    case EdgeWanPortRoleStatusEnum.INVALID:
+    default:
+      return noDataDisplay
+  }
 }

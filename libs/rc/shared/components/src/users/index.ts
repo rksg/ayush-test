@@ -12,3 +12,4 @@ export { IdentityForm } from  './IdentityForm'
 
 export { PersonaGroupDrawer } from './PersonaGroupDrawer'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
+export * from './PersonaGroupDetails'
