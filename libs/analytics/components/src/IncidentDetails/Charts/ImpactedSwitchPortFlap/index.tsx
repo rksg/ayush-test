@@ -79,8 +79,6 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
   }
 
   const handleExportCSV = () => {
-    if (!impactedSwitch.data?.ports) return
-
     const columnDefinitions = [
       {
         key: 'portNumber',
@@ -119,7 +117,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       }
     ]
 
-    const csvData = impactedSwitch.data.ports.map(port => {
+    const csvData = impactedSwitch.data!.ports!.map(port => {
       const rowData: Record<string, string> = {}
       columnDefinitions.forEach(col => {
         const portData = {

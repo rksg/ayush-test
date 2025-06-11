@@ -1,6 +1,4 @@
-
 import { useMemo, useState } from 'react'
-
 
 import { map }     from 'lodash'
 import { useIntl } from 'react-intl'
@@ -8,7 +6,8 @@ import { useIntl } from 'react-intl'
 import { Incident, overlapsRollup, sortProp }                                             from '@acx-ui/analytics/utils'
 import type { SortResult }                                                                from '@acx-ui/analytics/utils'
 import { Card, Loader, NoGranularityText, Table, Button, TableProps, Tooltip, showToast } from '@acx-ui/components'
-import { CopyOutlined }                                                                   from '@acx-ui/icons-new'
+import { CopyOutlined, DownloadOutlined }                                                 from '@acx-ui/icons-new'
+import { handleBlobDownloadFile }                                                         from '@acx-ui/utils'
 
 import { ImpactedSwitchesDrawer }              from './ImpactedDrawer'
 import { useImpactedVlansQuery, ImpactedVlan } from './services'
@@ -30,11 +29,34 @@ export function ImpactedVlanTable ({ incident }: ChartProps) {
       }
     })
 
+  const handleExportCSV = () => {
+    const csvContent = [
+      ['VLAN ID', 'Switches'].join(','),
+      ...response.data!.map(row => [
+        `"${row.vlanId}"`,
+        `"${row.switchesText}"`
+      ].join(','))
+    ].join('\n')
+
+    handleBlobDownloadFile(
+      new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
+      `impacted-switch-loop-detection-${incident.id}.csv`
+    )
+  }
+
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'VLANs' })} type='no-border'>
       {druidRolledup
         ? <NoGranularityText />
-        : <ImpactedVLANsTable data={response.data!} incident={incident} />
+        : <ImpactedVLANsTable
+          data={response.data!}
+          incident={incident}
+          iconButton={response.data && response.data.length > 0 ? {
+            icon: <DownloadOutlined />,
+            onClick: handleExportCSV,
+            tooltip: $t({ defaultMessage: 'Export to CSV' })
+          } : undefined}
+        />
       }
     </Card>
   </Loader>
@@ -55,7 +77,12 @@ export const vlanSorter = (a: unknown, b: unknown) => Math.sign(Number(a) - Numb
 
 function ImpactedVLANsTable (props: {
   data: ImpactedVlan[],
-  incident: Incident
+  incident: Incident,
+  iconButton?: {
+    icon: React.ReactNode
+    onClick: () => void
+    tooltip: string
+  }
 }) {
   const { $t } = useIntl()
   const rows = props.data
@@ -120,6 +147,7 @@ function ImpactedVLANsTable (props: {
       columns={columns}
       dataSource={rows}
       pagination={{ defaultPageSize: 5, pageSize: 5 }}
+      iconButton={props.iconButton}
     />
     { visible && <ImpactedSwitchesDrawer
       visible={visible}
