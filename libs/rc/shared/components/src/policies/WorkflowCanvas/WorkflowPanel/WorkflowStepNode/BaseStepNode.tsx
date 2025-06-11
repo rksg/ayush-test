@@ -156,7 +156,7 @@ export default function BaseStepNode (props: NodeProps
                 onClick={(e) => onDeleteStepClick(e.key)}
                 items={[
                   { key: 'deleteStep', label: $t({ defaultMessage: 'Delete Action Only' }) },
-                  { key: 'deleteStepDescendants',
+                  props.data?.isEnd ? null : { key: 'deleteStepDescendants',
                     label: $t({ defaultMessage: 'Delete Action and Children' }) }
                 ]}
               />}
