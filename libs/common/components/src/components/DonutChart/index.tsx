@@ -298,7 +298,16 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle
+        ...props.labelTextStyle,
+        rich: { // these rich styles are used to apply bold font weight to the name-bold-value legend
+          bold: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight-bold')
+          },
+          normal: {
+            ...legendStyles
+          }
+        }
       },
       itemStyle: {
         borderWidth: 0
@@ -308,7 +317,7 @@ export function DonutChart ({
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
-          case 'name-bold-value': return `${name}: ${dataFormatter(value)}`
+          case 'name-bold-value': return `{normal|${name}:} {bold|${dataFormatter(value)}}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
