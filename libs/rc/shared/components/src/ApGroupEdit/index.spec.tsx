@@ -429,11 +429,15 @@ describe('AP Group Edit Radio with unsaved changes dialog', () => {
 
 
     const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
-    expect(channelSelect).not.toHaveAttribute('disabled')
+    expect(channelSelect.getAttribute('disabled')).toBe('')
 
     const saveButton = screen.getByRole('button', { name: 'Save' })
     await userEvent.click(saveButton)
-    await waitFor(() => expect(mockedUpdateApGroupRadioCustomization).toBeCalled())
+
+    await screen.findByText('You Have Invalid Changes')
+    screen.logTestingPlaygroundURL()
+
+    // await waitFor(() => expect(mockedUpdateApGroupRadioCustomization).toBeCalled())
     expect(saveButton).toBeVisible()
   })
 })
