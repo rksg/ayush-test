@@ -20,7 +20,7 @@ import { DateRange }                           from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
-import { IncidentMutedStatus, IncidentTable, downloadIncidentList, getIncidentsMutedStatus } from './index'
+import { IncidentVisibility, IncidentTable, downloadIncidentList, getIncidentsMutedStatus } from './index'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -872,7 +872,7 @@ describe('CSV Functions', () => {
 
 describe('getIncidentsMutedStatus', () => {
   it('should return all when no incidents', () => {
-    expect(getIncidentsMutedStatus([])).toBe(IncidentMutedStatus.All)
+    expect(getIncidentsMutedStatus([])).toBe(IncidentVisibility.All)
   })
 
   it('should return muted when all selected incidents has isMuted = true and isMuted = false',
@@ -882,7 +882,7 @@ describe('getIncidentsMutedStatus', () => {
           { id: '1', code: '', severityLabel: '', isMuted: true },
           { id: '2', code: '', severityLabel: '', isMuted: false }
         ])
-      ).toBe(IncidentMutedStatus.All)
+      ).toBe(IncidentVisibility.All)
     }
   )
 
@@ -892,7 +892,7 @@ describe('getIncidentsMutedStatus', () => {
         { id: '1', code: '', severityLabel: '', isMuted: true },
         { id: '2', code: '', severityLabel: '', isMuted: true }
       ])
-    ).toBe(IncidentMutedStatus.Muted)
+    ).toBe(IncidentVisibility.Muted)
   })
 
   it('should return muted when all selected incidents isMuted = false', () => {
@@ -901,6 +901,6 @@ describe('getIncidentsMutedStatus', () => {
         { id: '1', code: '', severityLabel: '', isMuted: false },
         { id: '2', code: '', severityLabel: '', isMuted: false }
       ])
-    ).toBe(IncidentMutedStatus.Unmuted)
+    ).toBe(IncidentVisibility.Unmuted)
   })
 })

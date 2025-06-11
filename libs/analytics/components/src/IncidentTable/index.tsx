@@ -139,15 +139,15 @@ interface IncidentRowData {
   isMuted: boolean;
 }
 
-export enum IncidentMutedStatus {
+export enum IncidentVisibility {
   All,
   Muted,
   Unmuted
 }
 
-const mutedStatusFilterOptions = ($t: IntlShape['$t']) => [
+const visibilityFilterOptions = ($t: IntlShape['$t']) => [
   {
-    id: IncidentMutedStatus.Unmuted,
+    id: IncidentVisibility.Unmuted,
     key: 'false',
     value: (
       <UI.OptionItemWithIcon>
@@ -157,7 +157,7 @@ const mutedStatusFilterOptions = ($t: IntlShape['$t']) => [
     label: $t({ defaultMessage: 'Unmuted' })
   },
   {
-    id: IncidentMutedStatus.Muted,
+    id: IncidentVisibility.Muted,
     key: 'true',
     value: (
       <UI.OptionItemWithIcon>
@@ -169,16 +169,16 @@ const mutedStatusFilterOptions = ($t: IntlShape['$t']) => [
 ]
 
 export const getIncidentsMutedStatus = (incidents: IncidentRowData[]) => {
-  if (incidents.length === 0) return IncidentMutedStatus.All
+  if (incidents.length === 0) return IncidentVisibility.All
   const firstIncidentIsMuted = incidents[0].isMuted
 
   for (let i = 1; i < incidents.length; i++) {
-    if (incidents[i].isMuted !== firstIncidentIsMuted) return IncidentMutedStatus.All
+    if (incidents[i].isMuted !== firstIncidentIsMuted) return IncidentVisibility.All
   }
 
   return firstIncidentIsMuted
-    ? IncidentMutedStatus.Muted
-    : IncidentMutedStatus.Unmuted
+    ? IncidentVisibility.Muted
+    : IncidentVisibility.Unmuted
 }
 
 export function IncidentTable ({ filters }: {
@@ -239,7 +239,7 @@ export function IncidentTable ({ filters }: {
           await muteSelectedIncidents(true)
           setSelectedRowsData([])
         },
-        disabled: incidentsMutedStatus === IncidentMutedStatus.Muted
+        disabled: incidentsMutedStatus === IncidentVisibility.Muted
       },
       {
         key: getShowWithoutRbacCheckKey('unmute'),
@@ -252,7 +252,7 @@ export function IncidentTable ({ filters }: {
           await muteSelectedIncidents(false)
           setSelectedRowsData([])
         },
-        disabled: incidentsMutedStatus === IncidentMutedStatus.Unmuted
+        disabled: incidentsMutedStatus === IncidentVisibility.Unmuted
       }
     ]
   }, [
@@ -390,7 +390,7 @@ export function IncidentTable ({ filters }: {
       filterValueNullable: true,
       filterValueArray: true,
       filterMultiple: false,
-      filterable: mutedStatusFilterOptions($t)
+      filterable: visibilityFilterOptions($t)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
