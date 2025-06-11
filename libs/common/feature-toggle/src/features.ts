@@ -143,7 +143,6 @@ export enum Features {
   PLM_FF = 'ACX-PLM-FF',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   PTENANT_RBAC_API = 'abac-policies-toggle',
-  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
