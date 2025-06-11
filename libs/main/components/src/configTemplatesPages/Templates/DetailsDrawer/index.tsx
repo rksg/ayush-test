@@ -15,11 +15,11 @@ interface DetailsDrawerProps {
   selectedTemplate: ConfigTemplate
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
-  ShowDriftsDrawer: ConfigTemplateViewProps['ShowDriftsDrawer']
+  ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
 }
 
 export function DetailsDrawer (props: DetailsDrawerProps) {
-  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible, ShowDriftsDrawer } = props
+  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible, ShowDriftsView } = props
   const { $t } = useIntl()
 
   const onClose = () => {
@@ -39,7 +39,7 @@ export function DetailsDrawer (props: DetailsDrawerProps) {
     <DetailsContent
       template={selectedTemplate}
       setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
-      ShowDriftsDrawer={ShowDriftsDrawer}
+      ShowDriftsView={ShowDriftsView}
     />
   </Drawer>)
 }

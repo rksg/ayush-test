@@ -23,9 +23,9 @@ describe('ConfigTemplate', () => {
     render(
       <Provider>
         <ConfigTemplateView
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {

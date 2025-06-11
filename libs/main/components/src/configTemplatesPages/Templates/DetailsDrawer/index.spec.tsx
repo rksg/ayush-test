@@ -36,7 +36,7 @@ describe('DetailsDrawer', () => {
           setVisible={mockedSetVisible}
           selectedTemplate={selectedTemplate}
           setAccessControlSubPolicyVisible={mockedSetAccessControlSubPolicyVisible}
-          ShowDriftsDrawer={jest.fn()}
+          ShowDriftsView={jest.fn()}
         />
       </Provider>, {
         route: { params, path }

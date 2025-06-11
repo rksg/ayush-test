@@ -21,9 +21,9 @@ export interface CommonConfigTemplateDrawerProps {
 }
 
 export interface ConfigTemplateViewProps {
-  ApplyTemplateDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
-  AppliedToDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
-  ShowDriftsDrawer: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  ApplyTemplateView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  AppliedToView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  ShowDriftsView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   // eslint-disable-next-line max-len
   appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
 }
@@ -35,9 +35,9 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
     <>
       <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
       <ConfigTemplateList
-        ApplyTemplateDrawer={props.ApplyTemplateDrawer}
-        AppliedToDrawer={props.AppliedToDrawer}
-        ShowDriftsDrawer={props.ShowDriftsDrawer}
+        ApplyTemplateView={props.ApplyTemplateView}
+        AppliedToView={props.AppliedToView}
+        ShowDriftsView={props.ShowDriftsView}
         appliedToColumn={props.appliedToColumn}
       />
     </>

@@ -44,7 +44,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={mockTemplate}
         setAccessControlSubPolicyVisible={jest.fn()}
-        ShowDriftsDrawer={jest.fn()}
+        ShowDriftsView={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 
@@ -63,7 +63,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, lastApplied: 1690598405000 }}
         setAccessControlSubPolicyVisible={jest.fn()}
-        ShowDriftsDrawer={() => <div>Drift Drawer</div>}
+        ShowDriftsView={() => <div>Drift Drawer</div>}
       />
     </Provider>, { route: { params, path } })
 
@@ -81,7 +81,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, isEnforced: true }}
         setAccessControlSubPolicyVisible={jest.fn()}
-        ShowDriftsDrawer={jest.fn()}
+        ShowDriftsView={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 
@@ -97,7 +97,7 @@ describe('DetailsContent', () => {
       <DetailsContent
         template={{ ...mockTemplate, type: ConfigTemplateType.AP_GROUP }}
         setAccessControlSubPolicyVisible={jest.fn()}
-        ShowDriftsDrawer={jest.fn()}
+        ShowDriftsView={jest.fn()}
       />
     </Provider>, { route: { params, path } })
 

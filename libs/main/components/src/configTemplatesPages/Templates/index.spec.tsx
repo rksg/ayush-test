@@ -69,9 +69,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -92,9 +92,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={() => <div>AppliedToDrawer</div>}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={() => <div>AppliedToDrawer</div>}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={{
             ...mockedAppliedToColumn,
             customRender: (_, cb) => {
@@ -129,9 +129,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={() => <div>ApplyTemplateDrawer</div>}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={() => <div>ApplyTemplateDrawer</div>}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -163,9 +163,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -194,9 +194,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -245,9 +245,9 @@ describe('ConfigTemplateList component', () => {
       <Provider>
         <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
           <ConfigTemplateList
-            ApplyTemplateDrawer={jest.fn()}
-            AppliedToDrawer={jest.fn()}
-            ShowDriftsDrawer={jest.fn()}
+            ApplyTemplateView={jest.fn()}
+            AppliedToView={jest.fn()}
+            ShowDriftsView={jest.fn()}
             appliedToColumn={mockedAppliedToColumn}
           />
         </ConfigTemplateContext.Provider>
@@ -277,9 +277,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={(props: { setVisible: (visible: boolean) => void }) => {
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={(props: { setVisible: (visible: boolean) => void }) => {
             return <>
               <div>ShowDriftsDrawer</div>
               <Button type='link' onClick={() => { props.setVisible(false) }}>
@@ -318,9 +318,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {
@@ -342,9 +342,9 @@ describe('ConfigTemplateList component', () => {
     render(
       <Provider>
         <ConfigTemplateList
-          ApplyTemplateDrawer={jest.fn()}
-          AppliedToDrawer={jest.fn()}
-          ShowDriftsDrawer={jest.fn()}
+          ApplyTemplateView={jest.fn()}
+          AppliedToView={jest.fn()}
+          ShowDriftsView={jest.fn()}
           appliedToColumn={mockedAppliedToColumn}
         />
       </Provider>, {

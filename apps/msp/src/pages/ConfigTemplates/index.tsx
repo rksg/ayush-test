@@ -12,9 +12,9 @@ import { ShowDriftsDrawer }      from './Templates/ShowDriftsDrawer'
 
 export function ConfigTemplatePage () {
   return <ConfigTemplateView
-    ApplyTemplateDrawer={ApplyTemplateDrawer}
-    AppliedToDrawer={AppliedToTenantDrawer}
-    ShowDriftsDrawer={ShowDriftsDrawer}
+    ApplyTemplateView={ApplyTemplateDrawer}
+    AppliedToView={AppliedToTenantDrawer}
+    ShowDriftsView={ShowDriftsDrawer}
     appliedToColumn={getAppliedToColumn()}
   />
 }

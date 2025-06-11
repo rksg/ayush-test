@@ -61,13 +61,13 @@ import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
-  const { ApplyTemplateDrawer, AppliedToDrawer, ShowDriftsDrawer, appliedToColumn } = props
+  const { ApplyTemplateView, AppliedToView, ShowDriftsView, appliedToColumn } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
-  const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
-  const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
-  const [ appliedToDrawerVisible, setAppliedToDrawerVisible ] = useState(false)
+  const [ applyTemplateViewVisible, setApplyTemplateViewVisible ] = useState(false)
+  const [ showDriftsViewVisible, setShowDriftsViewVisible ] = useState(false)
+  const [ appliedToViewVisible, setAppliedToViewVisible ] = useState(false)
   // eslint-disable-next-line max-len
   const { visible: cloneModalVisible, setVisible: setCloneModalVisible, canClone } = useCloneConfigTemplate()
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
@@ -133,7 +133,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
       disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
-        setApplyTemplateDrawerVisible(true)
+        setApplyTemplateViewVisible(true)
       }
     },
     ...(driftsEnabled ? [{
@@ -143,7 +143,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
-        setShowDriftsDrawerVisible(true)
+        setShowDriftsViewVisible(true)
       }
     }] : []),
     {
@@ -182,11 +182,11 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToDrawerVisible,
+            setAppliedToDrawerVisible: setAppliedToViewVisible,
             setSelectedTemplates,
             setAccessControlSubPolicyVisible,
             setDetailsDrawerVisible,
-            setShowDriftsDrawerVisible,
+            setShowDriftsDrawerVisible: setShowDriftsViewVisible,
             appliedToColumn
           })}
           dataSource={tableQuery.data?.data}
@@ -200,19 +200,19 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
           enableApiFilter={true}
         />
       </Loader>
-      {applyTemplateDrawerVisible &&
-      <ApplyTemplateDrawer
-        setVisible={setApplyTemplateDrawerVisible}
+      {applyTemplateViewVisible &&
+      <ApplyTemplateView
+        setVisible={setApplyTemplateViewVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
-      {showDriftsDrawerVisible &&
-      <ShowDriftsDrawer
-        setVisible={setShowDriftsDrawerVisible}
+      {showDriftsViewVisible &&
+      <ShowDriftsView
+        setVisible={setShowDriftsViewVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
-      {appliedToDrawerVisible &&
-      <AppliedToDrawer
-        setVisible={setAppliedToDrawerVisible}
+      {appliedToViewVisible &&
+      <AppliedToView
+        setVisible={setAppliedToViewVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
       {cloneModalVisible &&
@@ -229,7 +229,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         setVisible={setDetailsDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
-        ShowDriftsDrawer={ShowDriftsDrawer}
+        ShowDriftsView={ShowDriftsView}
       />}
     </>
   )
