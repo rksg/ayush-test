@@ -1,7 +1,5 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-const venueVersionParams = '?firmware_version=:version&firmware_type=:type&search=:search'
-
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getUpgradePreferences: {
     method: 'get',
@@ -27,18 +25,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/upgradeConfig/switchPreference',
     newApi: true,
     opsApi: 'PUT:/upgradeConfig/switchPreference'
-  },
-  getVenueVersionList: {
-    method: 'get',
-    url: '/venues/apFirmwares/schedules' + venueVersionParams,
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
-    newApi: true
-  },
-  getLatestFirmwareList: {
-    method: 'get',
-    url: '/apFirmwares?status=latest',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/latest',
-    newApi: true
   },
   getAvailableFirmwareList: {
     method: 'get',
