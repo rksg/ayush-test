@@ -67,13 +67,15 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
               {({ height, width }) => (
                 <DonutChart
                   data={chartData}
-                  style={{ width: width * 0.9, height: height * 0.9 }}
+                  style={{ width: width * 0.95, height: height * 0.95 }}
                   legend='name-bold-value'
                   size='small'
                   showLegend
                   showTotal
                   value={centerText}
                   labelTextStyle={{ overflow: 'breakAll', width: 240 }}
+                  showLabel={true}
+                  showValue={true}
                 />
               )}
             </AutoSizer>
