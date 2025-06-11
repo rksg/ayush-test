@@ -347,6 +347,7 @@ export enum Features {
   ACX_UI_COUNTRYCODE_SEYCHELLES_TOGGLE = 'acx-ui-countrycode-seychelles-toggle',
   NEW_SERVICE_CATALOG = 'acx-ui-new-service-catalog',
   SSO_GROUP_LIMIT100 = 'sso-group-limit100',
+  MDNS_PROXY_CONSOLIDATION = 'acx-ui-consolidated-mdns-proxy-toggle',
   RUCKUS_AI_ENERGY_SAVING_TOGGLE = 'ruckus-ai-energy-saving-toggle',
   ACX_UI_ENERGY_SAVING_TOGGLE = 'acx-ui-energy-saving-toggle',
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
