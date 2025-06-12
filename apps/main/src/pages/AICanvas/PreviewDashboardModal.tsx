@@ -28,19 +28,19 @@ import * as UI from './styledComponents'
 
 export const PreviewDashboardModal = (props: {
   data: Canvas[]
-  previewId?: string
   visible: boolean
   setVisible: (visible: boolean) => void
   DefaultDashboard?: React.FC
 }) => {
   const { $t } = useIntl()
-  const { data, previewId, visible, setVisible, DefaultDashboard } = props
+  const { data, visible, setVisible, DefaultDashboard } = props
   const { menuCollapsed } = useLayoutContext()
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
 
+  const previewId = data?.[0]?.id
   const isDefaultDashboard = previewId === DEFAULT_DASHBOARD_ID
   const menuWidth = getMenuWidth(menuCollapsed)
   const modalDefaultWidth = document.documentElement.clientWidth - menuWidth
@@ -66,7 +66,7 @@ export const PreviewDashboardModal = (props: {
   }, [menuCollapsed, isFullmode])
 
   useEffect(() => {
-    if (visible) {
+    if (visible && previewId) {
       if (!isDefaultDashboard) {
         const { canvasId, sections, groups } = getCanvasData(data)
         if (canvasId && sections) {

@@ -1,7 +1,7 @@
 import { Input as AntInput, Badge as AntBadge } from 'antd'
 import styled                                   from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Button, Card } from '@acx-ui/components'
 
 import CanvasBackground from './assets/CanvasBackground.svg'
 import WaveBackground   from './assets/waves.svg'
@@ -275,6 +275,35 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         margin: 7px;
         margin-left: 10px;
         font-weight: 600;
+        &.loading {
+          position: relative;
+          font-style: italic;
+          overflow: hidden;
+          justify-content: flex-start;
+          background: transparent;
+          color: var(--acx-neutrals-70);
+          font-weight: 400;
+        }
+        .loader {
+          display: inline-block;
+          width: 24px;
+          max-height: 16px;
+          aspect-ratio: 3;
+          --_g: no-repeat radial-gradient(circle closest-side,var(--acx-neutrals-70) 90%,#0000);
+          background: 
+            var(--_g) 0%   50%,
+            var(--_g) 50%  50%,
+            var(--_g) 100% 50%;
+          background-size: calc(100%/5) 50%;
+          animation: l3 1s infinite linear;
+          margin-right: 9px;
+        }
+        @keyframes l3 {
+            20%{background-position:0%   0%, 50%  50%,100%  50%}
+            40%{background-position:0% 100%, 50%   0%,100%  50%}
+            60%{background-position:0%  50%, 50% 100%,100%   0%}
+            80%{background-position:0%  50%, 50%  50%,100% 100%}
+        }
       }
       .timestamp {
         color: var(--acx-neutrals-70);
@@ -537,4 +566,25 @@ export const Badge = styled(AntBadge)`
       font-weight: var(--acx-body-font-weight-bold);
     }
   }
+`
+
+export const SearchButton = styled(Button)`
+  color: var(--acx-primary-white) !important;
+  &[disabled] {
+    svg path{
+      color: currentColor !important;
+    }
+  }
+  svg path {
+    color: currentColor;
+    stroke: currentColor !important;
+  }
+`
+
+export const StopIcon = styled.div`
+  display: inline-block;
+  background: var(--acx-primary-white);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 `

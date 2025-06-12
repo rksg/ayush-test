@@ -230,7 +230,9 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       { isLoading: isLoading,
         isFetching: isFetching
       }
-    ]}>
+    ]}
+    style={{ minHeight: 45 }}
+    >
       {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>{$t({ defaultMessage: '3rd Party Administrators' })}
         </Subtitle>

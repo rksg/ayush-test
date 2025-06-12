@@ -4,12 +4,19 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                       from '@acx-ui/components'
-import { EyeOpenSolid }                                                                                 from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                                   from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasPermission }                                                                                from '@acx-ui/user'
-import { getOpsApi }                                                                                    from '@acx-ui/utils'
+import { Button, Drawer, Loader }     from '@acx-ui/components'
+import { EyeOpenSolid }               from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery } from '@acx-ui/rc/services'
+import {
+  ActionType,
+  ActionTypeTitle,
+  DisablePreviewActionTypes,
+  GenericActionData,
+  useGetActionDefaultValueByType,
+  WorkflowUrls
+} from '@acx-ui/rc/utils'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
@@ -20,7 +27,8 @@ import {
   DisplayMessageSetting,
   DpskSettings,
   MacRegistrationSettings,
-  CertTemplateSettings
+  CertTemplateSettings,
+  SamlAuthSettings
 } from './WorkflowActionSettingForm'
 
 
@@ -32,7 +40,6 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-
   priorNode?: NodeProps
 }
 
@@ -42,8 +49,11 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
   [ActionType.DPSK]: DpskSettings,
   [ActionType.MAC_REG]: MacRegistrationSettings,
-  [ActionType.CERT_TEMPLATE]: CertTemplateSettings
+  [ActionType.CERT_TEMPLATE]: CertTemplateSettings,
+  [ActionType.SAML_AUTH]: SamlAuthSettings
 }
+
+
 
 export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
@@ -67,6 +77,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     isError: isActionError
   } ] = useLazyGetActionByIdQuery()
 
+  const disablePreview = DisablePreviewActionTypes.has(actionType)
 
   useEffect(() => {
     formInstance.resetFields()
@@ -154,7 +165,7 @@ export default function StepDrawer (props: StepDrawerProps) {
               [getOpsApi(WorkflowUrls.createAction)] })}
           extra={
             <Button
-              disabled={isLoading}
+              disabled={isLoading || disablePreview}
               type={'link'}
               icon={<EyeOpenSolid/>}
               onClick={() => {

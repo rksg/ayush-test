@@ -191,7 +191,7 @@ export function MdnsProxy (props: ApEditItemProps) {
               <GridCol col={{ span: 7 }} style={{ minWidth: 400 }}>
                 <MdnsProxyFormField
                   disabled={!isAllowEdit}
-                  serviceId={apDetail.multicastDnsProxyServiceProfileId} />
+                  serviceId={apDetail?.multicastDnsProxyServiceProfileId} />
               </GridCol>
             </GridRow>
           </StepsFormLegacy.StepForm>

@@ -295,6 +295,7 @@ export default function AICanvasModal (props: {
         setHistoryData(historyData)
       }
     } else if (!isModalOpenInitialized) {
+      setIsModalOpenInitialized(true)
       setHistoryData(historyData)
     }
   }, [openNewCanvas, isModalOpen, isHistoryLoading, isCanvasLoading, isCanvasFetching])

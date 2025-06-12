@@ -18,6 +18,7 @@ import {
 import { kpiDelta }                                     from '@acx-ui/analytics/utils'
 import { Button, CaretDownSolidIcon, Dropdown, Loader } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { formatter }                                    from '@acx-ui/formatter'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
@@ -77,9 +78,13 @@ export function hasConfigChange <RecordType> (
 export const KPIs = () => {
   const { $t } = useIntl()
   const [dropDownKey, setDropDownKey] = useState('overview')
+  const isEnergySavingToggled = [
+    useIsSplitOn(Features.RUCKUS_AI_ENERGY_SAVING_TOGGLE),
+    useIsSplitOn(Features.ACX_UI_ENERGY_SAVING_TOGGLE)
+  ].some(Boolean)
 
   const kpis = kpisForTab(
-    get('IS_MLISA_SA')
+    get('IS_MLISA_SA'), isEnergySavingToggled
   )[dropDownKey as keyof ReturnType<typeof kpisForTab>].kpis
     .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
     .reduce((agg, key: string) => {

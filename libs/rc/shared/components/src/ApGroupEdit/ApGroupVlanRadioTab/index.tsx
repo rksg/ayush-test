@@ -59,7 +59,6 @@ export function ApGroupVlanRadioTab () {
   const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
 
   const {
-    isApGroupTableFlag,
     isRbacEnabled,
     setEditContextData,
     venueId
@@ -73,9 +72,7 @@ export function ApGroupVlanRadioTab () {
 
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/devices/', '')
-  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
-    ? `${basePath.pathname}/wifi/apgroups`
-    : `${basePath.pathname}/wifi`)
+  const navigatePathName = isTemplate ? basePath.pathname : `${basePath.pathname}/wifi/apgroups`
 
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
   const [getRbacApGroupNetworkList] = useLazyNewApGroupNetworkListQuery()

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { Root } from 'react-dom/client'
 
@@ -16,9 +16,7 @@ import { Provider, dynamicMiddleware }        from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
-  UserUrlsInfo,
-  useUpdateUserProfileMutation
-} from '@acx-ui/user'
+  UserUrlsInfo } from '@acx-ui/user'
 import {
   renderPendo,
   getTenantId,
@@ -31,10 +29,7 @@ import {
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
-import AllRoutes    from './AllRoutes'
-import { showBrowserLangDialog,
-  detectBrowserLang,
-  PartialUserData } from './BrowserDialog/BrowserDialog'
+import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
@@ -78,63 +73,15 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { data: userProfile, isUserProfileLoading } = useUserProfileContext()
 
   const request = useGetPreferencesQuery({ tenantId })
-  const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
-
-  const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
-  const [langLoading, setLangLoading] = useState(true)
-  const [ updateUserProfile ] = useUpdateUserProfileMutation()
-
-  useEffect(() => {
-    if (userProfile) {
-      const userLang = userProfile?.preferredLanguage
-      const browserLang = detectBrowserLang()
-      const browserCacheLang = localStorage.getItem('browserLang')
-      const openDialog = browserLang !== userLang
-        && browserLang !== browserCacheLang
-
-      if (openDialog) {
-        const userPreflang = showBrowserLangDialog(userLang as LangKey)
-        userPreflang.then((dialogResult) => {
-          // update user profile - 'yes' language change
-          if (dialogResult.lang !== '') {
-            setLanguage(dialogResult.lang)
-            const data:PartialUserData = {
-              detailLevel: userProfile?.detailLevel,
-              dateFormat: userProfile?.dateFormat,
-              preferredLanguage: dialogResult.lang
-            }
-            try {
-              updateUserProfile({
-                payload: data,
-                params: { tenantId }
-              }).unwrap()
-              setLangLoading(false)
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            } finally {
-              setLangLoading(false)
-            }
-          }
-        }).catch(() => {
-          // user selected 'no' language change
-          setLanguage(userProfile?.preferredLanguage?? defaultLang)
-          setLangLoading(false)
-        })
-      } else {
-        setLanguage(userProfile?.preferredLanguage?? defaultLang)
-        setLangLoading(false)
-      }
-    }
-  }, [ userProfile, defaultLang, tenantId, updateUserProfile ])
-
-  const lang = language
+  const defaultLang = request.data?.global?.defaultLanguage as LangKey || DEFAULT_SYS_LANG
+  const preferredLanguage = userProfile?.preferredLanguage as LangKey || defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter/>}
     states={[{
-      isLoading: isUserProfileLoading || request.isFetching || langLoading
+      isLoading: isUserProfileLoading || request.isFetching
     }]}
-    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
+    children={<ConfigProvider {...props} lang={preferredLanguage}/>}
   />
 }
 

@@ -1,8 +1,8 @@
-import { Divider, Form, Input, Select } from 'antd'
-import { useIntl }                      from 'react-intl'
-import { useParams }                    from 'react-router-dom'
+import { Divider, Form, Input } from 'antd'
+import { useIntl }              from 'react-intl'
+import { useParams }            from 'react-router-dom'
 
-import { Button, Drawer, PasswordInput }                          from '@acx-ui/components'
+import { Button, Drawer, PasswordInput, Select }                  from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useAddTenantAuthenticationsMutation,
@@ -15,7 +15,9 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   ApplicationAuthenticationStatus,
-  getRoles
+  getRoles,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { RolesEnum }     from '@acx-ui/types'
 import { roleStringMap } from '@acx-ui/user'
@@ -57,7 +59,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     label: roleStringMap[item.name as RolesEnum]
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.name
-  }))
+  }))?.sort(sortProp('label', defaultSort))
 
   const onClose = () => {
     setVisible(false)
@@ -197,6 +199,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       <Select
         options={isAbacToggleEnabled ? privilegeGroupList : rolesList}
         placeholder={$t({ defaultMessage: 'Select...' })}
+        getPopupContainer={Select.getPopupContainer}
       />
     </Form.Item>
 

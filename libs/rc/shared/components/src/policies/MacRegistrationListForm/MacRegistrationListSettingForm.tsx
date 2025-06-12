@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Form, Input, Select, Switch, Space, Button } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
+import { useIdentityGroupPageHeaderTitle }                        from '@acx-ui/cloudpath/components'
 import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
@@ -28,6 +29,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
   const { $t } = useIntl()
   const [ macRegList ] = useLazySearchMacRegListsQuery()
   const { policyId } = useParams()
+  const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: false })
   const policySetId = Form.useWatch('policySetId')
   const identityGroupId = Form.useWatch('identityGroupId')
   const isUseSingleIdentity = Form.useWatch('isUseSingleIdentity')
@@ -151,7 +153,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               </Button>
             </Space >
             <Modal
-              title={$t({ defaultMessage: 'Add Identity Group' })}
+              title={pageTitle}
               visible={identityGroupModelVisible}
               type={ModalType.ModalStepsForm}
               children={<IdentityGroupForm
@@ -175,7 +177,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               <Form.Item name='isUseSingleIdentity'
                 valuePropName='checked'
                 initialValue={false}
-                label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
+                // eslint-disable-next-line max-len
+                label={$t({ defaultMessage: 'Use single identity association to all onboarded devices' })}>
                 <Switch disabled={!identityGroupId}/>
               </Form.Item>
             </GridCol>

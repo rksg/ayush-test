@@ -10,11 +10,6 @@ export const EdgeConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     activateSdLanNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(EdgeConfigTemplateUrlsInfo.activateSdLanNetworkTemplate),
       invalidatesTags: [{ type: 'EdgeSdLanTemplate', id: 'LIST' }]
-    }),
-    // eslint-disable-next-line max-len
-    deactivateSdLanNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(EdgeConfigTemplateUrlsInfo.deactivateSdLanNetworkTemplate),
-      invalidatesTags: [{ type: 'EdgeSdLanTemplate', id: 'LIST' }]
     })
   })
 })

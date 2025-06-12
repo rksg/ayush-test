@@ -11,6 +11,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
+  defaultRichTextFormatValues,
   Button,
   Loader,
   PageHeader,
@@ -20,8 +21,8 @@ import {
 } from '@acx-ui/components'
 import {
   useAddIotControllerMutation,
-  useGetIotControllerQuery,
-  useLazyGetIotControllerListQuery,
+  useGetIotControllerListQuery,
+  useLazyGetIotControllerSerialNumberQuery,
   useUpdateIotControllerMutation,
   useTestConnectionIotControllerMutation
 } from '@acx-ui/rc/services'
@@ -29,6 +30,7 @@ import {
   checkObjectNotExists,
   redirectPreviousPage,
   IotControllerSetting,
+  IotControllerStatus,
   excludeSpaceRegExp,
   domainNameRegExp
 } from '@acx-ui/rc/utils'
@@ -65,19 +67,11 @@ export function IotControllerForm () {
   const [addIotController] = useAddIotControllerMutation()
   const [updateIotController] = useUpdateIotControllerMutation()
 
-  const [serialNumberEnabled, setSerialNumberEnabled] = useState(true)
+  const { iotId, action } = useParams()
 
-  const { tenantId, iotId, venueId, action } = useParams()
-  // eslint-disable-next-line max-len
-  const { data, isLoading: isIotControllerLoading } = useGetIotControllerQuery({ params: { tenantId, iotId, venueId } },
-    { skip: !iotId })
+  const isEditMode: boolean = action === 'edit'
 
   const onClickTestConnection = async () => {
-    try {
-      await form.validateFields(['adminDomainName', 'adminPassword', 'host'])
-    } catch (error) {
-      return
-    }
     setTestConnectionStatus(undefined)
     const { publicAddress, publicPort, apiToken } = form.getFieldsValue()
     const payload = {
@@ -91,35 +85,112 @@ export function IotControllerForm () {
       })
       const result = await currentTestConnectionFun.unwrap()
       if(result.serialNumber){
-        form.setFieldsValue({ iotSerialNumber: result.serialNumber })
-        setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+        if (isEditMode) {
+          if (form.getFieldValue('iotSerialNumber') === result.serialNumber) {
+            setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+          } else {
+            setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
+          }
+        } else {
+          form.setFieldsValue({ iotSerialNumber: result.serialNumber })
+          setTestConnectionStatus(TestConnectionStatusEnum.PASS)
+        }
+      } else {
+        setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
       }
     }catch (error) {
       setTestConnectionStatus(TestConnectionStatusEnum.FAIL)
     }
   }
 
+  useEffect(() => {
+    if (testConnectionStatus !== undefined) {
+      form.validateFields(['apiToken'])
+    }
+  }, [testConnectionStatus])
+
   const handleChange = () => {
     setTestConnectionStatus(undefined)
   }
 
-  const [getIotControllerList] = useLazyGetIotControllerListQuery()
+  const { availableIotControllers, isLoading } = useGetIotControllerListQuery({
+    payload: {
+      fields: [
+        'id',
+        'name',
+        'inboundAddress',
+        'serialNumber',
+        'publicAddress',
+        'publicPort',
+        'apiToken',
+        'tenantId',
+        'status',
+        'assocVenueId'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { tenantId: [params.tenantId] }
+    }
+  }, {
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableIotControllers: data?.data.map(item => ({
+        ...item,
+        iotSerialNumber: item.serialNumber
+      }) as IotControllerStatus) ?? []
+    })
+  })
+
+  // form data
+  // eslint-disable-next-line max-len
+  const data = availableIotControllers?.find((item: IotControllerStatus) => item.id === iotId)
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject($t(validationMessages.name))
     }
     try {
-      const list = (await getIotControllerList({ params: { tenantId } })
-        .unwrap()).data?.map(n => ({ name: n.name }))
+      // filter for edit mode if iotId is not null
+      const list = availableIotControllers?.filter(n => n.id !== iotId).map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'IoT Controller' }))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  // TODO : Add serial number check
+  const [ getSerialNumber ] = useLazyGetIotControllerSerialNumberQuery()
+
+  const serialNumberValidator = async (value: string) => {
+    try {
+      const serialNumberData = (await getSerialNumber({
+        params: { serialNumber: value }
+      }).unwrap())
+
+      if (serialNumberData?.existed) {
+        return Promise.reject($t({ defaultMessage: 'The serial number already exists' }))
+      } else {
+        return Promise.resolve()
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const apiTokenValidator = async () => {
+    // eslint-disable-next-line max-len
+    if (form.getFieldValue('publicEnabled') && testConnectionStatus !== TestConnectionStatusEnum.PASS) {
+      return Promise.reject($t({ defaultMessage: 'Please test connection first' }))
+    }
+    return Promise.resolve()
+  }
+
   const handleAddIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values }
+      // eslint-disable-next-line max-len
+      const formData = form.getFieldValue('publicEnabled') ? { ...values } : { ...values, apiToken: null, publicAddress: null, publicPort: null }
       await addIotController({ params: { ...params },
         payload: formData }).unwrap()
 
@@ -131,7 +202,8 @@ export function IotControllerForm () {
 
   const handleEditIotController = async (values: IotControllerSetting) => {
     try {
-      const formData = { ...values, id: data?.id }
+      // eslint-disable-next-line max-len
+      const formData = form.getFieldValue('publicEnabled') ? { ...values, id: data?.id } : { ...values, id: data?.id, apiToken: null, publicAddress: null, publicPort: null }
       await updateIotController({ params, payload: formData }).unwrap()
 
       navigate(linkToIotController, { replace: true })
@@ -140,8 +212,6 @@ export function IotControllerForm () {
     }
   }
 
-  const isEditMode: boolean = action === 'edit'
-
   const loadForm: boolean = isEditMode ? !!data : true
 
   useEffect(() => {
@@ -149,6 +219,7 @@ export function IotControllerForm () {
       currentTestConnectionFun && currentTestConnectionFun.abort()
     }
   }, [])
+
 
   return (
     <>
@@ -173,7 +244,7 @@ export function IotControllerForm () {
       >
         <StepsForm.StepForm>
           <Loader states={[{
-            isLoading: isIotControllerLoading
+            isLoading
           }]}>
             <>
               <Row gutter={20}>
@@ -212,15 +283,9 @@ export function IotControllerForm () {
                     {$t({ defaultMessage: 'Enable Public IP address' })}
                     <Form.Item
                       name='publicEnabled'
+                      initialValue={data?.publicAddress ? data?.publicAddress?.length > 0 : false}
                       valuePropName={'checked'}
-                      children={<Switch
-                        onChange={(checked: boolean)=>{
-                          if(checked){
-                            setSerialNumberEnabled(false)
-                          } else {
-                            setSerialNumberEnabled(true)
-                          }
-                        }}/>}
+                      children={<Switch />}
                     />
                   </StepsForm.FieldLabel>
                   <UI.FieldTitle>
@@ -280,9 +345,8 @@ export function IotControllerForm () {
                       initialValue={data?.apiToken}
                       label={<>{$t({ defaultMessage: 'API Token' })}
                         <Tooltip.Question
-                          title={$t({ defaultMessage:
-                            // eslint-disable-next-line max-len
-                            'The path for API Token to copy from vRIoT controller is as below vRIoT Admin Page -> Account -> API Token (Copy the Token) If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' })}
+                          title={// eslint-disable-next-line max-len
+                            $t({ defaultMessage: 'The path for API Token to copy from vRIoT controller is as below<br></br><b>vRIoT Admin Page -> Account -> API Token (Copy the Token)</b><br></br>If an API token in vRIoT controller is regenerated and the same to be updated here for a successful connection.' }, defaultRichTextFormatValues)}
                           placement='right'
                           iconStyle={{
                             width: 16,
@@ -291,7 +355,11 @@ export function IotControllerForm () {
                         />
                       </>}
                       rules={[
-                        { validator: (_, value) => excludeSpaceRegExp(value) }
+                        { validator: (_, value) => excludeSpaceRegExp(value) },
+                        {
+                          // eslint-disable-next-line max-len
+                          validator: () => apiTokenValidator()
+                        }
                       ]}
                       children={<PasswordInput onChange={handleChange} />}
                     />
@@ -333,10 +401,15 @@ export function IotControllerForm () {
                       {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Serial Number' })
+                      },
+                      {
+                        // eslint-disable-next-line max-len
+                        validator: (_, value) => isEditMode ? Promise.resolve() : serialNumberValidator(value)
                       }
                     ]}
-                    children={<Input disabled={isEditMode || !serialNumberEnabled} />}
+                    children={<Input disabled={isEditMode || publicEnabled} />}
                     validateFirst
+                    validateTrigger={'onBlur'}
                   />
                 </Col>
               </Row>

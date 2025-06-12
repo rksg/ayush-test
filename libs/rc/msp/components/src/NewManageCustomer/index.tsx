@@ -73,9 +73,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                       from '@acx-ui/types'
-import { useUserProfileContext }                                           from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { isCoreTier, useUserProfileContext, getUserProfile }                            from '@acx-ui/user'
+import { AccountTier, AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -187,13 +187,14 @@ export function NewManageCustomer () {
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
-  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormLegacyInstance<EcFormData>>()
   const { action, status, tenantId, mspEcTenantId } = useParams()
+  const { accountTier } = getUserProfile()
 
   const [isTrialMode, setTrialMode] = useState(false)
   const [isTrialActive, setTrialActive] = useState(false)
@@ -239,6 +240,10 @@ export function NewManageCustomer () {
 
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
   const isMDU = acx_account_vertical === AccountVertical.MDU
+
+  const isCore = mspServiceTierFFtoggle &&
+    (originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const entitlementSummaryPayload = {
     filters: {
@@ -458,7 +463,7 @@ export function NewManageCustomer () {
   }, [techPartners])
 
   const setServiceTier = (serviceTier: MspEcTierEnum) => {
-    return isMDU ? MspEcTierEnum.Core
+    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
       : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
   }
 
@@ -983,7 +988,7 @@ export function NewManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={isMDU ? MspEcTierEnum.Core
+      initialValue={(mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
         : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
@@ -994,10 +999,10 @@ export function NewManageCustomer () {
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
                 return (
-                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
                   (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!isMDU && value !== MspEcTierEnum.Core) &&
-                  (!isMDU && !isHospitality &&
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
                   (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
                 ) &&
                 <Radio

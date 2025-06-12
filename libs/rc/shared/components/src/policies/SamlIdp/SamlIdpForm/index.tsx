@@ -10,22 +10,20 @@ import { useIntl }                                            from 'react-intl'
 import { Button, cssStr, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
 import { useGetServerCertificatesQuery }                          from '@acx-ui/rc/services'
 import {
-  LocationExtended,
   PolicyOperation,
   PolicyType,
   SamlIdpProfileFormType,
   SamlIdpMessages,
-  getPolicyRoutePath,
-  redirectPreviousPage,
   usePolicyListBreadcrumb,
   KeyUsages,
   ServerCertificate,
   KeyUsageType,
   HttpURLRegExp,
-  AttributeMapping,
-  IdentityAttributeMappingNameType
+  combineAttributeMappingsToData,
+  usePolicyPreviousPath,
+  useAfterPolicySaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, useNavigate } from '@acx-ui/react-router-dom'
 
 import { CsvSize, ImportFileDrawerType } from '../../../ImportFileDrawer'
 import CertificateDrawer                 from '../../CertificateUtil/CertificateDrawer'
@@ -54,14 +52,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
     isEmbedded = false
   } = props
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.SAML_IDP,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
-  const location = useLocation()
-  const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
+
+  const previousPath = usePolicyPreviousPath(PolicyType.SAML_IDP, PolicyOperation.LIST)
+  const redirectPathAfterSave = useAfterPolicySaveRedirectPath(PolicyType.SAML_IDP)
+
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
 
   const [encryptCertFormVisible, setEncryptCertFormVisible] = useState(false)
@@ -107,13 +102,11 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
 
-    handleCancel()
+    handleCancel(redirectPathAfterSave)
   }
 
-  const handleCancel = () => {
-    (onCancel)?
-      onCancel() :
-      redirectPreviousPage(navigate, previousPath, linkToTableView)
+  const handleCancel = (prev: string | Path) => {
+    (onCancel) ? onCancel() : navigate(prev)
   }
 
   const handleImportRequest = (formData: FormData, values: object, content?: string)=> {
@@ -142,7 +135,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel(previousPath)}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>
@@ -354,7 +347,6 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
           <Row>
             <Col span={fieldColSpan}>
               <IdentityAttributesInput
-                form={formRef}
                 fieldLabel={$t({ defaultMessage: 'Identity Attributes & Claims Mapping' })}
                 description={$t(SamlIdpMessages.IDENTITY_DESCRIPTION)}
               />
@@ -393,20 +385,6 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   }
   delete result.metadataContent
 
-  //Add three identity attributes to attributeMappings
-  const identityMappings = [
-    // eslint-disable-next-line max-len
-    result.identityName && { name: IdentityAttributeMappingNameType.DISPLAY_NAME, mappedByName: result.identityName },
-    // eslint-disable-next-line max-len
-    result.identityEmail && { name: IdentityAttributeMappingNameType.EMAIL, mappedByName: result.identityEmail },
-    // eslint-disable-next-line max-len
-    result.identityPhone && { name: IdentityAttributeMappingNameType.PHONE_NUMBER, mappedByName: result.identityPhone }
-  ].filter(Boolean) as AttributeMapping[]
+  return combineAttributeMappingsToData(result)
 
-  result.attributeMappings = [...(result.attributeMappings ?? []), ...identityMappings]
-  delete result.identityName
-  delete result.identityEmail
-  delete result.identityPhone
-
-  return result
 }

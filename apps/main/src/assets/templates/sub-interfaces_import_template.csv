@@ -4,7 +4,7 @@
 # Subnet Mask is mandatory if using Static IP,,,,
 # VLAN ID is mandatory. A number between 0-4095,,,,
 ,,,,
-# Port Type,IP Assignment Type,IP Address,Subnet Mask,VLAN
-LAN,DHCP,,,25
-LAN,Static IP,192.10.4.1,255.255.255.0,26
-LAN,Static IP,68.21.4.1,255.255.255.0,27
+# Port Type,IP Assignment Type,IP Address,Subnet Mask,VLAN,Core Port,Access Port
+LAN,DHCP,,,25,,
+LAN,Static IP,192.10.4.1,255.255.255.0,26,true,true
+LAN,Static IP,68.21.4.1,255.255.255.0,27,,

@@ -4,15 +4,24 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                                                      from '@acx-ui/components'
-import { EdgeLagTable, NodesTabs, TypeForm }                                                       from '@acx-ui/rc/components'
-import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                              from '@acx-ui/types'
+import { useStepFormContext }                from '@acx-ui/components'
+import { Features }                          from '@acx-ui/feature-toggle'
+import { EdgeLagTable, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import {
+  EdgeLag, EdgePortTypeEnum, SubInterface,
+  edgePhysicalPortInitialConfigs,
+  validateEdgeAllPortsEmptyLag,
+  natPoolRangeClusterLevelValidator,
+  useIsEdgeFeatureReady,
+  getMergedLagTableDataFromLagForm
+} from '@acx-ui/rc/utils'
+import { EdgeScopes } from '@acx-ui/types'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 import * as UI                                                            from './styledComponents'
 import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
+import { getAllPhysicalInterfaceFormData }                                from './utils'
 
 export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
@@ -49,8 +58,11 @@ interface LagSettingViewProps {
 
 const LagSettingView = (props: LagSettingViewProps) => {
   const { value, onChange } = props
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const isMultiNatIpEnabled = useIsEdgeFeatureReady(Features.EDGE_MULTI_NAT_IP_TOGGLE)
+
+  const { clusterInfo, isSupportAccessPort } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
+
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
   const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
@@ -65,10 +77,21 @@ const LagSettingView = (props: LagSettingViewProps) => {
   // eslint-disable-next-line max-len
   const lagSubInterfaces = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
 
-  const allSubInterface = useMemo(() =>[
-    ...Object.values(portSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat(),
-    ...Object.values(lagSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat()
-  ], [portSubInterfaces, lagSubInterfaces])
+  const allSubInterfaceMap = useMemo(() => {
+    const subInterfaceMap = {} as {
+      [serialNumber: string]: {
+        portSubInterface?: { [portId: string]: SubInterface[] }
+        lagSubInterface?: { [lagId: string]: SubInterface[] }
+      }
+    }
+    Object.entries(portSubInterfaces ?? {}).forEach(([serialNumber, portSubInterface]) => {
+      subInterfaceMap[serialNumber] = { portSubInterface }
+    })
+    Object.entries(lagSubInterfaces ?? {}).forEach(([serialNumber, lagSubInterface]) => {
+      subInterfaceMap[serialNumber] = { ...subInterfaceMap[serialNumber], lagSubInterface }
+    })
+    return subInterfaceMap
+  }, [portSubInterfaces, lagSubInterfaces])
 
   const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
@@ -143,6 +166,19 @@ const LagSettingView = (props: LagSettingViewProps) => {
           const portList = portSettings?.[serialNumber]
             ? Object.values(portSettings?.[serialNumber]).flat()
             : []
+          // eslint-disable-next-line max-len
+          const lagMemberIds = lagList?.map(lag => lag.lagMembers.map(member => member.portId)).flat()
+          // eslint-disable-next-line max-len
+          const portSubInterfaceList = Object.entries(allSubInterfaceMap?.[serialNumber]?.portSubInterface ?? {})
+            .flatMap(([portId, subInterfaceList]) => {
+              return lagMemberIds?.includes(portId) ? [] : subInterfaceList
+            })
+          // eslint-disable-next-line max-len
+          const lagSubInterfaceList = Object.entries(allSubInterfaceMap?.[serialNumber]?.lagSubInterface ?? {})
+            .flatMap(([lagId, subInterfaceList]) => {
+              return lagList?.some(lag => String(lag.id) === lagId) ? subInterfaceList : []
+            })
+          const allSubInterface = portSubInterfaceList.concat(lagSubInterfaceList)
 
           return <>
             <UI.StyledHiddenFormItem
@@ -171,6 +207,23 @@ const LagSettingView = (props: LagSettingViewProps) => {
               subInterfaceList={allSubInterface}
               isClusterWizard
               clusterInfo={clusterInfo!}
+              isSupportAccessPort={isSupportAccessPort}
+              formFieldsProps={{
+                natStartIp: {
+                  rules: isMultiNatIpEnabled
+                    ? [{ validator: (_, currentData: EdgeLag) => {
+                      // eslint-disable-next-line max-len
+                      const { ports: allPortsData, lags: allLagsData } = getAllPhysicalInterfaceFormData(form)
+
+                      // eslint-disable-next-line max-len
+                      const mergedData = getMergedLagTableDataFromLagForm(allLagsData[serialNumber], currentData as EdgeLag)
+                      allLagsData[serialNumber] = mergedData
+
+                      // eslint-disable-next-line max-len
+                      return natPoolRangeClusterLevelValidator(allPortsData, allLagsData, clusterInfo?.edgeList)
+                    } }] : []
+                }
+              }}
             />
           </>
         }

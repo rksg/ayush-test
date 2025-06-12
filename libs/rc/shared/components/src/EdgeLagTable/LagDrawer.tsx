@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 
 import { Form, Space }             from 'antd'
 import TextArea                    from 'antd/lib/input/TextArea'
-import _, { cloneDeep, findIndex } from 'lodash'
+import _, { cloneDeep, find, get } from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { Drawer, Select, showActionModal } from '@acx-ui/components'
@@ -22,7 +22,9 @@ import {
   convertEdgeNetworkIfConfigToApiPayload,
   getEdgePortTypeOptions,
   isInterfaceInVRRPSetting,
-  validateEdgeGateway
+  validateEdgeGateway,
+  getMergedLagTableDataFromLagForm,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -46,6 +48,8 @@ interface LagDrawerProps {
   subInterfaceList?: SubInterface[]
   isClusterWizard?: boolean
   clusterInfo: EdgeClusterStatus
+  isSupportAccessPort?: boolean
+  formFieldsProps?: EdgeFormFieldsPropsType
 }
 
 const defaultFormValues = {
@@ -68,7 +72,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
     data, portList = [], existedLagList = [], vipConfig = [],
     onAdd, onEdit, subInterfaceList = [],
     isClusterWizard,
-    clusterInfo
+    clusterInfo, isSupportAccessPort,
+    formFieldsProps
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -109,7 +114,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   useEffect(() => {
     if(visible) {
       form.resetFields()
-      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList)
+      const corePortInfo = getEnabledCorePortInfo(portList, existedLagList, subInterfaceList)
       const hasCorePortEnabled = !!corePortInfo.key
 
       if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
@@ -269,6 +274,34 @@ export const LagDrawer = (props: LagDrawerProps) => {
         existedLag.id !== data?.id)) // keep the edit mode data as a selection
   }
 
+  const natPoolClusterLevelValidator = () => {
+    const currentData = form.getFieldsValue(true) as EdgeLag
+    // eslint-disable-next-line max-len
+    return get(get(formFieldsProps, 'natStartIp')?.rules?.[0], 'validator')?.(undefined, currentData)
+  }
+
+  const gatewayCheckFromNodeLevel = () => {
+    const currentData = form.getFieldsValue(true) as EdgeLag
+    const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentData)
+
+    const dryRunPorts = cloneDeep(portList ?? [])
+    let dryRunSubInterfaces = subInterfaceList
+    currentData.lagMembers.forEach(member => {
+      const targetPortItem = find(dryRunPorts, { id: member.portId })
+      if(targetPortItem) {
+        targetPortItem.portType = EdgePortTypeEnum.UNCONFIGURED
+        dryRunSubInterfaces = dryRunSubInterfaces.filter(subInterface =>
+          subInterface.interfaceName?.split('.')[0] !== targetPortItem.interfaceName)
+      }
+    })
+
+    // eslint-disable-next-line max-len
+    return validateEdgeGateway(
+      dryRunPorts, updatedLagList, dryRunSubInterfaces,
+      isDualWanEnabled, isEdgeCoreAccessSeparationReady
+    )
+  }
+
   const drawerContent = <Form
     layout='vertical'
     form={form}
@@ -342,16 +375,22 @@ export const LagDrawer = (props: LagDrawerProps) => {
       shouldUpdate={(prev, cur) => forceUpdateCondition(prev, cur)}
     >
       {({ getFieldsValue }) => {
-        const allValues = getFieldsValue(true) as EdgeLag
+        const currentLagData = getFieldsValue(true) as EdgeLag
+        const updatedLagList = getMergedLagTableDataFromLagForm(existedLagList, currentLagData)
 
         return <EdgePortCommonForm
           formRef={form}
           portsData={portList}
-          lagData={getMergedLagData(existedLagList, allValues)}
+          lagData={updatedLagList}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           clusterInfo={clusterInfo}
           formFieldsProps={{
+            natStartIp: {
+              rules: isClusterWizard && get(formFieldsProps, 'natStartIp')
+                ? [{ validator: natPoolClusterLevelValidator }]
+                : undefined
+            },
             // we should ONLY apply Edge gateway validator on node level edit LAG
             // because user should be able to configure physical port as WAN port + LAN LAG via cluster wizard
             portType: {
@@ -359,16 +398,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
               disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig),
               rules: isClusterWizard
                 ? undefined
-                :[{ validator: () => {
-                  const dryRunPorts = cloneDeep(portList ?? [])
-                  allValues.lagMembers.forEach(member => {
-                    const idx = findIndex(dryRunPorts, { id: member.portId })
-                    if (idx >= 0) dryRunPorts[idx].portType = EdgePortTypeEnum.UNCONFIGURED
-                  })
-
-                  // eslint-disable-next-line max-len
-                  return validateEdgeGateway(dryRunPorts, getMergedLagData(existedLagList, allValues) ?? [], isDualWanEnabled)
-                } }]
+                :[{ validator: gatewayCheckFromNodeLevel }]
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })
@@ -379,6 +409,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
             }
           }}
           subnetInfoForValidation={subnetInfoForValidation}
+          subInterfaceList={subInterfaceList}
+          isSupportAccessPort={isSupportAccessPort}
         />
       }}
     </Form.Item>
@@ -411,21 +443,4 @@ const forceUpdateCondition = (prev:unknown, cur: unknown) => {
         || _.get(prev, 'lagMembers') !== _.get(cur, 'lagMembers')
         || _.get(prev, 'lagEnabled') !== _.get(cur, 'lagEnabled')
         || _.get(prev, 'ipMode') !== _.get(cur, 'ipMode')
-}
-
-// Merge changed lag data and current lag data form api
-const getMergedLagData = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
-  let updatedLagData
-  if (lagData) {
-    updatedLagData = _.cloneDeep(lagData)
-    const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
-    if (targetIdx !== -1) {
-      updatedLagData[targetIdx] = changedLag
-    } else {
-      updatedLagData.push(changedLag)
-    }
-  } else {
-    updatedLagData = [changedLag]
-  }
-  return updatedLagData
 }

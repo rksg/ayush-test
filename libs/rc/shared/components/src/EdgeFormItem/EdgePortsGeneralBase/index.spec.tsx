@@ -87,11 +87,16 @@ describe('EditEdge ports - ports general', () => {
   describe('WAN port exist and no core port configured', () => {
     beforeEach(() => {})
 
-    const MockedComponent = (props: { vipConfig?: ClusterNetworkSettings['virtualIpSettings'] })=>
-      <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
-        <EdgePortsGeneralBase {...mockedProps} {...props} />
-        <button data-testid='rc-submit'>Submit</button>
-      </Form>
+    const MockedComponent = (props: {
+      vipConfig?: ClusterNetworkSettings['virtualIpSettings'],
+      isSupportAccessPort?: boolean
+    })=>
+      <Provider>
+        <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+          <EdgePortsGeneralBase {...mockedProps} {...props} />
+          <button data-testid='rc-submit'>Submit</button>
+        </Form>
+      </Provider>
 
     it ('IP status on each port tab should be displayed correctly', async () => {
       render(<MockedComponent />)
@@ -290,10 +295,14 @@ describe('EditEdge ports - ports general', () => {
     })
 
     it('should show IP is N/A and MAC empty when port status data is undefined', async () => {
-      render(<Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
-        <EdgePortsGeneralBase {...mockedProps} statusData={undefined} />
-        <button data-testid='rc-submit'>Submit</button>
-      </Form>)
+      render(
+        <Provider>
+          <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+            <EdgePortsGeneralBase {...mockedProps} statusData={undefined} />
+            <button data-testid='rc-submit'>Submit</button>
+          </Form>
+        </Provider>
+      )
 
       for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
         await userEvent.click(await screen.findByRole('tab',
@@ -403,7 +412,7 @@ describe('EditEdge ports - ports general', () => {
       })
 
       it('should show gateway field when access port is checked', async () => {
-        render(<MockedComponent />)
+        render(<MockedComponent isSupportAccessPort />)
 
         await screen.findByText(/00:0c:29:b6:ad:04/i)
         // disabled WAN port
@@ -422,10 +431,12 @@ describe('EditEdge ports', () => {
   const MockedComponentTestSDLAN = ({ initVals, otherProps }:
     { initVals?: unknown, otherProps?:unknown })=> {
 
-    return <Form initialValues={initVals ?? formEdgePortConfig}>
-      <EdgePortsGeneralBase {...mockedProps} {...(otherProps ?? {})} />
-      <button data-testid='rc-submit'>Submit</button>
-    </Form>
+    return <Provider>
+      <Form initialValues={initVals ?? formEdgePortConfig}>
+        <EdgePortsGeneralBase {...mockedProps} {...(otherProps ?? {})} />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>
+    </Provider>
   }
 
   beforeEach(() => {

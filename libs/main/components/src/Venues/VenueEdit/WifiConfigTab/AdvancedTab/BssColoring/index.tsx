@@ -131,7 +131,7 @@ export function BssColoring (props: VenueWifiConfigItemProps) {
             visible={drawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.BSS_COLORING}
+            featureNames={[InCompatibilityFeatures.BSS_COLORING]}
             onClose={() => setDrawerVisible(false)}
           />
         </StepsFormLegacy.FieldLabel>

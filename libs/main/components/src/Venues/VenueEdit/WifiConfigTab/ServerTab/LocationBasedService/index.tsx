@@ -222,11 +222,12 @@ export function LocationBasedService (props: VenueWifiConfigItemProps) {
             }}
             style={{ marginLeft: '20px' }}
           />
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
             visible={drawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.LOCATION_BASED_SERVICE}
+            featureNames={[InCompatibilityFeatures.LOCATION_BASED_SERVICE]}
             onClose={() => setDrawerVisible(false)}
           />}
         </StepsFormLegacy.FieldLabel>

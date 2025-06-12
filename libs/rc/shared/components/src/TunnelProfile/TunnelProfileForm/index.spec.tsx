@@ -429,7 +429,7 @@ describe('TunnelProfileForm', () => {
       expect(screen.queryByText('Tunnel Keep Alive Retries')).not.toBeInTheDocument()
     })
 
-    it('should disabled L2GRE when network segment type is VNI', async () => {
+    it('should disabled VNI when tunnel type is L2GRE', async () => {
       const user = userEvent.setup()
       render(
         <Provider><Form initialValues={defaultValues}>
@@ -438,9 +438,9 @@ describe('TunnelProfileForm', () => {
       )
       expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
       expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
-      await user.click(screen.getByRole('radio', { name: 'VNI' }))
-      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
-      expect(screen.getByRole('radio', { name: /L2GRE/i })).toBeDisabled()
+      await user.click(screen.getByRole('radio', { name: /L2GRE/i }))
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
     })
 
     it('should lock disabled fields L2GRE ff enabled', async () => {

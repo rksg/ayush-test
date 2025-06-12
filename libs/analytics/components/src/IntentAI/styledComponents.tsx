@@ -1,5 +1,7 @@
 import styled, { createGlobalStyle } from 'styled-components/macro'
 
+import { SettingsSolid } from '@acx-ui/icons'
+
 export const IntentAITableStyle = createGlobalStyle`
   .intentai-table {
     .ant-picker-suffix {
@@ -27,6 +29,16 @@ export const FeatureIcon = styled.div`
     width: 16px;
     height: 16px;
   }
+`
+export const SummaryFeatureIcon = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  > svg {
+    width: 24px;
+    height: 24px;
+  }
+  margin-right: 10px;
 `
 
 export const FeatureTooltip = styled.div`
@@ -56,3 +68,17 @@ export const FeatureTooltip = styled.div`
 export const DownloadWrapper = styled.div`
   width: fit-content;
 `
+
+export const Setting = {
+  Icon: styled(SettingsSolid)`
+    width: 16px;
+    height: 16px;
+  `,
+  Line: styled.div`
+    border-bottom: 1px solid var(--acx-neutrals-25);
+    margin: 16px 0;
+    display: block;
+    width: 100%;
+    height: 2px;
+  `
+}

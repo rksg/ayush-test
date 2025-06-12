@@ -384,5 +384,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'PUT:/templates/{id}/enforcementSettings'
+  },
+  bindingPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/templates/wifiNetworks/:networkId/identityGroups/:identityGroupId',
+    opsApi: 'PUT:/templates/wifiNetworks/{id}/identityGroups/{id}',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

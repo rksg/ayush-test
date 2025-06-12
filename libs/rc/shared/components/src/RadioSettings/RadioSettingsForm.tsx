@@ -66,7 +66,7 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
-  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType
+  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType && context !== 'apGroup'
 
   const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']
@@ -199,7 +199,7 @@ export function RadioSettingsForm (props:{
                 visible={afcDrawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
-                featureName={InCompatibilityFeatures.AFC}
+                featureNames={[InCompatibilityFeatures.AFC]}
                 onClose={() => setAfcDrawerVisible(false)}
               />
             </>}
@@ -393,7 +393,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('changeInterval')}
         />
       </Form.Item>
-      {context === 'venue' &&
+      {(context === 'venue' || context === 'apGroup') &&
         <Space>
           <Form.Item
             label={$t({ defaultMessage: 'Run background scan every:' })}
@@ -427,11 +427,12 @@ export function RadioSettingsForm (props:{
                 style={{ height: '16px', width: '16px' }}
               />}
             />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            {isR370UnsupportedFeatures &&
+            <ApCompatibilityDrawer
               visible={band320DrawerVisible}
               type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
               venueId={venueId}
-              featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
+              featureNames={[InCompatibilityFeatures.BANDWIDTH_320MHZ]}
               onClose={() => setBand320DrawerVisible(false)}
             />}
           </>
@@ -479,11 +480,17 @@ export function RadioSettingsForm (props:{
             />}
           />
           }
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
+            isMultiple
+            isRequirement
             visible={txDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.AUTO_CELL_SIZING}
+            featureNames={[
+              InCompatibilityFeatures.AUTO_CELL_SIZING,
+              InCompatibilityFeatures.AGGRESSIVE_TX_POWER
+            ]}
             onClose={() => setTxDrawerVisible(false)}
           />}
         </>}
@@ -543,7 +550,7 @@ export function RadioSettingsForm (props:{
                 visible={mrlDrawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
-                featureName={InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT}
+                featureNames={[InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT]}
                 onClose={() => setMrlDrawerVisible(false)}
               />
             </>}

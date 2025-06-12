@@ -459,7 +459,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
 
 .c8 .ant-pro-table .ant-table-thead > tr:last-child > th,
 .c8 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 }
 

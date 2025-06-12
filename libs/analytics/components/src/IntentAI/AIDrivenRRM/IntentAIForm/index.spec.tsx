@@ -8,9 +8,9 @@ import { useAnySplitsOn }                                                       
 import { Provider, intentAIUrl, store, intentAIApi }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext }                                        from '../../__tests__/fixtures'
-import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs } from '../__tests__/fixtures'
-import { kpis }                                                     from '../common'
+import { mockIntentContext }                                                                   from '../../__tests__/fixtures'
+import { mockedApPowerDistribution, mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs } from '../__tests__/fixtures'
+import { kpis }                                                                                from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -74,6 +74,18 @@ describe('IntentAIForm', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedIntentCRRMKPIs } })
 
     mockIntentContext({ intent: mockedIntentCRRM, kpis })
+
+    mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
+      data: { intent: { apPowerDistribution: mockedApPowerDistribution } }
+    })
+
+    mockGraphqlQuery(intentAIUrl, 'ApChannelDistribution', {
+      data: { intent: { apChannelDistribution: [] } }
+    })
+
+    mockGraphqlQuery(intentAIUrl, 'ApPowerDistribution', {
+      data: { intent: { apPowerDistribution: [] } }
+    })
   })
 
   afterEach((done) => {
