@@ -14,19 +14,21 @@ import {
   useSwitchPortlistQuery,
   useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
-  SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery,
-  SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
+} from '@acx-ui/rc/switch/utils'
+import {
+  SwitchMessages,
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   PoeSchedulerType
 } from '@acx-ui/rc/utils'
@@ -60,6 +62,7 @@ export function SwitchPortTable (props: {
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
   const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
@@ -398,7 +401,14 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'LAG Name' }),
     dataIndex: 'lagName',
     sorter: true,
-    show: false
+    show: false,
+    render: (_, row) => {
+      let lagName = row.lagName
+      if(isSwitchLagForceUpEnabled && row?.lagForceUpPort){
+        lagName = `${lagName} ${$t({ defaultMessage: '(Force-up)' })}`
+      }
+      return lagName
+    }
   }, {
     key: 'neighborName',
     title: $t({ defaultMessage: 'Neighbor Name' }),

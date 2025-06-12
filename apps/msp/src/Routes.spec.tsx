@@ -33,7 +33,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   PortalForm: () => <div>PortalForm</div>,
   VLANPoolForm: () => <div>VLANPoolForm</div>,
   ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>,
-  CliProfileForm: () => <div>CliProfileForm</div>
+  CliProfileForm: () => <div>CliProfileForm</div>,
+  IdentityGroupForm: () => <div>IdentityGroupForm</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -60,7 +61,9 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.SYSLOG]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
   [ConfigTemplateType.SWITCH_CLI]: false,
-  [ConfigTemplateType.AP_GROUP]: false
+  [ConfigTemplateType.AP_GROUP]: false,
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+  [ConfigTemplateType.IDENTITY_GROUP]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -279,5 +282,21 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('CliProfileForm')).toBeVisible()
+  })
+
+  it('should navigate to the Identity Group config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.IDENTITY_GROUP]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath('identityManagement/identityGroups/add'),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('IdentityGroupForm')).toBeVisible()
   })
 })
