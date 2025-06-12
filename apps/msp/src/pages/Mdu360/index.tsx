@@ -4,6 +4,7 @@ import Card        from 'antd/lib/card/Card'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import { TrafficByVolume }                                                                  from '@acx-ui/analytics/components'
 import { useAnalyticsFilter }                                                               from '@acx-ui/analytics/utils'
 import { getDefaultEarliestStart, GridRow, GridCol, Loader, PageHeader, RangePicker, Tabs } from '@acx-ui/components'
 import { VenueFilter }                                                                      from '@acx-ui/main/components'
@@ -63,6 +64,7 @@ const Mdu360: React.FC<{}> = () => {
               <Card/>
             </GridCol>
             <GridCol col={{ span: 12 }} style={{ height: '240px' }}>
+              <TrafficByVolume filters={filters} />
               {/* <WifiClient filters={filters} /> */}
             </GridCol>
             <GridCol col={{ span: 12 }} style={{ height: '240px' }}>
