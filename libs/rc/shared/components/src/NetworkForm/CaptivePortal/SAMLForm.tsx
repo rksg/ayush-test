@@ -72,11 +72,11 @@ export const SAMLForm = () => {
     }
 
     if ((editMode || cloneMode) && data) {
+      form.setFieldsValue({ ...data })
       const idp = idpViewDataList.find((idp: SamlIdpProfileViewData) =>
         idp.wifiNetworkIds.includes(data.id ?? '')
       )
       setFormFields(idp)
-      form.setFieldsValue({ ...data })
     }
 
     if (createdSamlIdpId) {
