@@ -50,10 +50,12 @@ const SubInterfaceSettingView = () => {
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+  Form.useWatch('portSubInterfaces', form)
+  Form.useWatch('lagSubInterfaces', form)
   // eslint-disable-next-line max-len
-  const portSubInterfaceSettings = Form.useWatch('portSubInterfaces', form) as InterfaceSettingsFormType['portSubInterfaces']
+  const portSubInterfaceSettings = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
   // eslint-disable-next-line max-len
-  const lagSubInterfaceSettings = Form.useWatch('lagSubInterfaces', form) as InterfaceSettingsFormType['lagSubInterfaces']
+  const lagSubInterfaceSettings = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
   const allInterface = getAllInterfaceAsPortInfoFromForm(form)
 
   const {
@@ -69,7 +71,7 @@ const SubInterfaceSettingView = () => {
     const allPortSubInterfaceValues = portSubInterfaceSettings ?
       Object.values(portSubInterfaceSettings)
         .flatMap(subInterfaceData => Object.entries(subInterfaceData)
-          .flatMap(([portId, subInterfaces]) => {
+          .flatMap(([portId, subInterfaces = []]) => {
             return allLagMemberIds.includes(portId) ? [] : subInterfaces
           })): []
     const allLagSubInterfaceValues = lagSubInterfaceSettings ?
