@@ -760,86 +760,6 @@ exports[`incident details should render incident details correctly 1`] = `
                             <span
                               class="ant-descriptions-item-label"
                             >
-                              Visibility
-                            </span>
-                          </div>
-                        </th>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <td
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-content"
-                            >
-                              <span
-                                class=""
-                              >
-                                Unmuted
-                              </span>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <th
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-label"
-                            >
-                              Client Impact Count
-                            </span>
-                          </div>
-                        </th>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <td
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-content"
-                            >
-                              <span
-                                class="c8"
-                              >
-                                5 of 27 clients (18.52%)
-                              </span>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <th
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-label"
-                            >
                               Event End Time
                             </span>
                           </div>
@@ -1625,46 +1545,6 @@ exports[`incident details should render incident details correctly when there is
                             <span
                               class="ant-descriptions-item-label"
                             >
-                              Client Impact Count
-                            </span>
-                          </div>
-                        </th>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <td
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-content"
-                            >
-                              <span
-                                class="c7"
-                              >
-                                5 of 27 clients (18.52%)
-                              </span>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <th
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-label"
-                            >
                               Incident Category
                             </span>
                           </div>
@@ -1891,46 +1771,6 @@ exports[`incident details should render incident details correctly when there is
                                 class=""
                               >
                                 07/19/2022 05:15
-                              </span>
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <th
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-label"
-                            >
-                              Visibility
-                            </span>
-                          </div>
-                        </th>
-                      </tr>
-                      <tr
-                        class="ant-descriptions-row"
-                      >
-                        <td
-                          class="ant-descriptions-item"
-                          colspan="1"
-                        >
-                          <div
-                            class="ant-descriptions-item-container"
-                          >
-                            <span
-                              class="ant-descriptions-item-content"
-                            >
-                              <span
-                                class=""
-                              >
-                                Unmuted
                               </span>
                             </span>
                           </div>
