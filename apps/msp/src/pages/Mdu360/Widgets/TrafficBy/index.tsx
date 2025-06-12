@@ -5,8 +5,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TrafficByBand, TrafficByVolume } from '@acx-ui/analytics/components'
-import { useAnalyticsFilter }             from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   getDefaultEarliestStart,
   GridRow,
@@ -23,6 +22,9 @@ import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { useDateFilter }                         from '@acx-ui/utils'
 import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
+import { TrafficByRadio }  from '../TrafficByRadio'
+import { TrafficByVolume } from '../TrafficByVolume'
+
 export function TrafficBy ({
   filters
 }: {
@@ -33,7 +35,7 @@ export function TrafficBy ({
   const trafficByRadio = <AutoSizer>
     {({ height, width }) => (
       <div style={{ display: 'block', height, width }}>
-        <TrafficByBand filters={filters}/>
+        <TrafficByRadio filters={filters}/>
       </div>
     )}
   </AutoSizer>
@@ -57,7 +59,7 @@ export function TrafficBy ({
         {({ height, width }) => (
           <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
             {/* <TrafficByVolume filters={filters} /> */}
-            <ContentSwitcher tabDetails={tabDetails}/>
+            <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
           </div>
         )}
       </AutoSizer>
