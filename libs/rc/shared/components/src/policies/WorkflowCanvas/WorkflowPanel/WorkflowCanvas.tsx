@@ -1,6 +1,6 @@
 import 'reactflow/dist/style.css' // Very important css must be imported!
 
-import { ReactElement, useCallback, useEffect, useRef } from 'react'
+import { MouseEvent, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import ReactFlow, {
@@ -224,7 +224,9 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
   }, [nodes])
 
+  // TODO: it might be better to use on selection change...
   const onNodeDragStart = useCallback((event:React.MouseEvent, node:Node) => {
+    // TODO: memoize nodemap
     const nodeMap = new Map<string, Node>()
     nodes.forEach(n => {nodeMap.set(n.id, n)})
 
@@ -252,17 +254,144 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     // are raised to 2000 when dragged. When created we are manually setting the edges within
     // subflows to 1000 to match the nodes so that this will work.
     // Also, reactflow seems to only update these levels on drag start, so we are following suit
+    
     edges.forEach(e => {
       if(nodeIdSet.has(e.source)) {
-        e.zIndex = 2000
+        // TODO: add 1000
+        e.zIndex = e.zIndex ? (e.zIndex > 2000 ? e.zIndex : e.zIndex + 1000) : 1000;
       } else {
-        e.zIndex = e.zIndex ? 1000 : undefined
+        // TODO: if set and over 2000 subtract 1000, else leave alone
+        // TODO: clean up
+        e.zIndex = e.zIndex ? (e.zIndex > 2000 ? e.zIndex - 1000 : e.zIndex) : undefined
       }
     })
 
     reactFlowInstance.setEdges(edges)
 
   }, [nodes, edges])
+
+  const [currentSelectedId, setCurrentSelectedId] = useState('')
+
+// TODO: double check the behavior with opaque subflows and see if that would be ok, in which case skip all of this goofiness
+
+  // the passed handler has to be memoized, otherwise the hook will not work correctly
+  const onSelectionChange = useCallback((params: { nodes: Node[]; edges: Edge[] }) => {
+    console.log("SELECT change!!!!!!!!!!!!!!", params.nodes)
+
+    const selectedNode = params.nodes.length > 0 ? params.nodes[0] : undefined
+    if(!selectedNode) {
+      console.log("SKIP 1")
+      return
+    }
+
+    if(selectedNode?.id === currentSelectedId) {
+      console.log("SKIP 2")
+      return
+    } else {
+      setCurrentSelectedId(selectedNode?.id ?? '')
+    }
+
+    // TODO: try using this - or start/stop for selection to make the node/edge zIndex changes
+
+    // TODO: memoize nodemap
+    const nodeMap = new Map<string, Node>()
+    nodes.forEach(n => {nodeMap.set(n.id, n)})
+
+    // find selected node: TODO: may not need this
+    // let selectedNode = undefined;
+    // selectedNode = params.nodes.find(n => n.selected)
+    // console.log("SELECTED", selectedNode)
+
+
+
+    //TODO: handle non subflow
+    let parentNodeId = undefined
+    if(selectedNode?.parentNode) {
+      parentNodeId = selectedNode.parentNode
+    } else if(selectedNode?.type === 'DISCONNECTED_BRANCH') {
+      parentNodeId = selectedNode.id
+    }
+    
+    let nodeIdSet = new Set()
+    let branchStartNodeId = undefined;
+    if(parentNodeId) {
+      console.log("PARENT node", parentNodeId)
+      branchStartNodeId = parentNodeId.split('parent')[0]
+    } else {
+      branchStartNodeId = selectedNode.id
+      // find all previous nodes
+      let nonDetachedCurrentNodeId = selectedNode.id
+      while(nonDetachedCurrentNodeId) {
+        nodeIdSet.add(nonDetachedCurrentNodeId)
+        nonDetachedCurrentNodeId = nodeMap.get(nonDetachedCurrentNodeId)?.data?.priorStepId
+      }
+      
+    }
+
+    // get all node ids in the branch
+    let currentNode = nodeMap.get(branchStartNodeId)
+    
+    nodeIdSet.add(parentNodeId)
+    while(currentNode) {
+      if(currentNode.data.type === StepType.End) {
+        currentNode = undefined
+      } else {
+        nodeIdSet.add(currentNode.id)
+        currentNode =
+          currentNode.data.nextStepId ? nodeMap.get(currentNode.data.nextStepId) : undefined
+      }
+    }
+
+    // TODO: make this more efficient
+    // TODO: move this into the setNodes callback?
+    const updatedNodes:Node<any, string | undefined>[] = []; // TODO: update this
+    nodes.forEach(n => {
+      if(nodeIdSet.has(n.id)) {
+        // TODO: add 1000
+        updatedNodes.push({...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex : n.zIndex + 1000) : 1000 })
+        // n.zIndex = n.zIndex ? (n.zIndex > 2000 ? n.zIndex : n.zIndex + 1000) : 1000;
+      } else {
+        // TODO: if set and over 2000 subtract 1000, else leave alone
+        // TODO: clean up
+        // n.zIndex = n.zIndex ? (n.zIndex > 2000 ? n.zIndex - 1000 : n.zIndex) : undefined
+        updatedNodes.push({...n, zIndex: n.zIndex ? (n.zIndex > 2000 ? n.zIndex - 1000 : n.zIndex) : undefined })
+      }
+    })
+
+  
+    
+    const updatedEdges:Edge<any>[] = [];
+    edges.forEach(e => {
+      if(nodeIdSet.has(e.source)) {
+        // TODO: add 1000
+        // e.zIndex = e.zIndex ? (e.zIndex > 2000 ? e.zIndex : e.zIndex + 1000) : 1000;
+        updatedEdges.push({...e, zIndex: e.zIndex ? (e.zIndex > 2000 ? e.zIndex : e.zIndex + 1000) : 1000})
+      } else {
+        // TODO: if set and over 2000 subtract 1000, else leave alone
+        // TODO: clean up
+        // e.zIndex = e.zIndex ? (e.zIndex > 2000 ? e.zIndex - 1000 : e.zIndex) : undefined
+        updatedEdges.push({...e, zIndex:  e.zIndex ? (e.zIndex > 2000 ? e.zIndex - 1000 : e.zIndex) : undefined})
+      }
+    })
+
+    setNodes(updatedNodes);
+    setEdges(updatedEdges)
+
+    // reactFlowInstance.setEdges(edges)
+    // reactFlowInstance.setNodes(nodes) // if I depend on the nodes then this creates an infinite loop
+
+    
+
+    // see if I can elevate/lower the entire subflow when one of it's nodes is selected/deselected
+  }, [nodes, edges]) // TODO: do I need nodes and edges?
+
+  
+
+  const onSelectionStart = useCallback((event:React.MouseEvent) => {
+    console.log("SELECTION START", event)
+  }, [])
+
+
 
   useEffect(() => {
     if (props.initialNodes) {
@@ -285,10 +414,14 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
       nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
-      onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
+      // onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
       nodesConnectable={false}
       onNodeDragStart={onNodeDragStart}
       minZoom={0.1}
+      elevateNodesOnSelect={false}
+      elevateEdgesOnSelect={false}
+      onSelectionChange={onSelectionChange}
+      // onSelectionStart={onSelectionStart}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
