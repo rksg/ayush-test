@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { FetchArgs, FetchBaseQueryError }                   from '@reduxjs/toolkit/query'
-import { keys, every, get, uniq, omit, findIndex, isEqual } from 'lodash'
+import { FetchArgs, FetchBaseQueryError }                           from '@reduxjs/toolkit/query'
+import { keys, every, get, uniq, omit, findIndex, isEqual, sortBy } from 'lodash'
 
 import {
   AccessControlUrls,
@@ -856,7 +856,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
           const networkVenueData = {
             ...defaultNetworkVenue,
             ...networkVenueResult,
-            ...(venueApGroups && { apGroups: venueApGroups }),
+            ...(venueApGroups && { apGroups: sortBy(venueApGroups, ['apGroupName']) }),
             networkId,
             venueId,
             ...(networkVlanPool && {
@@ -974,7 +974,7 @@ export const fetchEnhanceRbacVenueNetworkList = async (arg: any, fetchWithBQ: an
           const networkVenueData = {
             ...defaultNetworkVenue,
             ...networkVenueResult,
-            ...(venueApGroups && { apGroups: venueApGroups }),
+            ...(venueApGroups && { apGroups: sortBy(venueApGroups, ['apGroupName']) }),
             networkId,
             venueId,
             ...(networkVlanPool && {
@@ -1208,7 +1208,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
         return {
           ...defaultNetworkVenue,
           ...networkVenueResult,
-          ...(venueApGroups && { apGroups: venueApGroups }),
+          ...(venueApGroups && { apGroups: sortBy(venueApGroups, ['apGroupName']) }),
           networkId,
           venueId,
           ...(networkVlanPool && {
@@ -1337,7 +1337,7 @@ export const fetchEnhanceRbacNetworkVenueList = async (queryArgs: RequestPayload
         return {
           ...defaultNetworkVenue,
           ...networkVenueResult,
-          ...(venueApGroups && { apGroups: venueApGroups }),
+          ...(venueApGroups && { apGroups: sortBy(venueApGroups, ['apGroupName']) }),
           networkId,
           venueId,
           ...(networkVlanPool && {

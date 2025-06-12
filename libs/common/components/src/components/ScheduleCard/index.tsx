@@ -353,7 +353,7 @@ export function ScheduleCard (props: ScheduleCardProps) {
                         onChange={(list) => onChange(list, item.key)}
                         options={item.value.map((timeslot, i) => ({
                           label: <Tooltip
-                            title={`${item.key}-${convertToTimeFromSlotIndex(i)}`}
+                            title={`${_.startCase(item.key)}-${convertToTimeFromSlotIndex(i)}`}
                             className='channels'
                           >
                             <div

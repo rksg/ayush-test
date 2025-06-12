@@ -1,8 +1,8 @@
-import { Divider, Form, Input, Select } from 'antd'
-import { useIntl }                      from 'react-intl'
-import { useParams }                    from 'react-router-dom'
+import { Divider, Form, Input } from 'antd'
+import { useIntl }              from 'react-intl'
+import { useParams }            from 'react-router-dom'
 
-import { Button, Drawer, PasswordInput }                          from '@acx-ui/components'
+import { Button, Drawer, PasswordInput, Select }                  from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useAddTenantAuthenticationsMutation,
@@ -199,6 +199,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       <Select
         options={isAbacToggleEnabled ? privilegeGroupList : rolesList}
         placeholder={$t({ defaultMessage: 'Select...' })}
+        getPopupContainer={Select.getPopupContainer}
       />
     </Form.Item>
 

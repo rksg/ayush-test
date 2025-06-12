@@ -11,10 +11,8 @@ import {
   useLazyGetIotControllerVenuesQuery
 } from '@acx-ui/rc/services'
 import {
-  defaultSort,
   IotControllerStatus,
   IotControllerStatusEnum,
-  sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }    from '@acx-ui/react-router-dom'
@@ -66,7 +64,7 @@ export function IotController () {
         title: $t({ defaultMessage: 'IoT Controller' }),
         key: 'name',
         dataIndex: 'name',
-        sorter: { compare: sortProp('name', defaultSort) },
+        sorter: true,
         fixed: 'left',
         searchable: searchable,
         defaultSortOrder: 'ascend',
@@ -80,13 +78,13 @@ export function IotController () {
       },{
         title: $t({ defaultMessage: 'FQDN / IP (AP)' }),
         dataIndex: 'inboundAddress',
-        sorter: { compare: sortProp('inboundAddress', defaultSort) },
+        sorter: true,
         key: 'inboundAddress'
       },
       {
         title: $t({ defaultMessage: 'FQDN / IP (Public)' }),
         dataIndex: 'publicAddress',
-        sorter: { compare: sortProp('publicAddress', defaultSort) },
+        sorter: true,
         key: 'publicAddress',
         render: function (_, row) {
           if (!row.publicAddress || !row.publicPort) {
@@ -98,7 +96,7 @@ export function IotController () {
       {
         title: $t({ defaultMessage: 'Associated <VenuePlural></VenuePlural>' }),
         dataIndex: 'assocVenueCount',
-        sorter: { compare: sortProp('assocVenueCount', defaultSort) },
+        sorter: true,
         key: 'assocVenueCount',
         render: function (_, row) {
 

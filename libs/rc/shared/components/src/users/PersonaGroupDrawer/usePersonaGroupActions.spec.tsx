@@ -1,13 +1,14 @@
 import { rest } from 'msw'
 
-import { PersonaGroup, PersonaUrls }       from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
-import { RequestPayload }                  from '@acx-ui/types'
+import { ConfigTemplateContext, IdentityTemplateUrlsInfo, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                   from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                            from '@acx-ui/test-utils'
+import { RequestPayload }                                                             from '@acx-ui/types'
 
 import { usePersonaGroupAction } from './usePersonaGroupActions'
 
 const spyUpdatePersonaGroup = jest.fn()
+const spyUpdatePersonaGroupTemplate = jest.fn()
 const spyCreatePersonaGroup = jest.fn()
 const spyAssociateDpsk = jest.fn()
 const spyAssociateMacRegistration = jest.fn()
@@ -34,6 +35,7 @@ describe('usePersonaGroupActions', () => {
 
   beforeEach(async () => {
     spyUpdatePersonaGroup.mockClear()
+    spyUpdatePersonaGroupTemplate.mockClear()
     spyCreatePersonaGroup.mockClear()
     spyAssociateDpsk.mockClear()
     spyAssociateMacRegistration.mockClear()
@@ -41,6 +43,20 @@ describe('usePersonaGroupActions', () => {
     spyDissociatePolicySet.mockClear()
 
     mockServer.use(
+      rest.post(
+        IdentityTemplateUrlsInfo.addIdentityGroupTemplate.url,
+        (_, res, ctx) => {
+          spyCreatePersonaGroup()
+          return res(ctx.json({}))
+        }
+      ),
+      rest.patch(
+        IdentityTemplateUrlsInfo.updateIdentityGroupTemplate.url,
+        (_, res, ctx) => {
+          spyUpdatePersonaGroupTemplate()
+          return res(ctx.json({}))
+        }
+      ),
       rest.patch(
         PersonaUrls.updatePersonaGroup.url,
         (req, res, ctx) => {
@@ -202,5 +218,51 @@ describe('usePersonaGroupActions', () => {
     await updatePersonaGroupMutation(groupId, groupData, changedData)
 
     expect(spyDissociatePolicySet).toBeCalled()
+  })
+
+  it('Should create group template correctly', async () => {
+    const mockCallback = jest.fn()
+    const { result } = renderHook(() => usePersonaGroupAction(), {
+      wrapper: ({ children }) =>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <Provider children={children} />
+        </ConfigTemplateContext.Provider>
+    })
+    const { createPersonaGroupMutation } = result.current
+
+    await createPersonaGroupMutation({
+      id: groupId,
+      name: 'PersonaGroup'
+    }, mockCallback)
+
+    await waitFor(() => expect(spyCreatePersonaGroup).toBeCalled())
+    expect(mockCallback).toBeCalled()
+  })
+
+  it('Should not dissociate policy set via multiple steps in Config template view', async () => {
+    const { result } = renderHook(() => usePersonaGroupAction(), {
+      wrapper: ({ children }) =>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <Provider children={children} />
+        </ConfigTemplateContext.Provider>
+    })
+    const { updatePersonaGroupMutation } = result.current
+
+    const groupData: PersonaGroup = {
+      id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
+      name: 'groupName',
+      description: 'value'
+    }
+    const changedData: PersonaGroup = {
+      ...groupData,
+      description: 'new description',
+      policySetId: 'abb1a52d-fd77-434c-8895-36ee9a432ad1'
+    }
+
+    await updatePersonaGroupMutation(groupId, groupData, changedData)
+
+    await waitFor(() => expect(spyUpdatePersonaGroupTemplate).toBeCalledTimes(1))
+    // policy set has not supported config template, so ignore the changes
+    expect(spyDissociatePolicySet).not.toBeCalled()
   })
 })

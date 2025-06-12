@@ -3,32 +3,44 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { getIdentityGroupRoutePath, IdentityOperation, useIdentityGroupBreadcrumbs } from '@acx-ui/cloudpath/components'
+import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard }               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
 import {
-  BasePersonaTable,
-  CertTemplateLink,
-  DpskPoolLink,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PersonaGroupDrawer,
-  PolicySetLink,
-  VenueLink,
-  useIsEdgeFeatureReady
-} from '@acx-ui/rc/components'
-import {
+  useGetIdentityGroupTemplateByIdQuery,
   useGetPersonaGroupByIdQuery,
+  useLazyGetAdaptivePolicySetQuery,
   useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
-  useLazyGetMacRegListQuery,
+  useLazyGetDpskTemplateQuery,
   useLazyGetEdgePinByIdQuery,
-  useLazyGetVenueQuery,
-  useLazyGetAdaptivePolicySetQuery
+  useLazyGetMacRegListQuery,
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup, PersonaUrls }                    from '@acx-ui/rc/utils'
+import {
+  ConfigTemplateType,
+  getConfigTemplateEditPath,
+  PersonaGroup,
+  PersonaUrls,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  useIsEdgeFeatureReady
+} from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
+
+import {
+  DpskPoolLink,
+  CertTemplateLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PolicySetLink,
+  VenueLink
+} from '../../CommonLinkHelper'
+import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
+import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -37,6 +49,7 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
+  const breadcrumb = useIdentityGroupBreadcrumbs(IdentityOperation.LIST)
 
   const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
     ? [
@@ -53,32 +66,26 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={filterByOperations(extra)}
-      breadcrumb={[
-        {
-          text: $t({ defaultMessage: 'Clients' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Management' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Groups' }),
-          link: 'users/identity-management'
-        }
-      ]}
+      breadcrumb={breadcrumb}
     />
   )
 }
 
-function PersonaGroupDetails () {
+export function PersonaGroupDetails () {
   const { $t } = useIntl()
-  const basePath = useTenantLink('users/identity-management/identity-group')
   const navigate = useNavigate()
+  const { personaGroupId, tenantId } = useParams()
+
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
-  const { personaGroupId, tenantId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const editPagePath = useTenantLink(isTemplate
+    ? getConfigTemplateEditPath(ConfigTemplateType.IDENTITY_GROUP, personaGroupId ?? '')
+    : getIdentityGroupRoutePath(IdentityOperation.EDIT, isTemplate, personaGroupId),
+  isTemplate ? 'v' : 't')
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
@@ -88,13 +95,18 @@ function PersonaGroupDetails () {
   const [policySetDisplay, setPolicySetDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
-  const [getDpskPoolById] = useLazyGetDpskQuery()
+  const [getDpskPoolById] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyGetDpskQuery,
+    useLazyTemplateQueryFn: useLazyGetDpskTemplateQuery
+  })
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
   const [ getPolicySetById ] = useLazyGetAdaptivePolicySetQuery()
-  const detailsQuery = useGetPersonaGroupByIdQuery({
-    params: { groupId: personaGroupId }
+  const detailsQuery = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetPersonaGroupByIdQuery,
+    useTemplateQueryFn: useGetIdentityGroupTemplateByIdQuery,
+    extraParams: { groupId: personaGroupId }
   })
 
   useEffect(() => {
@@ -107,9 +119,9 @@ function PersonaGroupDetails () {
       propertyId,
       certificateTemplateId,
       policySetId
-    } = detailsQuery.data as PersonaGroup
+    } = (detailsQuery?.data as PersonaGroup) ?? {}
 
-    if (macRegistrationPoolId) {
+    if (macRegistrationPoolId && !isTemplate) {
       getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
         .then(result => {
           if (result.data) {
@@ -127,14 +139,14 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (personalIdentityNetworkId && networkSegmentationEnabled) {
+    if (personalIdentityNetworkId && networkSegmentationEnabled && !isTemplate) {
       let name: string | undefined
       getPinById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
         .finally(() => setPinDisplay({ id: personalIdentityNetworkId, name }))
     }
 
-    if (propertyId) {
+    if (propertyId && !isTemplate) {
       // FIXME: After the property id does not present in UUID format, I will remove .replace()
       const venueId = propertyId.replaceAll('-', '')
       let name: string | undefined
@@ -143,7 +155,7 @@ function PersonaGroupDetails () {
         .finally(() => setVenueDisplay({ id: venueId, name }))
     }
 
-    if (isCertTemplateEnable && certificateTemplateId) {
+    if (isCertTemplateEnable && certificateTemplateId && !isTemplate) {
       getCertTemplateById({ params: { policyId: certificateTemplateId } })
         .then(result => {
           setCertTemplateDisplay({
@@ -153,7 +165,7 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (policySetId) {
+    if (policySetId && !isTemplate) {
       getPolicySetById({ params: { policySetId } })
         .then(result => {
           setPolicySetDisplay({
@@ -165,7 +177,7 @@ function PersonaGroupDetails () {
   }, [detailsQuery.data])
 
   const basicInfo = [
-    {
+    ...(!isTemplate ? [{
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content:
       <VenueLink
@@ -177,8 +189,8 @@ function PersonaGroupDetails () {
     {
       title: $t({ defaultMessage: 'Identities' }),
       content: detailsQuery.data?.identities?.length
-        ?? detailsQuery.data?.identityCount ?? 0
-    },
+          ?? detailsQuery.data?.identityCount ?? 0
+    }] : []),
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
       content:
@@ -188,7 +200,7 @@ function PersonaGroupDetails () {
         dpskPoolId={detailsQuery.data?.dpskPoolId}
       />
     },
-    {
+    ...(!isTemplate ? [{
       title: $t({ defaultMessage: 'MAC Registration' }),
       content:
         <MacRegistrationPoolLink
@@ -200,30 +212,30 @@ function PersonaGroupDetails () {
     ...(networkSegmentationEnabled ? [{
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
-        <NetworkSegmentationLink
-          showNoData={true}
-          name={pinDisplay?.name}
-          id={detailsQuery.data?.personalIdentityNetworkId}
-        />
+          <NetworkSegmentationLink
+            showNoData={true}
+            name={pinDisplay?.name}
+            id={detailsQuery.data?.personalIdentityNetworkId}
+          />
     }] : []),
     ...(isCertTemplateEnable ? [{
       title: $t({ defaultMessage: 'Certificate Template' }),
       content:
-        <CertTemplateLink
-          showNoData={true}
-          name={certTemplateDisplay?.name}
-          id={detailsQuery.data?.certificateTemplateId}
-        />
+          <CertTemplateLink
+            showNoData={true}
+            name={certTemplateDisplay?.name}
+            id={detailsQuery.data?.certificateTemplateId}
+          />
     }] : []),
     ...(isCertTemplateEnable ? [{
       title: $t({ defaultMessage: 'Adaptive Policy' }),
       content:
-        <PolicySetLink
-          showNoData={true}
-          name={policySetDisplay?.name}
-          id={detailsQuery.data?.policySetId}
-        />
-    }] : [])
+          <PolicySetLink
+            showNoData={true}
+            name={policySetDisplay?.name}
+            id={detailsQuery.data?.policySetId}
+          />
+    }] : [])] : [])
   ]
 
   return (
@@ -233,8 +245,8 @@ function PersonaGroupDetails () {
         onClick={() => {
           if (isIdentityRefactorEnabled) {
             navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/${personaGroupId}/edit`
+              ...editPagePath,
+              pathname: `${editPagePath.pathname}`
             })
           } else {
             setEditVisible(true)
@@ -249,24 +261,27 @@ function PersonaGroupDetails () {
             isLoading={detailsQuery.isLoading}
           />
         </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <div>
-            <Subtitle level={4}>
-              {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? detailsQuery.data?.identityCount?? noDataDisplay})
-            </Subtitle>
-            <BasePersonaTable
-              personaGroupId={personaGroupId}
-              colProps={{
-                name: { searchable: true },
-                email: { searchable: true },
-                description: { searchable: true },
-                groupId: { disable: true, show: false, filterable: false },
-                ...!propertyEnabled
-                  ? { identityId: { disable: true, show: false } } : {}
-              }}/>
-          </div>
-        </GridCol>
+
+        {!isTemplate &&
+          <GridCol col={{ span: 24 }}>
+            <div>
+              <Subtitle level={4}>
+                {/* eslint-disable-next-line max-len */}
+                {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? detailsQuery.data?.identityCount?? noDataDisplay})
+              </Subtitle>
+              <BasePersonaTable
+                personaGroupId={personaGroupId}
+                colProps={{
+                  name: { searchable: true },
+                  email: { searchable: true },
+                  description: { searchable: true },
+                  groupId: { disable: true, show: false, filterable: false },
+                  ...!propertyEnabled
+                    ? { identityId: { disable: true, show: false } } : {}
+                }}/>
+            </div>
+          </GridCol>
+        }
       </GridRow>
 
       {detailsQuery.data &&
@@ -281,4 +296,3 @@ function PersonaGroupDetails () {
   )
 }
 
-export default PersonaGroupDetails

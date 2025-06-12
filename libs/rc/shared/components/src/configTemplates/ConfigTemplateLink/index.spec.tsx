@@ -1,3 +1,4 @@
+import { getIdentityGroupRoutePath, IdentityOperation } from '@acx-ui/cloudpath/components'
 import {
   ConfigTemplateType,
   getConfigTemplatePath,
@@ -142,6 +143,15 @@ describe('ConfigTemplateLink', () => {
       renderConfigTemplateDetailsComponent(ConfigTemplateType.SWITCH_REGULAR, 'r_id', 'regular')
     )
     expect(screen.getByText('regular')).toBeInTheDocument()
+
+    // The link for the Identity Group details page
+    rerender(
+      renderConfigTemplateDetailsComponent(
+        ConfigTemplateType.IDENTITY_GROUP, 'group_id', 'group name')
+    )
+    expect(screen.getByText(
+      getConfigTemplatePath(getIdentityGroupRoutePath(IdentityOperation.DETAIL, true, 'group_id'))
+    )).toBeInTheDocument()
   })
 
   it('should render the correct service link with the config template flag', () => {
