@@ -261,7 +261,6 @@ describe('EditPortDrawer', () => {
     })
 
     it('should cycle PoE correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
       render(<Provider>
         <EditPortDrawer
           visible={true}
