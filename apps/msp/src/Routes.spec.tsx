@@ -17,7 +17,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('./pages/ConfigTemplates/Templates', () => ({
-  ...jest.requireActual('./pages/ConfigTemplates/Templates'),
   ConfigTemplateList: () => <div>ConfigTemplateList</div>
 }))
 
@@ -39,12 +38,14 @@ jest.mock('@acx-ui/rc/components', () => ({
   NetworkDetails: () => <div>NetworkDetails</div>,
   VLANPoolDetail: () => <div>VLANPoolDetail</div>,
   DHCPDetail: () => <div>DHCPDetail</div>,
-  IdentityGroupForm: () => <div>IdentityGroupForm</div>
+  IdentityGroupForm: () => <div>IdentityGroupForm</div>,
+  PersonaGroupDetails: () => <div>PersonaGroupDetails</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
-  ...jest.requireActual('@acx-ui/main/components'),
-  VenuesForm: () => <div>VenuesForm</div>
+  VenuesForm: () => <div>VenuesForm</div>,
+  VenueDetails: () => <div>VenueDetails</div>,
+  VenueEdit: () => <div>VenueEdit</div>
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
