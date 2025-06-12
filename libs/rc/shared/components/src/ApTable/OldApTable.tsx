@@ -98,7 +98,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
 
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
-  const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
@@ -370,17 +369,16 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         return acc
       }, [] as TableProps<APExtended|APExtendedGrouped>['columns'])
     },
-    ...(apUptimeFlag ? [
-      {
-        key: 'uptime',
-        title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'apStatusData.APSystem.uptime',
-        sorter: true,
-        render: (data: React.ReactNode, row: APExtended) => {
-          const uptime = row.apStatusData?.APSystem?.uptime
-          return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
-        }
-      }] : []),
+    {
+      key: 'uptime',
+      title: $t({ defaultMessage: 'Up Time' }),
+      dataIndex: 'apStatusData.APSystem.uptime',
+      sorter: true,
+      render: (data: React.ReactNode, row: APExtended) => {
+        const uptime = row.apStatusData?.APSystem?.uptime
+        return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+      }
+    },
     {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
