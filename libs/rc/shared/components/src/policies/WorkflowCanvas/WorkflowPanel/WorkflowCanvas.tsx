@@ -385,12 +385,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
     // see if I can elevate/lower the entire subflow when one of it's nodes is selected/deselected
   }, [nodes, edges]) // TODO: do I need nodes and edges?
 
-  
-
-  const onSelectionStart = useCallback((event:React.MouseEvent) => {
-    console.log("SELECTION START", event)
-  }, [])
-
 
 
   useEffect(() => {
@@ -421,24 +415,26 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       elevateNodesOnSelect={false}
       elevateEdgesOnSelect={false}
       onSelectionChange={onSelectionChange}
-      // onSelectionStart={onSelectionStart}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
       proOptions={{ hideAttribution: true }}
     >
-      { isDesignMode &&
-        <>
-          <Controls
-            fitViewOptions={{ maxZoom: 1 }}
-            position={'bottom-right'}
-          />
+      
+      <>
+        <Controls
+          fitViewOptions={{ maxZoom: 1 }}
+          position={'bottom-right'}
+          showInteractive={false}
+        />
+        { isDesignMode &&
           <Background
             color='#ccc'
             variant={BackgroundVariant.Dots}
           />
-        </>
-      }
+        
+        }
+      </>
 
       { mode === WorkflowPanelMode.Default &&
         <Panel position={'top-left'} style={{ fontWeight: 600 }}>
