@@ -25,12 +25,14 @@ import {
   hasSomeServicesPermission,
   isServiceCardEnabled,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
-import { ServiceCard } from '../ServiceCard'
+import { ServiceCard }                         from '../ServiceCard'
+import { useMdnsProxyConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
 
 const defaultPayload = {
   fields: ['id']
@@ -50,11 +52,11 @@ export default function MyServices () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   const services = [
     {
@@ -62,7 +64,10 @@ export default function MyServices () {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedMdnsProxyListQuery({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }, {
+        skip: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
+      }).data?.totalCount,
+      disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY]
     },
     {
       type: ServiceType.EDGE_MDNS_PROXY,
@@ -70,10 +75,18 @@ export default function MyServices () {
       totalCount: useGetEdgeMdnsProxyViewDataListQuery({
         params, payload: defaultPayload
       }, {
-        skip: !isEdgeMdnsReady
+        skip: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY]
       }).data?.totalCount,
-      disabled: !isEdgeMdnsReady,
+      disabled: !mdnsProxyDisabledMap[ServiceType.EDGE_MDNS_PROXY],
       isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+    },
+    {
+      type: ServiceType.MDNS_PROXY_CONSOLIDATION,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: useMdnsProxyConsolidationTotalCount({
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
+      }, !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]).data?.totalCount,
+      disabled: !mdnsProxyDisabledMap[ServiceType.MDNS_PROXY_CONSOLIDATION]
     },
     {
       type: ServiceType.DHCP,

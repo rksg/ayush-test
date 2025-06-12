@@ -32,6 +32,7 @@ import { hasAllowedOperations }                                                 
 import { getOpsApi, ignoreErrorModal, noDataDisplay }                                            from '@acx-ui/utils'
 
 import { CommonAttributesDrawer } from './CommonAttributesDrawer'
+import { MAX_CLIENTS_PER_PAGE }   from './IdentityClientTable'
 
 
 const identityClientDefaultSorter = {
@@ -71,7 +72,9 @@ export function PersonaOverview (props:
     skip: !personaId,
     selectFromResult: ({ data, isLoading, isFetching }) => {
       return {
-        identityDeviceCount: data?.totalCount ?? 0,
+        identityDeviceCount: (data?.totalCount ?? 0) > MAX_CLIENTS_PER_PAGE
+          ? MAX_CLIENTS_PER_PAGE
+          : data?.totalCount ?? 0,
         isClientsLoading: isLoading,
         isClientsFetching: isFetching
       }
@@ -344,7 +347,9 @@ export function PersonaOverview (props:
                   data={[{
                     value: identityDeviceCount,
                     name: $t({ defaultMessage: 'Wi-Fi' }),
-                    color: cssStr('--acx-semantics-green-50')
+                    color: identityDeviceCount > 0
+                      ? cssStr('--acx-semantics-green-50')
+                      : cssStr('--acx-neutrals-50')
                   }]}
                 />
               )}

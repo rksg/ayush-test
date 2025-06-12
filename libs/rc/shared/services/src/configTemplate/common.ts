@@ -514,6 +514,14 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           body: JSON.stringify({ isEnforced: payload?.enabled })
         }
       }
+    }),
+    bindingPersonaGroupTemplateWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ConfigTemplateUrlsInfo.bindingPersonaGroupWithNetwork, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -546,5 +554,6 @@ export const {
   useLazyGetDriftReportQuery,
   usePatchDriftReportMutation,
   useCloneTemplateMutation,
-  useUpdateEnforcementStatusMutation
+  useUpdateEnforcementStatusMutation,
+  useBindingPersonaGroupTemplateWithNetworkMutation
 } = configTemplateApi
