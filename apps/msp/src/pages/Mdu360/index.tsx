@@ -3,15 +3,23 @@ import { useState } from 'react'
 import Card        from 'antd/lib/card/Card'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TrafficByVolume }                                                                  from '@acx-ui/analytics/components'
-import { useAnalyticsFilter }                                                               from '@acx-ui/analytics/utils'
-import { getDefaultEarliestStart, GridRow, GridCol, Loader, PageHeader, RangePicker, Tabs } from '@acx-ui/components'
-import { VenueFilter }                                                                      from '@acx-ui/main/components'
-import { useNavigate, useTenantLink, useParams }                                            from '@acx-ui/react-router-dom'
-import { useDateFilter }                                                                    from '@acx-ui/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  getDefaultEarliestStart,
+  GridRow,
+  GridCol,
+  Loader,
+  PageHeader,
+  RangePicker,
+  Tabs} from '@acx-ui/components'
+import { VenueFilter }                           from '@acx-ui/main/components'
+import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useDateFilter }                         from '@acx-ui/utils'
 
 import Mdu360Tabs from './Mdu360Tabs'
+import { TrafficBy } from './Widgets/TrafficBy'
 
 const Mdu360: React.FC<{}> = () => {
   const { $t } = useIntl()
@@ -64,7 +72,7 @@ const Mdu360: React.FC<{}> = () => {
               <Card/>
             </GridCol>
             <GridCol col={{ span: 12 }} style={{ height: '240px' }}>
-              <TrafficByVolume filters={filters} />
+              <TrafficBy filters={filters}/>
               {/* <WifiClient filters={filters} /> */}
             </GridCol>
             <GridCol col={{ span: 12 }} style={{ height: '240px' }}>
