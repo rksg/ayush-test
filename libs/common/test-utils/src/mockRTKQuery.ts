@@ -50,7 +50,8 @@ export const mockGraphqlMutation = (
 export const mockRestApiQuery = (
   url: string,
   type: 'get' | 'post' | 'delete' | 'put' | 'patch',
-  result: { status?: number, data?: any, error?: any, totalCount?: number, page?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line max-len
+  result: { status?: number, data?: any, error?: any, errors?: any, totalCount?: number, page?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
   omitData?: boolean,
   matchQuery?: boolean
 ) => {
@@ -61,9 +62,11 @@ export const mockRestApiQuery = (
       }
       return result.error
         ? res(ctx.status(result.status||500), ctx.json({ error: result.error }))
-        : omitData
-          ? res(ctx.status(result.status||200), ctx.json(result.data))
-          : res(ctx.status(result.status||200), ctx.json(result))
+        : result.errors
+          ? res(ctx.status(result.status||500), ctx.json({ errors: result.errors }))
+          : omitData
+            ? res(ctx.status(result.status||200), ctx.json(result.data))
+            : res(ctx.status(result.status||200), ctx.json(result))
     })
   )
 }

@@ -32,7 +32,8 @@ import {
   DisplayMessageNode,
   DpskNode,
   MacRegistrationNode,
-  StartNode
+  StartNode,
+  SamlAuthNode
 } from './WorkflowStepNode'
 import DisconnectedBranchNode from './WorkflowStepNode/DisconnectedBranchNode'
 
@@ -47,7 +48,8 @@ const nodeTypes: NodeTypes = {
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
   [ActionType.DPSK]: DpskNode,
   [ActionType.MAC_REG]: MacRegistrationNode,
-  [ActionType.CERT_TEMPLATE]: CertTemplateNode
+  [ActionType.CERT_TEMPLATE]: CertTemplateNode,
+  [ActionType.SAML_AUTH]: SamlAuthNode
 }
 
 interface WorkflowProps {

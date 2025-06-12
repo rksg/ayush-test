@@ -94,6 +94,15 @@ jest.mock('@acx-ui/rc/services', () => ({
   useRemoveUnitLinkedIdentityMutation: () => ([ mockDeleteAssociationMutation ])
 }))
 
+jest.mock('@acx-ui/cloudpath/components', () => ({
+  ...jest.requireActual('@acx-ui/cloudpath/components'),
+  useIdentityListQuery: () => ({
+    data: personaDetails,
+    isLoading: false,
+    setPayload: () => {}
+  })
+}))
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useTenantLink: () => jest.fn(),

@@ -75,7 +75,10 @@ const AccessControlSet = () => {
   const settingsId = 'policies-access-control-set-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      noDetails: true
+    },
     pagination: { settingsId },
     enableRbac
   })
