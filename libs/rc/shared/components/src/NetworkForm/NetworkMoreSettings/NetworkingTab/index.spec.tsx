@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   BasicServiceSetPriorityEnum,
   NetworkSaveData,
@@ -175,10 +175,6 @@ describe.skip('Network More settings - Networking Tab', () => {
   })
 
   it('Test case for Basic Service Set Radio Group', async ()=> {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.WIFI_EDA_BSS_PRIORITY_TOGGLE ? true : false
-    })
-
     render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
     const tabs = await screen.findAllByRole('tab')
     const networkingTab = tabs[3]
