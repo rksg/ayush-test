@@ -96,7 +96,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
 
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
@@ -419,7 +418,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         )
       }
     },
-    ...(secureBootFlag && enableAP70 ? [
+    ...(enableAP70 ? [
       {
         key: 'secureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
