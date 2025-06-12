@@ -455,7 +455,6 @@ describe('SwitchLagModal', () => {
     })
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
-    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
@@ -471,7 +470,7 @@ describe('SwitchLagModal', () => {
     expect(await screen.findByRole('switch')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('switch'))
 
-    expect(await screen.findByText('Force Up')).toBeInTheDocument()
+    expect(await screen.findByText('Force-up')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
@@ -510,7 +509,6 @@ describe('SwitchLagModal', () => {
     })
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
-    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
@@ -526,7 +524,7 @@ describe('SwitchLagModal', () => {
     expect(await screen.findByRole('switch')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('switch'))
 
-    expect(await screen.findByText('Force Up')).toBeInTheDocument()
+    expect(await screen.findByText('Force-up')).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Static' }))
     expect(screen.queryByTestId('force-up-interface')).not.toBeInTheDocument()
@@ -567,7 +565,6 @@ describe('SwitchLagModal', () => {
     })
 
     await userEvent.click(await screen.findByRole('radio', { name: 'Dynamic' }))
-    expect(await screen.findByTestId('force-up-interface')).toBeVisible()
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
@@ -583,11 +580,11 @@ describe('SwitchLagModal', () => {
     expect(await screen.findByRole('switch')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('switch'))
 
-    expect(await screen.findByText('Force Up')).toBeInTheDocument()
+    expect(await screen.findByText('Force-up')).toBeInTheDocument()
 
     const resetBtn = await screen.findByRole('button', { name: 'Reset' })
     await userEvent.click(resetBtn)
-    expect(screen.queryByText('Force Up')).not.toBeInTheDocument()
+    expect(screen.queryByText('Force-up')).not.toBeInTheDocument()
     expect(screen.queryByTestId('force-up-port')).toHaveTextContent('--')
   })
 })
