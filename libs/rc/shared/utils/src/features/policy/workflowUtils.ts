@@ -153,7 +153,7 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 }
 /* eslint-enable max-len */
 
-export const DisablePreviewActionType =
+export const DisablePreviewActionTypes =
   new Set<ActionType>([ ActionType.SAML_AUTH ])
 
 export const composeNext = (

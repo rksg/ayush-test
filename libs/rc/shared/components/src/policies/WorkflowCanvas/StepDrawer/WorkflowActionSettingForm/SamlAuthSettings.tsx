@@ -153,7 +153,7 @@ export function SamlAuthSettings () {
               $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })}</p>
           </Form.Item>
           <Form.Item
-            label={$t({ defaultMessage: 'Service Certificate' })}>
+            label={$t({ defaultMessage: 'Server Certificate' })}>
             <Space direction={'vertical'}>
               { signedServerCertName &&
               <TenantLink

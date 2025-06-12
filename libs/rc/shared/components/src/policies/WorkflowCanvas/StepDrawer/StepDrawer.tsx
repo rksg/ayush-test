@@ -10,7 +10,7 @@ import {  useLazyGetActionByIdQuery } from '@acx-ui/rc/services'
 import {
   ActionType,
   ActionTypeTitle,
-  DisablePreviewActionType,
+  DisablePreviewActionTypes,
   GenericActionData,
   useGetActionDefaultValueByType,
   WorkflowUrls
@@ -77,7 +77,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     isError: isActionError
   } ] = useLazyGetActionByIdQuery()
 
-  const disablePreview = DisablePreviewActionType.has(actionType)
+  const disablePreview = DisablePreviewActionTypes.has(actionType)
 
   useEffect(() => {
     formInstance.resetFields()
