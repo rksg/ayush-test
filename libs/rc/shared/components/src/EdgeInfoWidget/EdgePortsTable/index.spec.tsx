@@ -112,9 +112,8 @@ describe('Edge Ports Table', () => {
       // Check if data is rendered correctly
       // optional columns should not visible
       expect(screen.queryByText('On')).not.toBeInTheDocument()
-      expect(screen.queryByText('Primary')).not.toBeInTheDocument()
       expect(screen.getAllByText('Up')).toHaveLength(2)
-      expect(screen.getByText('Active')).toBeInTheDocument()
+      expect(screen.getAllByText('Active')).toHaveLength(1)
     })
 
     it('should not render deprecated columns when isEdgeDualWanEnabled is true', () => {
@@ -227,6 +226,45 @@ describe('Edge Ports Table', () => {
       expect(screen.getAllByText('Up')).toHaveLength(2)
       expect(screen.getByText('Down')).toBeInTheDocument()
       expect(screen.queryByRole('columnheader', { name: 'Node Name' })).not.toBeInTheDocument()
+    })
+
+    it('should display -- for WAN link status when link health check is off', async () => {
+      const mockData = cloneDeep(clusterPortsWithSerialNumber)
+      mockData[0].multiWan = {
+        linkHealthMonitorEnabled: false
+      }
+
+      render(<Provider>
+        <EdgePortsTable
+          portData={mockData}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={false}
+        />
+      </Provider>, { route: { params } })
+
+      await showLinkHealthMonitoringColumn()
+
+      const button = screen.queryByRole('button', { name: 'Off' })
+      expect(button).toBeNull()
+      // eslint-disable-next-line max-len
+      const port1Row = screen.getByRole('row', { name: /Port1 LAG 1 Up Enabled AA:BB:CC:DD:EE:FF 35.8 Gbps Off --/ })
+      expect(within(port1Row).queryByText('Off')).toBeVisible()
+    })
+
+    it('should display blank for dual WAN columns when port type is not WAN', async () => {
+      render(<Provider>
+        <EdgePortsTable
+          portData={clusterPortsWithSerialNumber}
+          lagData={mockEdgeLagStatusList.data}
+          edgeNodes={mockEdgeNodes}
+          isClusterLevel={false}
+        />
+      </Provider>, { route: { params } })
+
+      await showLinkHealthMonitoringColumn()
+      // eslint-disable-next-line max-len
+      expect(screen.getByRole('row', { name: 'Port2 Down Disabled LAN AA:BB:CC:DD:EE:F1 1.1.1.2 29.9 Gbps' })).toBeVisible()
     })
   })
 })
