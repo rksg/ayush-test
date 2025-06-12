@@ -46,7 +46,6 @@ jest.mock('react-router-dom', () => ({
 const venueId = venuelist.data[0].id
 const defaultApGroupCxtdata = {
   isEditMode: false,
-  isApGroupTableFlag: false,
   isWifiRbacEnabled: false,
   venueId,
   setEditContextData: setEditContextDataFn
@@ -108,7 +107,7 @@ describe('AP Group General tab for edit mode', () => {
       <Provider>
         <ApGroupEditContext.Provider value={{
           ...defaultApGroupCxtdata,
-          isEditMode: true, isApGroupTableFlag: true
+          isEditMode: true
         }}>
           <ApGroupGeneralTab />
         </ApGroupEditContext.Provider>
@@ -193,7 +192,7 @@ describe('AP Group General tab', () => {
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/wifi`,
+      pathname: `/${params.tenantId}/t/devices/wifi/apgroups`,
       hash: '',
       search: ''
     })
@@ -226,7 +225,7 @@ describe('AP Group General tab', () => {
     await userEvent.click(saveButton)
     await waitFor(() => {
       // eslint-disable-next-line max-len
-      expect(mockedUsedNavigate).toHaveBeenCalledWith('/tenant-id/t/devices/wifi', { replace: true })
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/tenant-id/t/devices/wifi/apgroups', { replace: true })
     })
   })
 })

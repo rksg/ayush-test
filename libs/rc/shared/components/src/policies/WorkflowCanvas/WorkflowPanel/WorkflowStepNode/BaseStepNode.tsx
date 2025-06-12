@@ -9,9 +9,17 @@ import { Features, useIsSplitOn }                                               
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, StepStatusCodes, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                                        from '@acx-ui/user'
-import { getOpsApi }                                                                                  from '@acx-ui/utils'
+import {
+  ActionType,
+  ActionTypeTitle,
+  DisablePreviewActionTypes,
+  MaxAllowedSteps,
+  MaxTotalSteps,
+  StepStatusCodes,
+  WorkflowUrls
+} from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                           from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -124,6 +132,8 @@ export default function BaseStepNode (props: NodeProps
     setIsPreviewOpen(false)
   }
 
+  const disablePreviewTooltip = DisablePreviewActionTypes.has(props.type as ActionType)
+
   const stepToolBar = (
     <Space size={12} direction={'horizontal'}>
       <Tooltip title={$t({ defaultMessage: 'Edit this action' })}>
@@ -136,14 +146,16 @@ export default function BaseStepNode (props: NodeProps
           onClick={onEditClick}
         />
       </Tooltip>
-      <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
-        <Button
-          size={'small'}
-          type={'link'}
-          icon={<EditorToolbarIcon><EyeOpenOutlined/></EditorToolbarIcon>}
-          onClick={onPreviewClick}
-        />
-      </Tooltip>
+      {!disablePreviewTooltip &&
+        <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
+          <Button
+            size={'small'}
+            type={'link'}
+            icon={<EditorToolbarIcon><EyeOpenOutlined /></EditorToolbarIcon>}
+            onClick={onPreviewClick}
+          />
+        </Tooltip>
+      }
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
         {workflowValidationEnhancementFFToggle ?
           <Popover

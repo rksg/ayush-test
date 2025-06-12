@@ -6,7 +6,7 @@ import {
   NewTableResult,
   PassphraseFormatEnum,
   Persona,
-  PersonaGroup
+  PersonaGroup, SamlIdpProfileFormType, ServerCertificate
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -187,5 +187,42 @@ export const mockCertificateTemplates = {
       keyLength: 0,
       algorithm: AlgorithmType.SHA_256
     }]
+}
+
+export const mockSamlProfileList = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '941ffadeefe44906bf680ce3ff450547',
+      tenantId: '914c2f910a654acd815ea3156dcd65c1',
+      name: 'profile-1',
+      signingCertificateEnabled: true,
+      signingCertificateId: '7a8cacdabe0643b0a5c0f7f05c266be2',
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    }
+  ]
+}
+
+export const mockSamlProfile: SamlIdpProfileFormType = {
+  id: '941ffadeefe44906bf680ce3ff450547',
+  name: 'profile-1',
+  signingCertificateEnabled: false,
+  signingCertificateId: '7a8cacdabe0643b0a5c0f7f05c266be2',
+  encryptionCertificateEnabled: true,
+  wifiNetworkIds: [],
+  metadata: '',
+  metadataUrl: ''
+}
+
+export const mockServerCert: ServerCertificate = {
+  id: '7a8cacdabe0643b0a5c0f7f05c266be2',
+  name: 'testCert',
+  commonName: '11212',
+  status: [],
+  createDate: '',
+  notBeforeDate: '',
+  notAfterDate: ''
 }
 
