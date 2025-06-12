@@ -19,6 +19,7 @@ export enum Features {
   CANVAS_Q2 = 'ruckus-gen-ai-customized-canvas-phase2',
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
+  IDENTITY_GROUP_CONFIG_TEMPLATE = 'identity-group-config-template',
   CONFIG_CHANGE = 'removable-ff',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
@@ -194,7 +195,6 @@ export enum Features {
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'removable-ff',
   WIFI_DISPLAY_MORE_AP_POE_PROPERTIES_TOGGLE = 'wifi-display-more-ap-poe-properties-toggle',
-  WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   WIFI_EDA_LBS_TOGGLE = 'wifi-eda-lbs-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
@@ -349,7 +349,8 @@ export enum Features {
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
-  MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control'
+  MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control',
+  WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

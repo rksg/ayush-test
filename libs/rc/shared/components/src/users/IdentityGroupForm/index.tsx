@@ -1,17 +1,26 @@
-
 import { useEffect } from 'react'
 
 import { Form }    from 'antd'
-import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
+import {
+  getIdentityGroupRoutePath,
+  IdentityOperation,
+  useIdentityGroupBreadcrumbs,
+  useIdentityGroupPageHeaderTitle
+} from '@acx-ui/cloudpath/components'
 import { Loader, PageHeader, StepsForm } from '@acx-ui/components'
 import {
-  useAddPersonaGroupMutation,
-  useAssociateIdentityGroupWithPolicySetMutation,
+  CommonAsyncResponse,
+  useGetIdentityGroupTemplateByIdQuery,
   useGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }                          from '@acx-ui/rc/utils'
+import {
+  PersonaGroup,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateTenantLink
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { usePersonaGroupAction } from '../PersonaGroupDrawer/usePersonaGroupActions'
@@ -33,12 +42,23 @@ export function IdentityGroupForm ({
   const { $t } = useIntl()
   const [ form ] = Form.useForm<PersonaGroup>()
   const navigate = useNavigate()
-  const { pathname: previousPath } = useTenantLink('users/identity-management/identity-group')
+  const { isTemplate } = useConfigTemplate()
+  const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit: editMode })
+  const breadcrumb = useIdentityGroupBreadcrumbs(IdentityOperation.LIST)
+  // eslint-disable-next-line max-len
+  const regularFallbackPath = useTenantLink(getIdentityGroupRoutePath(IdentityOperation.LIST, false))
+  const templateFallbackPath = useConfigTemplateTenantLink('')
+  const previousPath = isTemplate ? templateFallbackPath : regularFallbackPath
+
   const { personaGroupId } = useParams()
 
-  const { data: dataFromServer, isLoading, isFetching } = useGetPersonaGroupByIdQuery({
-    params: { groupId: personaGroupId }
-  }, { skip: !editMode })
+  const { data: dataFromServer, isLoading, isFetching }
+    = useConfigTemplateQueryFnSwitcher<PersonaGroup>({
+      useQueryFn: useGetPersonaGroupByIdQuery,
+      useTemplateQueryFn: useGetIdentityGroupTemplateByIdQuery,
+      skip: !editMode,
+      extraParams: { groupId: personaGroupId }
+    })
 
   useEffect(() => {
     if (editMode && dataFromServer) {
@@ -46,36 +66,32 @@ export function IdentityGroupForm ({
     }
   }, [editMode, dataFromServer])
 
-  const { updatePersonaGroupMutation } = usePersonaGroupAction()
-  const [ addPersonaGroup ] = useAddPersonaGroupMutation()
-  const [ associatePolicySet ] = useAssociateIdentityGroupWithPolicySetMutation()
+  const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
 
   const handleSubmit = async () => {
-    let result
-    try {
-      await form.validateFields()
-      if (editMode) {
-        if (personaGroupId) {
-          await updatePersonaGroupMutation(personaGroupId, dataFromServer, form.getFieldsValue())
-        }
-      } else {
-        result = await addPersonaGroup({
-          payload: omit(form.getFieldsValue(), ['policySetId'])
-        }).unwrap()
-
-        if (form.getFieldsValue().policySetId) {
-          await associatePolicySet({
-            params: { groupId: result.id, policySetId: form.getFieldsValue().policySetId }
-          })
-        }
-      }
-
+    const formCallback = (result?: CommonAsyncResponse) => {
       if (modalMode) {
         callback?.(result?.id)
       } else {
         editMode
           ? navigate(-1)
           : navigate(previousPath, { replace: true })
+      }
+    }
+    try {
+      await form.validateFields()
+      if (editMode) {
+        if (personaGroupId) {
+          await updatePersonaGroupMutation(personaGroupId, dataFromServer, form.getFieldsValue())
+          formCallback?.()
+        }
+      } else {
+        await new Promise<CommonAsyncResponse>(async (resolve) => {
+          await createPersonaGroupMutation(form.getFieldsValue(), (r: CommonAsyncResponse) => {
+            formCallback(r)
+            resolve(r)
+          })
+        })
       }
     } catch (e) {
       return Promise.resolve()
@@ -84,21 +100,8 @@ export function IdentityGroupForm ({
 
   return (<>
     {!modalMode && <PageHeader
-      title={editMode
-        ? $t({ defaultMessage: 'Edit Identity Group' })
-        : $t({ defaultMessage: 'Create Identity Group' })}
-      breadcrumb={[
-        {
-          text: $t({ defaultMessage: 'Clients' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Management' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Groups' }),
-          link: 'users/identity-management'
-        }
-      ]}
+      title={pageTitle}
+      breadcrumb={breadcrumb}
     />}
     <Loader states={[{ isLoading, isFetching }]}>
       <StepsForm

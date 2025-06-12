@@ -119,6 +119,7 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const { networkId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
     wlanSecurity,
@@ -451,7 +452,7 @@ function SettingsForm () {
       </div>
       { ( isWifiIdentityManagementEnable &&
           !isMacRegistrationList &&
-          !isTemplate ) &&
+          (isTemplate ? isIdentityGroupTemplateEnabled : true) ) &&
           <IdentityGroup comboWidth='200px' />}
     </Space>
   )
