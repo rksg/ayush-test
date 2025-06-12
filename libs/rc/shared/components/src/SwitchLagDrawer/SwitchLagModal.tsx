@@ -38,7 +38,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SwitchVlanUnion,
-  EditPortMessages,
   SwitchPortViewModel,
   Vlan,
   Lag,
@@ -71,7 +70,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
@@ -125,7 +123,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
   const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
-  const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
   // const [isStackMode, setIsStackMode] = useState(false) //TODO
@@ -156,7 +153,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
-      setHasSwitchProfile(!!switchProfile?.length)
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
     }
 
@@ -653,9 +649,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             venueVlans={venueVlans}
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
-            vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
             cliApplied={cliApplied}
-            hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
             switchIds={switchId ? [switchId] : []}
             venueId={switchDetailHeader?.venueId}
@@ -665,8 +659,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 switchVlans,
                 setSwitchVlans,
                 venueVlans,
-                setVenueVlans,
-                isSwitchLevelVlanEnabled
+                setVenueVlans
               )
             }
             switchFirmwares={switchDetailHeader?.firmware ? [switchDetailHeader.firmware] : []}

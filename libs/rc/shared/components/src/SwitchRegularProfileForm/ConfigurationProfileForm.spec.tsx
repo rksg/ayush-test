@@ -1057,7 +1057,6 @@ describe('Wired', () => {
       it('should show drawer correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 
@@ -1087,7 +1086,6 @@ describe('Wired', () => {
       it('should add vlan correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 
@@ -1121,7 +1119,6 @@ describe('Wired', () => {
       it('should update correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 

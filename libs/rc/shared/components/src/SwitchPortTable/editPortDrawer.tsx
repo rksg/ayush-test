@@ -23,8 +23,6 @@ import {
   useGetDefaultVlanQuery,
   useLazyGetPortSettingQuery,
   useLazyGetPortsSettingQuery,
-  useLazyGetSwitchVlanQuery,
-  useLazyGetSwitchesVlanQuery,
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVlansByVenueQuery,
@@ -235,7 +233,6 @@ export function EditPortDrawer ({
   const [ loading, setLoading ] = useState<boolean>(true)
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitch785048CPortSpeedEnabled =
     useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -324,8 +321,6 @@ export function EditPortDrawer ({
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
-  const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
-  const [getSwitchesVlan] = useLazyGetSwitchesVlanQuery()
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchConfigurationProfileByVenue] = useLazyGetSwitchConfigurationProfileByVenueQuery()
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
@@ -408,22 +403,7 @@ export function EditPortDrawer ({
     = switchesDefaultVlan?.map(v => v.defaultVlanId).toString()
 
   const getVlans = async () => {
-    if (isSwitchLevelVlanEnabled) {
-      return await getSwitchUnionVlans()
-    }
-
-    return switches.length > 1
-      // eslint-disable-next-line max-len
-      ? await getSwitchesVlan({
-        params: { tenantId, serialNumber },
-        payload: switches,
-        enableRbac: isSwitchRbacEnabled
-      }, true).unwrap()
-      : await getSwitchVlan({
-        params: { tenantId, switchId, venueId: switchDetail?.venueId },
-        enableRbac: isSwitchRbacEnabled,
-        option: { skip: !switchDetail?.venueId }
-      }, true).unwrap()
+    return await getSwitchUnionVlans()
   }
 
   const getMultiplePortsSetting = async () => {
@@ -2824,8 +2804,6 @@ export function EditPortDrawer ({
         showVoiceVlan={true}
         voiceVlan={voiceVlan}
         isVoiceVlanInvalid={isVoiceVlanInvalid}
-        vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
-        hasSwitchProfile={hasSwitchProfile}
         cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
         switchIds={switches}
@@ -2851,8 +2829,7 @@ export function EditPortDrawer ({
             switchVlans,
             setSwitchVlans,
             venueVlans,
-            setVenueVlans,
-            isSwitchLevelVlanEnabled
+            setVenueVlans
           )
         }
         switchFirmwares={switchFirmwares}

@@ -264,9 +264,6 @@ export const EditPortMessages = {
   UNSELECT_VLANS: defineMessage({
     defaultMessage: 'The port must be a member of at least one VLAN'
   }),
-  ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit VLANs'
-  }),
   ADD_ACL_DISABLE: defineMessage({
     defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit ACL'
   }),
