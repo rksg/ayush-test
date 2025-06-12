@@ -322,9 +322,7 @@ export function NetworkForm (props:{
         delete updateSate.accountingRadius
       }
 
-      // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
-      if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
-          && !saveData.isCloudpathEnabled) {
+      if (!saveData.isCloudpathEnabled) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
@@ -343,7 +341,7 @@ export function NetworkForm (props:{
         mergeSocialIdentities(saveData.guestPortal?.socialIdentities),
         mergeSocialEmails(saveData.guestPortal?.hostGuestConfig?.hostEmails)
       )
-      return { ...saveState, ...processedData }
+      return processedData
     })
   }
 
