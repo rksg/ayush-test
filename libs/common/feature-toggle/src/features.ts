@@ -36,7 +36,6 @@ export enum Features {
   MULTIPLE_CERTIFICATE_TEMPLATE = 'multiple-certificate-template',
   CONNECTION_METERING = 'connection-metering-enabled',
   DATA_PLANE = 'dataPlane',
-  DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
   EARLY_ACCESS_FEATURE_LIST_TOGGLE = 'acx-ui-selective-early-access-toggle',
