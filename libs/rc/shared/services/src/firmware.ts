@@ -262,6 +262,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    batchCreateSwitchVenueSchedulesV1001: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          FirmwareRbacUrlsInfo.createSwitchVenueSchedules, requests, fetchWithBQ, v1_1Header
+        )
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -894,6 +902,7 @@ export const {
   useUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesV1001Mutation,
+  useBatchCreateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchLatestFirmwareListQuery,
   useLazyGetSwitchLatestFirmwareListQuery,
   useGetSwitchLatestFirmwareListV1001Query,
