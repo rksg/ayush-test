@@ -1,3 +1,5 @@
+import { ApiInfo } from '@acx-ui/utils'
+
 export const EdgeConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   activateSdLanNetworkTemplate: {
     method: 'put',
