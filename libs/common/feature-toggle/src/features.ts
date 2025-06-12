@@ -349,7 +349,8 @@ export enum Features {
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
   WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
   SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
-  MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control'
+  MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control',
+  WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
