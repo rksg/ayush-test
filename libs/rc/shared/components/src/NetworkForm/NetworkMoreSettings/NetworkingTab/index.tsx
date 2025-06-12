@@ -84,6 +84,13 @@ export function NetworkingTab (props: {
     }
   }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
 
+
+  useEffect(() => {
+    if(!enableFastRoaming) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'fastRoamingOptions'], undefined)
+    }
+  }, [enableFastRoaming])
+
   const networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
