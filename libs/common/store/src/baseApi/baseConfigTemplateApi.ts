@@ -11,7 +11,7 @@ export const baseConfigTemplateApi = createApi({
     'PortalTemplate', 'VenueTemplateSwitchAAA', 'WifiCallingTemplate', 'VlanPoolTemplate',
     'SyslogTemplate', 'RogueApTemplate', 'SwitchConfigProfileTemplate',
     'VenueTemplateApGroup', 'ApGroupTemplate', 'NetworkRadiusServerTemplate',
-    'EthernetPortProfileTemplate'
+    'EthernetPortProfileTemplate', 'IdentityGroupTemplate'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
