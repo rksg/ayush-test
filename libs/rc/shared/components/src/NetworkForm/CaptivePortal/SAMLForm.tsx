@@ -87,6 +87,15 @@ export const SAMLForm = () => {
     }
   }, [idpViewDataList])
 
+  useEffect(() => {
+    const samlIdpProfilesName = samlIdpOptions.find((option) => {
+      return option.value === selectedSamlIdpProfilesId
+    })?.label
+    if (samlIdpProfilesName) {
+      form.setFieldValue('samlIdpProfilesName', samlIdpProfilesName)
+    }
+  }, [selectedSamlIdpProfilesId])
+
   return (
     <>
       <GridRow>

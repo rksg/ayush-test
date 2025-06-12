@@ -260,7 +260,7 @@ describe('Test', () => {
         component: SwitchPortFlap,
         fakeIncident: fakeIncidentPortFlap,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {

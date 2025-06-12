@@ -21,7 +21,9 @@ import {
   interfaceSubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
-  validateGatewayInSubnet
+  validateGatewayInSubnet,
+  edgeWanSyncIpModeValidator,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { ApCompatibilityToolTip }                           from '../../ApCompatibility'
@@ -29,9 +31,8 @@ import { EdgeCompatibilityDrawer, EdgeCompatibilityType }   from '../../Compatib
 import { useIsEdgeFeatureReady }                            from '../../useEdgeActions'
 import { getEnabledAccessPortInfo, getEnabledCorePortInfo } from '../EdgePortsGeneralBase/utils'
 
-import { EdgeNatFormItems }    from './NatFormItems'
-import * as UI                 from './styledComponents'
-import { formFieldsPropsType } from './types'
+import { EdgeNatFormItems } from './NatFormItems'
+import * as UI              from './styledComponents'
 
 export interface EdgePortCommonFormProps {
   formRef: FormInstance,
@@ -42,7 +43,7 @@ export interface EdgePortCommonFormProps {
   isEdgeSdLanRun: boolean,
   isListForm?: boolean,
   formListItemKey?: string,
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
   subnetInfoForValidation?: { id: string | number | undefined, ip: string, subnetMask: string } []
   clusterInfo: EdgeClusterStatus
   subInterfaceList?: SubInterface[]
@@ -51,6 +52,7 @@ export interface EdgePortCommonFormProps {
 
 const { useWatch } = Form
 export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
+  const { $t } = useIntl()
   const {
     formRef: form,
     fieldHeadPath = [],
@@ -69,7 +71,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures>()
   // eslint-disable-next-line max-len
   const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
-  const { $t } = useIntl()
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const portTypeOptions = getEdgePortTypeOptions($t)
 
   const getFieldPathBaseFormList = useCallback((fieldName: string) => {
@@ -109,11 +112,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //     - only allowed 1 core port enabled
   //     - must be LAN port type
   const wanPortsInfo = getEdgeWanInterfaces(portsData, lagData || [])
-
-  const isExistingWanPortInLagMember = existingLagMember.some(lagMember =>
-    wanPortsInfo.find(wan => (wan as EdgePort).id === lagMember)) ?? false
-
-  const hasWANPort = wanPortsInfo.length > 0 && !isExistingWanPortInLagMember
+  const hasWANPort = wanPortsInfo.length > 0
 
   const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
 
@@ -155,9 +154,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
-            rules={[{
-              required: true
-            }]}
+            rules={[
+              { required: true },
+              // eslint-disable-next-line max-len
+              ...(isEdgeDualWanEnabled ? [{ validator: () => edgeWanSyncIpModeValidator(portsData, lagData ?? []) }] : [])
+            ]}
             {..._.get(formFieldsProps, 'ipMode')}
             children={
               <Radio.Group>

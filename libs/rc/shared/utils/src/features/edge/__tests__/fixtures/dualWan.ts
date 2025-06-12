@@ -1,3 +1,9 @@
+import { cloneDeep } from 'lodash'
+
+import { EdgePortTypeEnum } from '../../../../models'
+
+import { mockEdgePortConfig } from './portsConfig'
+
 export const mockDualWanData = {
   mode: 'ACTIVE_BACKUP',
   wanMembers: [
@@ -37,3 +43,7 @@ export const mockDualWanData = {
     }
   ]
 }
+
+
+export const mockMultiWanPortConfigs = cloneDeep(mockEdgePortConfig)
+mockMultiWanPortConfigs.ports[2].portType = EdgePortTypeEnum.WAN

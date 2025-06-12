@@ -25,7 +25,8 @@ import {
   IpSecIntegrityAlgorithmEnum,
   IpSecProposalTypeEnum,
   IpSecPseudoRandomFunctionEnum,
-  IpsecViewData
+  IpsecViewData,
+  PersonaGroup
 } from '@acx-ui/rc/utils'
 
 export const mockedNetworkId = '5c342542bb824a8b981a9bb041a8a2da'
@@ -2140,6 +2141,54 @@ export const mockAAAPolicyListResponse = {
   ]
 }
 
+export const mockedAccountingServiceName1 = '__mocked_accounting_service_name1__'
+export const mockedAccountingServiceName2 = '__mocked_accounting_service_name2__'
+export const mockedAccountingRadsecName1 = '__mocked_account_radsec_service_name1__'
+
+export const mockedAccountingServiceId1 = '__mocked_accounting_service_Id1__'
+export const mockedAccountingServiceId2 = '__mocked_accounting_service_Id2__'
+export const mockedAccountingRadsecId1 = '__mocked_account_radsec_service_Id1__'
+
+export const mockedAccountingService1 = {
+  name: mockedAccountingServiceName1,
+  type: 'ACCOUNTING',
+  primary: '201.1.1.1:1812',
+  id: mockedAccountingServiceId1
+}
+
+export const mockedAccountingService2 = {
+  name: mockedAccountingServiceName2,
+  type: 'ACCOUNTING',
+  primary: '201.1.1.2:1812',
+  secondary: '201.2.1.2:1187',
+  id: mockedAccountingServiceId2
+}
+
+export const mockedAccountingRadsecService1 = {
+  id: mockedAccountingRadsecId1,
+  name: mockedAccountingRadsecName1,
+  primary: {
+    ip: '201.1.2.1',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
+  },
+  type: 'ACCOUNTING'
+}
+
+export const mockAAAPolicyAccountingListResponse = {
+  page: 1,
+  totalCount: 3,
+  data: [
+    mockedAccountingService1,
+    mockedAccountingService2,
+    mockedAccountingRadsecService1
+  ]
+}
+
 export const mockAAAPolicyTemplateListResponse = {
   page: 1,
   totalCount: 2,
@@ -3052,6 +3101,11 @@ export const mockIdentityGroupQuery = {
   first: true,
   numberOfElements: 4,
   empty: false
+}
+
+export const mockIdentityGroupTemplate: PersonaGroup = {
+  id: 'mock-identity-group-template-id-1',
+  name: 'mock-identity-group-template-name-1'
 }
 
 export const mockSamlProfileA7Id = 'cbe337e7917f48878f6feb1982199430'

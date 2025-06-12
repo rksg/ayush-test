@@ -95,7 +95,6 @@ describe('EditEdge ports - sub-interface', () => {
         enabled: true,
         ipMode: 'DHCP',
         mac: '00:0c:29:b6:ad:04',
-        name: '',
         portType: 'LAN',
         vlan: 2
       })
@@ -135,7 +134,6 @@ describe('EditEdge ports - sub-interface', () => {
         ip: '1.1.1.1',
         ipMode: 'STATIC',
         mac: '00:0c:29:b6:ad:04',
-        name: '',
         portType: 'LAN',
         subnet: '255.255.255.0',
         vlan: 2

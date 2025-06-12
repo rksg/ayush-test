@@ -17,7 +17,6 @@ jest.mock('./VenueFirmwareListPerApModel', () => ({
 }))
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsAlphaUser: () => false,
   useIsSplitOn: jest.fn()
 }))
 

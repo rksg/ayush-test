@@ -1,30 +1,31 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Form, Row, Col, Switch, Input, Space } from 'antd'
-import { get }                                  from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Form, Row, Col, Switch, Input, Space, FormItemProps } from 'antd'
+import { get, omit }                                           from 'lodash'
+import { useIntl }                                             from 'react-intl'
 
-import { cssStr, StepsFormLegacy }                                       from '@acx-ui/components'
-import { Features }                                                      from '@acx-ui/feature-toggle'
+import { cssStr, StepsFormLegacy } from '@acx-ui/components'
+import { Features }                from '@acx-ui/feature-toggle'
 import {
   ClusterHighAvailabilityModeEnum,
   convertIpToLong,
   EdgeClusterStatus,
   EdgeLag, EdgeNatPool, EdgePort,
+  getEdgeNatPools,
   IncompatibilityFeatures,
-  natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator
+  natPoolSizeValidator, networkWifiIpRegExp, poolRangeOverlapValidator,
+  EdgeFormFieldsPropsType
 } from '@acx-ui/rc/utils'
 
 import { ApCompatibilityToolTip }                         from '../../../ApCompatibility/ApCompatibilityToolTip'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { useIsEdgeFeatureReady }                          from '../../../useEdgeActions'
 import { StyledNoMarginFormItem }                         from '../styledComponents'
-import { formFieldsPropsType }                            from '../types'
 
 export interface NatFormItemsProps {
   parentNamePath: string[],
   getFieldFullPath: (fieldName: string) => string[],
-  formFieldsProps?: formFieldsPropsType
+  formFieldsProps?: EdgeFormFieldsPropsType
   clusterInfo: EdgeClusterStatus,
   portsData: EdgePort[],
   lagData: EdgeLag[] | undefined,
@@ -53,7 +54,7 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
   const allNatPoolsWithoutCurrent= useMemo(() => {
     if (!isMultiNatIpEnabled) return undefined
 
-    return getAllNatPools(
+    return getEdgeNatPools(
       portsData.filter(port => port.id !== lagId && port.interfaceName !== physicalPortIfName
         && !lagMembers.some(m => m.portId === port.id)
       ),
@@ -100,7 +101,7 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
     }
   }
 
-  const natPoolOverallValidator = async () => {
+  const natPoolNodeLevelValidator = async () => {
     try {
       const value = form.getFieldValue(getFieldFullPath('natPools'))
       // skip empty pool
@@ -184,11 +185,13 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
                        noStyle
                        {...field}
                        name={[index, 'startIpAddress']}
-                       {...get(formFieldsProps, 'natStartIp')}
+                       {...omit(get(formFieldsProps, 'natStartIp'), 'rules')}
                        dependencies={[getEndIpAddressNamePath(index)]}
                        rules={[
                          { validator: async () => ipAddressValidator(index) },
-                         { validator: async () => natPoolOverallValidator() }
+                         { validator: async () => natPoolNodeLevelValidator() },
+                         // eslint-disable-next-line max-len
+                         ...(get(formFieldsProps, 'natStartIp.rules') as FormItemProps['rules'] ?? [])
                        ]}
                        validateFirst
                        children={<Input />}
@@ -221,28 +224,4 @@ export const EdgeNatFormItems = (props: NatFormItemsProps) => {
      </Form.Item>
   }
   </>
-}
-
-const getAllNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
-  const allPools = [] as EdgeNatPool[]
-
-  const allNatPools = portsData.reduce((acc: EdgeNatPool[], port: EdgePort) => {
-    const natPools = port.natPools?.map((natPool) => ({
-      ...natPool
-    }))
-    return acc.concat(natPools)
-  }, [])
-  const allLagNatPools = (lagData ?? []).reduce((acc: EdgeNatPool[], lag: EdgeLag) => {
-    const natPools = lag.natPools?.map((natPool) => ({
-      ...natPool
-    }))
-    return acc.concat(natPools)
-  }, [])
-
-  // filter out initial component
-  return allPools.concat(allNatPools, allLagNatPools)
-    .filter(Boolean)
-    .filter((item: EdgeNatPool) => {
-      return item?.startIpAddress && item?.endIpAddress
-    })
 }

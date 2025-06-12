@@ -22,7 +22,8 @@ const list = {
       billing_postal_code: '33172',
       billing_state: 'FL',
       billing_street: '11275 Northwest 12th Street,',
-      is_tenant_onboarded: true
+      is_tenant_onboarded: true,
+      propertyCode: 'BNACD'
     },
     {
       account_name: 'Springhill Suites Las Vegas',
@@ -32,7 +33,8 @@ const list = {
       billing_postal_code: '95035',
       billing_state: 'CA',
       billing_street: '1480 Falcon Drive',
-      is_tenant_onboarded: true
+      is_tenant_onboarded: true,
+      propertyCode: 'ACBD'
     },
     {
       account_name: 'Hillton Max Mumbai',
@@ -42,7 +44,8 @@ const list = {
       billing_postal_code: '00001',
       billing_state: 'MH',
       billing_street: '1480 Falcon Drive',
-      is_tenant_onboarded: false
+      is_tenant_onboarded: false,
+      propertyCode: 'NYDV'
     }
   ]
 }

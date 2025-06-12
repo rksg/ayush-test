@@ -18,23 +18,39 @@ import {
   IotControllerStatus,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
+import {
+  TenantLink,
+  useParams
+} from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 // import { getOpsApi }                     from '@acx-ui/utils'
 
 interface IotControllerDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  applyIotController: (value: IotControllerStatus) => void
 }
 
 export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const params = useParams()
+  const { visible, setVisible, applyIotController } = props
 
   const payload = {
-    filters: {}
+    fields: [
+      'id',
+      'name',
+      'inboundAddress',
+      'publicAddress',
+      'publicPort',
+      'tenantId',
+      'status',
+      'assocVenueId'
+    ],
+    filters: { tenantId: [params.tenantId] }
   }
-  const settingsId = 'iot-controller-table'
+
+  const settingsId = 'iot-controller-drawer-table'
   const tableQuery = useTableQuery({
     useQuery: useGetIotControllerListQuery,
     defaultPayload: payload,
@@ -49,12 +65,18 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
   }
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [iotController, setIotController] = useState<IotControllerStatus | null>(null)
 
   // eslint-disable-next-line max-len
-  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[]) => {
+  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[], selectedRows: IotControllerStatus[]) => {
     setSelectedRowKeys(selectedRowKeys)
+    setIotController(selectedRows[0])
   }
 
+  const onApply = () => {
+    applyIotController(iotController as IotControllerStatus)
+    setVisible(false)
+  }
 
   const columns: TableProps<IotControllerStatus>['columns'] = [
     {
@@ -66,7 +88,7 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
       render: function (_, row, __, highlightFn) {
         return (
           <TenantLink
-            to={`/iots/${row.id}/details/overview`}>
+            to={`/devices/iotController/${row.id}/details/overview`}>
             {highlightFn(row.name)}</TenantLink>
         )
       }
@@ -95,7 +117,7 @@ export const IotControllerDrawer = (props: IotControllerDrawerProps) => {
       <Button
         key='okBtn'
         type='primary'
-        onClick={onClose}>
+        onClick={onApply}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
     </Space>

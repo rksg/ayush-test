@@ -1,17 +1,25 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Popover, Space }                                   from 'antd'
+import { Popover, Row, Space }                              from 'antd'
 import { useIntl }                                          from 'react-intl'
 import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
-import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
+import { Button, Loader, showActionModal, Tooltip }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                    from '@acx-ui/feature-toggle'
+import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag, WarningCircleSolid } from '@acx-ui/icons'
 import { useDeleteWorkflowStepDescendantsByIdMutation, useDeleteWorkflowStepByIdMutation,
   useDeleteWorkflowStepByIdV2Mutation } from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls } from '@acx-ui/rc/utils'
-import { hasAllowedOperations, hasPermission }                                       from '@acx-ui/user'
-import { getOpsApi }                                                                 from '@acx-ui/utils'
+import {
+  ActionType,
+  ActionTypeTitle,
+  DisablePreviewActionTypes,
+  MaxAllowedSteps,
+  MaxTotalSteps,
+  StepStatusCodes,
+  WorkflowUrls
+} from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                           from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -39,6 +47,19 @@ export default function BaseStepNode (props: NodeProps
     = useDeleteWorkflowStepByIdV2Mutation()
   const [ deleteStepDescendants, { isLoading: isDeleteStepDescendantsLoading }]
     = useDeleteWorkflowStepDescendantsByIdMutation()
+
+  const { isNodeValid, validationErrors } = useMemo(() => {
+    if(props.data?.statusReasons) {
+      // @ts-ignore
+      const validationErrors = props.data?.statusReasons.filter(
+        // @ts-ignore
+        reason => reason.statusCode !== StepStatusCodes.DisconnectedStep)
+      return { isNodeValid: (!validationErrors || validationErrors.length === 0), validationErrors }
+    }
+
+    return { isNodeValid: true, validationErrors: undefined }
+
+  }, [props.data])
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -111,6 +132,8 @@ export default function BaseStepNode (props: NodeProps
     setIsPreviewOpen(false)
   }
 
+  const disablePreviewTooltip = DisablePreviewActionTypes.has(props.type as ActionType)
+
   const stepToolBar = (
     <Space size={12} direction={'horizontal'}>
       <Tooltip title={$t({ defaultMessage: 'Edit this action' })}>
@@ -123,14 +146,16 @@ export default function BaseStepNode (props: NodeProps
           onClick={onEditClick}
         />
       </Tooltip>
-      <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
-        <Button
-          size={'small'}
-          type={'link'}
-          icon={<EditorToolbarIcon><EyeOpenOutlined/></EditorToolbarIcon>}
-          onClick={onPreviewClick}
-        />
-      </Tooltip>
+      {!disablePreviewTooltip &&
+        <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
+          <Button
+            size={'small'}
+            type={'link'}
+            icon={<EditorToolbarIcon><EyeOpenOutlined /></EditorToolbarIcon>}
+            onClick={onPreviewClick}
+          />
+        </Tooltip>
+      }
       <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
         {workflowValidationEnhancementFFToggle ?
           <Popover
@@ -174,7 +199,8 @@ export default function BaseStepNode (props: NodeProps
 
 
   return (
-    <UI.StepNode selected={props.selected}>
+    <UI.StepNode selected={props.selected}
+      invalid={workflowValidationEnhancementFFToggle && !isNodeValid}>
       <Loader states={[
         { isLoading: false, isFetching: (isDeleteStepLoading
           || isDeleteDetachStepLoading || isDeleteStepDescendantsLoading) }
@@ -232,14 +258,29 @@ export default function BaseStepNode (props: NodeProps
         position={Position.Bottom}
       />
 
+      {(!isNodeValid && workflowValidationEnhancementFFToggle) &&
+        <Tooltip
+          showArrow={false}
+          align={{ offset: [10, 10] }}
+          // @ts-ignore
+          title={validationErrors?.map(reason =>
+            <Row>{ reason.statusReason }</Row>)}>
+          <UI.InvalidIcon>
+            <WarningCircleSolid />
+          </UI.InvalidIcon>
+        </Tooltip>
+      }
+
       {props.data.isStart &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <StartFlag />
         </UI.FlagIcon>
       }
 
       {props.data.isEnd &&
-        <UI.FlagIcon>
+        <UI.FlagIcon
+          offset={workflowValidationEnhancementFFToggle && !isNodeValid}>
           <EndFlag />
         </UI.FlagIcon>
       }

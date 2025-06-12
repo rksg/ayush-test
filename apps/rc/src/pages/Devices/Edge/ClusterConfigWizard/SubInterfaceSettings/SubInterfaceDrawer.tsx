@@ -94,43 +94,34 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
   }
 
   const { isPortEnabled, hasWanPort, hasCorePort, hasAccessPort } = useMemo(() => {
-    let isPortEnabled = false
-    let hasWanPort = false
-    let hasCorePort = false
-    let hasAccessPort = false
     const allSubInterfaces = getAllSubInterfacesFromForm()
-    allInterface.forEach(item => {
-      if(
-        item.serialNumber === serialNumber && item.portName === currentInterfaceName &&
-        item.portType !== EdgePortTypeEnum.UNCONFIGURED
-      ) {
-        isPortEnabled = item.portEnabled
-      }
-      if(item.portType === EdgePortTypeEnum.WAN && item.portEnabled && !item.isLagMember) {
-        hasWanPort = true
-      }
-      if(item.isCorePort) {
-        hasCorePort = true
-      }
-      if(item.isAccessPort) {
-        hasAccessPort = true
-      }
-    })
-    allSubInterfaces.forEach(item => {
-      if(item.corePortEnabled) {
-        hasCorePort = true
-      }
-      if(item.accessPortEnabled) {
-        hasAccessPort = true
-      }
-    })
+    const allSubInterfacesWithoutCurrent = allSubInterfaces.filter(item => item.id !== data?.id)
+
+    const isPortEnabled = allInterface.some(
+      item =>
+        item.serialNumber === serialNumber &&
+        item.portName === currentInterfaceName &&
+        item.portType !== EdgePortTypeEnum.UNCONFIGURED &&
+        item.portEnabled
+    )
+
+    const hasWanPort = allInterface.some(
+      item => item.portType === EdgePortTypeEnum.WAN && item.portEnabled && !item.isLagMember
+    )
+
+    const hasCorePort = allInterface.some(item => item.isCorePort) ||
+      allSubInterfacesWithoutCurrent.some(item => item.corePortEnabled)
+
+    const hasAccessPort = allInterface.some(item => item.isAccessPort) ||
+      allSubInterfacesWithoutCurrent.some(item => item.accessPortEnabled)
+
     return {
       isPortEnabled,
       hasWanPort,
       hasCorePort,
       hasAccessPort
     }
-  }, [allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm])
+  }, [allInterface, currentInterfaceName, serialNumber, getAllSubInterfacesFromForm, data?.id])
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Sub-interface' },

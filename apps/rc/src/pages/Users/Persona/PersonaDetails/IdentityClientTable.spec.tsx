@@ -1,5 +1,6 @@
 
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, PersonaUrls, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                            from '@acx-ui/store'
@@ -60,7 +61,7 @@ describe('IdentityClientTable', () => {
       rest.post(
         ClientUrlsInfo.getClients.url,
         (_, res, ctx) => {
-          getClientsFn()
+          getClientsFn(_.body)
           return res(ctx.json({ data: [
             {
               osType: 'Windows',
@@ -68,6 +69,7 @@ describe('IdentityClientTable', () => {
               ipAddress: '10.206.1.93',
               username: 'My Device',
               hostname: 'Persona_Host_name',
+              identityId: testPersonaId,
               venueInformation: { id: 'VENUE_ID', name: 'UI-TEST-VENUE' },
               apInformation: { serialNumber: 'AP_SERIAL_NUMBER', name: 'UI team ONLY' },
               networkInformation: { id: 'network-id-1',authenticationMethod: 'Standard+Mac' },  // for MAC auth devices
@@ -105,7 +107,7 @@ describe('IdentityClientTable', () => {
     )
   })
 
-  it('should render successfully', async () => {
+  it('should render mapping clients successfully', async () => {
     const setCountFn = jest.fn()
     render(
       <IdentityDetailsContext.Provider
@@ -132,5 +134,14 @@ describe('IdentityClientTable', () => {
     expect(await screen.findByText('Persona_Host_name')).toBeInTheDocument()
     expect(await screen.findByText('DPSK')).toBeInTheDocument()
     expect(setCountFn).toHaveBeenCalledTimes(1)
+
+    // trigger sorting
+    await userEvent.click(screen.getByText('Hostname'))
+    await waitFor(() => expect(getClientsFn).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(getClientsFn).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortField: 'hostname'
+      })
+    ))
   })
 })

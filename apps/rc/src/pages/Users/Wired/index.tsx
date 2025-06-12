@@ -100,7 +100,7 @@ const useTabs = () : WiredTabsInfo => {
   }
 
   return {
-    tabs: [ switchClientsTab, apClientsTab ],
+    tabs: [ apClientsTab, switchClientsTab ],
     switchCount,
     apWiredCount
   }
