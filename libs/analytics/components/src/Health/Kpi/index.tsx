@@ -46,7 +46,11 @@ export const defaultThreshold: KpiThresholdType = {
   switchStormControl: kpiConfig.switchStormControl.histogram.initialThreshold,
   switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
   switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
-  clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
+  clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold,
+  switchIpv4MulticastUtilization: kpiConfig.switchIpv4MulticastUtilization
+    .histogram.initialThreshold,
+  switchIpv6MulticastUtilization: kpiConfig.switchIpv6MulticastUtilization
+    .histogram.initialThreshold
 }
 
 type KpiThresholdsQueryProps = {

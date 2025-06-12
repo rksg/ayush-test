@@ -530,6 +530,64 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
+  switchIpv4MulticastUtilization: {
+    text: defineMessage({ defaultMessage: 'Ipv4 Multicast Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMulticastIpv4UtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchMemoryUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilized' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with Ipv4 Multicast utilization below a threshold.' })
+    }
+  },
+  switchIpv6MulticastUtilization: {
+    text: defineMessage({ defaultMessage: 'Ipv6 Multicast Compliance' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMulticastIpv6UtilizationCountAndSwitchCount'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 90,
+      apiMetric: 'switchMemoryUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} utilized' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with Ipv6 Multicast utilization below a threshold.' })
+    }
+  },
   switchCpuUtilization: {
     text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
@@ -774,6 +832,8 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
       kpis: [
         // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
         //'switchReachability',
+        'switchIpv4MulticastUtilization',
+        'switchIpv6MulticastUtilization',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',
