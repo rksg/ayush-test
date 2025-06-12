@@ -347,10 +347,11 @@ export enum Features {
   ACX_UI_USE_PAGIATED_PRIVILEGE_GROUP_API = 'acx-ui-use-paginated-privilege-group-api',
   ACX_UI_PRIVILEGE_GROUP_CUSTOMERS_LIST_ENHANCEMENT = 'acx-ui-privilege-group-customers-list-enhancement',
   MSP_HSP_DISPLAY_UID_TOGGLE = 'mspservice-display-hsp-uid-toggle',
-  WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
-  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
   MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL = 'mspservice-tier-update-defaults-control',
-  WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication'
+  WORKFLOW_SAML_AUTH_ACTION = 'workflow-saml-authentication',
+  SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE = 'switch-support-time-based-poe-toggle',
+  WIFI_WORKFLOW_CAPTIVE_PORTAL_NETWORK_TOGGLE = 'wifi-workflow-captive-portal-network-toggle',
+  SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE = 'switch-support-lag-force-up-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
