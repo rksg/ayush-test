@@ -141,11 +141,13 @@ export enum EdgeLinkDownCriteriaEnum {
 }
 
 export enum EdgeWanLinkHealthStatusEnum {
+  INVALID = 'Invalid',
   UP = 'Up',
   DOWN = 'Down'
 }
 
 export enum EdgeWanPortRoleStatusEnum {
+  INVALID = 'Invalid',
   ACTIVE = 'Active',
   BACKUP = 'Backup'
 }

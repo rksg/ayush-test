@@ -151,6 +151,7 @@ function SettingsForm () {
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
     <Space align='start'>
@@ -224,7 +225,9 @@ function SettingsForm () {
           </Form.Item>
         </div>
         {
-          (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
+          (!useCertificateTemplate
+            && isWifiIdentityManagementEnable
+            && (isTemplate ? isIdentityGroupTemplateEnabled : true)) &&
           <Form.Item>
             <IdentityGroup comboWidth='210px' />
           </Form.Item>

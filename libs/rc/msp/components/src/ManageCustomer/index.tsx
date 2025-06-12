@@ -193,6 +193,7 @@ export function ManageCustomer () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
+  const mspServiceTierFFtoggle = useIsSplitOn(Features.MSPSERVICE_TIER_UPDATE_DEFAULTS_CONTROL)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -246,7 +247,8 @@ export function ManageCustomer () {
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
   const isMDU = acx_account_vertical === AccountVertical.MDU
 
-  const isCore = originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU
+  const isCore = mspServiceTierFFtoggle &&
+    (originalTier === AccountTier.CORE || isCoreTier(accountTier) || isMDU)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: userProfile } = useUserProfileContext()
@@ -370,7 +372,7 @@ export function ManageCustomer () {
           apswLicense: apswLic,
           apswTrialLicense: apswTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional,
+          tier: setServiceTier(data?.tier as MspEcTierEnum) ?? MspEcTierEnum.Professional,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -453,6 +455,11 @@ export function ManageCustomer () {
       setInstaller(assignedInstaller)
     }
   }, [techPartners])
+
+  const setServiceTier = (serviceTier: MspEcTierEnum) => {
+    return (mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
+      : (isHospitality ? MspEcTierEnum.Professional : serviceTier)
+  }
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -994,7 +1001,7 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={isMDU ? MspEcTierEnum.Core
+      initialValue={(mspServiceTierFFtoggle && isMDU) ? MspEcTierEnum.Core
         : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
@@ -1005,10 +1012,10 @@ export function ManageCustomer () {
                 // isHospitality: show only Professional
                 // everything else: show both Professional and Essentials
                 return (
-                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (mspServiceTierFFtoggle && isMDU && value === MspEcTierEnum.Core) ||
                   (isHospitality && value === MspEcTierEnum.Professional) ||
-                  ((!isMDU && value !== MspEcTierEnum.Core) &&
-                  (!isMDU && !isHospitality &&
+                  ((!(mspServiceTierFFtoggle && isMDU) && value !== MspEcTierEnum.Core) &&
+                  (!(mspServiceTierFFtoggle && isMDU) && !isHospitality &&
                   (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
                 ) &&
                 <Radio
