@@ -9,6 +9,8 @@ import {
   AccessControlUrls,
   AdministrationUrlsInfo,
   CommonUrlsInfo,
+  ConfigTemplateContext,
+  ConfigTemplateUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
@@ -21,7 +23,8 @@ import {
   NewDpskBaseUrl,
   AaaUrls,
   IpsecUrls,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -30,7 +33,8 @@ import {
   screen,
   fireEvent,
   waitForElementToBeRemoved,
-  waitFor
+  waitFor,
+  renderHook
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -53,7 +57,7 @@ import {
   mockIpSecTable,
   mockAAAPolicyListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import { NetworkForm, useIdentityGroupOnNetworkActivation } from './NetworkForm'
 
 jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
@@ -407,4 +411,133 @@ describe('NetworkForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Add'))
   }, 20000)
+
+  describe('Activation hooks', () => {
+    // eslint-disable-next-line max-len
+    it('should useIdentityGroupOnNetworkActivation to activate group and identity correctly', async () => {
+      // Mock the binding mutation endpoint
+      const mockBindingResponse = { response: { requestId: 'test-request-id' } }
+      const spyBindingPersonaGroupWithNetwork = jest.fn().mockReturnValue(mockBindingResponse)
+      const spyBindingSpecificIdentityPersonaGroupWithNetwork = jest.fn()
+        .mockReturnValue(mockBindingResponse)
+
+      mockServer.use(
+        rest.put(
+          WifiRbacUrlsInfo.bindingPersonaGroupWithNetwork.url,
+          (req, res, ctx) => {
+            spyBindingPersonaGroupWithNetwork(req.params)
+            return res(ctx.json(mockBindingResponse))
+          }
+        ),
+        rest.put(
+          WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork.url,
+          (req, res, ctx) => {
+            spyBindingSpecificIdentityPersonaGroupWithNetwork(req.params)
+            return res(ctx.json(mockBindingResponse))
+          }
+        )
+      )
+
+      const testNetworkId = 'test-network-id'
+      const testIdentityGroupId = 'test-identity-group-id'
+
+      // Test case 1: Network with identity group but no specific identity
+      const testNetwork1: NetworkSaveData = {
+        type: NetworkTypeEnum.PSK,
+        name: 'Test Network 1',
+        identityGroupId: testIdentityGroupId,
+        enableIdentityAssociation: false
+      }
+
+      const { result: activateIdentityGroupOnNetwork }
+      = renderHook(() => useIdentityGroupOnNetworkActivation(), {
+        wrapper: ({ children }) => <Provider>{children}</Provider>
+      })
+
+      await activateIdentityGroupOnNetwork.current(testNetwork1, testNetworkId)
+
+      // Verify that the correct mutation was called with the right parameters
+      expect(spyBindingPersonaGroupWithNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          networkId: testNetworkId,
+          identityGroupId: testIdentityGroupId
+        })
+      )
+      expect(spyBindingSpecificIdentityPersonaGroupWithNetwork).not.toHaveBeenCalled()
+
+      spyBindingPersonaGroupWithNetwork.mockClear()
+      spyBindingSpecificIdentityPersonaGroupWithNetwork.mockClear()
+
+      // Test case 2: Network with identity group and specific identity
+      const testIdentityId = 'test-identity-id'
+      const testNetwork2: NetworkSaveData = {
+        type: NetworkTypeEnum.PSK,
+        name: 'Test Network 2',
+        identityGroupId: testIdentityGroupId,
+        enableIdentityAssociation: true,
+        identity: {
+          id: testIdentityId,
+          name: 'Test Identity',
+          groupId: '',
+          revoked: false
+        }
+      }
+
+      await activateIdentityGroupOnNetwork.current(testNetwork2, testNetworkId)
+
+      expect(spyBindingPersonaGroupWithNetwork).not.toHaveBeenCalled()
+      expect(spyBindingSpecificIdentityPersonaGroupWithNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          networkId: testNetworkId,
+          identityGroupId: testIdentityGroupId,
+          identityId: testIdentityId
+        })
+      )
+    })
+
+    // eslint-disable-next-line max-len
+    it('should useIdentityGroupOnNetworkActivation to activate group in Config Template view correctly', async () => {
+      // Mock the binding mutation endpoint for template
+      const mockBindingResponse = { response: { requestId: 'test-request-id' } }
+      const spyBindingPersonaGroupTemplateWithNetwork = jest.fn()
+        .mockReturnValue(mockBindingResponse)
+
+      mockServer.use(
+        rest.put(
+          ConfigTemplateUrlsInfo.bindingPersonaGroupWithNetwork.url,
+          (req, res, ctx) => {
+            spyBindingPersonaGroupTemplateWithNetwork(req.params)
+            return res(ctx.json(mockBindingResponse))
+          }
+        )
+      )
+
+      const testNetworkId = 'test-network-id'
+      const testIdentityGroupId = 'test-identity-group-id'
+
+      const testNetwork: NetworkSaveData = {
+        type: NetworkTypeEnum.PSK,
+        name: 'Test Network Template',
+        identityGroupId: testIdentityGroupId,
+        enableIdentityAssociation: false
+      }
+
+      const { result: activateIdentityGroupOnNetwork }
+      = renderHook(() => useIdentityGroupOnNetworkActivation(), {
+        wrapper: ({ children }) =>
+          <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+            <Provider>{children}</Provider>
+          </ConfigTemplateContext.Provider>
+      })
+
+      await activateIdentityGroupOnNetwork.current(testNetwork, testNetworkId)
+
+      expect(spyBindingPersonaGroupTemplateWithNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          networkId: testNetworkId,
+          identityGroupId: testIdentityGroupId
+        })
+      )
+    })
+  })
 })

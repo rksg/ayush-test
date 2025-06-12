@@ -1,5 +1,6 @@
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
+import { getIdentityGroupRoutePath, IdentityOperation }                      from '@acx-ui/cloudpath/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { useGetIdentityGroupTemplateByIdQuery, useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
@@ -8,10 +9,14 @@ import {
   PolicyOperation,
   PolicyType,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
+
+import { ConfigTemplateLink, ServiceConfigTemplateLinkSwitcher } from '../configTemplates'
 
 
 export function VenueLink (props: { venueId?: string, name?: string, showNoData?: boolean }) {
@@ -33,13 +38,24 @@ export function IdentityGroupLink (props: {
   showNoData?: boolean,
   disableLink?: boolean
 }) {
+  const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   // eslint-disable-next-line max-len
   const { personaGroupId, name, enableFetchName = false, showNoData = false, disableLink = false } = props
-  const { data: groupData, isLoading } = useGetPersonaGroupByIdQuery(
-    { params: { groupId: personaGroupId } },
-    { skip: !personaGroupId || !enableFetchName })
+  const { data: groupData, isLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetPersonaGroupByIdQuery,
+    useTemplateQueryFn: useGetIdentityGroupTemplateByIdQuery,
+    extraParams: { groupId: personaGroupId },
+    skip: !personaGroupId || !enableFetchName || (isTemplate && !isIdentityGroupTemplateEnabled)
+  })
+
   // eslint-disable-next-line max-len
   const displayString = name ?? (enableFetchName ? groupData?.name ?? personaGroupId : personaGroupId)
+  const detailRoute = getIdentityGroupRoutePath(
+    IdentityOperation.DETAIL,
+    isTemplate,
+    personaGroupId
+  )
 
   return (
     personaGroupId
@@ -47,9 +63,9 @@ export function IdentityGroupLink (props: {
         ? <></>
         : disableLink
           ? <>{displayString}</>
-          : <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
-            {displayString}
-          </TenantLink>
+          : isTemplate
+            ? <ConfigTemplateLink to={detailRoute}>{displayString}</ConfigTemplateLink>
+            : <TenantLink to={detailRoute}>{displayString}</TenantLink>
       : <>{showNoData && noDataDisplay}</>
   )
 }
@@ -67,23 +83,22 @@ export function IdentityDetailsLink (
     ? <TenantLink
       to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
     >
-      {name ?? personaId}
+      {name || personaId}
     </TenantLink>
-    : <>{name ?? (showNoData && noDataDisplay)}</>
+    : <>{name || (showNoData && noDataDisplay)}</>
 }
 
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {
   const { dpskPoolId, name, showNoData } = props
   return (
     dpskPoolId
-      ? <TenantLink to={getServiceDetailsLink({
+      ? ServiceConfigTemplateLinkSwitcher({
         serviceId: dpskPoolId,
         oper: ServiceOperation.DETAIL,
         type: ServiceType.DPSK,
-        activeTab: DpskDetailsTabKey.OVERVIEW
-      })}>
-        {name ?? dpskPoolId}
-      </TenantLink>
+        activeTab: DpskDetailsTabKey.OVERVIEW,
+        children: name ?? dpskPoolId
+      })
       : <>{showNoData && noDataDisplay}</>
   )
 }
