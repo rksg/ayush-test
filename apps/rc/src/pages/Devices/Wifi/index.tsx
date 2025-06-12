@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
@@ -30,7 +29,6 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 }
 
 const useTabs = () : WifiTab[] => {
-  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
   const { $t } = useIntl()
   const listTab = {
@@ -61,11 +59,7 @@ const useTabs = () : WifiTab[] => {
     ...useApGroupsTable()
   }
 
-  if (showApGroupTable) {
-    return [listTab, apGroupTab, apReportTab, airtimeReportTab]
-  }
-
-  return [listTab, apReportTab, airtimeReportTab]
+  return [listTab, apGroupTab, apReportTab, airtimeReportTab]
 }
 
 export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
