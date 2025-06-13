@@ -23,6 +23,7 @@ interface DatePickerFooterProps {
   setIsCalendarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   defaultValue: DateRangeType;
   onDateApply: Function;
+  onCancelCallback: Function;
 }
 type DisabledTimes = {
   disabledHours?: () => number[],
@@ -50,7 +51,8 @@ export const DatePickerFooter = ({
   defaultValue,
   setRange,
   setIsCalendarOpen,
-  onDateApply
+  onDateApply,
+  onCancelCallback
 }: DatePickerFooterProps) => {
   const { $t } = useIntl()
   const initialTimePickerPanelState = timePickerConfig.reduce((acc, { id } ) => {
@@ -62,6 +64,9 @@ export const DatePickerFooter = ({
   const onButtonClick = (type: string) => {
     if (type === 'cancel') {
       setRange(defaultValue)
+      if(onCancelCallback) {
+        onCancelCallback()
+      }
     } else {
       onDateApply({
         startDate: range.startDate?.format(),

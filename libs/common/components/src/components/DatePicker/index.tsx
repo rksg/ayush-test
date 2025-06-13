@@ -21,6 +21,7 @@ import {
   defaultCoreTierRanges
 } from '@acx-ui/utils'
 
+import { Select }  from '../Select'
 import { Tooltip } from '../Tooltip'
 
 import { DatePickerFooter, DateTimePickerFooter } from './DatePickerFooter'
@@ -102,6 +103,7 @@ export const RangePicker = ({
   const rangeRef = useRef<RangeRef>(null)
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
+  const [pickerVisible, setPickerVisible] = useState(false)
   let allowedDateRange =
     (showResetMsg && allowedMonthRange) ?
       dateRangeForLast(convertMonthsToDays(allowedMonthRange), 'days')
@@ -135,6 +137,17 @@ export const RangePicker = ({
     [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
+  useEffect(
+    () => {
+      if (pickerVisible) {
+        setTimeout(() => {
+          setIsCalendarOpen(true)
+        })
+      }
+    },
+    [pickerVisible]
+  )
+
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
@@ -145,6 +158,10 @@ export const RangePicker = ({
       }
 
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
+        // @ts-ignore
+        if(event.target?.id !== 'filter'){
+          setPickerVisible(false)
+        }
         setIsCalendarOpen(false)
         setActiveIndex(0)
       }
@@ -154,6 +171,10 @@ export const RangePicker = ({
         setActiveIndex(0)
         rangeRef?.current?.blur()
         setIsCalendarOpen(false)
+        // @ts-ignore
+        if(selectedRange === 'All Time'){
+          setPickerVisible(false)
+        }
         onDateApply({ range: selectedRange })
       }
     }
@@ -176,46 +197,66 @@ export const RangePicker = ({
       showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
-      <AntRangePicker
-        ref={rangeRef}
-        ranges={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
-        placement='bottomRight'
-        disabledDate={disabledDate}
-        open={isCalendarOpen}
-        activePickerIndex={activeIndex}
-        onClick={() => {
-          setIsCalendarOpen(true)
-        }}
-        getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
-          const { range } = info
-          const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
-          setActiveIndex((range === 'start') ? 1 : 0)
-          setRange(prevRange => ({
-            ...prevRange,
-            startDate: restrictRange.startDate || null,
-            endDate: restrictRange.endDate || null
-          }))
-        }}
-        mode={['date', 'date']}
-        renderExtraFooter={() => (
-          <DatePickerFooter
-            showTimePicker={showTimePicker}
-            range={range}
-            setRange={setRange}
-            defaultValue={selectedRange}
-            setIsCalendarOpen={setIsCalendarOpen}
-            onDateApply={onDateApply}
+      {
+        !pickerVisible && rangeText === '[All Time]' ?
+          <div onClick={() => {
+            setPickerVisible(true)
+          }}>
+            <Select
+              placeholder='Create Date'
+              open={false}
+              onFocus={() => {
+                setPickerVisible(true)
+              }}
+            ></Select>
+          </div> :
+          <AntRangePicker
+            ref={rangeRef}
+            ranges={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
+            placement='bottomRight'
+            disabledDate={disabledDate}
+            open={isCalendarOpen}
+            activePickerIndex={activeIndex}
+            onClick={() => {
+              setIsCalendarOpen(true)
+            }}
+            getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
+            suffixIcon={<ClockOutlined />}
+            onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
+              const { range } = info
+              const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
+              setActiveIndex((range === 'start') ? 1 : 0)
+              setRange(prevRange => ({
+                ...prevRange,
+                startDate: restrictRange.startDate || null,
+                endDate: restrictRange.endDate || null
+              }))
+            }}
+            mode={['date', 'date']}
+            renderExtraFooter={() => (
+              <DatePickerFooter
+                showTimePicker={showTimePicker}
+                range={range}
+                setRange={setRange}
+                defaultValue={selectedRange}
+                setIsCalendarOpen={setIsCalendarOpen}
+                onDateApply={onDateApply}
+                onCancelCallback={()=>{
+                  if(selectionType === DateRange.allTime){
+                    setPickerVisible(false)
+                  }
+                }}
+              />
+            )}
+            value={[range?.startDate, range?.endDate]}
+            format={isCalendarOpen || selectionType === DateRange.custom
+              ? formatter(showTimePicker ?
+                DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
+              : rangeText
+            }
+            allowClear={false}
           />
-        )}
-        value={[range?.startDate, range?.endDate]}
-        format={isCalendarOpen || selectionType === DateRange.custom
-          ? formatter(showTimePicker ? DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
-          : rangeText
-        }
-        allowClear={false}
-      />
+      }
     </UI.RangePickerWrapper>
   )
 }
