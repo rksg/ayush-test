@@ -13,12 +13,7 @@ import {
 } from '@acx-ui/components'
 import { EdgePermissions } from '@acx-ui/edge/components'
 import {
-  Features,
-  useIsSplitOn
-} from '@acx-ui/feature-toggle'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
+  Features } from '@acx-ui/feature-toggle'
 import {
   useGetEdgeListQuery,
   useVenuesListQuery
@@ -30,7 +25,6 @@ import {
   FILTER,
   SEARCH,
   TABLE_QUERY,
-  TableQuery,
   allowRebootShutdownForStatus,
   allowResetForStatus,
   usePollingTableQuery
@@ -38,7 +32,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }        from '@acx-ui/utils'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
@@ -46,7 +40,6 @@ import { seriesMappingAP }                                from '../DevicesWidget
 import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
-import { useExportCsv }    from './useExportCsv'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -102,7 +95,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const basePath = useTenantLink('')
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -143,8 +135,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
     })
 
   const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
-  // eslint-disable-next-line max-len
-  const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
 
   const handleColumnStateChange = (state: ColumnState) => {
     if (isEdgeCompatibilityEnabled) {
@@ -371,12 +361,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
         onFilterChange={handleFilterChange}
         columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
         enableApiFilter
-        iconButton={(exportDevice && false) ? {
-          icon: <DownloadOutlined />,
-          disabled,
-          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-          onClick: exportCsv
-        } : undefined}
         {...otherProps}
       />
       {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
