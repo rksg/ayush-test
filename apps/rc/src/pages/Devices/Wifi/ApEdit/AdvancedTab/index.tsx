@@ -109,7 +109,7 @@ export function AdvancedTab () {
       )
 
     }] : []),
-    [{
+    {
       title: apMgmtVlanTitle,
       key: 'apMgmtVlan',
       content: (
@@ -121,7 +121,7 @@ export function AdvancedTab () {
         </>
       )
 
-    }]
+    }
   ]
 
   const resetEditContextData = () => {
