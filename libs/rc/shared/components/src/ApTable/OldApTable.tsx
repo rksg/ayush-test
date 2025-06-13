@@ -96,9 +96,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
 
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
-  const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
@@ -370,17 +368,16 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         return acc
       }, [] as TableProps<APExtended|APExtendedGrouped>['columns'])
     },
-    ...(apUptimeFlag ? [
-      {
-        key: 'uptime',
-        title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'apStatusData.APSystem.uptime',
-        sorter: true,
-        render: (data: React.ReactNode, row: APExtended) => {
-          const uptime = row.apStatusData?.APSystem?.uptime
-          return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
-        }
-      }] : []),
+    {
+      key: 'uptime',
+      title: $t({ defaultMessage: 'Up Time' }),
+      dataIndex: 'apStatusData.APSystem.uptime',
+      sorter: true,
+      render: (data: React.ReactNode, row: APExtended) => {
+        const uptime = row.apStatusData?.APSystem?.uptime
+        return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+      }
+    },
     {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
@@ -421,7 +418,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         )
       }
     },
-    ...(secureBootFlag && enableAP70 ? [
+    ...(enableAP70 ? [
       {
         key: 'secureBoot',
         title: $t({ defaultMessage: 'Secure Boot' }),
@@ -604,7 +601,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const importTemplateLink = `assets/templates/${isHospitality}aps_import_template_with_gps.csv`
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
     setIsImportResultLoading(false)
@@ -695,13 +691,12 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
-        iconButton={exportDevice ? {
+        iconButton={{
           icon: <DownloadOutlined />,
           disabled,
           onClick: exportCsv,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-        } : undefined
-        }
+        }}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.AP}
