@@ -9,7 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
@@ -38,7 +38,8 @@ import {
   TableResult,
   useServicePreviousPath,
   useConfigTemplate,
-  ConfigTemplateType
+  ConfigTemplateType,
+  useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -61,6 +62,7 @@ export function DpskForm (props: DpskFormProps) {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.DPSK, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.DPSK)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
 
@@ -172,7 +174,7 @@ export function DpskForm (props: DpskFormProps) {
       if (modalMode) {
         idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
       } else {
-        navigate(previousPath, { replace: true })
+        navigate(redirectPathAfterSave, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
