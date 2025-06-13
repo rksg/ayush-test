@@ -15,10 +15,10 @@ export const getRcapLicenseUtilizationDonutChartData = (rcapSummary?: RcapLicens
   const seriesMapping = [
     { key: RcapLicenseUtilizationEnum.USED,
       name: 'Used',
-      color: cssStr('--acx-semantics-blue-50') },
+      color: cssStr('--acx-accents-blue-30') },
     { key: RcapLicenseUtilizationEnum.AVAILABLE,
       name: 'Available',
-      color: cssStr('--acx-semantics-orange-50') }
+      color: cssStr('--acx-accents-orange-30') }
   ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
   if (rcapSummary) {
@@ -49,13 +49,13 @@ export function RcapLicenseUtilization () {
 
   const { data } = overviewQuery
 
-  const subTitle = <Space style={{ width: 'max-content' }}>
+  const subTitle = <Space style={{ alignSelf: 'center', marginTop: '18px' }}>
     <Badge
-      color='var(--acx-semantics-blue-50)'
+      color={'var(--acx-accents-blue-30)'}
       text={$t({ defaultMessage: 'Used' })}
     />
     <Badge
-      color='var(--acx-semantics-orange-50)'
+      color={'var(--acx-accents-orange-30)'}
       text={$t({ defaultMessage: 'Available' })}
     />
   </Space>

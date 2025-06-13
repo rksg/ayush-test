@@ -752,7 +752,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const importTemplateLink = 'assets/templates/new_aps_import_template_with_gps.csv'
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<NewAPModelExtended>(tableQuery as TableQuery<NewAPModelExtended, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
     setIsImportResultLoading(false)
@@ -856,13 +855,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }]) : []}
           searchableWidth={260}
           filterableWidth={150}
-          iconButton={exportDevice ? {
+          iconButton={{
             icon: <DownloadOutlined />,
             disabled,
             onClick: exportCsv,
             tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-          } : undefined
-          }
+          }}
         />
         <ImportFileDrawer
           type={ImportFileDrawerType.AP}

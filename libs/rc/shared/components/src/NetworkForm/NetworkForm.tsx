@@ -29,6 +29,7 @@ import {
   useAddNetworkVenueTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useAddRbacNetworkVenueMutation,
+  useBindingPersonaGroupTemplateWithNetworkMutation,
   useBindingPersonaGroupWithNetworkMutation,
   useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
   useBindingWorkflowOnNetworkMutation,
@@ -228,6 +229,7 @@ export function NetworkForm (props:{
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
   const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isMultipleCertificateTemplateEnabled = useIsSplitOn(Features.MULTIPLE_CERTIFICATE_TEMPLATE)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
@@ -356,7 +358,7 @@ export function NetworkForm (props:{
 
   const { data: macRegistrationPool } = useGetMacRegistrationPoolNetworkBindingQuery(
     { params: { networkId: data?.id } },
-    { skip: !saveState?.wlan?.macAddressAuthentication }
+    { skip: !saveState?.wlan?.macAddressAuthentication || !data?.id }
   )
 
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
@@ -1022,7 +1024,7 @@ export function NetworkForm (props:{
         )
       }
 
-      if (!isTemplate && isWifiIdentityManagementEnable) {
+      if (isWifiIdentityManagementEnable && (isTemplate ? isIdentityGroupTemplateEnabled : true)) {
         beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, networkId))
       }
 
@@ -1225,7 +1227,7 @@ export function NetworkForm (props:{
       }
       beforeVenueActivationRequest.push(updateHotspot20NetworkActivations(formData))
 
-      if (!isTemplate && isWifiIdentityManagementEnable) {
+      if (isWifiIdentityManagementEnable && (isTemplate ? isIdentityGroupTemplateEnabled : true)) {
         beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, payload.id))
       }
 
@@ -1574,8 +1576,11 @@ function useRbacProfileServiceActivation () {
   }
 }
 
-function useIdentityGroupOnNetworkActivation () {
-  const [ bindingPersonaGroupWithNetwork ] = useBindingPersonaGroupWithNetworkMutation()
+export function useIdentityGroupOnNetworkActivation () {
+  const [ bindingPersonaGroupWithNetwork ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBindingPersonaGroupWithNetworkMutation,
+    useTemplateMutationFn: useBindingPersonaGroupTemplateWithNetworkMutation
+  })
   const [ bindingSpecificIdentityPersonaGroupWithNetwork ] = useBindingSpecificIdentityPersonaGroupWithNetworkMutation()
   return async (network?: NetworkSaveData, networkId?: string) => {
     if(
