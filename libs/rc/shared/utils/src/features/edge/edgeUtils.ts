@@ -16,6 +16,7 @@ import {
   EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNatPool,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
@@ -489,7 +490,7 @@ export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: 
   if (!lagData) return []
 
   const lagWithGateways = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(member => member.portEnabled))
     && (lag.portType === EdgePortTypeEnum.WAN
       || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && (isCoreAccessEnabled ? lag.accessPortEnabled : lag.corePortEnabled)))
   )
@@ -551,4 +552,38 @@ export const getEdgeAppCurrentVersions = (data: Pick<DhcpStats, 'clusterAppVersi
     versions = data?.currentVersion || ''
   }
   return _.isEmpty(versions) ? $t({ defaultMessage: 'NA' }) : versions
+}
+
+export const getEdgeNatPools = (portsData: EdgePort[], lagData: EdgeLag[] | undefined) => {
+  const allPools = [] as EdgeNatPool[]
+
+  const filteredPorts = portsData.filter(port => !lagData?.some(lag =>
+    lag.lagMembers?.some(member => member.portId === port.id)) )
+
+  const allNatPools = filteredPorts.flatMap(port => port.natPools ?? [])
+  const allLagNatPools = (lagData ?? []).flatMap(lag => lag.natPools ?? [])
+
+  return allPools.concat(allNatPools, allLagNatPools)
+    // filter out initial component
+    .filter(Boolean)
+    .filter((item: EdgeNatPool) => {
+      return item?.startIpAddress && item?.endIpAddress
+    })
+}
+
+// Merge changed LAG data / new LAG data with current LAGs table data
+export const getMergedLagTableDataFromLagForm = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
+  let updatedLagData
+  if (lagData) {
+    updatedLagData = _.cloneDeep(lagData)
+    const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
+    if (targetIdx !== -1) {
+      updatedLagData[targetIdx] = changedLag
+    } else {
+      updatedLagData.push(changedLag)
+    }
+  } else {
+    updatedLagData = [changedLag]
+  }
+  return updatedLagData
 }

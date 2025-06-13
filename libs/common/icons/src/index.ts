@@ -428,6 +428,7 @@ export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 export { ReactComponent as OweTransition } from './icons/OweTransition.svg'
 export { ReactComponent as CrossCircleSolidIcon } from './icons/CrossCircleSolidIcon.svg'
+export { ReactComponent as SamlAuthActionTypeIcon } from './icons/SamlAuthActionTypeIcon.svg'
 
 
 export * from './styledComponents'
