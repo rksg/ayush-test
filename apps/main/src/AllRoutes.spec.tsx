@@ -40,7 +40,7 @@ jest.mock('@acx-ui/main/components', () => ({
   FetchBot: () => <div data-testid='fetch-bot' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  withTemplateFeatureGuard: () => () => <div data-testid='with-template-feature-guard' />,
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
   useUpdateGoogleMapRegion: () => { return { update: jest.fn() }},
   useIsEdgeReady: jest.fn().mockReturnValue(false),
