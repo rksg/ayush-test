@@ -68,6 +68,7 @@ export const venuelist = {
       switchClients: 2,
       switches: 1,
       edges: 3,
+      iotControllers: 2,
       clients: 1
     }
   ]
