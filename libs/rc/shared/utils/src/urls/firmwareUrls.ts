@@ -116,12 +116,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version',
     newApi: true
   },
-  getSwitchVenueVersionList: {
-    method: 'post',
-    url: '/venues/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
-    newApi: true
-  },
   getSwitchAvailableFirmwareList: {
     method: 'get',
     url: '/venues/switchFirmwares/versions/release',

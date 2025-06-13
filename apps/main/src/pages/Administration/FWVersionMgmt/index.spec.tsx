@@ -21,7 +21,7 @@ import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
 
 import {
-  availableVersions,  versionLatest, switchVenue,
+  availableVersions,  versionLatest,
   venue,  version, preference, mockedApModelFamilies,
   mockedFirmwareVenuesPerApModel, switchLatest
 } from './__tests__/fixtures'
@@ -121,10 +121,6 @@ describe('Firmware Version Management', () => {
         FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
-      rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(switchVenue))
-      ),
       rest.get(
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
@@ -143,8 +139,7 @@ describe('Firmware Version Management', () => {
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       (ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL &&
-      ff !== Features.SWITCH_RBAC_API &&
-      ff !== Features.SWITCH_FIRMWARE_V1002_TOGGLE))
+      ff !== Features.SWITCH_RBAC_API))
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
