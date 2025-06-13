@@ -88,7 +88,6 @@ export enum Features {
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
   ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
   ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE='acx-ethernet-port-support-proxy-radius-toggle',
-  EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   EXTEND_SSID_DESPRIPTION_TOGGLE = 'acx-ui-extend-ssid-description-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',

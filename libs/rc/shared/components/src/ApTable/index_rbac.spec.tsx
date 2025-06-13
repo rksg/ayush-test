@@ -316,7 +316,7 @@ describe('Aps', () => {
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.EXPORT_DEVICE || ff === Features.WIFI_RBAC_API
+      return ff === Features.WIFI_RBAC_API
     })
     jest.mocked(get).mockReturnValue('')
 
