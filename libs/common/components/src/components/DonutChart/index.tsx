@@ -272,8 +272,12 @@ export function DonutChart ({
       show: true,
       text: props.title,
       subtext: props.value
-        ? props.showTotal ? `${props.value}\n${dataFormatter(sum)}` : props.value
-        : props.showTotal ? `${dataFormatter(sum)}` : undefined,
+        ? props.showTotal
+          ? `${props.value}\n{subTextLarge|${dataFormatter(sum)}}`
+          : `${props.value}`
+        : props.showTotal
+          ? `${dataFormatter(sum)}`
+          : undefined,
       left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
@@ -284,7 +288,12 @@ export function DonutChart ({
         : { ...styles[props.size].title, width: 80, overflow: 'break' },
       subtextStyle: props.secondaryTitleTextStyle
         ? { ...props.secondaryTitleTextStyle }
-        : styles[props.size].value
+        : {
+          ...styles[props.size].value,
+          rich: {
+            subTextLarge: { ...styles['large'].value }
+          }
+        }
     },
     legend: {
       show: props.showLegend,
@@ -299,13 +308,14 @@ export function DonutChart ({
       textStyle: {
         ...legendStyles,
         ...props.labelTextStyle,
-        rich: { // these rich styles are used to apply bold font weight to the name-bold-value legend
-          bold: {
+        rich: {
+          legendBold: {
             ...legendStyles,
             fontWeight: cssNumber('--acx-body-font-weight-bold')
           },
-          normal: {
-            ...legendStyles
+          legendNormal: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight')
           }
         }
       },
@@ -317,7 +327,8 @@ export function DonutChart ({
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
-          case 'name-bold-value': return `{normal|${name}:} {bold|${dataFormatter(value)}}`
+          case 'name-bold-value':
+            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
