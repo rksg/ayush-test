@@ -325,7 +325,7 @@ export function NetworkForm (props:{
       }
 
       // Only when isCloudpathEnabled exists and value is false then delete radius data
-      if (saveData.isCloudpathEnabled === false) {
+      if (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
