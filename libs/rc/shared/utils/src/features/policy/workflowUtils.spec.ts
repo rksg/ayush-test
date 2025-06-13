@@ -181,13 +181,12 @@ describe('WorkflowUtils', () => {
     const targetNodes: Node<WorkflowStep, ActionType>[] = []
     const targetEdges: Edge[] = []
     const testParentId = 'test-subflow-node-id'
-    const testZIndex = 1234
     composeNext(
       WorkflowPanelMode.Default,
       findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
       testParentId,
-      targetNodes, targetEdges, 0, 0, testZIndex
+      targetNodes, targetEdges, 0, 0
     )
 
     expect(targetNodes).toHaveLength(3)
@@ -196,7 +195,8 @@ describe('WorkflowUtils', () => {
     const firstNode = targetNodes[0]
     expect(firstNode.parentNode).toBe(testParentId)
     expect(firstNode.extent).toBe('parent')
-    expect(firstNode.zIndex).toBe(testZIndex)
+
+    targetEdges.forEach(e => expect(e.zIndex).toBe(1000))
   })
 
   it('should handle composeNext correctly', () => {
@@ -207,7 +207,7 @@ describe('WorkflowUtils', () => {
       findAllFirstSteps(mockReverseOrderSteps)?.[0].id!,
       toStepMap(mockReverseOrderSteps),
       undefined,
-      targetNodes, targetEdges, 0, 0, 0
+      targetNodes, targetEdges, 0, 0
     )
 
     expect(targetNodes).toHaveLength(3)
@@ -216,7 +216,8 @@ describe('WorkflowUtils', () => {
     const firstNode = targetNodes[0]
     expect(firstNode.parentNode).toBe(undefined)
     expect(firstNode.extent).toBe(undefined)
-    expect(firstNode.zIndex).toBe(1000)
+
+    targetEdges.forEach(e => expect(e.zIndex).toBe(undefined))
   })
 
   it('should handle composeNext with empty input correctly', () => {
@@ -230,7 +231,7 @@ describe('WorkflowUtils', () => {
       WorkflowPanelMode.Default,
       'step-unknown-id',
       new Map(), undefined,
-      targetNodes, targetEdges, 0, 0, 0
+      targetNodes, targetEdges, 0, 0
     )
 
     // if it can not find the next one, it should not modify the original Node[] and Edge[] input sources.
