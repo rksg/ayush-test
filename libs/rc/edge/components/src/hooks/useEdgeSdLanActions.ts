@@ -125,11 +125,36 @@ export const useEdgeSdLanActions = () => {
     return Promise.all(actions)
   }
 
+  const handleNetworkTemplateChanges = async (
+    serviceId: string,
+    currentData: EdgeSdLanServiceProfile['activeNetworkTemplate'],
+    originData?: EdgeSdLanServiceProfile['activeNetworkTemplate']
+  ) => {
+    const actions = []
+    const { addNetworks = [] } = diffVenueNetworks(currentData, originData)
+
+    if (addNetworks.length > 0) {
+      actions.push(...addNetworks.map(network => activateNetwork({
+        params: {
+          serviceId,
+          venueId: network.venueId,
+          wifiNetworkId: network.networkId
+        },
+        payload: {
+          ...(network.tunnelProfileId ? {
+            forwardingTunnelProfileId: network.tunnelProfileId
+          } : {})
+        }
+      }).unwrap()))
+    }
+    return Promise.all(actions)
+  }
+
   const createEdgeSdLan = async (req: {
     payload: EdgeSdLanServiceProfile,
     callback?: (res: (CommonResult[]
       | CommonErrorsResult<CatchErrorDetails>)) => void
-  }) => {
+  }, isTemplate: boolean) => {
     const { payload, callback } = req
     return await addEdgeSdLan({
       customHeaders: {
@@ -147,6 +172,8 @@ export const useEdgeSdLanActions = () => {
 
         try {
           const reqResults = await handleNetworkChanges(serviceId, payload.activeNetwork)
+          if (isTemplate)
+            await handleNetworkTemplateChanges(serviceId, payload.activeNetworkTemplate)
           callback?.(reqResults)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)

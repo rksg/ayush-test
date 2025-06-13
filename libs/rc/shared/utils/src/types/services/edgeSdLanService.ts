@@ -201,5 +201,10 @@ export interface EdgeSdLanServiceProfile {
     venueId: string
     networkId: string
     tunnelProfileId?: string
+  }[],
+  activeNetworkTemplate: {
+    venueId: string
+    networkId: string
+    // tunnelProfileId?: string
   }[]
 }

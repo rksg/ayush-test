@@ -24,6 +24,7 @@ export interface EdgeSdLanFormType {
   name: string
   tunnelProfileId: string
   activatedNetworks: NetworkActivationType
+  activatedNetworkTemplates?: NetworkActivationType
 }
 
 export interface EdgeSdLanFormProps {

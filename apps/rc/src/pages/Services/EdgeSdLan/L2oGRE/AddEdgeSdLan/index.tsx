@@ -3,9 +3,12 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader }          from '@acx-ui/components'
 import { useEdgeSdLanActions } from '@acx-ui/edge/components'
+import { Features }            from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   useAfterServiceSaveRedirectPath,
+  useConfigTemplate,
+  useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
@@ -13,11 +16,14 @@ import { useNavigate } from '@acx-ui/react-router-dom'
 import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
+import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
 import { SummaryForm }                               from '../Form/SummaryForm'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
+  const isEdgeDelegationEnabled = useIsEdgeFeatureReady(Features.EDGE_DELEGATION_POC_TOGGLE)
 
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
@@ -32,6 +38,10 @@ export const AddEdgeSdLan = () => {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
     },
+    ...isEdgeDelegationEnabled && isTemplate ? [{
+      title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
+      content: NetworkTemplateSelectionForm
+    }] : [],
     {
       title: $t({ defaultMessage: 'Summary' }),
       content: SummaryForm
@@ -50,7 +60,15 @@ export const AddEdgeSdLan = () => {
                 venueId,
                 networkId,
                 tunnelProfileId
-              }))).flat()
+              }))).flat(),
+            activeNetworkTemplate: isTemplate
+              ? Object.entries(formData.activatedNetworks)
+                .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
+                  venueId,
+                  networkId,
+                  tunnelProfileId
+                }))).flat()
+              : undefined
           },
           callback: (result) => {
             // callback is after all RBAC related APIs sent
@@ -61,7 +79,7 @@ export const AddEdgeSdLan = () => {
             }
           }
         // need to catch basic service profile failed
-        }).catch(reject)
+        }, isTemplate).catch(reject)
       })
 
       navigate(redirectPathAfterSave, { replace: true })
