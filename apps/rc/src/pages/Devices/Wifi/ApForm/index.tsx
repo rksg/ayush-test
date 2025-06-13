@@ -96,8 +96,6 @@ const defaultApPayload = {
 export function ApForm () {
   const { $t } = useIntl()
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
-  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
-  const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, serialNumber='' } = useParams()
@@ -480,7 +478,7 @@ export function ApForm () {
       formRef?.current?.validateFields(['name'])
     }
 
-    if (supportMgmtVlan) {
+    if (supportVenueMgmtVlan) {
       const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
         { params: { venueId: value } })).data
       if (targetVenueMgmtVlan?.keepAp) {
