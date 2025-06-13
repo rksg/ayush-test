@@ -219,7 +219,6 @@ export enum Features {
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
-  SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
   WORKFLOW_CERTIFICATE_TEMPLATE_ACTION = 'workflow-cert-template-enabled',

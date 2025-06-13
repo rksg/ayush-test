@@ -195,7 +195,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
-  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   const switchAction = useSwitchActions()
@@ -409,8 +408,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
-    },
-    ...( enableSwitchExternalIp ? [{
+    }, {
       key: 'extIp',
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
@@ -421,7 +419,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         const extIp = row.isFirstLevel ? row.extIp || noDataDisplay : ''
         return searchable ? highlightFn(extIp) : extIp
       }
-    }] : [])
+    }
     ] as TableProps<SwitchRow>['columns']
   }, [$t, filterableKeys])
 
