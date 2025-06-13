@@ -39,7 +39,8 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  legend: 'value' | 'name' | 'name-value',
+  showValue: boolean,
+  legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
@@ -48,6 +49,7 @@ const defaultProps: DonutChartOptionalProps = {
   animation: false,
   showLabel: false,
   showTotal: true,
+  showValue: false,
   legend: 'value',
   size: 'small'
 }
@@ -192,7 +194,7 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
       value: {
-        ...(isCustomEmptyStatus ? customStyles : commonStyles)
+        ...((isCustomEmptyStatus || props.showValue) ? customStyles : commonStyles) // reusing showValue prop to change subtext size
       }
     },
     'medium': {
@@ -270,9 +272,9 @@ export function DonutChart ({
       show: true,
       text: props.title,
       subtext: props.value
-        ? props.value
+        ? props.showTotal ? `${props.value}\n${dataFormatter(sum)}` : props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '28%' : 'center',
+      left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -296,7 +298,16 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle
+        ...props.labelTextStyle,
+        rich: { // these rich styles are used to apply bold font weight to the name-bold-value legend
+          bold: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight-bold')
+          },
+          normal: {
+            ...legendStyles
+          }
+        }
       },
       itemStyle: {
         borderWidth: 0
@@ -306,6 +317,7 @@ export function DonutChart ({
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name-bold-value': return `{normal|${name}:} {bold|${dataFormatter(value)}}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
@@ -324,7 +336,10 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label
+          ...styles.label,
+          formatter: (params) => {
+            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+          }
         },
         tooltip: {
           ...tooltipOptions(),
