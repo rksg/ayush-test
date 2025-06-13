@@ -320,11 +320,12 @@ export function NetworkForm (props:{
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
       const updateSate = { ...preState }
-      if(!editMode&&!updateSate.enableAccountingService){
+      if(!editMode && !updateSate.enableAccountingService){
         delete updateSate.accountingRadius
       }
 
-      if (!saveData.isCloudpathEnabled) {
+      // Only when isCloudpathEnabled exists and value is false then delete radius data
+      if (saveData.isCloudpathEnabled === false) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
