@@ -16,7 +16,7 @@ interface WifiClientFilters {
 
 const tabDetails = [
   { label: 'Device Type', value: 'deviceType' },
-  { label: 'Manufacture', value: 'manufacturer' }
+  { label: 'Manufacturer', value: 'manufacturer' }
 ]
 
 export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
@@ -47,39 +47,37 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   return (
     <Loader states={[queryResults]}>
       <Card type='default' title={title}>
-        {results ? (
-          <>
-            <div style={{ marginTop: -38 }}>
-              <ContentSwitcher
-                tabDetails={tabDetails.map(({ label, value }) => ({
-                  label,
-                  value,
-                  children: null
-                }))}
-                value={selectedTab}
-                onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+        <div style={{ marginTop: -38 }}>
+          <ContentSwitcher
+            tabDetails={tabDetails.map(({ label, value }) => ({
+              label,
+              value,
+              children: null
+            }))}
+            value={selectedTab}
+            onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+            size='small'
+            align='right'
+            noPadding
+          />
+        </div>
+        {results && results?.[selectedTab]?.length > 0 ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <DonutChart
+                data={chartData}
+                style={{ width: width * 0.95, height: height * 0.95 }}
+                legend='name-bold-value'
                 size='small'
-                align='right'
-                noPadding
+                showLegend
+                showTotal
+                value={centerText}
+                labelTextStyle={{ overflow: 'breakAll', width: 240 }}
+                showLabel={true}
+                showValue={true}
               />
-            </div>
-            <AutoSizer>
-              {({ height, width }) => (
-                <DonutChart
-                  data={chartData}
-                  style={{ width: width * 0.95, height: height * 0.95 }}
-                  legend='name-bold-value'
-                  size='small'
-                  showLegend
-                  showTotal
-                  value={centerText}
-                  labelTextStyle={{ overflow: 'breakAll', width: 240 }}
-                  showLabel={true}
-                  showValue={true}
-                />
-              )}
-            </AutoSizer>
-          </>
+            )}
+          </AutoSizer>
         ) : (
           <NoData />
         )}
