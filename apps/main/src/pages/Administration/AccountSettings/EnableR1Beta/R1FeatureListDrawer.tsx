@@ -63,7 +63,10 @@ function R1FeatureListDrawer (
   useEffect(() => {
     if (betaFeaturesList?.betaFeatures) {
       const features = betaFeaturesList.betaFeatures.map(f => {
-        const desc = $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
+        const found = BetaListDetails.filter(detail => detail.key === f.id)
+        const desc = found.length > 0
+          ? $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
+          : ''
         const updatedFeature: Feature = {
           name: desc.split(': ')[0],
           desc: desc.split(': ')[1],
