@@ -163,7 +163,6 @@ describe('NetworkForm', () => {
   })
 
   it('should render AAA Network successfully with mac address format', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <MLOContext.Provider value={{
         isDisableMLO: true,

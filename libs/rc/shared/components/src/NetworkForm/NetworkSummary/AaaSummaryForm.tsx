@@ -20,7 +20,6 @@ export function AaaSummaryForm (props: {
 }) {
   const { summaryData } = props
   const { $t } = useIntl()
-  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   return (<>
     {get(summaryData, 'authRadius.primary.ip') !== undefined && <>
       {$t({ defaultMessage: 'Authentication Service' })}
@@ -36,15 +35,12 @@ export function AaaSummaryForm (props: {
         data={summaryData}
       />
     </>}
-    {support8021xMacAuth &&
-      <Form.Item
-        label={$t({ defaultMessage: 'MAC Authentication' })}
-        children={
-          summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
-            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
-    }
-    {support8021xMacAuth &&
-     summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
+    <Form.Item
+      label={$t({ defaultMessage: 'MAC Authentication' })}
+      children={
+        summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
+          $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+    {summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
       <Form.Item
         label={$t({ defaultMessage: 'MAC Address Format' })}
         children={

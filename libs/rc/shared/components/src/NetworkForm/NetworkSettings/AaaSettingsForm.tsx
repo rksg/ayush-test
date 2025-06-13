@@ -376,7 +376,6 @@ function AaaService () {
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
-  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
@@ -496,49 +495,47 @@ function AaaService () {
           </UI.FieldLabel>
         </>}
       </div>
-      {support8021xMacAuth && <>
-        <UI.FieldLabel width={labelWidth}>
-          <Space align='start'>
-            { $t({ defaultMessage: 'MAC Authentication' }) }
-            {!isR370UnsupportedFeatures && <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='bottom'
-              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              showDetailButton
-              placement='bottom'
-              onClick={() => setDrawerVisible(true)}
-            />}
-            {isR370UnsupportedFeatures &&
-            <ApCompatibilityDrawer
-              visible={drawerVisible}
-              type={ApCompatibilityType.ALONE}
-              networkId={networkId}
-              featureNames={[InCompatibilityFeatures.MAC_AUTH]}
-              onClose={() => setDrawerVisible(false)}
-            />}
-          </Space>
-          <Form.Item
-            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
-            initialValue={false}
-            valuePropName='checked'
-            children={<Switch
-              disabled={editMode}
-              onChange={onMacAuthChange}
-              data-testid='macAuth8021x'/>}
-          />
-        </UI.FieldLabel>
-        {enableMacAuthentication &&
-          <Form.Item
-            label={$t({ defaultMessage: 'MAC Address Format' })}
-            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
-            initialValue={MacAuthMacFormatEnum.UpperDash}
-            children={<Select children={macAuthOptions} />}
-          />
-        }
-      </>}
+      <UI.FieldLabel width={labelWidth}>
+        <Space align='start'>
+          { $t({ defaultMessage: 'MAC Authentication' }) }
+          {!isR370UnsupportedFeatures && <Tooltip.Question
+            title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+            placement='bottom'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+            showDetailButton
+            placement='bottom'
+            onClick={() => setDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures &&
+          <ApCompatibilityDrawer
+            visible={drawerVisible}
+            type={ApCompatibilityType.ALONE}
+            networkId={networkId}
+            featureNames={[InCompatibilityFeatures.MAC_AUTH]}
+            onClose={() => setDrawerVisible(false)}
+          />}
+        </Space>
+        <Form.Item
+          name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+          initialValue={false}
+          valuePropName='checked'
+          children={<Switch
+            disabled={editMode}
+            onChange={onMacAuthChange}
+            data-testid='macAuth8021x'/>}
+        />
+      </UI.FieldLabel>
+      {enableMacAuthentication &&
+        <Form.Item
+          label={$t({ defaultMessage: 'MAC Address Format' })}
+          name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+          initialValue={MacAuthMacFormatEnum.UpperDash}
+          children={<Select children={macAuthOptions} />}
+        />
+      }
     </Space>
   )
 }
