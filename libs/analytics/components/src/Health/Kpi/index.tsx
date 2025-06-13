@@ -47,9 +47,9 @@ export const defaultThreshold: KpiThresholdType = {
   switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
   switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold,
-  switchIpv4MulticastUtilization: kpiConfig.switchIpv4MulticastUtilization
+  switchMulticastIpv4Utilization: kpiConfig.switchMulticastIpv4Utilization
     .histogram.initialThreshold,
-  switchIpv6MulticastUtilization: kpiConfig.switchIpv6MulticastUtilization
+  switchMulticastIpv6Utilization: kpiConfig.switchMulticastIpv6Utilization
     .histogram.initialThreshold
 }
 

@@ -530,7 +530,7 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
-  switchIpv4MulticastUtilization: {
+  switchMulticastIpv4Utilization: {
     text: defineMessage({ defaultMessage: 'Ipv4 Multicast Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
@@ -540,7 +540,7 @@ export const kpiConfig = {
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchMemoryUtilization',
+      apiMetric: 'switchMulticastIpv4Utilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -559,7 +559,7 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with Ipv4 Multicast utilization below a threshold.' })
     }
   },
-  switchIpv6MulticastUtilization: {
+  switchMulticastIpv6Utilization: {
     text: defineMessage({ defaultMessage: 'Ipv6 Multicast Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
@@ -569,7 +569,7 @@ export const kpiConfig = {
     histogram: {
       highlightAbove: false,
       initialThreshold: 90,
-      apiMetric: 'switchMemoryUtilization',
+      apiMetric: 'switchMulticastIpv6Utilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
@@ -832,8 +832,8 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
       kpis: [
         // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
         //'switchReachability',
-        'switchIpv4MulticastUtilization',
-        'switchIpv6MulticastUtilization',
+        'switchMulticastIpv4Utilization',
+        'switchMulticastIpv6Utilization',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',
