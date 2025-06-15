@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Checkbox, Select }    from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -11,10 +11,10 @@ import _               from 'lodash'
 import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
 
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { DateFilter, DateRange, getDatePickerValues, getDateRangeFilter } from '@acx-ui/utils'
 
-import { getDefaultEarliestStart, RangePicker } from '../DatePicker'
+import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
@@ -39,10 +39,12 @@ interface RangePickerProps {
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { filterValues, setFilterValues, settingsId, filterPersistence } = props
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg,
-    earliestStart: getDefaultEarliestStart() })
+
+  const [dateFilterState, setDateFilterState] = useState<DateFilter>(
+    getDateRangeFilter(DateRange.allTime)
+  )
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   return <UI.FilterRangePicker>
     <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -59,7 +61,7 @@ function RangePickerComp (props: RangePickerProps) {
           sessionStorage.setItem(`${settingsId}-filter`, JSON.stringify(filters))
         }
         setFilterValues(filters)
-        setDateFilter(date)
+        setDateFilterState(date)
       }}
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
       maxMonthRange={isDateRangeLimit ? 1 : 3}
