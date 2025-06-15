@@ -437,6 +437,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
     advancedCustomization.qosMapSetOptions = { rules: [] }
   }
 
+  if(!get(data, 'wlan.advancedCustomization.enableFastRoaming')){
+    advancedCustomization.fastRoamingOptions = undefined
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,
