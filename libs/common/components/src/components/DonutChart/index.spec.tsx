@@ -113,6 +113,8 @@ describe('DonutChart - small', () => {
       legend={'name-bold-value'}
       showLegend
       subTitle='Donut Chart subTitle'
+      showValue={true}
+      singleSelect={true}
     />)
     data.forEach(async item => {
       expect(await screen.findByText(`${item.name}: ${item.value}`)).toBeTruthy()

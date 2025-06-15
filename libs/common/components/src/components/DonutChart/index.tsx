@@ -273,10 +273,10 @@ export function DonutChart ({
       text: props.title,
       subtext: props.value
         ? props.showTotal
-          ? `${props.value}\n{subTextLarge|${dataFormatter(sum)}}`
-          : `${props.value}`
+          ? `{subTextNormal|${props.value}}\n{subTextLarge|${dataFormatter(sum)}}`
+          : `{subTextNormal|${props.value}}`
         : props.showTotal
-          ? `${dataFormatter(sum)}`
+          ? `{subTextNormal|${dataFormatter(sum)}}`
           : undefined,
       left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
@@ -291,7 +291,8 @@ export function DonutChart ({
         : {
           ...styles[props.size].value,
           rich: {
-            subTextLarge: { ...styles['large'].value }
+            subTextLarge: { ...styles['large'].value },
+            subTextNormal: { ...styles[props.size].value }
           }
         }
     },
@@ -325,13 +326,13 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return name
-          case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name': return `{legendNormal|${name}}`
+          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
           case 'name-bold-value':
             return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
-            return `${dataFormatter(value)}`
+            return `{legendNormal|${dataFormatter(value)}}`
         }
       }
     },
