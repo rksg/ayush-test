@@ -116,6 +116,7 @@ export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
   EDGE_DHCP = 'DHCP (Edge)',
+  DHCP_CONSOLIDATION = 'DHCP Consolidation',
   EDGE_FIREWALL = 'Firewall (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
@@ -128,7 +129,8 @@ export enum ServiceType {
   EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
   EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management',
   EDGE_OLT = 'Nokia GPON',
-  PORTAL_PROFILE = 'PORTAL_PROFILE'
+  PORTAL_PROFILE = 'PORTAL_PROFILE',
+  MDNS_PROXY_CONSOLIDATION = 'mDNS Proxy Consolidation'
 }
 
 export enum ServiceOperation {

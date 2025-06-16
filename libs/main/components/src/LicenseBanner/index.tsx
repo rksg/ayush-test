@@ -87,7 +87,6 @@ export function LicenseBanner (props: BannerProps) {
 
   const { isMSPUser } = props
 
-  const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
@@ -280,7 +279,7 @@ export function LicenseBanner (props: BannerProps) {
     </UI.LicenseContainerSingle>
   }
 
-  return !_.isEmpty(expireList) && isFFEnabled
+  return !_.isEmpty(expireList)
     ? <UI.LicenseWrapper>
       {licenseRender()}
     </UI.LicenseWrapper>

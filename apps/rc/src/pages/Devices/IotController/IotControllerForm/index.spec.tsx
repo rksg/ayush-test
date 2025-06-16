@@ -123,6 +123,8 @@ describe('Iot Controller Form', () => {
     // eslint-disable-next-line max-len
     await fireEvent.change(passwordInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
 
+    await userEvent.click(await screen.findByText('Validate'))
+
     const serialInput = screen.getByLabelText('IoT Controller Serial Number')
     // eslint-disable-next-line max-len
     await fireEvent.change(serialInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
@@ -167,6 +169,8 @@ describe('Iot Controller Form', () => {
 
     const URLInput = screen.getByLabelText('FQDN / IP (AP Inbound IP address)')
     await fireEvent.change(URLInput, { target: { value: 'newtest.com' } })
+
+    await userEvent.click(await screen.findByText('Validate'))
 
     const serialInput = screen.getByLabelText('IoT Controller Serial Number')
     // eslint-disable-next-line max-len

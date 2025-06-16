@@ -37,5 +37,8 @@ describe('configTemplateRouteUtils', () => {
 
     // eslint-disable-next-line max-len
     expect(getConfigTemplateEditPath(ConfigTemplateType.SWITCH_REGULAR, templateId)).toBe(`configTemplates/networks/wired/profiles/regular/${templateId}/edit`)
+
+    // eslint-disable-next-line max-len
+    expect(getConfigTemplateEditPath(ConfigTemplateType.IDENTITY_GROUP, templateId)).toBe(`configTemplates/identityManagement/identityGroups/${templateId}/edit`)
   })
 })
