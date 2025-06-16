@@ -45,7 +45,6 @@ jest.mock('antd', () => {
 
 const mockedUpdatePreference = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   countryCodes: [{
     label: 'invalid',
     value: ''

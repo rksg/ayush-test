@@ -16,10 +16,15 @@ import {
 
 import DpskDetails from './DpskDetails'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  DpskOverview: () => <div>DPSK Overview</div>
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const { Link } = require('react-router-dom')
+  return {
+    ServiceConfigTemplateDetailsLink: () =>
+      // eslint-disable-next-line max-len
+      <Link to={'/15320bc221d94d2cb537fa0189fee742/v/configTemplates/services/dpsk/4b76b1952c80401b8500b00d68106576/edit'}>Configure</Link>,
+    DpskOverview: () => <div>DPSK Overview</div>
+  }
+})
 
 describe('DpskDetails', () => {
   const params = {
