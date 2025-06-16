@@ -4,6 +4,7 @@ import '@testing-library/jest-dom'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  SwitchRbacUrlsInfo,
   SwitchStatusEnum,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -79,6 +80,10 @@ describe('Test useSwitchActions', () => {
       ),
       rest.post(
         SwitchUrlsInfo.retryFirmwareUpdate.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.retryFirmwareUpdate.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
@@ -221,6 +226,23 @@ describe('Test useSwitchActions', () => {
     const callback = jest.fn()
     act(() => {
       doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
+    })
+
+    await waitFor(async () => expect(callback).toBeCalled())
+  })
+
+  it('doRetryFirmwareUpdateV1002', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { doRetryFirmwareUpdateV1002 } = result.current
+    const callback = jest.fn()
+    act(() => {
+      doRetryFirmwareUpdateV1002({
+        switchId: 'switch-id', tenantId: tenantId, venueId: 'venue-id' }, callback)
     })
 
     await waitFor(async () => expect(callback).toBeCalled())

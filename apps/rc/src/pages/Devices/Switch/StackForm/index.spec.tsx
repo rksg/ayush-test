@@ -49,10 +49,7 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitcDefaultVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
-  }),
-  useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   }),
   useGetSwitchCurrentVersionsV1001Query: () => ({
     data: mockSwitchCurrentVersionsV1002

@@ -14,7 +14,7 @@ import { availableVersions, preferenceData, venueFirmwareList } from '../__tests
 import { VenueFirmwareList } from '.'
 
 const MockModal = (props: ModalProps) => <Modal {...props} />
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/rc/components', () => {
   const oriComponents = jest.requireActual('@acx-ui/rc/components')
@@ -43,7 +43,7 @@ jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIRMWARE
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitcDefaultVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   })
 }))
 

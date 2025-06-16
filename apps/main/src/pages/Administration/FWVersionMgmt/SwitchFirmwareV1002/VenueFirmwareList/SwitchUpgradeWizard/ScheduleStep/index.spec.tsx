@@ -24,7 +24,7 @@ import {
 
 import { ScheduleStep } from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -40,11 +40,10 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   })
 }))
 
-const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 
 describe('ScheduleStep', () => {
