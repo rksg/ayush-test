@@ -14,11 +14,6 @@ interface WifiClientFilters {
   endDate: string;
 }
 
-const tabDetails = [
-  { label: 'Device Type', value: 'deviceType' },
-  { label: 'Manufacturer', value: 'manufacturer' }
-]
-
 export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   const { $t } = useIntl()
   const [selectedTab, setSelectedTab] = useState<'deviceType' | 'manufacturer'>('deviceType')
@@ -30,6 +25,11 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
     end,
     n: 5
   })
+
+  const tabDetails = [
+    { label: $t({ defaultMessage: 'Device Type' }), value: 'deviceType' },
+    { label: $t({ defaultMessage: 'Manufacturer' }), value: 'manufacturer' }
+  ]
 
   const results = queryResults?.data?.nodes?.[0]
 
