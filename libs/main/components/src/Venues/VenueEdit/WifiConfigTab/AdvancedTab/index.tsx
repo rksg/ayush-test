@@ -47,7 +47,6 @@ export function AdvancedTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
-  const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
   const isApIpModeFFEnabled = useIsSplitOn(Features.WIFI_EDA_IP_MODE_CONFIG_TOGGLE)
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
@@ -112,7 +111,7 @@ export function AdvancedTab () {
       <BssColoring isAllowEdit={isAllowEditVenueBssColoring} />,
       'bssColoring'
     ),
-    ...((supportApMgmgtVlan && !isTemplate) ? [
+    ...(!isTemplate ? [
       createAnchorSectionItem(
         $t({ defaultMessage: 'Access Point Management VLAN' }),
         'ap-mgmt-vlan',
