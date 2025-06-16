@@ -243,10 +243,10 @@ function testNoWlanSecuritySettings (guestNetworkType: GuestNetworkTypeEnum) {
       expect(wpa3).toBeInTheDocument()
       expect(mixedMode).toBeInTheDocument()
       const wpa = (await screen.findAllByTitle('WPA'))[0]
-      const wep = (await screen.findAllByTitle('WEP'))[0]
+      const wep = (await screen.findAllByTitle('WEP (Unsafe)'))[0]
       expect(wpa).toBeInTheDocument()
       expect(wep).toBeInTheDocument()
-      expect(wep).not.toHaveClass('ant-select-item-option-disabled')
+      expect(wep).toHaveClass('ant-select-item-option-disabled')
     } else if (
       guestNetworkType === GuestNetworkTypeEnum.GuestPass ||
       guestNetworkType === GuestNetworkTypeEnum.Directory
@@ -288,14 +288,14 @@ function testWlanSecuritySettingsOnlyPSK (guestNetworkType: GuestNetworkTypeEnum
     expect(wpa3).toBeInTheDocument()
     expect(mixedMode).toBeInTheDocument()
     const wpa = screen.queryAllByTitle('WPA')
-    const wep = screen.queryAllByTitle('WEP')
+    const wep = screen.queryAllByTitle('WEP (Unsafe)')
     expect(wpa2).toBeInTheDocument()
     expect(wpa3).toBeInTheDocument()
     if (guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       expect(oweNetworkSecurity[0]).toBeInTheDocument()
       expect(wpa[0]).toBeInTheDocument()
       expect(wep[0]).toBeInTheDocument()
-      expect(wep[0]).not.toHaveClass('ant-select-item-option-disabled')
+      expect(wep[0]).toHaveClass('ant-select-item-option-disabled')
     } else if (
       guestNetworkType === GuestNetworkTypeEnum.GuestPass ||
       guestNetworkType === GuestNetworkTypeEnum.Directory) {
