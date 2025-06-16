@@ -67,6 +67,7 @@ function RangePickerComp (props: RangePickerProps) {
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
       maxMonthRange={isDateRangeLimit ? 1 : 3}
       filterLabel={filterLabel}
+      showAllTime
     />
   </UI.FilterRangePicker>
 }

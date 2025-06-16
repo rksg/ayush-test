@@ -727,6 +727,240 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 </DocumentFragment>
 `;
 
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service and OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service and PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal default diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
