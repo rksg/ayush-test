@@ -218,7 +218,6 @@ export function WorkflowForm () {
             type={NetworkTypeEnum.CAPTIVEPORTAL}
             networkPortalType={GuestNetworkTypeEnum.Workflow}
             wlanSecurity={data?.wlan?.wlanSecurity}
-            forceHideAAAButton={true}
           />
         </GridCol>
       </GridRow>

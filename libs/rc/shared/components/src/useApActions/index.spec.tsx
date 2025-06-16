@@ -10,7 +10,6 @@ import { Provider } from '@acx-ui/store'
 import {
   screen,
   fireEvent,
-  act,
   within,
   waitFor,
   mockServer,
@@ -63,6 +62,11 @@ const apList = {
   ]
 }
 
+const mockFileSaver = jest.fn()
+jest.mock('file-saver', () => (data: string, fileName: string) => {
+  mockFileSaver(data, fileName)
+})
+
 describe('Test useApActions', () => {
 
   beforeEach(() => {
@@ -106,9 +110,9 @@ describe('Test useApActions', () => {
     const { showDeleteAp } = result.current
     const callback = jest.fn()
 
-    act(() => {
-      showDeleteAp(serialNumber, tenantId, callback)
-    })
+
+    showDeleteAp(serialNumber, tenantId, callback)
+
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Are you sure you want to delete')
 
@@ -135,9 +139,7 @@ describe('Test useApActions', () => {
     const { showRebootAp } = result.current
     const callback = jest.fn()
 
-    act(() => {
-      showRebootAp(serialNumber, tenantId, venueId, callback)
-    })
+    showRebootAp(serialNumber, tenantId, venueId, callback)
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Rebooting the AP will disconnect all connected clients')
 
@@ -155,9 +157,7 @@ describe('Test useApActions', () => {
     const { showDownloadApLog } = result.current
     const callback = jest.fn()
 
-    act(() => {
-      showDownloadApLog(serialNumber, tenantId, venueId, callback)
-    })
+    showDownloadApLog(serialNumber, tenantId, venueId, callback)
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('Preparing log')
 
@@ -173,9 +173,7 @@ describe('Test useApActions', () => {
 
     const { showBlinkLedAp } = result.current
 
-    act(() => {
-      showBlinkLedAp(serialNumber, tenantId)
-    })
+    showBlinkLedAp(serialNumber, tenantId)
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('AP LEDs Blink')
   })
