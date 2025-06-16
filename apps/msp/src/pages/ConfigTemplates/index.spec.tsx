@@ -17,11 +17,16 @@ jest.mock('./Templates/ApplyTemplateDrawer', () => ({
   ApplyTemplateDrawer: () => <div>ApplyTemplateDrawer</div>
 }))
 
+jest.mock('./Templates/ShowDriftsDrawer', () => ({
+  ...jest.requireActual('./Templates/ShowDriftsDrawer'),
+  ShowDriftsDrawer: () => <div>ShowDriftsDrawer</div>
+}))
+
 const mockedAppliedToCallback = jest.fn()
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   ConfigTemplateView: (props: ConfigTemplateViewProps) => {
-    const { ApplyTemplateDrawer, AppliedToDrawer, appliedToColumn } = props
+    const { ApplyTemplateView, AppliedToView, ShowDriftsView, appliedToColumn } = props
     const mockedTemplate = {
       id: '1',
       name: 'Template 1',
@@ -34,8 +39,9 @@ jest.mock('@acx-ui/main/components', () => ({
     } as ConfigTemplate
     return <div>
       <div>ConfigTemplateView</div>
-      <ApplyTemplateDrawer setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
-      <AppliedToDrawer setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
+      <ApplyTemplateView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
+      <AppliedToView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
+      <ShowDriftsView setVisible={jest.fn()} selectedTemplate={mockedTemplate} />
       <div>{appliedToColumn.customRender(mockedTemplate, mockedAppliedToCallback)}</div>
     </div>
   }
@@ -59,6 +65,7 @@ describe('ConfigTemplatePage', () => {
     expect(screen.getByText('ConfigTemplateView')).toBeVisible()
     expect(screen.getByText('AppliedToTenantDrawer')).toBeVisible()
     expect(screen.getByText('ApplyTemplateDrawer')).toBeVisible()
+    expect(screen.getByText('ShowDriftsDrawer')).toBeVisible()
 
     const appliedToButton = screen.getByRole('button', { name: /2/i })
     expect(appliedToButton).toBeVisible()
