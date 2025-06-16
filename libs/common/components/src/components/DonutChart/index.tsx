@@ -39,7 +39,8 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  legend: 'value' | 'name' | 'name-value',
+  showValue: boolean,
+  legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
@@ -48,6 +49,7 @@ const defaultProps: DonutChartOptionalProps = {
   animation: false,
   showLabel: false,
   showTotal: true,
+  showValue: false,
   legend: 'value',
   size: 'small'
 }
@@ -192,7 +194,7 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
       value: {
-        ...(isCustomEmptyStatus ? customStyles : commonStyles)
+        ...((isCustomEmptyStatus || props.showValue) ? customStyles : commonStyles) // reusing showValue prop to change subtext size
       }
     },
     'medium': {
@@ -270,9 +272,13 @@ export function DonutChart ({
       show: true,
       text: props.title,
       subtext: props.value
-        ? props.value
-        : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '28%' : 'center',
+        ? props.showTotal
+          ? `{subTextNormal|${props.value}}\n{subTextLarge|${dataFormatter(sum)}}`
+          : `{subTextNormal|${props.value}}`
+        : props.showTotal
+          ? `{subTextNormal|${dataFormatter(sum)}}`
+          : undefined,
+      left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -282,7 +288,13 @@ export function DonutChart ({
         : { ...styles[props.size].title, width: 80, overflow: 'break' },
       subtextStyle: props.secondaryTitleTextStyle
         ? { ...props.secondaryTitleTextStyle }
-        : styles[props.size].value
+        : {
+          ...styles[props.size].value,
+          rich: {
+            subTextLarge: { ...styles['large'].value },
+            subTextNormal: { ...styles[props.size].value }
+          }
+        }
     },
     legend: {
       show: props.showLegend,
@@ -296,7 +308,17 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle
+        ...props.labelTextStyle,
+        rich: {
+          legendBold: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight-bold')
+          },
+          legendNormal: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight')
+          }
+        }
       },
       itemStyle: {
         borderWidth: 0
@@ -304,11 +326,13 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return name
-          case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name': return `{legendNormal|${name}}`
+          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
+          case 'name-bold-value':
+            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
-            return `${dataFormatter(value)}`
+            return `{legendNormal|${dataFormatter(value)}}`
         }
       }
     },
@@ -324,7 +348,10 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label
+          ...styles.label,
+          formatter: (params) => {
+            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+          }
         },
         tooltip: {
           ...tooltipOptions(),
