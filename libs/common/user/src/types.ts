@@ -180,6 +180,46 @@ export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
 
+export interface TenantMspEc {
+  parentMspId?: string;
+  serviceEffectiveDate: string;
+  serviceExpirationDate: string;
+}
+
+export interface TenantDetails {
+  createdDate: string;
+  entitlementId: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean;
+  maintenanceState: boolean;
+  mspEc?: TenantMspEc;
+  name: string;
+  ruckusUser: boolean;
+  status: string;
+  tenantType: string;
+  updatedDate: string;
+  upgradeGroup: string;
+  preferences?: string;
+  tenantMFA?: {
+    mfaStatus: string
+  }
+  accountTier?: AccountTier;
+  subscribes?: string;
+  extendedTrial?: boolean;
+}
+
+export enum TenantType {
+  REC = 'REC',
+  VAR = 'VAR',
+  MSP = 'MSP',
+  MSP_EC = 'MSP_EC',
+  MSP_NON_VAR = 'MSP_NON_VAR',
+  MSP_INTEGRATOR = 'MSP_INTEGRATOR',
+  MSP_INSTALLER = 'MSP_INSTALLER',
+  UNRECOGNIZED = 'UNRECOGNIZED'
+}
+
 export enum raiPermissionsList {
   'READ_DASHBOARD',
   'READ_INCIDENTS',
