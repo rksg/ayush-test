@@ -9,6 +9,7 @@ import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps 
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
+  useGetEdgeFeatureSetsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -19,7 +20,8 @@ import {
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber, EdgeUrlsInfo,
-  getEdgeWanInterfaceCount
+  getEdgeWanInterfaceCount,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission } from '@acx-ui/user'
@@ -44,6 +46,7 @@ import {
   InterfaceSettingsTypeEnum
 } from './types'
 import {
+  DualWanStepTitle,
   getAllInterfaceAsPortInfoFromForm,
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
@@ -83,6 +86,20 @@ export const InterfaceSettings = () => {
   const validateResultRef = useRef<boolean>(true)
 
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
+  const { requiredFw } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.DUAL_WAN]
+      }
+    } }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === IncompatibilityFeatures.DUAL_WAN)?.requiredFw,
+        isFeatureSetLoading: isLoading
+      }
+    }
+  })
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
   const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
@@ -292,7 +309,10 @@ export const InterfaceSettings = () => {
       ...(
         (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
           [{
-            title: $t({ defaultMessage: 'Dual WAN' }),
+            title: <DualWanStepTitle
+              requiredFw={requiredFw}
+              edgeList={clusterInfo?.edgeList}
+            />,
             id: InterfaceSettingsTypeEnum.DUAL_WAN,
             content: <DualWanForm />
           }]:[]
@@ -422,43 +442,41 @@ export const InterfaceSettings = () => {
     rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)] }
   )
 
-  return (
-    <StepsForm<InterfaceSettingsFormType>
-      form={configWizardForm}
-      alert={isSingleNode ? undefined : alertData}
-      onFinish={applyAndFinish}
-      onCancel={handleCancel}
-      initialValues={clusterNetworkSettingsFormData}
-      buttonLabel={{
-        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
-      }}
-      customSubmit={hasUpdatePermission ? {
-        label: $t({ defaultMessage: 'Apply & Continue' }),
-        onCustomFinish: applyAndContinue
-      } : undefined}
-    >
-      {
-        steps.map((item, index) =>
-          <StepsForm.StepForm
-            key={`step-${index}`}
-            name={index.toString()}
-            title={item.title}
-            onFinish={item.onFinish
-              ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
-              : undefined}
-            onFinishFailed={() => {
-              validateResultRef.current = false
-            }}
-            onValuesChange={
-              item.onValuesChange
-                // eslint-disable-next-line max-len
-                ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
-                : undefined
-            }
-          >
-            {item.content}
-          </StepsForm.StepForm>)
-      }
-    </StepsForm>
-  )
+  return <StepsForm<InterfaceSettingsFormType>
+    form={configWizardForm}
+    alert={isSingleNode ? undefined : alertData}
+    onFinish={applyAndFinish}
+    onCancel={handleCancel}
+    initialValues={clusterNetworkSettingsFormData}
+    buttonLabel={{
+      submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
+    }}
+    customSubmit={hasUpdatePermission ? {
+      label: $t({ defaultMessage: 'Apply & Continue' }),
+      onCustomFinish: applyAndContinue
+    } : undefined}
+  >
+    {
+      steps.map((item, index) =>
+        <StepsForm.StepForm
+          key={`step-${index}`}
+          name={index.toString()}
+          title={item.title}
+          onFinish={item.onFinish
+            ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
+            : undefined}
+          onFinishFailed={() => {
+            validateResultRef.current = false
+          }}
+          onValuesChange={
+            item.onValuesChange
+            // eslint-disable-next-line max-len
+              ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
+              : undefined
+          }
+        >
+          {item.content}
+        </StepsForm.StepForm>)
+    }
+  </StepsForm>
 }
