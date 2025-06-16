@@ -14,11 +14,6 @@ interface TopApplicationsFilters {
   endDate: string;
 }
 
-const tabDetails = [
-  { label: 'Client Count', value: 'clientCount' },
-  { label: 'Data Usage', value: 'applicationTraffic' }
-]
-
 export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
@@ -32,123 +27,19 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
     n: 10
   })
 
-  // const results = queryResults?.data
+  const tabDetails = [
+    { label: $t({ defaultMessage: 'Client Count' }), value: 'clientCount' },
+    { label: $t({ defaultMessage: 'Data Usage' }), value: 'applicationTraffic' }
+  ]
 
-  // const results = {
-  //   topNApplicationByClient: [
-  //     {
-  //       applicationTraffic: 16184,
-  //       clientCount: 4,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 5093,
-  //       clientCount: 3,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 2059164,
-  //       clientCount: 3,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 131222,
-  //       clientCount: 2,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 2190550,
-  //       clientCount: 2,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 9157432,
-  //       clientCount: 2,
-  //       name: 'Facebook'
-  //     },
-  //     {
-  //       applicationTraffic: 316055,
-  //       clientCount: 2,
-  //       name: 'Facebook'
-  //     }
-  //     // {
-  //     //   applicationTraffic: 1627108,
-  //     //   clientCount: 2,
-  //     //   name: 'Facebook'
-  //     // },
-  //     // {
-  //     //   applicationTraffic: 115551,
-  //     //   clientCount: 2,
-  //     //   name: 'Facebook'
-  //     // },
-  //     // {
-  //     //   applicationTraffic: 5235759,
-  //     //   clientCount: 2,
-  //     //   name: 'Facebook'
-  //     // }
-  //   ]
-  // }
-  const results = {
-    topNApplicationByClient: [
-      {
-        applicationTraffic: 16184,
-        clientCount: 4,
-        name: 'Facebook'
-      },
-      {
-        applicationTraffic: 5093,
-        clientCount: 3,
-        name: 'Twitter'
-      }
-      // {
-      //   applicationTraffic: 2059164,
-      //   clientCount: 3,
-      //   name: 'Google'
-      // },
-      // {
-      //   applicationTraffic: 131222,
-      //   clientCount: 2,
-      //   name: 'Whatsapp'
-      // },
-      // {
-      //   applicationTraffic: 2190550,
-      //   clientCount: 2,
-      //   name: 'YouTube'
-      // },
-      // {
-      //   applicationTraffic: 9157432,
-      //   clientCount: 2,
-      //   name: 'Netflix'
-      // },
-      // {
-      //   applicationTraffic: 316055,
-      //   clientCount: 2,
-      //   name: 'apple_location'
-      // },
-      // {
-      //   applicationTraffic: 1627108,
-      //   clientCount: 2,
-      //   name: 'apple_update'
-      // },
-      // {
-      //   applicationTraffic: 115551,
-      //   clientCount: 2,
-      //   name: 'chrome_update'
-      // },
-      // {
-      //   applicationTraffic: 5235759,
-      //   clientCount: 2,
-      //   name: 'dns'
-      // }
-    ]
-  }
+  const results = queryResults?.data
 
-  const data = results.topNApplicationByClient
+  const data = results?.topNApplicationByClient
     .map(item => ({
       name: item.name,
       value: item[selectedTab]
     }))
-    .sort((a, b) => b.value - a.value)
+    .sort((a, b) => b.value - a.value) || []
 
   const mid = Math.ceil(data.length / 2)
   const leftColumn = data.slice(0, mid)
@@ -165,7 +56,8 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
       {items.map(({ name, value }) => (
         <UI.ColumnItemWrapper key={name}>
           <div>
-            {IconList.find(icon => icon.name === name)?.icon}
+            {IconList.find(icon => name.toLowerCase().includes(icon.name))?.icon ||
+              IconList.find(icon => icon.name === 'chrome')?.icon}
             <span>{name}</span>
           </div>
           <span><b>{formatValue(value)}</b></span>
@@ -179,31 +71,29 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
   return (
     <Loader states={[queryResults]}>
       <Card type='default' title={title}>
-        {results ? (
-          <>
-            <UI.ContentSwitcherWrapper>
-              <ContentSwitcher
-                tabDetails={tabDetails.map(({ label, value }) => ({
-                  label,
-                  value,
-                  children: null
-                }))}
-                value={selectedTab}
-                onChange={(value) => setSelectedTab(value as 'clientCount' | 'applicationTraffic')}
-                size='small'
-                align='right'
-                noPadding
-              />
-            </UI.ContentSwitcherWrapper>
-            <GridRow>
-              <UI.LeftColumnWrapper col={{ span: 12 }}>
-                {renderColumn(leftColumn)}
-              </UI.LeftColumnWrapper>
-              <UI.RightColumnWrapper col={{ span: 12 }}>
-                {renderColumn(rightColumn)}
-              </UI.RightColumnWrapper>
-            </GridRow>
-          </>
+        <UI.ContentSwitcherWrapper>
+          <ContentSwitcher
+            tabDetails={tabDetails.map(({ label, value }) => ({
+              label,
+              value,
+              children: null
+            }))}
+            value={selectedTab}
+            onChange={(value) => setSelectedTab(value as 'clientCount' | 'applicationTraffic')}
+            size='small'
+            align='right'
+            noPadding
+          />
+        </UI.ContentSwitcherWrapper>
+        {data.length > 0 ? (
+          <GridRow>
+            <UI.LeftColumnWrapper col={{ span: 12 }}>
+              {renderColumn(leftColumn)}
+            </UI.LeftColumnWrapper>
+            <UI.RightColumnWrapper col={{ span: 12 }}>
+              {renderColumn(rightColumn)}
+            </UI.RightColumnWrapper>
+          </GridRow>
         ) : (
           <NoData />
         )}
