@@ -1,7 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
-import { GridCol }                           from '@acx-ui/components'
-import { FacebookOutlined, TwitterOutlined } from '@acx-ui/icons'
+import { GridCol } from '@acx-ui/components'
 
 export const ContentSwitcherWrapper = styled.div`
   margin-top: -38px;
@@ -33,18 +32,4 @@ export const ColumnHeaderWrapper = styled.div`
 export const ColumnItemWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-`
-
-const socialIconStyle = css`
-  width: 21px;
-  height: 21px;
-  margin-top: 10px;
-`
-
-export const FacebookIcon = styled(FacebookOutlined)`
-  ${socialIconStyle}
-`
-
-export const TwitterIcon = styled(TwitterOutlined)`
-  ${socialIconStyle}
 `
