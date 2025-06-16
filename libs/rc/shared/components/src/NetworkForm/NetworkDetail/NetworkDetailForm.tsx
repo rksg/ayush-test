@@ -241,7 +241,9 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram />
+        <NetworkDiagram
+          type={form.getFieldValue('type')}
+        />
       </Col>
     </Row>
   )

@@ -17,7 +17,8 @@ import {
   ServiceOperation,
   ServiceType, useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -34,6 +35,7 @@ export const WifiCallingForm = () => {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.WIFI_CALLING)
   const params = useParams()
 
   const serviceName = ''
@@ -82,7 +84,7 @@ export const WifiCallingForm = () => {
         await saveEnforcementConfig(result.response.id)
       }
 
-      navigate(previousPath, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
