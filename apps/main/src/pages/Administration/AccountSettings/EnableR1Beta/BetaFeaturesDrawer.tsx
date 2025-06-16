@@ -59,7 +59,7 @@ function BetaFeaturesDrawer (
             <List.Item id={item.key}>
               <List.Item.Meta
                 avatar={<CaretRightList/>}
-                title={$t(item.description)}
+                title={$t(item?.description)}
               />
             </List.Item>
           }

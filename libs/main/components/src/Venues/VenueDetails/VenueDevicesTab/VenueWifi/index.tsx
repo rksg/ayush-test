@@ -96,7 +96,6 @@ export function VenueWifi () {
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
 
   const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
@@ -215,17 +214,15 @@ export function VenueWifi () {
           rlsClause={`"zoneName" in ('${venueId}')`}
         />
       </Tabs.TabPane>
-      { isShowApGroupTable && (
-        <Tabs.TabPane key='apgroup'
-          tab={<Tooltip title={$t({ defaultMessage: 'AP Group List' })}>
-            <DevicesOutlined />
-          </Tooltip>}>
-          <ApGroupTable rowSelection={{ type: 'checkbox' }}
-            searchable={true}
-            enableActions={true}
-          />
-        </Tabs.TabPane>
-      )}
+      <Tabs.TabPane key='apgroup'
+        tab={<Tooltip title={$t({ defaultMessage: 'AP Group List' })}>
+          <DevicesOutlined />
+        </Tooltip>}>
+        <ApGroupTable rowSelection={{ type: 'checkbox' }}
+          searchable={true}
+          enableActions={true}
+        />
+      </Tabs.TabPane>
     </IconThirdTab>
   )
 }

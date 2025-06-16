@@ -1,7 +1,6 @@
 import {  Loader }                from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useDashboardV2OverviewQuery,
   useDeviceSummariesQuery,
   useRwgListQuery,
   useGetIotControllerListQuery
@@ -24,11 +23,9 @@ export function DevicesDashboardWidgetV2 () {
   const params = useParams()
   const { venueIds } = useDashboardFilter()
 
-  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-  const query = isNewDashboardQueryEnabled ? useDeviceSummariesQuery : useDashboardV2OverviewQuery
 
-  const queryResults = query({
+  const queryResults = useDeviceSummariesQuery({
     params: useParams(),
     payload: {
       filters: {
@@ -41,10 +38,8 @@ export function DevicesDashboardWidgetV2 () {
         apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchStackedData: getSwitchStackedBarChartData(data),
         edgeStackedData: getEdgeStackedBarChartData(data?.summary?.edges),
-        apTotalCount: isNewDashboardQueryEnabled ?
-          data?.summary?.aps?.totalCount : data?.aps?.totalCount,
-        switchTotalCount: isNewDashboardQueryEnabled ?
-          data?.summary?.switches?.totalCount : data?.switches?.totalCount,
+        apTotalCount: data?.summary?.aps?.totalCount,
+        switchTotalCount: data?.summary?.switches?.totalCount,
         edgeTotalCount: data?.summary?.edges?.totalCount
       },
       ...rest

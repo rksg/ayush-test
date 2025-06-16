@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                                                            from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                                                                                             from '@acx-ui/rc/components'
-import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                                          from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                                                                                                         from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                                                                                          from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, ServiceType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,6 +16,12 @@ import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mocked
 
 import MyServices from '.'
 
+
+jest.mock('../UnifiedServices/useUnifiedServiceListWithTotalCount', () => ({
+  ...jest.requireActual('../UnifiedServices/useUnifiedServiceListWithTotalCount'),
+  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false }),
+  useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
+}))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
@@ -25,6 +31,14 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
+const mockedUseDhcpStateMap = jest.fn()
+const mockedUseMdnsProxyStateMap = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
+  useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
+}))
+
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
 
@@ -78,6 +92,20 @@ describe('MyServices', () => {
       )
     )
   })
+
+  beforeEach(() => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
+  })
+
   afterEach(() => {
     getEnhancedMdnsProxyRequestSpy.mockClear()
   })
@@ -125,8 +153,11 @@ describe('MyServices', () => {
   })
 
   it('should render Edge MDNS when FF is ON', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: true,
+      [ServiceType.EDGE_MDNS_PROXY]: true,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
+    })
 
     render(
       <Provider>
@@ -183,5 +214,44 @@ describe('MyServices', () => {
 
       expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
     })
+  })
+
+  it('should render DHCP Consolidation corredectly when FF is ON', async () => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: false,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: true
+    })
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/DHCP for Wi-Fi/i)).toBeNull()
+    expect(screen.queryByText(/DHCP for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('DHCP (0)')).toBeInTheDocument()
+  })
+
+  it('should render mDNS Proxy Consolidation corredectly when FF is ON', async () => {
+    mockedUseMdnsProxyStateMap.mockReturnValue({
+      [ServiceType.MDNS_PROXY]: false,
+      [ServiceType.EDGE_MDNS_PROXY]: false,
+      [ServiceType.MDNS_PROXY_CONSOLIDATION]: true
+    })
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('mDNS Proxy (16)')).toBeInTheDocument()
   })
 })

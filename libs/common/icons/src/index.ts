@@ -435,5 +435,6 @@ export { ReactComponent as OweTransition } from './icons/OweTransition.svg'
 export { ReactComponent as CrossCircleSolidIcon } from './icons/CrossCircleSolidIcon.svg'
 export { ReactComponent as YouTube } from './icons/YouTube.svg'
 export { ReactComponent as Netflix } from './icons/Netflix.svg'
+export { ReactComponent as SamlAuthActionTypeIcon } from './icons/SamlAuthActionTypeIcon.svg'
 
 export * from './styledComponents'

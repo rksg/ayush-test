@@ -28,7 +28,8 @@ export function DpskOverview (props: DpskOverviewProps) {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
   const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
-  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const dpskInfo = [
@@ -61,10 +62,11 @@ export function DpskOverview (props: DpskOverviewProps) {
       content: data && displayDefaultAccess(data.policyDefaultAccess),
       visible: isCloudpathEnabled
     },
-    ...(isIdentityGroupRequired ? [{
+    ...(isIdentityGroupRequired && (isTemplate ? isIdentityGroupTemplateEnabled : true) ? [{
       title: intl.$t({ defaultMessage: 'Identity Group' }),
       content: <IdentityGroupLink
         enableFetchName
+        showNoData
         disableLink={isDpskRole}
         personaGroupId={data?.identityId}
       />,
