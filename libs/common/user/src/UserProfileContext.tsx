@@ -2,8 +2,8 @@ import { createContext, useContext } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { RolesEnum as Role } from '@acx-ui/types'
-import { useTenantId }       from '@acx-ui/utils'
+import { RolesEnum as Role }        from '@acx-ui/types'
+import { AccountType, useTenantId } from '@acx-ui/utils'
 
 import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
@@ -16,8 +16,8 @@ import {
   useGetAllowedOperationsQuery,
   useGetTenantDetailsQuery
 } from './services'
-import { FeatureAPIResults, TenantType, UserProfile } from './types'
-import { setUserProfile, hasRoles, hasAccess }        from './userProfile'
+import { FeatureAPIResults, UserProfile }      from './types'
+import { setUserProfile, hasRoles, hasAccess } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -38,7 +38,7 @@ export interface UserProfileContextProps {
   venuesList?: string[]
   selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
-  tenantType?: TenantType
+  tenantType?: AccountType
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -56,7 +56,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   } = useGetUserProfileQuery({ params: { tenantId } })
 
   const { data: tenantDetails } = useGetTenantDetailsQuery({ tenantId })
-  const tenantType = tenantDetails?.tenantType as TenantType
+  const tenantType = tenantDetails?.tenantType as AccountType
 
   let abacEnabled = false,
     isCustomRole = false,

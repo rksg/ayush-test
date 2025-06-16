@@ -10,15 +10,14 @@ import {
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
-import { AccountTier } from '@acx-ui/utils'
+import { AccountTier, AccountType } from '@acx-ui/utils'
 
 import {
   type UserProfile,
   type RaiPermission,
   type RaiPermissions,
   CustomRoleType,
-  FeatureAPIResults,
-  TenantType
+  FeatureAPIResults
 } from './types'
 
 type Permission = {
@@ -41,7 +40,7 @@ type Profile = {
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[],
-  tenantType?: TenantType
+  tenantType?: AccountType
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
