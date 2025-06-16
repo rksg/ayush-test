@@ -122,10 +122,9 @@ const parseHotspot20SettingDataToSave = (data: NetworkSaveData, editMode: boolea
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData = { ...data }
-
-  if(!saveData.wlan) {
-    saveData.wlan = {}
+  let saveData = {
+    ...data,
+    wlan: data.wlan ? { ...data.wlan } : {}
   }
 
   saveData.wlan.wlanSecurity = (saveData.enableOweTransition)
