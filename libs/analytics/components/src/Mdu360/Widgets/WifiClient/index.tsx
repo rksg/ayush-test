@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { DonutChart, ContentSwitcher, qualitativeColorSet, Card, Loader, NoData } from '@acx-ui/components'
+import { DonutChart, ContentSwitcher, Card, Loader, NoData } from '@acx-ui/components'
 
 import { useTopNWifiClientQuery } from './services'
-
-const colors = qualitativeColorSet()
 
 interface WifiClientFilters {
   startDate: string;
@@ -27,16 +25,15 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   })
 
   const tabDetails = [
-    { label: $t({ defaultMessage: 'Device Type' }), value: 'deviceType' },
-    { label: $t({ defaultMessage: 'Manufacturer' }), value: 'manufacturer' }
+    { label: $t({ defaultMessage: 'Device Type' }), value: 'deviceType', children: null },
+    { label: $t({ defaultMessage: 'Manufacturer' }), value: 'manufacturer', children: null }
   ]
 
   const results = queryResults?.data?.nodes?.[0]
 
-  const chartData = (results?.[selectedTab] ?? []).map((d, i) => ({
+  const chartData = (results?.[selectedTab] ?? []).map((d) => ({
     name: d.name,
-    value: d.value,
-    color: colors[i]
+    value: d.value
   }))
 
   const title = $t({ defaultMessage: 'Wi-Fi Client' })
@@ -49,10 +46,10 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
       <Card type='default' title={title}>
         <div style={{ marginTop: -38 }}>
           <ContentSwitcher
-            tabDetails={tabDetails.map(({ label, value }) => ({
+            tabDetails={tabDetails.map(({ label, value, children }) => ({
               label,
               value,
-              children: null
+              children
             }))}
             value={selectedTab}
             onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
@@ -66,13 +63,12 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
             {({ height, width }) => (
               <DonutChart
                 data={chartData}
-                style={{ width: width * 0.95, height: height * 0.95 }}
+                style={{ width: width, height: height }}
                 legend='name-bold-value'
                 size='small'
                 showLegend
                 showTotal
                 value={centerText}
-                labelTextStyle={{ overflow: 'breakAll', width: 240 }}
                 showLabel={true}
                 showValue={true}
               />
