@@ -164,7 +164,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     type
   } = (useWatch([], form) ?? {})
 
-  const isDynamicFW10020bcd2 = type === LAG_TYPE.DYNAMIC &&
+  const isDynamicFW10020bcd2 = isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
     isFirmwareVersionAbove10020bCd2(switchDetailHeader?.firmware)
 
   useEffect(() => {
