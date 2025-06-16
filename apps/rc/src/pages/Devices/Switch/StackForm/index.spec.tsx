@@ -37,7 +37,7 @@ import {
 
 import { StackForm } from '.'
 
-const { mockSwitchCurrentVersions, mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 const mockedUsedNavigate = jest.fn()
 
