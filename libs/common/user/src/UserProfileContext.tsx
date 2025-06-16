@@ -13,7 +13,8 @@ import {
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
   useGetEarlyAccessQuery,
-  useGetAllowedOperationsQuery
+  useGetAllowedOperationsQuery,
+  useGetTenantDetailsQuery
 } from './services'
 import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -37,6 +38,7 @@ export interface UserProfileContextProps {
   venuesList?: string[]
   selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
+  tenantType?: string
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -52,6 +54,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
+
+  const { data: tenantDetails } = useGetTenantDetailsQuery({ tenantId })
+  const tenantType = tenantDetails?.tenantType
 
   let abacEnabled = false,
     isCustomRole = false,
@@ -151,7 +156,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
-      betaFeaturesList
+      betaFeaturesList,
+      tenantType
     })
   }
 
@@ -174,7 +180,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       hasAllVenues,
       venuesList,
       selectedBetaListEnabled,
-      betaFeaturesList
+      betaFeaturesList,
+      tenantType
     }}
     children={props.children}
   />

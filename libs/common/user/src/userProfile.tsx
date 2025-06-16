@@ -39,7 +39,8 @@ type Profile = {
   hasAllVenues?: boolean,
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
-  betaFeaturesList?: FeatureAPIResults[]
+  betaFeaturesList?: FeatureAPIResults[],
+  tenantType?: string
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
