@@ -26,13 +26,14 @@ import {
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType,
+  useDhcpStateMap,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { isCoreTier, getUserProfile } from '@acx-ui/user'
 
-import { ServiceCard }                         from '../ServiceCard'
-import { useMdnsProxyConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
+import { ServiceCard }                                                         from '../ServiceCard'
+import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount } from '../UnifiedServices/useUnifiedServiceListWithTotalCount'
 
 const defaultPayload = {
   fields: ['id']
@@ -49,13 +50,13 @@ export default function MyServices () {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+  const dhcpStateMap = useDhcpStateMap()
   const mdnsProxyDisabledMap = useMdnsProxyStateMap()
 
   const services = [
@@ -93,7 +94,8 @@ export default function MyServices () {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetDHCPProfileListViewModelQuery({
         params, payload: defaultPayload, enableRbac: isEnabledRbacService
-      }).data?.totalCount
+      }).data?.totalCount,
+      disabled: !dhcpStateMap[ServiceType.DHCP]
     },
     {
       type: ServiceType.EDGE_DHCP,
@@ -101,9 +103,17 @@ export default function MyServices () {
       totalCount: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeHaReady || !isEdgeDhcpHaReady
+        skip: !dhcpStateMap[ServiceType.EDGE_DHCP]
       }).data?.totalCount,
-      disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
+      disabled: !dhcpStateMap[ServiceType.EDGE_DHCP]
+    },
+    {
+      type: ServiceType.DHCP_CONSOLIDATION,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: useDhcpConsolidationTotalCount({
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
+      }, !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]).data?.totalCount,
+      disabled: !dhcpStateMap[ServiceType.DHCP_CONSOLIDATION]
     },
     {
       type: ServiceType.PIN,
