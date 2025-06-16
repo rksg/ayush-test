@@ -8,9 +8,9 @@ import { useParams }                    from 'react-router-dom'
 import { showToast }                                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetPrivacySettingsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, PrivacyFeatureName }                   from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, PrivacyFeatureName, TenantType }       from '@acx-ui/rc/utils'
 import { hasAllowedOperations, useUserProfileContext }                  from '@acx-ui/user'
-import { AccountType, getOpsApi }                                       from '@acx-ui/utils'
+import { getOpsApi }                                                    from '@acx-ui/utils'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -38,7 +38,7 @@ export default function Privacy () {
 
   const isAppVisibilityEnabled = useIsSplitOn(Features.MSP_APP_VISIBILITY)
 
-  const isMsp = (tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR)
+  const isMsp = (tenantType === TenantType.MSP || tenantType === TenantType.MSP_NON_VAR)
 
   const { data } = useGetPrivacySettingsQuery({ params })
 
