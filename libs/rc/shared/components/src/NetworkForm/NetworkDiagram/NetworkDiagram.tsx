@@ -3,13 +3,14 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }       from '@acx-ui/components'
+import { Button }   from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
   networkTypes,
   WlanSecurityEnum,
-  PskWlanSecurityEnum
+  PskWlanSecurityEnum,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
@@ -26,9 +27,10 @@ import CloudpathDiagram                from '../assets/images/network-wizard-dia
 import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
 import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
 import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
-import DpskCloudpathNonProxyDiagram    from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-non-proxy.png'
-import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
-import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
+import DpskAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/dpsk-aaa-proxy.png'
+import DpskAaaDiagram                  from '../assets/images/network-wizard-diagrams/dpsk-aaa.png'
+import DpskCloudpathProxyDiagram       from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-proxy.png'
+import DpskCloudpathDiagram            from '../assets/images/network-wizard-diagrams/dpsk-cloudpath.png'
 import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
 import GuestPassWithOweDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
 import GuestPassWithPskDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
@@ -69,16 +71,19 @@ import { Diagram }                     from '../styledComponents'
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
+  enableAuthProxy?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAccountingService?: boolean
 }
 
 interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  enableAuthProxy?: boolean;
-  enableAccountingProxy?: boolean;
+  // enableAuthProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   wlanSecurity?: WlanSecurityEnum
+  // enableAccountingService?: boolean
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -87,7 +92,7 @@ interface OpenDiagramProps extends DiagramProps {
 interface PskDiagramProps extends DiagramProps {
   enableMACAuth?: boolean
   isMacRegistrationList?: boolean
-  enableAccountingService?: boolean
+  // enableAccountingService?: boolean
 }
 interface AaaDiagramProps extends DiagramProps {
   enableAuthProxy?: boolean;
@@ -129,18 +134,17 @@ function getDiagram (props: NetworkDiagramProps) {
 }
 
 function getDPSKDiagram (props:DpskDiagramProps) {
-  return props?.isCloudpathEnabled ? getDpskUsingRadiusDiagram(props) : DpskDiagram
-}
-function getDpskUsingRadiusDiagram (props: DpskDiagramProps) {
-  const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
-  const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
-  if (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-    return DpskCloudpathNonProxyDiagram
+  if (props?.isCloudpathEnabled) {
+    return (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed)?
+      getAAADiagramByParams(props, DpskCloudpathProxyDiagram, DpskCloudpathDiagram)
+      : getAAADiagramByParams(props, DpskCloudpathProxyDiagram, DpskAaaDiagram)
   } else {
-    return enableAuthProxyService || enableAccProxyService ?
-      DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
+    return (props?.enableAccountingService) ?
+      getAAADiagramByParams(props, DpskAaaProxyDiagram, DpskAaaDiagram)
+      : DpskDiagram
   }
 }
+
 function getPSKDiagram (props: PskDiagramProps) {
   if(props?.enableMACAuth && props?.isMacRegistrationList) {
     return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
@@ -247,10 +251,14 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const title = data?.type ? $t(networkTypes[data?.type]) : undefined
+  const networkType = props.type ?? data?.type
+  const enableAuthProxy = getEnableAuthProxy(props, data, networkType)
+  const enableAccountingProxy = props.enableAccountingProxy ?? data?.enableAccountingProxy
+  const enableAccountingService = props.enableAccountingService ?? data?.enableAccountingService
 
-  const showButtons = (isForceHideButtons(props))? false :
-    !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
-    && data?.enableAccountingService
+  const showButtons = (isForceHideButtons(props, networkType))? false :
+    !!enableAuthProxy !== !!enableAccountingProxy
+    && !!enableAccountingService
 
   const diagram = getDiagram({
     ...data,
@@ -258,8 +266,19 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
     ...props
   })
 
-  function isForceHideButtons (props: NetworkDiagramProps) {
-    if(props.type === NetworkTypeEnum.PSK) {
+  function getEnableAuthProxy (
+    props: NetworkDiagramProps, data: NetworkSaveData | null, networkType?:NetworkTypeEnum
+  ) {
+    if(networkType === NetworkTypeEnum.DPSK){
+      return props.enableAuthProxy
+    } else {
+      return props.enableAuthProxy ?? data?.enableAuthProxy
+    }
+  }
+
+  function isForceHideButtons (props: NetworkDiagramProps, networkType?:NetworkTypeEnum) {
+
+    if(networkType === NetworkTypeEnum.PSK) {
       const pskProps = props as PskDiagramProps
       return !(pskProps.enableMACAuth && !pskProps.isMacRegistrationList)
     }
@@ -268,6 +287,11 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
     if(props.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       const cpProps = props as CaptivePortalDiagramProps
       return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow
+    }
+
+    if(networkType === NetworkTypeEnum.DPSK) {
+      const dpskProps = props as DpskDiagramProps
+      return !dpskProps.isCloudpathEnabled
     }
 
     return false

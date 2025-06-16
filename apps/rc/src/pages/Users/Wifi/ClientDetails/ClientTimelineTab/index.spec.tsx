@@ -10,7 +10,7 @@ import { events, eventsMeta } from './__tests__/fixtures'
 import { ClientTimelineTab } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  useEventsTableQuery: jest.fn(),
   EventTable: () => <div data-testid='EventTable'></div>
 }))
 

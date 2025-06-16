@@ -23,8 +23,8 @@ jest.mock('./pages/ConfigTemplates', () => ({
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap(),
+  withTemplateFeatureGuard: () => jest.fn(),
   AAAForm: () => <div>AAAForm</div>,
   AccessControlForm: () => <div>AccessControlForm</div>,
   NetworkForm: () => <div>NetworkForm</div>,
@@ -39,12 +39,19 @@ jest.mock('@acx-ui/rc/components', () => ({
   AddEthernetPortProfile: () => <div>AddEthernetPortProfile</div>,
   SyslogForm: () => <div>SyslogForm</div>,
   RogueAPDetectionForm: () => <div>RogueAPDetectionForm</div>,
-  ApGroupEdit: () => <div>ApGroupEdit</div>
+  ApGroupEdit: () => <div>ApGroupEdit</div>,
+  AccessControlDetail: () => <div>AccessControlDetail</div>,
+  AAAPolicyDetail: () => <div>AccessControlDetail</div>,
+  NetworkDetails: () => <div>NetworkDetails</div>,
+  VLANPoolDetail: () => <div>VLANPoolDetail</div>,
+  DHCPDetail: () => <div>DHCPDetail</div>,
+  PersonaGroupDetails: () => <div>PersonaGroupDetails</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
-  ...jest.requireActual('@acx-ui/main/components'),
-  VenuesForm: () => <div>VenuesForm</div>
+  VenuesForm: () => <div>VenuesForm</div>,
+  VenueDetails: () => <div>VenueDetails</div>,
+  VenueEdit: () => <div>VenueEdit</div>
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {

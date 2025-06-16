@@ -30,15 +30,29 @@ jest.mock('@acx-ui/msp/services', () => ({
     name: ''
   } })
 }))
-jest.mock('@acx-ui/main/components', () => ({
-  ...jest.requireActual('@acx-ui/main/components'),
-  LicenseBanner: () => <div data-testid='license-banner' />,
-  ActivityButton: () => <div data-testid='activity-button' />,
-  AlarmsButton: () => <div data-testid='alarms-button' />,
-  HelpButton: () => <div data-testid='help-button' />,
-  UserButton: () => <div data-testid='user-button' />,
-  FetchBot: () => <div data-testid='fetch-bot' />
-}))
+jest.mock('@acx-ui/main/components', () => {
+  const React = require('react')
+  return {
+    LicenseBanner: () => <div data-testid='license-banner' />,
+    ActivityButton: () => <div data-testid='activity-button' />,
+    AlarmsButton: () => <div data-testid='alarms-button' />,
+    HelpButton: () => <div data-testid='help-button' />,
+    UserButton: () => <div data-testid='user-button' />,
+    FetchBot: () => <div data-testid='fetch-bot' />,
+    GlobalSearchBar: () => <div data-testid='global-search-bar' />,
+    PropertyUnitDetails: () => <div data-testid='property-unit-details' />,
+    RegionButton: () => <div data-testid='region-button' />,
+    VenueDetails: () => <div data-testid='venue-details' />,
+    VenueEdit: () => <div data-testid='venue-edit' />,
+    VenuesForm: () => <div data-testid='venues-form' />,
+    HeaderContext: React.createContext({
+      setSearchExpanded: jest.fn(),
+      setLicenseExpanded: jest.fn(),
+      searchExpanded: true,
+      licenseExpanded: false
+    })
+  }
+})
 jest.mock('@acx-ui/rc/components', () => ({
   withTemplateFeatureGuard: () => () => <div data-testid='with-template-feature-guard' />,
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
@@ -52,9 +66,6 @@ jest.mock('@acx-ui/user', () => ({
 }))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
-})
-jest.mock('./pages/AICanvas/archived/AICanvasQ1', () => () => {
-  return <div data-testid='canvas' />
 })
 jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
@@ -188,19 +199,6 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('networks')
-  })
-
-  test('should navigate to canvas if the feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/canvas',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByTestId('canvas')).toBeInTheDocument()
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
