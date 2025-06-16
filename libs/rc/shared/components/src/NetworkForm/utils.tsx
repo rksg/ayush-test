@@ -438,7 +438,7 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
     case NetworkTypeEnum.DPSK:
       return true
     case NetworkTypeEnum.OPEN:
-      return !!saveData.wlan?.macAuthMacFormat
+      return !!saveData.wlan?.macAddressAuthentication
     case NetworkTypeEnum.AAA:
       return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:

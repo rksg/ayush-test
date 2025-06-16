@@ -324,8 +324,11 @@ export function NetworkForm (props:{
         delete updateSate.accountingRadius
       }
 
-      // Only when isCloudpathEnabled exists and value is false then delete radius data
-      if (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) {
+      const isDeleteAuthRadiusCase =
+        (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true)
+
+      if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius

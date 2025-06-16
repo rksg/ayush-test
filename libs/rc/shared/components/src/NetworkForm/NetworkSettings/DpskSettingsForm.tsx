@@ -77,7 +77,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
 
   const setFieldsValue = () => {
     data && form.setFieldsValue({
-      isCloudpathEnabled: data.authRadius?true:false,
+      isCloudpathEnabled: data?.isCloudpathEnabled,
       dpskServiceProfileId: data?.dpskServiceProfileId,
       dpskWlanSecurity: data?.wlan?.wlanSecurity,
       enableAccountingService: data.enableAccountingService,
