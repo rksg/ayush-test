@@ -45,7 +45,6 @@ const defaultPayload = {
 const defaultArray: Venue[] = []
 
 export function VenueSetting () {
-  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
@@ -202,31 +201,28 @@ export function VenueSetting () {
       <Row gutter={20}>
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} />
-          {
-            profileOnboardOnlyEnabled &&
-              <Form.Item style={{ marginBottom: '0px' }}>
-                <Form.Item
-                  noStyle
-                  name='applyOnboardOnly'
-                  valuePropName='checked'
-                  initialValue={true}
-                >
-                  <Switch />
-                </Form.Item>
-                <UI.ApplyOnboardOnlySpan>
-                  {$t({ defaultMessage: 'Apply profile updates to existing switches' })}
-                </UI.ApplyOnboardOnlySpan>
-                <UI.Hint>
-                  <Tooltip
-                    // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'Turn off the toggle button to apply profile updates only to the newly added switches.' })}
-                    overlayStyle={{ minWidth: '330px' }}
-                  >
-                    <InformationSolid />
-                  </Tooltip>
-                </UI.Hint>
-              </Form.Item>
-          }
+          <Form.Item style={{ marginBottom: '0px' }}>
+            <Form.Item
+              noStyle
+              name='applyOnboardOnly'
+              valuePropName='checked'
+              initialValue={true}
+            >
+              <Switch />
+            </Form.Item>
+            <UI.ApplyOnboardOnlySpan>
+              {$t({ defaultMessage: 'Apply profile updates to existing switches' })}
+            </UI.ApplyOnboardOnlySpan>
+            <UI.Hint>
+              <Tooltip
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'Turn off the toggle button to apply profile updates only to the newly added switches.' })}
+                overlayStyle={{ minWidth: '330px' }}
+              >
+                <InformationSolid />
+              </Tooltip>
+            </UI.Hint>
+          </Form.Item>
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}

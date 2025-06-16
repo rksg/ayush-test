@@ -178,14 +178,4 @@ describe('CustomizeWidgetDrawer', () => {
     )
     expect(screen.queryByText('Time Range')).not.toBeInTheDocument()
   })
-
-  it('no render time range if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <CustomizeWidgetDrawer {...mockProps} />
-      </Provider>
-    )
-    expect(screen.queryByText('Time Range')).not.toBeInTheDocument()
-  })
 })
