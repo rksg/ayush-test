@@ -14,19 +14,21 @@ import {
   useSwitchPortlistQuery,
   useLazyGetPortSettingQuery
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import { isOperationalSwitch }                 from '@acx-ui/rc/switch/utils'
 import {
   getSwitchModel,
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
-  SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery,
-  SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010gOr10020b,
-  isFirmwareVersionAbove10010gCd1Or10020bCd1,
+  isFirmwareVersionAbove10010gCd1Or10020bCd1
+} from '@acx-ui/rc/switch/utils'
+import {
+  SwitchMessages,
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo,
   SwitchUrlsInfo,
   PoeSchedulerType
 } from '@acx-ui/rc/utils'
@@ -55,12 +57,12 @@ export function SwitchPortTable (props: {
   const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
   const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
   const isSwitchTimeBasedPoeEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_TIME_BASED_POE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
@@ -399,7 +401,14 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'LAG Name' }),
     dataIndex: 'lagName',
     sorter: true,
-    show: false
+    show: false,
+    render: (_, row) => {
+      let lagName = row.lagName
+      if(isSwitchLagForceUpEnabled && row?.lagForceUpPort){
+        lagName = `${lagName} ${$t({ defaultMessage: '(Force-up)' })}`
+      }
+      return lagName
+    }
   }, {
     key: 'neighborName',
     title: $t({ defaultMessage: 'Neighbor Name' }),
@@ -473,7 +482,7 @@ export function SwitchPortTable (props: {
     sorter: true,
     show: false
   },
-  ...(isSwitchV6AclEnabled ? [{
+  {
     key: 'vsixIngressAclName',
     title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
     dataIndex: 'vsixIngressAclName',
@@ -485,7 +494,7 @@ export function SwitchPortTable (props: {
     dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false
-  }] : []), {
+  }, {
     key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',

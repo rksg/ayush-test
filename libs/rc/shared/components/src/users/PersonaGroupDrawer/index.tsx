@@ -1,7 +1,8 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer }       from '@acx-ui/components'
+import { useIdentityGroupPageHeaderTitle } from '@acx-ui/cloudpath/components'
+import { Drawer }                          from '@acx-ui/components'
 import {
   CommonAsyncResponse
 } from '@acx-ui/rc/services'
@@ -23,6 +24,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { isEdit, data, visible, onClose, requiredDpsk } = props
+  const pageTitle = useIdentityGroupPageHeaderTitle({ isEdit })
   const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
 
   const onFinish = async (contextData: PersonaGroup) => {
@@ -72,11 +74,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   return (
     <Drawer
       destroyOnClose={true}
-      title={
-        isEdit
-          ? $t({ defaultMessage: 'Edit Identity Group' })
-          : $t({ defaultMessage: 'Create Identity Group' })
-      }
+      title={pageTitle}
       width={'400px'}
       visible={visible}
       onClose={() => onClose()}

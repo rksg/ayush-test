@@ -42,7 +42,6 @@ export function SwitchVeTable (props: {
   const params = useParams()
   const { isVenueLevel, switchInfo } = props
   const [cliApplied, setCliApplied] = useState(false)
-  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: switchDetail }
@@ -146,7 +145,7 @@ export function SwitchVeTable (props: {
     dataIndex: 'egressAclName',
     sorter: true
   },
-  ...(isSwitchV6AclEnabled ? [{
+  {
     key: 'vsixIngressAclName',
     title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
     dataIndex: 'vsixIngressAclName',
@@ -158,7 +157,7 @@ export function SwitchVeTable (props: {
     dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false
-  }] : [])
+  }
   ]
 
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')

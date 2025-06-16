@@ -150,9 +150,9 @@ export function MspRecCustomers () {
       'wifiLicense',
       'switchLicense',
       'streetAddress',
-      'propertyCode'
+      ...(mspHspDisplayToggle ? ['propertyCode'] : [])
     ],
-    searchTargetFields: ['name','propertyCode']
+    searchTargetFields: ['name', ...(mspHspDisplayToggle ? ['propertyCode'] : [])]
   }
 
   const integratorPayload = {

@@ -40,7 +40,9 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' }),
   [ServiceType.EDGE_OLT]: defineMessage(
     { defaultMessage: 'NOKIA GPON Services' }),
-  [ServiceType.PORTAL_PROFILE]: defineMessage({ defaultMessage: 'Portal' })
+  [ServiceType.PORTAL_PROFILE]: defineMessage({ defaultMessage: 'Portal' }),
+  [ServiceType.DHCP_CONSOLIDATION]: defineMessage({ defaultMessage: 'DHCP' }),
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: defineMessage({ defaultMessage: 'mDNS Proxy' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -48,6 +50,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from RUCKUS Access Points' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.DHCP_CONSOLIDATION]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from Access Points or RUCKUS Edge' }),
   // eslint-disable-next-line max-len
   [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   [ServiceType.EDGE_SD_LAN]: defineMessage({
@@ -75,7 +79,9 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
     { defaultMessage: 'Nokia OLT-ONT network management' }),
   [ServiceType.PORTAL_PROFILE]: defineMessage({
     // eslint-disable-next-line max-len
-    defaultMessage: 'Create a web authentication portal for guest end-user connectivity or a portal for PIN service.' })
+    defaultMessage: 'Create a web authentication portal for guest end-user connectivity or a portal for PIN service.' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.MDNS_PROXY_CONSOLIDATION]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

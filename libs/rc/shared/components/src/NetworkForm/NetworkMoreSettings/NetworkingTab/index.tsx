@@ -46,7 +46,6 @@ export function NetworkingTab (props: {
      HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'
   })
 
-  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableDSSupport = useIsSplitOn(Features.WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
@@ -553,7 +552,7 @@ export function NetworkingTab (props: {
 
       <MulticastForm wlanData={wlanData}/>
 
-      {(enableBSSPriority && enableAP70) &&
+      {enableAP70 &&
       <>
         <StepsForm.Subtitle>
           {$t({ defaultMessage: 'Basic Service Set' })}

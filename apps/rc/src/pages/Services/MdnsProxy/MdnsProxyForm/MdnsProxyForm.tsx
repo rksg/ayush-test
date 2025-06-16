@@ -17,9 +17,9 @@ import {
   ServiceOperation,
   useServiceListBreadcrumb,
   useServicePreviousPath,
-  getServiceRoutePath
+  useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
@@ -38,10 +38,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.MDNS_PROXY, ServiceOperation.LIST)
-  const routeToList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.MDNS_PROXY,
-    oper: ServiceOperation.LIST
-  }))
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.MDNS_PROXY)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params, enableRbac }, { skip: !editMode })
@@ -78,7 +75,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         await addMdnsProxy({ params, payload: data, enableRbac }).unwrap()
       }
 
-      navigate(routeToList, { replace: true })
+      navigate(redirectPathAfterSave, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
