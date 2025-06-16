@@ -34,12 +34,13 @@ interface RangePickerProps {
   filterValues: Filter,
   setFilterValues: Function,
   settingsId?: string,
-  filterPersistence?: boolean
+  filterPersistence?: boolean,
+  filterLabel?: string
 }
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { filterValues, setFilterValues, settingsId, filterPersistence } = props
+  const { filterValues, setFilterValues, settingsId, filterPersistence, filterLabel } = props
 
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.allTime)
@@ -65,6 +66,7 @@ function RangePickerComp (props: RangePickerProps) {
       }}
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
       maxMonthRange={isDateRangeLimit ? 1 : 3}
+      filterLabel={filterLabel}
     />
   </UI.FilterRangePicker>
 }
@@ -185,6 +187,7 @@ export function renderFilter <RecordType> (
       setFilterValues={setFilterValues}
       settingsId={settingsId}
       filterPersistence={filterPersistence}
+      filterLabel={column.title as string}
     />
   }
   type Type = keyof typeof filterTypeComp

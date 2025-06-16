@@ -51,6 +51,7 @@ interface DatePickerProps {
   isReport?: boolean;
   maxMonthRange?: number;
   allowedMonthRange?: number;
+  filterLabel?: string
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -81,7 +82,8 @@ export const RangePicker = ({
   isReport,
   showLast8hours,
   maxMonthRange,
-  allowedMonthRange
+  allowedMonthRange,
+  filterLabel
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
@@ -203,7 +205,7 @@ export const RangePicker = ({
             setPickerVisible(true)
           }}>
             <Select
-              placeholder='Create Date'
+              placeholder={filterLabel}
               open={false}
               onFocus={() => {
                 setPickerVisible(true)
