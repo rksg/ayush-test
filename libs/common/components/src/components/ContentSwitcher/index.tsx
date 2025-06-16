@@ -24,6 +24,7 @@ export interface ContentSwitcherProps {
   onChange?: (value: string) => void
   noPadding?: boolean
   tabPersistence?: boolean
+  style?: React.CSSProperties
 }
 
 const sizeSpaceMap = {
@@ -33,7 +34,7 @@ const sizeSpaceMap = {
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const { tabId, tabDetails, defaultValue, formInitValue, size, align, value, onChange,
-    extra, noPadding, tabPersistence } = props
+    extra, noPadding, tabPersistence, style } = props
 
   const initValue = defaultValue || formInitValue
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
@@ -66,7 +67,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   }
   return (
     <>
-      <div style={{ textAlign: align, padding }}>
+      <div style={{ textAlign: align, padding, ...style }}>
         <SelectionControl options={options}
           defaultValue={initValue || options[0].value}
           size={size}
