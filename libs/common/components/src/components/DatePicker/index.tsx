@@ -141,13 +141,13 @@ export const RangePicker = ({
 
   useEffect(
     () => {
-      if (pickerVisible) {
+      if (filterLabel && pickerVisible) {
         setTimeout(() => {
           setIsCalendarOpen(true)
         })
       }
     },
-    [pickerVisible]
+    [filterLabel, pickerVisible]
   )
 
   useEffect(() => {
@@ -161,7 +161,7 @@ export const RangePicker = ({
 
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         // @ts-ignore
-        if(event.target?.id !== 'filter'){
+        if(filterLabel && event.target?.id !== 'filter'){
           setPickerVisible(false)
         }
         setIsCalendarOpen(false)
@@ -173,8 +173,7 @@ export const RangePicker = ({
         setActiveIndex(0)
         rangeRef?.current?.blur()
         setIsCalendarOpen(false)
-        // @ts-ignore
-        if(selectedRange === 'All Time'){
+        if(filterLabel && selectedRange === DateRange.allTime){
           setPickerVisible(false)
         }
         onDateApply({ range: selectedRange })
@@ -200,7 +199,7 @@ export const RangePicker = ({
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       {
-        !pickerVisible && rangeText === '[All Time]' ?
+        filterLabel && !pickerVisible && selectionType === DateRange.allTime ?
           <div onClick={() => {
             setPickerVisible(true)
           }}>
@@ -244,7 +243,7 @@ export const RangePicker = ({
                 setIsCalendarOpen={setIsCalendarOpen}
                 onDateApply={onDateApply}
                 onCancelCallback={()=>{
-                  if(selectionType === DateRange.allTime){
+                  if(filterLabel && selectionType === DateRange.allTime){
                     setPickerVisible(false)
                   }
                 }}
