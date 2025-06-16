@@ -219,7 +219,7 @@ describe('PageHeader', () => {
 
   it('wrapper with greybg', async () => {
     jest.mocked(useIsSplitOn)
-      .mockImplementation(ff => ff === Features.CANVAS_Q2)
+      .mockImplementation(ff => ff === Features.CANVAS)
     render(<PageHeader
       title='Title'
       extra={[

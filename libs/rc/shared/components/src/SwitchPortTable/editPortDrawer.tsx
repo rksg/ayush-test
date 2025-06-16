@@ -233,7 +233,6 @@ export function EditPortDrawer ({
 
   const { tenantId, venueId, serialNumber } = useParams()
   const [ loading, setLoading ] = useState<boolean>(true)
-  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitch785048CPortSpeedEnabled =
@@ -1423,16 +1422,12 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
-      {
-        cyclePoeFFEnabled && <>
-          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
-            {$t({ defaultMessage: 'Cycle PoE' })}
-          </Button>
-          <UI.DrawerFooterDivider>
-            <Divider type='vertical' />
-          </UI.DrawerFooterDivider>
-        </>
-      }
+      <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+        {$t({ defaultMessage: 'Cycle PoE' })}
+      </Button>
+      <UI.DrawerFooterDivider>
+        <Divider type='vertical' />
+      </UI.DrawerFooterDivider>
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
