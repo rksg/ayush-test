@@ -98,6 +98,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
     }
     visible={visible}
     width={450}
+    push={false}
     children={visible &&
       <Form form={form} layout='vertical' onFinish={handleApply}>
         <Typography style={{ marginBottom: '20px' }}>
@@ -108,7 +109,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           label={<>
             {$t({ defaultMessage: 'Tunneling Method' })}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={''}
+              title={'For SoftGRE Tunneling Method: '}
               showDetailButton
               placement='top'
               onClick={() => setSoftGreDrawerVisible(true)}
