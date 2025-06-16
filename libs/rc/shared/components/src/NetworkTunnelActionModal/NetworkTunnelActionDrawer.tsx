@@ -182,9 +182,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               }
               : undefined} />
         }
+        {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
+        tunnelType===NetworkTunnelTypeEnum.SdLan &&
         <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
-          {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
-          tunnelType===NetworkTunnelTypeEnum.SdLan &&
           <EdgeSdLanSelectOption
             tunnelTypeInitVal={tunnelTypeInitVal}
             currentTunnelType={tunnelType}
@@ -204,8 +204,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               }
               : undefined}
           />
-          }
         </Loader>
+        }
         {isEdgePinHaEnabled && !hiddenPin && venuePinInfo && hasPinAllowOps &&
         <SpaceWrapper fullWidth>
           <Typography>
