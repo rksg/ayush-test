@@ -16,9 +16,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   Navigate: props => <div>{JSON.stringify(props)}</div>
 }))
 
-jest.mock('./pages/ConfigTemplates/Templates', () => ({
-  ...jest.requireActual('./pages/ConfigTemplates/Templates'),
-  ConfigTemplateList: () => <div>ConfigTemplateList</div>
+jest.mock('./pages/ConfigTemplates', () => ({
+  ...jest.requireActual('./pages/ConfigTemplates'),
+  ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
 }))
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
@@ -60,7 +60,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.SYSLOG]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
   [ConfigTemplateType.SWITCH_CLI]: false,
-  [ConfigTemplateType.AP_GROUP]: false
+  [ConfigTemplateType.AP_GROUP]: false,
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -107,7 +108,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
       }
     })
 
-    expect(await screen.findByText('ConfigTemplateList')).toBeVisible()
+    expect(await screen.findByText('ConfigTemplatePage')).toBeVisible()
   })
 
   it('should navigate to the RADIUS Server config template', async () => {
