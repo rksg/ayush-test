@@ -12,9 +12,9 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }          from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ArrowChevronRight }      from '@acx-ui/icons'
+import { get as getEnv }                            from '@acx-ui/config'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { ArrowChevronRight }                        from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -217,7 +217,8 @@ export function Layout ({
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
     () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
 
   const onSubOptimalDisplay = useCallback((state: boolean) => {
     setSubOptimalDisplay(state)
@@ -245,7 +246,7 @@ export function Layout ({
   const isR1DashboardPage = location.pathname?.includes('t/dashboard')
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
-    greyBg={isCanvasQ2Enabled && isR1DashboardPage}
+    greyBg={isCanvasEnabled && isR1DashboardPage}
     style={{
       '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
       '--acx-pageheader-height': pageHeaderY + 'px'
@@ -280,7 +281,7 @@ export function Layout ({
         menuCollapsed: collapsed
       }}>
         {(display || subOptimalDisplay)
-          ? <Content greyBg={isCanvasQ2Enabled && isR1DashboardPage}>{content}</Content>
+          ? <Content greyBg={isCanvasEnabled && isR1DashboardPage}>{content}</Content>
           : <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}

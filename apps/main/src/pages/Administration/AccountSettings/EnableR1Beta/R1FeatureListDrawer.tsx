@@ -4,8 +4,8 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 import { useParams }  from 'react-router-dom'
 
-import { BetaIndicator, Button, Drawer, showActionModal } from '@acx-ui/components'
-import { BetaListDetails }                                from '@acx-ui/feature-toggle'
+import { BetaIndicator, Button, Drawer, NoDataIconOnly, showActionModal } from '@acx-ui/components'
+import { BetaListDetails }                                                from '@acx-ui/feature-toggle'
 import {
   Feature,
   useGetBetaFeatureListQuery,
@@ -66,7 +66,7 @@ function R1FeatureListDrawer (
         const found = BetaListDetails.filter(detail => detail.key === f.id)
         const desc = found.length > 0
           ? $t(BetaListDetails.filter(detail => detail.key === f.id)[0].description)
-          : 'Sample: sample description'
+          : ''
         const updatedFeature: Feature = {
           name: desc.split(': ')[0],
           desc: desc.split(': ')[1],
@@ -122,6 +122,7 @@ function R1FeatureListDrawer (
             <UI.FeatureDescription>{feature.desc}</UI.FeatureDescription>
           </UI.DrawerContent>
         })}
+        {!featureList.length && <NoDataIconOnly />}
       </UI.DrawerContentWrapper>}
     footer={<UI.FooterWrapper editMode={editMode}>
       <UI.FooterMsg>
@@ -141,6 +142,7 @@ function R1FeatureListDrawer (
         </Button>
         <Button
           type='primary'
+          disabled={!featureList.length}
           onClick={() => onSave()}>
           {editMode ? $t({ defaultMessage: 'Save' })
             : $t({ defaultMessage: 'Enable Early Access' })}
