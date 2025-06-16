@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { ActionType, WorkflowUrls }                    from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -151,4 +152,27 @@ describe('ActionsLibrary', () => {
       .getByRole('button', { name: /add/i })).toBeEnabled()
   })
 
+  it('should allow SAML Card when ff is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WORKFLOW_SAML_AUTH_ACTION)
+
+    const mockedOneOfRelationshipMap: Partial<Record<ActionType, RequiredDependency>> = {
+      [ActionType.DATA_PROMPT]: {
+        type: 'ONE_OF',
+        required: new Set([ActionType.AUP])
+      }
+    }
+
+    render(<Provider>
+      <ActionsLibrary
+        onClickAction={jest.fn()}
+        relationshipMap={mockedOneOfRelationshipMap}
+        existingActionTypes={new Set([ActionType.AUP])}
+      />
+    </Provider>)
+
+    await waitFor(() => expect(spyDefQuery).toHaveBeenCalled())
+
+    expect(within(screen.getByTestId(ActionType.SAML_AUTH))
+      .getByRole('button', { name: /add/i })).toBeEnabled()
+  })
 })
