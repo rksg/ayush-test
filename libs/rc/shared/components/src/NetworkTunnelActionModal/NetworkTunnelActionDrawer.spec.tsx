@@ -46,6 +46,12 @@ jest.mock('./useEdgeMvSdLanData', () => ({
   })
 }))
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 const { click } = userEvent
 
 describe('NetworkTunnelDrawer', () => {
@@ -511,7 +517,8 @@ describe('NetworkTunnelDrawer', () => {
       await userEvent.click(await screen.findByTestId('softgre-option'))
 
       await waitFor(() => expect(mockedGetFn).toBeCalled())
-      expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
     })
 
     it('should correctly hidden when SoftGRE run on this venue (CAPTIVEPORTAL)', async () => {
@@ -547,7 +554,10 @@ describe('NetworkTunnelDrawer', () => {
 
       await checkPageLoaded(mockedNetworkData.venueName)
       const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
-      expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
+
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
+
       await userEvent.click(tunnelingMethod)
       await userEvent.click(await screen.findByTestId('softgre-option'))
 
