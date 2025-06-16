@@ -68,6 +68,11 @@ exports[`ImpactedSwitchesDonut ImpactedSwitch should render 1`] = `
         fill="none"
         transform="translate(640 380)"
       />
+      <path
+        d="M-0.5 29.5l1 0l0 1l-1 0Z"
+        fill="none"
+        transform="translate(640 380)"
+      />
       <text
         dominant-baseline="central"
         fill="#333333"
