@@ -25,7 +25,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 
 import * as UI from './styledComponents'
 
-export default function DHCPTable () {
+export default function DHCPTable ({ hideHeader = false } : { hideHeader?: boolean }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
@@ -102,14 +102,15 @@ export default function DHCPTable () {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
-      <PageHeader
+      {!hideHeader && <PageHeader
         title={
           $t({ defaultMessage: 'DHCP ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             rbacOpsIds={getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)}
@@ -122,7 +123,7 @@ export default function DHCPTable () {
                 : false} >{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
       <UI.ToolTipStyle/>
       <Loader states={[tableQuery]}>
         <Table<DHCPSaveData>

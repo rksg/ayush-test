@@ -31,7 +31,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_REGULAR]: false,
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
-      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+      [ConfigTemplateType.IDENTITY_GROUP]: false
     })
   })
 
@@ -62,7 +63,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_REGULAR]: false,
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
-      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+      [ConfigTemplateType.IDENTITY_GROUP]: false
     })
   })
 
@@ -93,14 +95,16 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_REGULAR]: false,
       [ConfigTemplateType.SWITCH_CLI]: false,
       [ConfigTemplateType.AP_GROUP]: false,
-      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+      [ConfigTemplateType.IDENTITY_GROUP]: false
     })
   })
 
   it('should return the correct map for the extra scope', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff => (ff === Features.CONFIG_TEMPLATE_EXTRA ||
-      ff === Features.ETHERNET_PORT_TEMPLATE_TOGGLE
+      ff === Features.ETHERNET_PORT_TEMPLATE_TOGGLE ||
+      ff === Features.IDENTITY_GROUP_CONFIG_TEMPLATE
     ))
 
     const { result } = renderHook(() => useConfigTemplateVisibilityMap())
@@ -125,7 +129,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.SWITCH_REGULAR]: true,
       [ConfigTemplateType.SWITCH_CLI]: true,
       [ConfigTemplateType.AP_GROUP]: true,
-      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true,
+      [ConfigTemplateType.IDENTITY_GROUP]: true
     })
   })
 })

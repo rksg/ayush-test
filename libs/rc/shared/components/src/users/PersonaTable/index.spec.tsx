@@ -25,6 +25,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 jest.mock('@acx-ui/cloudpath/components', () => ({
+  ...jest.requireActual('@acx-ui/cloudpath/components'),
   useIdentityListQuery: () => ({
     data: { data: mockPersonaTableResult.content },
     isLoading: false,
