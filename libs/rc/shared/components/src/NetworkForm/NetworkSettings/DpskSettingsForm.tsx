@@ -23,7 +23,8 @@ import {
   TableResult,
   ServiceType,
   ServiceOperation,
-  useTemplateAwareServicePermission
+  useTemplateAwareServicePermission,
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -43,7 +44,12 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
+  const isCloudpathEnabled = useWatch('isCloudpathEnabled', form)
   const dpskWlanSecurity = useWatch('dpskWlanSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+  const enableAuthProxy = useWatch('enableAuthProxy', form)
+
 
   useEffect(()=>{
     if(!editMode) {
@@ -91,7 +97,13 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
-          wlanSecurity={dpskWlanSecurity}/>
+          type={NetworkTypeEnum.DPSK}
+          isCloudpathEnabled={isCloudpathEnabled}
+          wlanSecurity={dpskWlanSecurity}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+          enableAuthProxy={enableAuthProxy}
+        />
       </Col>
     </Row>
     {!(editMode) && !(isRuckusAiMode) && <Row>
@@ -137,6 +149,8 @@ function SettingsForm () {
 
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   // eslint-disable-next-line max-len
   const securityDescription = <> { $t({ defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. The WPA2/WPA3 mixed mode only will apply to the ‘supported’ AP models. This Network will not be applied to the Non-Supported AP models.' }) } </>
@@ -193,8 +207,17 @@ function SettingsForm () {
         {isCloudpathEnabled ?
           <RadiusSettings
             dpskWlanSecurity={dpskWlanSecurity}
-          /> :
+          />:
           <DpskServiceSelector />}
+        {isSupportNetworkRadiusAccounting &&
+          <div>
+            <RadiusSettings
+              dpskWlanSecurity={dpskWlanSecurity}
+              isDisplayAuth={false}
+              isDisplayAccounting={!isCloudpathEnabled}
+            />
+          </div>
+        }
       </div>
     </Space>
   )

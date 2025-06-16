@@ -224,7 +224,45 @@ export default function WorkflowCanvas (props: WorkflowProps) {
 
   }, [nodes])
 
+  const onNodeDragStart = useCallback((event:React.MouseEvent, node:Node) => {
+    const nodeMap = new Map<string, Node>()
+    nodes.forEach(n => {nodeMap.set(n.id, n)})
 
+    if(node.type !== 'DISCONNECTED_BRANCH') {
+      // this shouldn't be possible
+      return
+    }
+
+    const branchStartNodeId = node.id.split('parent')[0]
+
+    // get all node ids in the branch
+    let currentNode = nodeMap.get(branchStartNodeId)
+    let nodeIdSet = new Set()
+    while(currentNode) {
+      if(currentNode.data.type === StepType.End) {
+        currentNode = undefined
+      } else {
+        nodeIdSet.add(currentNode.id)
+        currentNode =
+          currentNode.data.nextStepId ? nodeMap.get(currentNode.data.nextStepId) : undefined
+      }
+    }
+
+    // NOTE: this is based on reactflow defaults, all nodes are set to 1000 initially and
+    // are raised to 2000 when dragged. When created we are manually setting the edges within
+    // subflows to 1000 to match the nodes so that this will work.
+    // Also, reactflow seems to only update these levels on drag start, so we are following suit
+    edges.forEach(e => {
+      if(nodeIdSet.has(e.source)) {
+        e.zIndex = 2000
+      } else {
+        e.zIndex = e.zIndex ? 1000 : undefined
+      }
+    })
+
+    reactFlowInstance.setEdges(edges)
+
+  }, [nodes, edges])
 
   useEffect(() => {
     if (props.initialNodes) {
@@ -249,14 +287,10 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodesDraggable={workflowValidationEnhancementFFToggle && isDesignMode ? true : false}
       onNodeDragStop={workflowValidationEnhancementFFToggle ? onNodeDragStop : undefined}
       nodesConnectable={false}
+      onNodeDragStart={onNodeDragStart}
       minZoom={0.1}
       attributionPosition={'bottom-left'}
       elementsSelectable={isDesignMode}
-      // setting elevate edges and nodes to false to prevent selection from hiding edges or nodes
-      // The zIndex for nodes and edges is being set manually within workflowUtils.toReactFlowData
-      // because the automatic behavior was not handling zIndexes properly causing strange rendering
-      elevateEdgesOnSelect={false}
-      elevateNodesOnSelect={false}
       style={{ background: isDesignMode ? 'var(--acx-neutrals-15)' : '' }}
       proOptions={{ hideAttribution: true }}
     >

@@ -34,7 +34,7 @@ jest.mock('./SwitchUpgradeWizard', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitcDefaultVersionsQuery: () => ({
+  useGetSwitchDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   }),
   useGetSwitchCurrentVersionsQuery: () => ({
