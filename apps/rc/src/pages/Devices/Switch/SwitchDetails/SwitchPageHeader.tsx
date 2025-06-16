@@ -18,7 +18,6 @@ import {
 }                         from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitation,
   getStackUnitsMinLimitationV1002,
   getSwitchModelGroup,
   SwitchRbacUrlsInfo,
@@ -83,6 +82,7 @@ function SwitchPageHeader () {
   const [cliModalState, setCliModalOpen] = useState(false)
   const [addStackMemberOpen, setAddStackMemberOpen] = useState(false)
   const [venueFwV1002, setVenueFwV1002] = useState([] as FirmwareSwitchVenueVersionsV1002[])
+  const [currentFw, setCurrentFw] = useState('')
   const [maxMembers, setMaxMembers] = useState(12)
 
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
@@ -197,17 +197,13 @@ function SwitchPageHeader () {
     if(switchDetailHeader?.stackMembers){
       const switchModel = switchDetailHeader?.model || ''
       const syncedStackMemberCount = switchData?.stackMembers?.length || 0
-      const currentFW = switchDetailHeader?.firmware || ''
-      const currentAboveTenFW = switchDetailHeader?.firmware || ''
-      let maxUnits = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
-      if (venueFwV1002.length > 0) {
-        const mg = getSwitchModelGroup(switchModel)
-        const currentVersion = switchDetailHeader?.firmware || venueFwV1002?.find(v =>
-          v.modelGroup === mg)?.version || ''
-        maxUnits = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
-      }
+      const mg = getSwitchModelGroup(switchModel)
+      const firmwareVersion = switchDetailHeader?.firmware || venueFwV1002?.find(v =>
+        v.modelGroup === mg)?.version || ''
+      const maxUnits = getStackUnitsMinLimitationV1002(switchModel, firmwareVersion)
 
       setMaxMembers(maxUnits - syncedStackMemberCount)
+      setCurrentFw(firmwareVersion)
     }
   }, [switchDetailHeader, switchData, venueFwV1002])
 
@@ -359,8 +355,7 @@ function SwitchPageHeader () {
         visible={addStackMemberOpen}
         setVisible={setAddStackMemberOpen}
         maxMembers={maxMembers}
-        // venueFirmwareVersion={venueFW}
-        venueFirmwareVersion={''} // Waiting for bug fixing, using venueFwV1002?
+        venueFirmwareVersion={currentFw}
       />
     </>
   )
