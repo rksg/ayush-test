@@ -283,7 +283,7 @@ export function toReactFlowData (
   const firstSteps = findAllFirstSteps(steps)
   const stepMap = toStepMap(steps)
 
-  let zIndex = 1005; // incrementing by 5 for each 'firstStep' gives us 200 detached branches which should be fine
+  let zIndex = 1005 // incrementing by 5 for each 'firstStep' gives us 200 detached branches which should be fine
 
   firstSteps?.forEach((firstStep) => { // increment zIndex start by five for each of these with parent = 0, edges = 1, nodes = 2
 
