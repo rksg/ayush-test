@@ -209,6 +209,17 @@ export interface TenantDetails {
   extendedTrial?: boolean;
 }
 
+export enum TenantType {
+  REC = 'REC',
+  VAR = 'VAR',
+  MSP = 'MSP',
+  MSP_EC = 'MSP_EC',
+  MSP_NON_VAR = 'MSP_NON_VAR',
+  MSP_INTEGRATOR = 'MSP_INTEGRATOR',
+  MSP_INSTALLER = 'MSP_INSTALLER',
+  UNRECOGNIZED = 'UNRECOGNIZED'
+}
+
 export enum raiPermissionsList {
   'READ_DASHBOARD',
   'READ_INCIDENTS',
