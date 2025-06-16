@@ -47,8 +47,6 @@ export function useApActions () {
   const [ blinkLedAp ] = useBlinkLedApMutation()
   const [ deleteApGroup ] = useDeleteApGroupMutation()
 
-  const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
-
   const showRebootAp = (
     serialNumber: string,
     tenantId?: string,
@@ -182,7 +180,7 @@ export function useApActions () {
       return
     }
 
-    genDeleteModal(rows, deleteSoloFlag, (resetType) => {
+    genDeleteModal(rows, (resetType) => {
       const deleteApApi = resetType === 'solo' ? deleteSoloAp : deleteAp
       if(isUseWifiRbacApi) {
         const requestArr = []
@@ -296,7 +294,6 @@ const hasDhcpAps = (dhcpAps: DhcpAp) => {
 
 const genDeleteModal = (
   rows: (AP|NewAPModel)[],
-  deleteSoloFlag: boolean,
   okHandler: (resetType: string) => void
 ) => {
   const { $t } = getIntl()
@@ -353,7 +350,7 @@ const genDeleteModal = (
       }} />
     </Form.Item>}
 
-    {deleteSoloFlag && showResetFirmwareOption && <Form.Item
+    {showResetFirmwareOption && <Form.Item
       label={$t({ defaultMessage: 'Select what should happen to the APs’ configuration:' })}>
       <Radio.Group defaultValue={'cloud'} onChange={(e) => {resetType = e.target.value}}>
         <Radio value='cloud'>

@@ -1,8 +1,9 @@
 import { Space, Badge } from 'antd'
-import { useIntl }      from 'react-intl'
+import { cloneDeep }    from 'lodash'
 
-import { Tooltip }                                  from '@acx-ui/components'
-import { defaultSort, EdgeWanLinkHealthStatusEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                   from '@acx-ui/components'
+import { defaultSort, EdgeWanLinkHealthStatusEnum, convertIpToLong } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                    from '@acx-ui/utils'
 
 import { StyledWanLinkTargetWrapper } from './styledComponents'
 
@@ -12,44 +13,56 @@ type EdgeWanLinkHealthStatusLightProps = {
 }
 
 export const EdgeWanLinkHealthStatusLight = (props: EdgeWanLinkHealthStatusLightProps) => {
-  const { $t } = useIntl()
   const { status, targetIpStatus } = props
 
-  const EdgeWanLinkHealthStatusLightConfig = {
-    [EdgeWanLinkHealthStatusEnum.UP]: {
-      color: 'var(--acx-semantics-green-50)',
-      text: $t({ defaultMessage: 'Up' })
-    },
-    [EdgeWanLinkHealthStatusEnum.DOWN]: {
-      color: 'var(--acx-semantics-red-50)',
-      text: $t({ defaultMessage: 'Down' })
-    }
-  }
-
   return <Badge
-    color={EdgeWanLinkHealthStatusLightConfig[status].color}
+    color={getEdgeWanLinkHealthStatusLightConfig(status).color}
     text={<Tooltip
       placement='bottom'
       dottedUnderline
       title={targetIpStatus
-        ? <Space direction='vertical'>
-          {targetIpStatus
-            .sort((a, b) => defaultSort(a.ip, b.ip))
-            .map(({ ip, status }) => {
-              const config = EdgeWanLinkHealthStatusLightConfig[status]
-              return <StyledWanLinkTargetWrapper key={ip} size={10}>
-                <span>{ip}</span>
-                <Badge
-                  key={ip}
-                  color={config.color}
-                  text={config.text}
-                />
-              </StyledWanLinkTargetWrapper>
-            })}
+        ? <Space direction='vertical' style={{ padding: 4 }}>
+          { // clone first to prevent issue if the given array is immutable
+            cloneDeep(targetIpStatus)
+              .sort((a, b) => defaultSort(convertIpToLong(a.ip), convertIpToLong(b.ip)))
+              .map(({ ip, status }) => {
+                const config = getEdgeWanLinkHealthStatusLightConfig(status)
+                return <StyledWanLinkTargetWrapper key={ip} >
+                  <span>{ip}</span>
+                  <Badge
+                    key={ip}
+                    color={config.color}
+                    text={config.text}
+                  />
+                </StyledWanLinkTargetWrapper>
+              })}
         </Space>
         : ''}
     >
-      {EdgeWanLinkHealthStatusLightConfig[status].text}
+      {getEdgeWanLinkHealthStatusLightConfig(status).text}
     </Tooltip>}
   />
+}
+
+const getEdgeWanLinkHealthStatusLightConfig = (status: EdgeWanLinkHealthStatusEnum | string) => {
+  const { $t } = getIntl()
+
+  switch (status) {
+    case EdgeWanLinkHealthStatusEnum.UP:
+      return {
+        color: 'var(--acx-semantics-green-50)',
+        text: $t({ defaultMessage: 'Up' })
+      }
+    case EdgeWanLinkHealthStatusEnum.DOWN:
+      return {
+        color: 'var(--acx-semantics-red-50)',
+        text: $t({ defaultMessage: 'Down' })
+      }
+    case EdgeWanLinkHealthStatusEnum.INVALID:
+    default:
+      return {
+        color: 'var(--acx-neutrals-50)',
+        text: noDataDisplay
+      }
+  }
 }

@@ -36,17 +36,16 @@ const { useWatch } = Form
 
 // move from ServicesForm.tsx
 export function NetworkControlTab () {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
   const { $t } = useIntl()
   const params = useParams()
   const { data, cloneMode, editMode } = useContext(NetworkFormContext)
-  const { accountTier } = getUserProfile()
-
-  const isCore = isCoreTier(accountTier)
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
   const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL) && !isCore
-  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING) && !isCore
 
   const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })
 

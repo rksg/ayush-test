@@ -3,22 +3,20 @@ import { useContext, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                                    from '@acx-ui/icons'
-import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }                           from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }                from '@acx-ui/components'
+import { Features }                                                          from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }         from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
   EdgeService,
   EdgeServiceTypeEnum,
   EdgeUrlsInfo,
-  TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { EdgeScopes, RequestPayload }      from '@acx-ui/types'
-import { filterByAccess, hasPermission }   from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi } from '@acx-ui/utils'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -30,7 +28,6 @@ export const EdgeServices = () => {
   const params = useParams()
   const { serialNumber } = params
 
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
@@ -55,9 +52,6 @@ export const EdgeServices = () => {
     pagination: { settingsId }
   })
 
-  const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
-    tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
-  )
   const [removeServices] = useDeleteEdgeServicesMutation()
   const { restartEdgeDhcp } = useEdgeDhcpActions()
 
@@ -291,14 +285,6 @@ export const EdgeServices = () => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
-        iconButton={
-          (exportDevice && false) ? {
-            icon: <DownloadOutlined />,
-            disabled,
-            onClick: exportCsv,
-            tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-          } : undefined
-        }
       />
       <ServiceDetailDrawer
         visible={drawerVisible}

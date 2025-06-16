@@ -1,12 +1,12 @@
 import { useContext, useMemo } from 'react'
 
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Form, Space, Typography } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                         from '@acx-ui/components'
-import { Features }                                   from '@acx-ui/feature-toggle'
-import { NodesTabs, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { validateEdgeClusterLevelGateway }            from '@acx-ui/rc/utils'
+import { useStepFormContext }                                                       from '@acx-ui/components'
+import { Features }                                                                 from '@acx-ui/feature-toggle'
+import { NodesTabs, TypeForm, useIsEdgeFeatureReady }                               from '@acx-ui/rc/components'
+import { validateCoreAndAccessPortsConfiguration, validateEdgeClusterLevelGateway } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import { SubInterfaceSettingsForm }   from '../SubInterfaceSettings/SubInterfaceSettingsForm'
@@ -50,6 +50,8 @@ const SubInterfaceSettingView = () => {
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
   const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+  Form.useWatch('portSubInterfaces', form)
+  Form.useWatch('lagSubInterfaces', form)
   // eslint-disable-next-line max-len
   const portSubInterfaceSettings = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
   // eslint-disable-next-line max-len
@@ -69,7 +71,7 @@ const SubInterfaceSettingView = () => {
     const allPortSubInterfaceValues = portSubInterfaceSettings ?
       Object.values(portSubInterfaceSettings)
         .flatMap(subInterfaceData => Object.entries(subInterfaceData)
-          .flatMap(([portId, subInterfaces]) => {
+          .flatMap(([portId, subInterfaces = []]) => {
             return allLagMemberIds.includes(portId) ? [] : subInterfaces
           })): []
     const allLagSubInterfaceValues = lagSubInterfaceSettings ?
@@ -88,14 +90,20 @@ const SubInterfaceSettingView = () => {
     <StyledHiddenFormItem
       name='clusterGatewayValidate'
       rules={[
-        { validator: () => {
-          return validateEdgeClusterLevelGateway(
+        {
+          validator: () => validateEdgeClusterLevelGateway(
             allPortsData, allLagsData, allSubInterfaceData,
             clusterInfo?.edgeList ?? [], isDualWanEnabled, isEdgeCoreAccessSeparationReady
           )
-        } }
+        },
+        {
+          validator: () => validateCoreAndAccessPortsConfiguration(
+            allPortsData, allLagsData, allSubInterfaceData
+          )
+        }
       ]}
       children={<input hidden/>}
+      validateFirst
     />
     <NodesTabs
       nodeList={clusterInfo?.edgeList}

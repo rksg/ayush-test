@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Button, Form, Row, Col, Space } from 'antd'
-import { isEmpty }                       from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import {
@@ -63,7 +62,7 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
   const [initData, setInitData] = useState({} as ApIotController)
-  const [apIot, setApIot] = useState({} as ApIotController)
+  // const [apIot, setApIot] = useState({} as ApIotController)
   const [venueIot, setVenueIot] = useState(
     {} as IotControllerStatus
   )
@@ -90,9 +89,9 @@ export function IotControllerV2 (props: ApEditItemProps) {
           const venueIotData = await getVenueIot({ params: { venueId } }).unwrap()
           const apIotData = await getApIot({ params: { apId: serialNumber } }).unwrap()
 
+          setInitData(iotData)
           setVenueIot(venueIotData)
           setInitIotController(apIotData)
-
           if (iotData.useVenueSettings) {
             setIotController(venueIotData)
           } else {
@@ -105,14 +104,8 @@ export function IotControllerV2 (props: ApEditItemProps) {
         setIsUseVenueSettings(iotData.useVenueSettings)
         isUseVenueSettingsRef.current = iotData.useVenueSettings
 
-        if (formInitializing) {
-          setInitData(iotData)
-          setFormInitializing(false)
-
-          setReadyToScroll?.((r) => [...new Set(r.concat('IOT-CONTROLLER'))])
-        } else {
-          form.setFieldsValue(iotData)
-        }
+        setFormInitializing(false)
+        setReadyToScroll?.((r) => [...new Set(r.concat('IOT-CONTROLLER'))])
       }
 
       setIotData()
@@ -125,18 +118,9 @@ export function IotControllerV2 (props: ApEditItemProps) {
     isUseVenueSettingsRef.current = isUseVenue
 
     if (isUseVenue) {
-      const currentData = form.getFieldsValue()
-      setApIot({ ...currentData })
-
       setIotController(venueIot)
-      const data = {
-        useVenueSettings: true
-      }
-      form.setFieldsValue(data)
     } else {
-      if (!isEmpty(apIot)) {
-        form.setFieldsValue(apIot)
-      }
+      setIotController(initIotController)
     }
 
     updateEditContext(true, undefined)
@@ -161,6 +145,14 @@ export function IotControllerV2 (props: ApEditItemProps) {
           params: { venueId, serialNumber },
           payload
         }).unwrap()
+
+        if (initIotController?.id) {
+          await deleteApIotController({
+            params: { venueId, serialNumber, iotControllerId: initIotController?.id },
+            payload
+          }).unwrap()
+        }
+
         return
       }
 
@@ -170,10 +162,12 @@ export function IotControllerV2 (props: ApEditItemProps) {
           payload
         }).unwrap()
       } else {
-        await deleteApIotController({
-          params: { venueId, serialNumber, iotControllerId: initIotController?.id },
-          payload
-        }).unwrap()
+        if (initIotController?.id) {
+          await deleteApIotController({
+            params: { venueId, serialNumber, iotControllerId: initIotController?.id },
+            payload
+          }).unwrap()
+        }
       }
 
     } catch (error) {
@@ -205,8 +199,12 @@ export function IotControllerV2 (props: ApEditItemProps) {
   const handleDiscard = () => {
     setIsUseVenueSettings(initData.useVenueSettings)
     isUseVenueSettingsRef.current = initData.useVenueSettings
-    form.setFieldsValue(initData)
-    setIotController(initIotController)
+    // form.setFieldsValue(initData)
+    if (initData.useVenueSettings) {
+      setIotController(venueIot)
+    } else {
+      setIotController(initIotController)
+    }
   }
 
   const iotNameFieldName = 'name'
@@ -295,7 +293,6 @@ export function IotControllerV2 (props: ApEditItemProps) {
                 <Space>
                   <Button
                     type='link'
-                    style={{ marginLeft: '20px' }}
                     onClick={handleIotController}
                   >
                     {$t({ defaultMessage: 'Associate IoT Controller' })}

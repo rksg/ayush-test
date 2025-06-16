@@ -435,14 +435,16 @@ export function getRadiusIdFromFormData (key: RadiusIdKey, formData: NetworkSave
 export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
+    case NetworkTypeEnum.DPSK:
+      return true
     case NetworkTypeEnum.OPEN:
       return !!saveData.wlan?.macAuthMacFormat
-    case NetworkTypeEnum.DPSK:
-      return !!saveData.isCloudpathEnabled
     case NetworkTypeEnum.AAA:
       return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      return saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath
+      return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
+        saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
+      )
   }
 
   return false

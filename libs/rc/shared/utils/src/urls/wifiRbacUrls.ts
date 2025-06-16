@@ -494,10 +494,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  bindingWorkflowOnNetwork: {
+    method: 'PUT',
+    url: '	/wifiNetworks/:networkId/workflowProfiles/:workflowId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getVenueApIpMode: {
     method: 'GET',
     url: '/venues/:venueId/apIpModeSettings',
     newApi: true,
+    opsApi: 'GET:/venues/{id}/apIpModeSettings',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
@@ -507,6 +517,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     url: '/venues/:venueId/apIpModeSettings',
     newApi: true,
+    opsApi: 'PUT:/venues/{id}/apIpModeSettings',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
