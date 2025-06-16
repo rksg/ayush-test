@@ -147,7 +147,7 @@ const eventsMetaForQuery = {
 }
 
 
-describe('AP Wired Client Details - Event tab', () => {
+describe('AP Wired Client Details - Events tab', () => {
   beforeEach(() => {
     store.dispatch(timelineApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventsForQuery)

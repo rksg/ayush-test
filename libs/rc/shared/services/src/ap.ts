@@ -870,7 +870,7 @@ export const apApi = baseApApi.injectEndpoints({
           data: {
             radioParams24G: responseData.radioParams24G,
             radioParams50G: responseData.radioParams5G,
-            radioParams60G: responseData.radioParams6G,
+            radioParams6G: responseData.radioParams6G,
             radioParamsDual5G: responseData.radioParamsDual5G
           } as ApGroupRadioCustomization
         }

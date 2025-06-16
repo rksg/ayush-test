@@ -32,7 +32,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/msp/components', () => ({
-  ...jest.requireActual('@acx-ui/msp/components'),
   MultiFactor: () => <div data-testid='MultiFactor' />
 }))
 

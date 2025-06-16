@@ -238,7 +238,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
+      providesTags: [{ type: 'Switch', id: 'STACK_MEMBER_LIST' }]
     }),
     batchDeleteSwitch: build.mutation<void, RequestPayload[]>({ // RBAC only
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
@@ -266,7 +266,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [
+        { type: 'Switch', id: 'DETAIL' },
+        { type: 'Switch', id: 'STACK_MEMBER_LIST' }
+      ]
     }),
     acknowledgeSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -278,7 +281,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
+      invalidatesTags: [
+        { type: 'Switch', id: 'DETAIL' },
+        { type: 'Switch', id: 'STACK_MEMBER_LIST' }
+      ]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -535,7 +541,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const res = _.get(result, 'response')
         return Array.isArray(res) ? res.pop() : result
       },
-      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+      providesTags: [{ type: 'SwitchPort', id: 'SETTING' }]
     }),
     getPortsSetting: build.query<PortsSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -551,7 +557,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+      providesTags: [{ type: 'SwitchPort', id: 'SETTING' }]
     }),
     cyclePoe: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -699,7 +705,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
+      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }, { type: 'SwitchPort', id: 'SETTING' }]
     }),
 
     importSwitches: build.mutation<{}, RequestFormData>({
@@ -946,7 +952,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         { type: 'Switch', id: 'LIST' },
         { type: 'Switch', id: 'DETAIL' },
         { type: 'Switch', id: 'SWITCH' },
-        { type: 'Switch', id: 'StackMemberList' }
+        { type: 'Switch', id: 'STACK_MEMBER_LIST' }
       ]
     }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
@@ -1865,7 +1871,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+      providesTags: [{ type: 'SwitchPortProfile', id: 'MAC_OUIS' }]
     }),
     addSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1876,7 +1882,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MAC_OUIS' }]
     }),
     editSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1887,7 +1893,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MAC_OUIS' }]
     }),
     deleteSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
       query: ({ params }) => {
@@ -1897,7 +1903,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MAC_OUIS' }]
     }),
     switchPortProfileLldpTlvsList: build.query<TableResult<LldpTlvs>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1908,7 +1914,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+      providesTags: [{ type: 'SwitchPortProfile', id: 'LLDP_TLVS' }]
     }),
     addSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1919,7 +1925,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LLDP_TLVS' }]
     }),
     editSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1930,7 +1936,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LLDP_TLVS' }]
     }),
     deleteSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
       query: ({ params }) => {
@@ -1940,7 +1946,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LLDP_TLVS' }]
     }),
     portProfileOptionsForMultiSwitches:
       build.query<PortProfilesForMultiSwitches[], RequestPayload>({
@@ -1991,7 +1997,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+      providesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2_ACL_LIST' }]
     }),
     getLayer2AclById: build.query<MacAcl, RequestPayload>({
       query: ({ params }) => {
@@ -2031,7 +2037,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2_ACL_LIST' }]
     }),
     updateLayer2Acl: build.mutation<MacAcl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2042,7 +2048,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2_ACL_LIST' }]
     }),
     deleteLayer2Acl: build.mutation<MacAcl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2053,14 +2059,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2ACLLIST' }]
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LAYER2_ACL_LIST' }]
     }),
     accessControlsCount: build.query<MacAcl, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getAccessControlCount, params, customHeaders.v1)
         return { ...req }
-      }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST_COUNT' }]
     }),
     getSwitchMacAcls: build.query<TableResult<MacAcl>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2142,7 +2149,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST' }]
     }),
     addSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2153,7 +2160,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [
+        { type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST' },
+        { type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST_COUNT' }
+      ]
     }),
     updateSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2164,7 +2174,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST' }]
     }),
     deleteSwitchAccessControlSet: build.mutation<SwitchAccessControl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2175,7 +2185,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+      invalidatesTags: [
+        { type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST' },
+        { type: 'SwitchMacAcl', id: 'ACCESS_CONTROL_LIST_COUNT' }
+      ]
     })
   })
 })

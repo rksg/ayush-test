@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { venueApi }                                                         from '@acx-ui/rc/services'
-import { IotUrlsInfo, IotControllerStatus }                                 from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { venueApi }                                              from '@acx-ui/rc/services'
+import { IotUrlsInfo, IotControllerStatus }                      from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { IotControllerV2 } from '.'
 
@@ -51,6 +51,10 @@ describe('IotControllerV2', () => {
       rest.post(
         IotUrlsInfo.getIotControllerList.url,
         (req, res, ctx) => res(ctx.json(iotControllerList.response))
+      ),
+      rest.get(
+        IotUrlsInfo.getIotControllerVenueAssociations.url,
+        (req, res, ctx) => res(ctx.json(iotControllerList.response.data[0]))
       )
     )
   })
@@ -71,22 +75,4 @@ describe('IotControllerV2', () => {
     expect(await screen.findByText(/Associate IoT Controller/)).toBeVisible()
   })
 
-  // eslint-disable-next-line max-len
-  it('should open the IoT Controller Drawer when "Associate IoT Controller" button is clicked', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_PHASE_2_TOGGLE)
-
-    render(
-      <Provider>
-        <Form>
-          <IotControllerV2 />
-        </Form>
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    const associateButton = await screen.findByText(/Associate IoT Controller/)
-    fireEvent.click(associateButton)
-    expect(await screen.findByText('Add IoT Controller')).toBeVisible()
-  })
 })

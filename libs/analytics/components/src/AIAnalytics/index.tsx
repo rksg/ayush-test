@@ -54,7 +54,7 @@ const useTabs = () : Tab[] => {
       skip: !isIntentSettingsVisible
     }
   )
-  const tenantSettings = settingsQuery.data?.['enabled-intent-features'] ?? '[]'
+  const tenantSettings = settingsQuery.data?.['enabled-intent-features'] ?? '{}'
   const intentTabHeaderExtra = [
     <Filter key={getShowWithoutRbacCheckKey('network-filter')} />
   ]

@@ -73,14 +73,13 @@ jest.mock('./EdgeFirmware/VenueFirmwareList', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitcDefaultVersionsQuery: () => ({
+  useGetSwitchDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsAlphaUser: () => false,
   useIsSplitOn: jest.fn()
 }))
 

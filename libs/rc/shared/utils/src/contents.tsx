@@ -167,6 +167,9 @@ export const WifiNetworkMessages = {
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
+  }),
+  ENABLE_PROXY_IN_CAPTIVE_PORTAL_TOOLTIP: defineMessage({
+    defaultMessage: 'A proxy accounting server is used when APs send accounting messages to the RUCKUS One and the RUCKUS One forwards these messages to an external accounting server.'
   })
 }
 
@@ -282,6 +285,9 @@ export const EditPortMessages = {
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
+  }),
   TAGGED_VLAN_TOOLTIP: defineMessage({
     defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
   }),
@@ -342,6 +348,9 @@ export const EditPortMessages = {
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
     defaultMessage: 'Port Authentication cannot be enabled if Port MAC Security is turned ON.'
+  }),
+  ONLY_ONE_PORT_CAN_BE_FORCE_UP: defineMessage({
+    defaultMessage: 'Only one port can be set to force-up. Reset the previous selection before changing it to a different port.'
   })
 }
 
@@ -351,6 +360,9 @@ export const MultipleEditPortMessages = {
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  }),
+  POE_CAPABILITY_SCHEDULE_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Schedule, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
 
