@@ -247,8 +247,8 @@ describe('BaseStepNode', () => {
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.hover(await screen.findByTestId('DeleteOutlined'))
     await userEvent.click(await screen.findByRole('menuitem',
-      { name: /Delete Action\'s Children/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action\'s Children' }))
+      { name: /Delete Action and Children/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Action and Children' }))
 
     await waitFor(() => expect(spyDeleteStepChildrenFn).toHaveBeenCalled())
     await waitFor(() => {

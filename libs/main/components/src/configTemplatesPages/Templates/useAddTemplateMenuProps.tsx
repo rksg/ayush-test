@@ -32,7 +32,8 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
     useWiFiMenuItems(),
     useVenueItem(),
     useSwitchMenuItems(),
-    ...servicePolicyMenuItems
+    ...servicePolicyMenuItems,
+    useIdentityGroupMenuItems()
   ].filter(item => item)
 
   if (menuItems.length === 0) return null
@@ -226,6 +227,22 @@ export function useVenueItem (): ItemType | null {
     key: 'add-venue',
     label: <ConfigTemplateLink to='venues/add'>
       {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
+    </ConfigTemplateLink>
+  }
+}
+
+export function useIdentityGroupMenuItems (): ItemType | null {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+
+  const isIdentityGroupAvailable = visibilityMap[ConfigTemplateType.IDENTITY_GROUP]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.IDENTITY_GROUP, 'Create')
+
+  if (!isIdentityGroupAvailable) return null
+
+  return {
+    key: 'add-identity-group',
+    label: <ConfigTemplateLink to='identityManagement/identityGroups/add'>
+      {getConfigTemplateTypeLabel(ConfigTemplateType.IDENTITY_GROUP)}
     </ConfigTemplateLink>
   }
 }

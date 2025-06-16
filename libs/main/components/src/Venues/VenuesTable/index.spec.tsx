@@ -182,6 +182,36 @@ describe('Venues Table', () => {
     expect(within(row).getByRole('cell', { name: '3' })).toBeTruthy()
   })
 
+  it('should have iot controller column when feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.IOT_PHASE_2_TOGGLE)
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'IoT Controller' })).toBeVisible()
+  })
+
+  it('should not have iot controller column when feature flag off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('My-Venue')).toBeVisible()
+    expect(screen.queryByRole('columnheader', { name: 'IoT Controller' })).toBeFalsy()
+  })
+
   it('should render correct title', async () => {
     render(
       <Provider>

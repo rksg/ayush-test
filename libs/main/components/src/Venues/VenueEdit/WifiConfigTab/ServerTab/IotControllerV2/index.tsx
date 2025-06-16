@@ -171,7 +171,6 @@ export function IotControllerV2 (props: VenueWifiConfigItemProps) {
             <Space>
               <Button
                 type='link'
-                style={{ marginLeft: '20px' }}
                 onClick={handleIotController}
               >
                 {$t({ defaultMessage: 'Associate IoT Controller' })}
