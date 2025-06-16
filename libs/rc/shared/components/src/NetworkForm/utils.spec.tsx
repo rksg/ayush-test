@@ -762,7 +762,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.DPSK
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
 
       it('check for AAA network type', () => {

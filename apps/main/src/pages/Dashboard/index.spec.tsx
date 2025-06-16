@@ -73,7 +73,7 @@ jest.mock(
 
 describe('Dashboard', () => {
   it('renders correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS_Q2)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
@@ -81,7 +81,7 @@ describe('Dashboard', () => {
   })
 
   it('switches between tabs', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS_Q2)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CANVAS)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(localStorage.getItem('dashboard-devices-content-switcher')).toBe(undefined)
 
