@@ -9,7 +9,6 @@ import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps 
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  useGetEdgeFeatureSetsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -71,7 +70,11 @@ export const InterfaceSettings = () => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo,
+    clusterNetworkSettings,
+    requiredFwMap
+  } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
@@ -86,20 +89,6 @@ export const InterfaceSettings = () => {
   const validateResultRef = useRef<boolean>(true)
 
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
-  const { requiredFw } = useGetEdgeFeatureSetsQuery({
-    payload: {
-      filters: {
-        featureNames: [IncompatibilityFeatures.DUAL_WAN]
-      }
-    } }, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        requiredFw: data?.featureSets
-          ?.find(item => item.featureName === IncompatibilityFeatures.DUAL_WAN)?.requiredFw,
-        isFeatureSetLoading: isLoading
-      }
-    }
-  })
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
   const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
@@ -310,7 +299,7 @@ export const InterfaceSettings = () => {
         (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
           [{
             title: <DualWanStepTitle
-              requiredFw={requiredFw}
+              requiredFw={requiredFwMap?.[IncompatibilityFeatures.DUAL_WAN]}
               edgeList={clusterInfo?.edgeList}
             />,
             id: InterfaceSettingsTypeEnum.DUAL_WAN,
