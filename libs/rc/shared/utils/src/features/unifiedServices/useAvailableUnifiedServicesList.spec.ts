@@ -8,6 +8,11 @@ import { PolicyType }  from '../../types'
 import { useAvailableUnifiedServicesList }  from './useAvailableUnifiedServicesList'
 import { BuildUnifiedServicesIncomingType } from './utils'
 
+const mockedUseDhcpStateMap = jest.fn().mockReturnValue({
+  [ServiceType.DHCP]: true,
+  [ServiceType.EDGE_DHCP]: false,
+  [ServiceType.DHCP_CONSOLIDATION]: false
+})
 const mockedUseMdnsProxyStateMap = jest.fn().mockReturnValue({
   [ServiceType.MDNS_PROXY]: true,
   [ServiceType.EDGE_MDNS_PROXY]: false,
@@ -15,6 +20,7 @@ const mockedUseMdnsProxyStateMap = jest.fn().mockReturnValue({
 })
 jest.mock('../service', () => ({
   ...jest.requireActual('../service'),
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
   useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
 }))
 
@@ -48,13 +54,17 @@ describe('useAvailableUnifiedServicesList', () => {
     jest.mocked(useIsBetaEnabled).mockReturnValue(false)
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(isCoreTier).mockReturnValue(false)
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
     mockedUseMdnsProxyStateMap.mockReturnValue({
       [ServiceType.MDNS_PROXY]: true,
       [ServiceType.EDGE_MDNS_PROXY]: false,
       [ServiceType.MDNS_PROXY_CONSOLIDATION]: false
     })
   })
-
   it('should return a non-empty list of services and policies', () => {
     const { result } = renderHook(() => useAvailableUnifiedServicesList())
     expect(result.current.length).toBeGreaterThan(0)
@@ -90,6 +100,40 @@ describe('useAvailableUnifiedServicesList', () => {
     const { result } = renderHook(() => useAvailableUnifiedServicesList())
     const workflowService = result.current.find(s => s.type === PolicyType.WORKFLOW)
     expect(workflowService?.disabled).toBe(true)
+  })
+
+  it('should disable DHCP Consolidation service', () => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: true,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
+
+    const { result } = renderHook(() => useAvailableUnifiedServicesList())
+    // eslint-disable-next-line max-len
+    const dhcpProxyConsolidation = result.current.find(s => s.type === ServiceType.DHCP_CONSOLIDATION)
+    const dhcpProxy = result.current.find(s => s.type === ServiceType.DHCP)
+    const edgeDhcpProxy = result.current.find(s => s.type === ServiceType.EDGE_DHCP)
+    expect(dhcpProxyConsolidation?.disabled).toBe(true)
+    expect(dhcpProxy?.disabled).toBe(false)
+    expect(edgeDhcpProxy?.disabled).toBe(false)
+  })
+
+  it('should enable DHCP Consolidation service', () => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: false,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: true
+    })
+
+    const { result } = renderHook(() => useAvailableUnifiedServicesList())
+    // eslint-disable-next-line max-len
+    const dhcpProxyConsolidation = result.current.find(s => s.type === ServiceType.DHCP_CONSOLIDATION)
+    const dhcpProxy = result.current.find(s => s.type === ServiceType.DHCP)
+    const edgeDhcpProxy = result.current.find(s => s.type === ServiceType.EDGE_DHCP)
+    expect(dhcpProxyConsolidation?.disabled).toBe(false)
+    expect(dhcpProxy?.disabled).toBe(true)
+    expect(edgeDhcpProxy?.disabled).toBe(true)
   })
 
   it('should disable mDNS Proxy Consolidation service', () => {

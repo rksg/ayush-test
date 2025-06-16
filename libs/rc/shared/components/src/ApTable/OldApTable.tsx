@@ -97,7 +97,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
 
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
@@ -431,19 +430,18 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           return (secureBootEnabled ? <CheckMark /> : null)
         }
       }] : []),
-    ...(apMgmtVlanFlag ? [
-      {
-        key: 'managementVlan',
-        title: $t({ defaultMessage: 'Management VLAN' }),
-        dataIndex: 'managementVlan',
-        show: false,
-        sorter: false,
-        render: (data: React.ReactNode, row: APExtended) => {
-          const mgmtVlanId = row.apStatusData?.APSystem?.managementVlan
+    {
+      key: 'managementVlan',
+      title: $t({ defaultMessage: 'Management VLAN' }),
+      dataIndex: 'managementVlan',
+      show: false,
+      sorter: false,
+      render: (data: React.ReactNode, row: APExtended) => {
+        const mgmtVlanId = row.apStatusData?.APSystem?.managementVlan
 
-          return (mgmtVlanId ? mgmtVlanId : null)
-        }
-      }] : []),
+        return (mgmtVlanId ? mgmtVlanId : null)
+      }
+    },
     ...(AFC_Featureflag ? [{
       key: 'afcStatus',
       title: $t({ defaultMessage: 'AFC Status' }),
