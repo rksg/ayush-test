@@ -399,7 +399,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitcDefaultVersions: build.query<CurrentVersions, RequestPayload>({
+    getSwitchDefaultVersions: build.query<CurrentVersions, RequestPayload>({
       query: ({ params, enableRbac, customHeaders }) => {
         const headers = enableRbac ? v1Header : {}
         const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
@@ -855,7 +855,7 @@ export const {
   useGetSwitchAvailableFirmwareListV1001Query,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchCurrentVersionsV1001Query,
-  useGetSwitcDefaultVersionsQuery,
+  useGetSwitchDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
   useUpdateSwitchFirmwarePredownloadMutation,
   useGetAvailableEdgeFirmwareVersionsQuery,
