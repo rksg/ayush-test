@@ -66,7 +66,6 @@ export function LanPortSettings (props: {
   selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
-  isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean,
   venueId?: string,
@@ -87,7 +86,6 @@ export function LanPortSettings (props: {
     selectedModelCaps,
     onGUIChanged,
     isDhcpEnabled,
-    isTrunkPortUntaggedVlanEnabled,
     readOnly,
     useVenueSettings,
     venueId,
@@ -324,7 +322,7 @@ export function LanPortSettings (props: {
           name={['lan', index, 'untagId']}
           label={<>
             {$t({ defaultMessage: 'VLAN untag ID' })}
-            {lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
+            {lan?.type === ApLanPortTypeEnum.TRUNK ?
               <ApCompatibilityToolTip
                 title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
                 showDetailButton
@@ -351,16 +349,15 @@ export function LanPortSettings (props: {
             disabled={readOnly
               || isDhcpEnabled
               || !lan?.enabled
-              || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
               || hasVni}
             onChange={(value) => {
               const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
-              if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
+              if (!isTrunkPort) {
                 const lanPorts =
               selectedModel?.lanPorts?.map((lan: LanPort, idx: number) => index === idx ? {
                 ...lan,
                 untagId: value,
-                vlanMembers: isTrunkPort ? lan?.vlanMembers : value?.toString()
+                vlanMembers: value?.toString()
               } : lan
               )
                 form?.setFieldValue('lan', lanPorts)
