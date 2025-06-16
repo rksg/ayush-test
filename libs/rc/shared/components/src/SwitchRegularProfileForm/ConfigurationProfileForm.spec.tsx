@@ -756,10 +756,11 @@ describe('Wired', () => {
     }
 
     it('should render Apply profile updates to existing switches button correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SWITCH_PROFILE_ONBOARD_ONLY
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getCliFamilyModels.url,
+          (_, res, ctx) => res(ctx.json(familyModels))
+        )
       )
-
       render(
         <Provider>
           <ConfigurationProfileFormContext.Provider value={{
