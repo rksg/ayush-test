@@ -34,7 +34,12 @@ jest.mock('@acx-ui/rc/components', () => ({
   VLANPoolForm: () => <div>VLANPoolForm</div>,
   ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>,
   CliProfileForm: () => <div>CliProfileForm</div>,
-  IdentityGroupForm: () => <div>IdentityGroupForm</div>
+  IdentityGroupForm: () => <div>IdentityGroupForm</div>,
+  WifiCallingForm: () => <div>WifiCallingForm</div>,
+  AddEthernetPortProfile: () => <div>AddEthernetPortProfile</div>,
+  SyslogForm: () => <div>SyslogForm</div>,
+  RogueAPDetectionForm: () => <div>RogueAPDetectionForm</div>,
+  ApGroupEdit: () => <div>ApGroupEdit</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -298,5 +303,94 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('IdentityGroupForm')).toBeVisible()
+  })
+
+  it('should navigate to the Wi-Fi Calling config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.WIFI_CALLING]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('WifiCallingForm')).toBeVisible()
+  })
+
+  it('should navigate to the Ethernet Port config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          // eslint-disable-next-line max-len
+          getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('AddEthernetPortProfile')).toBeVisible()
+  })
+
+  it('should navigate to the Syslog config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.SYSLOG]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('SyslogForm')).toBeVisible()
+  })
+
+  it('should navigate to the Rogue AP Detection config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('RogueAPDetectionForm')).toBeVisible()
+  })
+
+  it('should navigate to the AP Group config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.AP_GROUP]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath('devices/apgroups/create'),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('ApGroupEdit')).toBeVisible()
   })
 })

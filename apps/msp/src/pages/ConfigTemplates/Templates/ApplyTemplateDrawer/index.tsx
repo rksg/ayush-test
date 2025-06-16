@@ -242,7 +242,7 @@ interface ApplyTemplateConfirmationDrawerProps {
 }
 
 export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
-  const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel } = props
+  const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel, overrideValues } = props
   const { $t } = useIntl()
   const [loading, setLoading ] = useState(false)
 
@@ -255,7 +255,7 @@ export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmatio
       <AppliedMspEcListView
         targetMspEcs={targetMspEcs}
         templateType={selectedTemplate.type}
-        overrideValues={props.overrideValues}
+        overrideValues={overrideValues}
       />
       <Divider />
       <UI.TemplateListContainer>
@@ -304,7 +304,7 @@ interface AppliedMspEcListProps {
   templateType: ConfigTemplateType
   overrideValues: OverrideValuesPerMspEcType | undefined
 }
-function AppliedMspEcListView (props: AppliedMspEcListProps) {
+export function AppliedMspEcListView (props: AppliedMspEcListProps) {
   const { targetMspEcs, templateType, overrideValues } = props
   const OverrideDisplayView = overrideDisplayViewMap[templateType]
 

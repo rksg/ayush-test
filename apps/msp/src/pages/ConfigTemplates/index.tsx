@@ -20,7 +20,7 @@ export function ConfigTemplatePage () {
 }
 
 
-function getAppliedToColumn (): ConfigTemplateViewProps['appliedToColumn'] {
+export function getAppliedToColumn (): ConfigTemplateViewProps['appliedToColumn'] {
   const { $t } = getIntl()
 
   return {

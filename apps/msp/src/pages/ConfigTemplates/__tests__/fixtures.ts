@@ -1,4 +1,4 @@
-import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType, EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
 
 export const mockedConfigTemplateList = {
   totalCount: 3,
@@ -74,7 +74,7 @@ export const mockedMSPCustomerList = {
           expirationDateTs: '1703037906000',
           consumed: '0',
           quantity: '50',
-          entitlementDeviceType: 'DVCNWTYPE_APSW',
+          entitlementDeviceType: EntitlementNetworkDeviceType.APSW,
           tenantId: 'a80624a0549440868a846626084f57c9',
           type: 'entitlement',
           expirationDate: '2023-12-20T02:05:06Z',
@@ -83,20 +83,26 @@ export const mockedMSPCustomerList = {
           wifiDeviceCount: '0',
           switchDeviceCount: '0',
           edgeDeviceCount: '0',
-          outOfComplianceDevices: '0',
-          futureOutOfComplianceDevices: '0',
-          futureOfComplianceDate: '1703037906000'
+          outOfComplianceDevices: 0,
+          futureOutOfComplianceDevices: 0,
+          futureOfComplianceDate: 1703037906000
         }
       ],
       status: 'Active',
       accountType: 'TRIAL',
-      wifiLicenses: 0,
-      switchLicenses: 0,
-      edgeLicenses: 0,
-      apSwLicenses: 50,
+      wifiLicenses: '0',
+      switchLicenses: '0',
+      apswLicenses: '0',
+      edgeLicenses: '0',
+      apSwLicenses: '50',
       tenantType: 'MSP_EC',
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      mspAdminCount: '1',
+      mspEcAdminCount: '1',
+      expirationDate: '2023-12-20T02:05:06Z',
+      assignedMspEcList: [],
+      creationDate: 1715654961625
     },
     {
       id: 'a48e45a0331b4c7cac85965e3a72021e',
