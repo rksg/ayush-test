@@ -141,6 +141,7 @@ describe('Table Filters', () => {
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
@@ -152,7 +153,7 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByPlaceholderText('Start date')
+      const calenderSelect = await screen.findByText('From Time')
       await userEvent.click(calenderSelect)
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
@@ -169,6 +170,7 @@ describe('Table Filters', () => {
         {
           key: 'fromTime',
           dataIndex: 'fromTime',
+          title: 'From Time',
           filterable: true,
           filterKey: 'fromTime',
           filterComponent: { type: 'rangepicker' }
