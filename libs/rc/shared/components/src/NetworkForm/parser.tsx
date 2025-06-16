@@ -181,7 +181,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
   if(saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
     saveData.isCloudpathEnabled){
     saveData.enableAuthProxy = false
-    saveData.enableAccountingProxy = false
   }
 
   if (data.dpskServiceProfileId === '') {
