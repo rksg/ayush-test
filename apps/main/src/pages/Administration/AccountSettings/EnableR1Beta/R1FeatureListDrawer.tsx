@@ -4,8 +4,8 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 import { useParams }  from 'react-router-dom'
 
-import { BetaIndicator, Button, Drawer, showActionModal } from '@acx-ui/components'
-import { BetaListDetails }                                from '@acx-ui/feature-toggle'
+import { BetaIndicator, Button, Drawer, NoDataIconOnly, showActionModal } from '@acx-ui/components'
+import { BetaListDetails }                                                from '@acx-ui/feature-toggle'
 import {
   Feature,
   useGetBetaFeatureListQuery,
@@ -122,6 +122,7 @@ function R1FeatureListDrawer (
             <UI.FeatureDescription>{feature.desc}</UI.FeatureDescription>
           </UI.DrawerContent>
         })}
+        {!featureList.length && <NoDataIconOnly />}
       </UI.DrawerContentWrapper>}
     footer={<UI.FooterWrapper editMode={editMode}>
       <UI.FooterMsg>
