@@ -5,12 +5,12 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                                      from '@acx-ui/feature-toggle'
-import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                                      from '@acx-ui/rc/components'
-import { edgeApi }                                                                                                                                                                     from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                                                                                                 from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                                                                               from '@acx-ui/feature-toggle'
+import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                                                               from '@acx-ui/rc/components'
+import { edgeApi }                                                                                                                                                                                              from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                                                                                          from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -21,8 +21,8 @@ import { InterfaceSettings } from '.'
 
 const {
   mockEdgeClusterList,
-  mockedHaNetworkSettings,
-  mockSingleNodeClusterStatus
+  mockSingleNodeClusterStatus,
+  mockedHaNetworkSettings
 } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
@@ -566,6 +566,34 @@ describe('InterfaceSettings', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       const compatibleStatusBar = screen.queryByTestId('rc-CompatibilityStatusBar')
       expect(compatibleStatusBar).toBeNull()
+    })
+
+    it('should render dual WAN firmware compatibility check warning', async () => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+
+      const mockCxtData = {
+        ...defaultCxtData,
+        clusterInfo: mockSingleNodeClusterStatus as EdgeClusterStatus,
+        clusterNetworkSettings: mockedDualWanNetworkSettings,
+        requiredFwMap: {
+          [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: '2.5.0.1',
+          [IncompatibilityFeatures.DUAL_WAN]: '2.4.0.1'
+        }
+      }
+
+      render(<Provider>
+        <ClusterConfigWizardContext.Provider value={mockCxtData}>
+          <InterfaceSettings />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+      within(await screen.findByTestId('steps-form')).getByTestId('rc-LagForm')
+      const dualWanStepTitle = await screen.findByText('Dual WAN')
+      expect(await within(dualWanStepTitle).findByTestId('WarningTriangleSolid')).toBeVisible()
     })
   })
 
