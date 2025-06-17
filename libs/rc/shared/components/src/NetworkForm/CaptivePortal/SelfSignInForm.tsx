@@ -28,6 +28,7 @@ import { validationMessages } from '@acx-ui/utils'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AccountingServiceInput }  from '../SharedComponent'
 import * as UI                     from '../styledComponents'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
@@ -75,6 +76,11 @@ export function SelfSignInForm () {
     useWatch(['guestPortal', 'socialIdentities', 'twitter']),
     useWatch(['guestPortal', 'socialIdentities', 'linkedin'])
   ]
+
+  const networkSecurity = useWatch('networkSecurity', form)
+  const enableAccountingProxy = useWatch('enableAccountingProxy', form)
+  const enableAccountingService = useWatch('enableAccountingService', form)
+
   const [allowedDomainsValue, setAllowedDomainsValue] = useState('')
   const [allowedSignValue, setAllowedSignValue] = useState([] as Array<string>)
   const { $t } = useIntl()
@@ -192,7 +198,8 @@ export function SelfSignInForm () {
       if (isRestEnableSmsLogin)
         form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
-  }, [data])
+  }, [data?.id])
+
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
   const [redirectURL, setRedirectURL]=useState('')
   useEffect(()=>{
@@ -416,11 +423,20 @@ export function SelfSignInForm () {
         <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
           enableDefaultWalledGarden={false} />
+
+        <AccountingServiceInput
+          isProxyModeConfigurable={true}
+        />
       </GridCol>
       <GridCol col={{ span: 12 }}>
-        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+        <NetworkDiagram
+          type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.SelfSignIn}
-          wlanSecurity={data?.wlan?.wlanSecurity} />
+          wlanSecurity={data?.wlan?.wlanSecurity}
+          networkSecurity={networkSecurity}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+        />
       </GridCol>
     </GridRow>
     {!(editMode) && !(isRuckusAiMode) && <GridRow>
