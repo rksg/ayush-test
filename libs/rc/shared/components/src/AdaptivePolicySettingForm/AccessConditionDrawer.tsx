@@ -81,7 +81,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       let editData = {}
       // eslint-disable-next-line max-len
       if (isIdentityCommonAttributesEnabled && editCondition.templateAttribute?.category) {
-        const {attributeType, attributeValue} = toEvaluationRuleForm(editCondition.evaluationRule)
+        const { attributeType, attributeValue } = toEvaluationRuleForm(editCondition.evaluationRule)
         editData = {
           conditionId: editCondition.id,
           templateAttributeId: attributes.find(p => p.category)?.id,
