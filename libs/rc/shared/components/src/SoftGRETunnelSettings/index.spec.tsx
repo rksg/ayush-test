@@ -22,6 +22,11 @@ import { SoftGRETunnelSettings }                                                
 import { useIpsecProfileLimitedSelection }                                                                                     from './useIpsecProfileLimitedSelection'
 import { useSoftGreProfileLimitedSelection }                                                                                   from './useSoftGreProfileLimitedSelection'
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 describe('SoftGRETunnelSettings', () => {
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
@@ -48,7 +53,33 @@ describe('SoftGRETunnelSettings', () => {
     expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
     await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
     expect(await screen.findByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
+    expect(await screen.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
   })
+
+  it('Should display softgre heterogeneous tooltip if FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_R370_TOGGLE)
+    render(
+      <Provider>
+        <Form>
+          <SoftGRETunnelSettings
+            index={1}
+            readonly={false}
+            venueId={'venue_id'}
+          />
+        </Form>
+      </Provider>
+    )
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    const toolTip = await screen.findByTestId('QuestionMarkCircleOutlined')
+    expect(toolTip).toBeVisible()
+    await userEvent.hover(toolTip)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent(/See the compatibility requirements./)
+    const btn = screen.getByRole('button', { name: 'See the compatibility requirements.' })
+    await userEvent.click(btn)
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
+  })
+
   it('Should not display softgre tunnel banner', () => {
     render(
       <Provider>
