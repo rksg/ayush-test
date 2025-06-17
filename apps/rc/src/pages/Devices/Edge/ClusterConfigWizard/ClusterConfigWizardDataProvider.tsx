@@ -27,6 +27,7 @@ export interface ClusterConfigWizardContextType {
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
   isSupportAccessPort?: boolean
+  requiredFwMap?: Record<string, string | undefined>
   isLoading: boolean
   isFetching: boolean
 }
@@ -112,7 +113,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {
       filters: {
-        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]
+        // eslint-disable-next-line max-len
+        featureNames: [IncompatibilityFeatures.CORE_ACCESS_SEPARATION, IncompatibilityFeatures.DUAL_WAN]
       } }
   }, {
     selectFromResult: ({ data }) => {
@@ -120,7 +122,10 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
         requiredFwMap: {
           [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: data?.featureSets
             ?.find(item =>
-              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw
+              item.featureName === IncompatibilityFeatures.CORE_ACCESS_SEPARATION)?.requiredFw,
+          [IncompatibilityFeatures.DUAL_WAN]: data?.featureSets
+            ?.find(item =>
+              item.featureName === IncompatibilityFeatures.DUAL_WAN)?.requiredFw
         }
       }
     }
@@ -154,6 +159,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     clusterNetworkSettings,
     clusterSubInterfaceSettings,
     isSupportAccessPort,
+    requiredFwMap,
     isLoading,
     isFetching
   }}>
