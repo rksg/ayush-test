@@ -195,7 +195,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
-  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -438,7 +437,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         getOpsApi(SwitchRbacUrlsInfo.deleteSwitches),
         getOpsApi(SwitchRbacUrlsInfo.addSwitch)
       ]
-    }) || (isReadOnlyRole && enableSwitchBlinkLed)
+    }) || isReadOnlyRole
     )
 
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
@@ -536,7 +535,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }, callback)
     }
   },
-  ...(enableSwitchBlinkLed ? [{
+  {
     label: $t({ defaultMessage: 'Blink LEDs' }),
     key: 'SHOW_WITHOUT_RBAC_CHECK_BLINK_LEDs',
     rbacOpsIds: [getOpsApi(SwitchUrlsInfo.blinkLeds)],
@@ -548,7 +547,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }).length > 0
     },
     onClick: handleBlinkLeds
-  }] : []),
+  },
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
