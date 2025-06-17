@@ -118,6 +118,25 @@ const mockAllowedOperations = {
     }
   ]
 }
+
+export const fakeTenantDetails = {
+  id: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: ['825910','333815','825720','919107','836842'] },
+  preferences: { global: { mapRegion: 'UA' } },
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: 'MSP'
+}
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -160,6 +179,10 @@ describe('UserProfileContext', () => {
             }))
           }
         }
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
   })
