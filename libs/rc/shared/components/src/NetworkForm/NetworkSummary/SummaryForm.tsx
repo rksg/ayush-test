@@ -168,16 +168,10 @@ export function SummaryForm (props: {
             }
           />
           }
-          {!supportRadsec && summaryData.isCloudpathEnabled &&
+          {!supportRadsec &&
+            summaryData.isCloudpathEnabled &&
+            summaryData.type !== NetworkTypeEnum.DPSK &&
             <>
-              {summaryData.type === NetworkTypeEnum.DPSK &&
-                <Form.Item
-                  label={$t({ defaultMessage: 'Proxy Service' })}
-                  children={summaryData?.enableAuthProxy
-                    ? $t({ defaultMessage: 'Enabled' })
-                    : $t({ defaultMessage: 'Disabled' })
-                  }
-                />}
               {!summaryData.wlan?.macRegistrationListId &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Authentication Server' })}
@@ -222,7 +216,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
-          {supportRadsec && summaryData.type === NetworkTypeEnum.OPEN &&
+          {summaryData.type === NetworkTypeEnum.OPEN &&
             (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
               !summaryData.wlan?.macRegistrationListId) &&
             <OpenSummaryForm summaryData={summaryData} />

@@ -15,7 +15,8 @@ import {
   AdminRbacUrlsInfo,
   LicenseUrlsInfo,
   hasAdministratorTab,
-  MigrationUrlsInfo
+  MigrationUrlsInfo,
+  TenantType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
 import { getUserProfile, hasAllowedOperations, isCoreTier, useUserProfileContext } from '@acx-ui/user'
@@ -36,6 +37,7 @@ import R1Webhooks                                                               
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
+  const { tenantType } = useUserProfileContext()
 
   const isCore = isCoreTier(accountTier)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
@@ -45,6 +47,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
+  const showPrivacyTab = !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
 
   return [
     ...(
@@ -73,7 +76,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           component: <Administrators />
         }]
       : []),
-    ...(isMspAppMonitoringEnabled && !isCore &&
+    ...(showPrivacyTab && isMspAppMonitoringEnabled && !isCore &&
       hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
       ? [
         {
