@@ -2,7 +2,8 @@ import { Form, Input } from 'antd'
 import { RuleObject }  from 'antd/lib/form'
 import { useIntl }     from 'react-intl'
 
-import { CertificateCategoryType, emailRegExp } from '@acx-ui/rc/utils'
+import { CertificateCategoryType } from '@acx-ui/rc/utils'
+import { validationMessages }      from '@acx-ui/utils'
 
 interface FormFieldConfig {
   templateKey?: string[]
@@ -17,6 +18,17 @@ interface FormFieldConfig {
 export default function OrganizationInfoSettings (props: { type?: CertificateCategoryType }) {
   const { type = CertificateCategoryType.CERTIFICATE_TEMPLATE } = props
   const { $t } = useIntl()
+
+  const emailRegExp = (value: string) => {
+    // eslint-disable-next-line max-len
+    const re = new RegExp('^[a-zA-Z0-9](?:[a-zA-Z0-9._-]*[a-zA-Z0-9])?@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$')
+
+    if (value && !re.test(value)) {
+      return Promise.reject($t(validationMessages.emailAddress))
+    }
+    return Promise.resolve()
+  }
+
   const formFieldConfig: FormFieldConfig[] = [
     {
       templateKey: ['onboard', 'organizationPattern'],
