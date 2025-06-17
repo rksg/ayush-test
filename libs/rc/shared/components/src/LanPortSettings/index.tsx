@@ -271,6 +271,7 @@ export function LanPortSettings (props: {
             }
             softGREProfileOptionList={softGREProfileOptionList}
             serialNumber={serialNumber}
+            venueId={venueId}
             apModel={(selectedModel as VenueLanPorts)?.model}
             isUnderAPNetworking={isUnderAPNetworking}
             optionDispatch={optionDispatch}
