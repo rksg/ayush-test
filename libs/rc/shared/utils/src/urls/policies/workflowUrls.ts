@@ -216,7 +216,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   deleteWorkflowStepDescendants: {
     method: 'delete',
-    url: `${WorkflowStepBaseUrl}/:stepId/descendantSteps`,
+    url: `${WorkflowStepBaseUrl}/:stepId/descendantSteps?deleteSelectedStep=:deleteSelectedStep`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
