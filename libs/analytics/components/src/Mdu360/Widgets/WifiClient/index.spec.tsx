@@ -126,4 +126,18 @@ describe('WifiClient', () => {
     render(<WifiClient filters={mockFilters} />, { wrapper: Provider })
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
+
+  it('should handle when the data is empty', async () => {
+    (useTopNWifiClientQuery as jest.Mock).mockReturnValue({
+      loading: false,
+      data: { nodes: [
+        {
+          manufacturer: [],
+          deviceType: []
+        }
+      ] }
+    })
+    render(<WifiClient filters={mockFilters} />, { wrapper: Provider })
+    expect(await screen.findByText('No data to display')).toBeVisible()
+  })
 })

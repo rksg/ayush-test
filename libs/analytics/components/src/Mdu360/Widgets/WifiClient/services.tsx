@@ -50,12 +50,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
           `,
-        variables: {
-          path: payload.path,
-          start: payload.start,
-          end: payload.end,
-          n: payload.n
-        }
+        variables: payload
       }),
       transformResponse: (response: { network: { hierarchyNode: HierarchyNodeData } }) =>
         response.network.hierarchyNode
