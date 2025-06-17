@@ -8,23 +8,23 @@ import {
   NoActiveData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import type { DonutChartData }          from '@acx-ui/components'
-import { useIotControllerPluginsQuery } from '@acx-ui/rc/services'
-import { ActivePluginsData }            from '@acx-ui/rc/utils'
-import { useParams }                    from '@acx-ui/react-router-dom'
+import type { DonutChartData }            from '@acx-ui/components'
+import { useIotControllerDashboardQuery } from '@acx-ui/rc/services'
+import { IotControllerDashboard }         from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 // eslint-disable-next-line max-len
-export const getActivePluginsByRadioDonutChartData = (overviewData?: ActivePluginsData): DonutChartData[] => {
+export const getActivePluginsByRadioDonutChartData = (overviewData?: IotControllerDashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const colorMapping = qualitativeColorSet()
   // eslint-disable-next-line max-len
-  if (overviewData && overviewData.pluginStatus && overviewData.pluginStatus.length > 0) {
-    overviewData.pluginStatus.forEach(({ name }, index) => {
+  if (overviewData && overviewData.pluginsByRadioStatus) {
+    overviewData.pluginsByRadioStatus?.radioPlugins?.forEach((p, index) => {
       chartData.push({
-        name,
-        value: 1,
+        name: `${p.displayName}: ${p.count} Radios`,
+        value: p.count,
         color: colorMapping[index]
       })
     })
@@ -35,7 +35,7 @@ export const getActivePluginsByRadioDonutChartData = (overviewData?: ActivePlugi
 export function ActivePluginsByRadio () {
   const { $t } = useIntl()
 
-  const overviewQuery = useIotControllerPluginsQuery({
+  const overviewQuery = useIotControllerDashboardQuery({
     params: useParams()
   }, {
     selectFromResult: ({ data, ...rest }) => ({

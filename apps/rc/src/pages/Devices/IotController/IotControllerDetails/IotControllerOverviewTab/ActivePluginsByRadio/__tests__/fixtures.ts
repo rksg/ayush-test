@@ -1,72 +1,20 @@
 const data = {
   requestId: '336c8ceb-5a0d-4774-9ab7-9ecc751bdc0f',
-  pluginStatus: [
-    {
-      name: 'assaabloy',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'ibeacon',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'eddystone',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'ctrlDataStream',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'baas',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'telkonet',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'soter',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'dormakaba',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'blescan',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'vostio',
-      running: false,
-      enabled: false
-    },
-    {
-      name: 'salto',
-      running: true,
-      enabled: true
-    },
-    {
-      name: 'ses',
-      running: false,
-      enabled: false
-    }
-  ]
+  apStatus: {
+    onlineAp: 1,
+    offlineAp: 1,
+    totalAp: 2
+  },
+  pluginsByRadioStatus: {
+    // eslint-disable-next-line max-len
+    radioPlugins: [{ name: 'zigbee', count: 1, displayName: 'Zigbee' }, { name: 'vostio', count: 1, displayName: 'Vistio' }, { name: 'baas', count: 1, displayName: 'Beacon as a Service' }],
+    totalRadioCount: 3
+  }
 }
 
 const noData = {
   requestId: '336c8ceb-5a0d-4774-9ab7-9ecc751bdc0f',
-  pluginStatus: []
+  pluginsByRadioStatus: {}
 }
 
 export { data, noData }
