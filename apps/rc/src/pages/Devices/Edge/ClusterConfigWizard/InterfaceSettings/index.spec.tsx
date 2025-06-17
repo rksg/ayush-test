@@ -416,6 +416,8 @@ describe('InterfaceSettings', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Changing any virtual IP configurations might')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should do compatibility check on PortForm', async () => {
@@ -499,17 +501,15 @@ describe('InterfaceSettings', () => {
       within(stepsForm).getByTestId('rc-LagForm')
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       const form = within(stepsForm).getByTestId('rc-PortForm')
-      const ipMode = within(form).getByTestId('ipMode')
       const portType = within(form).getByTestId('portType')
       const enabled = within(form).getByTestId('enabled')
 
       expect(portType).toHaveValue(EdgePortTypeEnum.WAN)
-      expect(ipMode).toHaveValue(EdgeIpModeEnum.STATIC)
       expect(enabled).toBeChecked()
-
+      // turn off the 1 WAN port to make it run as single WAN
       await userEvent.click(enabled)
-      await waitFor(() =>
-        expect(enabled).not.toBeChecked())
+      await waitFor(() => expect(enabled).not.toBeChecked())
+
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       await within(stepsForm).findByTestId('rc-VirtualIpForm')
       expect(within(stepsForm).queryByTestId('rc-DualWanForm')).toBeNull()
@@ -518,7 +518,15 @@ describe('InterfaceSettings', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
       const dialog = await screen.findByRole('dialog')
       // eslint-disable-next-line max-len
-      expect(dialog).toHaveTextContent('Reducing the number of enabled WAN ports will turn off the Dual WAN feature')
+      expect(dialog).toHaveTextContent('You are about to reduce the number of enabled WAN ports,')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Apply the changes' }))
+      await waitFor(() =>
+        expect(mockedUsedNavigate).toBeCalledWith({
+          hash: '',
+          pathname: `/${params.tenantId}/t/devices/edge/cluster/mocked_cluster_id/configure`,
+          search: ''
+        }))
+      expect(mockedPatchEdgeClusterNetworkSettings).toBeCalled()
     })
   })
 

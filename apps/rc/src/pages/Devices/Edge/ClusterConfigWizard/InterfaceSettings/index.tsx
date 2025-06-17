@@ -348,10 +348,11 @@ export const InterfaceSettings = () => {
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
           content: $t({
-            defaultMessage: `Reducing the number of enabled WAN ports 
-            will turn off the Dual WAN feature. 
-            Are you sure you want to continue?`
+            defaultMessage: `You are about to reduce the number of enabled WAN ports, 
+            which will disable the Dual WAN feature.
+            Are you sure you want to proceed?`
           }),
+          okText: $t({ defaultMessage: 'Apply the changes' }),
           onOk: async () => {
             await invokeUpdateApi(value, callback)
           }
