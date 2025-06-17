@@ -27,8 +27,6 @@ type PortProfileMap = {
 }
 
 export function Summary () {
-  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
-
   const { $t } = useIntl()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchPortProfileToggle = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
@@ -99,13 +97,10 @@ export function Summary () {
           label={$t({ defaultMessage: 'Description:' })}
           children={currentData.description || $t({ defaultMessage: 'None' })}
         />
-        {
-          profileOnboardOnlyEnabled &&
-          <Form.Item
-            label={$t({ defaultMessage: 'Apply profile updates to existing switches:' })}
-            children={transformDisplayOnOff(currentData.applyOnboardOnly || false)}
-          />
-        }
+        <Form.Item
+          label={$t({ defaultMessage: 'Apply profile updates to existing switches:' })}
+          children={transformDisplayOnOff(currentData.applyOnboardOnly || false)}
+        />
         <Form.Item
           label={$t({ defaultMessage: 'VLANs:' })}
           children={(currentData.vlans && currentData.vlans.length > 0 &&

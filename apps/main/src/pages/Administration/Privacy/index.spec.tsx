@@ -16,7 +16,8 @@ const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
 
 const userProfileContextValues = {
   data: fakeUserProfile,
-  isPrimeAdmin
+  isPrimeAdmin,
+  tenantType: 'MSP'
 } as UserProfileContextProps
 
 

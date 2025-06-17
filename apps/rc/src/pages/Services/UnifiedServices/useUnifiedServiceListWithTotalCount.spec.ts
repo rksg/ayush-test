@@ -5,8 +5,8 @@ import { AaaUrls, AccessControlUrls, DHCPUrls, DpskUrls, PolicyType, ServiceType
 import { Provider }                                                                from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                                         from '@acx-ui/test-utils'
 
-import { mockedAvailableUnifiedServicesList }                                       from './__tests__/fixtures'
-import { useMdnsProxyConsolidationTotalCount, useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
+import { mockedAvailableUnifiedServicesList }                                                                       from './__tests__/fixtures'
+import { useMdnsProxyConsolidationTotalCount, useDhcpConsolidationTotalCount, useUnifiedServiceListWithTotalCount } from './useUnifiedServiceListWithTotalCount'
 
 
 const mockedUseAvailableUnifiedServicesList = jest.fn(() => mockedAvailableUnifiedServicesList)
@@ -20,6 +20,8 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ tenantId: 'TENANT_ID' }))
 }))
 
+const mockedDhcpListQuery = jest.fn()
+const mockedEdgeDhcpListQuery = jest.fn()
 const mockedMdnsProxyListQuery = jest.fn()
 const mockedEdgeMdnsProxyListQuery = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
@@ -27,7 +29,11 @@ jest.mock('@acx-ui/rc/services', () => ({
   // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
   useGetEnhancedMdnsProxyListQuery: (args: any, options: any) => mockedMdnsProxyListQuery(args, options),
   // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
-  useGetEdgeMdnsProxyViewDataListQuery: (args: any, options: any) => mockedEdgeMdnsProxyListQuery(args, options)
+  useGetEdgeMdnsProxyViewDataListQuery: (args: any, options: any) => mockedEdgeMdnsProxyListQuery(args, options),
+  // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+  useGetDHCPProfileListViewModelQuery: (args: any, options: any) => mockedDhcpListQuery(args, options),
+  // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+  useGetDhcpStatsQuery: (args: any, options: any) => mockedEdgeDhcpListQuery(args, options)
 }))
 
 describe('useUnifiedServiceListWithTotalCount', () => {
@@ -35,6 +41,8 @@ describe('useUnifiedServiceListWithTotalCount', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
+    mockedDhcpListQuery.mockReturnValue({ data: undefined, isFetching: false })
+    mockedEdgeDhcpListQuery.mockReturnValue({ data: undefined, isFetching: false })
     mockedMdnsProxyListQuery.mockReturnValue({ data: undefined, isFetching: false })
     mockedEdgeMdnsProxyListQuery.mockReturnValue({ data: undefined, isFetching: false })
   })
@@ -85,6 +93,8 @@ describe('useUnifiedServiceListWithTotalCount', () => {
   })
 
   afterEach(() => {
+    mockedDhcpListQuery.mockClear()
+    mockedEdgeDhcpListQuery.mockClear()
     mockedMdnsProxyListQuery.mockClear()
     mockedEdgeMdnsProxyListQuery.mockClear()
   })
@@ -141,6 +151,41 @@ describe('useUnifiedServiceListWithTotalCount', () => {
 
       expect(mockedMdnsProxyListQuery).toHaveBeenCalledWith({}, { skip: true })
       expect(mockedEdgeMdnsProxyListQuery).toHaveBeenCalledWith({}, { skip: true })
+    })
+  })
+
+  describe('useDhcpConsolidationTotalCount', () => {
+    it('returns the correct total count', () => {
+      mockedDhcpListQuery.mockReturnValueOnce({ data: { totalCount: 10 }, isFetching: false })
+      mockedEdgeDhcpListQuery.mockReturnValueOnce({ data: { totalCount: 10 }, isFetching: false })
+      const { result } = renderHook(() => useDhcpConsolidationTotalCount({}))
+      expect(result.current.data?.totalCount).toBe(20)
+      expect(result.current.isFetching).toBe(false)
+    })
+
+    // eslint-disable-next-line max-len
+    it('returns 0 as the total count when both dhcpData and edgeDhcpData are undefined', () => {
+      mockedDhcpListQuery.mockReturnValueOnce({ data: undefined, isFetching: true })
+      mockedEdgeDhcpListQuery.mockReturnValueOnce({ data: undefined, isFetching: false })
+      const { result } = renderHook(() => useDhcpConsolidationTotalCount({}))
+      expect(result.current.data?.totalCount).toBe(0)
+      expect(result.current.isFetching).toBe(true)
+    })
+
+    // eslint-disable-next-line max-len
+    it('returns the correct total count when only one of dhcpData or edgeDhcpData has a totalCount property', () => {
+      mockedDhcpListQuery.mockReturnValueOnce({ data: { totalCount: 10 }, isFetching: false })
+      mockedEdgeDhcpListQuery.mockReturnValueOnce({ data: undefined, isFetching: true })
+      const { result } = renderHook(() => useDhcpConsolidationTotalCount({}))
+      expect(result.current.data?.totalCount).toBe(10)
+      expect(result.current.isFetching).toBe(true)
+    })
+
+    it('should skip the query when isDisabled is true', () => {
+      renderHook(() => useDhcpConsolidationTotalCount({}, true))
+
+      expect(mockedDhcpListQuery).toHaveBeenCalledWith({}, { skip: true })
+      expect(mockedEdgeDhcpListQuery).toHaveBeenCalledWith({}, { skip: true })
     })
   })
 })
