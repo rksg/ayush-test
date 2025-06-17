@@ -378,17 +378,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? v1Header : {}
-        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
-        const req = createHttpRequest(switchUrls.getSwitchCurrentVersions, params, headers)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
-    }),
     getSwitchCurrentVersionsV1001: build.query<CurrentVersionsV1002, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -853,7 +842,6 @@ export const {
   useLazyGetSwitchVenueVersionListV1001Query,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchAvailableFirmwareListV1001Query,
-  useGetSwitchCurrentVersionsQuery,
   useGetSwitchCurrentVersionsV1001Query,
   useGetSwitchDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,

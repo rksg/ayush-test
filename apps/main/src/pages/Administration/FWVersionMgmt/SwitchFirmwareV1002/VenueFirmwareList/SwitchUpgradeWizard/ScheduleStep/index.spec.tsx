@@ -37,15 +37,6 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersionsV1002
-  })
-}))
-
-
-
 describe('ScheduleStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
