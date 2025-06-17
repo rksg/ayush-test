@@ -1,8 +1,9 @@
-import { fakeIncidentLLDPStatus, overlapsRollup } from '@acx-ui/analytics/utils'
-import { get }                                    from '@acx-ui/config'
-import { dataApi, dataApiURL, Provider, store }   from '@acx-ui/store'
+import { fakeIncidentLLDPStatus, overlapsRollup }        from '@acx-ui/analytics/utils'
+import { get }                                           from '@acx-ui/config'
+import { dataApi, dataApiURL, Provider, store }          from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render,
-  within, screen, fireEvent } from '@acx-ui/test-utils'
+  within, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { ImpactedSwitch } from '../ImpactedSwitchesTable/services'
 
@@ -15,7 +16,13 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+
 const mockOverlapsRollup = overlapsRollup as jest.Mock
+const mockHandleBlobDownloadFile = handleBlobDownloadFile as jest.Mock
 
 Object.assign(navigator, {
   clipboard: {
@@ -86,7 +93,10 @@ describe('ImpactedSwitchLLDP',()=>{
   })
 
   describe('ImpactedSwitchDDoSTable', () => {
-    beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
+    beforeEach(() => {
+      store.dispatch(dataApi.util.resetApiState())
+      jest.clearAllMocks()
+    })
     it('should render for R1', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
@@ -176,6 +186,60 @@ describe('ImpactedSwitchLLDP',()=>{
       // Check that the portNumbers column renders an empty string
       const portNumbersCell = within(rows[0]).getAllByRole('cell')[4]
       expect(portNumbersCell.textContent).toBe('  ')
+    })
+
+    it('should handle CSV export correctly when data is present', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      fireEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('Impacted-Switches-LLDP-Status')
+      )
+    })
+
+    it('should handle CSV export correctly when data is empty (only headers)', async () => {
+      const emptyResponse = {
+        incident: { impactedSwitches: [] }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: emptyResponse })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      // Assert that the table shows empty data state
+      const body = within(await findTBody())
+      const rows = await body.findAllByRole('row')
+      expect(rows).toHaveLength(1)
+      expect(rows[0]).toHaveClass('ant-table-placeholder')
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      expect(exportButton).toBeInTheDocument() // The button should be present
+
+      fireEvent.click(exportButton)
+
+      const expectedCsvContent = '"Switch Name","Switch Serial","Switch MAC",'
+        + '"Impacted Reason","Port Details"\n'
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        new Blob([expectedCsvContent], { type: 'text/csv;charset=utf-8;' }),
+        expect.stringContaining(
+          `Impacted-Switches-LLDP-Status-${fakeIncidentLLDPStatus.id}.csv`
+        )
+      )
     })
   })
 })

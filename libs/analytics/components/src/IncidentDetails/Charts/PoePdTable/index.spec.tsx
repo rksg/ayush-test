@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { fakeIncidentPoePd }                from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { fakeIncidentPoePd }                                                      from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { dataApiURL, Provider, store }                                            from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { handleBlobDownloadFile }                                                 from '@acx-ui/utils'
 
 import { impactedApi, Response } from './services'
 
@@ -47,9 +48,17 @@ export const response = {
   }
 } as Response
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+
+const mockHandleBlobDownloadFile = handleBlobDownloadFile as jest.Mock
+
 describe('PoeLowTable', () => {
   beforeEach(() => {
     store.dispatch(impactedApi.util.resetApiState())
+    jest.clearAllMocks()
   })
 
   it('should render correctly', async () => {
@@ -72,5 +81,42 @@ describe('PoeLowTable', () => {
     expect(links[0].href).toBe(
       'http://localhost/undefined/t/devices/switch/28:b3:71:29:8c:b6/one/details/overview'
     )
+  })
+
+  it('should handle CSV export correctly when data is present', async () => {
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
+    render(
+      <Provider>
+        <PoePdTable incident={fakeIncidentPoePd}/>
+      </Provider>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Impacted-Switches-PoE')
+    )
+  })
+
+  it('should not export CSV when data is empty', async () => {
+    const emptyResponse = {
+      incident: { impactedEntities: [] }
+    }
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: emptyResponse })
+    render(
+      <Provider>
+        <PoePdTable incident={fakeIncidentPoePd}/>
+      </Provider>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
   })
 })

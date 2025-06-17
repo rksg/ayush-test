@@ -103,7 +103,7 @@ describe('ImpactedSwitchDDoS', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('impacted-switch-ddos')
+      expect.stringContaining('Impacted-Switches-TCP-SYN-DDoS')
     )
   })
 

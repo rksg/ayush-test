@@ -6,9 +6,10 @@ import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {  TableProps,
   showToast,
   Tooltip } from '@acx-ui/components'
-import { get }          from '@acx-ui/config'
-import { CopyOutlined } from '@acx-ui/icons-new'
-import { TenantLink }   from '@acx-ui/react-router-dom'
+import { get }                            from '@acx-ui/config'
+import { CopyOutlined, DownloadOutlined } from '@acx-ui/icons-new'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { handleBlobDownloadFile }         from '@acx-ui/utils'
 
 import { ImpactedSwitchesTable } from '../ImpactedSwitchesTable'
 import {
@@ -108,10 +109,37 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
   }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ],[])
+
+  const handleExportCSV = (data: ImpactedSwitchPortRow[]) => {
+    const exportColumns = columns.filter(col => col.key !== 'action')
+    const headers = exportColumns.map(col => col.title)
+    const csvData = data.map(row =>
+      exportColumns.map(col => {
+        const value = row[col.dataIndex as keyof typeof row]
+        return value || '--'
+      })
+    )
+
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.map(value => `"${value}"`).join(','))
+    ].join('\n')
+
+    handleBlobDownloadFile(
+      new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
+      `Impacted-Switches-LLDP-Status-${incident.id}.csv`
+    )
+  }
+
   return (
     <ImpactedSwitchesTable
       incident={incident}
       columns={columns}
+      iconButton={{
+        icon: <DownloadOutlined />,
+        onClick: handleExportCSV,
+        tooltip: $t({ defaultMessage: 'Export to CSV' })
+      }}
     />
   )
 }

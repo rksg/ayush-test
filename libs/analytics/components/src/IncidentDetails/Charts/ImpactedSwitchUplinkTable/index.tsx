@@ -105,7 +105,7 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
 
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `impacted-switch-uplink-${incident.id}.csv`
+      `Impacted-Switches-Uplink-Congestion-${incident.id}.csv`
     )
   }
 

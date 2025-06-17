@@ -142,7 +142,7 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
     ].join('\n')
 
     handleBlobDownloadFile(new Blob([csvContent],
-      { type: 'text/csv;charset=utf-8;' }), `impacted-switch-port-flap-${incident.id}.csv`)
+      { type: 'text/csv;charset=utf-8;' }), `Impacted-Ports-Port-Flap-${incident.id}.csv`)
   }
 
   return <Loader states={[impactedSwitch]}>

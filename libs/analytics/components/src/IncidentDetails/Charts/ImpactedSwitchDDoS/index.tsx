@@ -35,7 +35,7 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
 
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `impacted-switch-ddos-${incident.id}.csv`
+      `Impacted-Switches-TCP-SYN-DDoS-${incident.id}.csv`
     )
   }
 

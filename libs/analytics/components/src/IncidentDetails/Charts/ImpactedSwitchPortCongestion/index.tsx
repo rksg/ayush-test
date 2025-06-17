@@ -87,7 +87,7 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
 
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `impacted-switch-port-congestion-${incident.id}.csv`
+      `Impacted-Port-Congestion-${incident.id}.csv`
     )
   }
 

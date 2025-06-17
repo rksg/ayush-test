@@ -40,7 +40,7 @@ export function ImpactedVlanTable ({ incident }: ChartProps) {
 
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `impacted-switch-loop-detection-${incident.id}.csv`
+      `VLANs-Loop-Detection-${incident.id}.csv`
     )
   }
 

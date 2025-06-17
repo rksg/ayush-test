@@ -429,7 +429,7 @@ describe('ImpactedSwitchPortFlap', () => {
       const { handleBlobDownloadFile } = require('@acx-ui/utils')
       expect(handleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
-        `impacted-switch-port-flap-${fakeIncident1.id}.csv`
+        `Impacted-Ports-Port-Flap-${fakeIncident1.id}.csv`
       )
 
       // Verify CSV content

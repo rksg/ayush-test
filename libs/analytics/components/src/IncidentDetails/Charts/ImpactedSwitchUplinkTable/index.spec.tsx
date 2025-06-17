@@ -132,7 +132,7 @@ describe('ImpactedSwitchUplinkTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('impacted-switch-uplink')
+      expect.stringContaining('Impacted-Switches-Uplink-Congestion')
     )
   })
   it('should display LAG ports correctly', async () => {
