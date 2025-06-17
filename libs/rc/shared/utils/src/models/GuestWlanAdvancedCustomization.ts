@@ -302,6 +302,6 @@ export class GuestWlanAdvancedCustomization {
 
     this.applicationVisibilityEnabled = true
 
-    this.fastRoamingOptions = new FastRoamingOptions()
+    this.fastRoamingOptions = undefined
   }
 }
