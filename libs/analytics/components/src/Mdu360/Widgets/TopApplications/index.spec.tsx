@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { formats }                                             from '@acx-ui/formatter'
 import { Provider }                                            from '@acx-ui/store'
 import { fireEvent, render, screen }                           from '@acx-ui/test-utils'
 import { AnalyticsFilter, DateRange, NodesFilter, SSIDFilter } from '@acx-ui/utils'
@@ -7,7 +8,6 @@ import { AnalyticsFilter, DateRange, NodesFilter, SSIDFilter } from '@acx-ui/uti
 import { mockTopApplications } from '../fixtures'
 
 import { useTopNApplicationQuery } from './services'
-import { formatBytes }             from './utils'
 
 import { TopApplications } from './index'
 
@@ -65,16 +65,16 @@ describe('TopApplications', () => {
 
     const dataUsageValues = await screen.findAllByText(/[0-9]+ (B|KB|MB|GB)/)
     const expectedValues = [
-      formatBytes(9157432),
-      formatBytes(5235759),
-      formatBytes(2190550),
-      formatBytes(1627108),
-      formatBytes(316055),
-      formatBytes(131222),
-      formatBytes(115551),
-      formatBytes(16184),
-      formatBytes(1509),
-      formatBytes(456)
+      formats.bytesFormat(9157432),
+      formats.bytesFormat(5235759),
+      formats.bytesFormat(2190550),
+      formats.bytesFormat(1627108),
+      formats.bytesFormat(316055),
+      formats.bytesFormat(131222),
+      formats.bytesFormat(115551),
+      formats.bytesFormat(16184),
+      formats.bytesFormat(1509),
+      formats.bytesFormat(456)
     ]
 
     expectedValues.forEach(value => {
