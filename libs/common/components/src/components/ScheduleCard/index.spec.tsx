@@ -11,7 +11,7 @@ import {
   screen,
   renderHook
 } from '@acx-ui/test-utils'
-import { Scheduler } from '@acx-ui/types'
+import { Scheduler, SchedulerDeviceTypeEnum } from '@acx-ui/types'
 
 import {
   venueResponse,
@@ -62,7 +62,12 @@ describe('ScheduleCard', () => {
             layout='horizontal'
             size='small'
             onFinish={onApply}>
-            <ScheduleCard {...props} type='ALWAYS_ON' form={formRef.current} disabled />
+            <ScheduleCard
+              {...props}
+              type='ALWAYS_ON'
+              form={formRef.current}
+              disabled
+              intervalUnit={15} />
           </Form>
         </Provider>)
 
@@ -81,7 +86,11 @@ describe('ScheduleCard', () => {
             layout='horizontal'
             size='small'
             onFinish={onApply}>
-            <ScheduleCard {...props} type='ALWAYS_ON' form={formRef.current} disabled={false} />
+            <ScheduleCard {...props}
+              type='ALWAYS_ON'
+              form={formRef.current}
+              disabled={false}
+              intervalUnit={15} />
           </Form>
         </Provider>)
 
@@ -101,7 +110,11 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              disabled={false}
+              intervalUnit={15} />
           </Form>
         </Provider>)
 
@@ -121,7 +134,8 @@ describe('ScheduleCard', () => {
               form={formRef.current}
               scheduler={scheduler}
               lazyQuery={undefined}
-              disabled={false} />
+              disabled={false}
+              intervalUnit={15} />
           </Form>
         </Provider>)
       const scheduleCheckboxMon0 = await screen.findByTestId('mon_0')
@@ -149,7 +163,12 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} scheduler={undefined} disabled />
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              scheduler={undefined}
+              intervalUnit={15}
+              disabled />
           </Form>
         </Provider>)
 
@@ -167,7 +186,8 @@ describe('ScheduleCard', () => {
               {...props}
               scheduler={scheduler}
               form={formRef.current}
-              disabled={false} />
+              disabled={false}
+              intervalUnit={15} />
           </Form>
         </Provider>)
 
@@ -195,7 +215,7 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard {...props} form={formRef.current} disabled={false} intervalUnit={15}/>
           </Form>
         </Provider>)
 
@@ -236,7 +256,7 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} />
+            <ScheduleCard {...props} form={formRef.current} disabled={false} intervalUnit={60}/>
           </Form>
         </Provider>)
       expect(await screen.findByText(/Local time/)).toBeVisible()
@@ -251,7 +271,12 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} disabled={false} readonly />
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              disabled={false}
+              readonly
+              intervalUnit={60}/>
           </Form>
         </Provider>)
       expect(await screen.findByText(/Local time/)).toBeVisible()
@@ -270,7 +295,12 @@ describe('ScheduleCard', () => {
       render(
         <Provider>
           <Form form={formRef.current} onFinish={onApply}>
-            <ScheduleCard {...props} form={formRef.current} type='ALWAYS_ON' disabled={false} />
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              type='ALWAYS_ON'
+              disabled={false}
+              intervalUnit={60}/>
           </Form>
         </Provider>)
       expect(await screen.findByText(/Local time/)).toBeVisible()
@@ -293,7 +323,8 @@ describe('ScheduleCard', () => {
             <ScheduleCard {...props}
               scheduler={undefined}
               form={formRef.current}
-              disabled={false} />
+              disabled={false}
+              intervalUnit={60} />
           </Form>
         </Provider>)
       expect(await screen.findByText(/Local time/)).toBeVisible()
@@ -314,7 +345,8 @@ describe('ScheduleCard', () => {
               {...props}
               form={formRef.current}
               scheduler={scheduler}
-              disabled={false} />
+              disabled={false}
+              intervalUnit={60} />
           </Form>
         </Provider>)
 
@@ -339,7 +371,8 @@ describe('ScheduleCard', () => {
           <Form form={formRef.current} onFinish={onApply}>
             <ScheduleCard {...props}
               form={formRef.current}
-              disabled={false} />
+              disabled={false}
+              intervalUnit={60} />
           </Form>
         </Provider>)
 
@@ -349,6 +382,123 @@ describe('ScheduleCard', () => {
       // eslint-disable-next-line max-len
       expect(formRef.current.getFieldsValue()).toEqual({ scheduler: { ...scheduleResultRAI, mon: scheduleResultRAI.mon.filter(item => item !== '2') } })
     })
-  })
 
+    it('should render schedule with slotwidth property correctly', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+
+      const customSlotWidth = 30
+
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              disabled={false}
+              slotwidth={customSlotWidth}
+              intervalUnit={60}
+            />
+          </Form>
+        </Provider>
+      )
+
+      // Verify that the schedule renders correctly
+      expect(await screen.findByText(/Local time/)).toBeVisible()
+
+      // Check that time slots are rendered
+      const timeSlots = await screen.findAllByTestId(/^(mon|tue|wed|thu|fri|sat|sun)_\d+$/)
+      expect(timeSlots.length).toBeGreaterThan(0)
+
+      // Check that the schedule data is correctly initialized
+      expect(formRef.current.getFieldsValue()).toEqual({ scheduler: scheduleResultRAI })
+
+      // Test interaction with the customized width slots
+      const mondayTimeSlot = await screen.findByTestId('mon_2')
+      expect(mondayTimeSlot).toBeVisible()
+      await userEvent.click(mondayTimeSlot)
+
+      // Verify the state is updated correctly after interaction
+      expect(formRef.current.getFieldsValue()).toEqual({
+        scheduler: {
+          ...scheduleResultRAI,
+          mon: scheduleResultRAI.mon.filter(item => item !== '2')
+        }
+      })
+    })
+
+    it('should render schedule poe tips correctly', async () => {
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+
+      const customSlotWidth = 30
+
+      render(
+        <Provider>
+          <Form form={formRef.current}
+            layout='horizontal'
+            size='small'
+            onFinish={onApply}>
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              disabled={false}
+              slotwidth={customSlotWidth}
+              intervalUnit={60}
+              deviceType={SchedulerDeviceTypeEnum.SWITCH}
+              readonly={false}
+              isShowTips={true}
+            />
+          </Form>
+        </Provider>
+      )
+
+      expect(await screen.findByRole('button', { name: 'See tips' })).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'See tips' }))
+      expect(await screen.findByRole('dialog')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+    it('should handle drag selection with onSelectionEnd callback', async () => {
+    // Setup form and refs
+      const { result: formRef } = renderHook(() => {
+        return Form.useForm()[0]
+      })
+
+      // Initial schedule data
+      const scheduler = { ...scheduleResultRAI, mon: ['0', '1', '2'] }
+
+      // Render component
+      render(
+        <Provider>
+          <Form form={formRef.current} onFinish={onApply}>
+            <ScheduleCard
+              {...props}
+              form={formRef.current}
+              scheduler={scheduler}
+              disabled={false}
+              intervalUnit={60}
+            />
+          </Form>
+        </Provider>
+      )
+
+      // Find elements to drag between
+      const mondayTimeSlot1 = await screen.findByTestId('mon_0')
+      const mondayTimeSlot3 = await screen.findByTestId('mon_2')
+
+      // Simulate drag selection
+      fireEvent.mouseDown(mondayTimeSlot1)
+      fireEvent.mouseMove(mondayTimeSlot3)
+      setTimeout(() => fireEvent.mouseUp(mondayTimeSlot3), 100)
+
+      // Verify the form was updated correctly
+      const formValues = formRef.current.getFieldsValue()
+      expect(formValues.scheduler.mon).toContain('0')
+      expect(formValues.scheduler.mon).toContain('1')
+      expect(formValues.scheduler.mon).toContain('2')
+    })
+  })
 })

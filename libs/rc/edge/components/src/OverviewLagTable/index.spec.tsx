@@ -2,9 +2,11 @@ import userEvent                   from '@testing-library/user-event'
 import { cloneDeep }               from 'lodash'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { Features }                                          from '@acx-ui/feature-toggle'
 import { EdgeLagStatus, EdgeStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
 import { render, screen, within }                            from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../hooks/useIsEdgeFeatureReady'
 
 import { EdgeOverviewLagTable } from './index'
 
@@ -14,6 +16,11 @@ const mockNavigator = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigator
+}))
+
+jest.mock('../hooks/useIsEdgeFeatureReady', () => ({
+  ...jest.requireActual('../hooks/useIsEdgeFeatureReady'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 jest.mock('../WanLinkHealthStatusLight', () => ({
@@ -56,7 +63,8 @@ describe('EdgeOverviewLagTable', () => {
 
   describe('Dual WAN enabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
     })
 
     it('renders loading icon when isLoading is true', async () => {
@@ -221,11 +229,61 @@ describe('EdgeOverviewLagTable', () => {
       await screen.findByRole('row', { name: /Port/ })
       await screen.findByTestId('MinusSquareOutlined')
     })
+
+    it('should display -- for WAN link status when link health check is off', async () => {
+      const mockDataDisabledLinkHealth = cloneDeep(mockData)
+      mockDataDisabledLinkHealth[0].multiWan = {
+        linkHealthMonitorEnabled: false
+      }
+
+      render(<Router>
+        <EdgeOverviewLagTable
+          data={mockDataDisabledLinkHealth}
+          isLoading={false}
+          isClusterLevel={true}
+          edgeNodes={mockEdgeNodes}
+        />
+      </Router>)
+
+      await showLinkHealthMonitoringColumn()
+
+      // Click the Link Health Monitoring button
+      const button = screen.queryByRole('button', { name: 'Off' })
+      expect(button).toBeNull()
+      // eslint-disable-next-line max-len
+      const lag1Row = screen.getByRole('row', { name: /Edge Node 1 LAG 1 Static Active Enabled 1 WAN 00:11:22:33:44:55 192.168.1.1 Off --/ })
+      expect(within(lag1Row).queryByText('Off')).toBeVisible()
+    })
+
+    it('should display blank for dual WAN columns when port type is not WAN', async () => {
+      const mockLanLag = cloneDeep(mockData[0])
+      mockLanLag.lagId = 2
+      mockLanLag.name = 'LAG 2'
+      mockLanLag.ip = '192.168.3.3'
+      mockLanLag.portType = 'LAN'
+      mockLanLag.multiWan = undefined
+
+      const mockLags = mockData.concat(mockLanLag)
+
+      render(<Router>
+        <EdgeOverviewLagTable
+          data={mockLags}
+          isLoading={false}
+          isClusterLevel={true}
+          edgeNodes={mockEdgeNodes}
+        />
+      </Router>)
+
+      await showLinkHealthMonitoringColumn()
+      // eslint-disable-next-line max-len
+      expect(screen.getByRole('row', { name: 'Edge Node 1 LAG 2 Static Active Enabled 1 LAN 00:11:22:33:44:55 192.168.3.3' })).toBeVisible()
+    })
   })
 
   describe('Dual WAN disabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     })
 
     it('renders the table with data', () => {

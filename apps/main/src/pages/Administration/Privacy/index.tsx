@@ -5,12 +5,12 @@ import { Col, Row, Switch, Typography } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams }                    from 'react-router-dom'
 
-import { showToast }                                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { useGetPrivacySettingsQuery, useGetTenantDetailsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, PrivacyFeatureName }                                             from '@acx-ui/rc/utils'
-import { hasAllowedOperations, useUserProfileContext }                                            from '@acx-ui/user'
-import { AccountType, getOpsApi }                                                                 from '@acx-ui/utils'
+import { showToast }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { useGetPrivacySettingsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, PrivacyFeatureName, TenantType }       from '@acx-ui/rc/utils'
+import { hasAllowedOperations, useUserProfileContext }                  from '@acx-ui/user'
+import { getOpsApi }                                                    from '@acx-ui/utils'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -27,7 +27,8 @@ export default function Privacy () {
   const params = useParams()
   const {
     isPrimeAdmin,
-    rbacOpsApiEnabled
+    rbacOpsApiEnabled,
+    tenantType
   } = useUserProfileContext()
   const isPrimeAdminUser = isPrimeAdmin()
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
@@ -35,13 +36,9 @@ export default function Privacy () {
   const [isAppVisibilitySettingsEnabled, setIsAppVisibilitySettingsEnabled]
     = useState<boolean>(false)
 
-  const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
-
   const isAppVisibilityEnabled = useIsSplitOn(Features.MSP_APP_VISIBILITY)
 
-  const tenantType = tenantDetails?.tenantType
-
-  const isMsp = (tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR)
+  const isMsp = (tenantType === TenantType.MSP || tenantType === TenantType.MSP_NON_VAR)
 
   const { data } = useGetPrivacySettingsQuery({ params })
 

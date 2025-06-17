@@ -1,19 +1,28 @@
 import {
   CommonAsyncResponse,
+  useAddIdentityGroupTemplateMutation,
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
   useAssociateIdentityGroupWithPolicySetMutation,
   useDissociateIdentityGroupWithPolicySetMutation,
+  useUpdateIdentityGroupTemplateMutation,
   useUpdatePersonaGroupMutation
 } from '@acx-ui/rc/services'
-import { PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup, useConfigTemplate, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 
 
 export function usePersonaGroupAction () {
-  const [addPersonaGroup] = useAddPersonaGroupMutation()
-  const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
+  const { isTemplate } = useConfigTemplate()
+  const [addPersonaGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddPersonaGroupMutation,
+    useTemplateMutationFn: useAddIdentityGroupTemplateMutation
+  })
+  const [updatePersonaGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdatePersonaGroupMutation,
+    useTemplateMutationFn: useUpdateIdentityGroupTemplateMutation
+  })
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
   const [associatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()
@@ -44,20 +53,26 @@ export function usePersonaGroupAction () {
       }
     }
 
-    return await addPersonaGroup({
-      payload: groupData,
-      onSuccess: (response: CommonAsyncResponse) => {
-        callback?.(response)
-        if (response.id) {
-          associateDpskCallback(response.id)
-          associateMacRegistrationCallback(response.id)
-          associatePolicySetCallback(response.id)
+    if (isTemplate) {
+      // template does not need to associate other resources, so we can return immediately
+      return await addPersonaGroup({ payload: groupData }).unwrap()
+        .then((result) => callback?.(result))
+    } else {
+      return await addPersonaGroup({
+        payload: groupData,
+        onSuccess: (response: CommonAsyncResponse) => {
+          callback?.(response)
+          if (response.id) {
+            associateDpskCallback(response.id)
+            associateMacRegistrationCallback(response.id)
+            associatePolicySetCallback(response.id)
+          }
+        },
+        onError: (response?: CommonAsyncResponse) => {
+          callback?.(response)
         }
-      },
-      onError: (response?: CommonAsyncResponse) => {
-        callback?.(response)
-      }
-    }).unwrap()
+      }).unwrap()
+    }
   }
 
   const updatePersonaGroupMutation
@@ -82,40 +97,42 @@ export function usePersonaGroupAction () {
     const { dpskPoolId, macRegistrationPoolId, policySetId, ...groupData } = patchData
     const associationPromises = []
 
-    if (macRegistrationPoolId) {
-      associationPromises.push(associateMacReg({
-        params: {
-          groupId,
-          poolId: macRegistrationPoolId
-        }
-      }))
-    }
+    if (!isTemplate) {
+      if (macRegistrationPoolId) {
+        associationPromises.push(associateMacReg({
+          params: {
+            groupId,
+            poolId: macRegistrationPoolId
+          }
+        }))
+      }
 
-    if (dpskPoolId) {
-      associationPromises.push(associateDpsk({
-        params: {
-          groupId,
-          poolId: dpskPoolId
-        }
-      }))
-    }
+      if (dpskPoolId) {
+        associationPromises.push(associateDpsk({
+          params: {
+            groupId,
+            poolId: dpskPoolId
+          }
+        }))
+      }
 
-    if (policySetId) {
-      associationPromises.push(associatePolicySet({
-        params: {
-          groupId,
-          policySetId
-        }
-      }))
-    } else if (newData.hasOwnProperty('policySetId')
+      if (policySetId) {
+        associationPromises.push(associatePolicySet({
+          params: {
+            groupId,
+            policySetId
+          }
+        }))
+      } else if (newData.hasOwnProperty('policySetId')
       && newData.policySetId === undefined
       && oldData.policySetId) {
-      associationPromises.push(dissociatePolicySet({
-        params: {
-          groupId,
-          policySetId: oldData.policySetId
-        }
-      }))
+        associationPromises.push(dissociatePolicySet({
+          params: {
+            groupId,
+            policySetId: oldData.policySetId
+          }
+        }))
+      }
     }
 
     let updatePersonaGroupPromise

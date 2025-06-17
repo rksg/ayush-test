@@ -25,6 +25,12 @@ export const useCasesToRefreshDpskTemplateList = [
   'DELETE_POOL_TEMPLATE'
 ]
 
+export const useCasesToRefreshIdentityGroupTemplateList = [
+  'CREATE_GROUP_TEMPLATE',
+  'UPDATE_GROUP_TEMPLATE',
+  'DELETE_GROUP_TEMPLATE'
+]
+
 export const useCasesToRefreshPortalTemplateList = [
   'Add Portal Service Profile by Template',
   'Update Portal Service Profile by Template',
@@ -163,5 +169,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshRogueAPTemplateList,
   ...useCasesToRefreshSwitchConfigProfileTemplateList,
   ...useCasesToRefreshApGroupTemplateList,
-  ...useCasesToRefreshEthernetPortTemplateList
+  ...useCasesToRefreshEthernetPortTemplateList,
+  ...useCasesToRefreshIdentityGroupTemplateList
 ]

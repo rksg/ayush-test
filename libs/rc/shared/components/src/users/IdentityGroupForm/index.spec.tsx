@@ -7,6 +7,7 @@ import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { PersonaUrls, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                             from '@acx-ui/store'
 import { mockServer, waitFor,render }           from '@acx-ui/test-utils'
+import { RequestPayload }                       from '@acx-ui/types'
 
 import { mockedPolicySet, mockPersonaGroupTableResult } from './__tests__/fixtures'
 
@@ -18,9 +19,25 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockAddPersonaGroup = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useAddPersonaGroupMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        mockAddPersonaGroup()
+        resolve(true)
+
+        setTimeout(() => {
+          (req.onSuccess as Function)({ id: 'mocked_id' })
+        }, 10)})
+      }
+    }]
+  }
+}))
+
 describe('IdentityGroupForm', () => {
   const callback = jest.fn()
-  const addPersonaGroup = jest.fn()
   const updatePersonaGroup = jest.fn()
   const getPersonaGroup = jest.fn()
   const associatePolicySet = jest.fn()
@@ -46,7 +63,7 @@ describe('IdentityGroupForm', () => {
   }
 
   beforeEach(() => {
-    addPersonaGroup.mockClear()
+    mockAddPersonaGroup.mockClear()
     updatePersonaGroup.mockClear()
     getPersonaGroup.mockClear()
     callback.mockClear()
@@ -75,13 +92,14 @@ describe('IdentityGroupForm', () => {
           return res(ctx.json({}))
         }
       ),
-      rest.post(
-        PersonaUrls.addPersonaGroup.url,
-        (req, res, ctx) => {
-          addPersonaGroup()
-          return res(ctx.json({ id: 'identityId', requestId: '123123123' }))
-        }
-      ),
+      // Does not need to be mocked due to mock the useAddPersonaGroupMutation in the above
+      // rest.post(
+      //   PersonaUrls.addPersonaGroup.url,
+      //   (req, res, ctx) => {
+      //     addPersonaGroup()
+      //     return res(ctx.json({ id: 'identityId', requestId: '123123123' }))
+      //   }
+      // ),
       rest.put(
         PersonaUrls.associatePolicySet.url,
         (req, res, ctx) => {
@@ -97,8 +115,8 @@ describe('IdentityGroupForm', () => {
     fireEvent.change(screen.getByLabelText('Identity Group Name'), { target: { value: 'Test' } })
     fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'New Description' } })
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(addPersonaGroup).toBeCalled())
-    await waitFor(() => expect(callback).toBeCalledWith('identityId'))
+    await waitFor(() => expect(mockAddPersonaGroup).toBeCalled())
+    await waitFor(() => expect(callback).toBeCalledWith('mocked_id'))
   })
 
   it('callback is called with zero argument when clicking cancel', async () => {
@@ -121,9 +139,9 @@ describe('IdentityGroupForm', () => {
 
     await userEvent.click(policySetOption)
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(addPersonaGroup).toBeCalled())
+    await waitFor(() => expect(mockAddPersonaGroup).toBeCalled())
     await waitFor(() => expect(associatePolicySet).toBeCalled())
-    await waitFor(() => expect(callback).toBeCalledWith('identityId'))
+    await waitFor(() => expect(callback).toBeCalledWith('mocked_id'))
   })
 
   it('should invoke update identity group and navigate to previous page', async () => {

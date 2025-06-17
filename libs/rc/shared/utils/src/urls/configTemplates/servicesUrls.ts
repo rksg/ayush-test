@@ -19,6 +19,16 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json'
     }
   },
+  createDpskWithIdentityGroup: {
+    method: 'post',
+    url: '/templates/identityGroups/:identityGroupId/dpskServices',
+    opsApi: 'POST:/templates/identityGroups/{id}/dpskServices',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
   updateDpsk: {
     method: 'put',
     url: '/templates/dpskServices/:serviceId',

@@ -14,8 +14,7 @@ import {
   ApDetails,
   ApVenueStatusEnum,
   ApViewModel,
-  RadioProperties,
-  useApContext
+  RadioProperties
 } from '@acx-ui/rc/utils'
 import { TenantLink }                                from '@acx-ui/react-router-dom'
 import { noDataDisplay, isApFwVersionLargerThan711 } from '@acx-ui/utils'
@@ -30,8 +29,6 @@ export function ApProperties (props:{
   const [visible, setVisible] = useState(false)
   const { currentAP, apDetails, isLoading } = props
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
-  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  const { supportAggressiveTxPower } = useApContext()
   const onMoreAction = () => {
     setVisible(true)
   }
@@ -39,8 +36,8 @@ export function ApProperties (props:{
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      const txPower = ((isApFwVersionLargerThan711(currentAP?.fwVersion) &&
-      (!supportR370 || supportAggressiveTxPower))? channel?.actualTxPower : channel?.txPower)
+      const txPower = ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
+        channel?.actualTxPower : channel?.txPower)
 
       return txPower !== undefined && txPower !== null ? txPower : noDataDisplay
     }

@@ -6,13 +6,16 @@ import { MessageDescriptor } from 'react-intl'
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 import { UIConfiguration } from './workflow'
 
+export type WorkflowNodeTypes = ActionType | 'START' | 'DISCONNECTED_BRANCH'
+
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
   DPSK = 'DPSK',
   MAC_REG = 'MAC_REG',
-  CERT_TEMPLATE = 'CERT_TEMPLATE'
+  CERT_TEMPLATE = 'CERT_TEMPLATE',
+  SAML_AUTH = 'IDP_AUTH_PROVIDER'
 }
 
 export interface ActionBase {
@@ -88,12 +91,16 @@ export interface CertTempAction extends ActionBase {
   certTemplateId: string,
   identityId?: string
 }
+export interface SamlAuthAction extends ActionBase {
+  samlIdpProfileId: string
+}
 export type AupActionContext = Omit<AupAction, keyof ActionBase>
 export type DataPromptActionContext = Omit<DataPromptAction, keyof ActionBase>
 export type DisplayMessageActionContext = Omit<DisplayMessageAction, keyof ActionBase>
 export type DpskActionContext = Omit<DpskAction, keyof ActionBase>
 export type MacRegActionContext = Omit<MacRegAction, keyof ActionBase>
 export type CertTempActionContext = Omit<CertTempAction, keyof ActionBase>
+export type SamlAuthContext = Omit<SamlAuthAction, keyof ActionBase>
 
 export type GenericActionData =
   ActionBase &
@@ -102,7 +109,8 @@ export type GenericActionData =
   DisplayMessageActionContext &
   DpskActionContext &
   MacRegActionContext &
-  CertTempActionContext
+  CertTempActionContext &
+  SamlAuthContext
 
 export enum FileType {
   AUP_FILE = 'AUP_FILE'

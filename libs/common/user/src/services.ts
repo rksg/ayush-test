@@ -16,7 +16,9 @@ import {
   BetaStatus,
   // FeatureAPIResults,
   BetaFeatures,
-  AllowedOperationsResponse
+  AllowedOperationsResponse,
+  EarlyAccessResponse,
+  TenantDetails
 } from './types'
 
 export const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -153,6 +155,12 @@ export const UserUrlsInfo = {
 }
 
 export const UserRbacUrlsInfo = {
+  getTenantDetails: {
+    method: 'get',
+    url: '/tenants/self',
+    opsApi: 'GET:/tenants/self',
+    newApi: true
+  },
   getAccountTier: {
     method: 'get',
     url: '/tenants/self/query?accountTier',
@@ -175,6 +183,11 @@ export const UserRbacUrlsInfo = {
     method: 'get',
     url: '/tenants/self/query?betaStatus',
     oldUrl: '/tenants/betaStatus',
+    newApi: true
+  },
+  getEarlyAccess: {
+    method: 'get',
+    url: '/tenants/self/query?earlyAccess',
     newApi: true
   },
   toggleBetaStatus: {
@@ -242,11 +255,13 @@ export const {
   useGetBetaStatusQuery,
   useToggleBetaStatusMutation,
   useFeatureFlagStatesQuery,
+  useGetEarlyAccessQuery,
   useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
   useUpdateBetaFeatureListMutation,
-  useGetAllowedOperationsQuery
+  useGetAllowedOperationsQuery,
+  useGetTenantDetailsQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -402,6 +417,14 @@ export const {
         ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
       providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
+    getEarlyAccess: build.query<EarlyAccessResponse, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getEarlyAccess, params)
+        return {
+          ...req
+        }
+      }
+    }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const userUrlsInfo = getUserUrls(enableRbac)
@@ -460,6 +483,14 @@ export const {
         }
       },
       invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    getTenantDetails: build.query<TenantDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getTenantDetails, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })

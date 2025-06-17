@@ -850,6 +850,19 @@ export const isFirmwareVersionAbove10010gCd1Or10020bCd1 = function (firmwareVers
   }
 }
 
+export const isFirmwareVersionAbove10020bCd2 = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010g_cd1 < 10020
+  2. > 10020b_cd1
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10020b_cd2', true)
+  } else {
+    return false
+  }
+}
+
 export const isFirmwareSupportAdminPassword = (
   firmwareVersion: string
 ) => {
@@ -962,3 +975,14 @@ export const isSpecific8100Model = (serialNumber: string) => {
     serialNumber?.startsWith('FNZ') ||
     serialNumber?.startsWith('FPA'))
 }
+
+export const allMultipleEditableFields = [
+  'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
+  'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
+  'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
+  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
+  'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
+  'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
+  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl', 'poeScheduler'
+]

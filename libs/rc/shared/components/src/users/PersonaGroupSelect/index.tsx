@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { Select }      from 'antd'
 import { SelectProps } from 'antd/lib/select'
 
-import { useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
-import { PersonaGroup }                   from '@acx-ui/rc/utils'
+import { useQueryIdentityGroupTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
+import { PersonaGroup, useConfigTemplateQueryFnSwitcher }                      from '@acx-ui/rc/utils'
 
 
 export function PersonaGroupSelect (props: {
@@ -14,7 +14,9 @@ export function PersonaGroupSelect (props: {
 } & SelectProps) {
   const { filterProperty, whiteList, setIdentityGroups, ...customSelectProps } = props
 
-  const personaGroupList = useSearchPersonaGroupListQuery({
+  const personaGroupList = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useSearchPersonaGroupListQuery,
+    useTemplateQueryFn: useQueryIdentityGroupTemplatesQuery,
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }

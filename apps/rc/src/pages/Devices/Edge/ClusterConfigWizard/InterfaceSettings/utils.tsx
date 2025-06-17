@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { FormInstance, Space, Typography } from 'antd'
-import _, { cloneDeep }                    from 'lodash'
+import _, { cloneDeep, flatten, reduce }   from 'lodash'
 import moment                              from 'moment-timezone'
 import { defineMessage }                   from 'react-intl'
 
@@ -494,25 +494,30 @@ const processSubInterfaceSettings = (data: InterfaceSettingsFormType) => {
         }))
     } as NodeSubInterfaces)
   })
-  Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
-    // eslint-disable-next-line max-len
-    const lagSettingsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
-    // eslint-disable-next-line max-len
+  const nodePortIdsMap = _.reduce(Object.entries(data.portSettings), (result, [serialNumber, portSetting]) => {
+    result[serialNumber] = Object.values(portSetting).map(item => item[0].id)
+    return result
+  }, {} as { [serialNumber: string]: string[] })
+  Object.entries(nodePortIdsMap).forEach(([serialNumber, portIds]) => {
+    const lagMemberIdsOfCurrentNode = data.lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+      ?.flatMap(lag => lag.lagMembers.map(member => member.portId))
+    const currentNodePortSubInterfaces = data.portSubInterfaces?.[serialNumber] ?? {}
     const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
     if(currentSubInterfaceItem) {
-      // eslint-disable-next-line max-len
-      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).filter(([portId]) => {
-        return !lagSettingsOfCurrentNode?.some(lag => lag.lagMembers.some(member => member.portId === portId))
-      }).map(([portId, subInterfaces]) => ({
-        portId: portId,
-        subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+      currentSubInterfaceItem.ports = portIds.map(portId => ({
+        portId,
+        subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+          preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+          []
       }))
     } else {
       subInterfaceSettings.push({
         serialNumber,
-        ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
-          portId: portId,
-          subInterfaces: preProcessSubInterfaceSetting(subInterfaces)
+        ports: portIds.map(portId => ({
+          portId,
+          subInterfaces: !lagMemberIdsOfCurrentNode?.includes(portId) ?
+            preProcessSubInterfaceSetting(currentNodePortSubInterfaces[portId] ?? []) :
+            []
         }))
       } as NodeSubInterfaces)
     }
@@ -635,4 +640,28 @@ export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<Ed
   }, {} as Record<EdgeSerialNumber, EdgePortInfo[]>)
 
   return result
+}
+
+// get physical port & LAG data from form instance
+export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
+  ports: Record<EdgeSerialNumber, EdgePort[]>,
+  lags: Record<EdgeSerialNumber, EdgeLag[]>
+} => {
+  const nodesPortData = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']
+  const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+
+  const allPortsData = reduce(nodesPortData, (result, values, key) => {
+    result[key] = flatten(Object.values(values))
+    return result
+  }, {} as Record<EdgeSerialNumber, EdgePort[]>)
+
+  const allLagsData = reduce(nodesLagData, (result, values) => {
+    result[values.serialNumber] = values.lags
+    return result
+  }, {} as Record<EdgeSerialNumber, EdgeLag[]>)
+
+  return {
+    ports: allPortsData,
+    lags: allLagsData
+  }
 }

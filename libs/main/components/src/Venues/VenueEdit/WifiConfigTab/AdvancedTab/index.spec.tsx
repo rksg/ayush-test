@@ -51,12 +51,10 @@ jest.mock('react-router-dom', () => ({
 }))
 
 jest.mock('./AccessPointUSB', () => ({
-  ...jest.requireActual('./AccessPointUSB'),
   AccessPointUSB: () => <div data-testid='mocked-AP-USB'></div>
 }))
 
 jest.mock('./RebootTimeout', () => ({
-  ...jest.requireActual('./AccessPointUSB'),
   RebootTimeout: () => <div data-testid='mocked-Reboot-Timeout'></div>
 }))
 
