@@ -326,8 +326,7 @@ export function NetworkForm (props:{
 
       const isDeleteAuthRadiusCase =
         (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
-        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
-        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true)
 
       if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius

@@ -380,7 +380,6 @@ export function useRadiusServer () {
     }).unwrap()
   }
 
-
   // eslint-disable-next-line max-len
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
@@ -440,10 +439,11 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
-    case NetworkTypeEnum.AAA:
       return true
     case NetworkTypeEnum.OPEN:
       return !!saveData.wlan?.macAddressAuthentication
+    case NetworkTypeEnum.AAA:
+      return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
         saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
