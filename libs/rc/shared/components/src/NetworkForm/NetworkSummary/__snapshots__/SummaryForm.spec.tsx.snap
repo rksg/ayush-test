@@ -314,7 +314,7 @@ h5.c1.ant-typography {
                         />
                       </svg>
                     </span>
-                    6cf550cdb67641d798d804793aaa82db
+                    My-Venue
                   </li>
                 </div>
               </div>
@@ -524,68 +524,6 @@ h5.c1.ant-typography {
                   class="ant-form-item-control-input-content"
                 >
                   Dynamic Pre-Shared Key (DPSK)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Proxy Service"
-              >
-                Proxy Service
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Enabled
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Authentication Server"
-              >
-                Authentication Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  undefined
                 </div>
               </div>
             </div>
@@ -929,68 +867,6 @@ h5.c1.ant-typography {
             >
               <label
                 class=""
-                title="Proxy Service"
-              >
-                Proxy Service
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Disabled
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Authentication Server"
-              >
-                Authentication Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  undefined
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
                 title="Security Protocol:"
               >
                 Security Protocol
@@ -1092,7 +968,7 @@ h5.c1.ant-typography {
                         />
                       </svg>
                     </span>
-                    My-Venue
+                    6cf550cdb67641d798d804793aaa82db
                   </li>
                 </div>
               </div>

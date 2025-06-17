@@ -35,7 +35,7 @@ import {
   Select,
   useLayoutContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   GlobeOutlined,
   LockOutlined,
@@ -136,7 +136,8 @@ export const useDashBoardUpdatedFilter = () => {
   return context
 }
 export default function Dashboard () {
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
   const [canvasId, setCanvasId] = useState('')
   const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
@@ -146,7 +147,7 @@ export default function Dashboard () {
 
   const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
+  const isDashboardCanvasEnabled = isCanvasEnabled && isAdminUser && !isCustomPrivilegeGroup
   const getDashboardsQuery = useGetDashboardsQuery({}, { skip: !isDashboardCanvasEnabled })
   const { data: dashboards, isLoading: dashboardsLoading } = getDashboardsQuery
 
@@ -157,7 +158,7 @@ export default function Dashboard () {
   }, [])
 
   useEffect(() => {
-    if (isCanvasQ2Enabled && dashboards?.length) {
+    if (isCanvasEnabled && dashboards?.length) {
       const updatedDashboards = formatDashboardList(dashboards)
       const dashboardIds = updatedDashboards.map(item => item.id)
       if (!initDashboardId) {
@@ -229,12 +230,13 @@ function DashboardPageHeader (props: {
   const { rbacOpsApiEnabled } = getUserProfile()
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
+  const isDashboardCanvasEnabled = isCanvasEnabled && isAdminUser && !isCustomPrivilegeGroup
 
   const [canvasModalVisible, setCanvasModalVisible] = useState(false)
   const [editCanvasId, setEditCanvasId] = useState<undefined | string>(undefined)
@@ -327,7 +329,7 @@ function DashboardPageHeader (props: {
   useEffect(() => {
     onPageFilterChange?.(dashboardFilters, true)
     return () => {
-      if (isCanvasQ2Enabled && shouldCleanupDashboardIdRef.current) {
+      if (isCanvasEnabled && shouldCleanupDashboardIdRef.current) {
         handleClearNotifications(shouldCleanupDashboardIdRef.current)
       }
     }
@@ -414,7 +416,7 @@ function DashboardPageHeader (props: {
   return (<>
     <PageHeader
       title={''}
-      titleExtra={isCanvasQ2Enabled && dashboardList?.length &&
+      titleExtra={isCanvasEnabled && dashboardList?.length &&
       <Space size={7} style={{ alignItems: 'center', lineHeight: 1 }}>
         <DashboardSelector />
         <Button
@@ -752,8 +754,9 @@ function CanvasDashboard (props: {
   const { canvasId, sections, groups, setGroups } = props
   const { isCustomPrivilegeGroup } = useUserProfileContext()
   const isAdminUser = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isCanvasQ2Enabled = useIsSplitOn(Features.CANVAS_Q2)
-  const isDashboardCanvasEnabled = isCanvasQ2Enabled && isAdminUser && !isCustomPrivilegeGroup
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+  const isDashboardCanvasEnabled = isCanvasEnabled && isAdminUser && !isCustomPrivilegeGroup
 
   const { menuCollapsed } = useLayoutContext()
   const [layout, setLayout] = useState({
