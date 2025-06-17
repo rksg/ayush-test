@@ -638,7 +638,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   stackingNeighborPort?: string
   lagForceUpPort?: boolean
   poeCapability?: boolean
-  poeScheduleEnabled?: boolean
+  poeScheduleEnabled?: string
   isPoeSupported?: string
   poeScheduler?: PoeSchedulerType
 }

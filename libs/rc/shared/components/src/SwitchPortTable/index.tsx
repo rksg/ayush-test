@@ -356,7 +356,7 @@ export function SwitchPortTable (props: {
       sorter: true,
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
-        return row.poeScheduleEnabled ?
+        return row.poeScheduleEnabled === 'true' ?
           <Button
             type='link'
             data-testid='edit-poe-schedule'
