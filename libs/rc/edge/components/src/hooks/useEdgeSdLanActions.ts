@@ -4,7 +4,8 @@ import {
   useActivateEdgeMvSdLanNetworkMutation,
   useAddEdgeMvSdLanMutation,
   useDeactivateEdgeMvSdLanNetworkMutation,
-  useUpdateEdgeMvSdLanPartialMutation
+  useUpdateEdgeMvSdLanPartialMutation,
+  useActivateSdLanNetworkTemplateMutation
 } from '@acx-ui/rc/services'
 import { CommonErrorsResult, EdgeSdLanServiceProfile } from '@acx-ui/rc/utils'
 import { CommonResult }                                from '@acx-ui/user'
@@ -15,6 +16,7 @@ export const useEdgeSdLanActions = () => {
   const [updateEdgeSdLanMutation] = useUpdateEdgeMvSdLanPartialMutation()
   const [activateNetwork] = useActivateEdgeMvSdLanNetworkMutation()
   const [deactivateNetwork] = useDeactivateEdgeMvSdLanNetworkMutation()
+  const [activateNetworkTemplate] = useActivateSdLanNetworkTemplateMutation()
 
   const diffVenueNetworks = (
     currentData: EdgeSdLanServiceProfile['activeNetwork'],
@@ -87,11 +89,14 @@ export const useEdgeSdLanActions = () => {
 
   const handleNetworkChanges = async (
     serviceId: string,
-    currentData: EdgeSdLanServiceProfile['activeNetwork'],
-    originData?: EdgeSdLanServiceProfile['activeNetwork']
+    // eslint-disable-next-line max-len
+    currentData: EdgeSdLanServiceProfile['activeNetwork'] | EdgeSdLanServiceProfile['activeNetworkTemplate'],
+    // eslint-disable-next-line max-len
+    originData?: EdgeSdLanServiceProfile['activeNetwork'] | EdgeSdLanServiceProfile['activeNetworkTemplate'],
+    isTemplate = false
   ) => {
     const actions = []
-    const { rmNetworks = [], addNetworks = [] } = diffVenueNetworks(currentData, originData)
+    const { rmNetworks = [], addNetworks = [] } = diffVenueNetworks(currentData ?? [], originData)
     if (rmNetworks.length > 0) {
       actions.push(...rmNetworks.map(network => deactivateNetwork({
         customHeaders: {
@@ -106,7 +111,8 @@ export const useEdgeSdLanActions = () => {
     }
 
     if (addNetworks.length > 0) {
-      actions.push(...addNetworks.map(network => activateNetwork({
+      // eslint-disable-next-line max-len
+      actions.push(...addNetworks.map(network => (isTemplate? activateNetworkTemplate : activateNetwork)({
         customHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1.1+json'
         },
@@ -116,31 +122,7 @@ export const useEdgeSdLanActions = () => {
           wifiNetworkId: network.networkId
         },
         payload: {
-          ...(network.tunnelProfileId ? {
-            forwardingTunnelProfileId: network.tunnelProfileId
-          } : {})
-        }
-      }).unwrap()))
-    }
-    return Promise.all(actions)
-  }
-
-  const handleNetworkTemplateChanges = async (
-    serviceId: string,
-    currentData: EdgeSdLanServiceProfile['activeNetworkTemplate'],
-    originData?: EdgeSdLanServiceProfile['activeNetworkTemplate']
-  ) => {
-    const actions = []
-    const { addNetworks = [] } = diffVenueNetworks(currentData, originData)
-
-    if (addNetworks.length > 0) {
-      actions.push(...addNetworks.map(network => activateNetwork({
-        params: {
-          serviceId,
-          venueId: network.venueId,
-          wifiNetworkId: network.networkId
-        },
-        payload: {
+          ...(isTemplate ? { isTemplate } : {}),
           ...(network.tunnelProfileId ? {
             forwardingTunnelProfileId: network.tunnelProfileId
           } : {})
@@ -154,7 +136,7 @@ export const useEdgeSdLanActions = () => {
     payload: EdgeSdLanServiceProfile,
     callback?: (res: (CommonResult[]
       | CommonErrorsResult<CatchErrorDetails>)) => void
-  }, isTemplate: boolean) => {
+  }, isMsp: boolean) => {
     const { payload, callback } = req
     return await addEdgeSdLan({
       customHeaders: {
@@ -172,8 +154,8 @@ export const useEdgeSdLanActions = () => {
 
         try {
           const reqResults = await handleNetworkChanges(serviceId, payload.activeNetwork)
-          if (isTemplate)
-            await handleNetworkTemplateChanges(serviceId, payload.activeNetworkTemplate)
+          if (isMsp)
+            await handleNetworkChanges(serviceId, payload.activeNetworkTemplate)
           callback?.(reqResults)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)

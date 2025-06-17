@@ -1,13 +1,14 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }          from '@acx-ui/components'
-import { useEdgeSdLanActions } from '@acx-ui/edge/components'
-import { Features }            from '@acx-ui/feature-toggle'
+import { PageHeader }               from '@acx-ui/components'
+import { useEdgeSdLanActions }      from '@acx-ui/edge/components'
+import { Features }                 from '@acx-ui/feature-toggle'
+import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
+  TenantType,
   useAfterServiceSaveRedirectPath,
-  useConfigTemplate,
   useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -22,12 +23,15 @@ import { SummaryForm }                               from '../Form/SummaryForm'
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { isTemplate } = useConfigTemplate()
   const isEdgeDelegationEnabled = useIsEdgeFeatureReady(Features.EDGE_DELEGATION_POC_TOGGLE)
 
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
   const [form] = Form.useForm()
+
+  const tenantDetailsData = useGetTenantDetailsQuery({ }, { skip: !isEdgeDelegationEnabled })
+  // eslint-disable-next-line max-len
+  const isTemplateSupported = tenantDetailsData.data?.tenantType === TenantType.MSP || tenantDetailsData.data?.tenantType === TenantType.MSP_NON_VAR
 
   const steps = [
     {
@@ -38,7 +42,7 @@ export const AddEdgeSdLan = () => {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
     },
-    ...isEdgeDelegationEnabled && isTemplate ? [{
+    ...isEdgeDelegationEnabled && isTemplateSupported ? [{
       title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
       content: NetworkTemplateSelectionForm
     }] : [],
@@ -61,8 +65,8 @@ export const AddEdgeSdLan = () => {
                 networkId,
                 tunnelProfileId
               }))).flat(),
-            activeNetworkTemplate: isTemplate
-              ? Object.entries(formData.activatedNetworks)
+            activeNetworkTemplate: isTemplateSupported && formData.activatedNetworkTemplates
+              ? Object.entries(formData.activatedNetworkTemplates)
                 .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
                   venueId,
                   networkId,
@@ -79,7 +83,7 @@ export const AddEdgeSdLan = () => {
             }
           }
         // need to catch basic service profile failed
-        }, isTemplate).catch(reject)
+        }, isTemplateSupported).catch(reject)
       })
 
       navigate(redirectPathAfterSave, { replace: true })
