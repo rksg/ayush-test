@@ -40,6 +40,17 @@ import HostApprovalWithPskDiagram      from '../assets/images/network-wizard-dia
 import HostApprovalDiagram             from '../assets/images/network-wizard-diagrams/host-approval.png'
 import Hotspot20Diagram                from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
 import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
+import OpenAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/open-aaa-proxy.png'
+import OpenAaaDiagram                  from '../assets/images/network-wizard-diagrams/open-aaa.png'
+import OpenMacregAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/open-macreg-aaa-proxy.png'
+import OpenMacregAaaDiagram            from '../assets/images/network-wizard-diagrams/open-macreg-aaa.png'
+import OpenMacregDiagram               from '../assets/images/network-wizard-diagrams/open-macreg.png'
+import OpenOweAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/open-owe-aaa-proxy.png'
+import OpenOweAaaDiagram               from '../assets/images/network-wizard-diagrams/open-owe-aaa.png'
+import OpenOweMacregAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa-proxy.png'
+import OpenOweMacregAaaDiagram         from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa.png'
+import OpenOweMacregDiagram            from '../assets/images/network-wizard-diagrams/open-owe-macreg.png'
+import OpenOweDiagram                  from '../assets/images/network-wizard-diagrams/open-owe.png'
 import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
 import PskMacAuthProxyDiagram          from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
 import PskMacAuthDiagram               from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
@@ -80,26 +91,27 @@ interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  // enableAuthProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   wlanSecurity?: WlanSecurityEnum
-  // enableAccountingService?: boolean
 }
 
-interface OpenDiagramProps extends DiagramProps {
-}
-
-interface PskDiagramProps extends DiagramProps {
+interface MacAuthDiagramProps extends DiagramProps {
   enableMACAuth?: boolean
   isMacRegistrationList?: boolean
-  // enableAccountingService?: boolean
+}
+
+interface OpenDiagramProps extends MacAuthDiagramProps {
+  enableOwe?: boolean
+}
+
+interface PskDiagramProps extends MacAuthDiagramProps {
 }
 interface AaaDiagramProps extends DiagramProps {
-  enableAuthProxy?: boolean;
-  enableAccountingProxy?: boolean;
-  enableAaaAuthBtn?: boolean;
-  enableAccountingService?: boolean;
-  showButtons?: boolean;
+  enableAuthProxy?: boolean
+  enableAccountingProxy?: boolean
+  enableAaaAuthBtn?: boolean
+  enableAccountingService?: boolean
+  showButtons?: boolean
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
@@ -146,17 +158,45 @@ function getDPSKDiagram (props:DpskDiagramProps) {
 }
 
 function getPSKDiagram (props: PskDiagramProps) {
-  if(props?.enableMACAuth && props?.isMacRegistrationList) {
-    return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
-  }else if(props?.enableMACAuth && !props?.isMacRegistrationList) {
+  if (props.enableMACAuth) {
+    if (props.isMacRegistrationList) {
+      return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
+    }
     return getAAADiagram(props)
-  } else {
-    return (props.enableAccountingService)? getAAADiagram(props) : PskDiagram
   }
+
+  return (props.enableAccountingService) ? getAAADiagram(props) : PskDiagram
 }
 
-function getOpenDiagram (props: PskDiagramProps) {
-  return props?.enableMACAuth ? getAAADiagram(props) : OpenDiagram
+function getOpenDiagram (props: OpenDiagramProps) {
+  const diagramSet = props.enableOwe ? {
+    OpenDiagram: OpenOweDiagram,
+    OpenAaaProxyDiagram: OpenOweAaaProxyDiagram,
+    OpenAaaDiagram: OpenOweAaaDiagram,
+    OpenMacregDiagram: OpenOweMacregDiagram,
+    OpenMacregAaaProxyDiagram: OpenOweMacregAaaProxyDiagram,
+    OpenMacregAaaDiagram: OpenOweMacregAaaDiagram
+  } : {
+    OpenDiagram,
+    OpenAaaProxyDiagram,
+    OpenAaaDiagram,
+    OpenMacregDiagram,
+    OpenMacregAaaProxyDiagram,
+    OpenMacregAaaDiagram
+  }
+
+
+  if (props.enableMACAuth) {
+    if (props.isMacRegistrationList) {
+      return (props.enableAccountingService) ?
+        getAAADiagramByParams(
+          props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
+        ) : diagramSet.OpenMacregDiagram
+    }
+    return getAAADiagramByParams(props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram)
+  }
+
+  return diagramSet.OpenDiagram
 }
 
 function getAAADiagramByParams (
@@ -277,10 +317,9 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   }
 
   function isForceHideButtons (props: NetworkDiagramProps, networkType?:NetworkTypeEnum) {
-
-    if(networkType === NetworkTypeEnum.PSK) {
-      const pskProps = props as PskDiagramProps
-      return !(pskProps.enableMACAuth && !pskProps.isMacRegistrationList)
+    if(networkType === NetworkTypeEnum.PSK || networkType === NetworkTypeEnum.OPEN) {
+      const macAuthProps = props as MacAuthDiagramProps
+      return !(macAuthProps.enableMACAuth && !macAuthProps.isMacRegistrationList)
     }
 
     // Hide AAA button under Captive Portal - Workflow
