@@ -5,6 +5,7 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
+import { NavigateProps }  from '@acx-ui/react-router-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -13,12 +14,17 @@ import { Init, ConfigTemplatesRoutes } from './Routes'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  Navigate: props => <div>{JSON.stringify(props)}</div>
+  Navigate: (props: NavigateProps) => <div>{JSON.stringify(props)}</div>
 }))
 
 jest.mock('./pages/ConfigTemplates', () => ({
   ...jest.requireActual('./pages/ConfigTemplates'),
   ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantType: 'MSP' })
 }))
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
@@ -94,8 +100,8 @@ describe('Init', () => {
     )).toBeVisible()
   })
   it('navigates to brand360 when available', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(ff => ff === Features.MSP_BRAND_360)
-    jest.mocked(useIsTierAllowed).mockReturnValue(ff => ff === Features.MSP_HSP_360_PLM_FF)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_BRAND_360)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.MSP_HSP_360_PLM_FF)
     render(<HspContext.Provider value={{ state: { isHsp: true }, dispatch: jest.fn() }}>
       <Init />
     </HspContext.Provider>, {
@@ -109,6 +115,7 @@ describe('Init', () => {
     )).toBeVisible()
   })
 })
+
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
   beforeEach(() => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })

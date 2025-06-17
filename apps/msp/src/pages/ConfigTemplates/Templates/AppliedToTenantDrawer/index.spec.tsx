@@ -6,9 +6,9 @@ import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplate, ConfigTemplateUrlsInfo } f
 import { Provider }                                                            from '@acx-ui/store'
 import { mockServer, render, screen }                                          from '@acx-ui/test-utils'
 
-import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
+import { mockedConfigTemplateList, mockedMSPCustomerList } from '../../__tests__/fixtures'
 
-import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
+import { AppliedToTenantDrawer } from '.'
 
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
@@ -57,9 +57,7 @@ describe('AppliedToTenantDrawer component', () => {
       name: /350 w java dr, sunnyvale, ca 94089, usa/i
     })).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', {
-      name: /cancel/i
-    }))
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
 
     expect(mockSetVisible).toHaveBeenCalled()
   })
