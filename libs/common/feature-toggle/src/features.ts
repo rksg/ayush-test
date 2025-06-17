@@ -242,7 +242,6 @@ export enum Features {
   WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE = 'wifi-ap-poe-operating-mode-setting-toggle',
   WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
   WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE = 'wifi-captive-portal-sso-saml-toggle',
-  WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   WIFI_ETHERNET_SOFTGRE_TOGGLE = 'wifi-ethernet-softgre-toggle',
