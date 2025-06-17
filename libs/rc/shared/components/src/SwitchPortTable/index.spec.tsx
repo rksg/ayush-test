@@ -61,7 +61,8 @@ const portlistData_7650 = {
     unitStatus: 'Standalone',
     usedInFormingStack: false,
     vlanIds: '1',
-    poeScheduleEnabled: 'true',
+    poeScheduleEnabled: true,
+    isPoeScheduleEnabled: 'true',
     isPoeSupported: 'true'
   }, {
     adminStatus: 'Up',
