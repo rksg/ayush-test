@@ -196,20 +196,21 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
             />}
             {isR370VenueSoftGre &&
+            <>
               <ApCompatibilityToolTip
                 title={tooltipInfo}
                 showDetailButton
                 placement='right'
                 onClick={() => setSoftGreDrawerVisible(true)}
-              />}
-            {isR370VenueSoftGre &&
+              />
               <ApCompatibilityDrawer
                 visible={softGreDrawerVisible}
                 type={ApCompatibilityType.VENUE}
                 venueId={venueId}
                 featureNames={[InCompatibilityFeatures.VENUE_SOFT_GRE]}
                 onClose={() => setSoftGreDrawerVisible(false)}
-              />}
+              />
+            </>}
           </Space>
           <Form.Item
             valuePropName='checked'
