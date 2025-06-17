@@ -103,9 +103,10 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
       ...csvData.map(row => row.map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const switchText = response.data!.length === 1 ? 'Switch' : 'Switches'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-Switches-Uplink-Congestion-${incident.id}.csv`
+      `Impacted-${switchText}-Uplink-Congestion-${incident.id}.csv`
     )
   }
 

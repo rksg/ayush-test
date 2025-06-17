@@ -588,7 +588,13 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should generate correct CSV content when exporting', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)
@@ -603,7 +609,13 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should include all required columns in CSV', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)
@@ -635,7 +647,13 @@ describe('ImpactedSwitchVLANsTable', () => {
     })
 
     it('should format data correctly in CSV', async () => {
-      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+      render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, {
+        wrapper: Provider,
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await click(exportButton)

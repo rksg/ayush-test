@@ -72,9 +72,10 @@ export function PoePdTable (props: ChartProps) {
       ...csvData.map(row => row.map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const switchText = queryResults.data!.length === 1 ? 'Switch' : 'Switches'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-Switches-PoE-${props.incident.id}.csv`
+      `Impacted-${switchText}-PoE-${props.incident.id}.csv`
     )
   }, [columnHeaders, queryResults.data, props.incident.id])
 

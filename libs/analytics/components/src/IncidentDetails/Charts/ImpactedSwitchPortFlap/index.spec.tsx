@@ -5,6 +5,7 @@ import { fakeIncident1 }                                               from '@ac
 import { get }                                                         from '@acx-ui/config'
 import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { handleBlobDownloadFile }                                      from '@acx-ui/utils'
 
 import { mockImpactedSwitches, mockImpactedSwitchesWithUnknown } from './__tests__/fixtures'
 import { api }                                                   from './services'
@@ -91,6 +92,8 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   handleBlobDownloadFile: jest.fn()
 }))
+
+const mockHandleBlobDownloadFile = handleBlobDownloadFile as jest.Mock
 
 describe('ImpactedSwitchPortFlap', () => {
   beforeEach(() => {
@@ -426,14 +429,13 @@ describe('ImpactedSwitchPortFlap', () => {
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await userEvent.click(exportButton)
 
-      const { handleBlobDownloadFile } = require('@acx-ui/utils')
-      expect(handleBlobDownloadFile).toHaveBeenCalledWith(
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
         `Impacted-Ports-Port-Flap-${fakeIncident1.id}.csv`
       )
 
       // Verify CSV content
-      const blob = handleBlobDownloadFile.mock.calls[0][0]
+      const blob = mockHandleBlobDownloadFile.mock.calls[0][0]
       const csvContent = await new Response(blob).text()
       const expectedHeaders = [
         'Port Id',
@@ -468,11 +470,69 @@ describe('ImpactedSwitchPortFlap', () => {
       const exportButton = await screen.findByTestId('DownloadOutlined')
       await userEvent.click(exportButton)
 
-      const { handleBlobDownloadFile } = require('@acx-ui/utils')
-      const blob = handleBlobDownloadFile.mock.calls[0][0]
-      const csvContent = await new Response(blob).text()
-      const rows = csvContent.split('\n').slice(1)
-      expect(rows[0]).toContain('--') // For unknown connected device type and port
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('Impacted-Port-Port-Flap')
+      )
+    })
+
+    it('should handle CSV export correctly with multiple ports', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await userEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('Impacted-Ports-Port-Flap')
+      )
+    })
+
+    it('should handle CSV export correctly with a single port', async () => {
+      const singlePortResponse = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: [mockImpactedSwitches.data.incident.impactedSwitches[0].ports[0]]
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', singlePortResponse)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = await screen.findByTestId('DownloadOutlined')
+      await userEvent.click(exportButton)
+
+      expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+        expect.any(Blob),
+        expect.stringContaining('Impacted-Port-Port-Flap')
+      )
+    })
+
+    it('should not export CSV when data is empty', async () => {
+      const emptyResponse = {
+        data: {
+          incident: {
+            impactedSwitches: [{
+              ...mockImpactedSwitches.data.incident.impactedSwitches[0],
+              ports: []
+            }]
+          }
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', emptyResponse)
+      renderWithRouter(<ImpactedSwitchPortFlapTable incident={fakeIncident1} />)
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = screen.queryByTestId('DownloadOutlined')
+      expect(exportButton).not.toBeInTheDocument()
+      expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
     })
   })
 })

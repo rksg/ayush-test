@@ -84,7 +84,7 @@ describe('ImpactedSwitchDDoS', () => {
     expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
   })
 
-  it('should handle CSV export', async () => {
+  it('should handle CSV export correctly with multiple switches', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
     render(
       <Provider>
@@ -105,6 +105,67 @@ describe('ImpactedSwitchDDoS', () => {
       expect.any(Blob),
       expect.stringContaining('Impacted-Switches-TCP-SYN-DDoS')
     )
+  })
+
+  it('should handle CSV export correctly with a single switch', async () => {
+    const singleSwitchResponse = {
+      incident: {
+        impactedSwitches: [{
+          name: 'ICX7150-C12 Router',
+          mac: '58:FB:96:0B:12:CA',
+          serial: 'FEK3215S0H7',
+          ports: [
+            {
+              portNumber: '1/1/1'
+            }
+          ]
+        }],
+        switchCount: 1
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: singleSwitchResponse })
+    render(
+      <Provider>
+        <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Impacted-Switch-TCP-SYN-DDoS')
+    )
+  })
+
+  it('should not export CSV when data is empty', async () => {
+    const emptyResponse = {
+      incident: {
+        impactedSwitches: [],
+        switchCount: 0
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: emptyResponse })
+    render(
+      <Provider>
+        <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+      </Provider>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
   })
 
   it('should copy port numbers to clipboard', async () => {

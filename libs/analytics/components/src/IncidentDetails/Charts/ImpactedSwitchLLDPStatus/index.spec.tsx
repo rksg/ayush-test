@@ -188,7 +188,7 @@ describe('ImpactedSwitchLLDP',()=>{
       expect(portNumbersCell.textContent).toBe('  ')
     })
 
-    it('should handle CSV export correctly when data is present', async () => {
+    it('should handle CSV export correctly when data is present (multiple switches)', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
@@ -209,9 +209,38 @@ describe('ImpactedSwitchLLDP',()=>{
 
     it('should handle CSV export correctly when data is empty (only headers)', async () => {
       const emptyResponse = {
-        incident: { impactedSwitches: [] }
+        incident: {
+          impactedSwitches: [],
+          switchCount: 0
+        }
       }
+
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: emptyResponse })
+      render(
+        <Provider>
+          <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
+        </Provider>, {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const exportButton = screen.queryByTestId('DownloadOutlined')
+      expect(exportButton).not.toBeInTheDocument()
+      expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
+    })
+
+    it('should handle CSV export correctly when data has single switch', async () => {
+      const singleSwitchResponse = {
+        incident: {
+          impactedSwitches: [sample1[0]]
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: singleSwitchResponse })
       render(
         <Provider>
           <ImpactedSwitchLLDPTable incident={fakeIncidentLLDPStatus} />
@@ -220,25 +249,12 @@ describe('ImpactedSwitchLLDP',()=>{
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-      // Assert that the table shows empty data state
-      const body = within(await findTBody())
-      const rows = await body.findAllByRole('row')
-      expect(rows).toHaveLength(1)
-      expect(rows[0]).toHaveClass('ant-table-placeholder')
-
       const exportButton = await screen.findByTestId('DownloadOutlined')
-      expect(exportButton).toBeInTheDocument() // The button should be present
-
       fireEvent.click(exportButton)
 
-      const expectedCsvContent = '"Switch Name","Switch Serial","Switch MAC",'
-        + '"Impacted Reason","Port Details"\n'
-
       expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
-        new Blob([expectedCsvContent], { type: 'text/csv;charset=utf-8;' }),
-        expect.stringContaining(
-          `Impacted-Switches-LLDP-Status-${fakeIncidentLLDPStatus.id}.csv`
-        )
+        expect.any(Blob),
+        expect.stringContaining('Impacted-Switch-LLDP-Status')
       )
     })
   })

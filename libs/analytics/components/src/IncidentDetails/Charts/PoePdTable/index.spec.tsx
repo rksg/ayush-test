@@ -83,7 +83,7 @@ describe('PoeLowTable', () => {
     )
   })
 
-  it('should handle CSV export correctly when data is present', async () => {
+  it('should handle CSV export correctly when multiple switches are present', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
     render(
       <Provider>
@@ -99,6 +99,43 @@ describe('PoeLowTable', () => {
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
       expect.stringContaining('Impacted-Switches-PoE')
+    )
+  })
+
+  it('should handle CSV export correctly when a single switch is present', async () => {
+    const singleSwitchResponse = {
+      incident: {
+        impactedEntities: [
+          {
+            name: 'ICX7550-48ZP Router',
+            mac: '28:B3:71:29:8C:B6',
+            serial: 'one',
+            ports: [
+              {
+                portNumber: '1/1/1',
+                metadata: '{"timestamp":1665817971541}'
+              }
+            ]
+          }
+        ]
+      }
+    } as Response
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: singleSwitchResponse })
+    render(
+      <Provider>
+        <PoePdTable incident={fakeIncidentPoePd}/>
+      </Provider>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Impacted-Switch-PoE')
     )
   })
 

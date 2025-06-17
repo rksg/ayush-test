@@ -33,9 +33,10 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
       ].join(','))
     ].join('\n')
 
+    const switchText = data.length === 1 ? 'Switch' : 'Switches'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-Switches-TCP-SYN-DDoS-${incident.id}.csv`
+      `Impacted-${switchText}-TCP-SYN-DDoS-${incident.id}.csv`
     )
   }
 

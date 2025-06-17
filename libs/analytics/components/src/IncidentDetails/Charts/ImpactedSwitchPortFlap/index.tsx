@@ -141,8 +141,9 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       ...csvData.map(row => Object.values(row).map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
     handleBlobDownloadFile(new Blob([csvContent],
-      { type: 'text/csv;charset=utf-8;' }), `Impacted-Ports-Port-Flap-${incident.id}.csv`)
+      { type: 'text/csv;charset=utf-8;' }), `Impacted-${portText}-Port-Flap-${incident.id}.csv`)
   }
 
   return <Loader states={[impactedSwitch]}>

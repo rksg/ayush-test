@@ -125,9 +125,10 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
       ...csvData.map(row => row.map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const switchText = data.length === 1 ? 'Switch' : 'Switches'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-Switches-LLDP-Status-${incident.id}.csv`
+      `Impacted-${switchText}-LLDP-Status-${incident.id}.csv`
     )
   }
 

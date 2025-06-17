@@ -85,9 +85,10 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
       ...csvData.map(row => row.map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-Port-Congestion-${incident.id}.csv`
+      `Impacted-${portText}-Congestion-${incident.id}.csv`
     )
   }
 

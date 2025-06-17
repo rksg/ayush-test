@@ -94,7 +94,7 @@ describe('ImpactedVlanTable', () => {
     expect(within(rows[1]).getAllByRole('cell')[1].textContent).toMatch('MM-126')
   })
 
-  it('should handle CSV export', async () => {
+  it('should handle CSV export with multiple VLANs', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
     render(
       <Provider>
@@ -115,6 +115,72 @@ describe('ImpactedVlanTable', () => {
       expect.any(Blob),
       expect.stringContaining('VLANs-Loop-Detection')
     )
+  })
+
+  it('should handle CSV export with single VLAN', async () => {
+    const singleVlanResponse = {
+      incident: {
+        impactedVLANs: [{
+          vlanId: '1',
+          switches: [
+            {
+              name: 'babyrdn_24p',
+              mac: '5C:83:6C:3F:B2:C2',
+              serial: 'FNY4828V00B',
+              switchGroup: 'switch grp 0',
+              domains: ['domain1||Domain 1']
+            }
+          ]
+        }]
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: singleVlanResponse })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('VLAN-Loop-Detection')
+    )
+  })
+
+  it('should handle CSV export with empty data', async () => {
+    const emptyResponse = {
+      incident: {
+        impactedVLANs: []
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: emptyResponse })
+    render(
+      <Provider>
+        <ImpactedVlanTable incident={fakeIncidentLoopDetection} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // The export button should not be present when data is empty
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
   })
 
   it('should handle table sorting', async () => {

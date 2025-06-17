@@ -209,8 +209,52 @@ describe('ImpactedSwitchPortConjestionTable', () => {
     expect(deviceNames[0]).toBeVisible()
   })
 
-  it('should handle CSV export correctly', async () => {
+  it('should handle CSV export correctly with multiple ports', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response })
+
+    render(
+      <Provider>
+        <ImpactedSwitchPortConjestionTable
+          incident={fakeIncidentUplinkPortCongestion} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton.closest('button')!)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Impacted-Ports-Congestion')
+    )
+  })
+
+  it('should handle CSV export correctly with a single port', async () => {
+    const singlePortResponse = {
+      incident: {
+        impactedSwitches: [{
+          name: 'ICX8200-24P Router',
+          mac: '38:45:3B:3C:F1:20',
+          model: 'ICX8200-24P',
+          firmware: 'RDR10020_b237',
+          ports: [
+            {
+              portNumber: '1/1/13',
+              connectedDevice: {
+                name: 'BRD-DUT1-VK1087',
+                mac: '00:11:22:33:44:55'
+              }
+            }
+          ]
+        }]
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: singlePortResponse })
 
     render(
       <Provider>
@@ -232,6 +276,36 @@ describe('ImpactedSwitchPortConjestionTable', () => {
       expect.any(Blob),
       expect.stringContaining('Impacted-Port-Congestion')
     )
+  })
+
+  it('should not export CSV when data is empty', async () => {
+    const emptyResponse = {
+      incident: {
+        impactedSwitches: [{
+          name: '',
+          mac: '',
+          model: '',
+          firmware: '',
+          ports: []
+        }]
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: emptyResponse })
+
+    render(
+      <Provider>
+        <ImpactedSwitchPortConjestionTable
+          incident={fakeIncidentUplinkPortCongestion} />
+      </Provider>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // The export button should not be present when data is empty
+    const exportButton = screen.queryByTestId('DownloadOutlined')
+    expect(exportButton).not.toBeInTheDocument()
+    expect(mockHandleBlobDownloadFile).not.toHaveBeenCalled()
   })
 
   it('should display LAG ports correctly', async () => {

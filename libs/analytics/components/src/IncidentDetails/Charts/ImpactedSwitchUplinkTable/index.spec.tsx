@@ -113,7 +113,7 @@ describe('ImpactedSwitchUplinkTable', () => {
     await screen.findByText('Data granularity at this level is not available')
     jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
-  it('should handle CSV export correctly', async () => {
+  it('should handle CSV export correctly with multiple switches', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitchesUplink', { data: response })
 
     render(
@@ -133,6 +133,51 @@ describe('ImpactedSwitchUplinkTable', () => {
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
       expect.stringContaining('Impacted-Switches-Uplink-Congestion')
+    )
+  })
+  it('should handle CSV export correctly with a single switch', async () => {
+    const singleSwitchResponse = {
+      incident: {
+        uplinkPortCount: 1,
+        impactedSwitches: [
+          {
+            name: 'Unknown',
+            mac: '5C:83:6C:3F:A8:36',
+            serial: 'Unknown',
+            ports: [
+              {
+                portNumber: '1/1/13',
+                connectedDevice: {
+                  deviceMac: '5C:83:6C:3F:BB:98',
+                  devicePortMac: '5C:83:6C:3F:BB:BC',
+                  deviceName: 'BRD-DUT1-VK1087',
+                  devicePort: 'GigabitEthernet1/1/37'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchesUplink', { data: singleSwitchResponse })
+
+    render(
+      <Provider>
+        <ImpactedSwitchUplinkTable
+          incident={fakeIncidentUplinkPortCongestion} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+    const exportButton = await screen.findByTestId('DownloadOutlined')
+    fireEvent.click(exportButton.closest('button')!)
+
+    expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
+      expect.any(Blob),
+      expect.stringContaining('Impacted-Switch-Uplink-Congestion')
     )
   })
   it('should display LAG ports correctly', async () => {

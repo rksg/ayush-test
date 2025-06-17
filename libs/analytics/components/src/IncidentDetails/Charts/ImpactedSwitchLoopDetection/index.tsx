@@ -38,9 +38,10 @@ export function ImpactedVlanTable ({ incident }: ChartProps) {
       ].join(','))
     ].join('\n')
 
+    const vlanText = response.data!.length === 1 ? 'VLAN' : 'VLANs'
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `VLANs-Loop-Detection-${incident.id}.csv`
+      `${vlanText}-Loop-Detection-${incident.id}.csv`
     )
   }
 

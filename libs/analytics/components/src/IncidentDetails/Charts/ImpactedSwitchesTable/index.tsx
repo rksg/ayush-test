@@ -56,7 +56,7 @@ function ImpactedSwitchTable (props: {
     columns={props.columns}
     dataSource={rows}
     pagination={{ defaultPageSize: 5, pageSize: 5 }}
-    iconButton={props.iconButton ? {
+    iconButton={props.iconButton && rows.length > 0 ? {
       ...props.iconButton,
       onClick: () => props.iconButton?.onClick(rows)
     } : undefined}
