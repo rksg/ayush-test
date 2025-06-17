@@ -1,7 +1,7 @@
 {
   "sourceRoot": "libs/rc/common/components/src",
   "projectType": "library",
-  "tags": ["type:components"],
+  "tags": ["acx-lib", "rc-common-components"],
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
