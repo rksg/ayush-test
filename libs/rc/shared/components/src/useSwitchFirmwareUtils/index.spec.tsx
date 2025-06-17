@@ -21,7 +21,7 @@ const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/rc/services', () => ({
   useGetSwitchDefaultVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   }),
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersionsV1002
