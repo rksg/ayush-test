@@ -366,15 +366,18 @@ describe('NetworkDiagram', () => {
   describe('NetworkDiagram - OPEN', () => {
     const type = NetworkTypeEnum.OPEN
     it('should render OPEN diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram />
+            <NetworkDiagram
+              type={type}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -383,7 +386,119 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Open')
-      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render OPEN OWE diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenOwe')
+    })
+
+    it('should render OPEN OWE Mac Auth Registration List diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={true}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenOweMacreg')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render OPEN Mac Auth Registration List Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={false}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenMacregAaaProxy')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render OPEN External Mac Auth Auth non proxy and Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={false}
+              enableMACAuth={true}
+              isMacRegistrationList={false}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              enableAuthProxy={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenAaa')
+
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
+      expect(diagram.src).toContain('OpenAaaProxy')
     })
   })
 
