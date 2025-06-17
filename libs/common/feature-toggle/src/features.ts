@@ -240,8 +240,6 @@ export enum Features {
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
   WIFI_AP_POE_OPERATING_MODE_SETTING_TOGGLE = 'wifi-ap-poe-operating-mode-setting-toggle',
-  WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
-  WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
   WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE = 'wifi-captive-portal-sso-saml-toggle',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',

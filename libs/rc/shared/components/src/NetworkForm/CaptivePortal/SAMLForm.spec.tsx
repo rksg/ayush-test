@@ -11,7 +11,8 @@ import {
   WifiUrlsInfo,
   SamlIdpProfileUrls,
   CertificateUrls,
-  NetworkSaveData
+  NetworkSaveData,
+  AccessControlUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -131,6 +132,21 @@ describe('CaptiveNetworkForm - SAML', () => {
             authenticationRequestSignedEnabled: true
           }))
         }
+      ),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
       )
     )
   })
@@ -171,7 +187,9 @@ describe('CaptiveNetworkForm - SAML', () => {
     await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
     const saml = screen.getByTestId('saml-idp-profile-select')
     expect(saml).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('combobox'))
+
+    const comboboxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboboxes[0])
     expect(
       await screen.findByRole('option', { name: /SAML-A7/ })
     ).toBeInTheDocument()
@@ -236,7 +254,8 @@ describe('CaptiveNetworkForm - SAML', () => {
     await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
     const saml = screen.getByTestId('saml-idp-profile-select')
     expect(saml).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('combobox'))
+    const comboboxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboboxes[0])
     expect(screen.queryByRole('option')).not.toBeInTheDocument()
   })
 
@@ -312,7 +331,8 @@ describe('CaptiveNetworkForm - SAML', () => {
     )
 
     await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
-    await userEvent.click(await screen.findByRole('combobox'))
+    const comboboxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboboxes[0])
     const option = await screen.findByRole('option', { name: /SAML-A7/ })
     await userEvent.click(option)
     expect(option).toBeInTheDocument()
