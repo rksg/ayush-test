@@ -17,8 +17,7 @@ import {
   networkTypes,
   transformDisplayText,
   useConfigTemplate,
-  Venue,
-  WlanSecurityEnum
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -154,30 +153,11 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Workflow:' })}
               children={summaryData.guestPortal.workflowName ?? ''}
             />}
-          {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
+          {!supportRadsec &&
+            summaryData.isCloudpathEnabled &&
             summaryData.type !== NetworkTypeEnum.DPSK &&
-            summaryData.type !== NetworkTypeEnum.HOTSPOT20
-            && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
-          && <Form.Item
-            label={$t({ defaultMessage: 'Use RADIUS Server:' })}
-            children={
-              summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
-                ? $t({ defaultMessage: 'Yes' })
-                : $t({ defaultMessage: 'No' })
-            }
-          />
-          }
-          {!supportRadsec && summaryData.isCloudpathEnabled &&
+            summaryData.type !== NetworkTypeEnum.OPEN &&
             <>
-              {summaryData.type === NetworkTypeEnum.DPSK &&
-                <Form.Item
-                  label={$t({ defaultMessage: 'Proxy Service' })}
-                  children={summaryData?.enableAuthProxy
-                    ? $t({ defaultMessage: 'Enabled' })
-                    : $t({ defaultMessage: 'Disabled' })
-                  }
-                />}
               {!summaryData.wlan?.macRegistrationListId &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Authentication Server' })}
@@ -222,9 +202,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
-          {supportRadsec && summaryData.type === NetworkTypeEnum.OPEN &&
-            (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
-              !summaryData.wlan?.macRegistrationListId) &&
+          {summaryData.type === NetworkTypeEnum.OPEN &&
             <OpenSummaryForm summaryData={summaryData} />
           }
         </Col>

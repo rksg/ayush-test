@@ -25,37 +25,16 @@ const iotController = {
 }
 
 const dashboardData = {
-  summary: {
-    aps: {
-      summary: {
-        online: 1,
-        offline: 1
-      },
-      totalCount: 2
-    },
-    rcapLicenseUtilization: {
-      summary: {
-        used: 1,
-        available: 1
-      },
-      totalCount: 2
-    },
-    associatedVenues: {
-      summary: {
-        venues: 2
-      },
-      totalCount: 2
-    },
-    activePluginsByRadio: [
-      {
-        name: 'Radio 1',
-        count: 1
-      },
-      {
-        name: 'Radio 2',
-        count: 1
-      }
-    ]
+  requestId: '336c8ceb-5a0d-4774-9ab7-9ecc751bdc0f',
+  apStatus: {
+    onlineAp: 1,
+    offlineAp: 1,
+    totalAp: 2
+  },
+  pluginsByRadioStatus: {
+    // eslint-disable-next-line max-len
+    radioPlugins: [{ name: 'zigbee', count: 1, displayName: 'Zigbee' }, { name: 'vostio', count: 1, displayName: 'Vistio' }, { name: 'baas', count: 1, displayName: 'Beacon as a Service' }],
+    totalRadioCount: 3
   }
 }
 
