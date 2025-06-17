@@ -1,7 +1,3 @@
-import {
-  useTrafficByVolumeQuery,
-  TrafficByVolumeData
-} from 'libs/analytics/components/src/TrafficByVolume/services'
 import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -14,9 +10,11 @@ import { formatter }                        from '@acx-ui/formatter'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
+import { useTrafficByVolumeQuery, TrafficByVolumeData } from './trafficByVolumeServices'
+
 type Key = keyof Omit<TrafficByVolumeData, 'time'>
 
-export { TrafficByVolumeWidget as TrafficByVolume }
+export { TrafficByVolumeWidget as TrafficTrend }
 
 TrafficByVolumeWidget.defaultProps = {
   vizType: 'line'

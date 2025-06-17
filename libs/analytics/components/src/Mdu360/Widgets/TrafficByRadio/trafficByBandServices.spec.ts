@@ -3,7 +3,7 @@ import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { api } from './services'
+import { api } from './trafficByBandServices'
 
 describe('trafficByUsageWidgetApi', () => {
   const props: AnalyticsFilter = {

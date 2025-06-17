@@ -1,48 +1,49 @@
-import {
-  useTrafficByBandQuery,
-  TrafficByBandData
-} from 'libs/analytics/components/src/TrafficByBand/services'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                            from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  HistoricalCard,
+  ContentSwitcherProps,
+  ContentSwitcher } from '@acx-ui/components'
 
-type Key = keyof Omit<TrafficByBandData, 'time'>
+import { TrafficSnapshot } from './TrafficSnapshot'
+import { TrafficTrend }    from './TrafficTrend'
 
-export { TrafficByBandWidget as TrafficByRadio }
-
-function TrafficByBandWidget ({ filters }: { filters : AnalyticsFilter }) {
+export function TrafficByRadio () {
   const { $t } = useIntl()
-  const seriesMapping = [
-    { key: 'userTraffic', name: $t({ defaultMessage: 'All Bands' }) },
-    { key: 'userTraffic_2_4', name: $t({ defaultMessage: '2.4 GHz' }) },
-    { key: 'userTraffic_5', name: $t({ defaultMessage: '5 GHz' }) },
-    { key: 'userTraffic_6', name: $t({ defaultMessage: '6 GHz' }) }
-  ] as Array<{ key: Key, name: string }>
-  const queryResults = useTrafficByBandQuery(filters, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping),
-      ...rest
-    })
-  })
+  const { filters } = useAnalyticsFilter()
+
+  const trafficSnapshot = <AutoSizer>
+    {({ height, width }) => (
+      <div style={{ display: 'block', height, width }}>
+        <TrafficSnapshot filters={filters}/>
+      </div>
+    )}
+  </AutoSizer>
+
+  const trafficTrend = <AutoSizer>
+    {({ height, width }) => (
+      <div style={{ display: 'block', height, width }}>
+        <TrafficTrend filters={filters}/>
+      </div>
+    )}
+  </AutoSizer>
+
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    { label: $t({ defaultMessage: 'Snapshot' }), children: trafficSnapshot, value: 'Snapshot' },
+    { label: $t({ defaultMessage: 'Trend' }), children: trafficTrend, value: 'Trend' }
+  ]
+
   return (
-    <Loader states={[queryResults]}>
+    <HistoricalCard title={$t({ defaultMessage: 'Traffic By Radio' })}>
       <AutoSizer>
         {({ height, width }) => (
-          queryResults.data.length ?
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              dataFormatter={formatter('bytesFormat')}
-            />
-            : <NoData/>
+          <div style={{ display: 'block', height, width, margin: '-38px 0 0 0' }}>
+            <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
+          </div>
         )}
       </AutoSizer>
-    </Loader>
+    </HistoricalCard>
   )
 }
-
-export default TrafficByBandWidget
