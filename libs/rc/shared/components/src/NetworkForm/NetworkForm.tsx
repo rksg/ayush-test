@@ -326,7 +326,8 @@ export function NetworkForm (props:{
 
       const isDeleteAuthRadiusCase =
         (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
-        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true)
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true) ||
+        (saveData.type === NetworkTypeEnum.AAA && saveData.useCertificateTemplate === true)
 
       if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
@@ -1002,7 +1003,7 @@ export function NetworkForm (props:{
       beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
       beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId, cloneMode))
       }
       beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))
