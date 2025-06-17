@@ -2,11 +2,10 @@ import { ItemType }           from '@acx-ui/components'
 import { ConfigTemplateType } from '@acx-ui/rc/utils'
 import { renderHook }         from '@acx-ui/test-utils'
 
-import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem } from './useAddTemplateMenuProps'
+import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems, usePolicyMenuItems, useServiceMenuItems, useVenueItem, useIdentityGroupMenuItems } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 
@@ -36,7 +35,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.SWITCH_REGULAR]: false,
   [ConfigTemplateType.SWITCH_CLI]: false,
   [ConfigTemplateType.AP_GROUP]: false,
-  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: false,
+  [ConfigTemplateType.IDENTITY_GROUP]: false
 }
 
 describe('useAddTemplateMenuProps', () => {
@@ -243,6 +243,29 @@ describe('useAddTemplateMenuProps', () => {
       const { result } = renderHook(() => useVenueItem())
       const key = (result.current as { key: string })?.key
       expect(key).toBe('add-venue')
+    })
+  })
+
+  describe('useIdentityGroupMenuItems', () => {
+    it('should return null when IdentityGroup is not visible', () => {
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+        ...mockedConfigTemplateVisibilityMap,
+        [ConfigTemplateType.IDENTITY_GROUP]: false
+      })
+
+      const { result } = renderHook(() => useIdentityGroupMenuItems())
+      expect(result.current).toBeNull()
+    })
+
+    it('should create a IdentityGroup menu item when IdentityGroup is visible', () => {
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+        ...mockedConfigTemplateVisibilityMap,
+        [ConfigTemplateType.IDENTITY_GROUP]: true
+      })
+
+      const { result } = renderHook(() => useIdentityGroupMenuItems())
+      const key = (result.current as { key: string })?.key
+      expect(key).toBe('add-identity-group')
     })
   })
 })

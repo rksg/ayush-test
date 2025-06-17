@@ -7,16 +7,22 @@ import {
   Radio,
   Row,
   Select,
-  Space } from 'antd'
+  Space,
+  Switch,
+  Typography } from 'antd'
 import { useWatch }          from 'antd/lib/form/Form'
 import { DefaultOptionType } from 'antd/lib/select'
 import { TransferItem }      from 'antd/lib/transfer'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
+import styled                from 'styled-components/macro'
 
 import {
   Button,
+  Card,
   Drawer,
+  GridCol,
+  GridRow,
   Modal,
   showActionModal,
   StepsFormLegacy,
@@ -38,20 +44,37 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SwitchVlanUnion,
-  EditPortMessages,
   SwitchPortViewModel,
-  Vlan,
   Lag,
   LAG_TYPE,
   sortPortFunction,
-  VenueMessages,
-  VlanModalType
+  VlanModalType,
+  isFirmwareVersionAbove10020bCd2
+} from '@acx-ui/rc/switch/utils'
+import {
+  EditPortMessages,
+  Vlan,
+  VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
+
+const CardWrapper = styled.div<{ forceUpPort?: boolean }>`
+  .ant-card {
+    height: 296px;
+    border-color: var(--acx-neutrals-30);
+    box-shadow: none;
+    .ant-card-extra{
+      span {
+        opacity: ${(props) => props.forceUpPort ? '1' : '40%' };
+      }
+    }
+  }
+
+`
 
 export interface SwitchLagParams {
   switchMac: string,
@@ -72,6 +95,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
 
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
@@ -128,13 +152,20 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [forceUpPort, setForceUpPort] = useState<string>('')
+  const [selectedPorts, setSelectedPorts] = useState([] as string[])
   // const [isStackMode, setIsStackMode] = useState(false) //TODO
   // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
 
   const {
     untaggedVlan,
-    taggedVlans
+    taggedVlans,
+    ports,
+    type
   } = (useWatch([], form) ?? {})
+
+  const isDynamicFW10020bcd2 = isSwitchLagForceUpEnabled && type === LAG_TYPE.DYNAMIC &&
+    isFirmwareVersionAbove10020bCd2(switchDetailHeader?.firmware)
 
   useEffect(() => {
     const setVlanData = async () => {
@@ -211,9 +242,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               return p.key ? getSameTypePortList(portsType).includes(p.key) : false
             }))
         }
+        let forceUpPortVal = editData[0]?.forceUpPort || ''
+        if(isSwitchLagForceUpEnabled){
+          setForceUpPort(forceUpPortVal)
+        }
         form.setFieldsValue({
           ...editData[0],
-          portsType
+          portsType,
+          ...(isSwitchLagForceUpEnabled &&
+            { forceUp: forceUpPortVal !== '' })
         })
       }
     }
@@ -233,6 +270,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setVisible(false)
     setCurrentPortType(null)
     setFinalAvailablePorts([])
+    setSelectedPorts([])
     form.setFieldsValue(
       {
         name: '',
@@ -254,14 +292,18 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       try {
         let payload = {
           ...value,
-          ..._.omit(value, 'portsType'),
+          ..._.omit(value, ['portsType', 'forceUp']),
           lagId: editData[0].lagId,
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
-          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan)),
+          ...(isSwitchLagForceUpEnabled && forceUpPort !== '' && { forceUpPort })
         }
 
+        if(payload.forceUp){
+          delete payload.forceUp
+        }
         setLoading(true)
         await updateLag({
           params: {
@@ -286,9 +328,14 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         let payload = {
           ...value,
           id: '',
-          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan)),
+          ...(isSwitchLagForceUpEnabled && forceUpPort !== '' && { forceUpPort })
         }
+
         delete payload.portsType
+        if(payload.forceUp){
+          delete payload.forceUp
+        }
         await addLag({
           params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
           payload,
@@ -299,6 +346,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         console.log(err) // eslint-disable-line no-console
       }
     }
+    setSelectedPorts([])
   }
 
   const onPortTypeChange = (value: string) => {
@@ -348,6 +396,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         })
     }
     setFinalAvailablePorts(finalAvailablePorts)
+
+    if(isSwitchLagForceUpEnabled){
+      form.setFieldValue('forceUp', false)
+      setForceUpPort('')
+      setSelectedPorts([])
+    }
   }
 
   // TODO:
@@ -406,6 +460,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           $t({ defaultMessage: 'The maximum number of ports is {count}.' }, { count }))
       }
     }
+
+    if(isSwitchLagForceUpEnabled){
+      setForceUpPort(ports.includes(forceUpPort) ? forceUpPort : '')
+    }
+
     form.getFieldValue('ports')
     return Promise.resolve()
   }
@@ -452,6 +511,26 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setSelectModalVisible(true)
   }
 
+  const resetForceUp = () => {
+    if(isSwitchLagForceUpEnabled){
+      setForceUpPort('')
+      form.setFieldValue('forceUp', false)
+    }
+  }
+
+  const onSelectChange = (_sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    if(isSwitchLagForceUpEnabled){
+      const targetPorts: string[] = []
+      targetSelectedKeys.forEach(item => {
+        if(ports.includes(item)){
+          form.setFieldValue('forceUp', item === forceUpPort)
+          targetPorts.push(item)
+        }
+      })
+      setSelectedPorts(targetPorts)
+    }
+  }
+
   const lagForm = <Form
     form={form}
     layout='vertical'
@@ -482,7 +561,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               <Space direction='vertical'>
                 <Radio
                   value={LAG_TYPE.STATIC}
-                  disabled={isEditMode}>
+                  disabled={isEditMode}
+                  onChange={() => resetForceUp()}>
                   {$t({ defaultMessage: 'Static' })}
                 </Radio>
                 <Radio
@@ -541,8 +621,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         />} */}
       </Col>
     </Row>
-    <Row>
-      <Col>
+    <Row gutter={20}>
+      <Col span={10}>
         <Form.Item
           name='ports'
           data-testid='targetKeysFormItem'
@@ -559,11 +639,79 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             showSearch
             showSelectAll={false}
             dataSource={[...finalAvailablePorts]}
-            render={item => item.name}
+            render={(item: TransferItem) => (
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <span>{item.name}</span>
+                {item.name === forceUpPort &&
+                  <span style={{ color: 'var(--acx-semantics-green-50)' }}>Force-up</span>}
+              </div>
+            )}
             operations={['Add', 'Remove']}
+            onSelectChange={onSelectChange}
           />
         </Form.Item>
       </Col>
+      { isDynamicFW10020bcd2 && selectedPorts.length > 0 &&
+        <Col
+          span={10}
+          flex='300px'
+          offset={5}
+          style={{ padding: '16px', marginTop: '6px' }}
+          data-testid='force-up-interface'>
+          <CardWrapper forceUpPort={forceUpPort !== ''}>
+            <Card
+              title={$t({ defaultMessage: 'Force-Up Interface' })}
+              action={{
+                actionName: $t({ defaultMessage: 'Reset' }),
+                onActionClick: resetForceUp
+              }}
+            >
+              <GridRow style={{ flexFlow: '2' }}>
+                <GridCol col={{ span: 24 }}>
+                  <span data-testid='force-up-port' style={{ color: 'var(--acx-neutrals-60)' }}>
+                    {forceUpPort !== '' ? forceUpPort : noDataDisplay}</span>
+                </GridCol>
+              </GridRow>
+              <GridRow>
+                <GridCol col={{ span: 24 }}>
+                  <Space size={8} style={{ display: 'flex', margin: '20px 0 30px' }}>
+                    {
+                      selectedPorts.length === 1 &&
+                        <><Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
+                          {$t({ defaultMessage: 'Port ' })} {selectedPorts[0]}
+                        </Typography.Text>
+                        <Form.Item
+                          noStyle
+                          valuePropName='checked'
+                          children={<Tooltip
+                            title={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
+                                  type !== LAG_TYPE.DYNAMIC ?
+                              $t(EditPortMessages.ONLY_ONE_PORT_CAN_BE_FORCE_UP) : ''}>
+                            <Form.Item
+                              noStyle
+                              name='forceUp'
+                              valuePropName='checked'><Switch
+                                disabled={(forceUpPort !== '' &&
+                                  forceUpPort !== selectedPorts[0]) ||
+                                  type !== LAG_TYPE.DYNAMIC}
+                                style={{ display: 'flex' }}
+                                onChange={(value) => value ?
+                                  setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
+                            </Form.Item>
+                          </Tooltip>}
+                        /></>
+                    }
+                    {
+                      selectedPorts.length > 1 &&
+                  $t({ defaultMessage: 'You can select only one port and set it to force-up' })
+                    }
+                  </Space>
+                </GridCol>
+              </GridRow>
+            </Card>
+          </CardWrapper>
+        </Col>
+      }
     </Row>
 
     <Form.Item
@@ -624,7 +772,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onClose={onClose}
-            width={644}
+            width={isDynamicFW10020bcd2 ? 900 : 644}
             footer={footerForDrawer}
             children={lagForm}
           />
@@ -632,7 +780,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             title={getTitle()}
             visible={visible}
             onCancel={onClose}
-            width={644}
+            width={isDynamicFW10020bcd2 ? 900 : 644}
             footer={footer}
             destroyOnClose={true}
             children={lagForm}

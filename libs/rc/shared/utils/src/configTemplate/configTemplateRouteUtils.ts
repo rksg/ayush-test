@@ -38,6 +38,8 @@ export function getConfigTemplateEditPath (type: ConfigTemplateType, id: string)
     path = `networks/wired/profiles/cli/${id}/edit`
   } else if (type === ConfigTemplateType.AP_GROUP) {
     path = `devices/apgroups/${id}/edit/general`
+  } else if (type === ConfigTemplateType.IDENTITY_GROUP) {
+    path = `identityManagement/identityGroups/${id}/edit`
   }
 
   return getConfigTemplatePath(path)
