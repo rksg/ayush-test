@@ -157,6 +157,7 @@ export function SummaryForm (props: {
             summaryData.isCloudpathEnabled &&
             summaryData.type !== NetworkTypeEnum.DPSK &&
             summaryData.type !== NetworkTypeEnum.OPEN &&
+            summaryData.type !== NetworkTypeEnum.AAA &&
             <>
               {!summaryData.wlan?.macRegistrationListId &&
                 <Form.Item
@@ -177,8 +178,7 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Accounting Service' })}
               children={`${summaryData.accountingRadius?.name}`}
             />}
-          {summaryData.type === NetworkTypeEnum.AAA
-          && !summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
+          {summaryData.type === NetworkTypeEnum.AAA &&
            <AaaSummaryForm summaryData={summaryData} />
           }
           {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
