@@ -160,8 +160,7 @@ export const RangePicker = ({
       }
 
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
-        // @ts-ignore
-        if(filterLabel && event.target?.id !== 'filter'){
+        if(filterLabel){
           setPickerVisible(false)
         }
         setIsCalendarOpen(false)
