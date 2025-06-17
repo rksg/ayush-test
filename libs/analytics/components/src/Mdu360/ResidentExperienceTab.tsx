@@ -2,8 +2,9 @@ import moment from 'moment-timezone'
 
 import { GridRow , GridCol } from '@acx-ui/components'
 
-import type { Mdu360TabPros } from '.'
 import { TopApplications } from './Widgets/TopApplications'
+
+import type { Mdu360TabPros } from '.'
 
 const ResidentExperienceTab: React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
 
