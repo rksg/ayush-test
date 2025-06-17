@@ -255,7 +255,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   patchVenueApModelFirmwares: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
     opsApi: 'PATCH:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
