@@ -99,7 +99,7 @@ After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto
 
 ### Prerequisites
 
-- Node.js v16.13.0 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
+- Node.js v16.14.2 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
 - Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI)
 
 Use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.
