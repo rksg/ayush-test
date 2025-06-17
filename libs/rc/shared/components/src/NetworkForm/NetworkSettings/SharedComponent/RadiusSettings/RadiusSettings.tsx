@@ -22,6 +22,8 @@ const { useWatch } = Form
 
 interface RadiusSettingsProps {
   dpskWlanSecurity?: WlanSecurityEnum
+  isDisplayAuth? : boolean
+  isDisplayAccounting? : boolean
 }
 
 /*
@@ -34,7 +36,7 @@ export function RadiusSettings (props: RadiusSettingsProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
-  const { dpskWlanSecurity } = props
+  const { dpskWlanSecurity, isDisplayAuth = true, isDisplayAccounting = true } = props
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
@@ -103,50 +105,52 @@ export function RadiusSettings (props: RadiusSettingsProps) {
   }
   return (
     <Space direction='vertical' size='middle'>
-      <div>
-        <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-        <AAAInstance
-          serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'
-          networkType={data?.type}
-          excludeRadSec={dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed}
-        />
-        {((data?.type && authProxyNetworkTypes.includes(data.type)) &&
-          dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed
-        ) &&
-        <UI.FieldLabel width={labelWidth}>
-          <Space align='start'>
-            { $t({ defaultMessage: 'Proxy Service' }) }
-            { (data?.type === NetworkTypeEnum.DPSK)? DPSKProxyServiceTooltip : proxyServiceTooltip }
-          </Space>
-          <Form.Item
-            name='enableAuthProxy'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch
-              data-testid='enable-auth-proxy'
-              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}
-            />}
+      {isDisplayAuth &&
+        <div>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+          <AAAInstance
+            serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+            type='authRadius'
+            networkType={data?.type}
+            excludeRadSec={dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed}
           />
-        </UI.FieldLabel>}
-      </div>
-      <div>
-        <AccountingServiceInput
-          isProxyModeConfigurable={
-            ((data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
-            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed) ?? false
-          }
-          labelWidth={labelWidth}
-          networkType={data?.type}
-          excludeRadSec={
-            data?.type === NetworkTypeEnum.DPSK ||
+          {((data?.type && authProxyNetworkTypes.includes(data.type)) &&
+          dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed
+          ) &&
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              { $t({ defaultMessage: 'Proxy Service' }) }
+              { (data?.type === NetworkTypeEnum.DPSK)?
+                DPSKProxyServiceTooltip : proxyServiceTooltip }
+            </Space>
+            <Form.Item
+              name='enableAuthProxy'
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch
+                data-testid='enable-auth-proxy'
+                disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}
+              />}
+            />
+          </UI.FieldLabel>}
+        </div>
+      }
+      {isDisplayAccounting &&
+        <div>
+          <AccountingServiceInput
+            isProxyModeConfigurable={true}
+            labelWidth={labelWidth}
+            networkType={data?.type}
+            excludeRadSec={
+              data?.type === NetworkTypeEnum.DPSK ||
             dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
-          }
-          customProxyModeToolTip={(data?.type === NetworkTypeEnum.DPSK)?
-            DPSKAcctProxyServiceTooltip: undefined
-          }
-        />
-      </div>
+            }
+            customProxyModeToolTip={(data?.type === NetworkTypeEnum.DPSK)?
+              DPSKAcctProxyServiceTooltip: undefined
+            }
+          />
+        </div>
+      }
     </Space>
   )
 }

@@ -3,13 +3,14 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }       from '@acx-ui/components'
+import { Button }   from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
   networkTypes,
   WlanSecurityEnum,
-  PskWlanSecurityEnum
+  PskWlanSecurityEnum,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
@@ -26,9 +27,10 @@ import CloudpathDiagram                from '../assets/images/network-wizard-dia
 import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
 import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
 import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
-import DpskCloudpathNonProxyDiagram    from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-non-proxy.png'
-import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
-import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
+import DpskAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/dpsk-aaa-proxy.png'
+import DpskAaaDiagram                  from '../assets/images/network-wizard-diagrams/dpsk-aaa.png'
+import DpskCloudpathProxyDiagram       from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-proxy.png'
+import DpskCloudpathDiagram            from '../assets/images/network-wizard-diagrams/dpsk-cloudpath.png'
 import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
 import GuestPassWithOweDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
 import GuestPassWithPskDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
@@ -39,6 +41,8 @@ import HostApprovalDiagram             from '../assets/images/network-wizard-dia
 import Hotspot20Diagram                from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
 import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
 import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
+import PskMacAuthProxyDiagram          from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
+import PskMacAuthDiagram               from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
 import PskDiagram                      from '../assets/images/network-wizard-diagrams/psk.png'
 import SAMLWithOweDiagram              from '../assets/images/network-wizard-diagrams/saml-owe.png'
 import SAMLWithPskDiagram              from '../assets/images/network-wizard-diagrams/saml-psk.png'
@@ -52,41 +56,49 @@ import WISPrWithAlwaysAcceptDiagram    from '../assets/images/network-wizard-dia
 import WISPrWithOweDiagram             from '../assets/images/network-wizard-diagrams/wispr-owe.png'
 import WISPrWithPskDiagram             from '../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                    from '../assets/images/network-wizard-diagrams/wispr.png'
-import WorkflowWithOweDiagram          from '../assets/images/network-wizard-diagrams/workflow-owe.png'
-import WorkflowProxyWithOweDiagram     from '../assets/images/network-wizard-diagrams/workflow-proxy-owe.png'
-import WorkflowProxyWithPskDiagram     from '../assets/images/network-wizard-diagrams/workflow-proxy-psk.png'
-import WorkflowProxyDiagram            from '../assets/images/network-wizard-diagrams/workflow-proxy.png'
-import WorkflowWithPskDiagram          from '../assets/images/network-wizard-diagrams/workflow-psk.png'
-import WorkflowDiagram                 from '../assets/images/network-wizard-diagrams/workflow.png'
+import WorkflowAcctOffNoneDiagram      from '../assets/images/network-wizard-diagrams/workflow-acctoff-none.png'
+import WorkflowAcctOffOweDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctoff-owe.png'
+import WorkflowAcctOffPskDiagram       from '../assets/images/network-wizard-diagrams/workflow-acctoff-psk.png'
+import WorkflowAcctOnNoneDiagram       from '../assets/images/network-wizard-diagrams/workflow-accton-none.png'
+import WorkflowAcctOnOweDiagram        from '../assets/images/network-wizard-diagrams/workflow-accton-owe.png'
+import WorkflowAcctOnPskDiagram        from '../assets/images/network-wizard-diagrams/workflow-accton-psk.png'
+import WorkflowAcctProxyNoneDiagram    from '../assets/images/network-wizard-diagrams/workflow-acctproxy-none.png'
+import WorkflowAcctProxyOweDiagram     from '../assets/images/network-wizard-diagrams/workflow-acctproxy-owe.png'
+import WorkflowAcctProxyPskDiagram     from '../assets/images/network-wizard-diagrams/workflow-acctproxy-psk.png'
 import NetworkFormContext              from '../NetworkFormContext'
 import { Diagram }                     from '../styledComponents'
 
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
-  forceHideAAAButton?: boolean;
+  enableAuthProxy?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAccountingService?: boolean
 }
 
 interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  enableAuthProxy?: boolean;
-  enableAccountingProxy?: boolean;
+  // enableAuthProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   wlanSecurity?: WlanSecurityEnum
+  // enableAccountingService?: boolean
 }
 
 interface OpenDiagramProps extends DiagramProps {
 }
 
 interface PskDiagramProps extends DiagramProps {
-  enableMACAuth?: boolean;
+  enableMACAuth?: boolean
+  isMacRegistrationList?: boolean
+  // enableAccountingService?: boolean
 }
 interface AaaDiagramProps extends DiagramProps {
   enableAuthProxy?: boolean;
   enableAccountingProxy?: boolean;
   enableAaaAuthBtn?: boolean;
+  enableAccountingService?: boolean;
   showButtons?: boolean;
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
@@ -122,32 +134,53 @@ function getDiagram (props: NetworkDiagramProps) {
 }
 
 function getDPSKDiagram (props:DpskDiagramProps) {
-  return props?.isCloudpathEnabled ? getDpskUsingRadiusDiagram(props) : DpskDiagram
-}
-function getDpskUsingRadiusDiagram (props: DpskDiagramProps) {
-  const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
-  const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
-  if (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-    return DpskCloudpathNonProxyDiagram
+  if (props?.isCloudpathEnabled) {
+    return (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed)?
+      getAAADiagramByParams(props, DpskCloudpathProxyDiagram, DpskCloudpathDiagram)
+      : getAAADiagramByParams(props, DpskCloudpathProxyDiagram, DpskAaaDiagram)
   } else {
-    return enableAuthProxyService || enableAccProxyService ?
-      DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
+    return (props?.enableAccountingService) ?
+      getAAADiagramByParams(props, DpskAaaProxyDiagram, DpskAaaDiagram)
+      : DpskDiagram
   }
 }
+
 function getPSKDiagram (props: PskDiagramProps) {
-  return props?.enableMACAuth ? AaaDiagram : PskDiagram
+  if(props?.enableMACAuth && props?.isMacRegistrationList) {
+    return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
+  }else if(props?.enableMACAuth && !props?.isMacRegistrationList) {
+    return getAAADiagram(props)
+  } else {
+    return (props.enableAccountingService)? getAAADiagram(props) : PskDiagram
+  }
 }
+
 function getOpenDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? getAAADiagram(props) : OpenDiagram
 }
-function getAAADiagram (props: AaaDiagramProps) {
+
+function getAAADiagramByParams (
+  props: AaaDiagramProps,
+  proxyDiagram: string,
+  nonProxyDiagram: string) {
+
   if (props.showButtons) {
     const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
     const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
-    return enableAuthProxyService || enableAccProxyService ? AaaProxyDiagram : AaaDiagram
+    return enableAuthProxyService || enableAccProxyService ? proxyDiagram : nonProxyDiagram
   }
-  return props.enableAuthProxy ? AaaProxyDiagram : AaaDiagram
+
+  const isProxyModeOn =
+    (!props.showButtons && props.enableAccountingService)?
+      props.enableAccountingProxy : props.enableAuthProxy
+
+  return isProxyModeOn ? proxyDiagram : nonProxyDiagram
 }
+
+function getAAADiagram (props: AaaDiagramProps) {
+  return getAAADiagramByParams(props, AaaProxyDiagram, AaaDiagram)
+}
+
 function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
   let useProxy = props.enableAuthProxy
@@ -168,12 +201,18 @@ function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
 function getWorkflowDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
   props: AaaDiagramProps) {
   let useProxy = props.enableAccountingProxy
+  let useAcctService = props.enableAccountingService
   if(useProxy) {
-    return wisprWithPsk ? WorkflowProxyWithPskDiagram :
-      (wisprWithOwe ? WorkflowProxyWithOweDiagram : WorkflowProxyDiagram)
+    return wisprWithPsk ? WorkflowAcctProxyPskDiagram :
+      (wisprWithOwe ? WorkflowAcctProxyOweDiagram : WorkflowAcctProxyNoneDiagram)
   } else {
-    return wisprWithPsk ? WorkflowWithPskDiagram :
-      (wisprWithOwe ? WorkflowWithOweDiagram : WorkflowDiagram)
+    if(useAcctService) {
+      return wisprWithPsk ? WorkflowAcctOnPskDiagram :
+        (wisprWithOwe ? WorkflowAcctOnOweDiagram : WorkflowAcctOnNoneDiagram)
+    } else {
+      return wisprWithPsk ? WorkflowAcctOffPskDiagram :
+        (wisprWithOwe ? WorkflowAcctOffOweDiagram : WorkflowAcctOffNoneDiagram)
+    }
   }
 }
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
@@ -212,18 +251,51 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const title = data?.type ? $t(networkTypes[data?.type]) : undefined
-  const { forceHideAAAButton = false } = props
+  const networkType = props.type ?? data?.type
+  const enableAuthProxy = getEnableAuthProxy(props, data, networkType)
+  const enableAccountingProxy = props.enableAccountingProxy ?? data?.enableAccountingProxy
+  const enableAccountingService = props.enableAccountingService ?? data?.enableAccountingService
 
-  const showButtons = !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
-  && data?.enableAccountingService && forceHideAAAButton
-  const enableMACAuth = data?.wlan?.macAddressAuthentication
+  const showButtons = (isForceHideButtons(props, networkType))? false :
+    !!enableAuthProxy !== !!enableAccountingProxy
+    && !!enableAccountingService
 
   const diagram = getDiagram({
     ...data,
-    ...{ showButtons, enableAaaAuthBtn, enableMACAuth },
+    ...{ showButtons, enableAaaAuthBtn },
     ...props
   })
 
+  function getEnableAuthProxy (
+    props: NetworkDiagramProps, data: NetworkSaveData | null, networkType?:NetworkTypeEnum
+  ) {
+    if(networkType === NetworkTypeEnum.DPSK){
+      return props.enableAuthProxy
+    } else {
+      return props.enableAuthProxy ?? data?.enableAuthProxy
+    }
+  }
+
+  function isForceHideButtons (props: NetworkDiagramProps, networkType?:NetworkTypeEnum) {
+
+    if(networkType === NetworkTypeEnum.PSK) {
+      const pskProps = props as PskDiagramProps
+      return !(pskProps.enableMACAuth && !pskProps.isMacRegistrationList)
+    }
+
+    // Hide AAA button under Captive Portal - Workflow
+    if(props.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+      const cpProps = props as CaptivePortalDiagramProps
+      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow
+    }
+
+    if(networkType === NetworkTypeEnum.DPSK) {
+      const dpskProps = props as DpskDiagramProps
+      return !dpskProps.isCloudpathEnabled
+    }
+
+    return false
+  }
 
   function AaaButtons () {
     const { $t } = useIntl()

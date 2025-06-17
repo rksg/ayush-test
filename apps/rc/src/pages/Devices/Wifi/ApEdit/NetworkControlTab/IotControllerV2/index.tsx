@@ -293,7 +293,6 @@ export function IotControllerV2 (props: ApEditItemProps) {
                 <Space>
                   <Button
                     type='link'
-                    style={{ marginLeft: '20px' }}
                     onClick={handleIotController}
                   >
                     {$t({ defaultMessage: 'Associate IoT Controller' })}

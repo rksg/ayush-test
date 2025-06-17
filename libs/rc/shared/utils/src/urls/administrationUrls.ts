@@ -439,7 +439,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteTenant: {
     method: 'delete',
     url: '/nuketenant/:tenantId',
-    opsApi: 'DELETE:/nuketenant/:tenantId',
+    opsApi: 'DELETE:/nuketenant/{id}',
     newApi: true
   }
 }

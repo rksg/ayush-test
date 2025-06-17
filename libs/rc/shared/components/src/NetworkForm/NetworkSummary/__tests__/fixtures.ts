@@ -1,8 +1,8 @@
-import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
+import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockAaaNetworkSummary = {
   name: 'test',
-  type: 'aaa',
+  type: NetworkTypeEnum.AAA,
   isCloudpathEnabled: false,
   venues: [
     {

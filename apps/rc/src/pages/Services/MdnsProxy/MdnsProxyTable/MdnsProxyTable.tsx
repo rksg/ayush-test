@@ -33,7 +33,7 @@ const defaultPayload = {
   filters: {}
 }
 
-export default function MdnsProxyTable () {
+export default function MdnsProxyTable ({ hideHeader = false } : { hideHeader?: boolean }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
@@ -87,17 +87,19 @@ export default function MdnsProxyTable () {
   ]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+  const breadcrumb = useServicesBreadcrumb()
 
   return (
     <>
-      <PageHeader
+      {!hideHeader && <PageHeader
         title={
           $t({ defaultMessage: 'mDNS Proxy ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={useServicesBreadcrumb()}
+        breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
             rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
@@ -106,7 +108,7 @@ export default function MdnsProxyTable () {
               {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}
-      />
+      />}
 
       <Loader states={[tableQuery]}>
         <ToolTipTableStyle.ToolTipStyle/>

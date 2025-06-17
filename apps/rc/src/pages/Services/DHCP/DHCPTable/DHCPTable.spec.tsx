@@ -239,4 +239,18 @@ describe('DHCPTable', () => {
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
   })
+
+  it('should render table without Header when hideHeader is true', async () => {
+    render(
+      <Provider>
+        <DHCPTable hideHeader={true} />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    expect(screen.queryByText(`DHCP (${mockTableResult.totalCount})`)).toBeNull()
+    expect(screen.queryByRole('button', { name: /Add DHCP Service/ })).toBeNull()
+  })
 })

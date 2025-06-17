@@ -120,7 +120,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: features } = useGetBetaFeatureListQuery({ params },
     { skip: !(betaStatus) || !selectedBetaListEnabled })
 
-  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
+  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures?.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {

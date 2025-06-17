@@ -4,8 +4,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { switchApi }                       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                  from '@acx-ui/rc/switch/services'
+import { switchApi, SwitchUrlsInfo }       from '@acx-ui/rc/switch/services'
 import { CommonUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import {
@@ -28,7 +27,6 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
 }))
 

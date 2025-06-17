@@ -73,7 +73,7 @@ export const nodeTypes = {
   [Node.Rogue]: {
     name: defineMessage({ defaultMessage: 'Avg. Rogue APs' }),
     color: cssStr('--acx-neutrals-80'),
-    legendText: defineMessage({ defaultMessage: 'Rogue APs' }),
+    legendText: defineMessage({ defaultMessage: 'Avg. Rogue APs' }),
     // eslint-disable-next-line max-len
     tooltip: defineMessage({ defaultMessage: 'Average number of unauthorized or unidentified APs detected in the vicinity, which may pose security risks or cause network interference.' })
   }
