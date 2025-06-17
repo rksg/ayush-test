@@ -37,7 +37,8 @@
     "reports-services": "libs/reports/services",
     "reports-utils": "libs/reports/utils",
     "switch-components": "libs/rc/switch/components",
-    "wifi-components": "libs/rc/wifi/components"
+    "wifi-components": "libs/rc/wifi/components",
+    "rc-generic-features-components": "libs/rc/generic-features/components"
   },
   "architect": {
     "serve": {
