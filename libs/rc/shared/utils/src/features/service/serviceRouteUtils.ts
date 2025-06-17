@@ -27,6 +27,7 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.EDGE_DHCP]: 'edgeDhcp',
+  [ServiceType.DHCP_CONSOLIDATION]: 'dhcpConsolidation',
   [ServiceType.EDGE_FIREWALL]: 'edgeFirewall',
   [ServiceType.EDGE_SD_LAN]: 'edgeSdLan',
   [ServiceType.EDGE_SD_LAN_P2]: 'edgeSdLanP2', // temporary type before SD-LAN GA2 dev done.

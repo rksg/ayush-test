@@ -75,6 +75,7 @@ import {
   IdentityProviderTabType,
   PersonaUrls,
   useIsNewServicesCatalogEnabled,
+  useDhcpStateMap,
   useMdnsProxyStateMap
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
@@ -174,6 +175,8 @@ import AddDHCP                                      from './pages/Services/DHCP/
 import EdgeDHCPDetail                               from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable                                from './pages/Services/DHCP/Edge/DHCPTable'
 import EditDhcp                                     from './pages/Services/DHCP/Edge/EditDHCP'
+import DHCPConsolidation                            from './pages/Services/DHCPConsolidation'
+import CreateDHCPService                            from './pages/Services/DHCPConsolidation/create'
 import DpskDetails                                  from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskTable                                    from './pages/Services/Dpsk/DpskTable/DpskTable'
 import AddFirewall                                  from './pages/Services/EdgeFirewall/AddFirewall'
@@ -694,6 +697,7 @@ function ServiceRoutes () {
   const isPortalProfileEnabled = useIsSplitOn(Features.PORTAL_PROFILE_CONSOLIDATION_TOGGLE)
   const pinRoutes = useEdgePinRoutes()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
+  const isDhcpConsolidationEnabled = useDhcpStateMap()[ServiceType.DHCP_CONSOLIDATION]
   const isMdnsProxyConsolidationEnabled = useMdnsProxyStateMap()[ServiceType.MDNS_PROXY_CONSOLIDATION]
 
   return rootRoutes(
@@ -794,6 +798,28 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
         element={<WifiCallingTable/>}
       />
+      {isDhcpConsolidationEnabled && <>
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/edge'} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.LIST })}
+          element={<TenantNavigate replace to={'services/dhcpConsolidation/list/wifi'} />}
+        />
+        <Route
+          path={'services/dhcpConsolidation/list/:activeTab'}
+          element={<DHCPConsolidation />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP_CONSOLIDATION, oper: ServiceOperation.CREATE })}
+          element={<CreateDHCPService />}
+        />
+      </>}
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={

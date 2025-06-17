@@ -42,7 +42,7 @@ jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIRMWARE
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitcDefaultVersionsQuery: () => ({
+  useGetSwitchDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
 }))

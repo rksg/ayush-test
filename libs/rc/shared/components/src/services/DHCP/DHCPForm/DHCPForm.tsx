@@ -18,9 +18,10 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  useAfterServiceSaveRedirectPath
 } from '@acx-ui/rc/utils'
-import { useParams, useNavigate } from '@acx-ui/react-router-dom'
+import { useParams, useNavigate, Path } from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -42,6 +43,7 @@ export function DHCPForm (props: DHCPFormProps) {
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
+  const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.DHCP)
 
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
@@ -80,7 +82,7 @@ export function DHCPForm (props: DHCPFormProps) {
       }
       await saveOrUpdateDHCP({ params, payload, enableRbac: resolvedEnableRbac }).unwrap()
 
-      navigateToPreviousPage(true)
+      navigateToPreviousPage(redirectPathAfterSave, true)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -99,7 +101,7 @@ export function DHCPForm (props: DHCPFormProps) {
     })
   }
 
-  const navigateToPreviousPage = (replaceCurrentPath = false) => {
+  const navigateToPreviousPage = (previousPath: Path | string, replaceCurrentPath: boolean) => {
     navigate(previousPath, {
       replace: replaceCurrentPath,
       ...(returnParams ? { state: { from: { returnParams } } } : {})
@@ -116,7 +118,7 @@ export function DHCPForm (props: DHCPFormProps) {
         <StepsFormLegacy<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={navigateToPreviousPage}
+          onCancel={() => navigateToPreviousPage(previousPath, false)}
           onFinish={handleAddOrUpdateDHCP}
         >
           <StepsFormLegacy.StepForm

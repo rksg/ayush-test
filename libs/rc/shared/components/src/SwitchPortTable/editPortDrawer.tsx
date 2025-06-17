@@ -233,11 +233,8 @@ export function EditPortDrawer ({
 
   const { tenantId, venueId, serialNumber } = useParams()
   const [ loading, setLoading ] = useState<boolean>(true)
-  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
-  const isSwitch785048CPortSpeedEnabled =
-    useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
@@ -567,20 +564,13 @@ export function EditPortDrawer ({
         ?.[0]?.portNumber?.split('-')?.[2] || ''
 
       let portSpeed = getPortSpeed(selectedPorts)
-      if (isSwitch785048CPortSpeedEnabled) {
-        if(selectedPorts.some(port => port.switchModel === 'ICX7850-48C') &&
-        switchDetail?.firmware &&
-        (!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
-        (isVerGEVer(switchDetail?.firmware, '10020', false) &&
-        !isVerGEVer(switchDetail?.firmware, '10020b', false)))) {
-          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
-            .filter(item => !item.includes('TEN_G_FULL_'))
-        }
-      }else{
-        if(selectedPorts.some(port => port.switchModel === 'ICX7850-48C')) {
-          portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
-            .filter(item => !item.includes('TEN_G_FULL_'))
-        }
+      if(selectedPorts.some(port => port.switchModel === 'ICX7850-48C') &&
+      switchDetail?.firmware &&
+      (!isVerGEVer(switchDetail?.firmware , '10010f', false) ||
+      (isVerGEVer(switchDetail?.firmware, '10020', false) &&
+      !isVerGEVer(switchDetail?.firmware, '10020b', false)))) {
+        portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+          .filter(item => !item.includes('TEN_G_FULL_'))
       }
 
       const defaultVlans = switchesDefaultVlan
@@ -1423,16 +1413,12 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
-      {
-        cyclePoeFFEnabled && <>
-          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
-            {$t({ defaultMessage: 'Cycle PoE' })}
-          </Button>
-          <UI.DrawerFooterDivider>
-            <Divider type='vertical' />
-          </UI.DrawerFooterDivider>
-        </>
-      }
+      <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+        {$t({ defaultMessage: 'Cycle PoE' })}
+      </Button>
+      <UI.DrawerFooterDivider>
+        <Divider type='vertical' />
+      </UI.DrawerFooterDivider>
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>

@@ -4,11 +4,11 @@ import { Divider, Tag, Tooltip, Typography } from 'antd'
 import _                                     from 'lodash'
 import { IntlShape }                         from 'react-intl'
 
-import { cssStr }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { StarSolid }                from '@acx-ui/icons'
+import { cssStr }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { StarSolid }                 from '@acx-ui/icons'
 import {
-  useGetSwitcDefaultVersionsQuery
+  useGetSwitchDefaultVersionsQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -42,7 +42,7 @@ export function useSwitchFirmwareUtils () {
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
-  const switchVersions = useGetSwitcDefaultVersionsQuery({
+  const switchVersions = useGetSwitchDefaultVersionsQuery({
     enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
     customHeaders: isSwitchFirmwareV1002Enabled ? {
       'Content-Type': 'application/vnd.ruckus.v1.1+json',
