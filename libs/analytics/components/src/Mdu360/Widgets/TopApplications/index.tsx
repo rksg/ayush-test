@@ -3,11 +3,12 @@ import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { ContentSwitcher, Card, Loader, NoData, GridRow } from '@acx-ui/components'
+import { formats }                                        from '@acx-ui/formatter'
 
 import * as UI from '../styledComponents'
 
 import { useTopNApplicationQuery } from './services'
-import { IconList, formatBytes }   from './utils'
+import { IconList }                from './utils'
 
 interface TopApplicationsFilters {
   startDate: string;
@@ -47,7 +48,7 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
 
   const formatValue = (value: number) => {
     return selectedTab === 'applicationTraffic'
-      ? formatBytes(value)
+      ? formats.bytesFormat(value)
       : value
   }
 

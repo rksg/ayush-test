@@ -27,13 +27,3 @@ export const IconList = [
   { name: 'whatsapp', icon: <IconWrapper zoom={0.4}><Whatsapp /></IconWrapper> },
   { name: 'chrome', icon: <IconWrapper><ChromeColored /></IconWrapper> }
 ]
-
-export function formatBytes (value: number): string {
-  if (value < 1_000) {
-    return `${value} KB`
-  } else if (value < 1_000_000) {
-    return `${(value / 1_000).toFixed(0)} MB`
-  } else {
-    return `${(value / 1_000_000).toFixed(0)} GB`
-  }
-}
