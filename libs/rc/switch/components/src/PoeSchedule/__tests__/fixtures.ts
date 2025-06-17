@@ -50,7 +50,8 @@ export const portDataResponse = {
   errorDisableStatus: '',
   stickyMacAclAllowCount: 0,
   lagForceUpPort: false,
-  poeScheduleEnabled: 'true',
+  poeScheduleEnabled: true,
+  isPoeScheduleEnabled: 'true',
   isPoeSupported: 'true',
   inactiveRow: false,
   inactiveTooltip: ''

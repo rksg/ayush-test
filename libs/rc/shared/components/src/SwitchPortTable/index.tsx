@@ -350,13 +350,13 @@ export function SwitchPortTable (props: {
   },
   ...(isSwitchTimeBasedPoeEnabled
     ? [{
-      key: 'poeScheduleEnabled',
+      key: 'isPoeScheduleEnabled',
       title: $t({ defaultMessage: 'PoE Schedule' }),
-      dataIndex: 'poeScheduleEnabled',
+      dataIndex: 'isPoeScheduleEnabled',
       sorter: true,
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
-        return row.poeScheduleEnabled === 'true' ?
+        return row.isPoeScheduleEnabled === 'true' ?
           <Button
             type='link'
             data-testid='edit-poe-schedule'
