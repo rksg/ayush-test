@@ -7,7 +7,6 @@ import { useIntl }           from 'react-intl'
 import { SwitchesTrafficByVolume }                  from '@acx-ui/analytics/components'
 import { SwitchStatusByTime }                       from '@acx-ui/analytics/components'
 import { Button, GridCol, GridRow }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { TopologyFloorPlanWidget, isLAGMemberPort } from '@acx-ui/rc/components'
 import {
   SwitchBlinkLEDsDrawer,
@@ -48,11 +47,9 @@ export function SwitchOverviewPanel (props:{
   const { $t } = useIntl()
   const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
   const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
-  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   return <>
-    {enableSwitchBlinkLed && (
-      hasPermission({ rbacOpsIds: [getOpsApi(SwitchUrlsInfo.blinkLeds)] })
+    {( hasPermission({ rbacOpsIds: [getOpsApi(SwitchUrlsInfo.blinkLeds)] })
     || hasRoles([RolesEnum.READ_ONLY])) &&
       <div style={{ textAlign: 'right' }}>
         <Button
@@ -96,13 +93,12 @@ export function SwitchOverviewPanel (props:{
       <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
     </GridRow>
 
-    {enableSwitchBlinkLed &&
-      <SwitchBlinkLEDsDrawer
-        visible={blinkDrawerVisible}
-        setVisible={setBlinkDrawerVisible}
-        switches={blinkData}
-        isStack={stackMember.length > 0}
-      />}
+    <SwitchBlinkLEDsDrawer
+      visible={blinkDrawerVisible}
+      setVisible={setBlinkDrawerVisible}
+      switches={blinkData}
+      isStack={stackMember.length > 0}
+    />
   </>
 }
 

@@ -4,22 +4,28 @@ import { Form }    from 'antd'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput } from '@acx-ui/components'
+import { PasswordInput }                                          from '@acx-ui/components'
+import { useIsTierAllowed, TierFeatures, useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkSaveData
+  NetworkSaveData,
+  transformDisplayOnOff,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
 
 type AaaSummaryProps = {
   summaryData: NetworkSaveData
+  isDisplayAuth?: boolean // Define whether display the Auth service fields, default display
+  isDisplayAccounting?: boolean // Define whether display the Accounting service fields, default display
 }
 
 type AaaServerFieldsProps = {
   serverType: AaaServerTypeEnum,
-  data: NetworkSaveData
+  data: NetworkSaveData,
+  supportRadsec?:boolean
 }
 
 type AaaServerDataProps = {
@@ -29,53 +35,85 @@ type AaaServerDataProps = {
 }
 
 export const AaaSummary = (props: AaaSummaryProps) => {
-  const { summaryData } = props
+  const {
+    summaryData,
+    isDisplayAuth = true,
+    isDisplayAccounting = true
+  } = props
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isRadSecFeatureTierAllowed = useIsTierAllowed(TierFeatures.PROXY_RADSEC)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && isRadSecFeatureTierAllowed && !isTemplate
+
   return (<>
-    {get(summaryData, 'authRadius.primary.ip') !== undefined && <>
+    {isDisplayAuth && get(summaryData, 'authRadius.primary.ip') !== undefined && <>
       {$t({ defaultMessage: 'Authentication Service' })}
       <AaaServerFields
         serverType={AaaServerTypeEnum.AUTHENTICATION}
         data={summaryData}
+        supportRadsec={supportRadsec}
       />
     </>}
-    {summaryData.enableAccountingService && <>
-      {$t({ defaultMessage: 'Accounting Service' })}
-      <AaaServerFields
-        serverType={AaaServerTypeEnum.ACCOUNTING}
-        data={summaryData}
-      />
-    </>}
+    {isDisplayAccounting &&
+      <>
+        {$t({ defaultMessage: 'Accounting Service' })}
+        <AaaServerFields
+          serverType={AaaServerTypeEnum.ACCOUNTING}
+          data={summaryData}
+          supportRadsec={supportRadsec}
+        />
+      </>
+    }
   </>)
 }
 
 const AaaServerFields = (props: AaaServerFieldsProps) => {
   const { $t } = useIntl()
-  const { serverType, data } = props
+  const { serverType, data, supportRadsec=false } = props
 
   const enableProxy = serverType === AaaServerTypeEnum.AUTHENTICATION ?
     data.enableAuthProxy : data.enableAccountingProxy
 
+  function getAccountingDisplayName (data: NetworkSaveData) {
+    const isEnabled = transformDisplayOnOff(data?.enableAccountingService ?? false)
+    return (data?.enableAccountingService)? `${isEnabled} (${data[serverType]?.name})`: isEnabled
+  }
+
+  const isAAAServerOn =
+    !(serverType === AaaServerTypeEnum.ACCOUNTING && !!!data?.enableAccountingService)
+
   return (<>
-    <AaaServerData
-      data={data}
-      serverType={serverType}
-      order={AaaServerOrderEnum.PRIMARY}
-    />
-    {data[serverType]?.secondary && <AaaServerData
-      data={data}
-      serverType={serverType}
-      order={AaaServerOrderEnum.SECONDARY}
-    />}
     <Form.Item
-      label={$t({ defaultMessage: 'RadSec' })}
-      children={$t({ defaultMessage: '{tlsEnabled}' }, {
-        tlsEnabled: data[serverType]?.radSecOptions?.tlsEnabled ? 'On' : 'Off'
-      })}
+      children={
+        (serverType === AaaServerTypeEnum.AUTHENTICATION)?
+          `${data[serverType]?.name}` :
+          getAccountingDisplayName(data)
+      }
     />
-    <Form.Item
-      label={$t({ defaultMessage: 'Proxy Service:' })}
-      children={$t(enableProxy ? contents.states.enabled : contents.states.disabled)} />
+    {isAAAServerOn && <>
+      <AaaServerData
+        data={data}
+        serverType={serverType}
+        order={AaaServerOrderEnum.PRIMARY}
+      />
+      {data[serverType]?.secondary && <AaaServerData
+        data={data}
+        serverType={serverType}
+        order={AaaServerOrderEnum.SECONDARY}
+      />}
+      {supportRadsec &&
+      <Form.Item
+        label={$t({ defaultMessage: 'RadSec' })}
+        children={$t({ defaultMessage: '{tlsEnabled}' }, {
+          tlsEnabled: transformDisplayOnOff(data[serverType]?.radSecOptions?.tlsEnabled ?? false)
+        })}
+      />
+      }
+      <Form.Item
+        label={$t({ defaultMessage: 'Proxy Service:' })}
+        children={$t(enableProxy ? contents.states.enabled : contents.states.disabled)} />
+    </>}
   </>)
 }
 
