@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/rc/common/components/src",
+  "projectType": "library",
+  "tags": ["type:components"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rc/common/components/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/rc/common/components"],
+      "options": {
+        "jestConfig": "libs/rc/common/components/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
