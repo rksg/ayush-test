@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
-import { FormInstance, Space, Typography } from 'antd'
-import _, { cloneDeep, flatten, reduce }   from 'lodash'
-import moment                              from 'moment-timezone'
-import { defineMessage }                   from 'react-intl'
+import { FormInstance, Space, Tooltip, Typography } from 'antd'
+import _, { cloneDeep, flatten, reduce }            from 'lodash'
+import moment                                       from 'moment-timezone'
+import { defineMessage, useIntl }                   from 'react-intl'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
+import { defaultRichTextFormatValues }                                                 from '@acx-ui/components'
+import { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
   ClusterHaFallbackScheduleTypeEnum,
   ClusterHaLoadDistributionEnum,
@@ -19,12 +20,16 @@ import {
   EdgeSerialNumber,
   NodeSubInterfaces,
   VirtualIpSetting,
-  SubInterface
+  SubInterface,
+  EdgeStatus,
+  isEdgeMatchedRequiredFirmware
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
 import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
+import { StyledCompatibilityWarningTriangleIcon }                                              from './styledComponents'
 import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
 const initialNodeCompatibleResult = {
@@ -664,4 +669,31 @@ export const getAllPhysicalInterfaceFormData = (form: FormInstance): {
     ports: allPortsData,
     lags: allLagsData
   }
+}
+
+export const DualWanStepTitle = (props: {
+  requiredFw: string | undefined,
+  edgeList: EdgeStatus[] | undefined
+}) => {
+  const { $t } = useIntl()
+  const { requiredFw, edgeList } = props
+  const isLower = requiredFw && edgeList && !isEdgeMatchedRequiredFirmware(requiredFw, edgeList)
+
+  return <>{$t({ defaultMessage: 'Dual WAN' })}
+    {isLower && <Tooltip
+      title={$t({ defaultMessage: `Dual WAN feature requires your RUCKUS Edge cluster
+          running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
+          <venueSingular></venueSingular> firmware from {targetLink}` },
+      {
+        ...defaultRichTextFormatValues,
+        requiredFw,
+        targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+          {$t({ defaultMessage: 'Administration > Version Management > RUCKUS Edge Firmware' })}
+        </TenantLink>
+      })
+      }>
+      <StyledCompatibilityWarningTriangleIcon />
+    </Tooltip>
+    }
+  </>
 }
