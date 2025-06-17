@@ -178,7 +178,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
               visible={softGreDrawerVisible}
               type={ApCompatibilityType.ALONE}
               networkId={networkId}
-              featureNames={[InCompatibilityFeatures.SOFT_GRE]}
+              featureNames={[InCompatibilityFeatures.NETWORK_SOFT_GRE]}
               onClose={() => setSoftGreDrawerVisible(false)}
             />}
           </Radio>

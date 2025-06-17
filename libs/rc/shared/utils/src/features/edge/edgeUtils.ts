@@ -3,7 +3,7 @@ import { DefaultOptionType }                    from 'antd/lib/select'
 import _, { difference, flatMap, isNil, sumBy } from 'lodash'
 import { IntlShape }                            from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { compareVersions, getIntl } from '@acx-ui/utils'
 
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 import {
@@ -586,4 +586,12 @@ export const getMergedLagTableDataFromLagForm = (lagData: EdgeLag[] | undefined,
     updatedLagData = [changedLag]
   }
   return updatedLagData
+}
+
+export const isEdgeMatchedRequiredFirmware = (requiredFw: string, edgeList: EdgeStatus[]) => {
+  // eslint-disable-next-line max-len
+  const edgesData = [...edgeList]?.sort((n1, n2) => compareVersions(n1.firmwareVersion, n2.firmwareVersion))
+  const minNodeVersion = edgesData?.[0]?.firmwareVersion
+  const isMatched = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) >= 0
+  return isMatched
 }
