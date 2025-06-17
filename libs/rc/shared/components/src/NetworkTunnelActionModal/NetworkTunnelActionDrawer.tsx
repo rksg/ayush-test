@@ -108,23 +108,25 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           name='tunnelType'
           label={<>
             {$t({ defaultMessage: 'Tunneling Method' })}
-            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={'For SoftGRE Tunneling Method:'}
-              showDetailButton
-              placement='top'
-              onClick={() => setSoftGreDrawerVisible(true)}
-              icon={<QuestionMarkCircleOutlined
-                style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
-              />}
-            />}
             {isR370UnsupportedFeatures &&
-            <ApCompatibilityDrawer
-              visible={softGreDrawerVisible}
-              type={ApCompatibilityType.ALONE}
-              networkId={networkId}
-              featureNames={[InCompatibilityFeatures.NETWORK_SOFT_GRE]}
-              onClose={() => setSoftGreDrawerVisible(false)}
-            />}
+            <>
+              <ApCompatibilityToolTip
+                title={'SoftGRE has specific compatibility requirements.'}
+                showDetailButton
+                placement='top'
+                onClick={() => setSoftGreDrawerVisible(true)}
+                icon={<QuestionMarkCircleOutlined
+                  style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
+                />}
+              />
+              <ApCompatibilityDrawer
+                visible={softGreDrawerVisible}
+                type={ApCompatibilityType.ALONE}
+                networkId={networkId}
+                featureNames={[InCompatibilityFeatures.NETWORK_SOFT_GRE]}
+                onClose={() => setSoftGreDrawerVisible(false)}
+              />
+            </>}
           </>}
           initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
