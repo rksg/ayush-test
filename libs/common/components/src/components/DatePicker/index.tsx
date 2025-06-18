@@ -169,6 +169,12 @@ export const RangePicker = ({
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
   const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
+
+  const hasFilterLabel = Boolean(filterLabel)
+  const isAllTimeAndClosed = rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]` &&
+    !isCalendarOpen
+  const shouldShowLabel = hasFilterLabel && ((!calChanged && !isCalendarOpen) || isAllTimeAndClosed)
+
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
@@ -178,8 +184,7 @@ export const RangePicker = ({
       rangeText={rangeText}
       showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
-      showLabel={(filterLabel && ((!calChanged && !isCalendarOpen) ||
-        (rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]` && !isCalendarOpen))) || false}
+      showLabel={shouldShowLabel}
       filterLabel={filterLabel}
     >
       <AntRangePicker
@@ -193,7 +198,7 @@ export const RangePicker = ({
           setIsCalendarOpen(true)
         }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={!filterLabel ||
+        suffixIcon={!hasFilterLabel ||
           ((calChanged && rangeText !== `[${$t(dateRangeMap[DateRange.allTime])}]`)
           || isCalendarOpen) ? <ClockOutlined /> : <CaretDownSolid />}
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
@@ -219,12 +224,23 @@ export const RangePicker = ({
           />
         )}
         value={[range?.startDate, range?.endDate]}
-        format={(isCalendarOpen || selectionType === DateRange.custom)
-          ? formatter(showTimePicker ? DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
-          : filterLabel && (!calChanged || !isCalendarOpen) &&
-            rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]` ?
-            `[${filterLabel}]` : rangeText
-        }
+        format={(() => {
+          if (isCalendarOpen || selectionType === DateRange.custom) {
+            const formatType = showTimePicker
+              ? DateFormatEnum.DateTimeFormat
+              : DateFormatEnum.DateFormat
+            return formatter(formatType)
+          }
+
+          const isAllTimeWithLabel = hasFilterLabel && (!calChanged || !isCalendarOpen) &&
+            rangeText === `[${$t(dateRangeMap[DateRange.allTime])}]`
+
+          if (isAllTimeWithLabel) {
+            return `[${filterLabel}]`
+          }
+
+          return rangeText
+        })()}
         allowClear={false}
       />
     </UI.RangePickerWrapper>
