@@ -5,6 +5,7 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
+import { NavigateProps }  from '@acx-ui/react-router-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -13,11 +14,17 @@ import { Init, ConfigTemplatesRoutes } from './Routes'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  Navigate: props => <div>{JSON.stringify(props)}</div>
+  Navigate: (props: NavigateProps) => <div>{JSON.stringify(props)}</div>
 }))
 
-jest.mock('./pages/ConfigTemplates/Templates', () => ({
-  ConfigTemplateList: () => <div>ConfigTemplateList</div>
+jest.mock('./pages/ConfigTemplates', () => ({
+  ...jest.requireActual('./pages/ConfigTemplates'),
+  ConfigTemplatePage: () => <div>ConfigTemplatePage</div>
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantType: 'MSP' })
 }))
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
@@ -33,12 +40,17 @@ jest.mock('@acx-ui/rc/components', () => ({
   VLANPoolForm: () => <div>VLANPoolForm</div>,
   ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>,
   CliProfileForm: () => <div>CliProfileForm</div>,
+  IdentityGroupForm: () => <div>IdentityGroupForm</div>,
+  WifiCallingForm: () => <div>WifiCallingForm</div>,
+  AddEthernetPortProfile: () => <div>AddEthernetPortProfile</div>,
+  SyslogForm: () => <div>SyslogForm</div>,
+  RogueAPDetectionForm: () => <div>RogueAPDetectionForm</div>,
+  ApGroupEdit: () => <div>ApGroupEdit</div>,
   AccessControlDetail: () => <div>AccessControlDetail</div>,
   AAAPolicyDetail: () => <div>AccessControlDetail</div>,
   NetworkDetails: () => <div>NetworkDetails</div>,
   VLANPoolDetail: () => <div>VLANPoolDetail</div>,
   DHCPDetail: () => <div>DHCPDetail</div>,
-  IdentityGroupForm: () => <div>IdentityGroupForm</div>,
   PersonaGroupDetails: () => <div>PersonaGroupDetails</div>
 }))
 
@@ -88,8 +100,8 @@ describe('Init', () => {
     )).toBeVisible()
   })
   it('navigates to brand360 when available', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(ff => ff === Features.MSP_BRAND_360)
-    jest.mocked(useIsTierAllowed).mockReturnValue(ff => ff === Features.MSP_HSP_360_PLM_FF)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_BRAND_360)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.MSP_HSP_360_PLM_FF)
     render(<HspContext.Provider value={{ state: { isHsp: true }, dispatch: jest.fn() }}>
       <Init />
     </HspContext.Provider>, {
@@ -103,6 +115,7 @@ describe('Init', () => {
     )).toBeVisible()
   })
 })
+
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
   beforeEach(() => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })
@@ -116,7 +129,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
       }
     })
 
-    expect(await screen.findByText('ConfigTemplateList')).toBeVisible()
+    expect(await screen.findByText('ConfigTemplatePage')).toBeVisible()
   })
 
   it('should navigate to the RADIUS Server config template', async () => {
@@ -304,5 +317,94 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('IdentityGroupForm')).toBeVisible()
+  })
+
+  it('should navigate to the Wi-Fi Calling config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.WIFI_CALLING]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('WifiCallingForm')).toBeVisible()
+  })
+
+  it('should navigate to the Ethernet Port config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.ETHERNET_PORT_PROFILE]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          // eslint-disable-next-line max-len
+          getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('AddEthernetPortProfile')).toBeVisible()
+  })
+
+  it('should navigate to the Syslog config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.SYSLOG]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('SyslogForm')).toBeVisible()
+  })
+
+  it('should navigate to the Rogue AP Detection config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('RogueAPDetectionForm')).toBeVisible()
+  })
+
+  it('should navigate to the AP Group config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.AP_GROUP]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath('devices/apgroups/create'),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('ApGroupEdit')).toBeVisible()
   })
 })
