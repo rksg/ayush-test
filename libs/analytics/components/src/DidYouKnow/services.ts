@@ -25,7 +25,7 @@ export const api = dataApi.injectEndpoints({
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
-            const baseVariables = getBaseVariables(payload)
+            const timeRange = getWeekRange()
             const filterVariables = getFilterVariables(payload)
             return {
               document: gql`
@@ -46,7 +46,7 @@ export const api = dataApi.injectEndpoints({
                 }
               `,
               variables: {
-                ...baseVariables,
+                ...timeRange,
                 ...filterVariables,
                 requestedList: payload.requestedList
               }
@@ -61,7 +61,7 @@ export const api = dataApi.injectEndpoints({
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
-            const baseVariables = getBaseVariables(payload)
+            const baseVariables = getWeekRange()
             const filterVariables = getFilterVariables(payload)
             return {
               document: gql`
@@ -111,13 +111,6 @@ export function useAvailableFactsQuery (filters: PathFilter | DashboardFilter) {
   return useCustomAvailableFactsQuery({ ...filters, weekRange: true })
 }
 
-const getBaseVariables = (payload: (PathFilter | DashboardFilter) & { weekRange: boolean }) => {
-  const { startDate, endDate } = payload.weekRange ?
-    getWeekRange() :
-    getRangeByFilter(payload)
-  return { startDate, endDate }
-}
-
 const getFilterVariables = (payload: (PathFilter | DashboardFilter)) => {
   return 'filter' in payload ? getFilterPayload(payload) : _.pick(payload, ['path'])
 }
@@ -129,8 +122,3 @@ const getWeekRange = () => {
     endDate: today.format('YYYY-MM-DDTHH:mm:ssZ')
   }
 }
-
-const getRangeByFilter = (filters: PathFilter | DashboardFilter) => ({
-  startDate: filters.startDate,
-  endDate: filters.endDate
-})

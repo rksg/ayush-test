@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { Incident, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
-import { dataApi }                         from '@acx-ui/store'
+import { Incident } from '@acx-ui/analytics/utils'
+import { dataApi }  from '@acx-ui/store'
 
 import {
   NetworkImpactChartConfig,
@@ -9,7 +9,7 @@ import {
   NetworkImpactQueryTypes
 } from './config'
 
-export interface RequestPayload extends IncidentsToggleFilter {
+export interface RequestPayload {
   incident: Incident,
   charts: NetworkImpactChartConfig[]
 }

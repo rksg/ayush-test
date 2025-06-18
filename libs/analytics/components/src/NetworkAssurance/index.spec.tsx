@@ -136,12 +136,6 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('Network Assurance')).toBeVisible()
     expect(await screen.findByTestId('ConfigChange')).toBeVisible()
   })
-  it('should render config change when feature flag CONFIG_CHANGE is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
-  })
   it('renders only health', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     setRaiPermissions({

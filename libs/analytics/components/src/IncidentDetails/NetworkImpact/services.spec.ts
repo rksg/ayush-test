@@ -119,41 +119,4 @@ describe('networkImpactChartsApi', () => {
     expect(data).toMatchSnapshot()
     expect(error).toBe(undefined)
   })
-
-  it('handles AirtimeIncidents toggle on', async () => {
-    const expectedResult = { incident: {
-      WLAN: { count: 2, data: [
-        { key: 'ssid1', value: 2 }, { key: 'ssid2', value: 1 }
-      ] },
-      reason: { count: 2, data: [
-        { key: 'CCD_REASON_AAA_AUTH_FAIL', value: 2 }
-      ] },
-      radio: { count: 2, data: [
-        { key: '2.4', value: 1 }, { key: '5', value: 1 }
-      ] },
-      clientManufacturer: { count: 2, data: [
-        { key: 'manufacturer1', value: 1 }, { key: 'manufacturer2', value: 1 }
-      ] },
-      airtimeBusy: {
-        summary: 0.5,
-        data: [
-          { key: 'airtimBusy', value: 0.5 },
-          { key: 'airtimRx', value: 0.3 },
-          { key: 'airtimTx', value: 0.1 },
-          { key: 'airtimIdle', value: 0.1 }
-        ] },
-      airtimeBusyPeak: 0.65
-    } }
-    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
-      data: expectedResult
-    })
-    const { status, data, error } = await store.dispatch(
-      networkImpactChartsApi.endpoints.networkImpactCharts.initiate({
-        ...payload
-      })
-    )
-    expect(status).toBe('fulfilled')
-    expect(data).toMatchSnapshot()
-    expect(error).toBe(undefined)
-  })
 })
