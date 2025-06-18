@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { ipSecApi, softGreApi }                            from '@acx-ui/rc/services'
 import { IpsecUrls, SoftGreUrls }                          from '@acx-ui/rc/utils'
 import { Provider, store }                                 from '@acx-ui/store'
