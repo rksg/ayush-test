@@ -128,7 +128,6 @@ describe('ServiceCatalog', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
           || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
@@ -162,7 +161,6 @@ describe('ServiceCatalog', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
           || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
       jest.mocked(useDhcpStateMap).mockReturnValue({
@@ -203,7 +201,6 @@ describe('ServiceCatalog', () => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
-          || ff === Features.EDGES_TOGGLE
           || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
@@ -242,8 +239,7 @@ describe('ServiceCatalog', () => {
       })
 
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+        .mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge mDNS with feature flag ON', async () => {

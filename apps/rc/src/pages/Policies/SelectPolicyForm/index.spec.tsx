@@ -109,8 +109,6 @@ describe('SelectPolicyForm', () => {
   })
 
   it('should render Tunnel Profile when edge is enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     render(
       <Provider>
         <SelectPolicyForm />

@@ -29,12 +29,6 @@ describe('useIsEdgeFeatureReady', () => {
     expect(result.current).toBe(true)
   })
 
-  it('should return false when edge is disabled', () => {
-    mockUseIsSplitOn.mockImplementation((flag) => flag === Features.EDGES_TOGGLE ? false : true)
-    const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))
-    expect(result.current).toBe(false)
-  })
-
   it('should return false when feature flag is disabled', () => {
     mockUseIsSplitOn.mockImplementation((flag) => flag === !Features.EDGE_PIN_HA_TOGGLE)
     const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))

@@ -361,20 +361,6 @@ describe('Network utils test', () => {
       expect(result.current.enableTunnel).toBe(false)
       expect(result.current.vxLanTunnels).toBe(undefined)
     })
-
-    it('should return false when edge flag is not ON',async () => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(false)
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const { result } = renderHook(() => {
-        return useNetworkVxLanTunnelProfileInfo({
-        } as NetworkSaveData)
-      }, { wrapper: Provider })
-
-      expect(mockedTunnelReq).not.toBeCalled()
-      expect(result.current.enableVxLan).toBe(false)
-      expect(result.current.enableTunnel).toBe(false)
-      expect(result.current.vxLanTunnels).toBe(undefined)
-    })
   })
 
   describe('useServicePolicyEnabledWithConfigTemplate', () => {

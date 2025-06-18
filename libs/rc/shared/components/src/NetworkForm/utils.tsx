@@ -97,8 +97,6 @@ import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
 import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                   from '../useEdgeActions'
-
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -205,13 +203,12 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const isEdgeEnabled = useIsEdgeReady()
 
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
       { payload: {
         filters: { networkIds: [data?.id] }
       } },
-      { skip: !isEdgeEnabled || !data }
+      { skip: !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN

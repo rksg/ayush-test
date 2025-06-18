@@ -6,8 +6,6 @@ import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQu
 import { DhcpHostStats, EdgeDhcpHostStatus, genExpireTimeString, useTableQuery }      from '@acx-ui/rc/utils'
 import { RequestPayload }                                                             from '@acx-ui/types'
 
-import { useIsEdgeReady } from '../useEdgeActions'
-
 interface EdgeDhcpLeaseTableProps {
   isInfinite?: boolean
   clusterId?: string
@@ -17,7 +15,6 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
   const { clusterId } = props
   const { $t } = useIntl()
-  const isEdgeReady = useIsEdgeReady()
 
   const getDhcpHostStatsPayload = {
     filters: { edgeClusterId: [clusterId] },
@@ -29,7 +26,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
-    option: { skip: !!!clusterId || !isEdgeReady },
+    option: { skip: !!!clusterId },
     search: {
       searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
     },
