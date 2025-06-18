@@ -3,7 +3,7 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard, Subtitle } from '@acx-ui/components'
 import { Features }                                          from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                        from '@acx-ui/react-router-dom'
 import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 

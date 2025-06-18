@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { switchApi }                          from '@acx-ui/rc/services'
 import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                    from '@acx-ui/store'
@@ -21,12 +21,10 @@ import {
   aclUnion,
   defaultVlan,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue,
@@ -45,21 +43,12 @@ const params = {
 
 const editPortVlans = async (
   inputTagged: string, inputUntagged: string,
-  currentStatus?: string, voiceVlan?: string, checkPortsModel?:boolean
+  currentStatus?: string, voiceVlan?: string
 ) => {
   await userEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
   const dialog = await screen.findByTestId('select-port-vlans')
-
-  if (checkPortsModel) {
-    await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
-    const dialogs = await screen.findAllByRole('dialog')
-    const drawer = dialogs[2]
-    expect(await within(drawer).findByText(/Add Model/i)).toBeVisible()
-    expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
-    await userEvent.click(await within(drawer).findByRole('button', { name: /Cancel/i }))
-  }
 
   if (inputTagged) {
     await userEvent.click(await within(dialog).findByRole('tab', { name: 'Tagged VLANs' }))
@@ -162,9 +151,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -194,9 +180,6 @@ describe('EditPortDrawer', () => {
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
-      ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -545,12 +528,6 @@ describe('EditPortDrawer', () => {
     })
 
     it('should support switch level vlan correctly', async () => {
-      mockServer.use(
-        rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-          (_, res, ctx) => res(ctx.json(defaultVlan.slice(2, 3)))
-        )
-      )
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_VLAN)
       render(<Provider>
         <EditPortDrawer
           visible={true}
