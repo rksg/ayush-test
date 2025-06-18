@@ -2,7 +2,6 @@
   width: 100%;
 }
 .iti__flag {
-  background-image: url('img/flags2x.png');
   background-size: auto 15px;
 }
 .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
