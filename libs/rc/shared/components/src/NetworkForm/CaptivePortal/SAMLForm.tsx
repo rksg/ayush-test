@@ -72,7 +72,6 @@ export const SAMLForm = () => {
     }
 
     if ((editMode || cloneMode) && data) {
-      form.setFieldsValue({ ...data })
       const idp = idpViewDataList.find((idp: SamlIdpProfileViewData) =>
         idp.wifiNetworkIds.includes(data.id ?? '')
       )
@@ -87,6 +86,14 @@ export const SAMLForm = () => {
       setCreatedSamlIdpId(undefined)
     }
   }, [idpViewDataList])
+
+  // Initialization when form in edit/clone mode
+  // All Captive Portal form needs this to make sure value is setup well.
+  useEffect(() => {
+    if ((editMode || cloneMode) && data) {
+      form.setFieldsValue({ ...data })
+    }
+  })
 
   useEffect(() => {
     const samlIdpProfilesName = samlIdpOptions.find((option) => {
