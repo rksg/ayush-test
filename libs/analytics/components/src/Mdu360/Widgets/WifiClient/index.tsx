@@ -1,23 +1,16 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { DonutChart, ContentSwitcher, qualitativeColorSet, Card, Loader, NoData } from '@acx-ui/components'
+import { DonutChart, ContentSwitcher, Card, Loader, NoData } from '@acx-ui/components'
 
 import { useTopNWifiClientQuery } from './services'
-
-const colors = qualitativeColorSet()
 
 interface WifiClientFilters {
   startDate: string;
   endDate: string;
 }
-
-const tabDetails = [
-  { label: 'Device Type', value: 'deviceType' },
-  { label: 'Manufacture', value: 'manufacturer' }
-]
 
 export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   const { $t } = useIntl()
@@ -31,12 +24,16 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
     n: 5
   })
 
+  const tabDetails = [
+    { label: $t({ defaultMessage: 'Device Type' }), value: 'deviceType', children: null },
+    { label: $t({ defaultMessage: 'Manufacturer' }), value: 'manufacturer', children: null }
+  ]
+
   const results = queryResults?.data?.nodes?.[0]
 
-  const chartData = (results?.[selectedTab] ?? []).map((d, i) => ({
+  const chartData = (results?.[selectedTab] ?? []).map((d) => ({
     name: d.name,
-    value: d.value,
-    color: colors[i]
+    value: d.value
   }))
 
   const title = $t({ defaultMessage: 'Wi-Fi Client' })
@@ -47,39 +44,36 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   return (
     <Loader states={[queryResults]}>
       <Card type='default' title={title}>
-        {results ? (
-          <>
-            <div style={{ marginTop: -38 }}>
-              <ContentSwitcher
-                tabDetails={tabDetails.map(({ label, value }) => ({
-                  label,
-                  value,
-                  children: null
-                }))}
-                value={selectedTab}
-                onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+        <div style={{ marginTop: -38 }}>
+          <ContentSwitcher
+            tabDetails={tabDetails.map(({ label, value, children }) => ({
+              label,
+              value,
+              children
+            }))}
+            value={selectedTab}
+            onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+            size='small'
+            align='right'
+            noPadding
+          />
+        </div>
+        {results && results?.[selectedTab]?.length > 0 ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <DonutChart
+                data={chartData}
+                style={{ width: width, height: height }}
+                legend='name-bold-value'
                 size='small'
-                align='right'
-                noPadding
+                showLegend
+                showTotal
+                value={centerText}
+                showLabel={true}
+                showValue={true}
               />
-            </div>
-            <AutoSizer>
-              {({ height, width }) => (
-                <DonutChart
-                  data={chartData}
-                  style={{ width: width * 0.95, height: height * 0.95 }}
-                  legend='name-bold-value'
-                  size='small'
-                  showLegend
-                  showTotal
-                  value={centerText}
-                  labelTextStyle={{ overflow: 'breakAll', width: 240 }}
-                  showLabel={true}
-                  showValue={true}
-                />
-              )}
-            </AutoSizer>
-          </>
+            )}
+          </AutoSizer>
         ) : (
           <NoData />
         )}

@@ -7,7 +7,6 @@ import { WifiGeneration } from './widgets/WifiGeneration'
 import type { Mdu360TabPros } from '.'
 
 const ResidentExperienceTab: React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
-
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '240px' }}>

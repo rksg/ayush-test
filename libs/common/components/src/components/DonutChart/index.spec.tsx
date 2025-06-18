@@ -113,6 +113,8 @@ describe('DonutChart - small', () => {
       legend={'name-bold-value'}
       showLegend
       subTitle='Donut Chart subTitle'
+      showValue={true}
+      singleSelect={true}
     />)
     data.forEach(async item => {
       expect(await screen.findByText(`${item.name}: ${item.value}`)).toBeTruthy()
@@ -183,7 +185,15 @@ describe('DonutChart - small', () => {
 
     expect(screen.getByText('Bald Donut Chart').getAttribute('style'))
       .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:700;')
-    expect(screen.getByText('NonBold secondary title').getAttribute('style'))
+
+    const secondaryTitleElement = screen.getByText('{subTextNormal|NonBold secondary title}')
+    expect(secondaryTitleElement).toBeTruthy()
+    expect(secondaryTitleElement.getAttribute('style'))
+      .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:400;')
+
+    const valueElement = screen.getByText('{subTextLarge|5095}')
+    expect(valueElement).toBeTruthy()
+    expect(valueElement.getAttribute('style'))
       .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:400;')
   })
 })
