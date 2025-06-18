@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import userEvent from '@testing-library/user-event'
+
 import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { render, screen }                                          from '@acx-ui/test-utils'
@@ -20,6 +21,7 @@ describe('NetworkDiagram', () => {
         <NetworkFormContext.Provider value={{
           editMode: false,
           cloneMode: false,
+          isRuckusAiMode: false,
           data: { type: undefined },
           setData: jest.fn()
         }}>
@@ -62,10 +64,6 @@ describe('NetworkDiagram', () => {
     })
 
     it('should render PSK Mac Auth with proxy diagram successfully', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(
-        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
-      )
-
       render(
         <Provider>
           <NetworkFormContext.Provider value={{
@@ -93,10 +91,6 @@ describe('NetworkDiagram', () => {
     })
 
     it('should render PSK external Mac Auth with proxy diagram successfully', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(
-        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
-      )
-
       render(
         <Provider>
           <NetworkFormContext.Provider value={{
@@ -119,15 +113,13 @@ describe('NetworkDiagram', () => {
             params
           }
         })
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('AaaProxy')
     })
 
-    it('should render PSK with proxy diagram successfully', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(
-        ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
-      )
-
+    it('should render PSK non proxy diagram successfully', async () => {
       render(
         <Provider>
           <NetworkFormContext.Provider value={{
@@ -139,9 +131,10 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram
               type={type}
-              enableMACAuth={true}
+              enableMACAuth={false}
               isMacRegistrationList={false}
               enableAccountingService={true}
+              enableAccountingProxy={false}
             />
           </NetworkFormContext.Provider>
         </Provider>,{
@@ -159,6 +152,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type: NetworkTypeEnum.AAA },
             setData: jest.fn()
           }}>
@@ -184,6 +178,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
@@ -200,17 +195,20 @@ describe('NetworkDiagram', () => {
     })
 
     it('should render DPSK authentication proxy radius diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram isCloudpathEnabled={true}
+            <NetworkDiagram
+              isCloudpathEnabled={true}
               enableAaaAuthBtn={true}
-              enableAuthProxy={true}/>
+              enableAuthProxy={true}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -218,22 +216,24 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('DpskUsingRadius')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('DpskCloudpathProxy')
     })
 
     it('should render DPSK authentication non-proxy radius diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram isCloudpathEnabled={true}
+            <NetworkDiagram
+              isCloudpathEnabled={true}
               enableAaaAuthBtn={true}
-              enableAuthProxy={false}/>
+              enableAuthProxy={false}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -241,45 +241,58 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('DpskUsingRadiusNonProxy')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('DpskAaa')
     })
 
     it('should render DPSK accounting proxy radius diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram isCloudpathEnabled={true}
-              enableAaaAuthBtn={false}
-              enableAccountingProxy={true}/>
+            <NetworkDiagram
+              type={type}
+              isCloudpathEnabled={true}
+              wlanSecurity={WlanSecurityEnum.WPA2Personal}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              enableAuthProxy={false}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
             params
           }
         })
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
+
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('DpskUsingRadius')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('DpskCloudpathProxy')
     })
 
     it('should render DPSK accounting non-proxy radius diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram isCloudpathEnabled={true}
-              enableAaaAuthBtn={false}
-              enableAccountingProxy={false}/>
+            <NetworkDiagram
+              type={type}
+              isCloudpathEnabled={true}
+              wlanSecurity={WlanSecurityEnum.WPA2Personal}
+              enableAccountingService={true}
+              enableAccountingProxy={false}
+              enableAuthProxy={false}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -287,23 +300,84 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('DpskUsingRadiusNonProxy')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('DpskAaa')
+    })
+
+    it('should render use DPSK accounting proxy radius diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              isCloudpathEnabled={false}
+              wlanSecurity={WlanSecurityEnum.WPA2Personal}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              enableAuthProxy={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskAaaProxy')
+    })
+
+    it('should render DPSK3 accounting non-proxy radius diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              isCloudpathEnabled={true}
+              wlanSecurity={WlanSecurityEnum.WPA23Mixed}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              enableAuthProxy={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskCloudpathProxy')
     })
   })
 
   describe('NetworkDiagram - OPEN', () => {
     const type = NetworkTypeEnum.OPEN
     it('should render OPEN diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram />
+            <NetworkDiagram
+              type={type}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -312,53 +386,144 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Open')
-      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render OPEN OWE diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenOwe')
+    })
+
+    it('should render OPEN OWE Mac Auth Registration List diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={true}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenOweMacreg')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render OPEN Mac Auth Registration List Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={false}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenMacregAaaProxy')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render OPEN External Mac Auth Auth non proxy and Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              enableOwe={false}
+              enableMACAuth={true}
+              isMacRegistrationList={false}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              enableAuthProxy={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('OpenAaa')
+
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
+      expect(diagram.src).toContain('OpenAaaProxy')
     })
   })
 
   describe('NetworkDiagram - AAA', () => {
     const type = NetworkTypeEnum.AAA
     it('should render AAA diagram successfully', async () => {
-      const { asFragment } = render(<Provider><NetworkDiagram type={type} /></Provider>)
+      render(
+        <Provider><NetworkDiagram type={type} /></Provider>
+      )
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Aaa')
-      expect(asFragment()).toMatchSnapshot()
     })
     it('should render AAA Proxy diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
-            data: { type },
-            setData: jest.fn()
-          }}>
-            <NetworkDiagram enableAuthProxy={true} />
-          </NetworkFormContext.Provider>
-        </Provider>, {
-          route: {
-            params
-          }
-        })
-      const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('AaaProxy')
-      expect(asFragment()).toMatchSnapshot()
-    })
-
-    it('should render AAA Proxy diagram when enabling Authentication Service button', async () => {
-      const { asFragment } = render(
-        <Provider>
-          <NetworkFormContext.Provider value={{
-            editMode: false,
-            cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
             <NetworkDiagram
+              type={type}
               enableAuthProxy={true}
-              enableAccountingProxy={false}
-              enableAaaAuthBtn={true}
-              showButtons={true}
             />
           </NetworkFormContext.Provider>
         </Provider>, {
@@ -366,25 +531,27 @@ describe('NetworkDiagram', () => {
             params
           }
         })
+
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('AaaProxy')
-      expect(asFragment()).toMatchSnapshot()
     })
 
-    it('should render AAA diagram when enabling Accounting Service button', async () => {
-      const { asFragment } = render(
+    // eslint-disable-next-line max-len
+    it('should render AAA Proxy diagram when Auth and Accounting proxy mode not the same', async () => {
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
             <NetworkDiagram
+              type={type}
               enableAuthProxy={true}
+              enableAccountingService={true}
               enableAccountingProxy={false}
-              enableAaaAuthBtn={false}
-              showButtons={true}
             />
           </NetworkFormContext.Provider>
         </Provider>, {
@@ -392,9 +559,66 @@ describe('NetworkDiagram', () => {
             params
           }
         })
+
       const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaProxy')
+
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
       expect(diagram.src).toContain('Aaa')
-      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render AAA Proxy Cert template Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              useCertificateTemplate={true}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaCertAaaProxy')
+    })
+
+    it('should render AAA Proxy Cert template diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              useCertificateTemplate={true}
+              enableAccountingService={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaCert')
     })
   })
 
@@ -958,5 +1182,229 @@ describe('NetworkDiagram', () => {
       expect(diagram.src).toContain('CloudpathProxyOwe')
       expect(asFragment()).toMatchSnapshot()
     })
+
+    it('should render Captive portal (Workflow) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Workflow
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram networkPortalType={portalType} />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('WorkflowAcctoffNone')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render Captive portal (Workflow with PSK) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Workflow
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              networkPortalType={portalType}
+              wlanSecurity={WlanSecurityEnum.WPA2Personal} />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('WorkflowAcctoffPsk')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render Captive portal (Workflow with OWE) diagram successfully', async () => {
+      const portalType = GuestNetworkTypeEnum.Workflow
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              networkPortalType={portalType}
+              wlanSecurity={WlanSecurityEnum.OWE} />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('WorkflowAcctoffOwe')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render Captive portal (Workflow with accounting service) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingService: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram networkPortalType={portalType} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctonNone')
+        expect(asFragment()).toMatchSnapshot()
+      })
+
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Workflow with accounting service and PSK) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingService: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram
+                networkPortalType={portalType}
+                wlanSecurity={WlanSecurityEnum.WPA2Personal} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctonPsk')
+        expect(asFragment()).toMatchSnapshot()
+      })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Workflow with accounting service and OWE) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingService: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.OWE} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctonOwe')
+        expect(asFragment()).toMatchSnapshot()
+      })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Workflow with accounting proxy) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingProxy: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram networkPortalType={portalType} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctproxyNone')
+        expect(asFragment()).toMatchSnapshot()
+      })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Workflow with accounting proxy and PSK) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingProxy: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram
+                networkPortalType={portalType}
+                wlanSecurity={WlanSecurityEnum.WPA2Personal} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctproxyPsk')
+        expect(asFragment()).toMatchSnapshot()
+      })
+    // eslint-disable-next-line max-len
+    it('should render Captive portal (Workflow with accounting proxy and OWE) diagram successfully',
+      async () => {
+        const portalType = GuestNetworkTypeEnum.Workflow
+        const { asFragment } = render(
+          <Provider>
+            <NetworkFormContext.Provider value={{
+              editMode: false,
+              cloneMode: false,
+              isRuckusAiMode: false,
+              data: { type, enableAccountingProxy: true },
+              setData: jest.fn()
+            }}>
+              <NetworkDiagram
+                networkPortalType={portalType}
+                wlanSecurity={WlanSecurityEnum.OWE} />
+            </NetworkFormContext.Provider>
+          </Provider>, {
+            route: {
+              params
+            }
+          })
+        const diagram = screen.getByRole('img') as HTMLImageElement
+        expect(diagram.src).toContain('WorkflowAcctproxyOwe')
+        expect(asFragment()).toMatchSnapshot()
+      })
   })
 })

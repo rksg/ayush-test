@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi }  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -236,10 +236,6 @@ describe('Aps', () => {
   })
 
   it('Table action bar Edit', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return (ff === Features.EXPORT_DEVICE) ? true : false
-    })
-
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'

@@ -108,6 +108,7 @@ export interface Venue extends EnforceableFields {
   clients?: number
   apWiredClients?: number
   edges?: number,
+  iotControllers?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
   addressLine?: string

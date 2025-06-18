@@ -264,9 +264,6 @@ export const EditPortMessages = {
   UNSELECT_VLANS: defineMessage({
     defaultMessage: 'The port must be a member of at least one VLAN'
   }),
-  ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit VLANs'
-  }),
   ADD_ACL_DISABLE: defineMessage({
     defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit ACL'
   }),
@@ -348,6 +345,9 @@ export const EditPortMessages = {
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
     defaultMessage: 'Port Authentication cannot be enabled if Port MAC Security is turned ON.'
+  }),
+  ONLY_ONE_PORT_CAN_BE_FORCE_UP: defineMessage({
+    defaultMessage: 'Only one port can be set to force-up. Reset the previous selection before changing it to a different port.'
   })
 }
 

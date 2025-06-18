@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { LayoutProps }                                            from '@acx-ui/components'
@@ -27,8 +29,8 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
-import { useIsEdgeReady }          from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { useIsEdgeReady }  from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -38,7 +40,8 @@ import {
   hasAdministratorTab,
   MigrationUrlsInfo,
   LicenseUrlsInfo,
-  useIsNewServicesCatalogEnabled
+  useIsNewServicesCatalogEnabled,
+  TenantType
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -53,7 +56,7 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
   const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
-    accountTier } = useUserProfileContext()
+    accountTier, tenantType } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -64,7 +67,6 @@ export function useMenuConfig () {
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
@@ -83,6 +85,14 @@ export function useMenuConfig () {
   const isCore = isCoreTier(accountTier)
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
+
+  const [showPrivacyMenu, setShowPrivacyMenu] = useState<boolean>(false)
+
+  useEffect(() => {
+    const showmenu = !!tenantType &&
+  !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
+    setShowPrivacyMenu(showmenu)
+  }, [tenantType])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -217,10 +227,10 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'AP List' }),
               isActiveCheck: new RegExp('^/devices/wifi(?!(/[reports|apgroup]))')
             },
-            ...(showApGroupTable? [{
+            {
               uri: '/devices/wifi/apgroups',
               label: $t({ defaultMessage: 'AP Group List' })
-            }] : []),
+            },
             {
               uri: '/devices/wifi/reports/aps',
               label: $t({ defaultMessage: 'AP Report' })
@@ -436,7 +446,7 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCore &&
+            ...(showPrivacyMenu && isMspAppMonitoringEnabled && !isCore &&
               (rbacOpsApiEnabled ?
                 hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
                 : !isCustomRole)

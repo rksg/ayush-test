@@ -91,6 +91,7 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
   const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
@@ -175,6 +176,20 @@ function useColumns (
         )
       }
     },
+    ...(isIotEnabled ? [{
+      title: $t({ defaultMessage: 'IoT Controller' }),
+      key: 'iotControllers',
+      dataIndex: 'iotControllers',
+      sorter: true,
+      render: function (data: ReactNode, row: Venue) {
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices/iotController`}
+            children={row.iotControllers ? row.iotControllers : 0}
+          />
+        )
+      }
+    }] : []),
     ...(isSupportWifiWiredClient? [{
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'wifi-clients',
@@ -295,6 +310,7 @@ function useColumns (
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   const isEdgeEnabled = useIsEdgeReady()
+  const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   return {
@@ -311,6 +327,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'clients',
       ...(isSupportWifiWiredClient? ['apWiredClients'] : []),
       ...(isEdgeEnabled ? ['edges'] : []),
+      ...(isIotEnabled ? ['iotControllers'] : []),
       'cog',
       'latitude',
       'longitude',

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                                                from '@acx-ui/msp/services'
+import { Brand360 }                                                                                    from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                    from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails, ConfigTemplateDpskDetails, ConfigTemplatePortalDetails } from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings }    from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                                                                   from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -25,7 +25,9 @@ import {
   CliProfileForm, ApGroupDetails, ApGroupEdit,
   AddEthernetPortProfile,
   EditEthernetPortProfile,
-  EthernetPortProfileDetail
+  EthernetPortProfileDetail,
+  IdentityGroupForm,
+  PersonaGroupDetails
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -47,9 +49,7 @@ import { AccountType, getJwtTokenPayload }                                      
 
 import HspContext, { HspActionTypes }              from './HspContext'
 import { hspReducer }                              from './HspReducer'
-import { ConfigTemplate }                          from './pages/ConfigTemplates'
-import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
-import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
+import { ConfigTemplatePage }                      from './pages/ConfigTemplates'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -218,7 +218,7 @@ export function ConfigTemplatesRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
-        <Route path='templates' element={<ConfigTemplate />} />
+        <Route path='templates' element={<ConfigTemplatePage />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
@@ -284,7 +284,7 @@ export function ConfigTemplatesRoutes () {
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
-            element={<DpskDetails />}
+            element={<ConfigTemplateDpskDetails />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.DHCP] && <>
@@ -312,7 +312,7 @@ export function ConfigTemplatesRoutes () {
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
-            element={<PortalDetail/>}
+            element={<ConfigTemplatePortalDetails/>}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
@@ -464,6 +464,20 @@ export function ConfigTemplatesRoutes () {
           <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
           <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.IDENTITY_GROUP] && <>
+          <Route
+            path='identityManagement/identityGroups/add'
+            element={<IdentityGroupForm />}
+          />
+          <Route
+            path='identityManagement/identityGroups/:personaGroupId/edit'
+            element={<IdentityGroupForm editMode={true}/>}
+          />
+          <Route
+            path='identityManagement/identityGroups/:personaGroupId/detail'
+            element={<PersonaGroupDetails />}
+          />
         </>}
       </Route>
     </Route>

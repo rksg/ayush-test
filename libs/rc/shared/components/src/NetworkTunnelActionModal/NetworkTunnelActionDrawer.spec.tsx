@@ -46,6 +46,12 @@ jest.mock('./useEdgeMvSdLanData', () => ({
   })
 }))
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 const { click } = userEvent
 
 describe('NetworkTunnelDrawer', () => {
@@ -97,8 +103,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
         await userEvent.click(sdlanOption)
@@ -132,8 +138,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
 
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
@@ -174,8 +180,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
       })
@@ -213,8 +219,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(defaultNetworkData.venueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
 
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
@@ -247,8 +253,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
 
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
@@ -290,8 +296,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(defaultNetworkData.venueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
 
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
@@ -323,8 +329,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
 
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
@@ -360,8 +366,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
       })
@@ -384,8 +390,8 @@ describe('NetworkTunnelDrawer', () => {
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-        await userEvent.click(networkTopology)
+        const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+        await userEvent.click(tunnelingMethod)
         const sdlanOption = await screen.findByTestId('sd-lan-option')
         expect(sdlanOption).not.toHaveClass('ant-select-item-option-disabled')
       })
@@ -416,8 +422,8 @@ describe('NetworkTunnelDrawer', () => {
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
       await checkPageLoaded(mockedNetworkData.venueName)
-      const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-      await userEvent.click(networkTopology)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+      await userEvent.click(tunnelingMethod)
       const sdlanOption = await screen.findByTestId('sd-lan-option')
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
@@ -456,6 +462,7 @@ describe('NetworkTunnelDrawer', () => {
         ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
         || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
         || ff === Features.RBAC_OPERATIONS_API_TOGGLE
+        || ff === Features.WIFI_R370_TOGGLE
         || ff === Features.EDGE_SD_LAN_MV_TOGGLE)
       mockServer.use(
         rest.post(
@@ -505,11 +512,13 @@ describe('NetworkTunnelDrawer', () => {
         { route: { path: viewPath, params: { venueId, tenantId } } }
       )
       await checkPageLoaded(mockedNetworkData.venueName)
-      const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-      await userEvent.click(networkTopology)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+      await userEvent.click(tunnelingMethod)
       await userEvent.click(await screen.findByTestId('softgre-option'))
 
       await waitFor(() => expect(mockedGetFn).toBeCalled())
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
     })
 
     it('should correctly hidden when SoftGRE run on this venue (CAPTIVEPORTAL)', async () => {
@@ -544,8 +553,12 @@ describe('NetworkTunnelDrawer', () => {
       )
 
       await checkPageLoaded(mockedNetworkData.venueName)
-      const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-      await userEvent.click(networkTopology)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+
+      expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
+
+      await userEvent.click(tunnelingMethod)
       await userEvent.click(await screen.findByTestId('softgre-option'))
 
       await waitFor(() => expect(screen.queryByRole('combobox', { name: 'SoftGRE Profile' }))
@@ -625,8 +638,8 @@ describe('NetworkTunnelDrawer', () => {
           />
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-      const networkTopology = screen.getByRole('combobox', { name: 'Network Topology' })
-      await userEvent.click(networkTopology)
+      const tunnelingMethod = screen.getByRole('combobox', { name: 'Tunneling Method' })
+      await userEvent.click(tunnelingMethod)
       const sdlanOption = await screen.findByTestId('sd-lan-option')
       expect(sdlanOption).toHaveClass('ant-select-item-option-disabled')
     })
