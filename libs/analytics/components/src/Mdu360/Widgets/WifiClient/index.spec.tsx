@@ -86,7 +86,6 @@ describe('WifiClient', () => {
     expect(await screen.findByText('Device Type')).toBeVisible()
     expect(await screen.findByText('Manufacturer')).toBeVisible()
 
-    expect(await screen.findByText('Total Wi-Fi Clients')).toBeVisible()
     expect(await screen.findByText('175')).toBeVisible()
 
     expect(await screen.findByText('Laptop:')).toBeVisible()
@@ -103,7 +102,6 @@ describe('WifiClient', () => {
     const manufacturer = await screen.findByRole('radio', { name: 'Manufacturer' })
     fireEvent.click(manufacturer)
 
-    expect(await screen.findByText('Total Devices')).toBeVisible()
     expect(await screen.findByText('150')).toBeVisible()
 
     expect(await screen.findByText('Apple:')).toBeVisible()

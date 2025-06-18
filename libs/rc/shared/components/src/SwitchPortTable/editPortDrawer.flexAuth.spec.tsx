@@ -21,12 +21,10 @@ import {
   defaultVlan,
   flexAuthList,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue
@@ -119,9 +117,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -151,9 +146,6 @@ describe('EditPortDrawer', () => {
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
-      ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -189,9 +181,6 @@ describe('EditPortDrawer', () => {
         ),
         rest.get(SwitchRbacUrlsInfo.getAclUnion.url,
           (_, res, ctx) => res(ctx.json(aclUnion))
-        ),
-        rest.get(SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
-          (_, res, ctx) => res(ctx.json(switchVlanUnion))
         ),
         rest.post(SwitchRbacUrlsInfo.getSwitchRoutedList.url,
           (_, res, ctx) => res(ctx.json(switchRoutedList))
@@ -705,6 +694,14 @@ describe('EditPortDrawer', () => {
           firmware: 'SPR10010f_b467'
         }] as SwitchRow[]
 
+        beforeEach(() => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan))
+            )
+          )
+        })
+
         it('should render correctly when either of the selected ports is uplink port', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           mockServer.use(
@@ -726,9 +723,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -777,9 +771,6 @@ describe('EditPortDrawer', () => {
               }, {
                 ...portSetting[2]
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -832,9 +823,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -894,9 +882,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -954,9 +939,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1052,9 +1034,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1121,9 +1100,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1208,9 +1184,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1276,9 +1249,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1337,9 +1307,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1426,9 +1393,6 @@ describe('EditPortDrawer', () => {
                 authTimeoutAction: 'critical_vlan',
                 criticalVlan: 5
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1510,9 +1474,6 @@ describe('EditPortDrawer', () => {
                 authDefaultVlan: 8,
                 switchLevelAuthDefaultVlan: 4
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1579,9 +1540,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1651,9 +1609,6 @@ describe('EditPortDrawer', () => {
                 flexibleAuthenticationEnabled: false,
                 authenticationCustomize: false
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1722,9 +1677,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1803,9 +1755,6 @@ describe('EditPortDrawer', () => {
                 profileAuthDefaultVlan: profile01.authDefaultVlan,
                 ...profile01
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -1890,9 +1839,6 @@ describe('EditPortDrawer', () => {
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2003,9 +1949,6 @@ describe('EditPortDrawer', () => {
                 criticalVlan: 7,
                 guestVlan: 7
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2114,9 +2057,6 @@ describe('EditPortDrawer', () => {
                 authFailAction: 'block',
                 authTimeoutAction: 'none'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2190,9 +2130,6 @@ describe('EditPortDrawer', () => {
                 criticalVlan: 7,
                 guestVlan: 7
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 
@@ -2262,9 +2199,6 @@ describe('EditPortDrawer', () => {
                 authenticationCustomize: false,
                 switchLevelAuthDefaultVlan: 3
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
 

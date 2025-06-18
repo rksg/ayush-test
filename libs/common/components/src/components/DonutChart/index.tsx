@@ -197,7 +197,7 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
       value: {
-        ...((isCustomEmptyStatus || props.showValue) ? customStyles : commonStyles) // reusing showValue prop to change subtext size
+        ...(isCustomEmptyStatus ? customStyles : commonStyles)
       }
     },
     'medium': {
@@ -275,12 +275,8 @@ export function DonutChart ({
       show: true,
       text: props.title,
       subtext: props.value
-        ? props.showTotal
-          ? `{subTextNormal|${props.value}}\n{subTextLarge|${dataFormatter(sum)}}`
-          : `{subTextNormal|${props.value}}`
-        : props.showTotal
-          ? `{subTextNormal|${dataFormatter(sum)}}`
-          : undefined,
+        ? props.value
+        : props.showTotal ? `${dataFormatter(sum)}` : undefined,
       left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
@@ -291,13 +287,7 @@ export function DonutChart ({
         : { ...styles[props.size].title, width: 80, overflow: 'break' },
       subtextStyle: props.secondaryTitleTextStyle
         ? { ...props.secondaryTitleTextStyle }
-        : {
-          ...styles[props.size].value,
-          rich: {
-            subTextLarge: { ...styles['large'].value },
-            subTextNormal: { ...styles[props.size].value }
-          }
-        }
+        : styles[props.size].value
     },
     legend: {
       show: props.showLegend,
@@ -329,13 +319,13 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return `{legendNormal|${name}}`
-          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
+          case 'name': return name
+          case 'name-value': return `${name} - ${dataFormatter(value)}`
           case 'name-bold-value':
             return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
-            return `{legendNormal|${dataFormatter(value)}}`
+            return `${dataFormatter(value)}`
         }
       }
     },
