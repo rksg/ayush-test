@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                            from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { getSeriesData }                                    from '@acx-ui/analytics/utils'
+import { Loader, MultiLineTimeSeriesChart, DonutChart, NoData } from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
@@ -36,6 +36,15 @@ function TrafficByBandWidget ({ filters }: { filters : AnalyticsFilter }) {
               data={queryResults.data}
               dataFormatter={formatter('bytesFormat')}
             />
+            // <DonutChart
+            //   style={{ width, height: height-30 }}
+            //   data={queryResults.data}
+            //   showLegend={true}
+            //   showTotal={false}
+            //   legend='name'
+            //   dataFormatter={formatter('bytesFormat')}
+            //   size={'x-large'}
+            // />
             : <NoData/>
         )}
       </AutoSizer>

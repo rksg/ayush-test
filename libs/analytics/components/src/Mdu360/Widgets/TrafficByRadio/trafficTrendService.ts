@@ -1,15 +1,21 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                from '@acx-ui/store'
-import type { AnalyticsFilter }                   from '@acx-ui/utils'
+import { calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }              from '@acx-ui/store'
+import { NetworkPath }          from '@acx-ui/utils'
 
-export type TrafficByVolumeData = {
+export type TrafficTrendData = {
   time: string[]
   userTraffic_all: number[]
   userTraffic_6: number[]
   userTraffic_5: number[]
   userTraffic_24: number[]
+}
+
+interface Payload {
+  path: NetworkPath
+  startDate: string,
+  endDate: string
 }
 
 interface Response <TimeSeriesData> {
@@ -22,13 +28,13 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    trafficByVolume: build.query<
-      TrafficByVolumeData,
-      AnalyticsFilter
+    trafficTrend: build.query<
+      TrafficTrendData,
+      Payload
     >({
       query: (payload) => ({
         document: gql`
-          query TrafficByVolumeWidget(
+          query TrafficTrendWidget(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
@@ -49,16 +55,16 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
+          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: calculateGranularity(payload.startDate, payload.endDate),
-          ...getFilterPayload(payload)
         }
       }),
-      transformResponse: (response: Response<TrafficByVolumeData>) =>
+      transformResponse: (response: Response<TrafficTrendData>) =>
         response.network.hierarchyNode.timeSeries
     })
   })
 })
 
-export const { useTrafficByVolumeQuery } = api
+export const { useTrafficTrendQuery } = api

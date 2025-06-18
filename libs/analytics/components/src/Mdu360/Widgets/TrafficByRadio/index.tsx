@@ -1,23 +1,26 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
-import { TrafficSnapshot } from './TrafficSnapshot'
+// import { TrafficSnapshot } from './TrafficSnapshot'
 import { TrafficTrend }    from './TrafficTrend'
 
-export function TrafficByRadio () {
+export interface TrafficByRadioFilters {
+  startDate: string,
+  endDate: string
+}
+
+export function TrafficByRadio ({ filters }: { filters: TrafficByRadioFilters }) {
   const { $t } = useIntl()
-  const { filters } = useAnalyticsFilter()
 
   const trafficSnapshot = <AutoSizer>
     {({ height, width }) => (
       <div style={{ display: 'block', height, width }}>
-        <TrafficSnapshot filters={filters}/>
+        {/* <TrafficSnapshot filters={filters}/> */}
       </div>
     )}
   </AutoSizer>

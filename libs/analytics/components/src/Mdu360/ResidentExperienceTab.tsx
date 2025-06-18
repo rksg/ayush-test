@@ -12,7 +12,7 @@ const ResidentExperienceTab: React.FC<Mdu360TabPros> = ({ startDate, endDate }) 
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '240px' }}>
-        <TrafficByRadio />
+        <TrafficByRadio filters={{ startDate, endDate }}/>
       </GridCol>
     </GridRow>
   )

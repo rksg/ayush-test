@@ -8,21 +8,22 @@ import { Loader, StackedAreaChart,
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
 
-import { useTrafficByVolumeQuery, TrafficByVolumeData } from './trafficByVolumeServices'
+import { useTrafficTrendQuery, TrafficTrendData } from './trafficTrendService'
 
-type Key = keyof Omit<TrafficByVolumeData, 'time'>
+import { TrafficByRadioFilters } from '.'
 
-export { TrafficByVolumeWidget as TrafficTrend }
+type Key = keyof Omit<TrafficTrendData, 'time'>
 
-TrafficByVolumeWidget.defaultProps = {
+export { TrafficTrendWidget as TrafficTrend }
+
+TrafficTrendWidget.defaultProps = {
   vizType: 'line'
 }
 
-function TrafficByVolumeWidget ({
+function TrafficTrendWidget ({
   filters, vizType
-}: { filters : AnalyticsFilter , vizType: string }) {
+}: { filters : TrafficByRadioFilters , vizType: string }) {
   const { $t } = useIntl()
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
@@ -33,7 +34,11 @@ function TrafficByVolumeWidget ({
     { key: 'userTraffic_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
-  const queryResults = useTrafficByVolumeQuery(filters, {
+  const queryResults = useTrafficTrendQuery({
+    path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
+    startDate: filters.startDate,
+    endDate: filters.endDate
+  }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest
@@ -71,4 +76,4 @@ function TrafficByVolumeWidget ({
   )
 }
 
-export default TrafficByVolumeWidget
+export default TrafficTrendWidget
