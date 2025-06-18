@@ -306,7 +306,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(showGatewaysMenu && (showRwgUI || isIotEnabled) ? [{
+    ...(showGatewaysMenu ? [{
       label: $t({ defaultMessage: 'Gateway' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
