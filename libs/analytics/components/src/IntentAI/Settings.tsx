@@ -59,11 +59,13 @@ const intents = [AiFeatures.RRM, AiFeatures.AIOps, AiFeatures.EquiFlex, AiFeatur
 
 const getUserAccessibleIntents = () => {
   const isRai = get('IS_MLISA_SA')
-  const isProfessionalUser = isProfessionalTier(getR1UserProfile().accountTier)
 
-  return intents.filter((feature) => isRai ||
-  isProfessionalUser ||
-  !professionalTierIntents.includes(feature))
+  return intents.filter(
+    (feature) =>
+      isRai ||
+      isProfessionalTier(getR1UserProfile().accountTier) ||
+      !professionalTierIntents.includes(feature)
+  )
 }
 
 export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
