@@ -6,10 +6,9 @@ import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplate, ConfigTemplateUrlsInfo } f
 import { Provider }                                                            from '@acx-ui/store'
 import { mockServer, render, screen }                                          from '@acx-ui/test-utils'
 
-import { ConfigTemplateTabKey }                            from '..'
-import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
+import { mockedConfigTemplateList, mockedMSPCustomerList } from '../../__tests__/fixtures'
 
-import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
+import { AppliedToTenantDrawer } from '.'
 
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
@@ -20,8 +19,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('AppliedToTenantDrawer component', () => {
-  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
-  const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
+  const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/templates`
+  const params = { tenantId: '__TENANT_ID' }
 
   beforeEach(() => {
     mockServer.use(
@@ -43,7 +42,7 @@ describe('AppliedToTenantDrawer component', () => {
       <Provider>
         <AppliedToTenantDrawer
           setVisible={mockSetVisible}
-          selectedTemplates={[selectedTemplate] as ConfigTemplate[]} />
+          selectedTemplate={selectedTemplate as ConfigTemplate} />
       </Provider>, {
         route: { params, path }
       }
@@ -58,9 +57,7 @@ describe('AppliedToTenantDrawer component', () => {
       name: /350 w java dr, sunnyvale, ca 94089, usa/i
     })).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', {
-      name: /cancel/i
-    }))
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
 
     expect(mockSetVisible).toHaveBeenCalled()
   })

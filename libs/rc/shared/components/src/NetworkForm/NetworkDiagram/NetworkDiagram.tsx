@@ -13,6 +13,9 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
+import AaaCertAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/aaa-cert-aaa-proxy.png'
+import AaaCertAaaDiagram               from '../assets/images/network-wizard-diagrams/aaa-cert-aaa.png'
+import AaaCertDiagram                  from '../assets/images/network-wizard-diagrams/aaa-cert.png'
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
 import AaaDiagram                      from '../assets/images/network-wizard-diagrams/aaa.png'
 import ClickThroughWithOweDiagram      from '../assets/images/network-wizard-diagrams/click-through-owe.png'
@@ -107,11 +110,9 @@ interface OpenDiagramProps extends MacAuthDiagramProps {
 interface PskDiagramProps extends MacAuthDiagramProps {
 }
 interface AaaDiagramProps extends DiagramProps {
-  enableAuthProxy?: boolean
-  enableAccountingProxy?: boolean
   enableAaaAuthBtn?: boolean
-  enableAccountingService?: boolean
   showButtons?: boolean
+  useCertificateTemplate?: boolean
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
@@ -162,10 +163,10 @@ function getPSKDiagram (props: PskDiagramProps) {
     if (props.isMacRegistrationList) {
       return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
     }
-    return getAAADiagram(props)
+    return getCommonAAADiagram(props)
   }
 
-  return (props.enableAccountingService) ? getAAADiagram(props) : PskDiagram
+  return (props.enableAccountingService) ? getCommonAAADiagram(props) : PskDiagram
 }
 
 function getOpenDiagram (props: OpenDiagramProps) {
@@ -217,8 +218,18 @@ function getAAADiagramByParams (
   return isProxyModeOn ? proxyDiagram : nonProxyDiagram
 }
 
-function getAAADiagram (props: AaaDiagramProps) {
+function getCommonAAADiagram (props: AaaDiagramProps) {
   return getAAADiagramByParams(props, AaaProxyDiagram, AaaDiagram)
+}
+
+function getAAADiagram (props: AaaDiagramProps) {
+  if(props.useCertificateTemplate) {
+    return (props.enableAccountingService) ?
+      getAAADiagramByParams(props, AaaCertAaaProxyDiagram, AaaCertAaaDiagram) :
+      AaaCertDiagram
+  }
+
+  return getCommonAAADiagram(props)
 }
 
 function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
@@ -331,6 +342,11 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
     if(networkType === NetworkTypeEnum.DPSK) {
       const dpskProps = props as DpskDiagramProps
       return !dpskProps.isCloudpathEnabled
+    }
+
+    if(networkType === NetworkTypeEnum.AAA) {
+      const aaaProps = props as AaaDiagramProps
+      return aaaProps.useCertificateTemplate
     }
 
     return false

@@ -775,7 +775,7 @@ describe('Network utils test', () => {
           type: NetworkTypeEnum.AAA,
           useCertificateTemplate: true
         }
-        expect(shouldSaveRadiusServerSettings(saveDataWithUseCertificateTemplate)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveDataWithUseCertificateTemplate)).toBe(true)
       })
       it('CAPTIVEPORTAL network type', () => {
         const saveDataWithCloudpathEnabled: NetworkSaveData = {
