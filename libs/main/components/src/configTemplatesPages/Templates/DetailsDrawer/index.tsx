@@ -5,6 +5,9 @@ import { Features }                                                   from '@acx
 import { AccessControlSubPolicyVisibility, withTemplateFeatureGuard } from '@acx-ui/rc/components'
 import { ConfigTemplate }                                             from '@acx-ui/rc/utils'
 
+
+import { ConfigTemplateViewProps } from '../..'
+
 import { DetailsContent } from './DetailsContent'
 
 interface DetailsDrawerProps {
@@ -12,10 +15,11 @@ interface DetailsDrawerProps {
   selectedTemplate: ConfigTemplate
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
 }
 
 export function DetailsDrawer (props: DetailsDrawerProps) {
-  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible } = props
+  const { setVisible, selectedTemplate, setAccessControlSubPolicyVisible, ShowDriftsView } = props
   const { $t } = useIntl()
 
   const onClose = () => {
@@ -35,6 +39,7 @@ export function DetailsDrawer (props: DetailsDrawerProps) {
     <DetailsContent
       template={selectedTemplate}
       setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
+      ShowDriftsView={ShowDriftsView}
     />
   </Drawer>)
 }

@@ -3,8 +3,14 @@ import { useContext, useState } from 'react'
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import {
+  ConfigTemplateOverrideModal, MAX_APPLICABLE_EC_TENANTS,
+  overrideDisplayViewMap, OverrideValuesPerMspEcType, transformOverrideValues,
+  useConfigTemplateOverride, useEcFilters,
+  CommonConfigTemplateDrawerProps
+} from '@acx-ui/main/components'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
 import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
@@ -12,25 +18,14 @@ import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/ut
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 import { AccountTier, AccountType }                          from '@acx-ui/utils'
 
-import HspContext                                                                         from '../../../HspContext'
-import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
-import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
-import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
-import { OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride } from '../Overrides/utils'
-
-import { CustomerFirmwareReminder } from './CustomerFirmwareReminder'
-import * as UI                      from './styledComponents'
-import { useEcFilters }             from './templateUtils'
+import HspContext                   from '../../../../HspContext'
+import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
+import * as UI                      from '../styledComponents'
 
 
 const mspUtils = MSPUtils()
 
-interface ApplyTemplateDrawerProps {
-  setVisible: (visible: boolean) => void
-  selectedTemplate: ConfigTemplate
-}
-
-export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
+export const ApplyTemplateDrawer = (props: CommonConfigTemplateDrawerProps) => {
   const { $t } = useIntl()
   const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()
@@ -247,7 +242,7 @@ interface ApplyTemplateConfirmationDrawerProps {
 }
 
 export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
-  const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel } = props
+  const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel, overrideValues } = props
   const { $t } = useIntl()
   const [loading, setLoading ] = useState(false)
 
@@ -260,7 +255,7 @@ export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmatio
       <AppliedMspEcListView
         targetMspEcs={targetMspEcs}
         templateType={selectedTemplate.type}
-        overrideValues={props.overrideValues}
+        overrideValues={overrideValues}
       />
       <Divider />
       <UI.TemplateListContainer>
@@ -309,7 +304,7 @@ interface AppliedMspEcListProps {
   templateType: ConfigTemplateType
   overrideValues: OverrideValuesPerMspEcType | undefined
 }
-function AppliedMspEcListView (props: AppliedMspEcListProps) {
+export function AppliedMspEcListView (props: AppliedMspEcListProps) {
   const { targetMspEcs, templateType, overrideValues } = props
   const OverrideDisplayView = overrideDisplayViewMap[templateType]
 

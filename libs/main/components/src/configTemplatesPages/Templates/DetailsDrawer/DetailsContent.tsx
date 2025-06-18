@@ -10,7 +10,7 @@ import { AccessControlSubPolicyVisibility }                            from '@ac
 import { ConfigTemplate, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                               from '@acx-ui/utils'
 
-import { ShowDriftsDrawer }                                                                                                                               from '../ShowDriftsDrawer'
+import { ConfigTemplateViewProps }                                                                                                                        from '../..'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
 import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
@@ -20,13 +20,14 @@ interface DetailsContentProps {
   template: ConfigTemplate
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  ShowDriftsView: ConfigTemplateViewProps['ShowDriftsView']
 }
 
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
-  const { template, setAccessControlSubPolicyVisible } = props
+  const { template, setAccessControlSubPolicyVisible, ShowDriftsView } = props
   const dateFormatter = useFormatTemplateDate()
-  const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
+  const [ showDriftsViewVisible, setShowDriftsViewVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
   const shouldShowApGroupVenue = useIsSplitOn(Features.CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION)
@@ -50,7 +51,7 @@ export function DetailsContent (props: DetailsContentProps) {
         label={$t({ defaultMessage: 'Drift Status' })}
         children={<ConfigTemplateDriftStatus row={template}
           callbackMap={{
-            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsDrawerVisible(true)
+            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsViewVisible(true)
           }}
         />}
       />}
@@ -93,9 +94,9 @@ export function DetailsContent (props: DetailsContentProps) {
     />
     <Divider/>
     <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
-    {showDriftsDrawerVisible &&
-      <ShowDriftsDrawer
-        setVisible={setShowDriftsDrawerVisible}
+    {showDriftsViewVisible &&
+      <ShowDriftsView
+        setVisible={setShowDriftsViewVisible}
         selectedTemplate={template}
       />}
   </>
