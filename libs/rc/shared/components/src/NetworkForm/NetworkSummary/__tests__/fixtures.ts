@@ -49,7 +49,7 @@ export const mockAaaNetworkSummary = {
 
 export const mockOpenNetworkSummary = {
   name: 'test',
-  type: 'open',
+  type: NetworkTypeEnum.OPEN,
   isCloudpathEnabled: false,
   venues: [
     {
@@ -57,7 +57,7 @@ export const mockOpenNetworkSummary = {
       name: 'My-Venue'
     }
   ],
-  wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
+  wlanSecurity: WlanSecurityEnum.OWE,
   passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
   passphraseLength: 18,
   expiration: PassphraseExpirationEnum.UNLIMITED,
@@ -90,6 +90,7 @@ export const mockOpenNetworkSummary = {
   wlan: {
     macAddressAuthenticationConfiguration: {
       macAddressAuthentication: true
-    }
+    },
+    macAddressAuthentication: true
   }
 }

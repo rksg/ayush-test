@@ -462,7 +462,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     }
 
     if(isSwitchLagForceUpEnabled){
-      setForceUpPort(ports.includes(forceUpPort) ? forceUpPort : '')
+      setForceUpPort(ports?.includes(forceUpPort) ? forceUpPort : '')
     }
 
     form.getFieldValue('ports')
@@ -522,7 +522,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     if(isSwitchLagForceUpEnabled){
       const targetPorts: string[] = []
       targetSelectedKeys.forEach(item => {
-        if(ports.includes(item)){
+        if(ports?.includes(item)){
           form.setFieldValue('forceUp', item === forceUpPort)
           targetPorts.push(item)
         }
@@ -682,22 +682,21 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                         </Typography.Text>
                         <Form.Item
                           noStyle
+                          name='forceUp'
                           valuePropName='checked'
                           children={<Tooltip
                             title={(forceUpPort !== '' && forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC ?
                               $t(EditPortMessages.ONLY_ONE_PORT_CAN_BE_FORCE_UP) : ''}>
-                            <Form.Item
-                              noStyle
-                              name='forceUp'
-                              valuePropName='checked'><Switch
-                                disabled={(forceUpPort !== '' &&
+                            <Switch
+                              defaultChecked={forceUpPort !== ''}
+                              checked={forceUpPort === selectedPorts[0]}
+                              disabled={(forceUpPort !== '' &&
                                   forceUpPort !== selectedPorts[0]) ||
                                   type !== LAG_TYPE.DYNAMIC}
-                                style={{ display: 'flex' }}
-                                onChange={(value) => value ?
-                                  setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
-                            </Form.Item>
+                              style={{ display: 'flex' }}
+                              onChange={(value) => value ?
+                                setForceUpPort(selectedPorts[0]) : setForceUpPort('')} />
                           </Tooltip>}
                         /></>
                     }

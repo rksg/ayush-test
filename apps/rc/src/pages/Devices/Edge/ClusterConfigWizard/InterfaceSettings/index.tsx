@@ -19,7 +19,8 @@ import {
   EdgePort,
   EdgePortTypeEnum,
   EdgeSerialNumber, EdgeUrlsInfo,
-  getEdgeWanInterfaceCount
+  getEdgeWanInterfaceCount,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { hasPermission } from '@acx-ui/user'
@@ -44,6 +45,7 @@ import {
   InterfaceSettingsTypeEnum
 } from './types'
 import {
+  DualWanStepTitle,
   getAllInterfaceAsPortInfoFromForm,
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
@@ -68,7 +70,11 @@ export const InterfaceSettings = () => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo,
+    clusterNetworkSettings,
+    requiredFwMap
+  } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
@@ -292,7 +298,10 @@ export const InterfaceSettings = () => {
       ...(
         (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
           [{
-            title: $t({ defaultMessage: 'Dual WAN' }),
+            title: <DualWanStepTitle
+              requiredFw={requiredFwMap?.[IncompatibilityFeatures.DUAL_WAN]}
+              edgeList={clusterInfo?.edgeList}
+            />,
             id: InterfaceSettingsTypeEnum.DUAL_WAN,
             content: <DualWanForm />
           }]:[]
@@ -422,43 +431,41 @@ export const InterfaceSettings = () => {
     rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)] }
   )
 
-  return (
-    <StepsForm<InterfaceSettingsFormType>
-      form={configWizardForm}
-      alert={isSingleNode ? undefined : alertData}
-      onFinish={applyAndFinish}
-      onCancel={handleCancel}
-      initialValues={clusterNetworkSettingsFormData}
-      buttonLabel={{
-        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
-      }}
-      customSubmit={hasUpdatePermission ? {
-        label: $t({ defaultMessage: 'Apply & Continue' }),
-        onCustomFinish: applyAndContinue
-      } : undefined}
-    >
-      {
-        steps.map((item, index) =>
-          <StepsForm.StepForm
-            key={`step-${index}`}
-            name={index.toString()}
-            title={item.title}
-            onFinish={item.onFinish
-              ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
-              : undefined}
-            onFinishFailed={() => {
-              validateResultRef.current = false
-            }}
-            onValuesChange={
-              item.onValuesChange
-                // eslint-disable-next-line max-len
-                ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
-                : undefined
-            }
-          >
-            {item.content}
-          </StepsForm.StepForm>)
-      }
-    </StepsForm>
-  )
+  return <StepsForm<InterfaceSettingsFormType>
+    form={configWizardForm}
+    alert={isSingleNode ? undefined : alertData}
+    onFinish={applyAndFinish}
+    onCancel={handleCancel}
+    initialValues={clusterNetworkSettingsFormData}
+    buttonLabel={{
+      submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
+    }}
+    customSubmit={hasUpdatePermission ? {
+      label: $t({ defaultMessage: 'Apply & Continue' }),
+      onCustomFinish: applyAndContinue
+    } : undefined}
+  >
+    {
+      steps.map((item, index) =>
+        <StepsForm.StepForm
+          key={`step-${index}`}
+          name={index.toString()}
+          title={item.title}
+          onFinish={item.onFinish
+            ? (_, e?: React.MouseEvent) => handleStepFinish(item, e)
+            : undefined}
+          onFinishFailed={() => {
+            validateResultRef.current = false
+          }}
+          onValuesChange={
+            item.onValuesChange
+            // eslint-disable-next-line max-len
+              ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
+              : undefined
+          }
+        >
+          {item.content}
+        </StepsForm.StepForm>)
+    }
+  </StepsForm>
 }
