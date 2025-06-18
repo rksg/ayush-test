@@ -285,6 +285,34 @@ describe('NetworkForm', () => {
     expect(screen.queryByText('Use External AAA Service')).not.toBeInTheDocument()
   })
 
+  // eslint-disable-next-line max-len
+  it('should render correctly when certificateTemplate enabled and enable accounting service', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.CERTIFICATE_TEMPLATE ||
+      ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+    )
+
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    await screen.findByText('Use External AAA Service')
+    const useCertRadio = await screen.findByLabelText('Use Certificate Auth')
+    await userEvent.click(useCertRadio)
+    expect(await screen.findByText('Certificate Template')).toBeVisible()
+    await userEvent.click(await screen.findByText('Add'))
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
+  })
+
   describe('resolveMacAddressAuthenticationConfiguration', () => {
     it('should return the original value when isWifiRbacEnabled is false', () => {
       const mockData: NetworkSaveData = {

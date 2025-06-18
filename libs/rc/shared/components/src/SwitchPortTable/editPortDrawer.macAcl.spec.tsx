@@ -19,12 +19,10 @@ import {
   aclUnion,
   defaultVlan,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue,
@@ -78,9 +76,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -110,9 +105,6 @@ describe('EditPortDrawer', () => {
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
-      ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -148,9 +140,6 @@ describe('EditPortDrawer', () => {
         ),
         rest.get(SwitchRbacUrlsInfo.getAclUnion.url,
           (_, res, ctx) => res(ctx.json(aclUnion))
-        ),
-        rest.get(SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
-          (_, res, ctx) => res(ctx.json(switchVlanUnion))
         ),
         rest.post(SwitchRbacUrlsInfo.getSwitchRoutedList.url,
           (_, res, ctx) => res(ctx.json(switchRoutedList))

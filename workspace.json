@@ -29,6 +29,7 @@
     "rc-switch-services": "libs/rc/switch/services",
     "rc-switch-utils": "libs/rc/switch/utils",
     "rc-common-utils": "libs/rc/common/utils",
+    "rc-common-components": "libs/rc/common/components",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
     "reports-components": "libs/reports/components",
@@ -36,7 +37,8 @@
     "reports-services": "libs/reports/services",
     "reports-utils": "libs/reports/utils",
     "switch-components": "libs/rc/switch/components",
-    "wifi-components": "libs/rc/wifi/components"
+    "wifi-components": "libs/rc/wifi/components",
+    "rc-generic-features-components": "libs/rc/generic-features/components"
   },
   "architect": {
     "serve": {
