@@ -25,7 +25,6 @@ export function SwitchTroubleshootingTab () {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
-  const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
   const isCableTestEnabled = useIsSplitOn(Features.SWITCH_CABLE_TEST)
 
   const onTabChange = (tab: string) => {
@@ -64,7 +63,6 @@ export function SwitchTroubleshootingTab () {
       }
       {
         isFirmwareVersionAbove10010f(switchDetailsContextData.switchDetailHeader?.firmware)
-          && isSwitchCliEnabled
           && <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
             <SwitchMacAddressForm />
           </TabPane>

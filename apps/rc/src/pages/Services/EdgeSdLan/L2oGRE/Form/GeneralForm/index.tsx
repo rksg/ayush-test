@@ -4,6 +4,7 @@ import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }           from '@acx-ui/components'
+import { SdLanTopologyVertical }                           from '@acx-ui/edge/components'
 import { InformationSolid }                                from '@acx-ui/icons'
 import { CompatibilityWarningTriangleIcon }                from '@acx-ui/rc/components'
 import { useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
@@ -136,7 +137,7 @@ export const GeneralForm = () => {
       </Col>
       <UI.VerticalSplitLine span={1} />
       <Col span={10}>
-        <UI.StyledSdLanTopology />
+        <SdLanTopologyVertical />
       </Col>
     </UI.Wrapper>
   )
