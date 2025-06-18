@@ -893,7 +893,9 @@ export const selfsignData = {
       duration: 12,
       unit: TimeUnitEnum.HOUR
     }
-  }
+  },
+  accountingRadius: mockedCloudPathAcctRadius,
+  enableAccountingService: true
 }
 export const guestpassData = {
   enableDhcp: true,
