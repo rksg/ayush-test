@@ -178,7 +178,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     .ant-picker-active-bar {
       background: var(--acx-accents-blue-50);
-      margin-left: 33px;
+      ${props => !props.showLabel && 'margin-left: 33px;' }
       max-width: 100%;
     }
   }
