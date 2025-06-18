@@ -153,8 +153,13 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByText('From Time')
-      await userEvent.click(calenderSelect)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
       await userEvent.click(dateSelect[0])
@@ -182,8 +187,13 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByText('From Time')
-      await userEvent.click(calenderSelect)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
       await userEvent.click(dateSelect[0])
@@ -211,8 +221,13 @@ describe('Table Filters', () => {
         false,
         200
       )}</BrowserRouter>)
-      const calenderSelect = await screen.findByText('From Time')
-      await userEvent.click(calenderSelect)
+      const startDateInputs = screen.getAllByPlaceholderText('Start date')
+      expect(startDateInputs.length).toBeGreaterThan(0)
+      const hasFromTimeValue = Array.from(startDateInputs).some(input =>
+        input.getAttribute('value') === 'From Time'
+      )
+      expect(hasFromTimeValue).toBe(true)
+      await userEvent.click(startDateInputs[0])
       const yesterday = moment().subtract(1, 'day')
       const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
       await userEvent.click(dateSelect[0])
