@@ -3,28 +3,23 @@ import '@testing-library/jest-dom'
 
 import { Input } from 'antd'
 
-import { DeviceConnectionStatus }                                                         from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
-import { MacAclRule }                                                                     from '../../types/switch'
+import { DeviceConnectionStatus }                                        from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient, SWITCH_TYPE } from '../../types'
+import { MacAclRule }                                                    from '../../types/switch'
 
 import { macAclRulesParser } from './switch.utils'
 
 import {
-  getSwitchModel,
-  getSwitchName,
   isStrictOperationalSwitch,
   transformSwitchStatus,
   getSwitchStatusString,
-  getPoeUsage,
   getStackMemberStatus,
   getClientIpAddr,
   getAdminPassword,
   transformSwitchUnitStatus,
   isRouter,
-  isEmpty,
   getSwitchPortLabel,
   sortPortFunction,
-  isSameModelFamily,
   convertInputToUppercase,
   isL3FunctionSupported,
   isFirmwareVersionAbove10,
@@ -60,20 +55,6 @@ const switchRow ={
 }
 
 describe('switch.utils', () => {
-  describe('Test getSwitchModel function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchModel('FJN4312T00C')).toBe('ICX7150-48ZP')
-      expect(getSwitchModel('EZC4312T00C')).toBe('ICX7650-48ZP')
-      expect(getSwitchModel('')).toBe('Unknown')
-    })
-    it('should check model family correctly', async () => {
-      expect(isSameModelFamily('', '')).toBe(true)
-      expect(isSameModelFamily('xxxx', '----')).toBe(true)
-      expect(isSameModelFamily('FEK3230S0DA', 'FEK3230S3DA')).toBe(true)
-      expect(isSameModelFamily('FJN3226U73C', 'FNC3333R015')).toBe(false)
-    })
-  })
-
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
@@ -83,16 +64,6 @@ describe('switch.utils', () => {
   describe('Test isRouter function', () => {
     it('should render correctly', async () => {
       expect(isRouter(SWITCH_TYPE.ROUTER)).toBeTruthy()
-    })
-  })
-
-  describe('Test isEmpty function', () => {
-    it('should render correctly', async () => {
-      expect(isEmpty(null)).toBeTruthy()
-      expect(isEmpty(undefined)).toBeTruthy()
-      expect(isEmpty('undefined')).toBeTruthy()
-      expect(isEmpty('')).toBeTruthy()
-      expect(isEmpty(1)).toBeFalsy()
     })
   })
 
@@ -228,12 +199,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test getSwitchName function', () => {
-    it('should render correctly', async () => {
-      expect(getSwitchName(switchRow)).toBe('FMF2249Q0JT')
-    })
-  })
-
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
       expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
@@ -248,31 +213,6 @@ describe('switch.utils', () => {
         operationalWarning: true
       }
       expect(getSwitchStatusString(data)).toBe('Synchronizing')
-    })
-  })
-
-  describe('Test getPoeUsage function', () => {
-    it('should render correctly', async () => {
-      const switchDetail_1 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT'
-      }
-      const switchDetail_2 = {
-        model: 'ICX7150-C08P',
-        id: 'FMF2249Q0JT',
-        poeTotal: 2000,
-        poeUtilization: 1000
-      }
-      expect(getPoeUsage(switchDetail_1 as SwitchViewModel)).toStrictEqual({
-        used: 0,
-        total: 0,
-        percentage: '0%'
-      })
-      expect(getPoeUsage(switchDetail_2 as unknown as SwitchViewModel)).toStrictEqual({
-        used: 1,
-        total: 2,
-        percentage: '50%'
-      })
     })
   })
 

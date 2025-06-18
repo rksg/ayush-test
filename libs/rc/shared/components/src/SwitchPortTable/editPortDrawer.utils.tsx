@@ -6,9 +6,11 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { cssStr }    from '@acx-ui/components'
 import { switchApi } from '@acx-ui/rc/services'
 import {
+  getSwitchModel
+} from '@acx-ui/rc/switch/utils'
+import {
   AclUnion,
   getPortSpeedOptions,
-  getSwitchModel,
   LldpQosModel,
   SwitchPortViewModel,
   SwitchDefaultVlan,

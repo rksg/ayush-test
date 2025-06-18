@@ -54,10 +54,13 @@ import {
   useGetSwitchVenueVersionListV1001Query,
   useUpdateSwitchAuthenticationMutation
 } from '@acx-ui/rc/services'
-import { isOperationalSwitch } from '@acx-ui/rc/switch/utils'
+import {
+  getSwitchModel,
+  isSameModelFamily,
+  isOperationalSwitch
+} from '@acx-ui/rc/switch/utils'
 import {
   Switch,
-  getSwitchModel,
   SwitchTable,
   SwitchStatusEnum,
   SwitchViewModel,
@@ -66,7 +69,6 @@ import {
   VenueMessages,
   SwitchRow,
   SwitchMessages,
-  isSameModelFamily,
   isFirmwareVersionAbove10010f,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,

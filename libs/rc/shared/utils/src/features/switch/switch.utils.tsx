@@ -184,26 +184,6 @@ export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:
   return isStrictOperational || isUpgradeFail
 }
 
-export const getSwitchModel = (serial: string) => {
-  if (!serial || serial.length < 3) {
-    return 'Unknown'
-  }
-
-  const productCode = serial.slice(0, 3)
-  return modelMap.get(productCode)
-}
-
-
-export const isSameModelFamily = (sn1: string, sn2: string) => {
-  const model1 = getSwitchModel(sn1) || ''
-  const model2 = getSwitchModel(sn2) || ''
-
-  const family1 = model1.split('-')[0]
-  const family2 = model2.split('-')[0]
-
-  return family1 === family2
-}
-
 export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
@@ -334,27 +314,6 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
 }
 
-export const getSwitchName = (row: SwitchRow) => {
-  return row.name || row.switchName || row.serialNumber
-}
-
-export const convertPoeUsage = (rawUsage: number) => {
-  return Math.round(rawUsage / 1000)
-}
-
-export const getPoeUsage = (data: SwitchViewModel) => {
-  const tmpTotal = _.get(data, 'poeUsage.poeTotal', 0) || _.get(data, 'poeTotal', 0)
-  const tmpUsage = _.get(data, 'poeUsage.poeUtilization', 0) || _.get(data, 'poeUtilization', 0)
-  const poeTotal = Math.round(convertPoeUsage(tmpTotal))
-  const poeUsage = Math.round(convertPoeUsage(tmpUsage))
-  const poePercentage = (poeUsage === 0 || poeTotal === 0) ? 0 : Math.round(poeUsage / poeTotal * 100)
-  return {
-    used: poeUsage,
-    total: poeTotal,
-    percentage: poePercentage + '%'
-  }
-}
-
 export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
   const { $t } = getIntl()
   if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
@@ -369,19 +328,6 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
-}
-
-export const isEmpty = (params?: unknown) => {
-  if (params == null) {
-    return true
-  } else if (params === undefined) {
-    return true
-  } else if (params === 'undefined') {
-    return true
-  } else if (params === '') {
-    return true
-  }
-  return false
 }
 
 export const getSwitchModelInfo = (switchModel: string) => {
