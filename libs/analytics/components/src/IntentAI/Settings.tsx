@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { Checkbox, Form, Typography } from 'antd'
 import { defineMessage, useIntl }     from 'react-intl'
@@ -9,13 +9,13 @@ import {
   useSetNotificationMutation,
   useUpdateTenantSettingsMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile as getRaiUserProfile }           from '@acx-ui/analytics/utils'
-import { Drawer, Button, Loader, Transfer, showToast }   from '@acx-ui/components'
-import { get }                                           from '@acx-ui/config'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
-import { TenantLink }                                    from '@acx-ui/react-router-dom'
-import { getUserProfile as getR1UserProfile }            from '@acx-ui/user'
-import { CatchErrorResponse }                            from '@acx-ui/utils'
+import { getUserProfile as getRaiUserProfile }                    from '@acx-ui/analytics/utils'
+import { Drawer, Button, Loader, Transfer, showToast }            from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }          from '@acx-ui/icons'
+import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { getUserProfile as getR1UserProfile, isProfessionalTier } from '@acx-ui/user'
+import { CatchErrorResponse }                                     from '@acx-ui/utils'
 
 import { AiFeatures, aiFeaturesLabel }                    from './config'
 import { Setting as UI, FeatureIcon, SummaryFeatureIcon } from './styledComponents'
@@ -53,11 +53,28 @@ const defaultIntentSubscriptions: IntentSubscriptions = {
   [AiFeatures.EquiFlex]: true,
   [AiFeatures.EcoFlex]: false
 }
+
+const professionalTierIntents = [AiFeatures.EcoFlex]
+const intents = [AiFeatures.RRM, AiFeatures.AIOps, AiFeatures.EquiFlex, AiFeatures.EcoFlex]
+
+const getUserAccessibleIntents = () => {
+  const isRai = get('IS_MLISA_SA')
+  const isProfessionalUser = isProfessionalTier(getR1UserProfile().accountTier)
+
+  return intents.filter((feature) => isRai ||
+  isProfessionalUser ||
+  !professionalTierIntents.includes(feature))
+}
+
 export const getEnabledIntentSubscriptions = (tenantSettings: string) => {
   const dbConfig = JSON.parse(tenantSettings) as IntentSubscriptions
-  const merged = { ...defaultIntentSubscriptions, ...dbConfig }
+  const userAccessibleIntents = getUserAccessibleIntents()
+  const merged = {
+    ...defaultIntentSubscriptions,
+    ...dbConfig
+  }
   const enabledKeys = (Object.keys(merged) as (keyof typeof merged)[])
-    .filter((key) => merged[key])
+    .filter((key) => merged[key] && userAccessibleIntents.includes(key))
   return enabledKeys
 }
 export const convertToIntentSubscriptions = (enabledKeys: string[]): string => {
@@ -76,8 +93,14 @@ export function Settings ({ settings }: { settings: string }) {
   const [visible, setVisible] = useState(false)
   const [notificationPreferences, setNotificationPreferences] = useState<AnalyticsPreferences>({})
   const [form] = Form.useForm()
-  const aiFeatures = Object.entries(aiFeaturesLabel)
-    .map(([key, value]) => ({ name: $t(value), key }))
+  const aiFeatures = useMemo(
+    () =>
+      getUserAccessibleIntents().map((feature) => ({
+        name: $t(aiFeaturesLabel[feature]),
+        key: feature
+      })),
+    [$t]
+  )
 
   useEffect(() => {
     setTargetKeys(getEnabledIntentSubscriptions(settings))
@@ -298,12 +321,9 @@ function AboutIntentsDrawer () {
       destroyOnClose
       data-testid='about-intents'
     >
-      {
-        Object.entries(intentSummaryConfig).map(
-          ([key, value]: [string, IntentSummaryProps]) =>
-            <IntentSummaryBlock key={key} {...value} />
-        )
-      }
+      {getUserAccessibleIntents().map((key) => (
+        <IntentSummaryBlock key={key} {...intentSummaryConfig[key]} />
+      ))}
     </Drawer>
   </Button>
 }
