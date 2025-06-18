@@ -320,13 +320,15 @@ export function NetworkForm (props:{
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
       const updateSate = { ...preState }
-      if(!editMode&&!updateSate.enableAccountingService){
+      if(!editMode && !updateSate.enableAccountingService){
         delete updateSate.accountingRadius
       }
 
-      // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
-      if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
-          && !saveData.isCloudpathEnabled) {
+      const isDeleteAuthRadiusCase =
+        (saveData.type === NetworkTypeEnum.DPSK && saveData.isCloudpathEnabled === false) ||
+        (saveData.type === NetworkTypeEnum.OPEN && saveData.wlan?.isMacRegistrationList === true)
+
+      if (isDeleteAuthRadiusCase) {
         delete updateSate.authRadius
         delete updateSate.authRadiusId
         delete saveData?.authRadius
@@ -345,7 +347,7 @@ export function NetworkForm (props:{
         mergeSocialIdentities(saveData.guestPortal?.socialIdentities),
         mergeSocialEmails(saveData.guestPortal?.hostGuestConfig?.hostEmails)
       )
-      return { ...saveState, ...processedData }
+      return processedData
     })
   }
 
@@ -1000,7 +1002,7 @@ export function NetworkForm (props:{
       beforeVenueActivationRequest.push(addHotspot20NetworkActivations(saveState, networkId))
       beforeVenueActivationRequest.push(updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool))
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId))
+        beforeVenueActivationRequest.push(updateRadiusServer(saveState, networkId, cloneMode))
       }
       beforeVenueActivationRequest.push(updateWifiCallingActivation(networkId, saveState, cloneMode))
       beforeVenueActivationRequest.push(updateAccessControl(saveState, data, networkId))

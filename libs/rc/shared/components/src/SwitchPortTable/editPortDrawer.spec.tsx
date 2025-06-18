@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { switchApi }                          from '@acx-ui/rc/services'
 import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                    from '@acx-ui/store'
@@ -244,7 +244,6 @@ describe('EditPortDrawer', () => {
     })
 
     it('should cycle PoE correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
       render(<Provider>
         <EditPortDrawer
           visible={true}
