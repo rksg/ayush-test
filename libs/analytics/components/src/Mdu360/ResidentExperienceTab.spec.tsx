@@ -17,8 +17,8 @@ jest.mock('./widgets/WifiClient', () => ({
   WifiClient: jest.fn(() => <div>Wi-Fi Client</div>)
 }))
 
-jest.mock('./widgets/WifiClientCapability', () => ({
-  WifiClientCapability: jest.fn(() => <div>Wi-Fi Client Capability</div>)
+jest.mock('./widgets/WifiGeneration', () => ({
+  WifiGeneration: jest.fn(() => <div>Wi-Fi Generation</div>)
 }))
 
 
@@ -31,7 +31,7 @@ describe('ResidentExperienceTab', () => {
       endDate='2023-02-01T00:00:00.000Z' />, { wrapper: Provider })
 
     expect(await screen.findByText('Wi-Fi Client')).toBeVisible()
-    expect(await screen.findByText('Wi-Fi Client Capability')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Generation')).toBeVisible()
 
   })
 

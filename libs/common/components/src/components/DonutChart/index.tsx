@@ -74,6 +74,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   subTitle?: string,
   subTitleBlockHeight?: number
   tooltipFormat?: MessageDescriptor
+  tooltipFormatFunc?: (name: string) => Object| undefined
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
@@ -92,7 +93,8 @@ export const onChartClick = (onClick: DonutChartProps['onClick']) =>
 export const tooltipFormatter = (
   dataFormatter: ((value: unknown) => string | null),
   total: number,
-  format?: MessageDescriptor
+  format?: MessageDescriptor,
+  formatValuesFunc?: ((name: string) => Object | undefined)
 ) => (
   parameters: TooltipFormatterParams
 ) => {
@@ -112,7 +114,8 @@ export const tooltipFormatter = (
     values={{
       ...defaultRichTextFormatValues,
       name, value, percent, total,
-      formattedPercent, formattedValue, formattedTotal
+      formattedPercent, formattedValue, formattedTotal,
+      ...(formatValuesFunc && formatValuesFunc(name) ? formatValuesFunc(name) : {})
     }}
   />
 
@@ -347,7 +350,8 @@ export function DonutChart ({
           formatter: tooltipFormatter(
             dataFormatter,
             sum,
-            props.tooltipFormat
+            props.tooltipFormat,
+            props.tooltipFormatFunc
           )
         },
         selectedMode: props.singleSelect ? 'single' : false,

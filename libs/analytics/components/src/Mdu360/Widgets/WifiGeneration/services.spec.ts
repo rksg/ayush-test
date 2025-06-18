@@ -3,10 +3,10 @@ import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { Mdu360Filter } from '../../types'
 
-import { mockedWifiClientCapability } from './__tests__/fixtures'
-import { api }                        from './services'
+import { mockedWifiGeneration } from './__tests__/fixtures'
+import { api }                  from './services'
 
-describe('WifiClient services', () => {
+describe('WifiGeneration services', () => {
   afterEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -14,7 +14,7 @@ describe('WifiClient services', () => {
   const mockResponse = {
     network: {
       hierarchyNode: {
-        wifiClientCapability: mockedWifiClientCapability
+        apWifiCapabilityDistribution: mockedWifiGeneration
       }
     }
   }
@@ -27,22 +27,22 @@ describe('WifiClient services', () => {
   it('should return correct data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockResponse })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.wifiClientCapability.initiate(payload)
+      api.endpoints.WifiGeneration.initiate(payload)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toEqual(mockResponse.network.hierarchyNode.wifiClientCapability[0])
+    expect(data).toEqual(mockResponse.network.hierarchyNode.apWifiCapabilityDistribution)
     expect(error).toBeUndefined()
   })
 
   it('should handle when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: { network: { hierarchyNode: { wifiClientCapability: [] } } }
+      data: { network: { hierarchyNode: { apWifiCapabilityDistribution: [] } } }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.wifiClientCapability.initiate(payload)
+      api.endpoints.WifiGeneration.initiate(payload)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toBeUndefined()
+    expect(data).toEqual([])
     expect(error).toBeUndefined()
   })
 })

@@ -12,7 +12,7 @@ export type Mdu360Filter = {
 }
 
 export type DistributionData = {
-  name:string
-  apModels: Record<string, number>
+  apCount: number
+  clientDistribution: Record<string, number|undefined>
 }
-export type DistributionMatrix = Record<string, Record<string, number>>
+export type DistributionMatrix = Record<string, DistributionData>

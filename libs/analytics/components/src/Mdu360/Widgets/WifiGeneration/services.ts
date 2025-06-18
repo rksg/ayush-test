@@ -4,33 +4,27 @@ import { dataApi } from '@acx-ui/store'
 
 import { Mdu360Filter } from '../../types'
 
-export type HierarchyNodeData = {
-  clientCapability: ClientCapability[]
-  apDistribution: ApDistribution[]
-}
-
-export type ClientCapability = {
-    name: string
-    value: number
-}
 export type ApDistribution = {
-  name: string
-  apCapability: string
+  apWifiCapability: string
+  clientCapability: string
   apCount: number
   clientCount: number
 }
+
+export type HierarchyNodeData = {
+  apWifiCapabilityDistribution: ApDistribution[]
+}
+
 interface Response <T> {
   network: {
-    hierarchyNode: {
-      wifiClientCapability: [T]
-    }
+    hierarchyNode: T
   }
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    wifiClientCapability: build.query<
-      HierarchyNodeData,
+    WifiGeneration: build.query<
+      ApDistribution[],
       Mdu360Filter
     >({
       query: (payload) => ({
@@ -42,17 +36,11 @@ export const api = dataApi.injectEndpoints({
       ) {
         network(start: $start, end: $end) {
           hierarchyNode(path: $path) {
-            wifiClientCapability {
-              clientCapability {
-                name
-                value
-              }
-              clientDistribution {
-                name
-                clientCount
-                apCompatibility
-                apCount
-              }
+            apWifiCapabilityDistribution {
+              apWifiCapability
+              clientCapability
+              apCount
+              clientCount
             }
           }
         }
@@ -65,10 +53,10 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>{
-        return response.network.hierarchyNode.wifiClientCapability[0]
+        return response.network.hierarchyNode.apWifiCapabilityDistribution
       }
     })
   })
 })
 
-export const { useWifiClientCapabilityQuery } = api
+export const { useWifiGenerationQuery } = api
