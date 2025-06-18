@@ -260,7 +260,7 @@ describe('TunnelProfileList', () => {
     })
   })
 
-  describe('when SD-LAN is ready', () => {
+  describe('SD-LAN scenario', () => {
     const mockedSdLanReq = jest.fn()
     const mockedSdLanDataList = {
       totalCount: 1,
@@ -268,10 +268,6 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
-          || ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
       mockServer.use(
         rest.post(
           TunnelProfileUrls.getTunnelProfileViewDataList.url,
@@ -336,8 +332,6 @@ describe('TunnelProfileList', () => {
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGE_L2OGRE_TOGGLE
-          || ff === Features.EDGES_SD_LAN_TOGGLE
-          || ff === Features.EDGES_SD_LAN_HA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
         )
 

@@ -1,8 +1,7 @@
-import userEvent              from '@testing-library/user-event'
-import { groupBy, cloneDeep } from 'lodash'
-import { rest }               from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
 import { edgeSdLanApi, useActivateEdgeSdLanDmzClusterMutation, useAddEdgeMvSdLanMutation, useToggleEdgeSdLanDmzMutation } from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
@@ -16,7 +15,7 @@ import { mockServer, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 import { RequestPayload }                          from '@acx-ui/types'
 
 import {
-  useGetEdgeSdLanByEdgeOrClusterId,
+  useGetEdgeSdLanByClusterId,
   checkSdLanScopedNetworkDeactivateAction,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
@@ -676,13 +675,11 @@ describe('useEdgeMvSdLanActions', () => {
   })
 })
 
-describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
+describe('useGetEdgeSdLanByClusterId', () => {
   const mockedReq = jest.fn()
   beforeEach(() => {
     store.dispatch(edgeSdLanApi.util.resetApiState())
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     mockedReq.mockClear()
 
     mockServer.use(
@@ -697,7 +694,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
 
   it('should successfully get data by edgeClusterId', async () => {
     const targetClusterId = mockedSdLanDataListP2[0].edgeClusterId
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+    const { result } = renderHook(() => useGetEdgeSdLanByClusterId(targetClusterId), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
@@ -710,7 +707,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
 
   it('should successfully get data by guestEdgeClusterId', async () => {
     const targetClusterId = mockedSdLanDataListP2[0].guestEdgeClusterId
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+    const { result } = renderHook(() => useGetEdgeSdLanByClusterId(targetClusterId), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
@@ -722,27 +719,12 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
   })
 
   it('should not return data when target id is not exist', async () => {
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('test-id'), {
+    const { result } = renderHook(() => useGetEdgeSdLanByClusterId('test-id'), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
     await waitFor(() => expect(result.current).toStrictEqual({
       edgeSdLanData: undefined,
-      isLoading: false,
-      isFetching: false
-    }))
-  })
-
-  it('should return the first get data by edgeId when only P1 FF on', async () => {
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_TOGGLE)
-
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('edge_id'), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    await waitFor(() => expect(result.current).toStrictEqual({
-      edgeSdLanData: mockedSdLanDataListP2[0],
       isLoading: false,
       isFetching: false
     }))
@@ -757,7 +739,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
         }
       ))
 
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+    const { result } = renderHook(() => useGetEdgeSdLanByClusterId(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
@@ -778,30 +760,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
         }
       ))
 
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-
-    expect(result.current).toStrictEqual({
-      edgeSdLanData: undefined,
-      isLoading: false,
-      isFetching: false
-    })
-    expect(mockedReq).not.toBeCalled()
-  })
-
-  it('should not trigger API when FF are all disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_req, res, ctx) => {
-          mockedReq()
-          return res(ctx.status(401))
-        }
-      ))
-
-    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+    const { result } = renderHook(() => useGetEdgeSdLanByClusterId(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
@@ -818,9 +777,6 @@ describe('SD-LAN feature functions', () => {
 
   describe('useSdLanScopedVenueNetworks', () => {
     const mockVenueId = 'mock_venue'
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
-    })
 
     it('should return networkId for DC case', async () => {
       const mockData = mockedSdLanDataListP2.filter(item => item.id === 'mocked-sd-lan-2')
@@ -867,228 +823,64 @@ describe('SD-LAN feature functions', () => {
           })
       )
     })
-
-    it('should do nothing when FF is OFF', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const mockedSdLanGet = jest.fn()
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => {
-            mockedSdLanGet()
-            return res(ctx.json({ data: [] }))
-          }
-        )
-      )
-      renderHook(() =>
-        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
-        wrapper: ({ children }) => <Provider children={children} />
-      })
-
-      expect(mockedSdLanGet).not.toBeCalled()
-    })
   })
 
   describe('useSdLanScopedNetworkVenues', () => {
-    describe('SDLAN P2 enabled, multi-venue is not enabled', () => {
 
-      beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
-      })
-
-      it('should return venueId used for DC case', async () => {
-        const mockData = mockedSdLanDataListP2
-          .filter(item => item.id === 'mocked-sd-lan-2')
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => res(ctx.json({ data: mockData }))
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: groupBy(mockData, 'venueId'),
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861560'
-              ],
-              guestNetworkVenueIds: []
-            })
-        )
-      })
-
-      it('should return venueId used for DC case with previous guest network', async () => {
-        let mockData = cloneDeep(mockedSdLanDataListP2
-          .filter(item => item.id === 'mocked-sd-lan-1'))
-        mockData[0].isGuestTunnelEnabled = false
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => res(ctx.json({ data: mockData }))
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: groupBy(mockData, 'venueId'),
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861567'
-              ],
-              guestNetworkVenueIds: []
-            })
-        )
-      })
-
-      it('should return venueId used for DMZ case', async () => {
-        const mockData = mockedSdLanDataListP2
-          .filter(item => item.id === 'mocked-sd-lan-1')
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => res(ctx.json({ data: mockData }))
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: groupBy(mockData, 'venueId'),
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861567'
-              ],
-              guestNetworkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861567'
-              ]
-            })
-        )
-      })
-
-      it('should return venueId used for DMZ case with no guest network', async () => {
-        const mockData = cloneDeep(mockedSdLanDataListP2
-          .filter(item => item.id === 'mocked-sd-lan-1'))
-        mockData[0].guestNetworkIds = []
-        mockData[0].guestNetworkInfos = []
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => {
-              return res(ctx.json({ data: mockData }))
-            }
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: groupBy(mockData, 'venueId'),
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861567'
-              ],
-              guestNetworkVenueIds: []
-            })
-        )
-      })
-    })
-
-    describe('multi-venue SDLAN enabled', () => {
-      beforeEach(() => {
-        // eslint-disable-next-line max-len
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
-      })
-
-      it('should return venueId used for DC case', async () => {
-        const mockData = mockedMvSdLanDataList
-          .filter(item => item.id === 'mocked-sd-lan-2')
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => res(ctx.json({ data: mockData }))
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: {
-                a307d7077410456f8f1a4fc41d861560: mockData
-              },
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861560'
-              ],
-              guestNetworkVenueIds: []
-            })
-        )
-      })
-
-      it('should return venueId used for DMZ case', async () => {
-        const mockData = mockedMvSdLanDataList
-          .filter(item => item.id === 'mocked-sd-lan-1')
-        mockServer.use(
-          rest.post(
-            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-            (_, res, ctx) => res(ctx.json({ data: mockData }))
-          )
-        )
-
-        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-          wrapper: ({ children }) => <Provider children={children} />
-        })
-
-        await waitFor(() =>
-          expect(result.current)
-            .toStrictEqual({
-              sdLansVenueMap: {
-                a307d7077410456f8f1a4fc41d861567: mockData
-              },
-              networkVenueIds: [
-                'a307d7077410456f8f1a4fc41d861567'
-              ],
-              guestNetworkVenueIds: ['a307d7077410456f8f1a4fc41d861567']
-            })
-        )
-      })
-    })
-
-    it('should do nothing when FF is OFF', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const mockedSdLanGet = jest.fn()
+    it('should return venueId used for DC case', async () => {
+      const mockData = mockedMvSdLanDataList
+        .filter(item => item.id === 'mocked-sd-lan-2')
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => {
-            mockedSdLanGet()
-            return res(ctx.json({ data: [] }))
-          }
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
         )
       )
 
-      renderHook(() => useSdLanScopedNetworkVenues('mocked_network_2'), {
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
-      expect(mockedSdLanGet).not.toBeCalled()
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: {
+              a307d7077410456f8f1a4fc41d861560: mockData
+            },
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861560'
+            ],
+            guestNetworkVenueIds: []
+          })
+      )
+    })
+
+    it('should return venueId used for DMZ case', async () => {
+      const mockData = mockedMvSdLanDataList
+        .filter(item => item.id === 'mocked-sd-lan-1')
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
+        )
+      )
+
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: {
+              a307d7077410456f8f1a4fc41d861567: mockData
+            },
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567'
+            ],
+            guestNetworkVenueIds: ['a307d7077410456f8f1a4fc41d861567']
+          })
+      )
     })
   })
 

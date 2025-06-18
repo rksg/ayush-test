@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeClusterNetworkSettingsQuery,
@@ -82,7 +82,7 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterInfo?.clusterId)
 
   const {
     data: clusterNetworkSettings,

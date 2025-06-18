@@ -201,8 +201,7 @@ describe('EditTunnelProfile', () => {
       mockedReqPin.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE ||
-          flag === Features.EDGES_TOGGLE ||
+        if (flag === Features.EDGES_TOGGLE ||
           flag === Features.EDGE_PIN_HA_TOGGLE) return true
         return false
       })
@@ -225,7 +224,7 @@ describe('EditTunnelProfile', () => {
       )
     })
 
-    it('should lock type fields when it is used in PIN / SD-LAN P1', async () => {
+    it('should lock type fields when it is used in PIN', async () => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
 
       render(
@@ -241,13 +240,7 @@ describe('EditTunnelProfile', () => {
       jest.mocked(useIsTierAllowed).mockReset()
     })
 
-    it('should lock type fields when it is used in SD-LAN HA case', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
-          flag === Features.EDGES_TOGGLE) return true
-        return false
-      })
-
+    it('should lock type fields', async () => {
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -283,7 +276,6 @@ describe('EditTunnelProfile', () => {
       })
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
         if (flag === Features.EDGES_TOGGLE ||
-          flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
           flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
           flag === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE) return true
         return false
@@ -366,9 +358,7 @@ describe('EditTunnelProfile', () => {
       mockedReqPin.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE ||
-          flag === Features.EDGES_TOGGLE ||
-          flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
+        if (flag === Features.EDGES_TOGGLE ||
           flag === Features.EDGE_PIN_HA_TOGGLE ||
           flag === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE ||
           flag === Features.EDGE_L2OGRE_TOGGLE
@@ -394,7 +384,7 @@ describe('EditTunnelProfile', () => {
       )
     })
 
-    it('should lock type fields when it is used in PIN / SD-LAN P1', async () => {
+    it('should lock type fields when it is used in PIN', async () => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
 
       render(
@@ -411,7 +401,7 @@ describe('EditTunnelProfile', () => {
       jest.mocked(useIsTierAllowed).mockReset()
     })
 
-    it('should lock disabled fields when it is used in SD-LAN HA case', async () => {
+    it('should lock disabled fields', async () => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
       mockServer.use(
         rest.post(

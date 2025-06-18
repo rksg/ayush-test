@@ -1,8 +1,8 @@
 import { createContext } from 'react'
 
-import { Loader }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
+import { Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetEdgeSdLanByClusterId } from '@acx-ui/rc/components'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
@@ -220,7 +220,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     edgeSdLanData,
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
-  } = useGetEdgeSdLanByEdgeOrClusterId(clusterId)
+  } = useGetEdgeSdLanByClusterId(clusterId)
 
   const { requiredFwMap } = useGetEdgeFeatureSetsQuery({
     payload: {

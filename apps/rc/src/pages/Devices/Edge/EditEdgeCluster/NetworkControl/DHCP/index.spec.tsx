@@ -165,8 +165,6 @@ describe('Edge Cluster Network Control Tab > DHCP', () => {
     const mockedSdlanData = cloneDeep(mockedMvSdLanDataList[0])
     mockedSdlanData.edgeClusterId = 'mockClusterId'
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,

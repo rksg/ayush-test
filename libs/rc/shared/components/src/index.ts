@@ -242,7 +242,7 @@ export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
   useEdgeMvSdLanActions,
-  useGetEdgeSdLanByEdgeOrClusterId,
+  useGetEdgeSdLanByClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction

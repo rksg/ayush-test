@@ -25,7 +25,7 @@ describe('Edge enabled evaluation', () => {
     })
 
     it('should return false when edge toggle not ON', async () => {
-      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff !== Features.EDGES_TOGGLE)
       const { result } = renderHook(() => useIsEdgeReady())
       expect(result.current).toBe(false)
     })
@@ -40,14 +40,14 @@ describe('Edge enabled evaluation', () => {
     })
 
     it('should return false when edge toggle not ON', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE))
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_TOGGLE)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE))
       expect(result.current).toBe(false)
     })
 
     it('should return false when target flag not ON', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
-      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE))
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_AV_REPORT_TOGGLE)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE))
       expect(result.current).toBe(false)
     })
 

@@ -55,8 +55,6 @@ describe('NetworkTunnelModal', () => {
     mockedGetVenueSdLanFn.mockReset()
     mockedOnFinish.mockReset()
 
-    // eslint-disable-next-line max-len
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
 

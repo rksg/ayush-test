@@ -7,7 +7,6 @@ import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                               from '@acx-ui/feature-toggle'
 import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -23,8 +22,7 @@ import { WifiScopes }         from '@acx-ui/types'
 import { filterByAccess }     from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
-import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
-import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
+import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
 
 import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
 import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.svg'
@@ -273,7 +271,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
 export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean) => void }) => {
   const { $t } = useIntl()
-  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   return <Drawer
     title={$t({ defaultMessage: 'Forward Guest Traffic to DMZ' })}
