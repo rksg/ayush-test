@@ -3,11 +3,9 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader }                                        from '@acx-ui/components'
 import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
-import { Features }                                          from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   useAfterServiceSaveRedirectPath,
-  useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
@@ -21,8 +19,6 @@ import { SummaryForm }                               from '../Form/SummaryForm'
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isEdgeDelegationEnabled = useIsEdgeFeatureReady(Features.EDGE_DELEGATION_POC_TOGGLE)
-
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
   const isTemplateSupported = useIsEdgeDelegationPermitted()
@@ -38,7 +34,7 @@ export const AddEdgeSdLan = () => {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
     },
-    ...isEdgeDelegationEnabled && isTemplateSupported ? [{
+    ...isTemplateSupported ? [{
       title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
       content: NetworkTemplateSelectionForm
     }] : [],

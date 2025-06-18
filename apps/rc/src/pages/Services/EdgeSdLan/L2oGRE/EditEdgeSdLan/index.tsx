@@ -3,13 +3,11 @@ import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader }                                from '@acx-ui/components'
 import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
-import { Features }                                          from '@acx-ui/feature-toggle'
 import { useGetEdgeMvSdLanViewDataListQuery }                from '@acx-ui/rc/services'
 import {
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -24,7 +22,6 @@ export const EditEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const isEdgeDelegationEnabled = useIsEdgeFeatureReady(Features.EDGE_DELEGATION_POC_TOGGLE)
 
   const [form] = Form.useForm()
   const cfListRoute = getServiceRoutePath({
@@ -55,7 +52,7 @@ export const EditEdgeSdLan = () => {
       title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
       content: NetworkSelectionForm
     },
-    ...isEdgeDelegationEnabled && isTemplateSupported ? [{
+    ...isTemplateSupported ? [{
       title: $t({ defaultMessage: 'Wi-Fi Network Template Selection' }),
       content: NetworkTemplateSelectionForm
     }] : []
