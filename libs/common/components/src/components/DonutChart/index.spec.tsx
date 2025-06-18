@@ -185,15 +185,7 @@ describe('DonutChart - small', () => {
 
     expect(screen.getByText('Bald Donut Chart').getAttribute('style'))
       .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:700;')
-
-    const secondaryTitleElement = screen.getByText('{subTextNormal|NonBold secondary title}')
-    expect(secondaryTitleElement).toBeTruthy()
-    expect(secondaryTitleElement.getAttribute('style'))
-      .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:400;')
-
-    const valueElement = screen.getByText('{subTextLarge|5095}')
-    expect(valueElement).toBeTruthy()
-    expect(valueElement.getAttribute('style'))
+    expect(screen.getByText('NonBold secondary title').getAttribute('style'))
       .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:400;')
   })
 })

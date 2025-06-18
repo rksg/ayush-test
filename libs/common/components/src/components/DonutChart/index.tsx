@@ -319,7 +319,7 @@ export function DonutChart ({
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
           case 'name-bold-value':
-            return `{legendNormal|${name}}: {legendBold|${dataFormatter(value)}}`
+            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
