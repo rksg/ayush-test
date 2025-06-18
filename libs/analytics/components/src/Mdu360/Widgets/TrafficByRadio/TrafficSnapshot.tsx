@@ -1,55 +1,67 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                                    from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, DonutChart, NoData } from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import { Loader, DonutChart, qualitativeColorSet } from '@acx-ui/components'
+import type { DonutChartData }                     from '@acx-ui/components'
+import { formatter }                               from '@acx-ui/formatter'
 
-import { useTrafficByBandQuery, TrafficByBandData } from './trafficByBandServices'
+import { useTrafficSnapshotQuery, TrafficSnapshotData } from './trafficSnapshotServices'
 
-type Key = keyof Omit<TrafficByBandData, 'time'>
+import { TrafficByRadioFilters } from '.'
 
-export { TrafficByBandWidget as TrafficSnapshot }
 
-function TrafficByBandWidget ({ filters }: { filters : AnalyticsFilter }) {
-  const { $t } = useIntl()
-  const seriesMapping = [
-    { key: 'userTraffic', name: $t({ defaultMessage: 'All Bands' }) },
-    { key: 'userTraffic_2_4', name: $t({ defaultMessage: '2.4 GHz' }) },
-    { key: 'userTraffic_5', name: $t({ defaultMessage: '5 GHz' }) },
-    { key: 'userTraffic_6', name: $t({ defaultMessage: '6 GHz' }) }
-  ] as Array<{ key: Key, name: string }>
-  const queryResults = useTrafficByBandQuery(filters, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping),
-      ...rest
+export { TrafficSnapshotWidget as TrafficSnapshot }
+
+function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData[] {
+  const trafficSnapshotData: DonutChartData[] = []
+  const colorMapping = qualitativeColorSet()
+
+  const nameMap = {
+    userTraffic_24: '2.4 GHz',
+    userTraffic_5: '5 GHz',
+    userTraffic_6: '6 GHz'
+  }
+
+  let i = 0
+  for (const key in data) {
+    trafficSnapshotData.push({
+      name: nameMap[key as keyof TrafficSnapshotData],
+      value: data[key as keyof TrafficSnapshotData].reduce((accum, curr) => accum + curr, 0),
+      color: colorMapping[i]
     })
+    i += 1
+  }
+
+  return trafficSnapshotData
+}
+
+function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters }) {
+
+  const queryResults = useTrafficSnapshotQuery({
+    path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
+    startDate: filters.startDate,
+    endDate: filters.endDate
   })
+
+  const chartData = getTrafficSnapshotChartData(queryResults.data!)
+
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          queryResults.data.length ?
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              dataFormatter={formatter('bytesFormat')}
-            />
-            // <DonutChart
-            //   style={{ width, height: height-30 }}
-            //   data={queryResults.data}
-            //   showLegend={true}
-            //   showTotal={false}
-            //   legend='name'
-            //   dataFormatter={formatter('bytesFormat')}
-            //   size={'x-large'}
-            // />
-            : <NoData/>
+          <DonutChart
+            style={{ width, height }}
+            data={chartData}
+            showLegend={true}
+            showTotal={true}
+            showLabel={true}
+            legend='name-value'
+            dataFormatter={formatter('bytesFormat')}
+            size={'large'}
+          />
         )}
       </AutoSizer>
     </Loader>
   )
 }
 
-export default TrafficByBandWidget
+export default TrafficSnapshotWidget

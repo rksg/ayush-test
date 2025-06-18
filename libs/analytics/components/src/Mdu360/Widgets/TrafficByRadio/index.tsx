@@ -6,7 +6,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher } from '@acx-ui/components'
 
-// import { TrafficSnapshot } from './TrafficSnapshot'
+import { TrafficSnapshot } from './TrafficSnapshot'
 import { TrafficTrend }    from './TrafficTrend'
 
 export interface TrafficByRadioFilters {
@@ -20,7 +20,7 @@ export function TrafficByRadio ({ filters }: { filters: TrafficByRadioFilters })
   const trafficSnapshot = <AutoSizer>
     {({ height, width }) => (
       <div style={{ display: 'block', height, width }}>
-        {/* <TrafficSnapshot filters={filters}/> */}
+        <TrafficSnapshot filters={filters}/>
       </div>
     )}
   </AutoSizer>

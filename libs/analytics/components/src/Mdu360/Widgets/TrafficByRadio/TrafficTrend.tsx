@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { useTrafficTrendQuery, TrafficTrendData } from './trafficTrendService'
+import { useTrafficTrendQuery, TrafficTrendData } from './trafficTrendServices'
 
 import { TrafficByRadioFilters } from '.'
 

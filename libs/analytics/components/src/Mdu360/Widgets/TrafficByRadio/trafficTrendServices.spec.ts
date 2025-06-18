@@ -3,9 +3,9 @@ import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { api } from './trafficByVolumeServices'
+import { api } from './trafficTrendServices'
 
-describe('trafficByVolumeWidgetApi', () => {
+describe('trafficTrendWidgetApi', () => {
   const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -35,22 +35,22 @@ describe('trafficByVolumeWidgetApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'trafficTrendWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.trafficTrend.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'trafficTrendWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.trafficTrend.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

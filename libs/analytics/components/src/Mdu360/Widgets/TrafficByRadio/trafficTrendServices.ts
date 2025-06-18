@@ -58,7 +58,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: calculateGranularity(payload.startDate, payload.endDate),
+          granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
       transformResponse: (response: Response<TrafficTrendData>) =>
