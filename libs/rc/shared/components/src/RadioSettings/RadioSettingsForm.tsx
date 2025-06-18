@@ -393,7 +393,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('changeInterval')}
         />
       </Form.Item>
-      {context === 'venue' &&
+      {(context === 'venue' || context === 'apGroup') &&
         <Space>
           <Form.Item
             label={$t({ defaultMessage: 'Run background scan every:' })}

@@ -1149,7 +1149,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 useVenueSettingsFieldName={['radioParams24G', 'useVenueSettings']}
                 enabledFieldName={['radioParams24G', 'enabled']}
                 onEnableChanged={handleEnableChanged}
-                disabled={!isAllowEdit}
+                disabled={!isAllowEdit || stateOfIsUseVenueSettings.isUseVenueSettings24G}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal24GHz)}
               />
@@ -1163,7 +1163,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 useVenueSettingsFieldName={['radioParams50G', 'useVenueSettings']}
                 enabledFieldName={['radioParams50G', 'enabled']}
                 onEnableChanged={handleEnableChanged}
-                disabled={!isAllowEdit}
+                disabled={!isAllowEdit || stateOfIsUseVenueSettings.isUseVenueSettings5G}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
               />
@@ -1179,7 +1179,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                 useVenueSettingsFieldName={['radioParams6G', 'useVenueSettings']}
                 enabledFieldName={['radioParams6G', 'enabled']}
                 onEnableChanged={handleEnableChanged}
-                disabled={!isAllowEdit}
+                disabled={!isAllowEdit || stateOfIsUseVenueSettings.isUseVenueSettings6G}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz)}
               />
@@ -1223,7 +1223,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsLower5G', 'useVenueSettings']}
                   enabledFieldName={['radioParamsDual5G', 'lower5gEnabled']}
                   onEnableChanged={handleEnableChanged}
-                  disabled={!isAllowEdit}
+                  disabled={!isAllowEdit || stateOfIsUseVenueSettings.isUseVenueSettingsLower5G}
                   handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Lower5GHz)}
                 />
@@ -1264,7 +1264,7 @@ export function RadioSettings (props: ApGroupRadioConfigItemProps) {
                   useVenueSettingsFieldName={['radioParamsDual5G', 'radioParamsUpper5G', 'useVenueSettings']}
                   enabledFieldName={['radioParamsDual5G', 'upper5gEnabled']}
                   onEnableChanged={handleEnableChanged}
-                  disabled={!isAllowEdit}
+                  disabled={!isAllowEdit || stateOfIsUseVenueSettings.isUseVenueSettingsUpper5G}
                   handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Upper5GHz)}
                 />

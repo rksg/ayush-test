@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Radio, Space } from 'antd'
 import {
@@ -119,6 +119,7 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const { networkId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupTemplateEnabled = useIsSplitOn(Features.IDENTITY_GROUP_CONFIG_TEMPLATE)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
     wlanSecurity,
@@ -151,15 +152,15 @@ function SettingsForm () {
       }
     </>)
   }
-  const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
+
   // eslint-disable-next-line max-len
   const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   // eslint-disable-next-line max-len
   const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
-    <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
-      {isDeprecateWep && key === 'WEP' ?
+    <Option key={key} disabled={key === 'WEP'}>
+      {key === 'WEP' ?
         `${PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]} (Unsafe)`
         : PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum]}
     </Option>
@@ -451,7 +452,7 @@ function SettingsForm () {
       </div>
       { ( isWifiIdentityManagementEnable &&
           !isMacRegistrationList &&
-          !isTemplate ) &&
+          (isTemplate ? isIdentityGroupTemplateEnabled : true) ) &&
           <IdentityGroup comboWidth='200px' />}
     </Space>
   )

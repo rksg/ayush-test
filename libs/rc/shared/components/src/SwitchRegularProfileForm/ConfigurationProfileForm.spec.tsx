@@ -756,10 +756,11 @@ describe('Wired', () => {
     }
 
     it('should render Apply profile updates to existing switches button correctly', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SWITCH_PROFILE_ONBOARD_ONLY
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getCliFamilyModels.url,
+          (_, res, ctx) => res(ctx.json(familyModels))
+        )
       )
-
       render(
         <Provider>
           <ConfigurationProfileFormContext.Provider value={{
@@ -1057,7 +1058,6 @@ describe('Wired', () => {
       it('should show drawer correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 
@@ -1087,7 +1087,6 @@ describe('Wired', () => {
       it('should add vlan correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 
@@ -1121,7 +1120,6 @@ describe('Wired', () => {
       it('should update correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff === Features.SWITCH_RBAC_API
-          || ff === Features.SWITCH_LEVEL_VLAN
           || ff === Features.BULK_VLAN_PROVISIONING
         )
 

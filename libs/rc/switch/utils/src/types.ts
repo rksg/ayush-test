@@ -96,6 +96,7 @@ export const SwitchPortViewModelQueryFields = [
   'inDiscard',
   'ingressAclName',
   'inErr',
+  'isPoeScheduleEnabled',
   'isPoeSupported',
   'lagId',
   'lagName',
@@ -109,7 +110,6 @@ export const SwitchPortViewModelQueryFields = [
   'outErr',
   'poeCapability',
   'poeEnabled',
-  'poeScheduleEnabled',
   'poeTotal',
   'poeType',
   'poeUsage',
@@ -141,7 +141,14 @@ export const SwitchPortViewModelQueryFields = [
   'venueId',
   'vlanIds',
   'vsixEgressAclName',
-  'vsixIngressAclName'
+  'vsixIngressAclName',
+  'authDefaultVlan',
+  'errorDisableStatus',
+  'stickyMacAclAllowList',
+  'stickyMacAclAllowCount',
+  'switchMacAcl',
+  'stackingNeighborPort',
+  'lagForceUpPort'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -629,8 +636,9 @@ export interface SwitchPortViewModel extends GridDataRow {
   stickyMacAclAllowCount?: number
   switchMacAcl?: string
   stackingNeighborPort?: string
+  lagForceUpPort?: boolean
   poeCapability?: boolean
-  poeScheduleEnabled?: boolean
+  isPoeScheduleEnabled?: string
   isPoeSupported?: string
   poeScheduler?: PoeSchedulerType
 }
@@ -1004,6 +1012,7 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+  forceUpPort?: string
 }
 
 export interface AclStandardRule {
