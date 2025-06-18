@@ -24,7 +24,7 @@ import { SearchOutlined }         from '@acx-ui/icons'
 import {
   GoogleMapWithPreference,
   usePlacesAutocomplete
-} from '@acx-ui/rc/components'
+} from '@acx-ui/rc/generic-features/components'
 import {
   useLazyVenuesListQuery,
   useGetVenueQuery,

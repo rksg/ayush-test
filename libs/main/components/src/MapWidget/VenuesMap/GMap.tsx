@@ -5,9 +5,7 @@ import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
 import { RawIntlProvider, useIntl }               from 'react-intl'
 
-import { VenueMarkerOptions } from '@acx-ui/rc/utils'
-
-import { useIsEdgeReady } from '../../useEdgeActions'
+import { useIsEdgeReady, VenueMarkerOptions } from '@acx-ui/rc/utils'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'

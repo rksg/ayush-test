@@ -41,13 +41,11 @@ import {
   LockOutlined,
   SettingsOutlined
 } from '@acx-ui/icons-new'
-import { VenueFilter }      from '@acx-ui/main/components'
+import { MapWidgetV2, VenueFilter } from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
-  MapWidgetV2,
-  useIsEdgeReady,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
@@ -62,6 +60,7 @@ import {
   DashboardInfo,
   EdgeUrlsInfo,
   SwitchRbacUrlsInfo,
+  useIsEdgeReady,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
