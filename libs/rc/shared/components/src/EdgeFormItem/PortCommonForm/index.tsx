@@ -313,8 +313,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                             children={$t({ defaultMessage: 'Core port' })}
                             onChange={handleCorePortChange}
                             disabled={
-                              hasWANPort || (hasCorePortEnabled && !corePortEnabled) ||
-                              isEdgeSdLanRun
+                              hasWANPort || (
+                                isEdgeSdLanRun ?
+                                  hasCorePortEnabled :
+                                  (hasCorePortEnabled && !corePortEnabled)
+                              )
                             }
                           />
                         </Form.Item>
@@ -327,8 +330,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                             <Checkbox
                               children={$t({ defaultMessage: 'Access port' })}
                               disabled={
-                                hasWANPort || (hasAccessPortEnabled && !accessPortEnabled) ||
-                              isEdgeSdLanRun || !isSupportAccessPort
+                                !isSupportAccessPort || hasWANPort || (
+                                  isEdgeSdLanRun ?
+                                    hasAccessPortEnabled :
+                                    (hasAccessPortEnabled && !accessPortEnabled)
+                                )
                               }
                             />
                           </Form.Item>
@@ -350,7 +356,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                     <Checkbox
                       disabled={!corePortInfo.isExistingCorePortInLagMember
                         && (
-                          (hasWANPort && !corePortEnabled)
+                          hasWANPort
                           || (isEdgeSdLanRun
                             ? hasCorePortEnabled
                             // eslint-disable-next-line max-len
