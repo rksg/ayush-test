@@ -51,12 +51,14 @@ export const AddEdgeSdLan = () => {
           payload: {
             name: formData.name,
             tunnelProfileId: formData.tunnelProfileId,
-            activeNetwork: Object.entries(formData.activatedNetworks)
-              .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-                venueId,
-                networkId,
-                tunnelProfileId
-              }))).flat(),
+            activeNetwork: formData.activatedNetworks
+              ? Object.entries(formData.activatedNetworks)
+                .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
+                  venueId,
+                  networkId,
+                  tunnelProfileId
+                }))).flat()
+              : [],
             activeNetworkTemplate: isTemplateSupported && formData.activatedNetworkTemplates
               ? Object.entries(formData.activatedNetworkTemplates)
                 .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
