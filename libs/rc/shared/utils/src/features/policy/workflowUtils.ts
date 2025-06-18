@@ -255,6 +255,7 @@ function addParentNode (firstStepId: string,
     },
     hidden: false,
     deletable: false,
+    dragHandle: '.subflow_drag_handle',
     data: { id: parentNodeId, enrollmentActionId: '' }
   })
 
