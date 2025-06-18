@@ -132,14 +132,6 @@ export function PortalSummaryForm (props: {
           enableAcctProxy={summaryData.enableAccountingProxy}
           enableAuthProxy={summaryData.enableAuthProxy}/>
       }
-      {isSupportNetworkRadiusAccounting &&
-        !(summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr||
-        isCloudPath) &&
-        <AaaSummary
-          summaryData={summaryData}
-          isDisplayAuth={false}
-        />
-      }
       {summaryData.guestPortal?.guestNetworkType!==GuestNetworkTypeEnum.Cloudpath&&
       <Form.Item
         label={$t({ defaultMessage: 'Redirect URL:' })}
@@ -247,6 +239,14 @@ export function PortalSummaryForm (props: {
           label={$t({ defaultMessage: 'Walled Garden:' })}
           children={summaryData.guestPortal?.walledGardens?.map(garden=>
             <div key={garden}>{garden}</div>)}
+        />
+      }
+      {isSupportNetworkRadiusAccounting &&
+        !(summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr||
+        isCloudPath) &&
+        <AaaSummary
+          summaryData={summaryData}
+          isDisplayAuth={false}
         />
       }
       {portalData?.displayLangCode&&<Form.Item
