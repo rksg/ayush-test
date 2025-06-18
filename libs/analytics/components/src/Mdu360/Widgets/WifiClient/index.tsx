@@ -30,27 +30,15 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
   ]
 
   const results = queryResults?.data?.nodes?.[0]
-
-  const chartData = (results?.[selectedTab] ?? []).map((d) => ({
-    name: d.name,
-    value: d.value
-  }))
-
+  const chartData = (results?.[selectedTab] ?? [])
   const title = $t({ defaultMessage: 'Wi-Fi Client' })
-  const centerText = selectedTab === 'deviceType'
-    ? $t({ defaultMessage: 'Total Wi-Fi Clients' })
-    : $t({ defaultMessage: 'Total Devices' })
 
   return (
     <Loader states={[queryResults]}>
       <Card type='default' title={title}>
         <div style={{ marginTop: -38 }}>
           <ContentSwitcher
-            tabDetails={tabDetails.map(({ label, value, children }) => ({
-              label,
-              value,
-              children
-            }))}
+            tabDetails={tabDetails}
             value={selectedTab}
             onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
             size='small'
@@ -58,19 +46,18 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
             noPadding
           />
         </div>
-        {results && results?.[selectedTab]?.length > 0 ? (
+        {chartData && chartData.length > 0 ? (
           <AutoSizer>
             {({ height, width }) => (
               <DonutChart
                 data={chartData}
                 style={{ width: width, height: height }}
                 legend='name-bold-value'
-                size='small'
+                size='large'
                 showLegend
                 showTotal
-                value={centerText}
-                showLabel={true}
-                showValue={true}
+                showLabel
+                showValue
               />
             )}
           </AutoSizer>

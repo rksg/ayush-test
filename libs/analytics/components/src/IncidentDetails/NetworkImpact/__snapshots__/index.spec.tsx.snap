@@ -193,61 +193,41 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l54.5 0l0 78l-54.5 0Z"
+                              d="M-45 -5l54.5 0l0 50l-54.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-4.5 0l9 0l0 16l-9 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Rogue APs
                             </text>
                             <path
-                              d="M-1 20l2 0l0 48l-2 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1 29.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
-                            >
-                              10
-                            </text>
-                            <path
-                              d="M-1 53.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
                             >
                               10
                             </text>
@@ -342,61 +322,41 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l56.5 0l0 78l-56.5 0Z"
+                              d="M-45 -5l56.5 0l0 50l-56.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-6.5 0l13 0l0 16l-13 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Rx PHY Errors
                             </text>
                             <path
-                              d="M-1 20l2 0l0 48l-2 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1 29.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
-                            >
-                              10
-                            </text>
-                            <path
-                              d="M-1 53.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
                             >
                               10
                             </text>
@@ -643,63 +603,43 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l54.5 0l0 74l-54.5 0Z"
+                              d="M-45 -5l54.5 0l0 46l-54.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 368)"
+                              transform="translate(640 382)"
                             />
                             <path
                               d="M-4.5 0l9 0l0 16l-9 0Z"
                               fill="none"
-                              transform="translate(640 368)"
+                              transform="translate(640 382)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 368)"
+                              transform="translate(640 382)"
                               xml:space="preserve"
                               y="8"
                             >
                               Rogue APs
                             </text>
                             <path
-                              d="M-3.5 20l7 0l0 44l-7 0Z"
+                              d="M-3.5 20l7 0l0 16l-7 0Z"
                               fill="none"
-                              transform="translate(640 368)"
-                            />
-                            <path
-                              d="M-3.5 27.5l7 0l0 1l-7 0Z"
-                              fill="none"
-                              transform="translate(640 368)"
+                              transform="translate(640 382)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#808284"
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 368)"
+                              transform="translate(640 382)"
                               y="28"
                             >
                               Unknown
-                            </text>
-                            <path
-                              d="M-0.5 49.5l1 0l0 1l-1 0Z"
-                              fill="none"
-                              transform="translate(640 368)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 368)"
-                              y="50"
-                            >
-                              0
                             </text>
                           </g>
                         </svg>
@@ -792,61 +732,41 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l56.5 0l0 78l-56.5 0Z"
+                              d="M-45 -5l56.5 0l0 50l-56.5 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-6.5 0l13 0l0 16l-13 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Rx PHY Errors
                             </text>
                             <path
-                              d="M-1 20l2 0l0 48l-2 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1 29.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
-                            >
-                              10
-                            </text>
-                            <path
-                              d="M-1 53.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
                             >
                               10
                             </text>
@@ -1582,63 +1502,43 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l60 0l0 78l-60 0Z"
+                              d="M-45 -5l60 0l0 50l-60 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-10 0l20 0l0 16l-20 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Average Airtime Busy
                             </text>
                             <path
-                              d="M-2 20l4 0l0 48l-4 0Z"
+                              d="M-1.5 20l3 0l0 20l-3 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1.5 29.5l3 0l0 1l-3 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
                             >
                               50%
-                            </text>
-                            <path
-                              d="M-2 53.5l4 0l0 1l-4 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
-                            >
-                              100%
                             </text>
                           </g>
                         </svg>
@@ -1743,63 +1643,43 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l67 0l0 78l-67 0Z"
+                              d="M-45 -5l67 0l0 50l-67 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-17 0l34 0l0 16l-34 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Average Peak No. of Clients per AP
                             </text>
                             <path
-                              d="M-1 20l2 0l0 48l-2 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1 29.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
                             >
                               28
-                            </text>
-                            <path
-                              d="M-0.5 53.5l1 0l0 1l-1 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
-                            >
-                              4
                             </text>
                           </g>
                         </svg>
@@ -1904,63 +1784,43 @@ exports[`NetworkImpact should match snapshot 1`] = `
                               stroke-linejoin="round"
                             />
                             <path
-                              d="M-45 -5l67 0l0 78l-67 0Z"
+                              d="M-45 -5l67 0l0 50l-67 0Z"
                               fill="rgb(0,0,0)"
                               fill-opacity="0"
                               stroke="#ccc"
                               stroke-width="0"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <path
                               d="M-17 0l34 0l0 16l-34 0Z"
                               fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               xml:space="preserve"
                               y="8"
                             >
                               Average Peak No. of Clients per AP
                             </text>
                             <path
-                              d="M-1 20l2 0l0 48l-2 0Z"
+                              d="M-1 20l2 0l0 20l-2 0Z"
                               fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <path
-                              d="M-1 29.5l2 0l0 1l-2 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                             />
                             <text
                               dominant-baseline="central"
                               fill="#333333"
                               style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                               text-anchor="middle"
-                              transform="translate(640 366)"
+                              transform="translate(640 380)"
                               y="30"
                             >
                               28
-                            </text>
-                            <path
-                              d="M-0.5 53.5l1 0l0 1l-1 0Z"
-                              fill="none"
-                              transform="translate(640 366)"
-                            />
-                            <text
-                              dominant-baseline="central"
-                              fill="#333333"
-                              style="font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;"
-                              text-anchor="middle"
-                              transform="translate(640 366)"
-                              y="54"
-                            >
-                              4
                             </text>
                           </g>
                         </svg>

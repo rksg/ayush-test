@@ -9,17 +9,14 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
+import { DriftInstance, MAX_SYNC_EC_TENANTS, useEcFilters }           from '@acx-ui/main/components'
 import { useGetDriftInstancesQuery, usePatchDriftReportMutation }     from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                                       from '@acx-ui/user'
 import { getOpsApi }                                                  from '@acx-ui/utils'
 
-import { MAX_SYNC_EC_TENANTS }      from '../../constants'
 import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
-import { useEcFilters }             from '../templateUtils'
-
-import { DriftInstance } from './DriftInstance'
-import * as UI           from './styledComponents'
+import * as UI                      from '../styledComponents'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void

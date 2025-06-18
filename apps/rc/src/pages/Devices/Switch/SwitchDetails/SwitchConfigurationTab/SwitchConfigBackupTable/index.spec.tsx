@@ -27,7 +27,6 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
 }))
 

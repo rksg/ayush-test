@@ -5,12 +5,12 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                 from '@acx-ui/rc/components'
-import { edgeApi }                                                                                                                                                from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                                        from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                                                                            from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                                                                               from '@acx-ui/feature-toggle'
+import { CompatibilityNodeError, CompatibilityStatusEnum, useIsEdgeFeatureReady }                                                                                                                               from '@acx-ui/rc/components'
+import { edgeApi }                                                                                                                                                                                              from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDualWanFixtures, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                                                                                          from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -19,9 +19,14 @@ import * as VirtualIpForm from './VirtualIpForm'
 
 import { InterfaceSettings } from '.'
 
-const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+const {
+  mockEdgeClusterList,
+  mockSingleNodeClusterStatus,
+  mockedHaNetworkSettings
+} = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
+const { mockedDualWanNetworkSettings } = EdgeDualWanFixtures
 const mockEdgeCluster = _.cloneDeep(EdgeGeneralFixtures.mockEdgeCluster)
 mockEdgeCluster.virtualIpSettings.virtualIps[0].virtualIp = '2.2.2.90'
 mockEdgeCluster.virtualIpSettings.virtualIps[1].virtualIp = '3.3.3.90'
@@ -34,6 +39,9 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('./LagForm', () => ({
   LagForm: () => <div data-testid='rc-LagForm'></div>
+}))
+jest.mock('./DualWan', () => ({
+  DualWanForm: () => <div data-testid='rc-DualWanForm' />
 }))
 jest.mock('./SubInterfaceForm', () => ({
   SubInterfaceForm: () => <div data-testid='rc-SubInterfaceForm' />
@@ -88,6 +96,9 @@ const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
           </Form.Item>
           <Form.Item name={[key, 'ipMode']}>
             <Input data-testid='ipMode' />
+          </Form.Item>
+          <Form.Item name={[key, 'enabled']} valuePropName='checked'>
+            <Switch data-testid='enabled' />
           </Form.Item>
           <Form.Item name={[key, 'corePortEnabled']} valuePropName='checked'>
             <Switch data-testid='corePortEnabled' />
@@ -405,6 +416,8 @@ describe('InterfaceSettings', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Changing any virtual IP configurations might')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should do compatibility check on PortForm', async () => {
@@ -455,6 +468,68 @@ describe('InterfaceSettings', () => {
       .queryByTestId(`errors_${mockEdgeCluster.smartEdges[0].serialNumber}`)).toBeNull()
   })
 
+  describe('should popup confirm when dual WAN is removed', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    })
+
+    afterEach(() => {jest.mocked(useIsEdgeFeatureReady).mockReset()})
+
+    it('when WAN port count is changed to < 2', async () => {
+      jest.mocked(PortForm)
+        .mockImplementation(() => <MockedPortForm portIfName='port1'/>)
+      jest.spyOn(VirtualIpForm, 'VirtualIpForm')
+        .mockImplementationOnce(() => <div data-testid='rc-VirtualIpForm'/>)
+
+      const mockCxtData = {
+        ...defaultCxtData,
+        clusterInfo: mockSingleNodeClusterStatus,
+        clusterNetworkSettings: mockedDualWanNetworkSettings
+      }
+
+      render(<Provider>
+        <ClusterConfigWizardContext.Provider value={mockCxtData}>
+          <InterfaceSettings />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+      const stepsForm = await screen.findByTestId('steps-form')
+      within(stepsForm).getByTestId('rc-LagForm')
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      const form = within(stepsForm).getByTestId('rc-PortForm')
+      const portType = within(form).getByTestId('portType')
+      const enabled = within(form).getByTestId('enabled')
+
+      expect(portType).toHaveValue(EdgePortTypeEnum.WAN)
+      expect(enabled).toBeChecked()
+      // turn off the 1 WAN port to make it run as single WAN
+      await userEvent.click(enabled)
+      await waitFor(() => expect(enabled).not.toBeChecked())
+
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      await within(stepsForm).findByTestId('rc-VirtualIpForm')
+      expect(within(stepsForm).queryByTestId('rc-DualWanForm')).toBeNull()
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      await within(stepsForm).findByTestId('rc-Summary')
+      await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
+      const dialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(dialog).toHaveTextContent('You are about to reduce the number of enabled WAN ports,')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Apply the changes' }))
+      await waitFor(() =>
+        expect(mockedUsedNavigate).toBeCalledWith({
+          hash: '',
+          pathname: `/${params.tenantId}/t/devices/edge/cluster/mocked_cluster_id/configure`,
+          search: ''
+        }))
+      expect(mockedPatchEdgeClusterNetworkSettings).toBeCalled()
+    })
+  })
+
   describe('Single node', () => {
     const mockSingleNodeCluster = _.cloneDeep(mockEdgeCluster)
     mockSingleNodeCluster.smartEdges.splice(1, 1)
@@ -491,6 +566,34 @@ describe('InterfaceSettings', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       const compatibleStatusBar = screen.queryByTestId('rc-CompatibilityStatusBar')
       expect(compatibleStatusBar).toBeNull()
+    })
+
+    it('should render dual WAN firmware compatibility check warning', async () => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+
+      const mockCxtData = {
+        ...defaultCxtData,
+        clusterInfo: mockSingleNodeClusterStatus as EdgeClusterStatus,
+        clusterNetworkSettings: mockedDualWanNetworkSettings,
+        requiredFwMap: {
+          [IncompatibilityFeatures.CORE_ACCESS_SEPARATION]: '2.5.0.1',
+          [IncompatibilityFeatures.DUAL_WAN]: '2.4.0.1'
+        }
+      }
+
+      render(<Provider>
+        <ClusterConfigWizardContext.Provider value={mockCxtData}>
+          <InterfaceSettings />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+      within(await screen.findByTestId('steps-form')).getByTestId('rc-LagForm')
+      const dualWanStepTitle = await screen.findByText('Dual WAN')
+      expect(await within(dualWanStepTitle).findByTestId('WarningTriangleSolid')).toBeVisible()
     })
   })
 
