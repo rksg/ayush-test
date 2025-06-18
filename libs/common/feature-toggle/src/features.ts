@@ -165,7 +165,6 @@ export enum Features {
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
-  SWITCH_LEVEL_VLAN = 'removable-ff',
   SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_PORT_HYPERLINK = 'removable-ff',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
