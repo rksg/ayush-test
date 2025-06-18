@@ -77,14 +77,20 @@ export function getFilteredData <RecordType> (
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
   /**
-   * Contains column names that will filter children row if the parent is filtered
+   * In a nested table, when columns in this array is used to filter parent rows, and
+   * parent row does not match, all children rows will be filtered out as well
+   * When column is not in array, default behavior is to show parent regardless of whether it matches
+   * when at least 1 child matches
    */
-  columnsToHideChildrenIfParentFiltered?: (keyof RecordType)[]
+  columnsToFilterChildrenRowBasedOnParentRow?: (keyof RecordType)[]
 ): RecordType[] | undefined {
   const isRowMatching = (row: RecordType, isParentRowNotMatching?: boolean): boolean => {
     for (const column of activeFilters) {
       const key = (column.filterKey || column.dataIndex) as keyof RecordType
-      if (columnsToHideChildrenIfParentFiltered?.includes(key) && isParentRowNotMatching) {
+      if (
+        columnsToFilterChildrenRowBasedOnParentRow?.includes(key) &&
+        isParentRowNotMatching
+      ) {
         return false
       }
 

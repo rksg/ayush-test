@@ -97,7 +97,7 @@ export interface TableProps <RecordType>
     highLightValue?: string
     preventRenderHeader?: boolean
     optionLabelProp?: SelectProps['optionLabelProp']
-    columnsToHideChildrenIfParentFiltered?: (keyof RecordType)[]
+    columnsToFilterChildrenRowBasedOnParentRow?: (keyof RecordType)[]
   }
 
 export interface TableHighlightFnArgs {
@@ -172,7 +172,7 @@ function Table <RecordType extends Record<string, any>> ({
   highLightValue,
   preventRenderHeader,
   optionLabelProp,
-  columnsToHideChildrenIfParentFiltered,
+  columnsToFilterChildrenRowBasedOnParentRow,
   ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
@@ -243,7 +243,7 @@ function Table <RecordType extends Record<string, any>> ({
           activeFilters,
           searchables,
           searchValue,
-          columnsToHideChildrenIfParentFiltered
+          columnsToFilterChildrenRowBasedOnParentRow
         )) ?? []
     )
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
@@ -622,7 +622,7 @@ function Table <RecordType extends Record<string, any>> ({
               activeFilters,
               searchables,
               searchValue,
-              columnsToHideChildrenIfParentFiltered
+              columnsToFilterChildrenRowBasedOnParentRow
             )?.length
           }
         </span>
@@ -694,7 +694,7 @@ function Table <RecordType extends Record<string, any>> ({
             activeFilters,
             searchables,
             searchValue,
-            columnsToHideChildrenIfParentFiltered
+            columnsToFilterChildrenRowBasedOnParentRow
           )
       }
       sortDirections={['ascend', 'descend', 'ascend']}

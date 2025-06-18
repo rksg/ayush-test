@@ -132,12 +132,10 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
   </TenantLink>
 }
 
-interface IncidentRowData {
-  id: string;
-  code: string;
-  severityLabel: string;
-  isMuted: boolean;
-}
+type IncidentRowData = Pick<
+  IncidentTableRow,
+  'id' | 'code' | 'severityLabel' | 'isMuted'
+  >
 
 export enum IncidentVisibility {
   All,
@@ -446,7 +444,7 @@ export function IncidentTable ({ filters }: {
         filterableWidth={100}
         searchableWidth={240}
         optionLabelProp='label'
-        columnsToHideChildrenIfParentFiltered={['isMuted']}
+        columnsToFilterChildrenRowBasedOnParentRow={['isMuted']}
       />
       <Drawer
         visible={!!drawerSelection}
