@@ -60,26 +60,7 @@ export const EditEdgeSdLan = () => {
 
   const handleFinish = async (formData: EdgeSdLanFormType) => {
     try {
-      const payload = {
-        name: formData.name,
-        tunnelProfileId: formData.tunnelProfileId,
-        activeNetwork: formData.activatedNetworks
-          ? Object.entries(formData.activatedNetworks)
-            .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-              venueId,
-              networkId,
-              tunnelProfileId
-            }))).flat()
-          : [],
-        activeNetworkTemplate: isTemplateSupported && formData.activatedNetworkTemplates
-          ? Object.entries(formData.activatedNetworkTemplates)
-            .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-              venueId,
-              networkId,
-              tunnelProfileId
-            }))).flat()
-          : undefined
-      }
+      const payload = transformToApiData(formData)
 
       await new Promise(async (resolve, reject) => {
         await updateEdgeSdLan(

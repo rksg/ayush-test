@@ -18,7 +18,6 @@ import {
 
 import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
 
-import { CompatibilityCheck }                    from './CompatibilityCheck'
 import { NetworkActivationType, NetworksDrawer } from './NetworksDrawer'
 
 export interface VenueTableDataType {
@@ -88,7 +87,6 @@ export const EdgeSdLanVenueNetworksTemplateTable = (props: VenueNetworksTablePro
     render: (_, row) => {
       return <Space align='center'>
         {row.name}
-        <CompatibilityCheck venueId={row.id} venueName={row.name} />
       </Space>
     }
   }, {

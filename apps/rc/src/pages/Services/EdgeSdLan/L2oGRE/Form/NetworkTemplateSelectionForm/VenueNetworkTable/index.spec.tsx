@@ -5,11 +5,10 @@ import { Form }                              from 'antd'
 import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
-import { StepsForm, StepsFormProps }                                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                                                          from '@acx-ui/rc/services'
-import { APCompatibilityFixtures, CommonUrlsInfo, EdgePinFixtures, EdgeSdLanFixtures, IncompatibilityFeatures, VenueFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                   from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                 from '@acx-ui/components'
+import { venueApi }                                                                  from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo, EdgePinFixtures, EdgeSdLanFixtures, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -19,7 +18,7 @@ import {
 
 import { EdgeSdLanContext, EdgeSdLanContextType } from '../../EdgeSdLanContextProvider'
 
-import { EdgeSdLanVenueNetworksTable, VenueNetworksTableProps } from '.'
+import { EdgeSdLanVenueNetworksTemplateTable, VenueNetworksTableProps } from '.'
 
 const { mockVenueList } = VenueFixtures
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
@@ -67,7 +66,7 @@ const MockedTargetComponent = (props: MockedTargetComponentType) => {
   return <Provider>
     <EdgeSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
       <StepsForm form={form} editMode={editMode}>
-        <EdgeSdLanVenueNetworksTable
+        <EdgeSdLanVenueNetworksTemplateTable
           {...networkTableProps}
         />
       </StepsForm>
@@ -84,7 +83,7 @@ describe('Tunneled Venue Networks Table', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueList))
       )
     )
@@ -227,38 +226,6 @@ describe('Tunneled Venue Networks Table', () => {
     expect(screen.getByRole('row', { name: /Mocked-Venue-1/i })).toBeVisible()
     expect(screen.getByRole('row', { name: /Mocked-Venue-3/i })).toBeVisible()
     expect(screen.queryByRole('row', { name: /Mocked-Venue-2/i })).toBeNull()
-  })
-
-  it('should have compatible warning', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-    const mockApCompatibilitiesVenue = cloneDeep(APCompatibilityFixtures.mockApCompatibilitiesVenue)
-    mockApCompatibilitiesVenue.apCompatibilities= [{
-      ...mockApCompatibilitiesVenue.apCompatibilities[0],
-      incompatibleFeatures: [{
-        ...mockApCompatibilitiesVenue.apCompatibilities[0]?.incompatibleFeatures![0],
-        featureName: IncompatibilityFeatures.SD_LAN
-      }]
-    }]
-
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (_req, res, ctx) => res(ctx.json({ data: mockVenueList.data.slice(1, 2) }))
-      ),
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue)))
-    )
-
-    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
-    const row = await screen.findByRole('row', { name: /Mocked-Venue-2 .* Select Networks/i })
-    const fwWarningIcon = await within(row).findByTestId('WarningTriangleSolid')
-    await userEvent.hover(fwWarningIcon)
-    expect(await screen.findByRole('tooltip', { hidden: true }))
-      .toHaveTextContent('See the compatibility requirements.')
-    const btn = screen.getByRole('button', { name: 'See the compatibility requirements.' })
-    await userEvent.click(btn)
-    expect(await within(row).findByTestId('ApGeneralCompatibilityDrawer')).toBeVisible()
   })
 })
 

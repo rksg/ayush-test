@@ -1,40 +1,24 @@
-import userEvent from '@testing-library/user-event'
-
 import { StepsForm }      from '@acx-ui/components'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { NetworkSelectionForm } from '.'
+import { NetworkTemplateSelectionForm } from '.'
 
 jest.mock('./VenueNetworkTable', () => ({
-  EdgeSdLanVenueNetworksTable: () => <div data-testid='VenueNetworkTable' />
+  // eslint-disable-next-line max-len
+  EdgeSdLanVenueNetworksTemplateTable: () => <div data-testid='EdgeSdLanVenueNetworksTemplateTable' />
 }))
 
-describe('Edge SD-LAN form: NetworkSelection', () => {
+describe('Edge SD-LAN form: Network Template Selection', () => {
   it('should render correctly', () => {
     render(
       <StepsForm>
         <StepsForm.StepForm>
-          <NetworkSelectionForm />
+          <NetworkTemplateSelectionForm />
         </StepsForm.StepForm>
       </StepsForm>
     )
 
-    expect(screen.getByText('Wi-Fi Network Selection')).toBeVisible()
-    expect(screen.getByTestId('VenueNetworkTable')).toBeVisible()
-  })
-
-  it('should show error message when there is no network selected', async () => {
-    render(
-      <StepsForm>
-        <StepsForm.StepForm>
-          <NetworkSelectionForm />
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
-
-    expect(screen.getByText('Wi-Fi Network Selection')).toBeVisible()
-    expect(screen.getByTestId('VenueNetworkTable')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByText('Please select at least 1 venue network')).toBeVisible()
+    expect(screen.getByText('Wi-Fi Network Template Selection')).toBeVisible()
+    expect(screen.getByTestId('EdgeSdLanVenueNetworksTemplateTable')).toBeVisible()
   })
 })

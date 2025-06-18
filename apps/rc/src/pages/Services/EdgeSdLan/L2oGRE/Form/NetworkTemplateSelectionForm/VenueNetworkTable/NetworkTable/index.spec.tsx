@@ -2,10 +2,10 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
-import { StepsForm }                                             from '@acx-ui/components'
-import { networkApi }                                            from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, NetworkTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
+import { StepsForm }                                                               from '@acx-ui/components'
+import { networkApi }                                                              from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo, NetworkTypeEnum, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -40,7 +40,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
     mockServer.use(
       rest.post(
-        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        ConfigTemplateUrlsInfo.getNetworkTemplateListRbac.url,
         (_req, res, ctx) => res(ctx.json({
           data: mockNetworkViewmodelList,
           page: 0,
@@ -48,7 +48,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         }))
       ),
       rest.post(
-        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList.url,
         (_req, res, ctx) => {
           mockedGetNetworkViewmodelList()
           return res(ctx.json({
@@ -171,22 +171,6 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     })
   })
 
-  it('should popup add network modal', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <ActivatedNetworksTable
-              venueId='mocked-venue'
-            />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-    await checkPageLoaded()
-    await userEvent.click(screen.getByRole('button', { name: 'Add Wi-Fi Network' }))
-    expect(screen.queryByTestId('AddNetworkModal')).toBeVisible()
-  })
   it('should grey out OWE transition network', async () => {
     render(
       <Provider>

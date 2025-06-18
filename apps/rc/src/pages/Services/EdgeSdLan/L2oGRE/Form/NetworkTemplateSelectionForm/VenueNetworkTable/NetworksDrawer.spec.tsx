@@ -6,10 +6,10 @@ import {
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                            from '@acx-ui/components'
-import { networkApi }                           from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                      from '@acx-ui/store'
+import { StepsForm }                                              from '@acx-ui/components'
+import { networkApi }                                             from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -66,7 +66,7 @@ describe('Network Drawer', () => {
 
     mockServer.use(
       rest.post(
-        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        ConfigTemplateUrlsInfo.getNetworkTemplateListRbac.url,
         (_req, res, ctx) => res(ctx.json({
           data: mockNetworkViewmodelList,
           page: 0,
@@ -74,7 +74,7 @@ describe('Network Drawer', () => {
         }))
       ),
       rest.post(
-        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList.url,
         (_req, res, ctx) => {
           mockedGetNetworkViewmodelList()
           return res(ctx.json({

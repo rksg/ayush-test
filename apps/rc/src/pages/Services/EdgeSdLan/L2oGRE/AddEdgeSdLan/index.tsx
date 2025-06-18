@@ -15,6 +15,7 @@ import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
 import { NetworkTemplateSelectionForm }              from '../Form/NetworkTemplateSelectionForm'
 import { SummaryForm }                               from '../Form/SummaryForm'
+import { transformToApiData }                        from '../Form/utils'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
@@ -45,29 +46,12 @@ export const AddEdgeSdLan = () => {
   ]
 
   const handleFinish = async (formData: EdgeSdLanFormType) => {
+    const payload = transformToApiData(formData)
+
     try {
       await new Promise(async (resolve, reject) => {
         await createEdgeSdLan({
-          payload: {
-            name: formData.name,
-            tunnelProfileId: formData.tunnelProfileId,
-            activeNetwork: formData.activatedNetworks
-              ? Object.entries(formData.activatedNetworks)
-                .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-                  venueId,
-                  networkId,
-                  tunnelProfileId
-                }))).flat()
-              : [],
-            activeNetworkTemplate: isTemplateSupported && formData.activatedNetworkTemplates
-              ? Object.entries(formData.activatedNetworkTemplates)
-                .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
-                  venueId,
-                  networkId,
-                  tunnelProfileId
-                }))).flat()
-              : undefined
-          },
+          payload,
           callback: (result) => {
             // callback is after all RBAC related APIs sent
             if (Array.isArray(result)) {
