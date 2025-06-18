@@ -732,7 +732,7 @@ export function NetworkForm (props:{
       delete data.authRadiusId
     }
 
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    updateSaveData({ ...data, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 

@@ -114,6 +114,8 @@ export function SelfSignInForm () {
   const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable(usedSMS, provider, {
     isSmsProviderEnabled, isGracePeriodEnabled
   })
+  // eslint-disable-next-line max-len
+  const isSupportNetworkRadiusAccounting = useIsSplitOn(Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE)
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -423,10 +425,11 @@ export function SelfSignInForm () {
         <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
           enableDefaultWalledGarden={false} />
-
-        <AccountingServiceInput
-          isProxyModeConfigurable={true}
-        />
+        {isSupportNetworkRadiusAccounting &&
+          <AccountingServiceInput
+            isProxyModeConfigurable={true}
+          />
+        }
       </GridCol>
       <GridCol col={{ span: 12 }}>
         <NetworkDiagram
