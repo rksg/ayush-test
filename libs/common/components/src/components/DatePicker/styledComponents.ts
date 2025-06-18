@@ -12,6 +12,8 @@ type RangePickerWrapperProps = {
   rangeText: string
   showTimePicker?: boolean
   timeRangesForSelection: RangesType
+  showLabel?: boolean
+  filterLabel?: string
 }
 
 /* eslint-disable max-len */
@@ -138,16 +140,21 @@ export const Wrapper = styled.div`
 /* eslint-enable */
 
 export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
-  --acx-date-picker-ranges-width: 125px;
-  --acx-date-picker-left-padding: 25px;
+  --acx-date-picker-ranges-width: ${props => props.showLabel ?
+    `${props.filterLabel?.length}ch` : '125px'};
+  --acx-date-picker-left-padding: ${props => props.showLabel ? '0' : '25px'};
 
   > .ant-picker {
     &:not(.ant-picker-focused) {
       transition: width 1ms linear 500ms;
+      .ant-picker-input > input {
+        color: ${props => props.showLabel ? 'var(--acx-neutrals-50)' : 'var(--acx-primary-black)'};
+      }
     }
     ${props => props.selectionType !== DateRange.custom && !props.isCalendarOpen
     ? `
-        width: calc(var(--acx-date-picker-left-padding) + ${props.rangeText.length}ch);
+        width: calc(var(--acx-date-picker-left-padding) +
+          ${props.showLabel ? props.filterLabel?.length : props.rangeText.length}ch);
         .ant-picker-range-separator, .ant-picker-input:nth-child(3) {
           display: none;
         }
@@ -166,8 +173,8 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     > .ant-picker-suffix {
       position: absolute;
-      left: 8px;
       width: 16px;
+      ${props => props.showLabel ? 'right: 6px;' : 'left:8px;' }
     }
     .ant-picker-active-bar {
       background: var(--acx-accents-blue-50);
