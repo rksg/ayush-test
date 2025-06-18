@@ -302,7 +302,7 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<FirmwareSwitchVenueV1002>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
     scopeKey: [SwitchScopes.UPDATE],
-    rbacOpsIds: [getOpsApi(FirmwareRbacUrlsInfo.updateSwitchVenueSchedules)],
+    rbacOpsIds: [getOpsApi(FirmwareRbacUrlsInfo.createSwitchVenueSchedules)],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
