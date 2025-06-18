@@ -94,7 +94,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLagForceUpEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_LAG_FORCE_UP_TOGGLE)
 
   const urlParams = useParams()
@@ -149,7 +148,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
   const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
-  const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
   const [forceUpPort, setForceUpPort] = useState<string>('')
@@ -187,7 +185,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
-      setHasSwitchProfile(!!switchProfile?.length)
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
     }
 
@@ -800,9 +797,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             venueVlans={venueVlans}
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
-            vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
             cliApplied={cliApplied}
-            hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
             switchIds={switchId ? [switchId] : []}
             venueId={switchDetailHeader?.venueId}
@@ -812,8 +807,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 switchVlans,
                 setSwitchVlans,
                 venueVlans,
-                setVenueVlans,
-                isSwitchLevelVlanEnabled
+                setVenueVlans
               )
             }
             switchFirmwares={switchDetailHeader?.firmware ? [switchDetailHeader.firmware] : []}

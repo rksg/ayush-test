@@ -159,7 +159,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
-  const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetClientIsolationEnabled = useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -852,7 +851,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     setSelectedPortCaps={setSelectedPortCaps}
                     selectedModelCaps={selectedModelCaps}
                     isDhcpEnabled={isDhcpEnabled}
-                    isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}

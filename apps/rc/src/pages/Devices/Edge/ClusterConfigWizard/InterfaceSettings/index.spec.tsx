@@ -97,6 +97,9 @@ const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
           <Form.Item name={[key, 'ipMode']}>
             <Input data-testid='ipMode' />
           </Form.Item>
+          <Form.Item name={[key, 'enabled']} valuePropName='checked'>
+            <Switch data-testid='enabled' />
+          </Form.Item>
           <Form.Item name={[key, 'corePortEnabled']} valuePropName='checked'>
             <Switch data-testid='corePortEnabled' />
           </Form.Item>
@@ -413,6 +416,8 @@ describe('InterfaceSettings', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Changing any virtual IP configurations might')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should do compatibility check on PortForm', async () => {
@@ -461,6 +466,68 @@ describe('InterfaceSettings', () => {
     expect(within(compatibleStatusBar).getByTestId('status').textContent).toBe(CompatibilityStatusEnum.PASS)
     expect(within(compatibleStatusBar)
       .queryByTestId(`errors_${mockEdgeCluster.smartEdges[0].serialNumber}`)).toBeNull()
+  })
+
+  describe('should popup confirm when dual WAN is removed', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DUAL_WAN_TOGGLE)
+    })
+
+    afterEach(() => {jest.mocked(useIsEdgeFeatureReady).mockReset()})
+
+    it('when WAN port count is changed to < 2', async () => {
+      jest.mocked(PortForm)
+        .mockImplementation(() => <MockedPortForm portIfName='port1'/>)
+      jest.spyOn(VirtualIpForm, 'VirtualIpForm')
+        .mockImplementationOnce(() => <div data-testid='rc-VirtualIpForm'/>)
+
+      const mockCxtData = {
+        ...defaultCxtData,
+        clusterInfo: mockSingleNodeClusterStatus,
+        clusterNetworkSettings: mockedDualWanNetworkSettings
+      }
+
+      render(<Provider>
+        <ClusterConfigWizardContext.Provider value={mockCxtData}>
+          <InterfaceSettings />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+      const stepsForm = await screen.findByTestId('steps-form')
+      within(stepsForm).getByTestId('rc-LagForm')
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      const form = within(stepsForm).getByTestId('rc-PortForm')
+      const portType = within(form).getByTestId('portType')
+      const enabled = within(form).getByTestId('enabled')
+
+      expect(portType).toHaveValue(EdgePortTypeEnum.WAN)
+      expect(enabled).toBeChecked()
+      // turn off the 1 WAN port to make it run as single WAN
+      await userEvent.click(enabled)
+      await waitFor(() => expect(enabled).not.toBeChecked())
+
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      await within(stepsForm).findByTestId('rc-VirtualIpForm')
+      expect(within(stepsForm).queryByTestId('rc-DualWanForm')).toBeNull()
+      await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+      await within(stepsForm).findByTestId('rc-Summary')
+      await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
+      const dialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(dialog).toHaveTextContent('You are about to reduce the number of enabled WAN ports,')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Apply the changes' }))
+      await waitFor(() =>
+        expect(mockedUsedNavigate).toBeCalledWith({
+          hash: '',
+          pathname: `/${params.tenantId}/t/devices/edge/cluster/mocked_cluster_id/configure`,
+          search: ''
+        }))
+      expect(mockedPatchEdgeClusterNetworkSettings).toBeCalled()
+    })
   })
 
   describe('Single node', () => {
