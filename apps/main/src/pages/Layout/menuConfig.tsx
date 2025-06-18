@@ -29,7 +29,7 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
