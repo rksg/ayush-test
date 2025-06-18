@@ -47,7 +47,7 @@ export function VenueServicesTab () {
       filters: { venueId: [venueId] }
     } },
     {
-      skip: !!!venueId,
+      skip: !!!venueId || isTemplate,
       selectFromResult: ({ data, isLoading }) => ({
         edgeData: data?.data[0],
         isEdgeLoading: isLoading,
