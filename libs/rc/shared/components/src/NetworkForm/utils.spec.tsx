@@ -741,7 +741,7 @@ describe('Network utils test', () => {
         const saveDataWithMacAuthFormat: NetworkSaveData = {
           type: NetworkTypeEnum.OPEN,
           wlan: {
-            macAuthMacFormat: 'some-format'
+            macAddressAuthentication: true
           }
         }
         expect(shouldSaveRadiusServerSettings(saveDataWithMacAuthFormat)).toBe(true)

@@ -56,14 +56,14 @@ export const AaaSummary = (props: AaaSummaryProps) => {
       />
     </>}
     {isDisplayAccounting &&
-      <>
+      <div>
         {$t({ defaultMessage: 'Accounting Service' })}
         <AaaServerFields
           serverType={AaaServerTypeEnum.ACCOUNTING}
           data={summaryData}
           supportRadsec={supportRadsec}
         />
-      </>
+      </div>
     }
   </>)
 }

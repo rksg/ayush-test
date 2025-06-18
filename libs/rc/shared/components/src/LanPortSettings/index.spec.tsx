@@ -248,7 +248,7 @@ describe('LanPortSettings', () => {
 
     expect(screen.getByLabelText(/VLAN untag ID/)).toHaveValue('1')
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
-    expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
+    expect(screen.getByLabelText(/VLAN untag ID/)).toBeEnabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
     const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
     fireEvent.mouseEnter(toolips[1])
@@ -677,7 +677,6 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
           setSelectedPortCaps={jest.fn()}
           selectedModelCaps={selectedSinglePortModelCaps}
           isDhcpEnabled={false}
-          isTrunkPortUntaggedVlanEnabled={true}
           useVenueSettings={false}
           serialNumber={apParams.serialNumber}
           venueId={venueId}
@@ -717,7 +716,6 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
           setSelectedPortCaps={jest.fn()}
           selectedModelCaps={selectedSinglePortModelCaps}
           isDhcpEnabled={true}
-          isTrunkPortUntaggedVlanEnabled={true}
           useVenueSettings={false}
           serialNumber={apParams.serialNumber}
           venueId={venueId}
