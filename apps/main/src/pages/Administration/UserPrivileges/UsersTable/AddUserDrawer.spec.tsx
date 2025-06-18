@@ -59,8 +59,8 @@ const mockedAddAdminFn = jest.fn()
 const mockReqAdminsData = jest.fn()
 const services = require('@acx-ui/rc/services')
 const mobilePlaceHolder = '555'
-jest.mock('@acx-ui/rc/components', () => ({
-  SpaceWrapper: ({ children }) => <div data-testid='SpaceWrapper'>{children}</div>,
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
 }))
 
