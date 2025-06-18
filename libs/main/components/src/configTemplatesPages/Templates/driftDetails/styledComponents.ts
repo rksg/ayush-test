@@ -44,10 +44,3 @@ export const DriftInstanceCollapse = styled(Collapse)`
     padding-bottom: 4px;
   }
 `
-export const SelectedCustomersIndicator = styled.div`
-  padding: 6px;
-  background-color: var(--acx-accents-blue-10);
-  border-radius: 4px;
-  font-size: var(--acx-body-4-font-size);
-  font-weight: normal;
-`
