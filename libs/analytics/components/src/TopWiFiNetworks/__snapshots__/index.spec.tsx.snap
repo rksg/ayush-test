@@ -82,15 +82,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 332)"
     />
-    <path
-      d="M13 3.5l11 0l0 1l-11 0Z"
-      fill="none"
-      transform="translate(709 332)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 332)"
       x="13"
@@ -113,15 +108,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 364)"
     />
-    <path
-      d="M13 3.5l4 0l0 1l-4 0Z"
-      fill="none"
-      transform="translate(709 364)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 364)"
       x="13"
@@ -144,15 +134,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 396)"
     />
-    <path
-      d="M13 3.5l16 0l0 1l-16 0Z"
-      fill="none"
-      transform="translate(709 396)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 396)"
       x="13"
@@ -175,15 +160,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 428)"
     />
-    <path
-      d="M13 3.5l3 0l0 1l-3 0Z"
-      fill="none"
-      transform="translate(709 428)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 428)"
       x="13"
@@ -206,15 +186,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
       fill="none"
       transform="translate(709 460)"
     />
-    <path
-      d="M13 3.5l14 0l0 1l-14 0Z"
-      fill="none"
-      transform="translate(709 460)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 460)"
       x="13"
@@ -463,15 +438,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       fill="none"
       transform="translate(709 348)"
     />
-    <path
-      d="M13 3.5l4 0l0 1l-4 0Z"
-      fill="none"
-      transform="translate(709 348)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 348)"
       x="13"
@@ -494,15 +464,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       fill="none"
       transform="translate(709 380)"
     />
-    <path
-      d="M13 3.5l4 0l0 1l-4 0Z"
-      fill="none"
-      transform="translate(709 380)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 380)"
       x="13"
@@ -525,15 +490,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       fill="none"
       transform="translate(709 412)"
     />
-    <path
-      d="M13 3.5l14 0l0 1l-14 0Z"
-      fill="none"
-      transform="translate(709 412)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 412)"
       x="13"
@@ -556,15 +516,10 @@ exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
       fill="none"
       transform="translate(709 444)"
     />
-    <path
-      d="M13 3.5l11 0l0 1l-11 0Z"
-      fill="none"
-      transform="translate(709 444)"
-    />
     <text
       dominant-baseline="central"
       fill="#333333"
-      style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      style="font: normal NaN 10px 'Open Sans', sans-serif"
       text-anchor="start"
       transform="translate(709 444)"
       x="13"
