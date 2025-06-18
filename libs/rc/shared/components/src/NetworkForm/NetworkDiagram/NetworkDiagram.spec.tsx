@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { GuestNetworkTypeEnum, NetworkTypeEnum, WisprSecurityEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                   from '@acx-ui/store'
-import { render, screen }                                                             from '@acx-ui/test-utils'
+import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { render, screen }                                          from '@acx-ui/test-utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -723,22 +723,17 @@ describe('NetworkDiagram', () => {
     })
     it('should render Captive portal (Self Sign In) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.SelfSignIn
-      render(
+      const { asFragment } = render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
-            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram
-              networkPortalType={portalType}
-              enableAccountingService={true}
-              networkSecurity={'NONE'}
-            />
+            <NetworkDiagram networkPortalType={portalType} />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -746,27 +741,22 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('SelfSignInAaa')
+      expect(diagram.src).toContain('SelfSignIn')
+      expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Self Sign In with PSK) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.SelfSignIn
-      render(
+      const { asFragment } = render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
-            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram
-              type={NetworkTypeEnum.CAPTIVEPORTAL}
-              networkPortalType={portalType}
-              wlanSecurity={WlanSecurityEnum.WPA3}
-              networkSecurity={'PSK'}
-            />
+            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.WPA3} />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -775,26 +765,21 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('SelfSignInPsk')
+      expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Self Sign In with OWE) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.SelfSignIn
-      render(
+      const { asFragment } = render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
-            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram
-              type={NetworkTypeEnum.CAPTIVEPORTAL}
-              networkPortalType={portalType}
-              wlanSecurity={WlanSecurityEnum.OWE}
-              networkSecurity={'OWE'}
-            />
+            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.OWE} />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -803,6 +788,7 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('SelfSignInOwe')
+      expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Host Approval) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.HostApproval

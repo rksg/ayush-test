@@ -61,14 +61,8 @@ import PskDiagram                      from '../assets/images/network-wizard-dia
 import SAMLWithOweDiagram              from '../assets/images/network-wizard-diagrams/saml-owe.png'
 import SAMLWithPskDiagram              from '../assets/images/network-wizard-diagrams/saml-psk.png'
 import SAMLDiagram                     from '../assets/images/network-wizard-diagrams/saml.png'
-import SelfSignInAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/self-sign-in-aaa-proxy.png'
-import SelfSignInAaaDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-aaa.png'
-import SelfSignInOweAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa-proxy.png'
-import SelfSignInOweAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa.png'
-import SelfSignInOweDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
-import SelfSignInPskAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa-proxy.png'
-import SelfSignInPskAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa.png'
-import SelfSignInPskDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
+import SelfSignInWithOweDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
+import SelfSignInWithPskDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
 import SelfSignInDiagram               from '../assets/images/network-wizard-diagrams/self-sign-in.png'
 import WISPrWithAlwaysAcceptOweDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-owe.png'
 import WISPrWithAlwaysAcceptPskDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-psk.png'
@@ -124,7 +118,6 @@ interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
   wlanSecurity?: WlanSecurityEnum
   wisprWithAlwaysAccept?: boolean
-  networkSecurity?: string
 }
 
 type NetworkDiagramProps = DefaultDiagramProps
@@ -284,7 +277,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :
       (wisprWithOwe ? ClickThroughWithOweDiagram : ClickThroughDiagram),
-    [GuestNetworkTypeEnum.SelfSignIn]: getSelfSignInDiagram(props),
+    [GuestNetworkTypeEnum.SelfSignIn]: wisprWithPsk ? SelfSignInWithPskDiagram :
+      (wisprWithOwe ? SelfSignInWithOweDiagram : SelfSignInDiagram),
     [GuestNetworkTypeEnum.HostApproval]: wisprWithPsk ? HostApprovalWithPskDiagram :
       (wisprWithOwe ? HostApprovalWithOweDiagram : HostApprovalDiagram),
     [GuestNetworkTypeEnum.GuestPass]: wisprWithPsk ? GuestPassWithPskDiagram :
@@ -302,50 +296,6 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
-
-function getSelfSignInDiagram (props: CaptivePortalDiagramProps) {
-  let diagrams
-
-  switch (props.networkSecurity) {
-    case 'OWE':
-      diagrams = {
-        Diagram: SelfSignInOweDiagram,
-        AaaProxyDiagram: SelfSignInOweAaaProxyDiagram,
-        AaaDiagram: SelfSignInOweAaaDiagram
-      }
-      break
-    case 'PSK':
-      diagrams = {
-        Diagram: SelfSignInPskDiagram,
-        AaaProxyDiagram: SelfSignInPskAaaProxyDiagram,
-        AaaDiagram: SelfSignInPskAaaDiagram
-      }
-      break
-    case 'NONE':
-    default:
-      diagrams = {
-        Diagram: SelfSignInDiagram,
-        AaaProxyDiagram: SelfSignInAaaProxyDiagram,
-        AaaDiagram: SelfSignInAaaDiagram
-      }
-      break
-  }
-
-  return getCommonCaptivePortalDiagram(
-    props, diagrams.Diagram, diagrams.AaaProxyDiagram, diagrams.AaaDiagram
-  )
-}
-
-function getCommonCaptivePortalDiagram (
-  props: NetworkDiagramProps,
-  nonAaaDiagram:string,
-  aaaProxyDiagram:string,
-  aaaNonProxyDiagram:string
-) {
-  return (props.enableAccountingService)?
-    getAAADiagramByParams(props, aaaProxyDiagram, aaaNonProxyDiagram) : nonAaaDiagram
-}
-
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
@@ -386,9 +336,7 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
     // Hide AAA button under Captive Portal - Workflow
     if(props.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       const cpProps = props as CaptivePortalDiagramProps
-
-      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow ||
-        cpProps.networkPortalType === GuestNetworkTypeEnum.SelfSignIn
+      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow
     }
 
     if(networkType === NetworkTypeEnum.DPSK) {

@@ -62,41 +62,6 @@ exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network succes
   color: var(--acx-neutrals-40);
 }
 
-h1.c17.ant-typography {
-  line-height: var(--acx-subtitle-1-line-height);
-  font-size: var(--acx-subtitle-1-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-1-font-weight);
-}
-
-h2.c17.ant-typography {
-  line-height: var(--acx-subtitle-2-line-height);
-  font-size: var(--acx-subtitle-2-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-2-font-weight);
-}
-
-h3.c17.ant-typography {
-  line-height: var(--acx-subtitle-3-line-height);
-  font-size: var(--acx-subtitle-3-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-3-font-weight);
-}
-
-h4.c17.ant-typography {
-  line-height: var(--acx-subtitle-4-line-height);
-  font-size: var(--acx-subtitle-4-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-h5.c17.ant-typography {
-  line-height: var(--acx-subtitle-5-line-height);
-  font-size: var(--acx-subtitle-5-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
 .c3 {
   display: -webkit-box;
   display: -webkit-flex;
@@ -118,7 +83,7 @@ h5.c17.ant-typography {
   min-width: 0;
 }
 
-.c20 {
+.c18 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -128,14 +93,14 @@ h5.c17.ant-typography {
   z-index: 5;
 }
 
-.c20::before {
+.c18::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c20 .ant-space-item .ant-space {
+.c18 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -165,37 +130,37 @@ h5.c17.ant-typography {
   height: 16px;
 }
 
-.c21 .has-steps-form .ant-modal-content .c19 {
+.c19 .has-steps-form .ant-modal-content .c17 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c21 .has-steps-form .ant-modal-content .c19::before {
+.c19 .has-steps-form .ant-modal-content .c17::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c21 .ant-modal-content:has(.c19) .c19 {
+.c19 .ant-modal-content:has(.c17) .c17 {
   position: -webkit-sticky;
   position: sticky;
   width: 100%;
   min-width: 100%;
 }
 
-.c21 .ant-modal-content:has(.c19) .c19::before {
+.c19 .ant-modal-content:has(.c17) .c17::before {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   inset: 0 -24px 0 -24px;
 }
 
-.c21 .ant-modal-content:has(.c19) .ant-modal-body {
+.c19 .ant-modal-content:has(.c17) .ant-modal-body {
   padding-bottom: 0px;
 }
 
-.c21 .ant-modal-content:has(.c19) .ant-modal-footer {
+.c19 .ant-modal-content:has(.c17) .ant-modal-footer {
   display: none;
 }
 
@@ -336,7 +301,7 @@ h5.c17.ant-typography {
   flex: 1;
 }
 
-.c18 {
+.c16 {
   width: 358px;
   margin-top: 40px;
 }
@@ -429,13 +394,6 @@ h5.c17.ant-typography {
 
 .c15 path {
   fill: var(--acx-neutrals-60);
-}
-
-.c16 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  line-height: 32px;
-  grid-template-columns: 250px 1fr;
 }
 
 <section
@@ -1434,52 +1392,6 @@ h5.c17.ant-typography {
                           </div>
                         </div>
                       </div>
-                      <div
-                        class="c16"
-                        width="250px"
-                      >
-                        <h3
-                          class="ant-typography c17 "
-                        >
-                          Accounting Service
-                        </h3>
-                        <div
-                          class="ant-form-item"
-                          style="margin-top: -5px; margin-bottom: 0px;"
-                        >
-                          <div
-                            class="ant-row ant-form-item-row"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <button
-                                    aria-checked="false"
-                                    class="ant-switch"
-                                    data-testid="enable-accounting-service"
-                                    id="0_enableAccountingService"
-                                    role="switch"
-                                    type="button"
-                                  >
-                                    <div
-                                      class="ant-switch-handle"
-                                    />
-                                    <span
-                                      class="ant-switch-inner"
-                                    />
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div
@@ -1496,7 +1408,7 @@ h5.c17.ant-typography {
                           class="ant-col"
                         >
                           <div
-                            class="c18"
+                            class="c16"
                           >
                             <img
                               src="SelfSignIn"
@@ -1530,7 +1442,7 @@ h5.c17.ant-typography {
         </div>
       </div>
       <div
-        class="c19 c20 action-footer single-step"
+        class="c17 c18 action-footer single-step"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
