@@ -107,10 +107,12 @@ export const mockKpiData = {
         unsupported: 10,
         enabled: 10,
         disabled: 40,
+        excluded: 40,
         projectedPowerSaving: 15.1,
         powerConsumption: 48,
         maxApPower: 20,
-        minApPower: 10
+        minApPowerStandard: 80,
+        minApPowerAi: 90
       }
     },
     compareData: {
@@ -119,10 +121,9 @@ export const mockKpiData = {
         unsupported: 10,
         enabled: 20,
         disabled: 30,
+        excluded: 40,
         projectedPowerSaving: 30.2,
-        powerConsumption: 50,
-        maxApPower: 20,
-        minApPower: 5
+        powerConsumption: 50
       }
     }
   }
@@ -215,11 +216,13 @@ export const mockedKpiData = {
       projectedPowerSaving: 15.1,
       enabled: 80,
       disabled: 10,
+      excluded: 20,
       unsupported: 10,
       powerConsumption: 48,
       maxApPower: 20,
-      minApPower: 10,
-      apTotalCount: 100
+      minApPowerStandard: 10,
+      minApPowerAi: 10,
+      apTotalCount: 120
     }
   },
   compareData: {
@@ -228,11 +231,10 @@ export const mockedKpiData = {
       projectedPowerSaving: 30.2,
       enabled: 10,
       disabled: 80,
+      excluded: 20,
       unsupported: 10,
       powerConsumption: 50,
-      maxApPower: 20,
-      minApPower: 5,
-      apTotalCount: 100
+      apTotalCount: 120
     }
   }
 }

@@ -85,14 +85,14 @@ export const MetricsConfig: IntentKPIConfigExtend[] = [{
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
 },{
-  key: 'disabled',
+  key: 'excluded',
   label: defineMessage({ defaultMessage: 'Excluded APs' }),
   format: formatter('countFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.disabled,
+      value: current.excluded,
       total: current.apTotalCount
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs manually excluded from AI-Driven Energy Saving. These APs operate at full power.' })
@@ -142,15 +142,15 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
     }),
   tooltip: defineMessage({ defaultMessage: 'Number of APs actively using AI-Driven Energy Saving to optimize power consumption.' })
 },{
-  key: 'disabled',
+  key: 'excluded',
   label: defineMessage({ defaultMessage: 'Excluded APs' }),
   format: formatter('countFormat'),
   deltaSign: '-',
   valueMessage: defineMessage({ defaultMessage: '{value} / {total}' }),
   valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
     ({
-      value: current.disabled,
-      previous: previous.disabled,
+      value: current.excluded,
+      previous: previous.excluded,
       total: current.apTotalCount,
       isPill: true
     }),
@@ -198,10 +198,10 @@ export const KPIConfig: IntentKPIConfigExtend[] = [{
   format: formatter('countFormat'),
   deltaSign: 'none',
   valueMessage: defineMessage({ defaultMessage: '{value}W' }),
-  valueAccessor: (current: KpiResultExtend, previous: KpiResultExtend) =>
+  valueAccessor: (current: KpiResultExtend) =>
     ({
-      value: current.minApPower,
-      previous: previous.minApPower,
+      value: current.minApPowerStandard,
+      previous: current.minApPowerAi,
       isShowPreviousSpan: true
     }),
   valueSuffixMessage: defineMessage({ defaultMessage: 'vs <previousSpan>{previous}W</previousSpan>' }),
