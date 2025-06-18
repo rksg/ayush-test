@@ -145,4 +145,15 @@ describe('OrganizationInfoSettings', () => {
     expect(await screen.findByText('State must be up to 255 characters')).toBeInTheDocument()
     expect(await screen.findByText('Country must be up to 255 characters')).toBeInTheDocument()
   })
+
+  it('should validate the invalid email format', async () => {
+    render(<Form>
+      <OrganizationInfoSettings type={CertificateCategoryType.CERTIFICATE_AUTHORITY} />
+    </Form>)
+    const emailInput = screen.getByLabelText('Email Address')
+    await userEvent.type(emailInput, '#test@commscope.com')
+
+    expect(await screen.findByText('Please enter a valid email address'))
+      .toBeInTheDocument()
+  })
 })
