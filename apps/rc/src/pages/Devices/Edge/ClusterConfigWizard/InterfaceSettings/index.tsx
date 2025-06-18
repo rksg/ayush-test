@@ -6,6 +6,7 @@ import { useIntl }                        from 'react-intl'
 import { useNavigate, useParams }         from 'react-router-dom'
 
 import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { emptyDualWanLinkSettings }                                               from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
@@ -47,6 +48,7 @@ import {
 import {
   DualWanStepTitle,
   getAllInterfaceAsPortInfoFromForm,
+  getAllPhysicalInterfaceData,
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
@@ -329,12 +331,42 @@ export const InterfaceSettings = () => {
   // eslint-disable-next-line max-len
   }, [configWizardForm, getCompatibleCheckResult, handleValuesChange, onPortStepFinish, dynamicStepsVisible])
 
-  const invokeUpdateApi = async (
+  const invokeUpdateApi = async (payload: InterfaceSettingsFormType, callback: () => void) => {
+    await updateNetworkConfig({
+      params: {
+        venueId: clusterInfo?.venueId,
+        clusterId
+      },
+      payload: transformFromFormToApiData(
+        payload,
+        clusterInfo?.highAvailabilityMode,
+        isEdgeCoreAccessSeparationReady
+      )
+    }).unwrap()
+
+    callback()
+  }
+
+  const handleUpdate = async (
     value: InterfaceSettingsFormType,
     callback: () => void
   ) => {
     try {
-      if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
+      if(isSingleNode && isDualWanConfigRemoved(value)) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `You are about to reduce the number of enabled WAN ports, 
+            which will disable the Dual WAN feature.
+            Are you sure you want to proceed?`
+          }),
+          okText: $t({ defaultMessage: 'Apply the changes' }),
+          onOk: async () => {
+            await invokeUpdateApi(value, callback)
+          }
+        })
+      } else if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
@@ -344,33 +376,11 @@ export const InterfaceSettings = () => {
             of this cluster. Are you sure you want to continue?`
           }),
           onOk: async () => {
-            await updateNetworkConfig({
-              params: {
-                venueId: clusterInfo?.venueId,
-                clusterId
-              },
-              payload: transformFromFormToApiData(
-                value,
-                clusterInfo?.highAvailabilityMode,
-                isEdgeCoreAccessSeparationReady
-              )
-            }).unwrap()
-            callback()
+            await invokeUpdateApi(value, callback)
           }
         })
       } else {
-        await updateNetworkConfig({
-          params: {
-            venueId: clusterInfo?.venueId,
-            clusterId
-          },
-          payload: transformFromFormToApiData(
-            value,
-            clusterInfo?.highAvailabilityMode,
-            isEdgeCoreAccessSeparationReady
-          )
-        }).unwrap()
-        callback()
+        await invokeUpdateApi(value, callback)
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -381,15 +391,29 @@ export const InterfaceSettings = () => {
     return !isEqual(config, clusterNetworkSettingsFormData.vipConfig)
   }
 
+  const isDualWanConfigRemoved = (config: InterfaceSettingsFormType) => {
+    // eslint-disable-next-line max-len
+    const originWanCount = getAllPhysicalInterfaceData(clusterNetworkSettingsFormData.portSettings, clusterNetworkSettingsFormData.lagSettings)
+    const currentWanCount = getAllPhysicalInterfaceData(config.portSettings, config.lagSettings)
+    const isWanCountChanged = originWanCount !== currentWanCount
+
+    const originDualWanConfig = clusterNetworkSettingsFormData.multiWanSettings
+    const currentDualWanConfig = config.multiWanSettings
+    // eslint-disable-next-line max-len
+    const isConfigRemoved = !!originDualWanConfig?.wanMembers.length && isEqual(currentDualWanConfig, emptyDualWanLinkSettings)
+
+    return isWanCountChanged && isConfigRemoved
+  }
+
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
-    await invokeUpdateApi(
+    await handleUpdate(
       value,
       () => navigate(clusterListPage)
     )
   }
 
   const applyAndContinue = async (value: InterfaceSettingsFormType) => {
-    await invokeUpdateApi(
+    await handleUpdate(
       value,
       () => navigate(selectTypePage)
     )
