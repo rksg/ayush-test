@@ -93,7 +93,7 @@ export const SAMLForm = () => {
     if ((editMode || cloneMode) && data) {
       form.setFieldsValue({ ...data })
     }
-  })
+  }, [])
 
   useEffect(() => {
     const samlIdpProfilesName = samlIdpOptions.find((option) => {
