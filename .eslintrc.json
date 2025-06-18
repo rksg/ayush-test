@@ -73,6 +73,14 @@
                 "notDependOnLibsWithTags": ["acx-lib"]
               },
               {
+                "sourceTag": "type:components",
+                "notDependOnLibsWithTags": ["type:features-components"]
+              },
+              {
+                "sourceTag": "acx-app",
+                "notDependOnLibsWithTags": ["rc-common-components"]
+              },
+              {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
               }

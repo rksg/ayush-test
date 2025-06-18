@@ -255,9 +255,9 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   patchVenueApModelFirmwares: {
-    method: 'put',
+    method: 'PATCH',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
-    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
+    opsApi: 'PATCH:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

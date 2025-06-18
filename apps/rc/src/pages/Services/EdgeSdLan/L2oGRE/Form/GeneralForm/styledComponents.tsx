@@ -1,14 +1,8 @@
 import { Col, Row } from 'antd'
 import styled       from 'styled-components/macro'
 
-import { SdLanTopologyVertical } from '@acx-ui/edge/components'
-
 export const Wrapper = styled(Row)`
   margin-top: 30px;
-`
-
-export const StyledSdLanTopology = styled(SdLanTopologyVertical)`
-  padding-right: 50px
 `
 
 export const FieldText = styled.div`

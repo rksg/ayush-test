@@ -54,9 +54,8 @@ export default function SelectPolicyForm () {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
-  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
-  const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed && !isCore
+  const supportLbs = isLbsFeatureTierAllowed && !isCore
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,

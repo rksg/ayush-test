@@ -335,7 +335,7 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -346,6 +346,9 @@ export function useRadiusServer () {
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
+
+      // Clone case don't need to deactivate
+      if (!newRadiusId && !!cloneMode) return
 
       const isRadiusIdChanged = isRadiusKeyChanged(radiusKey, saveData, radiusServerConfigurations)
       const isDifferentNetwork = saveData.id !== networkId
@@ -375,11 +378,11 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string, cloneMode?: boolean) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
-    await updateProfile(saveData, networkId)
+    await updateProfile(saveData, networkId, cloneMode)
   }
 
   return {
@@ -433,11 +436,10 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
+    case NetworkTypeEnum.AAA:
       return true
     case NetworkTypeEnum.OPEN:
-      return !!saveData.wlan?.macAuthMacFormat
-    case NetworkTypeEnum.AAA:
-      return !saveData.useCertificateTemplate
+      return !!saveData.wlan?.macAddressAuthentication
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
         saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough

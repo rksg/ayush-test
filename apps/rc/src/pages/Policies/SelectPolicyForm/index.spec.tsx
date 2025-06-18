@@ -136,8 +136,6 @@ describe('SelectPolicyForm', () => {
 
   it('should render LBS Server Profile when FF is enabled', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(
-      ff => ff === Features.WIFI_EDA_LBS_TOGGLE)
 
     render(
       <Provider>

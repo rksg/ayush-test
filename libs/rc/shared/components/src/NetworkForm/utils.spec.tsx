@@ -727,7 +727,7 @@ describe('Network utils test', () => {
         const saveDataWithMacAuthFormat: NetworkSaveData = {
           type: NetworkTypeEnum.OPEN,
           wlan: {
-            macAuthMacFormat: 'some-format'
+            macAddressAuthentication: true
           }
         }
         expect(shouldSaveRadiusServerSettings(saveDataWithMacAuthFormat)).toBe(true)
@@ -761,7 +761,7 @@ describe('Network utils test', () => {
           type: NetworkTypeEnum.AAA,
           useCertificateTemplate: true
         }
-        expect(shouldSaveRadiusServerSettings(saveDataWithUseCertificateTemplate)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveDataWithUseCertificateTemplate)).toBe(true)
       })
       it('CAPTIVEPORTAL network type', () => {
         const saveDataWithCloudpathEnabled: NetworkSaveData = {

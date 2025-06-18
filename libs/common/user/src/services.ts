@@ -17,7 +17,8 @@ import {
   // FeatureAPIResults,
   BetaFeatures,
   AllowedOperationsResponse,
-  EarlyAccessResponse
+  EarlyAccessResponse,
+  TenantDetails
 } from './types'
 
 export const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -154,6 +155,12 @@ export const UserUrlsInfo = {
 }
 
 export const UserRbacUrlsInfo = {
+  getTenantDetails: {
+    method: 'get',
+    url: '/tenants/self',
+    opsApi: 'GET:/tenants/self',
+    newApi: true
+  },
   getAccountTier: {
     method: 'get',
     url: '/tenants/self/query?accountTier',
@@ -253,7 +260,8 @@ export const {
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
   useUpdateBetaFeatureListMutation,
-  useGetAllowedOperationsQuery
+  useGetAllowedOperationsQuery,
+  useGetTenantDetailsQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -475,6 +483,14 @@ export const {
         }
       },
       invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    getTenantDetails: build.query<TenantDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getTenantDetails, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
