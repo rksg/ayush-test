@@ -789,7 +789,7 @@ describe('Network utils test', () => {
         const saveData: NetworkSaveData = {
           type: NetworkTypeEnum.CAPTIVEPORTAL
         }
-        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
       })
     })
     describe('shouldSaveRadiusServerProfile', () => {

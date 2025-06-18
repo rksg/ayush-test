@@ -18,8 +18,14 @@ import AaaCertAaaDiagram               from '../assets/images/network-wizard-dia
 import AaaCertDiagram                  from '../assets/images/network-wizard-diagrams/aaa-cert.png'
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
 import AaaDiagram                      from '../assets/images/network-wizard-diagrams/aaa.png'
-import ClickThroughWithOweDiagram      from '../assets/images/network-wizard-diagrams/click-through-owe.png'
-import ClickThroughWithPskDiagram      from '../assets/images/network-wizard-diagrams/click-through-psk.png'
+import ClickThroughAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/click-through-aaa-proxy.png'
+import ClickThroughAaaDiagram          from '../assets/images/network-wizard-diagrams/click-through-aaa.png'
+import ClickThroughOweAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/click-through-owe-aaa-proxy.png'
+import ClickThroughOweAaaDiagram       from '../assets/images/network-wizard-diagrams/click-through-owe-aaa.png'
+import ClickThroughOweDiagram          from '../assets/images/network-wizard-diagrams/click-through-owe.png'
+import ClickThroughPskAaaProxyDiagram  from '../assets/images/network-wizard-diagrams/click-through-psk-aaa-proxy.png'
+import ClickThroughPskAaaDiagram       from '../assets/images/network-wizard-diagrams/click-through-psk-aaa.png'
+import ClickThroughPskDiagram          from '../assets/images/network-wizard-diagrams/click-through-psk.png'
 import ClickThroughDiagram             from '../assets/images/network-wizard-diagrams/click-through.png'
 import CloudpathWithOweDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-owe.png'
 import CloudpathProxyWithOweDiagram    from '../assets/images/network-wizard-diagrams/cloudpath-proxy-owe.png'
@@ -294,8 +300,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     (wlanSecurity === WlanSecurityEnum.OWE) || (wlanSecurity === WlanSecurityEnum.OWETransition)
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
-    [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :
-      (wisprWithOwe ? ClickThroughWithOweDiagram : ClickThroughDiagram),
+    [GuestNetworkTypeEnum.ClickThrough]: getClickThroughDiagram(props),
     [GuestNetworkTypeEnum.SelfSignIn]: getSelfSignInDiagram(props),
     [GuestNetworkTypeEnum.HostApproval]: getHostApprovalDiagram(props),
     [GuestNetworkTypeEnum.GuestPass]: getGuestPassDiagram(props),
@@ -319,6 +324,24 @@ interface CaptivePortalDiagramSet {
 }
 
 const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
+
+  // --- ClickThrough ---
+  ClickThroughOWE: {
+    Diagram: ClickThroughOweDiagram,
+    AaaProxyDiagram: ClickThroughOweAaaProxyDiagram,
+    AaaDiagram: ClickThroughOweAaaDiagram
+  },
+  ClickThroughPSK: {
+    Diagram: ClickThroughPskDiagram,
+    AaaProxyDiagram: ClickThroughPskAaaProxyDiagram,
+    AaaDiagram: ClickThroughPskAaaDiagram
+  },
+  ClickThrough: {
+    Diagram: ClickThroughDiagram,
+    AaaProxyDiagram: ClickThroughAaaProxyDiagram,
+    AaaDiagram: ClickThroughAaaDiagram
+  },
+
   // --- SelfSignIn ---
   SelfSignInOWE: {
     Diagram: SelfSignInOweDiagram,
@@ -400,6 +423,9 @@ function getCommonCaptivePortalDiagram (
 const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
 const getHostApprovalDiagram = createCaptivePortalDiagramGenerator('HostApproval')
 const getGuestPassDiagram = createCaptivePortalDiagramGenerator('GuestPass')
+const getClickThroughDiagram = createCaptivePortalDiagramGenerator('ClickThrough')
+
+
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
@@ -437,14 +463,13 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
       return !(macAuthProps.enableMACAuth && !macAuthProps.isMacRegistrationList)
     }
 
-    // Hide AAA button under Captive Portal - Workflow
+    // Hide AAA button under Captive Portal
     if(props.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       const cpProps = props as CaptivePortalDiagramProps
 
-      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow ||
-        cpProps.networkPortalType === GuestNetworkTypeEnum.HostApproval ||
-        cpProps.networkPortalType === GuestNetworkTypeEnum.GuestPass ||
-        cpProps.networkPortalType === GuestNetworkTypeEnum.SelfSignIn
+      return cpProps.networkPortalType !== GuestNetworkTypeEnum.Cloudpath &&
+        cpProps.networkPortalType !== GuestNetworkTypeEnum.WISPr
+
     }
 
     if(networkType === NetworkTypeEnum.DPSK) {

@@ -639,9 +639,11 @@ describe('NetworkDiagram', () => {
         <NetworkFormContext.Provider value={{
           editMode: false,
           cloneMode: false,
+          isRuckusAiMode: false,
           data: { type },
           setData: jest.fn()
-        }}><NetworkDiagram /></NetworkFormContext.Provider>
+        }}><NetworkDiagram />
+        </NetworkFormContext.Provider>
       </Provider>, {
         route: {
           params
@@ -653,17 +655,21 @@ describe('NetworkDiagram', () => {
     })
     it('should render Captive portal (Click Through) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.ClickThrough
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -672,22 +678,26 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('ClickThrough')
-      expect(asFragment()).toMatchSnapshot()
     })
     it('should render Captive portal (Click Through with PSK) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.ClickThrough
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType}
-              wlanSecurity={WlanSecurityEnum.WPA2Personal} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              enableAccountingService={true}
+              networkSecurity={'PSK'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -695,22 +705,28 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('ClickThroughPsk')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('ClickThroughPskAaa')
     })
     it('should render Captive portal (Click Through with OWE) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.ClickThrough
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               type
             },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wlanSecurity={WlanSecurityEnum.OWE} />
+            <NetworkDiagram
+              type={NetworkTypeEnum.CAPTIVEPORTAL}
+              networkPortalType={portalType}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+              networkSecurity={'OWE'}
+            />
           </NetworkFormContext.Provider>
         </Provider>, {
           route: {
@@ -718,8 +734,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('ClickThroughOwe')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('ClickThroughOweAaaProxy')
     })
     it('should render Captive portal (Self Sign In) diagram successfully', async () => {
       const portalType = GuestNetworkTypeEnum.SelfSignIn

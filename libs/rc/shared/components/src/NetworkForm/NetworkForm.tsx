@@ -725,7 +725,8 @@ export function NetworkForm (props:{
       saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Workflow &&
       saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.HostApproval &&
       saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.GuestPass &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.SelfSignIn
+      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.SelfSignIn &&
+      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.ClickThrough
     ){
       delete data.authRadius
       delete data.accountingRadius
