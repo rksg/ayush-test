@@ -120,6 +120,8 @@ describe('OpenNetwork form', () => {
 
     await userEvent.click(await screen.findByLabelText(/MAC Registration list/i))
     expect(screen.queryByText(/mac address format/i)).not.toBeInTheDocument()
+
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
   })
 
   it('should render OpenNetwork with R370 compatibility tooltip', async () => {

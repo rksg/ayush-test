@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsEdgeFeatureReady }              from '@acx-ui/rc/components'
 import { render, screen, within }             from '@acx-ui/test-utils'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
 import { AccountTier }                        from '@acx-ui/utils'
@@ -16,7 +15,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
@@ -25,7 +24,7 @@ jest.mock('@acx-ui/user', () => ({
   getUserProfile: jest.fn()
 }))
 const userProfileR1 = getUserProfileR1 as jest.Mock
-
+const mockedUseIsEdgeFeatureReady = jest.requireMock('@acx-ui/rc/utils').useIsEdgeFeatureReady
 
 describe('ReportList', () => {
   const path = '/:tenantId/t'
@@ -74,7 +73,7 @@ describe('ReportList', () => {
   })
 
   it('should render report cards with feature ready', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    jest.mocked(mockedUseIsEdgeFeatureReady).mockReturnValue(true)
 
     render(<ReportList />, { route: { path, params } })
 
@@ -83,7 +82,7 @@ describe('ReportList', () => {
   })
 
   it('should not render report cards without feature ready', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    jest.mocked(mockedUseIsEdgeFeatureReady).mockReturnValue(false)
 
     render(<ReportList />, { route: { path, params } })
 

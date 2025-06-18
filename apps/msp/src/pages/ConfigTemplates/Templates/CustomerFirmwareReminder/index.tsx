@@ -4,6 +4,7 @@ import { MspTenantLink } from '@acx-ui/react-router-dom'
 
 import { Warning } from '../styledComponents'
 
+
 export function CustomerFirmwareReminder () {
   const { $t } = useIntl()
   return <Warning>{
