@@ -5,9 +5,7 @@ import type { Mdu360TabProps }                   from '@acx-ui/analytics/compone
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-
-
-const Mdu360Tabs :React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
+const Mdu360Tabs: React.FC<Mdu360TabProps> = ({ startDate, endDate }) => {
   const { $t } = useIntl()
   const basePath = useTenantLink('/mdu360', 'v')
   const navigate = useNavigate()

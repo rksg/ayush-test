@@ -1181,11 +1181,6 @@ exports[`ApplicationCategories should render top 10 application categories corre
                           fill="none"
                           transform="translate(376.2 384)"
                         />
-                        <path
-                          d="M-1 17.5l2 0l0 1l-2 0Z"
-                          fill="none"
-                          transform="translate(376.2 384)"
-                        />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
@@ -2415,11 +2410,6 @@ exports[`ApplicationCategories should render top 10 application categories corre
                           fill="none"
                           transform="translate(376.2 384)"
                         />
-                        <path
-                          d="M-1 17.5l2 0l0 1l-2 0Z"
-                          fill="none"
-                          transform="translate(376.2 384)"
-                        />
                         <text
                           dominant-baseline="central"
                           fill="#333333"
@@ -3352,11 +3342,6 @@ exports[`ApplicationCategories should render top 10 application categories corre
                         />
                         <path
                           d="M-2.5 4l5 0l0 28l-5 0Z"
-                          fill="none"
-                          transform="translate(376.2 384)"
-                        />
-                        <path
-                          d="M-2.5 17.5l5 0l0 1l-5 0Z"
                           fill="none"
                           transform="translate(376.2 384)"
                         />

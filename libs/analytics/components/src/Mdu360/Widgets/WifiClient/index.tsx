@@ -35,18 +35,19 @@ export const WifiClient = ({ filters }: { filters: WifiClientFilters }) => {
 
   return (
     <Loader states={[queryResults]}>
-      <Card type='default' title={title}>
-        <div style={{ marginTop: -38 }}>
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            value={selectedTab}
-            onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
-            size='small'
-            align='right'
-            noPadding
-          />
-        </div>
-        {chartData && chartData.length > 0 ? (
+      <Card
+        title={title}
+        extra={<ContentSwitcher
+          tabDetails={tabDetails}
+          value={selectedTab}
+          onChange={(value) => setSelectedTab(value as 'deviceType' | 'manufacturer')}
+          size='small'
+          align='center'
+          noPadding
+          style={{ padding: 0 }}
+        />}
+      >
+        {chartData?.length ? (
           <AutoSizer>
             {({ height, width }) => (
               <DonutChart

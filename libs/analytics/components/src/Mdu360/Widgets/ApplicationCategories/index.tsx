@@ -62,7 +62,6 @@ export const ApplicationCategories = ({
   return (
     <Loader states={[queryResults]}>
       <Card
-        type='default'
         title={title}
         extra={
           <ContentSwitcher
