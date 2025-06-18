@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -29,8 +29,8 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
   })
 
   const tabDetails = [
-    { label: $t({ defaultMessage: 'Client Count' }), value: 'clientCount' },
-    { label: $t({ defaultMessage: 'Data Usage' }), value: 'applicationTraffic' }
+    { label: $t({ defaultMessage: 'Client Count' }), value: 'clientCount', children: null },
+    { label: $t({ defaultMessage: 'Data Usage' }), value: 'applicationTraffic', children: null }
   ]
 
   const results = queryResults?.data
@@ -74,11 +74,7 @@ export const TopApplications = ({ filters }: { filters: TopApplicationsFilters }
       <Card type='default' title={title}>
         <UI.ContentSwitcherWrapper>
           <ContentSwitcher
-            tabDetails={tabDetails.map(({ label, value }) => ({
-              label,
-              value,
-              children: null
-            }))}
+            tabDetails={tabDetails}
             value={selectedTab}
             onChange={(value) => setSelectedTab(value as 'clientCount' | 'applicationTraffic')}
             size='small'
