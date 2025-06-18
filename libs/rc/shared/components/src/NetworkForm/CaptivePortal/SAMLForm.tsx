@@ -88,7 +88,7 @@ export const SAMLForm = () => {
   }, [idpViewDataList])
 
   // Initialization when form in edit/clone mode
-  // All Captive Portal form needs this to make sure value is setup well.
+  // All Captive Portal form needs this to make sure the value is set up well.
   useEffect(() => {
     if ((editMode || cloneMode) && data) {
       form.setFieldsValue({ ...data })
