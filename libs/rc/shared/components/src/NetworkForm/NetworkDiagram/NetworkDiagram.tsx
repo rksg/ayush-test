@@ -335,8 +335,6 @@ function createCaptivePortalDiagramGenerator (
       props.networkSecurity === 'OWE' || props.networkSecurity === 'PSK' ?
         props.networkSecurity : ''
     const key = `${prefix}${securityTypeKey}`
-
-    // 嘗試精確匹配，如果沒有則回退到該 prefix 的 'NONE' 默認值
     const diagrams = captivePortalDiagramMapping[key]
 
     return getCommonCaptivePortalDiagram(
