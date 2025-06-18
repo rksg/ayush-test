@@ -303,37 +303,49 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
 
-function getSelfSignInDiagram (props: CaptivePortalDiagramProps) {
-  let diagrams
+interface CaptivePortalDiagramSet {
+  Diagram: string;
+  AaaProxyDiagram: string;
+  AaaDiagram: string;
+}
 
-  switch (props.networkSecurity) {
-    case 'OWE':
-      diagrams = {
-        Diagram: SelfSignInOweDiagram,
-        AaaProxyDiagram: SelfSignInOweAaaProxyDiagram,
-        AaaDiagram: SelfSignInOweAaaDiagram
-      }
-      break
-    case 'PSK':
-      diagrams = {
-        Diagram: SelfSignInPskDiagram,
-        AaaProxyDiagram: SelfSignInPskAaaProxyDiagram,
-        AaaDiagram: SelfSignInPskAaaDiagram
-      }
-      break
-    case 'NONE':
-    default:
-      diagrams = {
-        Diagram: SelfSignInDiagram,
-        AaaProxyDiagram: SelfSignInAaaProxyDiagram,
-        AaaDiagram: SelfSignInAaaDiagram
-      }
-      break
+const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
+  // --- SelfSignIn ---
+  SelfSignInOWE: {
+    Diagram: SelfSignInOweDiagram,
+    AaaProxyDiagram: SelfSignInOweAaaProxyDiagram,
+    AaaDiagram: SelfSignInOweAaaDiagram
+  },
+  SelfSignInPSK: {
+    Diagram: SelfSignInPskDiagram,
+    AaaProxyDiagram: SelfSignInPskAaaProxyDiagram,
+    AaaDiagram: SelfSignInPskAaaDiagram
+  },
+  SelfSignIn: {
+    Diagram: SelfSignInDiagram,
+    AaaProxyDiagram: SelfSignInAaaProxyDiagram,
+    AaaDiagram: SelfSignInAaaDiagram
   }
+}
 
-  return getCommonCaptivePortalDiagram(
-    props, diagrams.Diagram, diagrams.AaaProxyDiagram, diagrams.AaaDiagram
-  )
+function createCaptivePortalDiagramGenerator (
+  prefix: keyof typeof captivePortalDiagramMapping): (props: CaptivePortalDiagramProps) => string {
+  return (props: CaptivePortalDiagramProps) => {
+    const securityTypeKey: 'OWE' | 'PSK' | '' =
+      props.networkSecurity === 'OWE' || props.networkSecurity === 'PSK' ?
+        props.networkSecurity : ''
+    const key = `${prefix}${securityTypeKey}`
+
+    // 嘗試精確匹配，如果沒有則回退到該 prefix 的 'NONE' 默認值
+    const diagrams = captivePortalDiagramMapping[key]
+
+    return getCommonCaptivePortalDiagram(
+      props,
+      diagrams.Diagram,
+      diagrams.AaaProxyDiagram,
+      diagrams.AaaDiagram
+    )
+  }
 }
 
 function getCommonCaptivePortalDiagram (
@@ -346,6 +358,7 @@ function getCommonCaptivePortalDiagram (
     getAAADiagramByParams(props, aaaProxyDiagram, aaaNonProxyDiagram) : nonAaaDiagram
 }
 
+const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
@@ -388,6 +401,7 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
       const cpProps = props as CaptivePortalDiagramProps
 
       return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow ||
+        cpProps.networkPortalType === GuestNetworkTypeEnum.HostApproval ||
         cpProps.networkPortalType === GuestNetworkTypeEnum.SelfSignIn
     }
 
