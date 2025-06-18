@@ -35,8 +35,14 @@ import DpskAaaDiagram                  from '../assets/images/network-wizard-dia
 import DpskCloudpathProxyDiagram       from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-proxy.png'
 import DpskCloudpathDiagram            from '../assets/images/network-wizard-diagrams/dpsk-cloudpath.png'
 import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
-import GuestPassWithOweDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
-import GuestPassWithPskDiagram         from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
+import GuestPassAaaProxyDiagram        from '../assets/images/network-wizard-diagrams/guest-pass-aaa-proxy.png'
+import GuestPassAaaDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-aaa.png'
+import GuestPassOweAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa-proxy.png'
+import GuestPassOweAaaDiagram          from '../assets/images/network-wizard-diagrams/guest-pass-owe-aaa.png'
+import GuestPassOweDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-owe.png'
+import GuestPassPskAaaProxyDiagram     from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa-proxy.png'
+import GuestPassPskAaaDiagram          from '../assets/images/network-wizard-diagrams/guest-pass-psk-aaa.png'
+import GuestPassPskDiagram             from '../assets/images/network-wizard-diagrams/guest-pass-psk.png'
 import GuestPassDiagram                from '../assets/images/network-wizard-diagrams/guest-pass.png'
 import HostApprovalWithOweDiagram      from '../assets/images/network-wizard-diagrams/host-approval-owe.png'
 import HostApprovalWithPskDiagram      from '../assets/images/network-wizard-diagrams/host-approval-psk.png'
@@ -287,8 +293,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.SelfSignIn]: getSelfSignInDiagram(props),
     [GuestNetworkTypeEnum.HostApproval]: wisprWithPsk ? HostApprovalWithPskDiagram :
       (wisprWithOwe ? HostApprovalWithOweDiagram : HostApprovalDiagram),
-    [GuestNetworkTypeEnum.GuestPass]: wisprWithPsk ? GuestPassWithPskDiagram :
-      (wisprWithOwe ? GuestPassWithOweDiagram : GuestPassDiagram),
+    [GuestNetworkTypeEnum.GuestPass]: getGuestPassDiagram(props),
     [GuestNetworkTypeEnum.Cloudpath]: getCloudpathDiagram(wisprWithPsk, wisprWithOwe, props),
     [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept ?
       (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
@@ -310,6 +315,23 @@ interface CaptivePortalDiagramSet {
 }
 
 const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
+  // --- GuestPass ---
+  GuestPassOWE: {
+    Diagram: GuestPassOweDiagram,
+    AaaProxyDiagram: GuestPassOweAaaProxyDiagram,
+    AaaDiagram: GuestPassOweAaaDiagram
+  },
+  GuestPassPSK: {
+    Diagram: GuestPassPskDiagram,
+    AaaProxyDiagram: GuestPassPskAaaProxyDiagram,
+    AaaDiagram: GuestPassPskAaaDiagram
+  },
+  GuestPass: {
+    Diagram: GuestPassDiagram,
+    AaaProxyDiagram: GuestPassAaaProxyDiagram,
+    AaaDiagram: GuestPassAaaDiagram
+  },
+
   // --- SelfSignIn ---
   SelfSignInOWE: {
     Diagram: SelfSignInOweDiagram,
@@ -357,6 +379,7 @@ function getCommonCaptivePortalDiagram (
 }
 
 const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
+const getGuestPassDiagram = createCaptivePortalDiagramGenerator('GuestPass')
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
@@ -400,6 +423,7 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
 
       return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow ||
         cpProps.networkPortalType === GuestNetworkTypeEnum.HostApproval ||
+        cpProps.networkPortalType === GuestNetworkTypeEnum.GuestPass ||
         cpProps.networkPortalType === GuestNetworkTypeEnum.SelfSignIn
     }
 

@@ -812,7 +812,7 @@ describe('Network utils test', () => {
             guestNetworkType: GuestNetworkTypeEnum.GuestPass
           }
         }
-        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(false)
+        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(true)
       })
     })
 
