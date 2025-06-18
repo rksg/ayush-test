@@ -90,7 +90,7 @@ export const useEdgeSdLanActions = () => {
   const handleNetworkChanges = async (
     serviceId: string,
     // eslint-disable-next-line max-len
-    currentData: EdgeSdLanServiceProfile['activeNetwork'] | EdgeSdLanServiceProfile['activeNetworkTemplate'],
+    currentData: EdgeSdLanServiceProfile['activeNetwork'] | EdgeSdLanServiceProfile['activeNetworkTemplate'] | undefined,
     // eslint-disable-next-line max-len
     originData?: EdgeSdLanServiceProfile['activeNetwork'] | EdgeSdLanServiceProfile['activeNetworkTemplate'],
     isTemplate = false
@@ -132,11 +132,13 @@ export const useEdgeSdLanActions = () => {
     return Promise.all(actions)
   }
 
-  const createEdgeSdLan = async (req: {
-    payload: EdgeSdLanServiceProfile,
-    callback?: (res: (CommonResult[]
-      | CommonErrorsResult<CatchErrorDetails>)) => void
-  }, isMsp: boolean) => {
+  const createEdgeSdLan = async (
+    req: {
+      payload: EdgeSdLanServiceProfile,
+      callback?: (res: (CommonResult[] | CommonErrorsResult<CatchErrorDetails>)) => void
+    },
+    isMsp: boolean
+  ) => {
     const { payload, callback } = req
     return await addEdgeSdLan({
       customHeaders: {
@@ -155,7 +157,7 @@ export const useEdgeSdLanActions = () => {
         try {
           const reqResults = await handleNetworkChanges(serviceId, payload.activeNetwork)
           if (isMsp)
-            await handleNetworkChanges(serviceId, payload.activeNetworkTemplate)
+            await handleNetworkChanges(serviceId, payload.activeNetworkTemplate, undefined, true)
           callback?.(reqResults)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
@@ -170,7 +172,8 @@ export const useEdgeSdLanActions = () => {
       payload: EdgeSdLanServiceProfile,
       callback?: (res: (CommonResult[]
         | CommonErrorsResult<CatchErrorDetails>)) => void
-    }
+    },
+    isMsp: boolean
   ) => {
     const { payload, callback } = req
     const actions = []
@@ -194,6 +197,16 @@ export const useEdgeSdLanActions = () => {
         payload.activeNetwork,
         originData.activeNetwork
       )
+
+      if (isMsp) {
+        await handleNetworkChanges(
+          originData.id || '',
+          payload.activeNetworkTemplate,
+          originData.activeNetworkTemplate,
+          isMsp
+        )
+      }
+
       const reqResults = await Promise.all([...actions, networkResults])
       callback?.(reqResults.flat())
     } catch(error) {

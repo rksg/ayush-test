@@ -1,15 +1,14 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }                                           from '@acx-ui/components'
-import { useEdgeSdLanActions }                                          from '@acx-ui/edge/components'
-import { Features }                                                     from '@acx-ui/feature-toggle'
-import { useGetEdgeMvSdLanViewDataListQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { Loader, PageHeader }                                from '@acx-ui/components'
+import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
+import { Features }                                          from '@acx-ui/feature-toggle'
+import { useGetEdgeMvSdLanViewDataListQuery }                from '@acx-ui/rc/services'
 import {
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  TenantType,
   useIsEdgeFeatureReady,
   useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -34,6 +33,8 @@ export const EditEdgeSdLan = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const { updateEdgeSdLan } = useEdgeSdLanActions()
+  const isTemplateSupported = useIsEdgeDelegationPermitted()
+
   const { data, isLoading, isFetching } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: ['id', 'name', 'tunnelProfileId', 'tunneledWlans'],
@@ -44,11 +45,6 @@ export const EditEdgeSdLan = () => {
       ...rest
     })
   })
-
-  const tenantDetailsData = useGetTenantDetailsQuery({ }, { skip: !isEdgeDelegationEnabled })
-  // eslint-disable-next-line max-len
-  const isTemplateSupported = tenantDetailsData.data?.tenantType === TenantType.MSP || tenantDetailsData.data?.tenantType === TenantType.MSP_NON_VAR
-
 
   const steps = [
     {
@@ -75,23 +71,35 @@ export const EditEdgeSdLan = () => {
             venueId,
             networkId,
             tunnelProfileId
-          }))).flat()
+          }))).flat(),
+        activeNetworkTemplate: isTemplateSupported && formData.activatedNetworkTemplates
+          ? Object.entries(formData.activatedNetworkTemplates)
+            .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
+              venueId,
+              networkId,
+              tunnelProfileId
+            }))).flat()
+          : undefined
       }
 
       await new Promise(async (resolve, reject) => {
-        await updateEdgeSdLan(transformToApiData(data), {
-          payload,
-          callback: (result) => {
+        await updateEdgeSdLan(
+          transformToApiData(data),
+          {
+            payload,
+            callback: (result) => {
             // callback is after all RBAC related APIs sent
-            if (Array.isArray(result)) {
-              resolve(true)
-              navigate(linkToServiceList, { replace: true })
-            } else {
-              reject(result)
+              if (Array.isArray(result)) {
+                resolve(true)
+                navigate(linkToServiceList, { replace: true })
+              } else {
+                reject(result)
+              }
             }
-          }
+          },
+          isTemplateSupported
           // need to catch basic service profile failed
-        }).catch(reject)
+        ).catch(reject)
       })
     } catch(err) {
       // eslint-disable-next-line no-console

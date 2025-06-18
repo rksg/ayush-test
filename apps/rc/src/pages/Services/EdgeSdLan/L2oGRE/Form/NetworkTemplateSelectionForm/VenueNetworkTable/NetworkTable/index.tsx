@@ -23,7 +23,6 @@ import {
   sortProp,
   TunnelProfileViewData,
   TunnelTypeEnum,
-  useConfigTemplate,
   useHelpPageLink,
   useTableQuery } from '@acx-ui/rc/utils'
 import { compareVersions, getIntl } from '@acx-ui/utils'
@@ -92,7 +91,6 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   } = props
 
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
 
   const { form } = useStepFormContext<EdgeMvSdLanFormModel>()
   const {
@@ -117,7 +115,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       filters: {
         'venueApGroups.venueId': [venueId]
       },
-      isTemplate
+      isTemplate: true
     },
     option: {
       skip: !Boolean(venueId)

@@ -13,8 +13,7 @@ import {
   arraySizeSort,
   defaultSort,
   EdgeMvSdLanFormModel,
-  sortProp,
-  useConfigTemplate
+  sortProp
 } from '@acx-ui/rc/utils'
 
 import { useEdgeSdLanContext } from '../../EdgeSdLanContextProvider'
@@ -38,7 +37,6 @@ export const EdgeSdLanVenueNetworksTemplateTable = (props: VenueNetworksTablePro
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans, allPins } = useEdgeSdLanContext()
-  const { isTemplate } = useConfigTemplate()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
@@ -63,7 +61,7 @@ export const EdgeSdLanVenueNetworksTemplateTable = (props: VenueNetworksTablePro
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      isTemplate
+      isTemplate: true
     }
   }, {
     selectFromResult: ({ data, isLoading, isFetching }) => ({

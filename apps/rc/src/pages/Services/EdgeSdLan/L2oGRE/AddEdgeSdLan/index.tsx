@@ -1,13 +1,11 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }               from '@acx-ui/components'
-import { useEdgeSdLanActions }      from '@acx-ui/edge/components'
-import { Features }                 from '@acx-ui/feature-toggle'
-import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { PageHeader }                                        from '@acx-ui/components'
+import { useEdgeSdLanActions, useIsEdgeDelegationPermitted } from '@acx-ui/edge/components'
+import { Features }                                          from '@acx-ui/feature-toggle'
 import {
   ServiceType,
-  TenantType,
   useAfterServiceSaveRedirectPath,
   useIsEdgeFeatureReady,
   useServiceListBreadcrumb
@@ -27,11 +25,9 @@ export const AddEdgeSdLan = () => {
 
   const redirectPathAfterSave = useAfterServiceSaveRedirectPath(ServiceType.EDGE_SD_LAN)
   const { createEdgeSdLan } = useEdgeSdLanActions()
-  const [form] = Form.useForm()
+  const isTemplateSupported = useIsEdgeDelegationPermitted()
 
-  const tenantDetailsData = useGetTenantDetailsQuery({ }, { skip: !isEdgeDelegationEnabled })
-  // eslint-disable-next-line max-len
-  const isTemplateSupported = tenantDetailsData.data?.tenantType === TenantType.MSP || tenantDetailsData.data?.tenantType === TenantType.MSP_NON_VAR
+  const [form] = Form.useForm()
 
   const steps = [
     {
