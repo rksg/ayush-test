@@ -439,11 +439,10 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.DPSK:
+    case NetworkTypeEnum.AAA:
       return true
     case NetworkTypeEnum.OPEN:
       return !!saveData.wlan?.macAddressAuthentication
-    case NetworkTypeEnum.AAA:
-      return !saveData.useCertificateTemplate
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return [GuestNetworkTypeEnum.Cloudpath, GuestNetworkTypeEnum.Workflow].includes(
         saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough

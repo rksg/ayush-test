@@ -505,46 +505,25 @@ describe('NetworkDiagram', () => {
   describe('NetworkDiagram - AAA', () => {
     const type = NetworkTypeEnum.AAA
     it('should render AAA diagram successfully', async () => {
-      const { asFragment } = render(<Provider><NetworkDiagram type={type} /></Provider>)
+      render(
+        <Provider><NetworkDiagram type={type} /></Provider>
+      )
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Aaa')
-      expect(asFragment()).toMatchSnapshot()
     })
     it('should render AAA Proxy diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
-            data: { type },
-            setData: jest.fn()
-          }}>
-            <NetworkDiagram enableAuthProxy={true} />
-          </NetworkFormContext.Provider>
-        </Provider>, {
-          route: {
-            params
-          }
-        })
-      const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('AaaProxy')
-      expect(asFragment()).toMatchSnapshot()
-    })
-
-    it('should render AAA Proxy diagram when enabling Authentication Service button', async () => {
-      const { asFragment } = render(
-        <Provider>
-          <NetworkFormContext.Provider value={{
-            editMode: false,
-            cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
             <NetworkDiagram
+              type={type}
               enableAuthProxy={true}
-              enableAccountingProxy={false}
-              enableAaaAuthBtn={true}
-              showButtons={true}
             />
           </NetworkFormContext.Provider>
         </Provider>, {
@@ -552,25 +531,27 @@ describe('NetworkDiagram', () => {
             params
           }
         })
+
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('AaaProxy')
-      expect(asFragment()).toMatchSnapshot()
     })
 
-    it('should render AAA diagram when enabling Accounting Service button', async () => {
-      const { asFragment } = render(
+    // eslint-disable-next-line max-len
+    it('should render AAA Proxy diagram when Auth and Accounting proxy mode not the same', async () => {
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
             <NetworkDiagram
+              type={type}
               enableAuthProxy={true}
+              enableAccountingService={true}
               enableAccountingProxy={false}
-              enableAaaAuthBtn={false}
-              showButtons={true}
             />
           </NetworkFormContext.Provider>
         </Provider>, {
@@ -578,9 +559,66 @@ describe('NetworkDiagram', () => {
             params
           }
         })
+
       const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaProxy')
+
+      const acctButton = screen.getByRole('button', { name: 'Accounting Service' })
+      await userEvent.click(acctButton)
       expect(diagram.src).toContain('Aaa')
-      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render AAA Proxy Cert template Accounting proxy diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              useCertificateTemplate={true}
+              enableAccountingService={true}
+              enableAccountingProxy={true}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaCertAaaProxy')
+    })
+
+    it('should render AAA Proxy Cert template diagram successfully', async () => {
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram
+              type={type}
+              useCertificateTemplate={true}
+              enableAccountingService={false}
+            />
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('AaaCert')
     })
   })
 

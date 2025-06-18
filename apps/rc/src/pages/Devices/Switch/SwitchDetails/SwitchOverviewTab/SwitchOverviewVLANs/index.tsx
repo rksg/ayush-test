@@ -77,7 +77,6 @@ export function SwitchOverviewVLANs (props: {
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const [addSwitchesVlans] = useAddSwitchVlansMutation()
   const [updateSwitchVlan] = useUpdateSwitchVlanMutation()
@@ -109,7 +108,7 @@ export function SwitchOverviewVLANs (props: {
       }
     }
   }, {
-    skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
+    skip: !(switchDetail?.venueId)
   })
 
   const { data: lagList, isLoading: isLagListLoading }
@@ -117,7 +116,7 @@ export function SwitchOverviewVLANs (props: {
       params: { tenantId, switchId, venueId: switchDetail?.venueId },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
+      skip: !(switchDetail?.venueId)
     })
 
   const { data: vePortsList, isLoading: isVePortsListLoading }
@@ -129,7 +128,7 @@ export function SwitchOverviewVLANs (props: {
       },
       enableRbac: isSwitchRbacEnabled
     }, {
-      skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
+      skip: !(switchDetail?.venueId)
     })
 
   const { data: stackMember, isLoading: isStackMemberLoading } = useStackMemberListQuery({
@@ -139,7 +138,7 @@ export function SwitchOverviewVLANs (props: {
         'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
       filters: { activeUnitId: [switchDetail?.serialNumber] } }
   }, {
-    skip: !(switchDetail?.venueId && switchDetail?.enableStack && isSwitchLevelVlanEnabled)
+    skip: !(switchDetail?.venueId && switchDetail?.enableStack)
   })
 
   const { data: portsData } = useSwitchPortlistQuery({
@@ -152,9 +151,7 @@ export function SwitchOverviewVLANs (props: {
       page: 1,
       pageSize: 10000,
       fields: SwitchPortViewModelQueryFields
-    } }, {
-    skip: !isSwitchLevelVlanEnabled
-  })
+    } })
 
   const onClose = () => {
     setDrawerVisible(false)
@@ -369,7 +366,7 @@ export function SwitchOverviewVLANs (props: {
         getOpsApi(SwitchRbacUrlsInfo.deleteSwitchVlan),
         getOpsApi(SwitchRbacUrlsInfo.updateSwitchVlan)
       ] })
-  && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational
+  && !cliApplied && isSwitchOperational
 
   const getUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
     return vlanList?.filter(
@@ -475,7 +472,7 @@ export function SwitchOverviewVLANs (props: {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'radio' }}
-        actions={isSwitchLevelVlanEnabled ? filterByAccess(tableActions) : []}
+        actions={filterByAccess(tableActions)}
       />
 
       <Drawer
@@ -489,7 +486,7 @@ export function SwitchOverviewVLANs (props: {
         }
       />
 
-      { isSwitchLevelVlanEnabled && vlanDrawerVisible && <VlanSettingDrawer
+      { vlanDrawerVisible && <VlanSettingDrawer
         editMode={editMode}
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
@@ -507,7 +504,7 @@ export function SwitchOverviewVLANs (props: {
         switchFirmwares={[switchFirmware]}
       />}
 
-      { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
+      { defaultVlanDrawerVisible && <DefaultVlanDrawer
         visible={defaultVlanDrawerVisible}
         setVisible={setDefaultVlanDrawerVisible}
         defaultVlan={defaultVlan}

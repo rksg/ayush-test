@@ -212,7 +212,7 @@ describe('Wired - VlanSetting', () => {
   describe('Bulk VLAN provisioning', () => {
     it('should handle edit VLAN correctly', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+        ff === Features.BULK_VLAN_PROVISIONING
       )
       const params = {
         tenantId: 'tenant-id',
@@ -247,7 +247,7 @@ describe('Wired - VlanSetting', () => {
 
     it('should handle delete VLAN correctly', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+        ff === Features.BULK_VLAN_PROVISIONING
       )
       const params = {
         tenantId: 'tenant-id'
@@ -295,7 +295,7 @@ describe('Wired - VlanSetting', () => {
 
     it('should handle change IPv4 DHCP Snooping correctly', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+        ff === Features.BULK_VLAN_PROVISIONING
       )
       const params = {
         tenantId: 'tenant-id',
