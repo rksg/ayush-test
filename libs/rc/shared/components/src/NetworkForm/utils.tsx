@@ -448,6 +448,7 @@ export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): bool
         GuestNetworkTypeEnum.Cloudpath,
         GuestNetworkTypeEnum.Workflow,
         GuestNetworkTypeEnum.GuestPass,
+        GuestNetworkTypeEnum.HostApproval,
         GuestNetworkTypeEnum.SelfSignIn
       ].includes(
         saveData.guestPortal?.guestNetworkType ?? GuestNetworkTypeEnum.ClickThrough
