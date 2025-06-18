@@ -36,7 +36,7 @@ describe('WifiGeneration services', () => {
 
   it('should handle when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
-      data: { network: { hierarchyNode: { apWifiCapabilityDistribution: [] } } }
+      data: { network: { hierarchyNode: { } } }
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.WifiGeneration.initiate(payload)

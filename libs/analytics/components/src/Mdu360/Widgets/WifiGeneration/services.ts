@@ -53,7 +53,7 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>{
-        return response.network.hierarchyNode.apWifiCapabilityDistribution
+        return response.network.hierarchyNode.apWifiCapabilityDistribution ?? []
       }
     })
   })

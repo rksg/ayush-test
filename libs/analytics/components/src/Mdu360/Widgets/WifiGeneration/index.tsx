@@ -1,6 +1,3 @@
-import { useState } from 'react'
-
-import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import AutoSizer                                    from 'react-virtualized-auto-sizer'
 
@@ -11,7 +8,6 @@ import {
   DonutChart,
   ContentSwitcher,
   ContentSwitcherProps,
-  cssStr,
   GridRow,
   GridCol
 } from '@acx-ui/components'
@@ -21,13 +17,12 @@ import { intlFormats }         from '@acx-ui/formatter'
 import { DistributionMatrix, Mdu360TabPros } from '../../types'
 
 import { ApDistribution, useWifiGenerationQuery } from './services'
-import * as UI                                    from './styledComponents'
 
-const colorMapping: Record<string, string> = {
-  'Non Wi-Fi 6/6E AP': cssStr('--acx-viz-qualitative-11'),
-  'Wi-Fi 6/6E AP': cssStr('--acx-viz-qualitative-10'),
-  'Wi-Fi 7 AP': cssStr('--acx-viz-qualitative-12')
-}
+const LEGEND: string[] = [
+  'Non Wi-Fi 6/6E AP',
+  'Wi-Fi 6/6E AP',
+  'Wi-Fi 7 AP'
+]
 
 type WiFiGenerationChartData = {
   distribution: DonutChartData[],
@@ -35,13 +30,14 @@ type WiFiGenerationChartData = {
   olderClientCount: number
   olderApCount: number
 }
-export const getWifiGenerationChartData =
+
+const getWifiGenerationChartData =
 (data: ApDistribution[]): WiFiGenerationChartData => {
   const distributionData: DistributionMatrix = {}
   let olderClientCount = 0
   let olderApCount = 0
 
-  if (data && data?.length > 0) {
+  if (data && data.length > 0) {
     data.forEach(({ apWifiCapability, clientCapability, apCount, clientCount }) => {
       if (!distributionData[apWifiCapability]) {
         distributionData[apWifiCapability] = { apCount: 0, clientDistribution: {} }
@@ -51,7 +47,7 @@ export const getWifiGenerationChartData =
       distributionData[apWifiCapability].clientDistribution[clientCapability] = clientCount
 
       if (clientCapability !== 'Non Wi-Fi 6/6E' && apWifiCapability === 'Non Wi-Fi 6/6E AP') {
-        olderClientCount += apCount
+        olderApCount += apCount
         olderClientCount += clientCount
       }
     })
@@ -59,11 +55,11 @@ export const getWifiGenerationChartData =
 
   return {
     distribution:
-    Object.entries(distributionData)
-      .map(([name, { apCount }]) => ({
+    LEGEND
+      .filter(legendItem => distributionData[legendItem]) // Only include items that exist in data
+      .map(name => ({
         name,
-        value: apCount,
-        color: colorMapping[name]
+        value: distributionData[name].apCount
       })),
     distributionData,
     olderClientCount,
@@ -72,12 +68,24 @@ export const getWifiGenerationChartData =
   }
 }
 
+export const tooltipValuesFunc = (
+  distributionData: DistributionMatrix
+) => (
+  name: string
+) => {
+  const values = distributionData[name].clientDistribution
+  return {
+    values: Object.entries(values).map(([clientCapability, clientCount], index) => (
+      <span key={clientCapability}>
+        {clientCapability}: <strong>{clientCount}</strong>
+        {index < Object.entries(values).length - 1 && <br/>}
+      </span>
+    ))
+  }
+}
 
 export const WifiGeneration: React.FC<Mdu360TabPros> = ({ startDate, endDate }) => {
-
   const { $t } = useIntl()
-  const [isVisibleCapabilityDrawer, setIsVisibleCapabilityDrawer] = useState(false)
-
   const queryResults = useWifiGenerationQuery({
     path: [{ type: 'network', name: 'Network' }], // replace the finalized filter as needed
     start: startDate,
@@ -96,30 +104,19 @@ export const WifiGeneration: React.FC<Mdu360TabPros> = ({ startDate, endDate }) 
     {({ height, width }) => (
       isDistributionDataAvailable ?
         <DonutChart
-          style={{ width, height: height-30 }}
-          title={$t({ defaultMessage: 'Total APs' })}
-          dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
-          tooltipFormat={defineMessage({
-            defaultMessage: '{name}: {formattedValue}<br></br><b>{values}</b>'
-          })}
-          tooltipFormatFunc={(name) => {
-            const values = data.distributionData[name].clientDistribution
-            return {
-              values: Object.entries(values).map(([clientCapability, clientCount], index) => (
-                <span key={clientCapability}>
-                  {clientCapability}: <strong>{clientCount}</strong>
-                  {index < Object.entries(values).length - 1 && <br/>}
-                </span>
-              ))
-            }
-          }}
+          style={{ width, height }}
           data={data.distribution}
+          legend='name-bold-value'
+          size='small'
           showLegend
           showTotal
           showLabel
-          labelTextStyle={{ overflow: 'breakAll', width: 240 }}
-          legend='name-bold-value'
-          size={'small'}
+          showValue
+          dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+          tooltipFormat={defineMessage({
+            defaultMessage: '{name}: {formattedValue}<br></br>{values}'
+          })}
+          tooltipValuesFunc={tooltipValuesFunc(data.distributionData)}
         />
         : <NoData style={{ margin: '38px 0 0 0' }}/>
     )}
@@ -165,26 +162,6 @@ export const WifiGeneration: React.FC<Mdu360TabPros> = ({ startDate, endDate }) 
           )}
         </AutoSizer>
       </HistoricalCard>
-      {isDistributionDataAvailable &&
-      <UI.OpportunityDrawer
-        width={493}
-        title={$t({ defaultMessage: 'Upgrade Opportunity' })}
-        placement='right'
-        onClose={() => setIsVisibleCapabilityDrawer(false)}
-        visible={isVisibleCapabilityDrawer}
-      >
-        <FormattedMessage
-          defaultMessage={
-            '{olderClientCount} clients are connected to older-generation access points. ' +
-            'Consider upgrading {olderApCount} APs to enhance performance and user experience.'
-          }
-          values={{
-            olderClientCount: <span><strong>{data.olderClientCount}</strong></span>,
-            olderApCount: <span><strong>{data.olderApCount} APs</strong></span>
-          }}
-        />
-      </UI.OpportunityDrawer>
-      }
     </Loader>
   )
 }
