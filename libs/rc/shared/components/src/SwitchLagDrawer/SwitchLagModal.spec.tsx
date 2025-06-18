@@ -43,7 +43,6 @@ jest.mock('antd', () => {
 })
 
 jest.mock('../SwitchPortTable/selectVlanModal', () => ({
-  ...jest.requireActual('../SwitchPortTable/selectVlanModal'),
   SelectVlanModal: () => <div data-testid='SelectVlanModal' />
 }))
 
