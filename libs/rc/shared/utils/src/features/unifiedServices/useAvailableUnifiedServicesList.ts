@@ -48,7 +48,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  // eslint-disable-next-line max-len
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING) && propertyManagementEnabled
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
