@@ -52,7 +52,7 @@ function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters })
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          queryResults.data ?
+          queryResults.data?.time.length ?
             <DonutChart
               style={{ width, height }}
               data={chartData}

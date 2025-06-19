@@ -1,9 +1,5 @@
-import React from 'react'
-
-import { formats }                                             from '@acx-ui/formatter'
-import { Provider }                                            from '@acx-ui/store'
-import { fireEvent, render, screen }                           from '@acx-ui/test-utils'
-import { AnalyticsFilter, DateRange, NodesFilter, SSIDFilter } from '@acx-ui/utils'
+import { Provider }                  from '@acx-ui/store'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { TrafficByRadioData, useTrafficByRadioQuery } from './services'
 
@@ -47,6 +43,10 @@ const mockTrafficByRadioData: TrafficByRadioData = {
   ]
 }
 
+const mockEmptyTrafficByRadioData: TrafficByRadioData = {
+  time: [], userTraffic_all: [], userTraffic_24: [], userTraffic_5: [], userTraffic_6: []
+}
+
 function getContainerWithNoChartId (container: HTMLElement) {
   const echartsInstances = container.querySelectorAll('[_echarts_instance_]')
   echartsInstances.forEach((element) =>
@@ -77,9 +77,18 @@ describe('TrafficByRadioWidget', () => {
     expect(getContainerWithNoChartId(container)).toMatchSnapshot('Trend')
   })
 
-  it('should return no dta when query response is null', async () => {
+  it('should return no data when query response is undefined', async () => {
     mockUseTrafficByRadioQuery.mockReturnValue({
-      data: null
+      data: undefined
+    })
+
+    render(<TrafficByRadio filters={mockFilters} />, { wrapper: Provider })
+    expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  it('should return no data when query response data is empty', async () => {
+    mockUseTrafficByRadioQuery.mockReturnValue({
+      data: mockEmptyTrafficByRadioData
     })
 
     render(<TrafficByRadio filters={mockFilters} />, { wrapper: Provider })

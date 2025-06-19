@@ -1,20 +1,20 @@
-import { dataApiURL, store }    from '@acx-ui/store'
-import { mockGraphqlQuery }     from '@acx-ui/test-utils'
-import type { AnalyticsFilter } from '@acx-ui/utils'
-import { DateRange }            from '@acx-ui/utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { api, Payload } from './services'
 
-describe('trafficTrendWidgetApi', () => {
-  const props: AnalyticsFilter = {
+describe('TrafficByRadio services', () => {
+  const mockPayload: Payload = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     range: DateRange.last24Hours,
     filter: {}
   }
+
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
+
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
@@ -45,6 +45,7 @@ describe('trafficTrendWidgetApi', () => {
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
     expect(error).toBe(undefined)
   })
+
   it('should return error', async () => {
     mockGraphqlQuery(dataApiURL, 'trafficTrendWidget', {
       error: new Error('something went wrong!')
