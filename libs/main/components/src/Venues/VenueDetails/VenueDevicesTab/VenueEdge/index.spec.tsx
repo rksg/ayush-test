@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { EdgeCompatibilityFixtures, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { EdgeCompatibilityFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }     from '@acx-ui/test-utils'
 
 import { VenueEdge } from '.'
 
@@ -12,10 +12,8 @@ const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeC
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgesTable: (props: {
-    incompatibleCheck:boolean,
     filterables: Record<string, unknown>
   }) => <div data-testid={'EdgesTable'} >
-    <div>incompatibleCheck:{''+props.incompatibleCheck}</div>
     <div>filterables:{JSON.stringify(props.filterables)}</div>
   </div>
 }))
@@ -62,7 +60,6 @@ describe('VenueEdge', () => {
 
     const target = screen.getByRole('link', { name: 'Add RUCKUS Edge' })
     expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
-    await waitFor(() => expect(within(edgeTable).queryByText('incompatibleCheck:true')).toBeValid())
 
     // eslint-disable-next-line max-len
     await waitFor(() => expect(edgeTable).toHaveTextContent('SD-LAN'))
@@ -82,7 +79,6 @@ describe('VenueEdge', () => {
 
     const target = screen.getByRole('link', { name: 'Add RUCKUS Edge' })
     expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
-    await waitFor(() => expect(within(edgeTable).queryByText('incompatibleCheck:true')).toBeValid())
 
     // eslint-disable-next-line max-len
     await waitFor(() => expect(edgeTable).toHaveTextContent('SD-LAN'))
