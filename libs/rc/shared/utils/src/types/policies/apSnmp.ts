@@ -118,7 +118,7 @@ export type RbacApSnmpViewModelData = {
   apNames: string[]
   venueIds: string[]
   venueNames: string[]
-  apActivations?: {
+  apActivations: {
     venueId: string,
     apSerialNumber: string
   }[]
