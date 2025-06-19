@@ -46,9 +46,9 @@ export const api = dataApi.injectEndpoints({
                 timeSeries(granularity: $granularity) {
                   time
                   userTraffic_all: userTraffic
-                  userTraffic_6: userTraffic(band: "6")
-                  userTraffic_5: userTraffic(band: "5")
                   userTraffic_24: userTraffic(band: "2.4")
+                  userTraffic_5: userTraffic(band: "5")
+                  userTraffic_6: userTraffic(band: "6")
                 }
               }
             }

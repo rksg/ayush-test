@@ -348,85 +348,85 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                               />
                               <g>
                                 <path
-                                  d="M384 88L384 73L394 73"
+                                  d="M392.2088 88.108L392.6034 73.1132L402.6034 73.1132"
                                   fill="none"
                                   stroke="#66B1E8"
                                 />
                                 <path
-                                  d="M392.2088 711.892L392.6034 726.8868L402.6034 726.8868"
+                                  d="M375.7912 711.892L375.3966 726.8868L365.3966 726.8868"
                                   fill="none"
                                   stroke="#EC7100"
                                 />
                                 <path
-                                  d="M375.7912 88.108L375.3966 73.1132L365.3966 73.1132"
+                                  d="M384 88L384 73L374 73"
                                   fill="none"
                                   stroke="#F9C34B"
                                 />
                                 <path
-                                  d="M384 88L384 152Z"
+                                  d="M384 88A312 312 0 0 1 400.4118 88.4319L397.0453 152.3433A248 248 0 0 0 384 152Z"
                                   fill="#66B1E8"
                                   stroke="#FFFFFF"
                                   stroke-linejoin="round"
                                   stroke-width="2"
                                 />
                                 <path
-                                  d="M384 88A312 312 0 1 1 367.5882 88.4319L370.9547 152.3433A248 248 0 1 0 384 152Z"
+                                  d="M400.4118 88.4319A312 312 0 1 1 384 88L384 152A248 248 0 1 0 397.0453 152.3433Z"
                                   fill="#EC7100"
                                   stroke="#FFFFFF"
                                   stroke-linejoin="round"
                                   stroke-width="2"
                                 />
                                 <path
-                                  d="M367.5882 88.4319A312 312 0 0 1 384 88L384 152A248 248 0 0 0 370.9547 152.3433Z"
+                                  d="M384 88L384 152Z"
                                   fill="#F9C34B"
                                   stroke="#FFFFFF"
                                   stroke-linejoin="round"
                                   stroke-width="2"
                                 />
                                 <path
-                                  d="M0 -8l4 0l0 16l-4 0Z"
+                                  d="M0 -8l6 0l0 16l-6 0Z"
                                   fill="none"
-                                  transform="translate(399 73)"
+                                  transform="translate(407.6034 73.1132)"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#333333"
                                   style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                                   text-anchor="start"
-                                  transform="translate(399 73)"
+                                  transform="translate(407.6034 73.1132)"
                                   xml:space="preserve"
                                 >
-                                  21 B
+                                  263 MB
                                 </text>
                                 <path
-                                  d="M0 -8l7 0l0 16l-7 0Z"
+                                  d="M-7 -8l7 0l0 16l-7 0Z"
                                   fill="none"
-                                  transform="translate(407.6034 726.8868)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#333333"
-                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                  text-anchor="start"
-                                  transform="translate(407.6034 726.8868)"
-                                  xml:space="preserve"
-                                >
-                                  30.4 GB
-                                </text>
-                                <path
-                                  d="M-6 -8l6 0l0 16l-6 0Z"
-                                  fill="none"
-                                  transform="translate(360.3966 73.1132)"
+                                  transform="translate(360.3966 726.8868)"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#333333"
                                   style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                                   text-anchor="end"
-                                  transform="translate(360.3966 73.1132)"
+                                  transform="translate(360.3966 726.8868)"
                                   xml:space="preserve"
                                 >
-                                  263 MB
+                                  30.4 GB
+                                </text>
+                                <path
+                                  d="M-4 -8l4 0l0 16l-4 0Z"
+                                  fill="none"
+                                  transform="translate(369 73)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                  text-anchor="end"
+                                  transform="translate(369 73)"
+                                  xml:space="preserve"
+                                >
+                                  21 B
                                 </text>
                                 <path
                                   d="M-5 -5l38 0l0 66l-38 0Z"
@@ -447,12 +447,12 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   transform="translate(773 376)"
                                 />
                                 <path
-                                  d="M13 -4l11 0l0 16l-11 0Z"
+                                  d="M13 -4l15 0l0 16l-15 0Z"
                                   fill="none"
                                   transform="translate(773 376)"
                                 />
                                 <path
-                                  d="M13 3.5l6 0l0 1l-6 0Z"
+                                  d="M13 3.5l8 0l0 1l-8 0Z"
                                   fill="none"
                                   transform="translate(773 376)"
                                 />
@@ -466,7 +466,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   xml:space="preserve"
                                   y="4"
                                 >
-                                  6 GHz:
+                                  2.4 GHz:
                                 </text>
                                 <text
                                   dominant-baseline="central"
@@ -474,14 +474,14 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   style="font: normal NaN 10px 'Open Sans', sans-serif"
                                   text-anchor="start"
                                   transform="translate(773 376)"
-                                  x="19"
+                                  x="21"
                                   xml:space="preserve"
                                   y="4"
                                 >
                                    
                                 </text>
                                 <path
-                                  d="M20 3.5l4 0l0 1l-4 0Z"
+                                  d="M22 3.5l6 0l0 1l-6 0Z"
                                   fill="none"
                                   transform="translate(773 376)"
                                 />
@@ -491,11 +491,11 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                   text-anchor="start"
                                   transform="translate(773 376)"
-                                  x="20"
+                                  x="22"
                                   xml:space="preserve"
                                   y="4"
                                 >
-                                  21 B
+                                  263 MB
                                 </text>
                                 <path
                                   d="M8 4A4 4 0 1 1 8 3.9996"
@@ -569,12 +569,12 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   transform="translate(773 416)"
                                 />
                                 <path
-                                  d="M13 -4l15 0l0 16l-15 0Z"
+                                  d="M13 -4l11 0l0 16l-11 0Z"
                                   fill="none"
                                   transform="translate(773 416)"
                                 />
                                 <path
-                                  d="M13 3.5l8 0l0 1l-8 0Z"
+                                  d="M13 3.5l6 0l0 1l-6 0Z"
                                   fill="none"
                                   transform="translate(773 416)"
                                 />
@@ -588,7 +588,7 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   xml:space="preserve"
                                   y="4"
                                 >
-                                  2.4 GHz:
+                                  6 GHz:
                                 </text>
                                 <text
                                   dominant-baseline="central"
@@ -596,14 +596,14 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   style="font: normal NaN 10px 'Open Sans', sans-serif"
                                   text-anchor="start"
                                   transform="translate(773 416)"
-                                  x="21"
+                                  x="19"
                                   xml:space="preserve"
                                   y="4"
                                 >
                                    
                                 </text>
                                 <path
-                                  d="M22 3.5l6 0l0 1l-6 0Z"
+                                  d="M20 3.5l4 0l0 1l-4 0Z"
                                   fill="none"
                                   transform="translate(773 416)"
                                 />
@@ -613,11 +613,11 @@ exports[`TrafficByRadioWidget should render TrafficByRadio snapshot and trend wi
                                   style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                   text-anchor="start"
                                   transform="translate(773 416)"
-                                  x="22"
+                                  x="20"
                                   xml:space="preserve"
                                   y="4"
                                 >
-                                  263 MB
+                                  21 B
                                 </text>
                                 <path
                                   d="M-8.5 -5l17 0l0 42l-17 0Z"

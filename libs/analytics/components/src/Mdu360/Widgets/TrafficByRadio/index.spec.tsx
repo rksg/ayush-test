@@ -1,3 +1,4 @@
+import { formats }                   from '@acx-ui/formatter'
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -29,17 +30,17 @@ const mockTrafficByRadioData: TrafficByRadioData = {
     4840994186,
     6525469926
   ],
-  userTraffic_6: [
-    1, 2, 3,
-    4, 5, 6
+  userTraffic_24: [
+    29988707, 23852188, 20935682,
+    27621528, 20097666, 153122164
   ],
   userTraffic_5: [
     2585534418, 5484309526, 7173649642,
     6194367059, 4820896515, 6372347756
   ],
-  userTraffic_24: [
-    29988707, 23852188, 20935682,
-    27621528, 20097666, 153122164
+  userTraffic_6: [
+    1, 2, 3,
+    4, 5, 6
   ]
 }
 
@@ -72,8 +73,25 @@ describe('TrafficByRadioWidget', () => {
       <TrafficByRadio filters={mockFilters} />, { wrapper: Provider }
     )
     expect(getContainerWithNoChartId(container)).toMatchSnapshot('Snapshot')
+    const capturedDataUsageValues = await screen.findAllByText(/[0-9]+ (B|KB|MB|GB)/)
+    const expectedValues = [
+      formats.bytesFormat(mockTrafficByRadioData.userTraffic_24.reduce(
+        (accumulator, current) => accumulator + current, 0
+      )),
+      formats.bytesFormat(mockTrafficByRadioData.userTraffic_5.reduce(
+        (accumulator, current) => accumulator + current, 0
+      )),
+      formats.bytesFormat(mockTrafficByRadioData.userTraffic_6.reduce(
+        (accumulator, current) => accumulator + current, 0
+      ))
+    ]
+    expectedValues.forEach((value, index) => {
+      expect(capturedDataUsageValues[index].textContent === value).toBe(true)
+    })
+
     const trafficTrendSwitch = await screen.findByRole('radio', { name: 'Trend' })
     fireEvent.click(trafficTrendSwitch)
+
     expect(getContainerWithNoChartId(container)).toMatchSnapshot('Trend')
   })
 
