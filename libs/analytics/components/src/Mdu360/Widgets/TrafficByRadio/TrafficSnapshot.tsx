@@ -12,7 +12,7 @@ import { TrafficByRadioFilters } from '.'
 export { TrafficSnapshotWidget as TrafficSnapshot }
 
 function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData[] {
-  const trafficSnapshotData: DonutChartData[] = []
+  const trafficSnapshotChartData: DonutChartData[] = []
   const colorMapping = qualitativeColorSet()
 
   const nameMap = {
@@ -23,7 +23,7 @@ function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData
 
   let i = 0
   for (const key in data) {
-    trafficSnapshotData.push({
+    trafficSnapshotChartData.push({
       name: nameMap[key as keyof TrafficSnapshotData],
       value: data[key as keyof TrafficSnapshotData].reduce((accum, curr) => accum + curr, 0),
       color: colorMapping[i]
@@ -31,7 +31,7 @@ function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData
     i += 1
   }
 
-  return trafficSnapshotData
+  return trafficSnapshotChartData
 }
 
 function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters }) {
@@ -53,8 +53,9 @@ function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters })
             data={chartData}
             showLegend={true}
             showTotal={true}
+            showValue={true}
             showLabel={true}
-            legend='name-value'
+            legend='name-bold-value'
             dataFormatter={formatter('bytesFormat')}
             size={'large'}
           />
