@@ -39,8 +39,7 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  showValue: boolean,
-  legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
+  legend: 'value' | 'name' | 'name-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
@@ -49,7 +48,6 @@ const defaultProps: DonutChartOptionalProps = {
   animation: false,
   showLabel: false,
   showTotal: true,
-  showValue: false,
   legend: 'value',
   size: 'small'
 }
@@ -274,7 +272,7 @@ export function DonutChart ({
       subtext: props.value
         ? props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '29%' : 'center',
+      left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -298,17 +296,7 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle,
-        rich: {
-          legendBold: {
-            ...legendStyles,
-            fontWeight: cssNumber('--acx-body-font-weight-bold')
-          },
-          legendNormal: {
-            ...legendStyles,
-            fontWeight: cssNumber('--acx-body-font-weight')
-          }
-        }
+        ...props.labelTextStyle
       },
       itemStyle: {
         borderWidth: 0
@@ -316,13 +304,11 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return `{legendNormal|${name}}`
-          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
-          case 'name-bold-value':
-            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
+          case 'name': return name
+          case 'name-value': return `${name} - ${dataFormatter(value)}`
           case 'value':
           default:
-            return `{legendNormal|${dataFormatter(value)}}`
+            return `${dataFormatter(value)}`
         }
       }
     },
@@ -338,10 +324,7 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label,
-          formatter: (params) => {
-            return props.showValue ? `${dataFormatter(params.value)}` : params.name
-          }
+          ...styles.label
         },
         tooltip: {
           ...tooltipOptions(),
