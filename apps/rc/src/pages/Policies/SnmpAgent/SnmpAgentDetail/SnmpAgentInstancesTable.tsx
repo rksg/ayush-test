@@ -23,13 +23,29 @@ export default function SnmpAgentInstancesTable () {
 
 
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
+  const tableQueryForApActivation = useTableQuery({
     useQuery: useGetApUsageByApSnmpQuery,
     enableRbac: isUseRbacApi,
     defaultPayload: {
       page: 1,
       pageSize: 25,
-      searchString: ''
+      searchString: '',
+      searchForActivation: 'ap'
+    },
+    sorter: {
+      sortField: 'venueName',
+      sortOrder: 'DESC'
+    }
+  })
+
+  const tableQueryForVenueActivation = useTableQuery({
+    useQuery: useGetApUsageByApSnmpQuery,
+    enableRbac: isUseRbacApi,
+    defaultPayload: {
+      page: 1,
+      pageSize: 25,
+      searchString: '',
+      searchForActivation: 'venue'
     },
     sorter: {
       sortField: 'venueName',
@@ -77,9 +93,13 @@ export default function SnmpAgentInstancesTable () {
   ]
 
   return (
-    <Loader states={[tableQuery]}>
+    <Loader states={[tableQueryForApActivation, tableQueryForVenueActivation]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.totalCount })}>
+        { count:
+            (tableQueryForApActivation.data?.totalCount ?? 0 ) +
+            (tableQueryForVenueActivation.data?.totalCount ?? 0)
+        })}
+      >
 
         <Tabs onChange={(tab: string) => { setCurrentTab(tab) }}
           activeKey={currentTab}
@@ -97,20 +117,21 @@ export default function SnmpAgentInstancesTable () {
         }}>
           <Table
             columns={columnsForVenueTable}
-            pagination={tableQuery.pagination}
-            onChange={isUseRbacApi? undefined : tableQuery.handleTableChange}
-            dataSource={tableQuery.data?.data}
+            pagination={tableQueryForVenueActivation.pagination}
+            onChange={isUseRbacApi? undefined : tableQueryForVenueActivation.handleTableChange}
+            dataSource={tableQueryForVenueActivation.data?.data}
             rowKey='apId'
           />
+
         </div>
         <div style={{
           display: currentTab === 'ap' ? 'block' : 'none'
         }}>
           <Table
             columns={columnsForApTable}
-            pagination={tableQuery.pagination}
-            onChange={isUseRbacApi? undefined : tableQuery.handleTableChange}
-            dataSource={tableQuery.data?.data}
+            pagination={tableQueryForApActivation.pagination}
+            onChange={isUseRbacApi? undefined : tableQueryForApActivation.handleTableChange}
+            dataSource={tableQueryForApActivation.data?.data}
             rowKey='apId'
           />
         </div>
