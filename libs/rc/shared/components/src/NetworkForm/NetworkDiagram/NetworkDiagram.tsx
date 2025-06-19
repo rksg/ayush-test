@@ -79,8 +79,9 @@ import OpenOweMacregAaaDiagram           from '../assets/images/network-wizard-d
 import OpenOweMacregDiagram              from '../assets/images/network-wizard-diagrams/open-owe-macreg.png'
 import OpenOweDiagram                    from '../assets/images/network-wizard-diagrams/open-owe.png'
 import OpenDiagram                       from '../assets/images/network-wizard-diagrams/open.png'
-import PskMacAuthProxyDiagram            from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
-import PskMacAuthDiagram                 from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
+import PskMacregAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/psk-macreg-aaa-proxy.png'
+import PskMacregAaaDiagram               from '../assets/images/network-wizard-diagrams/psk-macreg-aaa.png'
+import PskMacregDiagram                  from '../assets/images/network-wizard-diagrams/psk-macreg.png'
 import PskDiagram                        from '../assets/images/network-wizard-diagrams/psk.png'
 import SamlAaaProxyDiagram               from '../assets/images/network-wizard-diagrams/saml-aaa-proxy.png'
 import SamlAaaDiagram                    from '../assets/images/network-wizard-diagrams/saml-aaa.png'
@@ -198,7 +199,9 @@ function getDPSKDiagram (props:DpskDiagramProps) {
 function getPSKDiagram (props: PskDiagramProps) {
   if (props.enableMACAuth) {
     if (props.isMacRegistrationList) {
-      return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
+      return (props.enableAccountingService)?
+        getAAADiagramByParams(props, PskMacregAaaProxyDiagram, PskMacregAaaDiagram) :
+        PskMacregDiagram
     }
     return getCommonAAADiagram(props)
   }

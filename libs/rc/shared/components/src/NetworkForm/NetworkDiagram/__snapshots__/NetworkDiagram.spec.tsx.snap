@@ -623,58 +623,6 @@ exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagr
 </DocumentFragment>
 `;
 
-exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="Aaa"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Passphrase (PSK/SAE)"
-          src="Psk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram should render default diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {

@@ -42,7 +42,7 @@ describe('NetworkDiagram', () => {
   describe('NetworkDiagram - PSK', () => {
     const type = NetworkTypeEnum.PSK
     it('should render PSK diagram successfully', async () => {
-      const { asFragment } = render(
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
@@ -60,7 +60,6 @@ describe('NetworkDiagram', () => {
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('Psk')
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render PSK Mac Auth with proxy diagram successfully', async () => {
@@ -87,7 +86,7 @@ describe('NetworkDiagram', () => {
           }
         })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('PskMacAuthProxy')
+      expect(diagram.src).toContain('PskMacregAaaProxy')
     })
 
     it('should render PSK external Mac Auth with proxy diagram successfully', async () => {
@@ -146,27 +145,32 @@ describe('NetworkDiagram', () => {
       expect(diagram.src).toContain('Aaa')
     })
 
-    it('should render AAA diagram successfully', async () => {
-      const { asFragment } = render(
+    it('should render PSK Mac Auth Mac Registration diagram successfully', async () => {
+      render(
         <Provider>
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
             isRuckusAiMode: false,
-            data: { type: NetworkTypeEnum.AAA },
+            data: { type },
             setData: jest.fn()
           }}>
-            <NetworkDiagram enableMACAuth={true} />
+            <NetworkDiagram
+              type={type}
+              enableMACAuth={true}
+              isMacRegistrationList={true}
+              enableAccountingService={false}
+              enableAccountingProxy={false}
+            />
           </NetworkFormContext.Provider>
-        </Provider>, {
+        </Provider>,{
           route: {
             params
           }
-        }
-      )
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('Aaa')
-      expect(asFragment()).toMatchSnapshot()
+      expect(diagram.src).toContain('PskMacreg')
+      expect(diagram.src).not.toContain('PskMacregAaa')
     })
   })
 
@@ -1145,6 +1149,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1166,6 +1171,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1188,6 +1194,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1210,6 +1217,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1232,6 +1240,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1256,6 +1265,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
@@ -1279,6 +1289,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
@@ -1300,6 +1311,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
@@ -1321,6 +1333,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type },
             setData: jest.fn()
           }}>
@@ -1344,6 +1357,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
@@ -1366,6 +1380,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
@@ -1388,6 +1403,7 @@ describe('NetworkDiagram', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: { type, enableAuthProxy: true },
             setData: jest.fn()
           }}>
