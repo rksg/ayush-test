@@ -35,7 +35,6 @@ import {
   apDeviceRadio,
   apDeviceRadioV1Dot1,
   apR760DeviceRadio,
-  apT670DeviceRadio,
   apViewModel,
   r560Ap,
   r760ApV1Dot1,
@@ -598,7 +597,7 @@ describe('RadioSettingsTab', ()=> {
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
         rest.get(
           WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
           (_, res, ctx) => res(ctx.json(validRadioChannels))),
@@ -614,7 +613,7 @@ describe('RadioSettingsTab', ()=> {
         // rbac
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
         rest.get(
           WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
           (_, res, ctx) => res(ctx.json(validRadioChannels))),
