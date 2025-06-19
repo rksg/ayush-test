@@ -4,16 +4,14 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card }                                                          from '@acx-ui/components'
 import { ContentSwitcher, ContentSwitcherProps }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 import { TenantLink }                                                    from '@acx-ui/react-router-dom'
 import { getIntl }                                                       from '@acx-ui/utils'
 
-import { ApFloorplan }         from '../ApFloorplan'
-import { FloorPlan }           from '../FloorPlan'
-import { SwitchFloorplan }     from '../SwitchFloorplan'
-import { TopologyGraph }       from '../Topology'
-import { TopologyGraphLegacy } from '../TopologyLegacy'
+import { ApFloorplan }     from '../ApFloorplan'
+import { FloorPlan }       from '../FloorPlan'
+import { SwitchFloorplan } from '../SwitchFloorplan'
+import { TopologyGraph }   from '../Topology'
 
 
 export function TopologyFloorPlanWidget (props: {
@@ -21,21 +19,16 @@ export function TopologyFloorPlanWidget (props: {
   currentDevice?: NetworkDevice,
   venueId?: string,
   devicePosition?: NetworkDevicePosition }) {
-  const nextGenTopology = useIsSplitOn(Features.SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE)
   const { $t } = useIntl()
   const { showTopologyFloorplanOn, currentDevice, venueId, devicePosition } = props
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Topology' }),
       value: 'topology',
-      children: nextGenTopology ? <TopologyGraph
+      children: <TopologyGraph
         showTopologyOn={showTopologyFloorplanOn}
         venueId={venueId}
-        deviceMac={currentDevice?.apMac || currentDevice?.switchMac}/> :
-        <TopologyGraphLegacy
-          showTopologyOn={showTopologyFloorplanOn}
-          venueId={venueId}
-          deviceMac={currentDevice?.apMac || currentDevice?.switchMac}/>
+        deviceMac={currentDevice?.apMac || currentDevice?.switchMac}/>
     },
     {
       label: $t({ defaultMessage: 'Floor Plans' }),
