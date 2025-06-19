@@ -194,7 +194,8 @@ export const composeNext = (
       ...step,
       isStart,
       isEnd: nextStep?.type === StepType.End,
-      mode
+      mode,
+      attachCandidate: false
     },
 
     hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),

@@ -201,6 +201,7 @@ export default function BaseStepNode (props: NodeProps
 
   return (
     <UI.StepNode selected={props.selected}
+      attachCandidate={props.data?.attachCandidate}
       invalid={workflowValidationEnhancementFFToggle && !isNodeValid}>
       <Loader states={[
         { isLoading: false, isFetching: (isDeleteStepLoading
