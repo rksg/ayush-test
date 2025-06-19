@@ -50,7 +50,8 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
   const isEdgeEnabled = useIsEdgeReady()
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  // eslint-disable-next-line max-len
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING) && propertyManagementEnabled
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE) && !isCore
