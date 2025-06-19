@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 
 import { Input } from 'antd'
 
-import { DeviceConnectionStatus }                                        from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient, SWITCH_TYPE } from '../../types'
-import { MacAclRule }                                                    from '../../types/switch'
+import { DeviceConnectionStatus }                           from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchClient } from '../../types'
+import { MacAclRule }                                       from '../../types/switch'
 
 import { macAclRulesParser } from './switch.utils'
 
@@ -17,11 +17,9 @@ import {
   getClientIpAddr,
   getAdminPassword,
   transformSwitchUnitStatus,
-  isRouter,
   getSwitchPortLabel,
   sortPortFunction,
   convertInputToUppercase,
-  isL3FunctionSupported,
   isFirmwareVersionAbove10,
   isFirmwareSupportAdminPassword,
   isFirmwareVersionAbove10010f,
@@ -58,12 +56,6 @@ describe('switch.utils', () => {
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
-    })
-  })
-
-  describe('Test isRouter function', () => {
-    it('should render correctly', async () => {
-      expect(isRouter(SWITCH_TYPE.ROUTER)).toBeTruthy()
     })
   })
 
@@ -392,27 +384,6 @@ describe('switch.utils', () => {
     })
   })
 
-  describe('Test isL3FunctionSupported function', () => {
-    it('returns false for undefined switchType', () => {
-      const result = isL3FunctionSupported(undefined)
-      expect(result).toBe(false)
-    })
-
-    it('returns false for empty string switchType', () => {
-      const result = isL3FunctionSupported('')
-      expect(result).toBe(false)
-    })
-
-    it('returns true for ROUTER switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.ROUTER)
-      expect(result).toBe(true)
-    })
-
-    it('returns treu for SWITCH switchType', () => {
-      const result = isL3FunctionSupported(SWITCH_TYPE.SWITCH)
-      expect(result).toBe(false)
-    })
-  })
 })
 
 describe('Test isFirmwareVersionAbove10010f function', () => {

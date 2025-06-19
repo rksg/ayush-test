@@ -71,20 +71,21 @@ export const versionAbove10020a = (version: string): boolean => {
   return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
 }
 
-export const getStackUnitsMinLimitation = (
-  switchModel: string, firmwareVersion: string, firmwareVersionAboveTen: string): number => {
-  if (switchModel?.includes('ICX8200')) {
-    return checkVersionAtLeast10010b(firmwareVersionAboveTen) ? 12 : 4
-  } else if (switchModel?.includes('ICX7150')) {
-    return (checkVersionAtLeast09010h(firmwareVersion) ? 4 : 2)
-  } else { // 7550, 7650, 7850
-    if (checkVersionAtLeast10010c(firmwareVersion)) {
-      // For the switch's own firmware, this field contains the value '10010'.
-      return 12
-    }
-    return (checkVersionAtLeast09010h(firmwareVersion) ? 8 : 4)
-  }
-}
+//TODO: remove
+// export const getStackUnitsMinLimitation = (
+//   switchModel: string, firmwareVersion: string, firmwareVersionAboveTen: string): number => {
+//   if (switchModel?.includes('ICX8200')) {
+//     return checkVersionAtLeast10010b(firmwareVersionAboveTen) ? 12 : 4
+//   } else if (switchModel?.includes('ICX7150')) {
+//     return (checkVersionAtLeast09010h(firmwareVersion) ? 4 : 2)
+//   } else { // 7550, 7650, 7850
+//     if (checkVersionAtLeast10010c(firmwareVersion)) {
+//       // For the switch's own firmware, this field contains the value '10010'.
+//       return 12
+//     }
+//     return (checkVersionAtLeast09010h(firmwareVersion) ? 8 : 4)
+//   }
+// }
 
 export const getStackUnitsMinLimitationV1002 = (
   switchModel: string,

@@ -879,7 +879,7 @@ export const getDefaultPortSpeedOption = () => {
   return (ICX_MODELS_PORTSPEED['DEFAULT'] as MODELS_PORTSPEED).capacity
 }
 
-export const _isAmongPortRange = (port: string, startPort: string, endPort: string) => {
+function _isAmongPortRange (port: string, startPort: string, endPort: string) {
   const portValue = convertPortToNumber(port)
   const startPortValue = convertPortToNumber(startPort)
   const endPortValue = convertPortToNumber(endPort)

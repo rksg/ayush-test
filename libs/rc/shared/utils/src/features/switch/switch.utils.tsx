@@ -12,7 +12,6 @@ import {
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  SWITCH_TYPE,
   MacAclRule,
   SWITCH_SERIAL_BASE,
   SWITCH_SERIAL_8200AV,
@@ -182,10 +181,6 @@ export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:
   const isStrictOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
   const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
   return isStrictOperational || isUpgradeFail
-}
-
-export const isRouter = (switchType: SWITCH_TYPE) => {
-  return switchType === SWITCH_TYPE.ROUTER
 }
 
 export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
@@ -373,14 +368,6 @@ export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string 
 export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
   return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
-
-export const isL3FunctionSupported = (switchType: string | undefined) => {
-  if (!switchType) {
-    return false
-  }
-  return isRouter(switchType as SWITCH_TYPE)
-}
-
 
 export const getDhcpOptionList = () => {
   const { $t } = getIntl()
