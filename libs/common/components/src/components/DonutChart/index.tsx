@@ -39,7 +39,8 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  legend: 'value' | 'name' | 'name-value',
+  showValue: boolean,
+  legend: 'value' | 'name' | 'name-value' | 'name-bold-value',
   size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
@@ -48,6 +49,7 @@ const defaultProps: DonutChartOptionalProps = {
   animation: false,
   showLabel: false,
   showTotal: true,
+  showValue: false,
   legend: 'value',
   size: 'small'
 }
@@ -272,7 +274,7 @@ export function DonutChart ({
       subtext: props.value
         ? props.value
         : props.showTotal ? `${dataFormatter(sum)}` : undefined,
-      left: props.showLegend && !isEmpty ? '28%' : 'center',
+      left: props.showLegend && !isEmpty ? '29%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -296,7 +298,17 @@ export function DonutChart ({
       itemHeight: 8,
       textStyle: {
         ...legendStyles,
-        ...props.labelTextStyle
+        ...props.labelTextStyle,
+        rich: {
+          legendBold: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight-bold')
+          },
+          legendNormal: {
+            ...legendStyles,
+            fontWeight: cssNumber('--acx-body-font-weight')
+          }
+        }
       },
       itemStyle: {
         borderWidth: 0
@@ -306,6 +318,8 @@ export function DonutChart ({
         switch(props.legend) {
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name-bold-value':
+            return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
             return `${dataFormatter(value)}`
@@ -324,7 +338,10 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label
+          ...styles.label,
+          formatter: (params) => {
+            return props.showValue ? `${dataFormatter(params.value)}` : params.name
+          }
         },
         tooltip: {
           ...tooltipOptions(),
