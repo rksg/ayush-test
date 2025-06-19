@@ -27,7 +27,6 @@ jest.mock('@acx-ui/reports/components', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   ClientDualTable: () => <div data-testid={'ClientDualTable'} />,
   SwitchClientsTable: () => <div data-testid={'SwitchClientsTable'} />,
   BasePersonaTable: () => <div data-testid={'personaTable'} />

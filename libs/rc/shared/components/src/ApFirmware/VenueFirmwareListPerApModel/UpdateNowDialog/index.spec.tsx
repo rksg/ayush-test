@@ -63,7 +63,7 @@ describe('Update Now Dialog Per AP Model', () => {
     const updateFn = jest.fn()
 
     mockServer.use(
-      rest.put(
+      rest.patch(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           updateFn(req.body)

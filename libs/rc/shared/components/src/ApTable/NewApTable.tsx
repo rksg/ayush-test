@@ -135,7 +135,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
@@ -573,18 +572,18 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           return (secureBootEnabled ? <CheckMark /> : null)
         }
       }] : []),
-    ...(apMgmtVlanFlag ? [
-      {
-        key: 'networkStatus.managementTrafficVlan',
-        title: $t({ defaultMessage: 'Management VLAN' }),
-        dataIndex: 'networkStatus.managementTrafficVlan',
-        show: false,
-        sorter: false,
-        render: (data: ReactNode, row: NewAPModelExtended) => {
-          const mgmtVlanId = row.networkStatus?.managementTrafficVlan
-          return (mgmtVlanId ? mgmtVlanId : null)
-        }
-      }] : []),
+
+    {
+      key: 'networkStatus.managementTrafficVlan',
+      title: $t({ defaultMessage: 'Management VLAN' }),
+      dataIndex: 'networkStatus.managementTrafficVlan',
+      show: false,
+      sorter: false,
+      render: (data: ReactNode, row: NewAPModelExtended) => {
+        const mgmtVlanId = row.networkStatus?.managementTrafficVlan
+        return (mgmtVlanId ? mgmtVlanId : null)
+      }
+    },
     ...(AFC_Featureflag ? [{
       key: 'afcStatus',
       title: $t({ defaultMessage: 'AFC Status' }),

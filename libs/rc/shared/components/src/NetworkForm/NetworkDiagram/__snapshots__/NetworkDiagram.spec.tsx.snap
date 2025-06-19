@@ -1,108 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="AaaProxy"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram when enabling Authentication Service button 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="AaaProxy"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          src="Aaa"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enabling Accounting Service button 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="Aaa"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through with OWE) diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
@@ -493,84 +390,6 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 </DocumentFragment>
 `;
 
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Self Sign In with OWE) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="SelfSignInOwe"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Self Sign In with PSK) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="SelfSignInPsk"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Self Sign In) diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Captive Portal"
-          src="SelfSignIn"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr With OWE) diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
@@ -727,6 +546,240 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 </DocumentFragment>
 `;
 
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy and PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting proxy) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctproxyNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service and OWE) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonOwe"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service and PSK) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonPsk"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow with accounting service) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctonNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Workflow) diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Captive Portal"
+          src="WorkflowAcctoffNone"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal default diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
@@ -746,110 +799,6 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         <img
           alt="Captive Portal"
           src="ClickThrough"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK accounting non-proxy radius diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskUsingRadiusNonProxy"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK accounting proxy radius diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskUsingRadius"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK authentication non-proxy radius diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskUsingRadiusNonProxy"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK authentication proxy radius diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskUsingRadius"
         />
       </div>
     </div>
@@ -901,32 +850,6 @@ exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagr
       >
         <img
           src="Hotspot20"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram successfully 1`] = `
-<DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="c0"
-      >
-        <img
-          alt="Open Network"
-          src="Open"
         />
       </div>
     </div>

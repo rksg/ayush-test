@@ -262,6 +262,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    batchCreateSwitchVenueSchedulesV1001: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          FirmwareRbacUrlsInfo.createSwitchVenueSchedules, requests, fetchWithBQ, v1_1Header
+        )
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -453,7 +461,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitcDefaultVersions: build.query<CurrentVersions, RequestPayload>({
+    getSwitchDefaultVersions: build.query<CurrentVersions, RequestPayload>({
       query: ({ params, enableRbac, customHeaders }) => {
         const headers = enableRbac ? v1Header : {}
         const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
@@ -894,6 +902,7 @@ export const {
   useUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesV1001Mutation,
+  useBatchCreateSwitchVenueSchedulesV1001Mutation,
   useGetSwitchLatestFirmwareListQuery,
   useLazyGetSwitchLatestFirmwareListQuery,
   useGetSwitchLatestFirmwareListV1001Query,
@@ -911,7 +920,7 @@ export const {
   useGetSwitchAvailableFirmwareListV1001Query,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchCurrentVersionsV1001Query,
-  useGetSwitcDefaultVersionsQuery,
+  useGetSwitchDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
   useUpdateSwitchFirmwarePredownloadMutation,
   useGetAvailableEdgeFirmwareVersionsQuery,

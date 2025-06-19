@@ -17,7 +17,8 @@ import {
   type RaiPermission,
   type RaiPermissions,
   CustomRoleType,
-  FeatureAPIResults
+  FeatureAPIResults,
+  TenantType
 } from './types'
 
 type Permission = {
@@ -39,7 +40,8 @@ type Profile = {
   hasAllVenues?: boolean,
   venuesList?: string[],
   selectedBetaListEnabled?: boolean,
-  betaFeaturesList?: FeatureAPIResults[]
+  betaFeaturesList?: FeatureAPIResults[],
+  tenantType?: TenantType
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
