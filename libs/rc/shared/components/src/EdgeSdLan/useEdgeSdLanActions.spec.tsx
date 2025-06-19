@@ -22,7 +22,7 @@ import {
   useEdgeMvSdLanActions
 } from './useEdgeSdLanActions'
 
-const { mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const mockedCallback = jest.fn()
 const mockedActivateEdgeSdLanDmzClusterReq = jest.fn()
 const mockedDeactivateEdgeSdLanDmzClusterReq = jest.fn()
@@ -687,32 +687,32 @@ describe('useGetEdgeSdLanByClusterId', () => {
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => {
           mockedReq()
-          return res(ctx.json({ data: mockedSdLanDataListP2 }))
+          return res(ctx.json({ data: mockedMvSdLanDataList }))
         }
       ))
   })
 
   it('should successfully get data by edgeClusterId', async () => {
-    const targetClusterId = mockedSdLanDataListP2[0].edgeClusterId
+    const targetClusterId = mockedMvSdLanDataList[0].edgeClusterId
     const { result } = renderHook(() => useGetEdgeSdLanByClusterId(targetClusterId), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
     await waitFor(() => expect(result.current).toStrictEqual({
-      edgeSdLanData: mockedSdLanDataListP2[0],
+      edgeSdLanData: mockedMvSdLanDataList[0],
       isLoading: false,
       isFetching: false
     }))
   })
 
   it('should successfully get data by guestEdgeClusterId', async () => {
-    const targetClusterId = mockedSdLanDataListP2[0].guestEdgeClusterId
+    const targetClusterId = mockedMvSdLanDataList[0].guestEdgeClusterId
     const { result } = renderHook(() => useGetEdgeSdLanByClusterId(targetClusterId), {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
     await waitFor(() =>expect(result.current).toStrictEqual({
-      edgeSdLanData: mockedSdLanDataListP2[0],
+      edgeSdLanData: mockedMvSdLanDataList[0],
       isLoading: false,
       isFetching: false
     }))
@@ -779,7 +779,7 @@ describe('SD-LAN feature functions', () => {
     const mockVenueId = 'mock_venue'
 
     it('should return networkId for DC case', async () => {
-      const mockData = mockedSdLanDataListP2.filter(item => item.id === 'mocked-sd-lan-2')
+      const mockData = mockedMvSdLanDataList.filter(item => item.id === 'mocked-sd-lan-2')
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -805,7 +805,7 @@ describe('SD-LAN feature functions', () => {
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
+          (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
         )
       )
       const { result } = renderHook(() =>
@@ -819,7 +819,7 @@ describe('SD-LAN feature functions', () => {
           .toStrictEqual({
             scopedNetworkIds: ['network_1', 'network_4', 'network_2'],
             scopedGuestNetworkIds: ['network_4'],
-            sdLans: mockedSdLanDataListP2
+            sdLans: mockedMvSdLanDataList
           })
       )
     })

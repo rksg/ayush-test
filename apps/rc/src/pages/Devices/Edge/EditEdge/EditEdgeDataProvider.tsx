@@ -24,7 +24,7 @@ import {
   EdgeLagStatus,
   EdgePort,
   EdgePortInfo,
-  EdgeSdLanViewDataP2,
+  EdgeMvSdLanViewData,
   EdgeStaticRouteConfig,
   EdgeStatusEnum,
   IncompatibilityFeatures,
@@ -44,7 +44,7 @@ export interface EditEdgeDataContextType {
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
   clusterConfig?: EdgeCluster
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   isSupportAccessPort?: boolean
   isClusterFormed: boolean
   isGeneralSettingsLoading: boolean

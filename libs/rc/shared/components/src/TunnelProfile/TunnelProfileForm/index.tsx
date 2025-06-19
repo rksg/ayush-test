@@ -133,15 +133,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       skip: !isEdgeL2greReady,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterServiceData: data?.data
-          ,isLoading
+          clusterServiceData: data?.data,
+          isLoading
         }
       }
     })
 
   const inValidClusterIds = clusterServiceData
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
-    item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
+      item.serviceType === EdgeServiceTypeEnum.SD_LAN ||
     // eslint-disable-next-line max-len
     (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 

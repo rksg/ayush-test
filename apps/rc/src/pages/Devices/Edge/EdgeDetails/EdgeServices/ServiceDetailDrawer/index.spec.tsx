@@ -41,7 +41,7 @@ const {
   mockEdgeList,
   mockEdgeServiceList
 } = EdgeGeneralFixtures
-const { mockedSdLanDataList, mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
@@ -102,7 +102,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       ),
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,

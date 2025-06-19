@@ -16,7 +16,8 @@ import {
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useGetResidentPortalListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetEdgeMvSdLanViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,

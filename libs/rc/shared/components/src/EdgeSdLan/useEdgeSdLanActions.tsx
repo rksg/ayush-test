@@ -20,9 +20,7 @@ import {
   CommonResult,
   EdgeMvSdLanExtended,
   EdgeMvSdLanNetworks,
-  EdgeMvSdLanViewData,
-  EdgeSdLanSettingP2,
-  EdgeSdLanViewDataP2
+  EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { getIntl, CatchErrorDetails } from '@acx-ui/utils'
 
@@ -54,7 +52,7 @@ const useEdgeSdLanCommonActions = () => {
   const [activateDmzTunnel] = useActivateEdgeSdLanDmzTunnelProfileMutation()
 
   const activateGuestEdgeCluster = (
-    serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended,
+    serviceId: string, payload: EdgeMvSdLanExtended,
     activityCallback?: (res: (CommonResult[] | CommonErrorsResult<CatchErrorDetails>)) => void
   ): Promise<CommonResult> => {
     return new Promise(async (resolve, reject) => {
@@ -79,7 +77,7 @@ const useEdgeSdLanCommonActions = () => {
   }
 
   const activateGuestTunnel =
-  (serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended): Promise<CommonResult> => {
+  (serviceId: string, payload: EdgeMvSdLanExtended): Promise<CommonResult> => {
     return activateDmzTunnel({ params: {
       serviceId,
       tunnelProfileId: payload.guestTunnelProfileId
@@ -393,7 +391,7 @@ export const useEdgeMvSdLanActions = () => {
 }
 
 export interface SdLanScopedVenueNetworksData {
-  sdLans: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] | undefined,
+  sdLans: EdgeMvSdLanViewData[] | undefined,
   scopedNetworkIds: string[],
   scopedGuestNetworkIds: string[]
 }
@@ -436,7 +434,7 @@ export const useSdLanScopedVenueNetworks = (
 }
 
 export interface SdLanScopedNetworkVenuesData {
-    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] },
+    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
     networkVenueIds: string[] | undefined,
     guestNetworkVenueIds: string[] | undefined
 }
@@ -465,7 +463,7 @@ export const useSdLanScopedNetworkVenues = (
 
   const result = useMemo(() => {
     const mvSdlans = data?.data as EdgeMvSdLanViewData[]
-    const sdLansVenueMap: { [venueId in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
+    const sdLansVenueMap: { [venueId in string]: ( EdgeMvSdLanViewData)[] } = {}
     const guestNetworkVenueIds: string[] = []
 
     mvSdlans?.forEach(sdlan => {

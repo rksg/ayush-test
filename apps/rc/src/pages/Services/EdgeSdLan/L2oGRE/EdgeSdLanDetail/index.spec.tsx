@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitForElementToBeRemoved, within }        
 
 import { EdgeSdLanDetail } from '.'
 
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeSdLanCompatibilities, mockEdgeSdLanApCompatibilites } = EdgeCompatibilityFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -33,7 +33,7 @@ describe('Edge SD-LAN Detail', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       )
     )
   })
@@ -55,7 +55,7 @@ describe('Edge SD-LAN Detail', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2.slice(1) }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList.slice(1) }))
       )
     )
 

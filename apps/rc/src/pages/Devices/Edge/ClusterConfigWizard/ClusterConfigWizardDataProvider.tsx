@@ -13,8 +13,8 @@ import {
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   EdgeClusterStatus,
+  EdgeMvSdLanViewData,
   EdgeNodesPortsInfo,
-  EdgeSdLanViewDataP2,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
@@ -23,7 +23,7 @@ export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
   portsStatus?: EdgeNodesPortsInfo
   lagsStatus?: EdgeNodesPortsInfo
-  edgeSdLanData?: EdgeSdLanViewDataP2
+  edgeSdLanData?: EdgeMvSdLanViewData
   clusterNetworkSettings?: ClusterNetworkSettings
   clusterSubInterfaceSettings? : ClusterSubInterfaceSettings
   isSupportAccessPort?: boolean

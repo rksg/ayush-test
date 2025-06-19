@@ -18,7 +18,7 @@ import Ports from './index'
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -119,7 +119,7 @@ describe('EditEdge - Ports', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
       ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,

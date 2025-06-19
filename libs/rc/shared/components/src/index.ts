@@ -254,7 +254,6 @@ export type {
 export { useEdgePinActions } from './EdgePersonalIdentityNetwork/useEdgePinActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
-  useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   transformSdLanScopedVenueMap,
   isSdLanDmzUtilizedOnDiffVenue,

@@ -14,7 +14,7 @@ const {
   mockedDefaultTunnelProfileData,
   mockedTunnelTypeL2greData
 } = EdgeTunnelProfileFixtures
-const { mockedSdLanDataListP2, mockedL2oGreSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList, mockedL2oGreSdLanDataList } = EdgeSdLanFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
@@ -246,7 +246,7 @@ describe('EditTunnelProfile', () => {
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
           (_, res, ctx) => {
             mockedReqSdLan()
-            return res(ctx.json({ data: mockedSdLanDataListP2 }))
+            return res(ctx.json({ data: mockedMvSdLanDataList }))
           }
         )
       )
@@ -256,7 +256,7 @@ describe('EditTunnelProfile', () => {
         </Provider>
         , { route: { path: editViewPath, params: {
           ...params,
-          policyId: mockedSdLanDataListP2[0].tunnelProfileId
+          policyId: mockedMvSdLanDataList[0].tunnelProfileId
         } } }
       )
 
@@ -286,7 +286,7 @@ describe('EditTunnelProfile', () => {
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
           (_, res, ctx) => {
             mockedReqSdLan()
-            return res(ctx.json({ data: mockedSdLanDataListP2 }))
+            return res(ctx.json({ data: mockedMvSdLanDataList }))
           }
         )
       )
@@ -299,7 +299,7 @@ describe('EditTunnelProfile', () => {
         </Provider>
         , { route: { path: editViewPath, params: {
           ...params,
-          policyId: mockedSdLanDataListP2[0].tunnelProfileId
+          policyId: mockedMvSdLanDataList[0].tunnelProfileId
         } } }
       )
 
@@ -321,7 +321,7 @@ describe('EditTunnelProfile', () => {
         </Provider>
         , { route: { path: editViewPath, params: {
           ...params,
-          policyId: mockedSdLanDataListP2[0].guestTunnelProfileId
+          policyId: mockedMvSdLanDataList[0].guestTunnelProfileId
         } } }
       )
 
