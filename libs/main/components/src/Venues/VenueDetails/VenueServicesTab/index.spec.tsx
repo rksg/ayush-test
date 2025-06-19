@@ -71,21 +71,6 @@ describe('Venue service tab', () => {
     }
   })
 
-  describe('when edge feature flag is off', () => {
-    it('should not render edge related tab', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-      render(
-        <Provider>
-          <VenueServicesTab />
-        </Provider>, {
-          route: { params }
-        })
-
-      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(5)
-    })
-  })
-
   describe('when edge feature flag is on', () => {
     const mockedGetEdgeListFn = jest.fn()
     const mockedGetEdgeDhcpFn = jest.fn()

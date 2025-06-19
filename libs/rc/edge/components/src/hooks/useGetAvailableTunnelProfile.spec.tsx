@@ -19,7 +19,8 @@ modifiedMockSdLanDataList[0].tunnelProfileId = mockedTunnelProfileViewData.data[
 const modifiedMockPinStatsList = cloneDeep(mockPinStatsList)
 modifiedMockPinStatsList.data[0].vxlanTunnelProfileId = mockedTunnelProfileViewData.data[1].id
 
-jest.mock('./useIsEdgeFeatureReady', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
 }))
 

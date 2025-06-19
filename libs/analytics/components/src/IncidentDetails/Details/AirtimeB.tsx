@@ -1,4 +1,4 @@
-import moment, { unitOfTime } from 'moment-timezone'
+import { unitOfTime } from 'moment-timezone'
 
 import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
@@ -12,20 +12,22 @@ import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpa
 import { TimeSeries }                                       from '../TimeSeries'
 import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { commonAttributes } from './constants'
+import { IncidentHeader }   from './IncidentHeader'
+
+const timeSeriesCharts: TimeSeriesChartTypes[] = [
+  TimeSeriesChartTypes.AirtimeUtilizationChart
+]
+const buffer = {
+  front: { value: 0, unit: 'hours' as unitOfTime.Base },
+  back: { value: 0, unit: 'hours' as unitOfTime.Base }
+}
 
 export const AirtimeB = (incident: Incident) => {
   const attributeList = [
     Attributes.ClientImpactCount,
     Attributes.ApImpactCount,
-    Attributes.IncidentCategory,
-    Attributes.IncidentSubCategory,
-    Attributes.Type,
-    Attributes.Scope,
-    Attributes.Duration,
-    Attributes.EventStartTime,
-    ...((moment(incident.startTime).isSame(incident.impactedStart))
-      ? [Attributes.EventEndTime] : [Attributes.DataStartTime, Attributes.DataEndTime])
+    ...commonAttributes(incident)
   ]
   const rogueEnabled = incident.metadata.rootCauseChecks?.checks
     .some(check => check.isRogueDetectionEnabled)
@@ -58,17 +60,8 @@ export const AirtimeB = (incident: Incident) => {
     }
   ]
 
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.AirtimeUtilizationChart
-  ]
-
   const insightExtraValues = {
     rogueapdrawer: extraValues.RogueAPsDrawerLink(incident)
-  }
-
-  const buffer = {
-    front: { value: 0, unit: 'hours' as unitOfTime.Base },
-    back: { value: 0, unit: 'hours' as unitOfTime.Base }
   }
 
   return <>
