@@ -17,8 +17,7 @@ import {
   networkTypes,
   transformDisplayText,
   useConfigTemplate,
-  Venue,
-  WlanSecurityEnum
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -154,23 +153,11 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Workflow:' })}
               children={summaryData.guestPortal.workflowName ?? ''}
             />}
-          {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
-            summaryData.type !== NetworkTypeEnum.DPSK &&
-            summaryData.type !== NetworkTypeEnum.HOTSPOT20
-            && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
-          && <Form.Item
-            label={$t({ defaultMessage: 'Use RADIUS Server:' })}
-            children={
-              summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
-                ? $t({ defaultMessage: 'Yes' })
-                : $t({ defaultMessage: 'No' })
-            }
-          />
-          }
           {!supportRadsec &&
             summaryData.isCloudpathEnabled &&
             summaryData.type !== NetworkTypeEnum.DPSK &&
+            summaryData.type !== NetworkTypeEnum.OPEN &&
+            summaryData.type !== NetworkTypeEnum.AAA &&
             <>
               {!summaryData.wlan?.macRegistrationListId &&
                 <Form.Item
@@ -191,8 +178,7 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Accounting Service' })}
               children={`${summaryData.accountingRadius?.name}`}
             />}
-          {summaryData.type === NetworkTypeEnum.AAA
-          && !summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
+          {summaryData.type === NetworkTypeEnum.AAA &&
            <AaaSummaryForm summaryData={summaryData} />
           }
           {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
@@ -217,8 +203,6 @@ export function SummaryForm (props: {
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
           {summaryData.type === NetworkTypeEnum.OPEN &&
-            (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
-              !summaryData.wlan?.macRegistrationListId) &&
             <OpenSummaryForm summaryData={summaryData} />
           }
         </Col>

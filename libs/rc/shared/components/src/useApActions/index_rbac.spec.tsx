@@ -64,6 +64,10 @@ describe('Test useApActions', () => {
           venueDhcpEnabled: true
         }] ))
       ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_req, res, ctx) => res(ctx.json(dummySwitchClientList))
+      ),
       rest.delete(
         WifiRbacUrlsInfo.deleteAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
@@ -92,10 +96,6 @@ describe('Test useApActions', () => {
       rest.post(
         WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        SwitchRbacUrlsInfo.getSwitchClientList.url,
-        (_req, res, ctx) => res(ctx.json(dummySwitchClientList))
       )
     )
     const { result } = renderHook(() => useApActions(), {

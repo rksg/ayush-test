@@ -155,7 +155,8 @@ describe('CaptiveNetworkForm-Directory', () => {
     await waitFor(() => expect(directoryServerAPI).toBeCalled())
     const server = screen.getByTestId('directory-server-select')
     expect(server).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('combobox'))
+    const comboboxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboboxes[0])
     expect(await screen.findByRole('option', { name: /ldap-profile1/ })).toBeInTheDocument()
   })
   it('should render and interact with Identity Group in create mode', async () => {

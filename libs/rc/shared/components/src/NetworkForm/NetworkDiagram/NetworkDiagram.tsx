@@ -13,6 +13,9 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
+import AaaCertAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/aaa-cert-aaa-proxy.png'
+import AaaCertAaaDiagram               from '../assets/images/network-wizard-diagrams/aaa-cert-aaa.png'
+import AaaCertDiagram                  from '../assets/images/network-wizard-diagrams/aaa-cert.png'
 import AaaProxyDiagram                 from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
 import AaaDiagram                      from '../assets/images/network-wizard-diagrams/aaa.png'
 import ClickThroughWithOweDiagram      from '../assets/images/network-wizard-diagrams/click-through-owe.png'
@@ -40,6 +43,17 @@ import HostApprovalWithPskDiagram      from '../assets/images/network-wizard-dia
 import HostApprovalDiagram             from '../assets/images/network-wizard-diagrams/host-approval.png'
 import Hotspot20Diagram                from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
 import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
+import OpenAaaProxyDiagram             from '../assets/images/network-wizard-diagrams/open-aaa-proxy.png'
+import OpenAaaDiagram                  from '../assets/images/network-wizard-diagrams/open-aaa.png'
+import OpenMacregAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/open-macreg-aaa-proxy.png'
+import OpenMacregAaaDiagram            from '../assets/images/network-wizard-diagrams/open-macreg-aaa.png'
+import OpenMacregDiagram               from '../assets/images/network-wizard-diagrams/open-macreg.png'
+import OpenOweAaaProxyDiagram          from '../assets/images/network-wizard-diagrams/open-owe-aaa-proxy.png'
+import OpenOweAaaDiagram               from '../assets/images/network-wizard-diagrams/open-owe-aaa.png'
+import OpenOweMacregAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa-proxy.png'
+import OpenOweMacregAaaDiagram         from '../assets/images/network-wizard-diagrams/open-owe-macreg-aaa.png'
+import OpenOweMacregDiagram            from '../assets/images/network-wizard-diagrams/open-owe-macreg.png'
+import OpenOweDiagram                  from '../assets/images/network-wizard-diagrams/open-owe.png'
 import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
 import PskMacAuthProxyDiagram          from '../assets/images/network-wizard-diagrams/psk-mac-auth-proxy.png'
 import PskMacAuthDiagram               from '../assets/images/network-wizard-diagrams/psk-mac-auth.png'
@@ -47,8 +61,14 @@ import PskDiagram                      from '../assets/images/network-wizard-dia
 import SAMLWithOweDiagram              from '../assets/images/network-wizard-diagrams/saml-owe.png'
 import SAMLWithPskDiagram              from '../assets/images/network-wizard-diagrams/saml-psk.png'
 import SAMLDiagram                     from '../assets/images/network-wizard-diagrams/saml.png'
-import SelfSignInWithOweDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
-import SelfSignInWithPskDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
+import SelfSignInAaaProxyDiagram       from '../assets/images/network-wizard-diagrams/self-sign-in-aaa-proxy.png'
+import SelfSignInAaaDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-aaa.png'
+import SelfSignInOweAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa-proxy.png'
+import SelfSignInOweAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-owe-aaa.png'
+import SelfSignInOweDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
+import SelfSignInPskAaaProxyDiagram    from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa-proxy.png'
+import SelfSignInPskAaaDiagram         from '../assets/images/network-wizard-diagrams/self-sign-in-psk-aaa.png'
+import SelfSignInPskDiagram            from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
 import SelfSignInDiagram               from '../assets/images/network-wizard-diagrams/self-sign-in.png'
 import WISPrWithAlwaysAcceptOweDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-owe.png'
 import WISPrWithAlwaysAcceptPskDiagram from '../assets/images/network-wizard-diagrams/wispr-always-accept-psk.png'
@@ -80,31 +100,31 @@ interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  // enableAuthProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   wlanSecurity?: WlanSecurityEnum
-  // enableAccountingService?: boolean
 }
 
-interface OpenDiagramProps extends DiagramProps {
-}
-
-interface PskDiagramProps extends DiagramProps {
+interface MacAuthDiagramProps extends DiagramProps {
   enableMACAuth?: boolean
   isMacRegistrationList?: boolean
-  // enableAccountingService?: boolean
+}
+
+interface OpenDiagramProps extends MacAuthDiagramProps {
+  enableOwe?: boolean
+}
+
+interface PskDiagramProps extends MacAuthDiagramProps {
 }
 interface AaaDiagramProps extends DiagramProps {
-  enableAuthProxy?: boolean;
-  enableAccountingProxy?: boolean;
-  enableAaaAuthBtn?: boolean;
-  enableAccountingService?: boolean;
-  showButtons?: boolean;
+  enableAaaAuthBtn?: boolean
+  showButtons?: boolean
+  useCertificateTemplate?: boolean
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
   networkPortalType?: GuestNetworkTypeEnum
   wlanSecurity?: WlanSecurityEnum
   wisprWithAlwaysAccept?: boolean
+  networkSecurity?: string
 }
 
 type NetworkDiagramProps = DefaultDiagramProps
@@ -146,17 +166,45 @@ function getDPSKDiagram (props:DpskDiagramProps) {
 }
 
 function getPSKDiagram (props: PskDiagramProps) {
-  if(props?.enableMACAuth && props?.isMacRegistrationList) {
-    return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
-  }else if(props?.enableMACAuth && !props?.isMacRegistrationList) {
-    return getAAADiagram(props)
-  } else {
-    return (props.enableAccountingService)? getAAADiagram(props) : PskDiagram
+  if (props.enableMACAuth) {
+    if (props.isMacRegistrationList) {
+      return getAAADiagramByParams(props, PskMacAuthProxyDiagram, PskMacAuthDiagram)
+    }
+    return getCommonAAADiagram(props)
   }
+
+  return (props.enableAccountingService) ? getCommonAAADiagram(props) : PskDiagram
 }
 
-function getOpenDiagram (props: PskDiagramProps) {
-  return props?.enableMACAuth ? getAAADiagram(props) : OpenDiagram
+function getOpenDiagram (props: OpenDiagramProps) {
+  const diagramSet = props.enableOwe ? {
+    OpenDiagram: OpenOweDiagram,
+    OpenAaaProxyDiagram: OpenOweAaaProxyDiagram,
+    OpenAaaDiagram: OpenOweAaaDiagram,
+    OpenMacregDiagram: OpenOweMacregDiagram,
+    OpenMacregAaaProxyDiagram: OpenOweMacregAaaProxyDiagram,
+    OpenMacregAaaDiagram: OpenOweMacregAaaDiagram
+  } : {
+    OpenDiagram,
+    OpenAaaProxyDiagram,
+    OpenAaaDiagram,
+    OpenMacregDiagram,
+    OpenMacregAaaProxyDiagram,
+    OpenMacregAaaDiagram
+  }
+
+
+  if (props.enableMACAuth) {
+    if (props.isMacRegistrationList) {
+      return (props.enableAccountingService) ?
+        getAAADiagramByParams(
+          props, diagramSet.OpenMacregAaaProxyDiagram, diagramSet.OpenMacregAaaDiagram
+        ) : diagramSet.OpenMacregDiagram
+    }
+    return getAAADiagramByParams(props, diagramSet.OpenAaaProxyDiagram, diagramSet.OpenAaaDiagram)
+  }
+
+  return diagramSet.OpenDiagram
 }
 
 function getAAADiagramByParams (
@@ -177,8 +225,18 @@ function getAAADiagramByParams (
   return isProxyModeOn ? proxyDiagram : nonProxyDiagram
 }
 
-function getAAADiagram (props: AaaDiagramProps) {
+function getCommonAAADiagram (props: AaaDiagramProps) {
   return getAAADiagramByParams(props, AaaProxyDiagram, AaaDiagram)
+}
+
+function getAAADiagram (props: AaaDiagramProps) {
+  if(props.useCertificateTemplate) {
+    return (props.enableAccountingService) ?
+      getAAADiagramByParams(props, AaaCertAaaProxyDiagram, AaaCertAaaDiagram) :
+      AaaCertDiagram
+  }
+
+  return getCommonAAADiagram(props)
 }
 
 function getCloudpathDiagram (wisprWithPsk: boolean, wisprWithOwe: boolean,
@@ -226,8 +284,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :
       (wisprWithOwe ? ClickThroughWithOweDiagram : ClickThroughDiagram),
-    [GuestNetworkTypeEnum.SelfSignIn]: wisprWithPsk ? SelfSignInWithPskDiagram :
-      (wisprWithOwe ? SelfSignInWithOweDiagram : SelfSignInDiagram),
+    [GuestNetworkTypeEnum.SelfSignIn]: getSelfSignInDiagram(props),
     [GuestNetworkTypeEnum.HostApproval]: wisprWithPsk ? HostApprovalWithPskDiagram :
       (wisprWithOwe ? HostApprovalWithOweDiagram : HostApprovalDiagram),
     [GuestNetworkTypeEnum.GuestPass]: wisprWithPsk ? GuestPassWithPskDiagram :
@@ -245,6 +302,61 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
+
+interface CaptivePortalDiagramSet {
+  Diagram: string;
+  AaaProxyDiagram: string;
+  AaaDiagram: string;
+}
+
+const captivePortalDiagramMapping: Record<string, CaptivePortalDiagramSet> = {
+  // --- SelfSignIn ---
+  SelfSignInOWE: {
+    Diagram: SelfSignInOweDiagram,
+    AaaProxyDiagram: SelfSignInOweAaaProxyDiagram,
+    AaaDiagram: SelfSignInOweAaaDiagram
+  },
+  SelfSignInPSK: {
+    Diagram: SelfSignInPskDiagram,
+    AaaProxyDiagram: SelfSignInPskAaaProxyDiagram,
+    AaaDiagram: SelfSignInPskAaaDiagram
+  },
+  SelfSignIn: {
+    Diagram: SelfSignInDiagram,
+    AaaProxyDiagram: SelfSignInAaaProxyDiagram,
+    AaaDiagram: SelfSignInAaaDiagram
+  }
+}
+
+function createCaptivePortalDiagramGenerator (
+  prefix: keyof typeof captivePortalDiagramMapping): (props: CaptivePortalDiagramProps) => string {
+  return (props: CaptivePortalDiagramProps) => {
+    const securityTypeKey: 'OWE' | 'PSK' | '' =
+      props.networkSecurity === 'OWE' || props.networkSecurity === 'PSK' ?
+        props.networkSecurity : ''
+    const key = `${prefix}${securityTypeKey}`
+    const diagrams = captivePortalDiagramMapping[key]
+
+    return getCommonCaptivePortalDiagram(
+      props,
+      diagrams.Diagram,
+      diagrams.AaaProxyDiagram,
+      diagrams.AaaDiagram
+    )
+  }
+}
+
+function getCommonCaptivePortalDiagram (
+  props: NetworkDiagramProps,
+  nonAaaDiagram:string,
+  aaaProxyDiagram:string,
+  aaaNonProxyDiagram:string
+) {
+  return (props.enableAccountingService)?
+    getAAADiagramByParams(props, aaaProxyDiagram, aaaNonProxyDiagram) : nonAaaDiagram
+}
+
+const getSelfSignInDiagram = createCaptivePortalDiagramGenerator('SelfSignIn')
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
@@ -277,21 +389,28 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   }
 
   function isForceHideButtons (props: NetworkDiagramProps, networkType?:NetworkTypeEnum) {
-
-    if(networkType === NetworkTypeEnum.PSK) {
-      const pskProps = props as PskDiagramProps
-      return !(pskProps.enableMACAuth && !pskProps.isMacRegistrationList)
+    if(networkType === NetworkTypeEnum.PSK || networkType === NetworkTypeEnum.OPEN) {
+      const macAuthProps = props as MacAuthDiagramProps
+      return !(macAuthProps.enableMACAuth && !macAuthProps.isMacRegistrationList)
     }
 
     // Hide AAA button under Captive Portal - Workflow
     if(props.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       const cpProps = props as CaptivePortalDiagramProps
-      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow
+
+      return cpProps.networkPortalType === GuestNetworkTypeEnum.Workflow ||
+        cpProps.networkPortalType === GuestNetworkTypeEnum.HostApproval ||
+        cpProps.networkPortalType === GuestNetworkTypeEnum.SelfSignIn
     }
 
     if(networkType === NetworkTypeEnum.DPSK) {
       const dpskProps = props as DpskDiagramProps
       return !dpskProps.isCloudpathEnabled
+    }
+
+    if(networkType === NetworkTypeEnum.AAA) {
+      const aaaProps = props as AaaDiagramProps
+      return aaaProps.useCertificateTemplate
     }
 
     return false
