@@ -4,16 +4,22 @@ import { Loader, DonutChart, qualitativeColorSet } from '@acx-ui/components'
 import type { DonutChartData }                     from '@acx-ui/components'
 import { formatter }                               from '@acx-ui/formatter'
 
-import { useTrafficSnapshotQuery, TrafficSnapshotData } from './trafficSnapshotServices'
+import { useTrafficByRadioQuery, TrafficByRadioData } from './services'
 
 import { TrafficByRadioFilters } from '.'
 
 
 export { TrafficSnapshotWidget as TrafficSnapshot }
 
-function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData[] {
+function getTrafficSnapshotChartData (queryResultsData: TrafficByRadioData): DonutChartData[] {
   const trafficSnapshotChartData: DonutChartData[] = []
   const colorMapping = qualitativeColorSet()
+
+  function sumOfTraffic (trafficData: number[]) {
+    return trafficData.reduce((accumulator, current) => accumulator + current, 0)
+  }
+
+  type TrafficData = Omit<TrafficByRadioData, 'time' | 'userTraffic_all'>
 
   const nameMap = {
     userTraffic_24: '2.4 GHz',
@@ -22,13 +28,15 @@ function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData
   }
 
   let i = 0
-  for (const key in data) {
-    trafficSnapshotChartData.push({
-      name: nameMap[key as keyof TrafficSnapshotData],
-      value: data[key as keyof TrafficSnapshotData].reduce((accum, curr) => accum + curr, 0),
-      color: colorMapping[i]
-    })
-    i += 1
+  for (const key in queryResultsData) {
+    if (key !== 'time' && key !== 'userTraffic_all') {
+      trafficSnapshotChartData.push({
+        name: nameMap[key as keyof TrafficData],
+        value: sumOfTraffic(queryResultsData[key as keyof TrafficData]),
+        color: colorMapping[i]
+      })
+      i += 1
+    }
   }
 
   return trafficSnapshotChartData
@@ -36,7 +44,7 @@ function getTrafficSnapshotChartData (data: TrafficSnapshotData): DonutChartData
 
 function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters }) {
 
-  const queryResults = useTrafficSnapshotQuery({
+  const queryResults = useTrafficByRadioQuery({
     path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
     startDate: filters.startDate,
     endDate: filters.endDate

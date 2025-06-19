@@ -3,7 +3,7 @@ import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { api } from './trafficTrendServices'
+import { api } from './services'
 
 describe('trafficTrendWidgetApi', () => {
   const props: AnalyticsFilter = {
@@ -39,7 +39,7 @@ describe('trafficTrendWidgetApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficTrend.initiate(props)
+      api.endpoints.trafficByRadio.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)

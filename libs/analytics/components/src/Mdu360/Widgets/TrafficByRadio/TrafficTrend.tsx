@@ -9,11 +9,11 @@ import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { useTrafficTrendQuery, TrafficTrendData } from './trafficTrendServices'
+import { useTrafficByRadioQuery, TrafficByRadioData } from './services'
 
 import { TrafficByRadioFilters } from '.'
 
-type Key = keyof Omit<TrafficTrendData, 'time'>
+type Key = keyof Omit<TrafficByRadioData, 'time'>
 
 export { TrafficTrendWidget as TrafficTrend }
 
@@ -34,7 +34,7 @@ function TrafficTrendWidget ({
     { key: 'userTraffic_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
-  const queryResults = useTrafficTrendQuery({
+  const queryResults = useTrafficByRadioQuery({
     path: [{ type: 'network', name: 'Network' }], // replace this with the path when provided by ResidentExperienceTab
     startDate: filters.startDate,
     endDate: filters.endDate

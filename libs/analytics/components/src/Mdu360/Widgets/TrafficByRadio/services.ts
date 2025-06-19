@@ -4,7 +4,7 @@ import { calculateGranularity } from '@acx-ui/analytics/utils'
 import { dataApi }              from '@acx-ui/store'
 import { NetworkPath }          from '@acx-ui/utils'
 
-export type TrafficTrendData = {
+export type TrafficByRadioData = {
   time: string[]
   userTraffic_all: number[]
   userTraffic_6: number[]
@@ -28,13 +28,13 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    trafficTrend: build.query<
-      TrafficTrendData,
+    trafficByRadio: build.query<
+      TrafficByRadioData,
       Payload
     >({
       query: (payload) => ({
         document: gql`
-          query TrafficTrendWidget(
+          query TrafficByRadioWidget(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
@@ -61,10 +61,10 @@ export const api = dataApi.injectEndpoints({
           granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
-      transformResponse: (response: Response<TrafficTrendData>) =>
+      transformResponse: (response: Response<TrafficByRadioData>) =>
         response.network.hierarchyNode.timeSeries
     })
   })
 })
 
-export const { useTrafficTrendQuery } = api
+export const { useTrafficByRadioQuery } = api
