@@ -1,3 +1,4 @@
+import moment                                        from 'moment'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { defaultSort, sortProp }           from '@acx-ui/analytics/utils'
@@ -86,9 +87,10 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-${portText}-Congestion-${incident.id}.csv`
+      `Congestion-Impacted-${portText}-${incident.id}-${timestamp}.csv`
     )
   }
 

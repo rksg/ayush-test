@@ -98,7 +98,7 @@ describe('PoeLowTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switches-PoE')
+      expect.stringContaining('PoE-Impacted-Switches')
     )
   })
 
@@ -135,7 +135,7 @@ describe('PoeLowTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switch-PoE')
+      expect.stringContaining('PoE-Impacted-Switch')
     )
   })
 

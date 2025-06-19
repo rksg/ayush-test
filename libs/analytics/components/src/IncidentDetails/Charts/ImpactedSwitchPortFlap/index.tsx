@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import moment                                                          from 'moment'
 import { MessageDescriptor, defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { defaultSort, sortProp }                    from '@acx-ui/analytics/utils'
@@ -141,9 +142,11 @@ export function ImpactedSwitchPortFlapTable ({ incident }: ChartProps) {
       ...csvData.map(row => Object.values(row).map(value => `"${value}"`).join(','))
     ].join('\n')
 
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     const portText = impactedSwitch.data!.ports!.length === 1 ? 'Port' : 'Ports'
     handleBlobDownloadFile(new Blob([csvContent],
-      { type: 'text/csv;charset=utf-8;' }), `Impacted-${portText}-Port-Flap-${incident.id}.csv`)
+      { type: 'text/csv;charset=utf-8;' }),
+    `Port-Flap-Impacted-${portText}-${incident.id}-${timestamp}.csv`)
   }
 
   return <Loader states={[impactedSwitch]}>

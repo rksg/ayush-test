@@ -1,5 +1,6 @@
 import { useMemo, useCallback } from 'react'
 
+import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { defaultSort, dateSort, sortProp } from '@acx-ui/analytics/utils'
@@ -73,9 +74,10 @@ export function PoePdTable (props: ChartProps) {
     ].join('\n')
 
     const switchText = queryResults.data!.length === 1 ? 'Switch' : 'Switches'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-${switchText}-PoE-${props.incident.id}.csv`
+      `PoE-Impacted-${switchText}-${props.incident.id}-${timestamp}.csv`
     )
   }, [columnHeaders, queryResults.data, props.incident.id])
 

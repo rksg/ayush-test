@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
@@ -34,9 +35,10 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const switchText = data.length === 1 ? 'Switch' : 'Switches'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-${switchText}-TCP-SYN-DDoS-${incident.id}.csv`
+      `TCP-SYN-DDoS-Impacted-${switchText}-${incident.id}-${timestamp}.csv`
     )
   }
 

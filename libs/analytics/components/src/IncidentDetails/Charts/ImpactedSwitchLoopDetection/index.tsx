@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { map }     from 'lodash'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { Incident, overlapsRollup, sortProp }                                             from '@acx-ui/analytics/utils'
@@ -39,9 +40,10 @@ export function ImpactedVlanTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const vlanText = response.data!.length === 1 ? 'VLAN' : 'VLANs'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `${vlanText}-Loop-Detection-${incident.id}.csv`
+      `Loop-Detection-${vlanText}-${incident.id}-${timestamp}.csv`
     )
   }
 

@@ -103,7 +103,7 @@ describe('ImpactedSwitchDDoS', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switches-TCP-SYN-DDoS')
+      expect.stringContaining('TCP-SYN-DDoS-Impacted-Switches')
     )
   })
 
@@ -142,7 +142,7 @@ describe('ImpactedSwitchDDoS', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switch-TCP-SYN-DDoS')
+      expect.stringContaining('TCP-SYN-DDoS-Impacted-Switch')
     )
   })
 

@@ -230,7 +230,7 @@ describe('ImpactedSwitchPortConjestionTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Ports-Congestion')
+      expect.stringContaining('Congestion-Impacted-Ports')
     )
   })
 
@@ -274,7 +274,7 @@ describe('ImpactedSwitchPortConjestionTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Port-Congestion')
+      expect.stringContaining('Congestion-Impacted-Port')
     )
   })
 

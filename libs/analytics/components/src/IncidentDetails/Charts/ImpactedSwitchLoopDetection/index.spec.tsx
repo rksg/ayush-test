@@ -113,7 +113,7 @@ describe('ImpactedVlanTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('VLANs-Loop-Detection')
+      expect.stringContaining('Loop-Detection-VLANs')
     )
   })
 
@@ -153,7 +153,7 @@ describe('ImpactedVlanTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('VLAN-Loop-Detection')
+      expect.stringContaining('Loop-Detection-VLAN')
     )
   })
 

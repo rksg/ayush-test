@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
@@ -126,9 +127,10 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const switchText = data.length === 1 ? 'Switch' : 'Switches'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-${switchText}-LLDP-Status-${incident.id}.csv`
+      `LLDP-Status-Impacted-${switchText}-${incident.id}-${timestamp}.csv`
     )
   }
 

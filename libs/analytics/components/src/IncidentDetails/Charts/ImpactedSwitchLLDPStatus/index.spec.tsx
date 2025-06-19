@@ -203,7 +203,7 @@ describe('ImpactedSwitchLLDP',()=>{
 
       expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
-        expect.stringContaining('Impacted-Switches-LLDP-Status')
+        expect.stringContaining('LLDP-Status-Impacted-Switches')
       )
     })
 
@@ -254,7 +254,7 @@ describe('ImpactedSwitchLLDP',()=>{
 
       expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
         expect.any(Blob),
-        expect.stringContaining('Impacted-Switch-LLDP-Status')
+        expect.stringContaining('LLDP-Status-Impacted-Switch')
       )
     })
   })

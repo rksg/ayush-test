@@ -1,3 +1,4 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { defaultSort, overlapsRollup, sortProp }              from '@acx-ui/analytics/utils'
@@ -104,9 +105,10 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
     ].join('\n')
 
     const switchText = response.data!.length === 1 ? 'Switch' : 'Switches'
+    const timestamp = moment().format('YYYYMMDDHHmmss')
     handleBlobDownloadFile(
       new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }),
-      `Impacted-${switchText}-Uplink-Congestion-${incident.id}.csv`
+      `Uplink-Congestion-Impacted-${switchText}-${incident.id}-${timestamp}.csv`
     )
   }
 

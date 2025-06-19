@@ -132,7 +132,7 @@ describe('ImpactedSwitchUplinkTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switches-Uplink-Congestion')
+      expect.stringContaining('Uplink-Congestion-Impacted-Switches')
     )
   })
   it('should handle CSV export correctly with a single switch', async () => {
@@ -177,7 +177,7 @@ describe('ImpactedSwitchUplinkTable', () => {
 
     expect(mockHandleBlobDownloadFile).toHaveBeenCalledWith(
       expect.any(Blob),
-      expect.stringContaining('Impacted-Switch-Uplink-Congestion')
+      expect.stringContaining('Uplink-Congestion-Impacted-Switch')
     )
   })
   it('should display LAG ports correctly', async () => {
