@@ -23,3 +23,13 @@ export function useTenantId () {
     return getTenantId(location.pathname)
   }
 }
+
+function getSiteType (): 'REC' | 'MSP' {
+  const [, marker] = window.location.pathname.split('/').filter(Boolean)
+
+  return marker === 'v' ? 'MSP' : 'REC'
+}
+
+export function isRecSite (): boolean {
+  return getSiteType() === 'REC'
+}

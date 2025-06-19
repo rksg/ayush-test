@@ -5,7 +5,7 @@ import { generatePath, Params }                                                 
 import { get }                          from '@acx-ui/config'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
-import { getTenantId }                       from './getTenantId'
+import { getSiteType, getTenantId, isRecSite }          from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
 export interface ApiInfo {
@@ -104,6 +104,8 @@ export const createHttpRequest = (
     ...getJwtHeaders({ ignoreDelegation })
   }
 
+  apiInfo = convertApiInfoForRecConfigTemplate(apiInfo)
+
   const origin = window.location.origin
   const newApiHostName = origin.replace(
     window.location.hostname, get('NEW_API_DOMAIN_NAME'))
@@ -193,5 +195,18 @@ export const getUrlForTest = (apiInfo: ApiInfo) => {
 
 
 export const getOpsApi = (apiInfo: ApiInfo) => {
-  return apiInfo.opsApi || ''
+  const { opsApi = '' } = apiInfo
+
+  return isRecSite() && opsApi.includes(':/templates')
+    ? opsApi.replace(':/templates', ':/rec/templates')
+    : opsApi
+}
+
+function convertApiInfoForRecConfigTemplate (apiInfo: ApiInfo): ApiInfo {
+  const { url, ...rest } = apiInfo
+
+  return {
+    ...rest,
+    url: isRecSite() ? url.replace(/^\/templates/, '/rec/templates') : url
+  }
 }
