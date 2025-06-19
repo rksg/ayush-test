@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
@@ -14,7 +14,6 @@ import {
   useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
   useLazyGetVenueQuery,
-  useLazyGetClientListQuery,
   useLazyGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -35,8 +34,8 @@ import {
   displayDeviceCountLimit,
   EXPIRATION_TIME_FORMAT
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }               from '@acx-ui/utils'
+import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -48,19 +47,26 @@ interface ClientExtended extends Client {
   radioType: string
 }
 
-// eslint-disable-next-line
-const getRadioTypeFromRbacAndNonRbacAPI = (nonRbacRadioType: any, rbacRadioType: any, ff: boolean) : string => {
-  let radioType = undefined
-  if (ff) {
-    radioType = rbacRadioType?.data.data[0]?.radioStatus?.type
-  } else {
-    radioType = nonRbacRadioType?.data?.data[0]?.radio?.mode
-  }
+// eslint-disable-next-line max-len
+const shouldDisplayDpskPassphraseDetail = (networkType: NetworkTypeEnum | undefined, isExternalDpskClient: boolean) => {
+  return networkType === NetworkTypeEnum.DPSK && !isExternalDpskClient
+}
 
-  if(radioType === undefined || radioType === '') {
-    radioType = '--'
-  }
-  return radioType
+// eslint-disable-next-line max-len
+const shouldDisplayGuestDetail = (
+  networkType: NetworkTypeEnum | undefined,
+  guestType: GuestNetworkTypeEnum | undefined
+) => {
+  if (!networkType || !guestType) return false
+
+  const displayGuestNetworkTypes = [
+    GuestNetworkTypeEnum.GuestPass,
+    GuestNetworkTypeEnum.HostApproval,
+    GuestNetworkTypeEnum.SelfSignIn
+  ]
+
+  return (networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
+    displayGuestNetworkTypes.includes(guestType))
 }
 
 export function ClientProperties ({ clientStatus, clientDetails }: {
@@ -75,19 +81,16 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
   const [getGuestsList] = useLazyGetGuestsListQuery()
-  const [getClientNonRbac] = useLazyGetClientListQuery()
   const [getClientRbac] = useLazyGetClientsQuery()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
-
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
       let apData = null as unknown as ApDeep
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
-      let radioType = null as string | null
+      let radioType = noDataDisplay
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
 
       const getGuestData = async () => {
@@ -118,29 +121,19 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
               ? [getVenue({ params: { tenantId, venueId: clientDetails?.venueId } }, true)] : [[]]
             ),
             getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true),
-            ...(!isWifiRbacEnabled ? [getClientNonRbac({ payload: {
-              fields: [
-                'clientMac','radio.mode'
-              ],
-              filters: {
-                clientMac: [clientDetails.clientMac]
-              }
-            } })]: [[]]),
-            ...(isWifiRbacEnabled ? [getClientRbac({ payload: {
-              fields: [
-                'macAddress','radioStatus.type'
-              ],
+            getClientRbac({ payload: {
+              fields: ['macAddress','radioStatus.type'],
               filters: {
                 macAddress: [clientDetails.clientMac]
               }
-            } })] : [[]])
-          ]).then(([ ap, venue, network, nonRbacRadioType, rbacRadioType ]) => {
+            } })
+          ]).then(([ ap, venue, network, rbacRadioType ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */
             setData(
               ((ap as any)?.data ?? null) as unknown as ApDeep,
               ((venue as any)?.data ?? null) as unknown as VenueExtended,
               ((network as any)?.data ?? null) as unknown as NetworkSaveData,
-              getRadioTypeFromRbacAndNonRbacAPI(nonRbacRadioType, rbacRadioType, isWifiRbacEnabled)
+              ((rbacRadioType as any)?.data?.data[0]?.radioStatus?.type) || noDataDisplay
             )
             /* eslint-enable @typescript-eslint/no-explicit-any */
           }).catch((error) => {
@@ -155,7 +148,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const setData = (apData: ApDeep,
         venueData: VenueExtended,
         networkData: NetworkSaveData | null,
-        clientMacAndRadioType: string | null
+        clientMacAndRadioType: string
       ) => {
         setNetworkType(networkData?.type)
         setGuestType(networkData?.guestPortal?.guestNetworkType)
@@ -170,7 +163,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           enableLinkToVenue: clientDetails.hasOwnProperty('isVenueExists') ?
             !!clientDetails.isVenueExists : !!venueData,
           enableLinkToNetwork: !!networkData,
-          radioType: (clientMacAndRadioType === null ? '--' : clientMacAndRadioType)
+          radioType: clientMacAndRadioType
         })
         setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
 
@@ -186,17 +179,6 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
     }
   }, [clientDetails])
 
-  const shouldDisplayDpskPassphraseDetail = () => {
-    return networkType === NetworkTypeEnum.DPSK && !isExternalDpskClient
-  }
-
-  const shouldDisplayGuestDetail = () => {
-    return networkType === NetworkTypeEnum.CAPTIVEPORTAL && (
-      guestType === GuestNetworkTypeEnum.GuestPass ||
-      guestType === GuestNetworkTypeEnum.HostApproval ||
-      guestType === GuestNetworkTypeEnum.SelfSignIn
-    )
-  }
 
   const getProperties = (clientStatus: string, clientMac: string) => {
     let obj = null
@@ -206,9 +188,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (shouldDisplayGuestDetail() &&
+          (shouldDisplayGuestDetail(networkType, guestType) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
-          (shouldDisplayDpskPassphraseDetail() &&
+          (shouldDisplayDpskPassphraseDetail(networkType, isExternalDpskClient) &&
             <DpskPassphraseDetails
               networkId={client.networkId}
               clientMac={client.clientMac}
@@ -222,9 +204,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (shouldDisplayGuestDetail() &&
+          (shouldDisplayGuestDetail(networkType, guestType) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
-          (shouldDisplayDpskPassphraseDetail() &&
+          (shouldDisplayDpskPassphraseDetail(networkType, isExternalDpskClient) &&
             <DpskPassphraseDetails
               networkId={client.networkId}
               clientMac={client.clientMac}

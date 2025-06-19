@@ -195,7 +195,7 @@ export enum Features {
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
-  WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
+  WIFI_RBAC_API = 'removable-ff',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE = 'wifi-ipsec-psk-over-network',

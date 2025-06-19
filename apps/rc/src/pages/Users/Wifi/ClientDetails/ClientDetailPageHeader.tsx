@@ -14,11 +14,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { isEqualCaptivePortal }   from '@acx-ui/rc/components'
 import {
   useDisconnectClientMutation,
-  useGetClientOrHistoryDetailQuery,
   useRevokeClientMutation,
-  useGetClientsQuery
-} from '@acx-ui/rc/services'
-import { Client, ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
+  useGetClientsQuery } from '@acx-ui/rc/services'
+import { ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -37,7 +35,7 @@ import {
   encodeParameter,
   getOpsApi,
   useDateFilter
-}  from '@acx-ui/utils'
+} from '@acx-ui/utils'
 
 
 import ClientDetailTabs from './ClientDetailTabs'
@@ -58,39 +56,26 @@ function DatePicker () {
 }
 
 function ClientDetailPageHeader () {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
-  const { tenantId, clientId } = useParams()
+  const { clientId } = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
   const [searchParams] = useSearchParams()
   const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const isHisToricalClient = (status === ClientStatusEnum.HISTORICAL)
 
+  // Connection Client
   const clientInfo = useGetClientsQuery({ payload: {
     filters: {
       macAddress: [clientId]
     }
-  } }, { skip: !isWifiRbacEnabled || isHisToricalClient })?.data?.data[0]
+  } }, { skip: isHisToricalClient })?.data?.data[0]
 
-  // non-rbac API or History Client
-  const { data: result } = useGetClientOrHistoryDetailQuery(
-    { params: {
-      tenantId,
-      clientId,
-      status
-    } }, { skip: isWifiRbacEnabled && !isHisToricalClient })
-
-  const clentDetails = (isHisToricalClient
-    ? { hostname: result?.data?.hostname }
-    : result?.data) as Client
 
   /* eslint-disable max-len */
-  const hostname = isWifiRbacEnabled ? clientInfo?.hostname : clentDetails?.hostname
-  const macAddress = isWifiRbacEnabled ? clientInfo?.macAddress : clentDetails?.clientMac
-  const venueId = isWifiRbacEnabled ? clientInfo?.venueInformation.id : clentDetails?.venueId
-  const apSerialNumber = isWifiRbacEnabled ? clientInfo?.apInformation.serialNumber : clentDetails?.apSerialNumber
-  const networkType = isWifiRbacEnabled ? clientInfo?.networkInformation.type : clentDetails?.networkType
-  /* eslint-enable max-len */
+  const { hostname, macAddress, venueInformation, apInformation, networkInformation } = clientInfo || {}
+  const venueId = venueInformation?.id
+  const apSerialNumber = apInformation?.serialNumber
+  const networkType = networkInformation?.type
 
   const [disconnectClient] = useDisconnectClientMutation()
   const [revokeClient] = useRevokeClientMutation()
@@ -182,8 +167,7 @@ function ClientDetailPageHeader () {
   return (
     <PageHeader
       title={<Space size={4}>{clientId}
-        {
-          hostname && (hostname !== clientId) &&
+        {hostname && (hostname !== clientId) &&
           <Space style={{ fontSize: '14px', marginLeft: '8px' }} size={0}>
             ({hostname})
           </Space>

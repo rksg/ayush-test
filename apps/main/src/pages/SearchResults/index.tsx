@@ -6,17 +6,12 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApTable,
   ConnectedClientsTable,
-  defaultApPayload,
-  defaultClientPayload,
-  // defaultHistoricalClientPayload,
-  defaultNetworkPayload,
   defaultRbacClientPayload,
   defaultRbacNetworkPayload,
   defaultSwitchClientPayload,
   defaultSwitchPayload,
   eventDefaultSearch,
   EventTable,
-  // GlobalSearchHistoricalClientsTable,
   NetworkTable,
   newDefaultApPayload,
   ClientsTable as SwitchClientTable,
@@ -24,12 +19,8 @@ import {
   useEventsTableQuery
 } from '@acx-ui/rc/components'
 import {
-  useApListQuery,
-  useGetClientListQuery,
   useGetClientsQuery,
-  // useGetHistoricalClientListQuery,
   useGetSwitchClientListQuery,
-  useNetworkListQuery,
   useNewApListQuery,
   useSwitchListQuery,
   useVenuesListQuery,
@@ -38,14 +29,12 @@ import {
 import {
   APExtended,
   ApExtraParams,
-  // Client,
   ClientInfo,
   ClientList,
   Network,
   NewAPModelExtended,
   SwitchClient,
   SwitchRow,
-  TableQuery,
   useTableQuery,
   Venue,
   WifiNetwork
@@ -60,7 +49,6 @@ import { Collapse, Panel } from './styledComponents'
 
 interface EnableRbacType {
   isSwitchRbacEnabled?: boolean
-  isWifiRbacEnabled?: boolean
 }
 
 const pagination = { pageSize: 5, showSizeChanger: false }
@@ -86,11 +74,10 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+  (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<Network|WifiNetwork, RequestPayload<unknown>, unknown>({
-      useQuery: enableRbac.isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
-      // eslint-disable-next-line max-len
-      defaultPayload: enableRbac.isWifiRbacEnabled? defaultRbacNetworkPayload : defaultNetworkPayload,
+      useQuery: useWifiNetworkListQuery,
+      defaultPayload: defaultRbacNetworkPayload,
       search: {
         searchString,
         searchTargetFields: ['name', 'description']
@@ -104,16 +91,14 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+  (searchString: string, $t: IntlShape['$t']) => {
     // eslint-disable-next-line max-len
-    const result = useTableQuery<APExtended|NewAPModelExtended, RequestPayload<unknown>, ApExtraParams>({
-      useQuery: enableRbac.isWifiRbacEnabled ? useNewApListQuery : useApListQuery,
-      defaultPayload: enableRbac.isWifiRbacEnabled ? newDefaultApPayload :defaultApPayload,
+    const result = useTableQuery<NewAPModelExtended|APExtended, RequestPayload<unknown>, ApExtraParams>({
+      useQuery: useNewApListQuery,
+      defaultPayload: newDefaultApPayload,
       search: {
         searchString,
-        searchTargetFields: enableRbac.isWifiRbacEnabled ?
-          newDefaultApPayload.searchTargetFields :
-          defaultApPayload.searchTargetFields
+        searchTargetFields: newDefaultApPayload.searchTargetFields
       },
       pagination
     })
@@ -121,8 +106,7 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'APs' }),
       component: <ApTable
-        // eslint-disable-next-line max-len
-        tableQuery={result as TableQuery<APExtended|NewAPModelExtended, RequestPayload<unknown>, ApExtraParams>}
+        tableQuery={result}
         searchable={false} />
     }
   },
@@ -166,18 +150,15 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
-    const isWifiRbacEnabled = enableRbac.isWifiRbacEnabled
-    const defaultPayload = isWifiRbacEnabled? defaultRbacClientPayload : defaultClientPayload
-
+  (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<ClientInfo|ClientList, RequestPayload<unknown>, unknown>({
-      useQuery: isWifiRbacEnabled? useGetClientsQuery : useGetClientListQuery,
+      useQuery: useGetClientsQuery,
       defaultPayload: {
-        ...defaultPayload
+        ...defaultRbacClientPayload
       },
       search: {
         searchString,
-        searchTargetFields: defaultPayload.searchTargetFields
+        searchTargetFields: defaultRbacClientPayload.searchTargetFields
       },
       pagination
     })
@@ -187,22 +168,6 @@ const searches = [
       component: <ConnectedClientsTable tableQuery={result} />
     }
   },
-
-  // (searchString: string, $t: IntlShape['$t']) => {
-  //   const result = useTableQuery<Client, RequestPayload<unknown>, unknown>({
-  //     useQuery: useGetHistoricalClientListQuery,
-  //     defaultPayload: {
-  //       ...defaultHistoricalClientPayload,
-  //       searchString
-  //     },
-  //     pagination
-  //   })
-  //   return {
-  //     result,
-  //     title: $t({ defaultMessage: 'Historical Clients' }),
-  //     component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
-  //   }
-  // },
 
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
@@ -262,13 +227,12 @@ function SearchResult ({ searchVal, enableRbac }:
 export default function SearchResults () {
   const { searchVal } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   return <SearchResult
     key={searchVal}
     searchVal={searchVal}
     enableRbac={{
-      isSwitchRbacEnabled,
-      isWifiRbacEnabled
+      isSwitchRbacEnabled
     }}
   />
 }
