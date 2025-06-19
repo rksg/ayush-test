@@ -13,11 +13,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: jest.fn().mockReturnValue({ pathname: '/t1/v/mdu360' })
 }))
 
-jest.mock('./widgets/WifiClient', () => ({
+jest.mock('./Widgets/WifiClient', () => ({
   WifiClient: jest.fn(() => <div>Wi-Fi Client</div>)
 }))
 
-jest.mock('./widgets/WifiGeneration', () => ({
+jest.mock('./Widgets/WifiGeneration', () => ({
   WifiGeneration: jest.fn(() => <div>Wi-Fi Generation</div>)
 }))
 

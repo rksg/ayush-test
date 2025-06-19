@@ -1,8 +1,8 @@
 
 import { GridRow , GridCol } from '@acx-ui/components'
 
-import { WifiClient }     from './widgets/WifiClient'
-import { WifiGeneration } from './widgets/WifiGeneration'
+import { WifiClient }     from './Widgets/WifiClient'
+import { WifiGeneration } from './Widgets/WifiGeneration'
 
 import type { Mdu360TabPros } from '.'
 
