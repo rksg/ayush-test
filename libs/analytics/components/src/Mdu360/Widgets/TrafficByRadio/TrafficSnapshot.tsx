@@ -1,8 +1,8 @@
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { Loader, DonutChart, qualitativeColorSet } from '@acx-ui/components'
-import type { DonutChartData }                     from '@acx-ui/components'
-import { formatter }                               from '@acx-ui/formatter'
+import { Loader, DonutChart, NoData } from '@acx-ui/components'
+import type { DonutChartData }        from '@acx-ui/components'
+import { formatter }                  from '@acx-ui/formatter'
 
 import { useTrafficByRadioQuery, TrafficByRadioData } from './services'
 
@@ -11,9 +11,8 @@ import { TrafficByRadioFilters } from '.'
 
 export { TrafficSnapshotWidget as TrafficSnapshot }
 
-function getTrafficSnapshotChartData (queryResultsData: TrafficByRadioData): DonutChartData[] {
+function getTrafficSnapshotChartData (data: TrafficByRadioData | undefined): DonutChartData[]{
   const trafficSnapshotChartData: DonutChartData[] = []
-  const colorMapping = qualitativeColorSet()
 
   function sumOfTraffic (trafficData: number[]) {
     return trafficData.reduce((accumulator, current) => accumulator + current, 0)
@@ -27,15 +26,12 @@ function getTrafficSnapshotChartData (queryResultsData: TrafficByRadioData): Don
     userTraffic_6: '6 GHz'
   }
 
-  let i = 0
-  for (const key in queryResultsData) {
+  for (const key in data) {
     if (key !== 'time' && key !== 'userTraffic_all') {
       trafficSnapshotChartData.push({
         name: nameMap[key as keyof TrafficData],
-        value: sumOfTraffic(queryResultsData[key as keyof TrafficData]),
-        color: colorMapping[i]
+        value: sumOfTraffic(data[key as keyof TrafficData])
       })
-      i += 1
     }
   }
 
@@ -50,23 +46,25 @@ function TrafficSnapshotWidget ({ filters }: { filters: TrafficByRadioFilters })
     endDate: filters.endDate
   })
 
-  const chartData = getTrafficSnapshotChartData(queryResults.data!)
+  const chartData = getTrafficSnapshotChartData(queryResults?.data)
 
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          <DonutChart
-            style={{ width, height }}
-            data={chartData}
-            showLegend={true}
-            showTotal={true}
-            showValue={true}
-            showLabel={true}
-            legend='name-bold-value'
-            dataFormatter={formatter('bytesFormat')}
-            size={'large'}
-          />
+          queryResults.data ?
+            <DonutChart
+              style={{ width, height }}
+              data={chartData}
+              showLegend={true}
+              showTotal={true}
+              showValue={true}
+              showLabel={true}
+              legend='name-bold-value'
+              dataFormatter={formatter('bytesFormat')}
+              size={'large'}
+            />
+            : <NoData />
         )}
       </AutoSizer>
     </Loader>
