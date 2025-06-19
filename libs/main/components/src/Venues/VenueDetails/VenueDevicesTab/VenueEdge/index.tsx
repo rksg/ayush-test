@@ -41,7 +41,6 @@ const baseFields = [
 export const VenueEdge = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -72,7 +71,7 @@ export const VenueEdge = () => {
   return (<>
     {hasCreateEdgePermission &&
       <SpaceWrapper direction='vertical' align='end' size={0}>
-        {(isEdgeCompatibilityEnabled && edgeCompatibilities) &&
+        {edgeCompatibilities &&
           <CompatibilityCheck
             data={edgeCompatibilities!.compatibilities ?? []}
             venueId={params.venueId}
@@ -88,7 +87,6 @@ export const VenueEdge = () => {
       tableQuery={tableQuery}
       filterColumns={['venue']}
       settingsId={settingsId}
-      incompatibleCheck={isEdgeCompatibilityEnabled}
       filterables={{
         featureIncompatible: featureIncompatible.compatibilitiesFilterOptions
       }}
@@ -98,7 +96,6 @@ export const VenueEdge = () => {
 
 const useGetVenueEdgeCompatibilities = (venueId: string | undefined)
 : VenueEdgeCompatibilitiesResponseV1_1 | VenueEdgeCompatibilitiesResponse | undefined => {
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   // eslint-disable-next-line max-len
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
@@ -107,7 +104,7 @@ const useGetVenueEdgeCompatibilities = (venueId: string | undefined)
       venueIds: [venueId]
     }
   } }, {
-    skip: isEdgeCompatibilityEnhancementEnabled || (!isEdgeCompatibilityEnabled || !venueId)
+    skip: isEdgeCompatibilityEnhancementEnabled || !venueId
   })
 
   const { data: edgeCompatibilitiesV1_1 } = useGetVenueEdgeCompatibilitiesV1_1Query({ payload: {

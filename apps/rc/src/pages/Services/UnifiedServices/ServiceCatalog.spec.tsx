@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }                                                                                             from '@acx-ui/components'
-import { Features }                                                                                                      from '@acx-ui/feature-toggle'
-import { IncompatibilityFeatures, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                      from '@acx-ui/store'
-import { render, screen }                                                                                                from '@acx-ui/test-utils'
+import { RadioCardCategory }                                                                      from '@acx-ui/components'
+import { IncompatibilityFeatures, ServiceType, UnifiedServiceCategory, UnifiedServiceSourceType } from '@acx-ui/rc/utils'
+import { Provider }                                                                               from '@acx-ui/store'
+import { render, screen }                                                                         from '@acx-ui/test-utils'
 
 import { mockedAvailableUnifiedServicesList } from './__tests__/fixtures'
 
@@ -13,6 +12,14 @@ import { ServiceCatalog } from '.'
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * Mocked ApCompatibilityToolTip component
+   *
+   * @param {{ onClick: () => void }} props
+   * @returns {JSX.Element}
+   */
+  /*******  10052d80-7507-43b8-abab-5d93364955ba  *******/
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={props.onClick}/>,
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures, visible: boolean }) =>
@@ -87,9 +94,6 @@ describe('ServiceCatalog', () => {
 
   describe('Edge SD-LAN', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-
       mockedUseAvailableUnifiedServicesList.mockReturnValue([
         ...mockedAvailableUnifiedServicesList,
         {

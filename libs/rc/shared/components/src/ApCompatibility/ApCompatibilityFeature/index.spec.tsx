@@ -1,9 +1,6 @@
 
-import { Features }           from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum } from '@acx-ui/rc/utils'
 import { render, screen }     from '@acx-ui/test-utils'
-
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { ApCompatibilityFeature } from '.'
 
@@ -31,12 +28,7 @@ describe('ApCompatibilityFeature', () => {
     expect(icon).toBeVisible()
   })
 
-  describe('edge compatibility FF ON', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-    })
-
+  describe('edge compatibility', () => {
     it('should render Fully compatible correctly', async () => {
       render(<ApCompatibilityFeature
         count={0}

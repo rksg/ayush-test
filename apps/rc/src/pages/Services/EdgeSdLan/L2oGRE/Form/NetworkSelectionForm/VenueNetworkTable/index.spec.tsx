@@ -6,7 +6,6 @@ import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
 import { StepsForm, StepsFormProps }                                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
 import { venueApi }                                                                                                                          from '@acx-ui/rc/services'
 import { APCompatibilityFixtures, CommonUrlsInfo, EdgePinFixtures, EdgeSdLanFixtures, IncompatibilityFeatures, VenueFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                   from '@acx-ui/store'
@@ -86,7 +85,10 @@ describe('Tunneled Venue Networks Table', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueList))
-      )
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json(APCompatibilityFixtures.mockApCompatibilitiesVenue)))
     )
   })
 
@@ -230,7 +232,6 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should have compatible warning', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     const mockApCompatibilitiesVenue = cloneDeep(APCompatibilityFixtures.mockApCompatibilitiesVenue)
     mockApCompatibilitiesVenue.apCompatibilities= [{
       ...mockApCompatibilitiesVenue.apCompatibilities[0],

@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                                 from '@acx-ui/rc/components'
 import { venueApi, apApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -169,9 +168,6 @@ describe('VenueWifi', () => {
   })
 
   it('should render Ap Compatibilities Note correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ![Features.WIFI_RBAC_API, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
-
     render(<Provider><VenueDevicesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })

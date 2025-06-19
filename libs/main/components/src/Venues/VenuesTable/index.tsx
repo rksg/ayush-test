@@ -513,7 +513,6 @@ function useGetVenueCityList () {
 }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
   const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
@@ -544,10 +543,10 @@ const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayloa
       setTableData(result)
     }
 
-    if (isEdgeCompatibilityEnabled && tableQuery.data)
+    if (tableQuery.data)
       fetchVenueEdgeCompatibilities(tableQuery.data.data)
 
-  }, [isEdgeCompatibilityEnabled, tableQuery.data?.data])
+  }, [tableQuery.data?.data])
 
   return tableData
 }
