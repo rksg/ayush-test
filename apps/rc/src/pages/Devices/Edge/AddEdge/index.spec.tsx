@@ -2,15 +2,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
-  EdgeErrorsFixtures,
-  EdgeUrlsInfo,
   EdgeCompatibilityFixtures,
-  FirmwareUrlsInfo,
+  EdgeErrorsFixtures,
   EdgeFirmwareFixtures,
   EdgeGeneralFixtures,
+  EdgeUrlsInfo,
+  FirmwareUrlsInfo,
   VenueFixtures
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -129,7 +128,6 @@ describe('AddEdge', () => {
   })
 
   it('should add edge with cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -157,7 +155,6 @@ describe('AddEdge', () => {
   })
 
   it('should add edge without cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -205,8 +202,6 @@ describe('AddEdge api fail', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
 
     mockServer.use(
       rest.post(

@@ -27,7 +27,6 @@ export function VenueServicesTab () {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE) && !isTemplate
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE) && !isTemplate
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
   // eslint-disable-next-line max-len
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
@@ -42,7 +41,7 @@ export function VenueServicesTab () {
   const { edgeData, isEdgeLoading, edgeClusterIds = [] } = useGetEdgeListQuery(
     { payload: {
       // Before Edge GA, no need to query firewallId
-      fields: (isEdgeHaReady && isEdgeFirewallHaReady)
+      fields: isEdgeFirewallHaReady
         ? edgeListFields.concat(['firewallId']) : edgeListFields,
       filters: { venueId: [venueId] }
     } },
@@ -68,7 +67,7 @@ export function VenueServicesTab () {
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: edgeClusterIds.length === 0 || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: edgeClusterIds.length === 0 || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
@@ -121,7 +120,7 @@ export function VenueServicesTab () {
     })
 
   // Before Edge GA, need to hide the service not support HA
-  const isAppliedFirewall = (isEdgeHaReady && isEdgeFirewallHaReady)
+  const isAppliedFirewall = isEdgeFirewallHaReady
     ? !_.isEmpty(edgeData?.firewallId) : false
 
   return (
@@ -135,7 +134,7 @@ export function VenueServicesTab () {
               <DHCPInstance/>
             </Tabs.TabPane>
             {
-              isEdgeHaReady && isEdgeDhcpHaReady &&
+              isEdgeDhcpHaReady &&
             <Tabs.TabPane
               tab={$t({ defaultMessage: 'RUCKUS Edge' })}
               key={'smartEdge'}
@@ -191,7 +190,7 @@ export function VenueServicesTab () {
           </>
         }
         {
-          isEdgeHaReady && isEdgeFirewallHaReady && isAppliedFirewall &&
+          isEdgeFirewallHaReady && isAppliedFirewall &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}

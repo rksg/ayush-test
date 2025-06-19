@@ -36,7 +36,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isCore
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -285,7 +284,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         sourceType: UnifiedServiceSourceType.SERVICE,
         products: [RadioCardCategory.EDGE],
         category: UnifiedServiceCategory.SECURITY_ACCESS_CONTROL,
-        disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+        disabled: !isEdgeFirewallHaReady
       },
       {
         type: ServiceType.EDGE_OLT,
