@@ -219,9 +219,9 @@ export const mockedKpiData = {
       excluded: 20,
       unsupported: 10,
       powerConsumption: 48,
-      maxApPower: 20,
-      minApPowerStandard: 10,
-      minApPowerAi: 10,
+      maxApPower: 25,
+      minApPowerStandard: 15,
+      minApPowerAi: 13,
       apTotalCount: 120
     }
   },
@@ -230,11 +230,11 @@ export const mockedKpiData = {
     data: {
       projectedPowerSaving: 30.2,
       enabled: 10,
-      disabled: 80,
-      excluded: 20,
-      unsupported: 10,
+      disabled: 70,
+      excluded: 30,
+      unsupported: 20,
       powerConsumption: 50,
-      apTotalCount: 120
+      apTotalCount: 130
     }
   }
 }
