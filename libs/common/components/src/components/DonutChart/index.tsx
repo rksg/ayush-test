@@ -319,13 +319,13 @@ export function DonutChart ({
       formatter: name => {
         const value = find(chartData, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'name': return name
-          case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'name': return `{legendNormal|${name}}`
+          case 'name-value': return `{legendNormal|${name} - ${dataFormatter(value)}}`
           case 'name-bold-value':
             return `{legendNormal|${name}:} {legendBold|${dataFormatter(value)}}`
           case 'value':
           default:
-            return `${dataFormatter(value)}`
+            return `{legendNormal|${dataFormatter(value)}}`
         }
       }
     },
