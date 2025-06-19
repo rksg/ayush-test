@@ -47,7 +47,6 @@ export default function ServiceCatalog () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
@@ -117,7 +116,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeFirewallHaReady
         }
       ]
     },

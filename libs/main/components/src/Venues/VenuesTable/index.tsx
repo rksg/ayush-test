@@ -21,8 +21,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getAPStatusDisplayName,
   useEnforcedStatus,
-  useIsEdgeFeatureReady,
-  useIsEdgeReady
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useDeleteVenueMutation,
@@ -90,7 +89,6 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsEdgeReady()
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
   const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
@@ -304,12 +302,10 @@ function useColumns (
     }] : [])
   ]
 
-  return columns.filter(({ key }) =>
-    (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
+  return columns
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsEdgeReady()
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
   const isSupportWifiWiredClient = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
@@ -326,7 +322,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'switchClients',
       'clients',
       ...(isSupportWifiWiredClient? ['apWiredClients'] : []),
-      ...(isEdgeEnabled ? ['edges'] : []),
+      'edges',
       ...(isIotEnabled ? ['iotControllers'] : []),
       'cog',
       'latitude',

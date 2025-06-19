@@ -12,14 +12,6 @@ import { ServiceCatalog } from '.'
 const mockedUseIsWifiCallingProfileLimitReached = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /**
-   * Mocked ApCompatibilityToolTip component
-   *
-   * @param {{ onClick: () => void }} props
-   * @returns {JSX.Element}
-   */
-  /*******  10052d80-7507-43b8-abab-5d93364955ba  *******/
   ApCompatibilityToolTip: (props: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={props.onClick}/>,
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures, visible: boolean }) =>

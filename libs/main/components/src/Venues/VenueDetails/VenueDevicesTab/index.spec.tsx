@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsEdgeReady }                                 from '@acx-ui/rc/components'
 import { venueApi, apApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
@@ -49,8 +48,7 @@ jest.mock('@acx-ui/rc/components', () => ({
       apCompatibilities: apCompatibilitiesData(),
       incompatible: 1
     }
-  },
-  useIsEdgeReady: jest.fn().mockReturnValue(false)
+  }
 }))
 
 jest.mock('./VenueEdge', () => ({
@@ -195,8 +193,6 @@ describe('Venue device tab', () => {
   let params: { tenantId: string, venueId: string, activeTab: string, activeSubTab: string }
 
   beforeEach(() => {
-    jest.mocked(useIsEdgeReady).mockReturnValue(true)
-
     params = {
       tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
       venueId: '8caa8f5e01494b5499fa156a6c565138',

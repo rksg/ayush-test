@@ -2,11 +2,10 @@ import userEvent                   from '@testing-library/user-event'
 import { cloneDeep }               from 'lodash'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import { Features }                                          from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgeStatus, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, screen, within }                            from '@acx-ui/test-utils'
+import { Features }                                                                 from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgeStatus, EdgePortConfigFixtures, useIsEdgeFeatureReady } from '@acx-ui/rc/utils'
+import { render, screen, within }                                                   from '@acx-ui/test-utils'
 
-import { useIsEdgeFeatureReady } from '../hooks/useIsEdgeFeatureReady'
 
 import { EdgeOverviewLagTable } from './index'
 
@@ -18,8 +17,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigator
 }))
 
-jest.mock('../hooks/useIsEdgeFeatureReady', () => ({
-  ...jest.requireActual('../hooks/useIsEdgeFeatureReady'),
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 

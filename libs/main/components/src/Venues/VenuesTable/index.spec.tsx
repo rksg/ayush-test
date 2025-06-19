@@ -143,8 +143,6 @@ describe('Venues Table', () => {
   })
 
   it('should have edge column when feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     render(
       <Provider>
         <VenuesTable />
@@ -157,24 +155,7 @@ describe('Venues Table', () => {
     expect(await screen.findByRole('columnheader', { name: 'RUCKUS Edges' })).toBeVisible()
   })
 
-  it('should not have edge column when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <VenuesTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('My-Venue')).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'RUCKUS Edges' })).toBeFalsy()
-  })
-
   it('should have correct edge device quantity', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
     render(
       <Provider>
         <VenuesTable />
@@ -257,10 +238,6 @@ describe('Venues Table', () => {
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenuelist))
       )
-      // rest.post(
-      //   EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
-      //   (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
-      // )
     )
 
     render(
