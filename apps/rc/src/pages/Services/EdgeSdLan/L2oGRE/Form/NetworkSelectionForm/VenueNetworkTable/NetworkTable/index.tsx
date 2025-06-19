@@ -10,7 +10,7 @@ import { useIntl }             from 'react-intl'
 
 import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
 import { transToOptions }                                                     from '@acx-ui/edge/components'
-import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
+import { AddNetworkModal, useGetSoftGreScopeVenueMap }                        from '@acx-ui/rc/components'
 import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
@@ -45,7 +45,8 @@ import { ActivateNetworkSwitchButton, ActivateNetworkSwitchButtonProps } from '.
 const getRowDisabledInfo = (
   row: Network,
   dsaeOnboardNetworkIds?: string[],
-  pinNetworkIds?: string[]
+  pinNetworkIds?: string[],
+  softGreNetworkIds?: string[]
 ) => {
   const { $t } = getIntl()
   let disabled = false
@@ -62,7 +63,11 @@ const getRowDisabledInfo = (
   } else if (pinNetworkIds?.includes(row.id)) {
     disabled = true
     // eslint-disable-next-line max-len
-    tooltip = $t({ defaultMessage: 'This network already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+    tooltip = $t({ defaultMessage: 'This network is already used in Personal Identity Network, cannot be SD-LAN traffic network.' })
+  } else if (softGreNetworkIds?.includes(row.id)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This network already has SoftGRE enabled and cannot be used for SD-LAN traffic.' })
   }
 
   return { disabled, tooltip }
@@ -191,6 +196,9 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     onTunnelProfileChange?.(row, value)
   }
 
+  const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const softGreNetworkIds = (softGreVenueMap?.[venueId] ?? []).flatMap(sg => sg.networkIds)
+
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
     tooltip: $t({ defaultMessage:
@@ -219,7 +227,7 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds)
+      const disabledInfo = getRowDisabledInfo(row, dsaeOnboardNetworkIds, pinNetworkIds, softGreNetworkIds)
       let isDisabled = disabled
       let tooltip = toggleButtonTooltip
 
