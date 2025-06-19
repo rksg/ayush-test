@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { LayoutProps }                                            from '@acx-ui/components'
@@ -29,8 +31,8 @@ import {
   CopyOutlined,
   CopySolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }    from '@acx-ui/msp/utils'
-import { useIsEdgeReady }     from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { useIsEdgeReady }  from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -42,7 +44,8 @@ import {
   LicenseUrlsInfo,
   useIsNewServicesCatalogEnabled,
   useRecConfigTemplateAccess,
-  CONFIG_TEMPLATE_LIST_PATH
+  CONFIG_TEMPLATE_LIST_PATH,
+  TenantType
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -57,7 +60,7 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
   const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
-    accountTier } = useUserProfileContext()
+    accountTier, tenantType } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -86,6 +89,14 @@ export function useMenuConfig () {
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
   const isRecConfigTemplateEnabled = useRecConfigTemplateAccess()
+
+  const [showPrivacyMenu, setShowPrivacyMenu] = useState<boolean>(false)
+
+  useEffect(() => {
+    const showmenu = !!tenantType &&
+  !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
+    setShowPrivacyMenu(showmenu)
+  }, [tenantType])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -446,7 +457,7 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCore &&
+            ...(showPrivacyMenu && isMspAppMonitoringEnabled && !isCore &&
               (rbacOpsApiEnabled ?
                 hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
                 : !isCustomRole)

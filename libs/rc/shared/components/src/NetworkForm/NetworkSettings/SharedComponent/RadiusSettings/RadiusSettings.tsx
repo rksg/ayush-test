@@ -26,11 +26,6 @@ interface RadiusSettingsProps {
   isDisplayAccounting? : boolean
 }
 
-/*
- * This component forked from CloudpathServerForm and remove setData actions,
- * If you want to modify this file please also reflect to CloudpathServerForm and modify it
- * Once we can refactor OpenSettingsForm from setData, then we can reuse this component and remove CloudpathServerForm
- */
 export function RadiusSettings (props: RadiusSettingsProps) {
   const labelWidth = '250px'
   const { $t } = useIntl()

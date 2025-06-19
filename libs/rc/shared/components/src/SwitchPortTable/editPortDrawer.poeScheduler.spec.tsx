@@ -17,12 +17,10 @@ import {
   aclUnion,
   defaultVlan,
   selectedPorts,
-  switchesVlan,
   switchDetailHeader,
   switchProfile,
   switchRoutedList,
   switchVlans,
-  switchVlanUnion,
   portSetting,
   portsSetting,
   vlansByVenue,
@@ -100,9 +98,6 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenue))
       ),
@@ -132,9 +127,6 @@ describe('EditPortDrawer', () => {
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
         (_, res, ctx) => res(ctx.json(portsSetting))
-      ),
-      rest.post(SwitchUrlsInfo.getSwitchesVlan.url,
-        (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -170,9 +162,6 @@ describe('EditPortDrawer', () => {
         ),
         rest.get(SwitchRbacUrlsInfo.getAclUnion.url,
           (_, res, ctx) => res(ctx.json(aclUnion))
-        ),
-        rest.get(SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
-          (_, res, ctx) => res(ctx.json(switchVlanUnion))
         ),
         rest.post(SwitchRbacUrlsInfo.getSwitchRoutedList.url,
           (_, res, ctx) => res(ctx.json(switchRoutedList))
@@ -275,6 +264,14 @@ describe('EditPortDrawer', () => {
           firmware: 'TNR10020b_b205'
         }] as SwitchRow[]
 
+        beforeEach(() => {
+          mockServer.use(
+            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
+              (_, res, ctx) => res(ctx.json(defaultVlan))
+            )
+          )
+        })
+
         it('should render multiple custom poe schedule correctly', async () => {
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
@@ -288,9 +285,6 @@ describe('EditPortDrawer', () => {
                 taggedVlans: ['2'],
                 untaggedVlan: '1'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
           render(<Provider>
@@ -327,9 +321,6 @@ describe('EditPortDrawer', () => {
                 taggedVlans: ['2'],
                 untaggedVlan: '1'
               }]))
-            ),
-            rest.post(SwitchRbacUrlsInfo.getDefaultVlan.url,
-              (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
             )
           )
           render(<Provider>
