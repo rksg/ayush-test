@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { Tabs, Tooltip }             from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { InformationSolid }          from '@acx-ui/icons'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetSigPackQuery,
