@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
-import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
   compareVersions,
   getApVersion,
@@ -41,7 +40,6 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsEdgeReady()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
@@ -68,11 +66,8 @@ const FWVersionMgmt = () => {
       { params },
       { skip: !isSwitchFirmwareV1002Enabled })
 
-  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
-    skip: !isEdgeEnabled
-  })
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
   const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
-    skip: !isEdgeEnabled,
     selectFromResult: ({ data }) => ({
       latestEdgeReleaseVersion: data?.[0]
     })
@@ -181,7 +176,7 @@ const FWVersionMgmt = () => {
         }
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: true
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}

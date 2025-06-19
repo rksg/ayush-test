@@ -57,7 +57,7 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                   from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, usePlacesAutocomplete }                                   from '@acx-ui/rc/components'
 import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   Address,
@@ -181,7 +181,6 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
@@ -1544,10 +1543,10 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
-          {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: 'RUCKUS Edge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
-          </UI.FieldLabel2>}
+          </UI.FieldLabel2>
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{isvSmartEdgeEnabled
@@ -1814,11 +1813,11 @@ export function ManageCustomer () {
           >
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
-          {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          <Form.Item style={{ marginTop: '-22px' }}
             label={intl.$t({ defaultMessage: 'RUCKUS Edge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>
-          </Form.Item>}
+          </Form.Item>
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item

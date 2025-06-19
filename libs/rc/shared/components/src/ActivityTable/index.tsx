@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
-import { omit }                   from 'lodash'
 import { Moment }                 from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { Button, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
-  TableQuery,
+  CommonUrlsInfo,
   getActivityDescription,
   productMapping,
   severityMapping,
   statusMapping,
-  CommonUrlsInfo,
+  TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                  from '@acx-ui/types'
-import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
-import { useIsEdgeReady } from '../useEdgeActions'
 
 export const columnState = {
   defaultValue: {
@@ -96,12 +94,7 @@ const ActivityTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
-  const isEdgeEnabled = useIsEdgeReady()
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
-
-  const excludeProduct = [
-    ...(!isEdgeEnabled ? ['EDGE'] : [])
-  ]
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -146,7 +139,7 @@ const ActivityTable = ({
         return msg
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
-        && Object.entries(omit(productMapping, excludeProduct))
+        && Object.entries(productMapping)
           .map(([key, value])=>({ key, value: $t(value) }))
     },
     {

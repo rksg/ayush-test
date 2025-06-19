@@ -216,24 +216,6 @@ describe('Subscriptions', () => {
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /RUCKUS Edge/i })
   })
-  it('should filter edge data when edge FF is not denabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.concat(Features.EDGES_TOGGLE)
-      .includes(ff as Features))
-
-    render(
-      <Provider>
-        <Subscriptions />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByRole('columnheader', { name: 'Device Count' })
-    await userEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
-    await screen.findByRole('row', { name: /Wi-Fi/i })
-    expect(screen.queryByRole('row', { name: /RUCKUS Edge/i })).toBeNull()
-    expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
-    expect(screen.queryAllByText('RUCKUS Edge').length).toBe(0)
-  })
 
   it('should show banner on no subscription active error', async () => {
 
