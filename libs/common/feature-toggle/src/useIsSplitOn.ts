@@ -15,6 +15,9 @@ enum FeatureFlag {
 
 export const useIsSplitOn = (splitName: string, tenantId?: string) => {
   const { values } = useTreatmentsValues(splitName, tenantId)
+
+  if (splitName === 'acx-ui-config-template-rec') return true
+
   return values[0] === FeatureFlag.ON
 }
 

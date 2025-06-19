@@ -208,7 +208,12 @@ export function LayoutWithConfigTemplateContext () {
   }
 
   return <ConfigTemplateContext.Provider
-    value={{ isTemplate: true, setSaveEnforcementConfigFn, saveEnforcementConfig }}>
+    value={{
+      isTemplate: true,
+      templateContext: 'MSP',
+      setSaveEnforcementConfigFn,
+      saveEnforcementConfig
+    }}>
     <Outlet />
   </ConfigTemplateContext.Provider>
 }

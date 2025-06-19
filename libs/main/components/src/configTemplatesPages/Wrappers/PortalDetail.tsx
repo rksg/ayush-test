@@ -10,7 +10,8 @@ import {
   ServiceType,
   generateConfigTemplateBreadcrumb,
   Demo,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  useConfigTemplate
 }  from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -18,11 +19,12 @@ export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { templateContext } = useConfigTemplate()
   const queryResults = useGetPortalTemplateQuery({
     params,
     enableRbac: isEnabledRbacService
   })
-  const breadcrumb = generateConfigTemplateBreadcrumb()
+  const breadcrumb = generateConfigTemplateBreadcrumb(templateContext)
 
   return (
     <>

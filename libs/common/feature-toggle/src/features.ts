@@ -30,6 +30,7 @@ export enum Features {
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CONFIG_TEMPLATE_DISPLAYABLE_ACTIVATION = 'acx-ui-config-template-displayable-activation',
+  CONFIG_TEMPLATE_REC = 'acx-ui-config-template-rec',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   MULTIPLE_CERTIFICATE_TEMPLATE = 'multiple-certificate-template',
   CONNECTION_METERING = 'connection-metering-enabled',

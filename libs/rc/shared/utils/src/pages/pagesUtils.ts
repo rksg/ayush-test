@@ -27,10 +27,10 @@ export function generatePageHeaderTitle (props: TitleGenerationProps): string {
 
 // eslint-disable-next-line max-len
 export function useConfigTemplateBreadcrumb (fallbackPath: { text: string, link?: string, tenantType?: TenantType }[]) {
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, templateContext } = useConfigTemplate()
   const breadcrumb = useMemo(() => {
     return isTemplate
-      ? generateConfigTemplateBreadcrumb()
+      ? generateConfigTemplateBreadcrumb(templateContext)
       : fallbackPath
   }, [isTemplate])
 

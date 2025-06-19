@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }                                               
 import { DateFormatEnum, userDateTimeFormat }                                                                                                                           from '@acx-ui/formatter'
 import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, renderConfigTemplateDetailsComponent, subPolicyMappingType } from '@acx-ui/rc/components'
 import {
+  AccessControlPolicyForTemplateCheckType,
   ConfigTemplate,
   ConfigTemplateDriftType,
   ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
@@ -130,4 +131,13 @@ export function useFormatTemplateDate () {
   return (date?: number) => {
     return date ? moment(date).format(dateFormat) : noDataDisplay
   }
+}
+
+export function isTemplateTypeAllowed (type: ConfigTemplateType) {
+  const disallowedTypes = [
+    ...Object.values(AccessControlPolicyForTemplateCheckType),
+    ConfigTemplateType.AP_GROUP
+  ]
+
+  return !disallowedTypes.includes(type)
 }

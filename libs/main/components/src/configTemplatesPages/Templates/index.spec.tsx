@@ -16,11 +16,6 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 
 import { ConfigTemplateList } from '.'
 
-jest.mock('../constants', () => ({
-  ...jest.requireActual('../constants'),
-  MAX_APPLICABLE_EC_TENANTS: 2
-}))
-
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
 jest.mock('@acx-ui/react-router-dom', () => ({

@@ -8,12 +8,11 @@ import { ConfigTemplate }          from '@acx-ui/rc/utils'
 import { ConfigTemplateList } from './Templates'
 
 export * from './Wrappers'
-export * from './constants'
 export * from './Overrides'
 
-export { useEcFilters }             from './Templates/templateUtils'
+export { useEcFilters, isTemplateTypeAllowed } from './Templates/templateUtils'
 export * as ConfigTemplatePageUI from './Templates/styledComponents'
-export { DriftInstance }            from './Templates/driftDetails'
+export { DriftInstance, DriftComparisonSet } from './Templates/driftDetails'
 
 export interface CommonConfigTemplateDrawerProps {
   setVisible: (visible: boolean) => void
@@ -22,7 +21,8 @@ export interface CommonConfigTemplateDrawerProps {
 
 export interface ConfigTemplateViewProps {
   ApplyTemplateView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
-  AppliedToView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
+  canApplyTemplate?: (template: ConfigTemplate) => boolean
+  AppliedToView?: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   ShowDriftsView: (props: CommonConfigTemplateDrawerProps) => JSX.Element
   // eslint-disable-next-line max-len
   appliedToColumn: TableColumn<ConfigTemplate, 'text'> & { customRender: (row: ConfigTemplate, callback: () => void) => React.ReactNode }
@@ -36,6 +36,7 @@ export function ConfigTemplateView (props: ConfigTemplateViewProps) {
       <PageHeader title={$t({ defaultMessage: 'Configuration Templates' })} />
       <ConfigTemplateList
         ApplyTemplateView={props.ApplyTemplateView}
+        canApplyTemplate={props.canApplyTemplate}
         AppliedToView={props.AppliedToView}
         ShowDriftsView={props.ShowDriftsView}
         appliedToColumn={props.appliedToColumn}

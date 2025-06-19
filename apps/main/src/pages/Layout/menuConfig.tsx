@@ -25,10 +25,12 @@ import {
   DevicesOutlined,
   DevicesSolid,
   DataStudioOutlined,
-  DataStudioSolid
+  DataStudioSolid,
+  CopyOutlined,
+  CopySolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
-import { useIsEdgeReady }          from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo }    from '@acx-ui/msp/utils'
+import { useIsEdgeReady }     from '@acx-ui/rc/components'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -38,7 +40,9 @@ import {
   hasAdministratorTab,
   MigrationUrlsInfo,
   LicenseUrlsInfo,
-  useIsNewServicesCatalogEnabled
+  useIsNewServicesCatalogEnabled,
+  useRecConfigTemplateAccess,
+  CONFIG_TEMPLATE_LIST_PATH
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -81,6 +85,7 @@ export function useMenuConfig () {
   const isCore = isCoreTier(accountTier)
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
+  const isRecConfigTemplateEnabled = useRecConfigTemplateAccess()
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -382,6 +387,13 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     }]),
+    ...(isRecConfigTemplateEnabled
+      ? [{
+        uri: `/${CONFIG_TEMPLATE_LIST_PATH}`,
+        label: $t({ defaultMessage: 'Templates' }),
+        inactiveIcon: CopyOutlined,
+        activeIcon: CopySolid
+      }] : []),
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,

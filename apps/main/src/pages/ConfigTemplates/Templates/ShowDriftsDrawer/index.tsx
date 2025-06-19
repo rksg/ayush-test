@@ -9,14 +9,13 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
-import { ConfigTemplatePageUI, DriftInstance, useEcFilters }          from '@acx-ui/main/components'
-import { useGetDriftInstancesQuery, usePatchDriftReportMutation }     from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { hasAllowedOperations }                                       from '@acx-ui/user'
-import { getOpsApi }                                                  from '@acx-ui/utils'
+import { ConfigTemplatePageUI, DriftComparisonSet, DriftInstance }                                              from '@acx-ui/main/components'
+import { useQueryDriftInstancesQuery, usePatchDriftReportByInstanceMutation, useGetDriftReportByInstanceQuery } from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                                                 from '@acx-ui/user'
+import { getOpsApi }                                                                                            from '@acx-ui/utils'
 
-import { MAX_SYNC_EC_TENANTS }      from '../../constants'
-import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
+const MAX_SYNC_VENUES = 10
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -29,18 +28,24 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   const [ selectedFilterValue, setSelectedFilterValue ] = useState<string | undefined>()
   const { setVisible, selectedTemplate } = props
   // eslint-disable-next-line max-len
-  const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useGetDriftInstancesQuery({
-    params: {
-      templateId: selectedTemplate.id!
-    },
-    payload: {
-      filters: { ...useEcFilters() }
-    }
+  const { data: driftInstances = [], isLoading: isDriftInstancesLoading } = useQueryDriftInstancesQuery({
+    params: { templateId: selectedTemplate.id! },
+    payload: { type: selectedTemplate.type }
   })
-  const [ patchDriftReport ] = usePatchDriftReportMutation()
+
+  const { data: driftReport, isLoading: isDriftReportLoading } = useGetDriftReportByInstanceQuery({
+    params: {
+      templateId: selectedTemplate.id!,
+      instanceId: driftInstances[0]?.id
+    }
+  }, {
+    skip: selectedTemplate.type === ConfigTemplateType.VENUE || driftInstances.length === 0
+  })
+
+  const [ patchDriftReport ] = usePatchDriftReportByInstanceMutation()
 
   const hasReachedTheMaxRecord = (): boolean => {
-    return selectedInstances.length >= MAX_SYNC_EC_TENANTS
+    return selectedInstances.length >= MAX_SYNC_VENUES
   }
 
   const onClose = () => {
@@ -52,7 +57,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       await patchDriftReport({
         payload: {
           templateId: selectedTemplate.id!,
-          tenantIds: selectedInstances
+          instanceIds: selectedInstances
         }
       }).unwrap()
       onClose()
@@ -78,7 +83,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const getSyncAllInstances = () => {
-    return driftInstances.map(i => i.id).slice(0, MAX_SYNC_EC_TENANTS)
+    return driftInstances.map(i => i.id).slice(0, MAX_SYNC_VENUES)
   }
 
   const footer = <div>
@@ -96,7 +101,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Customer Drifts Report' })}
+      title={$t({ defaultMessage: 'Drifts Report' })}
       visible={true}
       onClose={onClose}
       footer={footer}
@@ -105,72 +110,76 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
     >
       <Space direction='vertical' size='small'>
         {/* eslint-disable-next-line max-len */}
-        <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
-        { selectedTemplate.type === ConfigTemplateType.VENUE && <CustomerFirmwareReminder /> }
-        <Toolbar
-          customerOptions={driftInstances}
-          onSyncAllChange={onSyncAllChange}
-          onInstanceFilterSelect={onInstanceFilterSelect}
-        />
-        <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
+        <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated instances.' }) }</p>
+        {selectedTemplate.type === ConfigTemplateType.VENUE && <>
+          <Toolbar
+            venueOptions={driftInstances}
+            onSyncAllChange={onSyncAllChange}
+            onInstanceFilterSelect={onInstanceFilterSelect}
+          />
+          <SelectedVenuesIndicator selectedCount={selectedInstances.length} />
+        </>}
         <Divider style={{ margin: '8px 0 0 0' }} />
       </Space>
-      <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
-        <List
-          pagination={{ position: 'bottom' }}
-          // eslint-disable-next-line max-len
-          dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
-          renderItem={(instance) => (
-            <List.Item style={{ padding: '0' }}>
-              <DriftInstance
-                templateId={selectedTemplate.id!}
-                instanceName={instance.name}
-                instanceId={instance.id}
-                updateSelection={onInstanceSelecte}
-                selected={selectedInstances.includes(instance.id)}
-                disalbed={hasReachedTheMaxRecord()}
-              />
-            </List.Item>
-          )}
-        />
+      <Loader states={[{ isLoading: isDriftInstancesLoading || isDriftReportLoading }]}>
+        {selectedTemplate.type === ConfigTemplateType.VENUE
+          ? <List
+            pagination={{ position: 'bottom' }}
+            // eslint-disable-next-line max-len
+            dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
+            renderItem={(instance) => (
+              <List.Item style={{ padding: '0' }}>
+                <DriftInstance
+                  templateId={selectedTemplate.id!}
+                  instanceName={instance.name}
+                  instanceId={instance.id}
+                  updateSelection={onInstanceSelecte}
+                  selected={selectedInstances.includes(instance.id)}
+                  disalbed={hasReachedTheMaxRecord()}
+                />
+              </List.Item>
+            )}
+          />
+          : driftReport?.map((set, index) => <DriftComparisonSet key={index} {...set} />)
+        }
       </Loader>
     </Drawer>
   )
 }
 
 interface ToolbarProps {
-  customerOptions: Array<{ name: string, id: string }>
+  venueOptions: Array<{ name: string, id: string }>
   onSyncAllChange: (e: CheckboxChangeEvent) => void
   onInstanceFilterSelect: (value: string | undefined) => void
 }
 
 function Toolbar (props: ToolbarProps) {
-  const { customerOptions, onSyncAllChange, onInstanceFilterSelect } = props
+  const { venueOptions, onSyncAllChange, onInstanceFilterSelect } = props
   const { $t } = useIntl()
 
   return <Row justify='space-between' align='middle'>
     <Col span={12}>
       <Checkbox onChange={onSyncAllChange}>
-        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
+        {$t({ defaultMessage: 'Sync all drifts for all <venuePlural></venuePlural>' })}
       </Checkbox>
     </Col>
     <Col span={12} style={{ textAlign: 'right' }}>
       <Select
         style={{ minWidth: 200, textAlign: 'left' }}
-        placeholder={$t({ defaultMessage: 'All Customers' })}
+        placeholder={$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })}
         allowClear
         showSearch
         filterOption={(input, option) =>
           (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
         }
         onChange={onInstanceFilterSelect}
-        options={customerOptions.map(i => ({ label: i.name, value: i.id }))}
+        options={venueOptions.map(i => ({ label: i.name, value: i.id }))}
       />
     </Col>
   </Row>
 }
 
-export function SelectedCustomersIndicator (props: { selectedCount: number }) {
+export function SelectedVenuesIndicator (props: { selectedCount: number }) {
   const { selectedCount } = props
   const { $t } = useIntl()
 

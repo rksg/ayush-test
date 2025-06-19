@@ -2,10 +2,11 @@ import { createContext, useContext } from 'react'
 
 export type SaveEnforcementConfigFnType = (templateId: string) => Promise<void>
 
-interface ConfigTemplateContextType {
+export interface ConfigTemplateContextType {
   isTemplate: boolean
   setSaveEnforcementConfigFn?: (fn: SaveEnforcementConfigFnType) => void
   saveEnforcementConfig?: SaveEnforcementConfigFnType
+  templateContext?: 'MSP' | 'REC'
 }
 export const ConfigTemplateContext = createContext({} as ConfigTemplateContextType)
 

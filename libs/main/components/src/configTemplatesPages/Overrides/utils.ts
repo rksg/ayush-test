@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { MspEc }                                                         from '@acx-ui/msp/utils'
 import { ApplyConfigTemplatePaylod, ConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { flattenObject }                                                 from '@acx-ui/utils'
 
@@ -8,10 +7,10 @@ import { OverrideEntitiyType } from './types'
 
 import { ConfigTemplateOverrideModalProps } from '.'
 
-export type OverrideValuesPerMspEcType = { [mspEcId in string]: OverrideEntitiyType }
+export type OverrideValuesPerMspEcType = { [id in string]: OverrideEntitiyType }
 
 // eslint-disable-next-line max-len
-export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, selectedMspEcs: MspEc[]) {
+export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, selectedTargets: Array<{ id: string }>) {
   const [ overrideModalVisible, setOverrideModalVisible ] = useState(false)
   const [ overrideValues, setOverrideValues ] = useState<OverrideValuesPerMspEcType>()
 
@@ -24,7 +23,7 @@ export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, sel
   }
 
   const updateOverrideValue = (values: OverrideEntitiyType) => {
-    const resolvedValues = selectedMspEcs.reduce((acc, curr) => {
+    const resolvedValues = selectedTargets.reduce((acc, curr) => {
       acc[curr.id] = values
       return acc
     }, {} as OverrideValuesPerMspEcType)
@@ -33,7 +32,7 @@ export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, sel
   }
 
   const createOverrideModalProps = (): ConfigTemplateOverrideModalProps => {
-    const mspEcWithOverrideValues = selectedMspEcs.find(mspEc => overrideValues?.[mspEc.id])
+    const mspEcWithOverrideValues = selectedTargets.find(mspEc => overrideValues?.[mspEc.id])
 
     return {
       templateId: selectedTemplate.id!,

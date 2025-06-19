@@ -1,15 +1,16 @@
 import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { Params, TenantType, useParams }                  from '@acx-ui/react-router-dom'
-import { RequestPayload, RolesEnum, UseQuery }            from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi }                from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { Params, TenantType, useParams }                              from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, UseQuery }                        from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles, isCoreTier } from '@acx-ui/user'
+import { AccountType, getIntl, getOpsApi }                            from '@acx-ui/utils'
 
 import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
 import { ConfigTemplateUrlsInfo }                    from '../urls'
 
+import { ConfigTemplateContextType }                                         from './ConfigTemplateContext'
 import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
 import {
   configTemplateApGroupOperationMap, configTemplateIdentityGroupOperationMap,
@@ -20,14 +21,16 @@ import {
 import { useConfigTemplate } from './useConfigTemplate'
 
 // eslint-disable-next-line max-len
-export function generateConfigTemplateBreadcrumb (): { text: string, link?: string, tenantType?: TenantType }[] {
+export function generateConfigTemplateBreadcrumb (
+  templateContext: ConfigTemplateContextType['templateContext'] = 'MSP'
+): { text: string, link?: string, tenantType?: TenantType }[] {
   const { $t } = getIntl()
 
   return [
     {
       text: $t({ defaultMessage: 'Configuration Templates' }),
       link: CONFIG_TEMPLATE_LIST_PATH,
-      tenantType: 'v'
+      tenantType: templateContext === 'MSP' ? 'v' : 't'
     }
   ]
 }
@@ -41,6 +44,14 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
   return featureFlagEnabled
     && hasPermission
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
+}
+
+export function useRecConfigTemplateAccess (): boolean {
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
+  const isRecConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_REC)
+
+  return !isCore && isRecConfigTemplateEnabled
 }
 
 export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {

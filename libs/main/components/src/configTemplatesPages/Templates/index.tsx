@@ -11,8 +11,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                           from '@acx-ui/feature-toggle'
-import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, isNotAllowToApplyPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                                                                                  from '@acx-ui/feature-toggle'
+import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyDrawers, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, subPolicyMappingType, useAccessControlSubPolicyVisible } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
@@ -56,13 +56,20 @@ import { ProtectedDetailsDrawer }                           from './DetailsDrawe
 import {
   ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
   getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel,
-  ViewConfigTemplateDetailsLink, useFormatTemplateDate
+  ViewConfigTemplateDetailsLink, useFormatTemplateDate,
+  isTemplateTypeAllowed
 } from './templateUtils'
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 
 export function ConfigTemplateList (props: ConfigTemplateViewProps) {
-  const { ApplyTemplateView, AppliedToView, ShowDriftsView, appliedToColumn } = props
+  const {
+    ApplyTemplateView,
+    canApplyTemplate = (t: ConfigTemplate) => isTemplateTypeAllowed(t.type),
+    AppliedToView,
+    ShowDriftsView,
+    appliedToColumn
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -131,7 +138,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
     {
       rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
+      disabled: (selectedRows) => !selectedRows[0] || !canApplyTemplate(selectedRows[0]),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateViewVisible(true)
@@ -211,7 +218,7 @@ export function ConfigTemplateList (props: ConfigTemplateViewProps) {
         setVisible={setShowDriftsViewVisible}
         selectedTemplate={selectedTemplates[0]}
       />}
-      {appliedToViewVisible &&
+      {appliedToViewVisible && AppliedToView &&
       <AppliedToView
         setVisible={setAppliedToViewVisible}
         selectedTemplate={selectedTemplates[0]}

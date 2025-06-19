@@ -34,14 +34,14 @@ export function useServicePageHeaderTitle (isEdit: boolean, serviceType: Service
  */
 // eslint-disable-next-line max-len
 export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, templateContext } = useConfigTemplate()
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const from = (useLocation() as LocationExtended)?.state?.from
 
   // If the user is in the template context, use the config template breadcrumb.
   // Otherwise, use the service list breadcrumb.
   return isTemplate
-    ? generateConfigTemplateBreadcrumb()
+    ? generateConfigTemplateBreadcrumb(templateContext)
     : generateServiceListBreadcrumb(type, isNewServiceCatalogEnabled, from)
 }
 

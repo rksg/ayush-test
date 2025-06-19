@@ -32,6 +32,15 @@ describe('config-template-utils', () => {
         tenantType: 'v'
       }
     ])
+
+    const breadcrumbForREC = generateConfigTemplateBreadcrumb('REC')
+    expect(breadcrumbForREC).toEqual([
+      {
+        text: 'Configuration Templates',
+        link: CONFIG_TEMPLATE_LIST_PATH,
+        tenantType: 't'
+      }
+    ])
   })
 
   it('should return correct access for config template', () => {
