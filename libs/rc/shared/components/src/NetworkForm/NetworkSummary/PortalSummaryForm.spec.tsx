@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
+import { render, screen }         from '@acx-ui/test-utils'
 
 import {
   guestpassData,
@@ -54,6 +55,10 @@ describe('PortalSummaryForm', () => {
 
   it('should render self sign in successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_NETWORK_RADIUS_ACCOUNTING_TOGGLE
+    )
+
     render(
       <Provider>
         <Form>
@@ -65,6 +70,7 @@ describe('PortalSummaryForm', () => {
       }
     )
     expect(await screen.findByText('Sign-in Option')).toBeVisible()
+    expect(screen.getByText('Accounting Service')).toBeInTheDocument()
   })
 
   it('should render wispr none successfully', async () => {
