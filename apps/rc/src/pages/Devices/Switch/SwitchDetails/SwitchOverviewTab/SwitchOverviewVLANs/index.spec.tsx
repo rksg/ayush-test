@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { switchApi }                          from '@acx-ui/rc/services'
 import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                    from '@acx-ui/store'
@@ -42,6 +41,12 @@ describe('Switch Overview VLAN', () => {
       ),
       rest.get(SwitchUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(SwitchUrlsInfo.getSwitchRoutedList.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portList))
       )
     )
   })
@@ -77,18 +82,11 @@ describe('Switch Overview VLAN', () => {
     const updateVlanSpy = jest.fn()
     const deleteVlanSpy = jest.fn()
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_VLAN)
       addVlanSpy.mockClear()
       updateVlanSpy.mockClear()
       mockServer.use(
-        rest.post(SwitchUrlsInfo.getSwitchPortlist.url,
-          (req, res, ctx) => res(ctx.json(portList))
-        ),
         rest.get(SwitchUrlsInfo.getLagList.url,
           (req, res, ctx) => res(ctx.json(lagList))
-        ),
-        rest.post(SwitchUrlsInfo.getSwitchRoutedList.url,
-          (_, res, ctx) => res(ctx.json({}))
         ),
         rest.post(SwitchRbacUrlsInfo.addSwitchVlans.url,
           (req, res, ctx) => {

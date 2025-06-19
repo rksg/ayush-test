@@ -16,8 +16,10 @@ import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mocked
 
 import MyServices from '.'
 
+
 jest.mock('../UnifiedServices/useUnifiedServiceListWithTotalCount', () => ({
   ...jest.requireActual('../UnifiedServices/useUnifiedServiceListWithTotalCount'),
+  useDhcpConsolidationTotalCount: () => ({ data: { totalCount: 0 }, isFetching: false }),
   useMdnsProxyConsolidationTotalCount: () => ({ data: { totalCount: 16 }, isFetching: false })
 }))
 jest.mock('@acx-ui/rc/components', () => ({
@@ -29,9 +31,11 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
+const mockedUseDhcpStateMap = jest.fn()
 const mockedUseMdnsProxyStateMap = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
+  useDhcpStateMap: () => mockedUseDhcpStateMap(),
   useMdnsProxyStateMap: () => mockedUseMdnsProxyStateMap()
 }))
 
@@ -90,6 +94,11 @@ describe('MyServices', () => {
   })
 
   beforeEach(() => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: true,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: false
+    })
     mockedUseMdnsProxyStateMap.mockReturnValue({
       [ServiceType.MDNS_PROXY]: true,
       [ServiceType.EDGE_MDNS_PROXY]: false,
@@ -205,6 +214,26 @@ describe('MyServices', () => {
 
       expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
     })
+  })
+
+  it('should render DHCP Consolidation corredectly when FF is ON', async () => {
+    mockedUseDhcpStateMap.mockReturnValue({
+      [ServiceType.DHCP]: false,
+      [ServiceType.EDGE_DHCP]: false,
+      [ServiceType.DHCP_CONSOLIDATION]: true
+    })
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/DHCP for Wi-Fi/i)).toBeNull()
+    expect(screen.queryByText(/DHCP for RUCKUS Edge/i)).toBeNull()
+    expect(screen.getByText('DHCP (0)')).toBeInTheDocument()
   })
 
   it('should render mDNS Proxy Consolidation corredectly when FF is ON', async () => {

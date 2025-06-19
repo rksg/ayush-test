@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { LayoutProps }                                            from '@acx-ui/components'
@@ -27,8 +29,7 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
-import { MspRbacUrlsInfo }         from '@acx-ui/msp/utils'
-import { useIsEdgeReady }          from '@acx-ui/rc/components'
+import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
@@ -38,7 +39,8 @@ import {
   hasAdministratorTab,
   MigrationUrlsInfo,
   LicenseUrlsInfo,
-  useIsNewServicesCatalogEnabled
+  useIsNewServicesCatalogEnabled,
+  TenantType
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 import {
@@ -53,10 +55,9 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
   const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
-    accountTier } = useUserProfileContext()
+    accountTier, tenantType } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsEdgeReady()
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -69,6 +70,7 @@ export function useMenuConfig () {
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isIotEnabled = useIsSplitOn(Features.IOT_PHASE_2_TOGGLE)
+  const isDeviceProvisionMgmtEnabled = useIsSplitOn(Features.DEVICE_PROVISION_MANAGEMENT)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -81,6 +83,14 @@ export function useMenuConfig () {
   const isCore = isCoreTier(accountTier)
   const isNewServiceCatalogEnabled = useIsNewServicesCatalogEnabled()
   const isSupportUser = Boolean(userProfileData?.support)
+
+  const [showPrivacyMenu, setShowPrivacyMenu] = useState<boolean>(false)
+
+  useEffect(() => {
+    const showmenu = !!tenantType &&
+  !(tenantType === TenantType.REC || tenantType === TenantType.VAR)
+    setShowPrivacyMenu(showmenu)
+  }, [tenantType])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -301,23 +311,23 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(!showGatewaysMenu && isEdgeEnabled ? [{
+    ...(!showGatewaysMenu ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'RUCKUS Edge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI || isIotEnabled) ? [{
+    ...(showGatewaysMenu ? [{
       label: $t({ defaultMessage: 'Gateway' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
       children: [
-        ...(isEdgeEnabled ? [{
+        {
           uri: '/devices/edge',
           isActiveCheck: new RegExp('^/devices/edge'),
           label: $t({ defaultMessage: 'RUCKUS Edge' })
-        }] : []),
+        },
         ...(showRwgUI ? [{
           uri: '/ruckus-wan-gateway',
           label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
@@ -434,7 +444,7 @@ export function useMenuConfig () {
                   label: $t({ defaultMessage: 'Administrators' })
                 }
               ] : []),
-            ...(isMspAppMonitoringEnabled && !isCore &&
+            ...(showPrivacyMenu && isMspAppMonitoringEnabled && !isCore &&
               (rbacOpsApiEnabled ?
                 hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getPrivacySettings)])
                 : !isCustomRole)
@@ -464,6 +474,10 @@ export function useMenuConfig () {
                   }] : [])
               ] : []
             ),
+            ...(isDeviceProvisionMgmtEnabled ? [{
+              uri: '/administration/pendingAssets',
+              label: $t({ defaultMessage: 'Pending Assets' })
+            }]:[]),
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })

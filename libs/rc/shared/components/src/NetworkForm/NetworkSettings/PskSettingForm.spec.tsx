@@ -367,41 +367,7 @@ describe('NetworkForm', () => {
     await userEvent.click((await screen.findAllByRole('switch'))[1])
   }, 20000)
 
-  it('should create PSK network with WEP security protocol', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_WLAN_DEPRECATE_WEP
-      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
-
-    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
-
-    await fillInBeforeSettings('PSK network test')
-
-    const securityProtocols = await screen.findByRole('combobox', { name: 'Security Protocol' })
-
-    fireEvent.mouseDown(securityProtocols)
-
-    const mixOption1 = await screen.findByText('WPA')
-    await userEvent.click(mixOption1)
-
-    fireEvent.mouseDown(securityProtocols)
-
-    const mixOption2 = await screen.findByText('WPA2 (Recommended)')
-    await userEvent.click(mixOption2)
-
-    fireEvent.mouseDown(securityProtocols)
-
-    const mixOption3 = await screen.findByText('WPA2/WPA3 mixed mode')
-    await userEvent.click(mixOption3)
-
-    fireEvent.mouseDown(securityProtocols)
-    const option = await screen.findByText('WEP')
-    await userEvent.click(option)
-    await userEvent.click(await screen.findByText('Generate'))
-  })
-
   it('should not create PSK network with WEP security protocol', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_WLAN_DEPRECATE_WEP)
-
     render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')

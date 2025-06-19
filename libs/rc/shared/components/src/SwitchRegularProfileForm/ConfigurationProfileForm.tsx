@@ -69,7 +69,6 @@ export function ConfigurationProfileForm () {
     useLazyQueryFn: useLazyGetProfilesQuery,
     useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateListQuery
   })
-  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
     useQueryFn: useGetSwitchConfigProfileQuery,
@@ -298,12 +297,10 @@ export function ConfigurationProfileForm () {
     if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
       delete data.voiceVlanConfigs
     }
-    if (profileOnboardOnlyEnabled) {
-      data.applyOnboardOnly = !data.applyOnboardOnly
-    } else {
-      data.applyOnboardOnly = false
+    return {
+      ...data,
+      applyOnboardOnly: !data.applyOnboardOnly
     }
-    return data
   }
 
   const associateWithCliProfile = async (
