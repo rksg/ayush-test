@@ -8,7 +8,7 @@ import { getUserProfile, isCoreTier }                                           
 
 import { ServiceType }                           from '../../constants'
 import { PolicyType }                            from '../../types'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '../edge'
+import { useIsEdgeFeatureReady }                 from '../edge'
 import { policyTypeLabelMapping }                from '../policy'
 import { useDhcpStateMap, useMdnsProxyStateMap } from '../service'
 
@@ -49,7 +49,6 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureTierAllowed && !isCore
-  const isEdgeEnabled = useIsEdgeReady()
   // eslint-disable-next-line max-len
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING) && propertyManagementEnabled
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -233,8 +232,7 @@ function useBaseAvailableUnifiedServicesList (): Array<BaseAvailableUnifiedServi
         type: PolicyType.TUNNEL_PROFILE,
         sourceType: UnifiedServiceSourceType.POLICY,
         products: [RadioCardCategory.EDGE],
-        category: UnifiedServiceCategory.NETWORK_SERVICES,
-        disabled: !isEdgeEnabled
+        category: UnifiedServiceCategory.NETWORK_SERVICES
       },
       {
         type: PolicyType.VLAN_POOL,
