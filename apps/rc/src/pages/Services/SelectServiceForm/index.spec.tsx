@@ -183,8 +183,7 @@ describe('Select Service Form', () => {
 
   it('should display Edge TNM service when its FF ON', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE
-        || ff === Features.EDGES_TOGGLE)
+      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
     render(<SelectServiceForm />, {
       route: { params, path }
     })

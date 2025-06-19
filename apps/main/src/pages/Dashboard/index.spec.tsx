@@ -7,7 +7,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { ruckusAiChatApi, useGetCanvasesQuery }                   from '@acx-ui/rc/services'
-import { RuckusAiChatUrlInfo, useIsEdgeReady }                    from '@acx-ui/rc/utils'
+import { RuckusAiChatUrlInfo }                                    from '@acx-ui/rc/utils'
 import { BrowserRouter }                                          from '@acx-ui/react-router-dom'
 import { Provider, store }                                        from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within, waitFor } from '@acx-ui/test-utils'
@@ -123,12 +123,6 @@ describe('Dashboard', () => {
   it('should show report link correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(screen.getByText('See more reports')).toBeVisible()
-  })
-
-  it('should hide edge tab when FF is off', async () => {
-    jest.mocked(useIsEdgeReady).mockReturnValue(false)
-    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
-    expect(await screen.findAllByRole('radio')).toHaveLength(2)
   })
 
   it('DashboardFilterProvider provides default value', async () => {

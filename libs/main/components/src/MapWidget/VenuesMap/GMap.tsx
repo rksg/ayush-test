@@ -5,7 +5,7 @@ import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
 import { RawIntlProvider, useIntl }               from 'react-intl'
 
-import { useIsEdgeReady, VenueMarkerOptions } from '@acx-ui/rc/utils'
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -45,8 +45,6 @@ const GMap: React.FC<MapProps> = ({
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
   const [venueInfoWindow, setVenueInfoWindow] = React.useState<google.maps.InfoWindow>()
-  // whether to display edge on marker tooltip
-  const isEdgeEnabled = useIsEdgeReady()
 
   React.useEffect(() => {
     if (ref.current) {
@@ -135,7 +133,7 @@ const GMap: React.FC<MapProps> = ({
               <VenueMarkerTooltip
                 venueMarker={venueMarker}
                 onNavigate={onNavigate}
-                isEdgeEnabled={isEdgeEnabled}
+                isEdgeEnabled={true}
               />
             </RawIntlProvider>
           )
@@ -173,7 +171,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers: visibleMarkers,
-            renderer: new VenueClusterRenderer(map, intl, isEdgeEnabled, onNavigate),
+            renderer: new VenueClusterRenderer(map, intl, true, onNavigate),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
             onClusterClick: onClusterClick
           }))

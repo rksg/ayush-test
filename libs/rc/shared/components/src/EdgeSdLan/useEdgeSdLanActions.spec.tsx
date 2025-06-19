@@ -682,7 +682,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
     store.dispatch(edgeSdLanApi.util.resetApiState())
 
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     mockedReq.mockClear()
 
     mockServer.use(
@@ -735,7 +735,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
 
   it('should return the first get data by edgeId when only P1 FF on', async () => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE)
 
     const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('edge_id'), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -1011,7 +1011,7 @@ describe('SD-LAN feature functions', () => {
     describe('multi-venue SDLAN enabled', () => {
       beforeEach(() => {
         // eslint-disable-next-line max-len
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
       })
 
       it('should return venueId used for DC case', async () => {

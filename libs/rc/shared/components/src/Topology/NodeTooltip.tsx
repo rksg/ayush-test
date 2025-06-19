@@ -91,8 +91,10 @@ closeTooltip: Function
       position: 'absolute',
       width: '348px',
       maxHeight: '350px',
-      top: tooltipPosition.y - 100,
-      left: tooltipPosition.x + 5,
+      top: tooltipPosition?.x && typeof tooltipPosition?.y === 'number'
+        ? tooltipPosition.y - 100 : 0,
+      left: tooltipPosition?.x && typeof tooltipPosition?.x === 'number'
+        ? tooltipPosition.x + 5 : 0,
       zIndex: 9999
     }}>
     {
